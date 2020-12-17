@@ -506,6 +506,13 @@ class ProxyResource(Resource):
     def __init__(self, **kwargs):
         super(ProxyResource, self).__init__(**kwargs)
 
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[PrivateLinkResource]'},
+    }
+
+    def __init__(self, **kwargs):
+        super(PrivateLinkResourceListResult, self).__init__(**kwargs)
+        self.value = kwargs.get('value', None)
 
 class ServiceAccessPolicyEntry(Model):
     """An access policy entry.
@@ -631,25 +638,6 @@ class ServiceExportConfigurationInfo(Model):
     def __init__(self, **kwargs):
         super(ServiceExportConfigurationInfo, self).__init__(**kwargs)
         self.storage_account_name = kwargs.get('storage_account_name', None)
-
-
-class ServiceArcConfigurationInfo(Model):
-    """Acr operation configuration information.
-
-    :param login_servers: The list of the login servers.
-    :type login_servers: str
-    """
-
-    _attribute_map = {
-        'login_servers': {'key': 'loginServers', 'type': '[str]'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(ServiceArcConfigurationInfo, self).__init__(**kwargs)
-        self.login_servers = kwargs.get('login_servers', None)
 
 
 class ServiceAcrConfigurationInfo(Model):
@@ -875,6 +863,10 @@ class ServicesProperties(Model):
      service instance.
     :type export_configuration:
      ~azure.mgmt.healthcareapis.models.ServiceExportConfigurationInfo
+    :param acr_configuration: The azure container registry settings used for
+     convert data operation of the service instance.
+    :type acr_configuration:
+     ~azure.mgmt.healthcareapis.models.ServiceAcrConfigurationInfo
     :param private_endpoint_connections: The list of private endpoint
      connections that are set up for this resource.
     :type private_endpoint_connections:
@@ -884,10 +876,6 @@ class ServicesProperties(Model):
      values include: 'Enabled', 'Disabled'
     :type public_network_access: str or
      ~azure.mgmt.healthcareapis.models.PublicNetworkAccess
-    :param acr_configuration: The settings for the acr operation of the
-	service instance.
-    :type acr_configuration:
-	~azure.mgmt.healthcareapis.models.ServiceAcrConfigurationInfo
     """
 
     _validation = {
@@ -901,9 +889,9 @@ class ServicesProperties(Model):
         'authentication_configuration': {'key': 'authenticationConfiguration', 'type': 'ServiceAuthenticationConfigurationInfo'},
         'cors_configuration': {'key': 'corsConfiguration', 'type': 'ServiceCorsConfigurationInfo'},
         'export_configuration': {'key': 'exportConfiguration', 'type': 'ServiceExportConfigurationInfo'},
+        'acr_configuration': {'key': 'acrConfiguration', 'type': 'ServiceAcrConfigurationInfo'},
         'private_endpoint_connections': {'key': 'privateEndpointConnections', 'type': '[PrivateEndpointConnection]'},
         'public_network_access': {'key': 'publicNetworkAccess', 'type': 'str'},
-        'acr_configuration': {'key': 'acrConfiguration', 'type': 'ServiceAcrConfigurationInfo'},
     }
 
     def __init__(self, **kwargs):
@@ -914,9 +902,9 @@ class ServicesProperties(Model):
         self.authentication_configuration = kwargs.get('authentication_configuration', None)
         self.cors_configuration = kwargs.get('cors_configuration', None)
         self.export_configuration = kwargs.get('export_configuration', None)
+        self.acr_configuration = kwargs.get('acr_configuration', None)
         self.private_endpoint_connections = kwargs.get('private_endpoint_connections', None)
         self.public_network_access = kwargs.get('public_network_access', None)
-        self.acr_configuration = kwargs.get('acr_configuration', None)
 
 
 class ServicesResourceIdentity(Model):

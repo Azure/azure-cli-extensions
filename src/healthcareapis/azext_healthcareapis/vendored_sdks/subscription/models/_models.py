@@ -363,7 +363,8 @@ class PrivateEndpointConnectionListResult(msrest.serialization.Model):
 class PrivateLinkResource(Resource):
     """A private link resource.
 
-    Variables are only populated by the server, and will be ignored when sending a request.
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
 
     :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.

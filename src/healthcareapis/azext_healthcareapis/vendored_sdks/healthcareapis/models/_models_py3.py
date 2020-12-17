@@ -379,6 +379,12 @@ class PrivateEndpointConnection(Resource):
         self.private_link_service_connection_state = private_link_service_connection_state
         self.provisioning_state = provisioning_state
 
+    def __init__(self, *, private_link_service_connection_state, private_endpoint=None, provisioning_state=None, system_data=None, **kwargs) -> None:
+        super(PrivateEndpointConnection, self).__init__(**kwargs)
+        self.private_endpoint = private_endpoint
+        self.private_link_service_connection_state = private_link_service_connection_state
+        self.provisioning_state = provisioning_state
+        self.system_data = system_data
 
 class PrivateLinkResource(Resource):
     """A private link resource.
@@ -530,6 +536,22 @@ class ServiceAccessPolicyEntry(Model):
         self.object_id = object_id
 
 
+class ServiceAcrConfigurationInfo(Model):
+    """Azure container registry configuration information.
+
+    :param login_servers: The list of the ACR login servers.
+    :type login_servers: list[str]
+    """
+
+    _attribute_map = {
+        'login_servers': {'key': 'loginServers', 'type': '[str]'},
+    }
+
+    def __init__(self, *, login_servers=None, **kwargs) -> None:
+        super(ServiceAcrConfigurationInfo, self).__init__(**kwargs)
+        self.login_servers = login_servers
+
+
 class ServiceAuthenticationConfigurationInfo(Model):
     """Authentication configuration information.
 
@@ -631,27 +653,6 @@ class ServiceExportConfigurationInfo(Model):
     def __init__(self, *, storage_account_name: str=None, **kwargs) -> None:
         super(ServiceExportConfigurationInfo, self).__init__(**kwargs)
         self.storage_account_name = storage_account_name
-
-
-class ServiceArcConfigurationInfo(Model):
-    """Acr operation configuration information.
-
-    :param login_servers: The list of the login servers.
-    :type login_servers: str
-    """
-
-    _attribute_map = {
-        'login_servers': {'key': 'loginServers', 'type': '[str]'},
-    }
-
-    def __init__(
-        self,
-        *,
-        login_servers = None,
-        **kwargs
-    ):
-        super(ServiceArcConfigurationInfo, self).__init__(**kwargs)
-        self.login_servers = login_servers
 
 
 class ServicesResource(Model):
@@ -858,6 +859,10 @@ class ServicesProperties(Model):
      service instance.
     :type export_configuration:
      ~azure.mgmt.healthcareapis.models.ServiceExportConfigurationInfo
+    :param acr_configuration: The azure container registry settings used for
+     convert data operation of the service instance.
+    :type acr_configuration:
+     ~azure.mgmt.healthcareapis.models.ServiceAcrConfigurationInfo
     :param private_endpoint_connections: The list of private endpoint
      connections that are set up for this resource.
     :type private_endpoint_connections:
@@ -867,8 +872,6 @@ class ServicesProperties(Model):
      values include: 'Enabled', 'Disabled'
     :type public_network_access: str or
      ~azure.mgmt.healthcareapis.models.PublicNetworkAccess
-    :param acr_configuration: The settings for the data convert operation of the service instance.
-    :type acr_configuration: ~azure.mgmt.healthcareapis.models.ServiceArcConfigurationInfo
     """
 
     _validation = {
@@ -882,12 +885,12 @@ class ServicesProperties(Model):
         'authentication_configuration': {'key': 'authenticationConfiguration', 'type': 'ServiceAuthenticationConfigurationInfo'},
         'cors_configuration': {'key': 'corsConfiguration', 'type': 'ServiceCorsConfigurationInfo'},
         'export_configuration': {'key': 'exportConfiguration', 'type': 'ServiceExportConfigurationInfo'},
+        'acr_configuration': {'key': 'acrConfiguration', 'type': 'ServiceAcrConfigurationInfo'},
         'private_endpoint_connections': {'key': 'privateEndpointConnections', 'type': '[PrivateEndpointConnection]'},
         'public_network_access': {'key': 'publicNetworkAccess', 'type': 'str'},
-        'acr_configuration': {'key': 'acrConfiguration', 'type': 'ServiceArcConfigurationInfo'},
     }
 
-    def __init__(self, *, access_policies=None, cosmos_db_configuration=None, authentication_configuration=None, cors_configuration=None, export_configuration=None, private_endpoint_connections=None, public_network_access=None,acr_configuration=None, **kwargs) -> None:
+    def __init__(self, *, access_policies=None, cosmos_db_configuration=None, authentication_configuration=None, cors_configuration=None, export_configuration=None, acr_configuration=None, private_endpoint_connections=None, public_network_access=None, **kwargs) -> None:
         super(ServicesProperties, self).__init__(**kwargs)
         self.provisioning_state = None
         self.access_policies = access_policies
@@ -895,9 +898,9 @@ class ServicesProperties(Model):
         self.authentication_configuration = authentication_configuration
         self.cors_configuration = cors_configuration
         self.export_configuration = export_configuration
+        self.acr_configuration = acr_configuration
         self.private_endpoint_connections = private_endpoint_connections
         self.public_network_access = public_network_access
-        self.acr_configuration = acr_configuration
 
 
 class ServicesResourceIdentity(Model):

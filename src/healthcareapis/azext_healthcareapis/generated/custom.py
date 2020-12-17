@@ -184,60 +184,70 @@ def healthcareapis_private_link_resource_show(client,
 
 def healthcareapis_acr_list(client,
                             resource_group_name,
-                            resource_name,):
+                            resource_name):
     return client.get(resource_group_name=resource_group_name,
                       resource_name=resource_name).properties.acr_configuration
 
 
 def healthcareapis_acr_add(client,
-                            resource_group_name,
-                            resource_name,
-                            login_servers = None,
-                            no_wait=False):
+                           resource_group_name,
+                           resource_name,
+                           login_servers = None,
+                           no_wait=False):
+
     service_description = client.get(resource_group_name=resource_group_name,
-                      resource_name=resource_name)
+                                     resource_name=resource_name)
     if not login_servers:
-        return service_description.properties.acr_configuration
-    login_servers = login_servers.split()
-    new_login_servers = service_description.properties.acr_configuration.login_servers
-    for login_server in login_servers:
+        return service_description
+
+    print(service_description)
+    print("")
+    print(service_description.properties)
+    print("")
+    print(service_description.properties.acr_configuration)
+    
+    if not service_description.properties.acr_configuration:
+        service_description.properties.acr_configuration = {}
+        new_login_servers = []
+    else:
+        new_login_servers = service_description.properties.acr_configuration.login_servers
+
+    for login_server in login_servers.split():
         if login_server not in new_login_servers:
             new_login_servers.append(login_server)
+
+    service_description.properties.acr_configuration['login_servers'] = new_login_servers
+
+    print("FinalOutput")
+    print(service_description.properties.acr_configuration)
+
     return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
+                       client.create_or_update,
                        resource_group_name=resource_group_name,
                        resource_name=resource_name,
-                       kind=service_description.kind,
-                       location=service_description.location,
-                       tags=service_description.tags,
-                       identity=service_description.identity,
-                       properties=service_description.properties)
+                       service_description=service_description)
 
 
 def healthcareapis_acr_remove(client,
-                            resource_group_name,
-                            resource_name,
-                            login_servers = None,
-                            no_wait=False):
+                              resource_group_name,
+                              resource_name,
+                              login_servers = None,
+                              no_wait=False):
     service_description = client.get(resource_group_name=resource_group_name,
-                      resource_name=resource_name)
+                                     resource_name=resource_name)
     if not login_servers:
-        return service_description.properties.acr_configuration
-    login_servers = login_servers.split()
+        return service_description
+
     new_login_servers = service_description.properties.acr_configuration.login_servers
-    for login_server in login_servers:
+    for login_server in login_servers.split():
         if login_server in new_login_servers:
             new_login_servers.remove(login_server)
-    print(new_login_servers)
+
     return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
+                       client.create_or_update,
                        resource_group_name=resource_group_name,
                        resource_name=resource_name,
-                       kind=service_description.kind,
-                       location=service_description.location,
-                       tags=service_description.tags,
-                       identity=service_description.identity,
-                       properties=service_description.properties)
+                       service_description=service_description)
 
 
 def healthcareapis_acr_reset(client,
@@ -246,15 +256,12 @@ def healthcareapis_acr_reset(client,
                             login_servers = None,
                             no_wait=False):
     service_description = client.get(resource_group_name=resource_group_name,
-                      resource_name=resource_name)
+                                     resource_name=resource_name)
     login_servers = login_servers.split() if login_servers else []
     service_description.properties.acr_configuration.login_servers = login_servers
+
     return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
+                       client.create_or_update,
                        resource_group_name=resource_group_name,
                        resource_name=resource_name,
-                       kind=service_description.kind,
-                       location=service_description.location,
-                       tags=service_description.tags,
-                       identity=service_description.identity,
-                       properties=service_description.properties)
+                       service_description=service_description)
