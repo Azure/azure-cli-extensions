@@ -32,6 +32,6 @@ def load_arguments(self, _):
         c.argument('pipeline_name', options_list=['--pipeline', '-p'], help='Name of the pipeline to run.')
         c.argument('pipeline_type', options_list=['--pipeline-type', '-t'], validator=validate_pipeline_type, help='Type of pipeline. Must be either import or export.')
         c.argument('pipeline_run_name', options_list=['--name', '-n'], help='Name of the pipeline run.')
-        c.argument('force_update_tag', options_list=['--force-update-tag', '-f'], action='store_true', help='Flag that forces ARM to redeploy resource even if no parameters have changed.')
+        c.argument('force_update_tag', options_list=['--force-redeploy', '-f'], action='store_true', help='Flag that forces ARM to redeploy resource even if no parameters have changed.')
         c.argument('storage_blob_name', options_list=['--storage-blob', '-b'], help='Name of the storage blob to be imported or exported.')
         c.argument('artifacts', options_list=['--artifacts', '-a'], nargs='+', help='Space-separated list of container artifacts. Artifacts must be either of the form `repository:tag` or `repository@digest` such as hello-world:latest or hello-world@sha256:90659bf80b44ce6be8234e6ff90a1ac34acbeb826903b02cfa0da11c82cbc042.')
