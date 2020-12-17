@@ -459,8 +459,7 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('ruleCollections[2].rules[0].ruleType', 'ApplicationRule'),
                      self.check('ruleCollections[2].rules[0].terminateTls', True),
                      self.check('ruleCollections[2].rules[0].targetUrls', "['www.google.com', 'www.bing.com']")
-                ]
-            )
+                ])
 
         self.cmd('az network firewall policy rule-collection-group collection add-nat-collection -n nat-collection-2 \
                                  --policy-name {policy} --rule-collection-group-name {collectiongroup} -g {rg} --collection-priority 1000 \
