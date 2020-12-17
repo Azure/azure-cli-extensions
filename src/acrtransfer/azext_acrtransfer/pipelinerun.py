@@ -35,7 +35,7 @@ def create_pipelinerun(client, resource_group_name, registry_name, pipeline_name
 
         pipeline_resource_id = raw_result.id
         if artifacts is None:
-            raise CLIError("artifacts cannot be null for Export PipelineRuns. Please provide a comma separated list of container images to be exported in the form REPOSITORY:TAG or REPOSITORY@sha256:90659bf80b44ce6be8234e6ff90a1ac34acbeb826903b02cfa0da11c82cbc042.")
+            raise CLIError("artifacts cannot be null for Export PipelineRuns. Please provide a space-separated list of container images to be exported in the form REPOSITORY:TAG or REPOSITORY@sha256:90659bf80b44ce6be8234e6ff90a1ac34acbeb826903b02cfa0da11c82cbc042.")
 
         # add tag ":latest" if a tag is not present
         artifacts = [artifact + ":latest" if ":" not in artifact and "@" not in artifact else artifact for artifact in artifacts]
