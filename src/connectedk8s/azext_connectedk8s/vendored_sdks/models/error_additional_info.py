@@ -12,29 +12,29 @@
 from msrest.serialization import Model
 
 
-class ErrorDetails(Model):
-    """The error response details containing error code and error message.
+class ErrorAdditionalInfo(Model):
+    """The resource management error additional info.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar code: The error code.
-    :vartype code: str
-    :ivar message: The error message.
-    :vartype message: str
+    :ivar type: The additional info type.
+    :vartype type: str
+    :ivar info: The additional info.
+    :vartype info: object
     """
 
     _validation = {
-        'code': {'readonly': True},
-        'message': {'readonly': True},
+        'type': {'readonly': True},
+        'info': {'readonly': True},
     }
 
     _attribute_map = {
-        'code': {'key': 'code', 'type': 'str'},
-        'message': {'key': 'message', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'info': {'key': 'info', 'type': 'object'},
     }
 
     def __init__(self, **kwargs):
-        super(ErrorDetails, self).__init__(**kwargs)
-        self.code = None
-        self.message = None
+        super(ErrorAdditionalInfo, self).__init__(**kwargs)
+        self.type = None
+        self.info = None
