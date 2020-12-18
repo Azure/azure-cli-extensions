@@ -10,182 +10,147 @@
 
 import os
 from azure.cli.testsdk import ScenarioTest
-from .. import try_manual, raise_if, calc_coverage
 from azure.cli.testsdk import ResourceGroupPreparer
+from .example_steps import step_environment_gen1_create
+from .example_steps import step_environment_list
+from .example_steps import step_environment_show
+from .example_steps import step_environment_update
+from .example_steps import step_access_policy_create
+from .example_steps import step_access_policy_list
+from .example_steps import step_access_policy_show
+from .example_steps import step_access_policy_update
+from .example_steps import step_access_policy_delete
+from .example_steps import step_event_source_microsoft__event_hub_create
+from .example_steps import step_event_source_show
+from .example_steps import step_event_source_list
+from .example_steps import step_event_source_update
+from .example_steps import step_event_source_delete
+from .example_steps import step_reference_data_set_create
+from .example_steps import step_reference_data_set_show
+from .example_steps import step_reference_data_set_list
+from .example_steps import step_reference_data_set_update
+from .example_steps import step_reference_data_set_delete
+from .example_steps import step_environment_delete
+from .. import (
+    try_manual,
+    raise_if,
+    calc_coverage
+)
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-# Env setup
+# Env setup_scenario
 @try_manual
-def setup(test, rg):
+def setup_scenario(test, rg):
     pass
 
 
-# EXAMPLE: /AccessPolicies/put/AccessPoliciesCreate
+# Env cleanup_scenario
 @try_manual
-def step__accesspolicies_put_accesspoliciescreate(test, rg):
-    test.cmd('az timeseriesinsights access-policy create '
-             '--name "{myAccessPolicy}" '
-             '--environment-name "env1" '
-             '--description "some description" '
-             '--principal-object-id "aGuid" '
-             '--roles "Reader" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("name", "{myAccessPolicy}", case_sensitive=False),
-                 test.check("description", "some description", case_sensitive=False),
-                 test.check("principalObjectId", "aGuid", case_sensitive=False),
-             ])
-
-
-# EXAMPLE: /AccessPolicies/get/AccessPoliciesByEnvironment
-@try_manual
-def step__accesspolicies_get(test, rg):
-    test.cmd('az timeseriesinsights access-policy list '
-             '--environment-name "env1" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check('length(@)', 1),
-             ])
-
-
-# EXAMPLE: /AccessPolicies/get/AccessPoliciesGet
-@try_manual
-def step__accesspolicies_get_accesspoliciesget(test, rg):
-    test.cmd('az timeseriesinsights access-policy show '
-             '--name "{myAccessPolicy}" '
-             '--environment-name "env1" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("name", "{myAccessPolicy}", case_sensitive=False),
-                 test.check("description", "some description", case_sensitive=False),
-                 test.check("principalObjectId", "aGuid", case_sensitive=False),
-             ])
-
-
-# EXAMPLE: /AccessPolicies/patch/AccessPoliciesUpdate
-@try_manual
-def step__accesspolicies_patch_accesspoliciesupdate(test, rg):
-    test.cmd('az timeseriesinsights access-policy update '
-             '--name "{myAccessPolicy}" '
-             '--roles "Reader" '
-             '--roles "Contributor" '
-             '--environment-name "env1" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("name", "{myAccessPolicy}", case_sensitive=False),
-                 test.check("description", "some description", case_sensitive=False),
-                 test.check("principalObjectId", "aGuid", case_sensitive=False),
-             ])
-
-
-# EXAMPLE: /AccessPolicies/delete/AccessPoliciesDelete
-@try_manual
-def step__accesspolicies_delete_accesspoliciesdelete(test, rg):
-    test.cmd('az timeseriesinsights access-policy delete -y '
-             '--name "{myAccessPolicy}" '
-             '--environment-name "env1" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# EXAMPLE: /ReferenceDataSets/put/ReferenceDataSetsCreate
-@try_manual
-def step__referencedatasets_put(test, rg):
-    test.cmd('az timeseriesinsights reference-data-set create '
-             '--environment-name "env1" '
-             '--location "West US" '
-             '--key-properties name="DeviceId1" type="String" '
-             '--key-properties name="DeviceFloor" type="Double" '
-             '--name "{myReferenceDataSet}" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("location", "West US", case_sensitive=False),
-                 test.check("name", "{myReferenceDataSet}", case_sensitive=False),
-             ])
-
-
-# EXAMPLE: /ReferenceDataSets/get/ReferenceDataSetsGet
-@try_manual
-def step__referencedatasets_get_referencedatasetsget(test, rg):
-    test.cmd('az timeseriesinsights reference-data-set show '
-             '--environment-name "env1" '
-             '--name "{myReferenceDataSet}" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("location", "West US", case_sensitive=False),
-                 test.check("name", "{myReferenceDataSet}", case_sensitive=False),
-             ])
-
-
-# EXAMPLE: /ReferenceDataSets/get/ReferenceDataSetsListByEnvironment
-@try_manual
-def step__referencedatasets_get(test, rg):
-    test.cmd('az timeseriesinsights reference-data-set list '
-             '--environment-name "env1" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check('length(@)', 1),
-             ])
-
-
-# EXAMPLE: /ReferenceDataSets/patch/ReferenceDataSetsUpdate
-@try_manual
-def step__referencedatasets_patch(test, rg):
-    test.cmd('az timeseriesinsights reference-data-set update '
-             '--environment-name "env1" '
-             '--name "{myReferenceDataSet}" '
-             '--tags someKey="someValue" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("location", "West US", case_sensitive=False),
-                 test.check("name", "{myReferenceDataSet}", case_sensitive=False),
-                 test.check("tags.someKey", "someValue", case_sensitive=False),
-             ])
-
-
-# EXAMPLE: /ReferenceDataSets/delete/ReferenceDataSetsDelete
-@try_manual
-def step__referencedatasets_delete(test, rg):
-    test.cmd('az timeseriesinsights reference-data-set delete -y '
-             '--environment-name "env1" '
-             '--name "{myReferenceDataSet}" '
-             '--resource-group "{rg}"',
-             checks=[])
-
-
-# Env cleanup
-@try_manual
-def cleanup(test, rg):
+def cleanup_scenario(test, rg):
     pass
 
 
-# Testcase
+# Testcase: Scenario
 @try_manual
 def call_scenario(test, rg):
-    setup(test, rg)
-    step__accesspolicies_put_accesspoliciescreate(test, rg)
-    step__accesspolicies_get(test, rg)
-    step__accesspolicies_get_accesspoliciesget(test, rg)
-    step__accesspolicies_patch_accesspoliciesupdate(test, rg)
-    step__accesspolicies_delete_accesspoliciesdelete(test, rg)
-    step__referencedatasets_put(test, rg)
-    step__referencedatasets_get_referencedatasetsget(test, rg)
-    step__referencedatasets_get(test, rg)
-    step__referencedatasets_patch(test, rg)
-    step__referencedatasets_delete(test, rg)
-    cleanup(test, rg)
+    setup_scenario(test, rg)
+    step_environment_gen1_create(test, rg, checks=[])
+    step_environment_list(test, rg, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_environment_list(test, rg, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_environment_show(test, rg, checks=[
+        test.check("name", "{myEnvironment}", case_sensitive=False),
+        test.check("location", "West US", case_sensitive=False),
+        test.check("dataRetentionTime", "P31D", case_sensitive=False),
+        test.check("sku.name", "S1", case_sensitive=False),
+        test.check("sku.capacity", 1),
+    ])
+    step_environment_update(test, rg, checks=[
+        test.check("name", "{myEnvironment}", case_sensitive=False),
+        test.check("location", "West US", case_sensitive=False),
+        test.check("dataRetentionTime", "P31D", case_sensitive=False),
+        test.check("tags.someTag", "someTagValue", case_sensitive=False),
+    ])
+    step_access_policy_create(test, rg, checks=[
+        test.check("name", "{myAccessPolicy}", case_sensitive=False),
+        test.check("description", "some description", case_sensitive=False),
+        test.check("principalObjectId", "aGuid", case_sensitive=False),
+    ])
+    step_access_policy_list(test, rg, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_access_policy_show(test, rg, checks=[
+        test.check("name", "{myAccessPolicy}", case_sensitive=False),
+        test.check("description", "some description", case_sensitive=False),
+        test.check("principalObjectId", "aGuid", case_sensitive=False),
+    ])
+    step_access_policy_update(test, rg, checks=[
+        test.check("name", "{myAccessPolicy}", case_sensitive=False),
+        test.check("description", "some description", case_sensitive=False),
+        test.check("principalObjectId", "aGuid", case_sensitive=False),
+    ])
+    step_access_policy_delete(test, rg, checks=[])
+    step_event_source_microsoft__event_hub_create(test, rg, checks=[])
+    step_event_source_show(test, rg, checks=[
+        test.check("name", "{myEventSource}", case_sensitive=False),
+        test.check("location", "West US", case_sensitive=False),
+        test.check("consumerGroupName", "cgn", case_sensitive=False),
+        test.check("eventHubName", "ehn", case_sensitive=False),
+        test.check("eventSourceResourceId", "somePathInArm", case_sensitive=False),
+        test.check("keyName", "managementKey", case_sensitive=False),
+        test.check("serviceBusNamespace", "sbn", case_sensitive=False),
+    ])
+    step_event_source_list(test, rg, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_event_source_update(test, rg, checks=[
+        test.check("name", "{myEventSource}", case_sensitive=False),
+        test.check("location", "West US", case_sensitive=False),
+        test.check("consumerGroupName", "cgn", case_sensitive=False),
+        test.check("eventHubName", "ehn", case_sensitive=False),
+        test.check("eventSourceResourceId", "somePathInArm", case_sensitive=False),
+        test.check("keyName", "managementKey", case_sensitive=False),
+        test.check("serviceBusNamespace", "sbn", case_sensitive=False),
+        test.check("tags.someKey", "someValue", case_sensitive=False),
+    ])
+    step_event_source_delete(test, rg, checks=[])
+    step_reference_data_set_create(test, rg, checks=[
+        test.check("location", "West US", case_sensitive=False),
+        test.check("name", "{myReferenceDataSet}", case_sensitive=False),
+    ])
+    step_reference_data_set_show(test, rg, checks=[
+        test.check("location", "West US", case_sensitive=False),
+        test.check("name", "{myReferenceDataSet}", case_sensitive=False),
+    ])
+    step_reference_data_set_list(test, rg, checks=[
+        test.check('length(@)', 1),
+    ])
+    step_reference_data_set_update(test, rg, checks=[
+        test.check("location", "West US", case_sensitive=False),
+        test.check("name", "{myReferenceDataSet}", case_sensitive=False),
+        test.check("tags.someKey", "someValue", case_sensitive=False),
+    ])
+    step_reference_data_set_delete(test, rg, checks=[])
+    step_environment_delete(test, rg, checks=[])
+    cleanup_scenario(test, rg)
 
 
+# Test class for Scenario
 @try_manual
-class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
+class TimeseriesinsightsScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitesttimeseriesinsights_rg1'[:7], key='rg', parameter_name='rg')
-    def test_timeseriesinsights(self, rg):
+    def test_timeseriesinsights_Scenario(self, rg):
 
         self.kwargs.update({
+            'myEnvironment': 'env1',
+            'myEventSource': 'es1',
             'myReferenceDataSet': 'rds1',
             'myAccessPolicy': 'ap1',
         })
@@ -193,3 +158,4 @@ class TimeSeriesInsightsClientScenarioTest(ScenarioTest):
         call_scenario(self, rg)
         calc_coverage(__file__)
         raise_if()
+
