@@ -194,6 +194,8 @@ def load_arguments(self, _):
 
     with self.argument_context('network firewall policy rule-collection-group collection', arg_group='Application Rule') as c:
         c.argument('target_fqdns', nargs='+', help='Space-separated list of FQDNs for this rule.', validator=validate_rule_group_collection)
+        c.argument('target_urls', nargs='+', help='Space-separated list of target urls for this rule')
+        c.argument('enable_terminate_tls', arg_type=get_three_state_flag(), help='Enable flag to terminate TLS connection for this rule')
         c.argument('fqdn_tags', nargs='+', help='Space-separated list of FQDN tags for this rule.', validator=validate_rule_group_collection)
         c.argument('protocols', nargs='+', validator=validate_application_rule_protocols, help='Space-separated list of protocols and port numbers to use, in PROTOCOL=PORT format. Valid protocols are Http, Https.')
 
