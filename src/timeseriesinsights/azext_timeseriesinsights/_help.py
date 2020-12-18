@@ -7,6 +7,10 @@
 
 from knack.help_files import helps
 
+helps['timeseriesinsights'] = """
+    type: group
+    short-summary: Manage Azure Time Series Insights.
+"""
 
 helps['timeseriesinsights environment'] = """
     type: group
@@ -15,8 +19,8 @@ helps['timeseriesinsights environment'] = """
 
 helps['timeseriesinsights environment list'] = """
     type: command
-    short-summary: "Lists all the available environments associated with the subscription and within the specified \
-resource group. And Lists all the available environments within a subscription, irrespective of the resource groups."
+    short-summary: "List all the available environments associated with the subscription and within the specified \
+    resource group."
     examples:
       - name: EnvironmentsByResourceGroup
         text: |-
@@ -28,7 +32,7 @@ resource group. And Lists all the available environments within a subscription, 
 
 helps['timeseriesinsights environment show'] = """
     type: command
-    short-summary: "Gets the environment with the specified name in the specified subscription and resource group."
+    short-summary: "Show the environment with the specified name in the specified subscription and resource group."
     examples:
       - name: EnvironmentsGet
         text: |-
@@ -37,22 +41,22 @@ helps['timeseriesinsights environment show'] = """
 
 helps['timeseriesinsights environment gen1'] = """
     type: group
-    short-summary: Manage environment with timeseriesinsights sub group gen1
+    short-summary: "Manage a gen1 environment in the specified subscription and resource group."
 """
 
 helps['timeseriesinsights environment gen1 create'] = """
     type: command
-    short-summary: "Create an environment in the specified subscription and resource group."
+    short-summary: "Create a gen1 environment in the specified subscription and resource group."
     parameters:
       - name: --sku
-        short-summary: "The sku determines the type of environment, either Gen1 (S1 or S2) or Gen2 (L1). For Gen1 \
+        short-summary: "The sku determines the type of environment, either S1 or S2. For Gen1 \
 environments the sku determines the capacity of the environment, the ingress rate, and the billing rate."
         long-summary: |
             Usage: --sku name=XX capacity=XX
 
             name: Required. The name of this SKU.
-            capacity: Required. The capacity of the sku. For Gen1 environments, this value can be changed to support \
-scale out of environments after they have been created.
+            capacity: Required. The capacity of the sku. This value can be changed to support scale out of \
+            environments after they have been created.
       - name: --partition-key-properties
         short-summary: "The list of event properties which will be used to partition data in the environment. \
 Currently, only a single partition key property is supported."
@@ -70,24 +74,52 @@ Currently, only a single partition key property is supported."
 "P31D" --partition-key-properties name="DeviceId1" type="String" --sku name="S1" capacity=1 --resource-group "rg1"
 """
 
-helps['timeseriesinsights environment gen2'] = """
-    type: group
-    short-summary: Manage environment with timeseriesinsights sub group gen2
-"""
-
-helps['timeseriesinsights environment gen2 create'] = """
+helps['timeseriesinsights environment gen1 update'] = """
     type: command
-    short-summary: "Create an environment in the specified subscription and resource group."
+    short-summary: "Update a gen1 environment in the specified subscription and resource group."
     parameters:
       - name: --sku
-        short-summary: "The sku determines the type of environment, either Gen1 (S1 or S2) or Gen2 (L1). For Gen1 \
+        short-summary: "The sku determines the type of environment, either S1 or S2. For Gen1 \
 environments the sku determines the capacity of the environment, the ingress rate, and the billing rate."
         long-summary: |
             Usage: --sku name=XX capacity=XX
 
             name: Required. The name of this SKU.
-            capacity: Required. The capacity of the sku. For Gen1 environments, this value can be changed to support \
-scale out of environments after they have been created.
+            capacity: Required. The capacity of the sku. This value can be changed to support scale out of \
+            environments after they have been created.
+      - name: --partition-key-properties
+        short-summary: "The list of event properties which will be used to partition data in the environment. \
+Currently, only a single partition key property is supported."
+        long-summary: |
+            Usage: --partition-key-properties name=XX type=XX
+
+            name: The name of the property.
+            type: The type of the property.
+
+            Multiple actions can be specified by using more than one --partition-key-properties argument.
+    examples:
+      - name: EnvironmentsUpdate
+        text: |-
+               az timeseriesinsights environment gen1 update --name "env1" --sku name="S1" capacity=2 \
+               --resource-group "rg1"
+"""
+
+helps['timeseriesinsights environment gen2'] = """
+    type: group
+    short-summary: Manage a gen2 environment in the specified subscription and resource group.
+"""
+
+helps['timeseriesinsights environment gen2 create'] = """
+    type: command
+    short-summary: "Create a gen2 environment in the specified subscription and resource group."
+    parameters:
+      - name: --sku
+        short-summary: "The sku determines the type of environment, L1."
+        long-summary: |
+            Usage: --sku name=XX capacity=XX
+
+            name: Required. The name of this SKU.
+            capacity: Required. The capacity of the sku. 
       - name: --time-series-id-properties
         short-summary: "The list of event properties which will be used to define the environment's time series id."
         long-summary: |
@@ -116,19 +148,48 @@ retain a copy of the environment's data available for faster query."
 available for query from the warm store.
 """
 
-helps['timeseriesinsights environment update'] = """
+helps['timeseriesinsights environment gen2 update'] = """
     type: command
-    short-summary: "Updates the environment with the specified name in the specified subscription and resource group."
-    examples:
-      - name: EnvironmentsUpdate
-        text: |-
-               az timeseriesinsights environment update --name "env1" --tags someTag="someTagValue" --resource-group \
-"rg1"
+    short-summary: "Create a gen2 environment in the specified subscription and resource group."
+    parameters:
+      - name: --sku
+        short-summary: "The sku determines the type of environment, L1."
+        long-summary: |
+            Usage: --sku name=XX capacity=XX
+
+            name: Required. The name of this SKU.
+            capacity: Required. The capacity of the sku. 
+      - name: --time-series-id-properties
+        short-summary: "The list of event properties which will be used to define the environment's time series id."
+        long-summary: |
+            Usage: --time-series-id-properties name=XX type=XX
+
+            name: The name of the property.
+            type: The type of the property.
+
+            Multiple actions can be specified by using more than one --time-series-id-properties argument.
+      - name: --storage-configuration
+        short-summary: "The storage configuration provides the connection details that allows the Time Series Insights \
+service to connect to the customer storage account that is used to store the environment's data."
+        long-summary: |
+            Usage: --storage-configuration account-name=XX management-key=XX
+
+            account-name: Required. The name of the storage account that will hold the environment's Gen2 data.
+            management-key: Required. The value of the management key that grants the Time Series Insights service \
+write access to the storage account. This property is not shown in environment responses.
+      - name: --warm-store-configuration
+        short-summary: "The warm store configuration provides the details to create a warm store cache that will \
+retain a copy of the environment's data available for faster query."
+        long-summary: |
+            Usage: --warm-store-configuration data-retention=XX
+
+            data-retention: Required. ISO8601 timespan specifying the number of days the environment's events will be \
+available for query from the warm store.
 """
 
 helps['timeseriesinsights environment delete'] = """
     type: command
-    short-summary: "Deletes the environment with the specified name in the specified subscription and resource group."
+    short-summary: "Delete the environment with the specified name in the specified subscription and resource group."
     examples:
       - name: EnvironmentsDelete
         text: |-
@@ -156,7 +217,7 @@ helps['timeseriesinsights event-source'] = """
 
 helps['timeseriesinsights event-source list'] = """
     type: command
-    short-summary: "Lists all the available event sources associated with the subscription and within the specified \
+    short-summary: "List all the available event sources associated with the subscription and within the specified \
 resource group and environment."
     examples:
       - name: ListEventSourcesByEnvironment
@@ -166,54 +227,58 @@ resource group and environment."
 
 helps['timeseriesinsights event-source show'] = """
     type: command
-    short-summary: "Gets the event source with the specified name in the specified environment."
+    short-summary: "Show the event source with the specified name in the specified environment."
     examples:
       - name: GetEventHubEventSource
         text: |-
                az timeseriesinsights event-source show --environment-name "env1" --name "es1" --resource-group "rg1"
 """
 
-helps['timeseriesinsights event-source event-hub'] = """
+helps['timeseriesinsights event-source eventhub'] = """
     type: group
     short-summary: Manage event source with timeseriesinsights sub group event-hub
 """
 
-helps['timeseriesinsights event-source event-hub create'] = """
+helps['timeseriesinsights event-source eventhub create'] = """
     type: command
     short-summary: "Create an event source under the specified environment."
     examples:
       - name: CreateEventHubEventSource
         text: |-
-               az timeseriesinsights event-source event-hub create --environment-name "env1" --name "es1" \
+               az timeseriesinsights event-source eventhub create --environment-name "env1" --name "es1" \
 --location "West US" --consumer-group-name "cgn" --event-hub-name "ehn" --event-source-resource-id "somePathInArm" \
 --key-name "managementKey" --service-bus-namespace "sbn" --shared-access-key "someSecretvalue" \
 --timestamp-property-name "someTimestampProperty" --resource-group "rg1"
 """
 
-helps['timeseriesinsights event-source iot-hub'] = """
+helps['timeseriesinsights event-source eventhub update'] = """
+    type: command
+    short-summary: "Update an event source under the specified environment."
+    examples:
+      - name: UpdateEventHubEventSource
+        text: |-
+               az timeseriesinsights event-source eventhub update --environment-name "env1" --name "es1" \
+--shared-access-key "someSecretvalue" --timestamp-property-name "someTimestampProperty" --resource-group "rg1"
+"""
+
+helps['timeseriesinsights event-source iothub'] = """
     type: group
     short-summary: Manage event source with timeseriesinsights sub group iot-hub
 """
 
-helps['timeseriesinsights event-source iot-hub create'] = """
+helps['timeseriesinsights event-source iothub create'] = """
     type: command
     short-summary: "Create an event source under the specified environment."
 """
 
-helps['timeseriesinsights event-source update'] = """
+helps['timeseriesinsights event-source iothub update'] = """
     type: command
-    short-summary: "Updates the event source with the specified name in the specified subscription, resource group, \
-and environment."
-    examples:
-      - name: UpdateEventSource
-        text: |-
-               az timeseriesinsights event-source update --environment-name "env1" --name "es1" --tags \
-someKey="someValue" --resource-group "rg1"
+    short-summary: "Update an event source under the specified environment."
 """
 
 helps['timeseriesinsights event-source delete'] = """
     type: command
-    short-summary: "Deletes the event source with the specified name in the specified subscription, resource group, \
+    short-summary: "Delete the event source with the specified name in the specified subscription, resource group, \
 and environment."
     examples:
       - name: DeleteEventSource
@@ -228,7 +293,7 @@ helps['timeseriesinsights reference-data-set'] = """
 
 helps['timeseriesinsights reference-data-set list'] = """
     type: command
-    short-summary: "Lists all the available reference data sets associated with the subscription and within the \
+    short-summary: "List all the available reference data sets associated with the subscription and within the \
 specified resource group and environment."
     examples:
       - name: ReferenceDataSetsListByEnvironment
@@ -238,7 +303,7 @@ specified resource group and environment."
 
 helps['timeseriesinsights reference-data-set show'] = """
     type: command
-    short-summary: "Gets the reference data set with the specified name in the specified environment."
+    short-summary: "Show the reference data set with the specified name in the specified environment."
     examples:
       - name: ReferenceDataSetsGet
         text: |-
@@ -269,7 +334,7 @@ helps['timeseriesinsights reference-data-set create'] = """
 
 helps['timeseriesinsights reference-data-set update'] = """
     type: command
-    short-summary: "Updates the reference data set with the specified name in the specified subscription, resource \
+    short-summary: "Update the reference data set with the specified name in the specified subscription, resource \
 group, and environment."
     examples:
       - name: ReferenceDataSetsUpdate
@@ -280,7 +345,7 @@ someKey="someValue" --resource-group "rg1"
 
 helps['timeseriesinsights reference-data-set delete'] = """
     type: command
-    short-summary: "Deletes the reference data set with the specified name in the specified subscription, resource \
+    short-summary: "Delete the reference data set with the specified name in the specified subscription, resource \
 group, and environment."
     examples:
       - name: ReferenceDataSetsDelete
@@ -296,7 +361,7 @@ helps['timeseriesinsights access-policy'] = """
 
 helps['timeseriesinsights access-policy list'] = """
     type: command
-    short-summary: "Lists all the available access policies associated with the environment."
+    short-summary: "List all the available access policies associated with the environment."
     examples:
       - name: AccessPoliciesByEnvironment
         text: |-
@@ -305,7 +370,7 @@ helps['timeseriesinsights access-policy list'] = """
 
 helps['timeseriesinsights access-policy show'] = """
     type: command
-    short-summary: "Gets the access policy with the specified name in the specified environment."
+    short-summary: "Show the access policy with the specified name in the specified environment."
     examples:
       - name: AccessPoliciesGet
         text: |-
@@ -324,7 +389,7 @@ description" --principal-object-id "aGuid" --roles "Reader" --resource-group "rg
 
 helps['timeseriesinsights access-policy update'] = """
     type: command
-    short-summary: "Updates the access policy with the specified name in the specified subscription, resource group, \
+    short-summary: "Update the access policy with the specified name in the specified subscription, resource group, \
 and environment."
     examples:
       - name: AccessPoliciesUpdate
@@ -335,7 +400,7 @@ and environment."
 
 helps['timeseriesinsights access-policy delete'] = """
     type: command
-    short-summary: "Deletes the access policy with the specified name in the specified subscription, resource group, \
+    short-summary: "Delete the access policy with the specified name in the specified subscription, resource group, \
 and environment."
     examples:
       - name: AccessPoliciesDelete

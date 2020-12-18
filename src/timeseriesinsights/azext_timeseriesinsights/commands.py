@@ -43,12 +43,12 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'timeseriesinsights_event_source_show')
         g.custom_command('delete', 'timeseriesinsights_event_source_delete', confirmation=True)
 
-    with self.command_group('timeseriesinsights event-source event-hub', timeseriesinsights_event_source,
+    with self.command_group('timeseriesinsights event-source eventhub', timeseriesinsights_event_source,
                             client_factory=cf_event_source) as g:
         g.custom_command('create', 'timeseriesinsights_event_source_event_hub_create')
         g.custom_command('update', 'timeseriesinsights_event_source_event_hub_update')
 
-    with self.command_group('timeseriesinsights event-source iot-hub', timeseriesinsights_event_source,
+    with self.command_group('timeseriesinsights event-source iothub', timeseriesinsights_event_source,
                             client_factory=cf_event_source) as g:
         g.custom_command('create', 'timeseriesinsights_event_source_iot_hub_create')
         g.custom_command('update', 'timeseriesinsights_event_source_iot_hub_update')
