@@ -87,6 +87,27 @@ class StorageBlobUploadLiveTests(LiveScenarioTest):
             self.assertEqual(file_size_kb * 1024, os.stat(downloaded).st_size,
                              'The download file size is not right.')
 
+    @ResourceGroupPreparer()
+    @StorageAccountPreparer()
+    def test_blob_upload_with_stream(self, resource_group, storage_account):
+        file_size_kb = 128
+        container = self.create_random_name(prefix='cont', length=24)
+        local_dir = self.create_temp_dir()
+        local_file = self.create_temp_file(file_size_kb, full_random=True)
+        blob_name = self.create_random_name(prefix='blob', length=24)
+        account_key = self.cmd('storage account keys list -n {} -g {} --query "[0].value" -otsv'
+                               .format(storage_account, resource_group)).output
+        self.set_env('AZURE_STORAGE_ACCOUNT', storage_account)
+        self.set_env('AZURE_STORAGE_KEY', account_key)
+
+        self.cmd('storage container create -n {}'.format(container))
+
+        self.cmd('storage blob exists -n {} -c {}'.format(blob_name, container),
+                 checks=JMESPathCheck('exists', False))
+
+        self.cmd('storage blob upload -c {} -f "{}" -n {}'.format(container, local_file, blob_name),
+                 checks=JMESPathCheck('exists', False))
+
 
 class StorageBlobURLScenarioTest(StorageScenarioMixin, LiveScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitest')
