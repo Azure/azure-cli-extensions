@@ -72,24 +72,25 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                 summary='Please provide aad-server-app-id and aad-client-app-id together.')
         raise CLIError("AAD client app ID and server app ID are both required for using cluster connect feature with AAD credentials for authentication. Please note that both these inputs are only relevant for a cluster that uses AAD for authentication and is not required for clusters using other authentication mechanisms.")
 
-    if aad_server_app_id:
-        try:
-            object_id = _resolve_service_principal(graph_client.service_principals, aad_server_app_id)
-            graph_client.service_principals.get(object_id)
-        except Exception as e:
-            telemetry.set_user_fault()
-            telemetry.set_exception(exception=e, fault_type=consts.Invalid_AAD_Profile_Details_Type,
-                                    summary='Invalid AAD server app id.')
-            extra_error_details = ""
-            if custom_tenant_id:
-                extra_error_details += " Please check if the custom tenant id provided is correct."
-            raise CLIError("Invalid AAD server app id. " + str(e) + str(extra_error_details))
-    if aad_client_app_id:
-        try:
-            object_id = _resolve_service_principal(graph_client.service_principals, aad_client_app_id)
-            graph_client.service_principals.get(object_id)
-        except Exception as e:
-            logger.warning("Couldn't validate the AAD client app id. Continuing without validation...")
+    if not custom_tenant_id:
+        if aad_server_app_id:
+            try:
+                object_id = _resolve_service_principal(graph_client.service_principals, aad_server_app_id)
+                graph_client.service_principals.get(object_id)
+            except Exception as e:
+                telemetry.set_user_fault()
+                telemetry.set_exception(exception=e, fault_type=consts.Invalid_AAD_Profile_Details_Type,
+                                        summary='Invalid AAD server app id.')
+                extra_error_details = ""
+                if custom_tenant_id:
+                    extra_error_details += " Please check if the custom tenant id provided is correct."
+                raise CLIError("Invalid AAD server app id. " + str(e) + str(extra_error_details))
+        if aad_client_app_id:
+            try:
+                object_id = _resolve_service_principal(graph_client.service_principals, aad_client_app_id)
+                graph_client.service_principals.get(object_id)
+            except Exception as e:
+                logger.warning("Couldn't validate the AAD client app id. Continuing without validation...")
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
