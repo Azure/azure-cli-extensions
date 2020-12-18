@@ -6,7 +6,7 @@
 
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import ExportPipeline, ExportPipelineTargetProperties
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._container_registry_management_client_enums import PipelineSourceType
-from .utility_functions import create_identity_properties, print_keyvault_policy_output, print_pipeline_output, print_lite_pipeline_output
+from .utility_functions import create_identity_properties, print_keyvault_policy_output
 
 
 def create_exportpipeline(client, resource_group_name, registry_name, export_pipeline_name, keyvault_secret_uri, storage_account_container_uri, options=None, user_assigned_identity_resource_id=None):
