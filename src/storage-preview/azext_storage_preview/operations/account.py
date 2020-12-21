@@ -7,6 +7,7 @@
 
 import os
 from azure.cli.core.util import get_file_json, shell_safe_json_parse
+from knack.util import CLIError
 from .._client_factory import storage_client_factory
 
 
@@ -34,7 +35,6 @@ def create_storage_account(cmd, resource_group_name, account_name, sku=None, loc
 
     if NetworkRuleSet and (bypass or default_action):
         if bypass and not default_action:
-            from knack.util import CLIError
             raise CLIError('incorrect usage: --default-action ACTION [--bypass SERVICE ...]')
         params.network_rule_set = NetworkRuleSet(bypass=bypass, default_action=default_action, ip_rules=None,
                                                  virtual_network_rules=None)
@@ -138,10 +138,63 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
             acl = NetworkRuleSet(bypass=bypass, virtual_network_rules=None, ip_rules=None,
                                  default_action=default_action)
         elif bypass:
-            from knack.util import CLIError
             raise CLIError('incorrect usage: --default-action ACTION [--bypass SERVICE ...]')
         params.network_rule_set = acl
     return params
+
+
+def create_blob_inventory_policy(cmd, client, resource_group_name, account_name, policy):
+    # BlobInventoryPolicy = cmd.get_models('BlobInventoryPolicy')
+    # TODO: add again with rule management if bandwidth is allowed
+    # BlobInventoryPolicy, BlobInventoryPolicySchema, BlobInventoryPolicyRule, BlobInventoryPolicyDefinition, \
+    # BlobInventoryPolicyFilter = cmd.get_models('BlobInventoryPolicy', 'BlobInventoryPolicySchema',
+    #                                            'BlobInventoryPolicyRule', 'BlobInventoryPolicyDefinition',
+    #                                            'BlobInventoryPolicyFilter')
+    # filters = BlobInventoryPolicyFilter(prefix_match=prefix_match, blob_types=blob_types,
+    #                                     include_blob_versions=include_blob_versions,
+    #                                     include_snapshots=include_snapshots)
+    # rule = BlobInventoryPolicyRule(enabled=True, name=rule_name,
+    #                                definition=BlobInventoryPolicyDefinition(filters=filters))
+    # policy = BlobInventoryPolicySchema(enabled=enabled, destination=destination,
+    #                                    type=type, rules=[rule])
+    # blob_inventory_policy = BlobInventoryPolicy(policy=policy)
+    #
+    # return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
+    #                                blob_inventory_policy_name=blob_inventory_policy_name,
+    #                                properties=blob_inventory_policy,
+    #                                **kwargs)
+    if os.path.exists(policy):
+        policy = get_file_json(policy)
+    else:
+        policy = shell_safe_json_parse(policy)
+
+    BlobInventoryPolicy, InventoryRuleType, BlobInventoryPolicyName = \
+        cmd.get_models('BlobInventoryPolicy', 'InventoryRuleType', 'BlobInventoryPolicyName')
+    properties = BlobInventoryPolicy()
+    if 'type' not in policy:
+        policy['type'] = InventoryRuleType.INVENTORY
+    properties.policy = policy
+
+    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
+                                   blob_inventory_policy_name=BlobInventoryPolicyName.DEFAULT, properties=properties)
+
+
+def delete_blob_inventory_policy(cmd, client, resource_group_name, account_name):
+    BlobInventoryPolicyName = cmd.get_models('BlobInventoryPolicyName')
+    return client.delete(resource_group_name=resource_group_name, account_name=account_name,
+                         blob_inventory_policy_name=BlobInventoryPolicyName.DEFAULT)
+
+
+def get_blob_inventory_policy(cmd, client, resource_group_name, account_name):
+    BlobInventoryPolicyName = cmd.get_models('BlobInventoryPolicyName')
+    return client.get(resource_group_name=resource_group_name, account_name=account_name,
+                      blob_inventory_policy_name=BlobInventoryPolicyName.DEFAULT)
+
+
+def update_blob_inventory_policy(cmd, client, resource_group_name, account_name, parameters=None):
+    BlobInventoryPolicyName = cmd.get_models('BlobInventoryPolicyName')
+    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
+                                   blob_inventory_policy_name=BlobInventoryPolicyName.DEFAULT, properties=parameters)
 
 
 def list_network_rules(client, resource_group_name, account_name):
@@ -153,23 +206,32 @@ def list_network_rules(client, resource_group_name, account_name):
 
 
 def add_network_rule(cmd, client, resource_group_name, account_name, action='Allow', subnet=None,
-                     vnet_name=None, ip_address=None):  # pylint: disable=unused-argument
+                     vnet_name=None, ip_address=None, tenant_id=None, resource_id=None):  # pylint: disable=unused-argument
     sa = client.get_properties(resource_group_name, account_name)
     rules = sa.network_rule_set
     if subnet:
         from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(subnet):
-            from knack.util import CLIError
             raise CLIError("Expected fully qualified resource ID: got '{}'".format(subnet))
         VirtualNetworkRule = cmd.get_models('VirtualNetworkRule')
         if not rules.virtual_network_rules:
             rules.virtual_network_rules = []
+        rules.virtual_network_rules = [r for r in rules.virtual_network_rules
+                                       if r.virtual_network_resource_id.lower() != subnet.lower()]
         rules.virtual_network_rules.append(VirtualNetworkRule(virtual_network_resource_id=subnet, action=action))
     if ip_address:
         IpRule = cmd.get_models('IPRule')
         if not rules.ip_rules:
             rules.ip_rules = []
+        rules.ip_rules = [r for r in rules.ip_rules if r.ip_address_or_range != ip_address]
         rules.ip_rules.append(IpRule(ip_address_or_range=ip_address, action=action))
+    if resource_id:
+        ResourceAccessRule = cmd.get_models('ResourceAccessRule')
+        if not rules.resource_access_rules:
+            rules.resource_access_rules = []
+        rules.resource_access_rules = [r for r in rules.resource_access_rules if r.resource_id !=
+                                       resource_id or r.tenant_id != tenant_id]
+        rules.resource_access_rules.append(ResourceAccessRule(tenant_id=tenant_id, resource_id=resource_id))
 
     StorageAccountUpdateParameters = cmd.get_models('StorageAccountUpdateParameters')
     params = StorageAccountUpdateParameters(network_rule_set=rules)
@@ -177,7 +239,7 @@ def add_network_rule(cmd, client, resource_group_name, account_name, action='All
 
 
 def remove_network_rule(cmd, client, resource_group_name, account_name, ip_address=None, subnet=None,
-                        vnet_name=None):  # pylint: disable=unused-argument
+                        vnet_name=None, tenant_id=None, resource_id=None):  # pylint: disable=unused-argument
     sa = client.get_properties(resource_group_name, account_name)
     rules = sa.network_rule_set
     if subnet:
@@ -185,6 +247,10 @@ def remove_network_rule(cmd, client, resource_group_name, account_name, ip_addre
                                        if not x.virtual_network_resource_id.endswith(subnet)]
     if ip_address:
         rules.ip_rules = [x for x in rules.ip_rules if x.ip_address_or_range != ip_address]
+
+    if resource_id:
+        rules.resource_access_rules = [x for x in rules.resource_access_rules if
+                                       not (x.tenant_id == tenant_id and x.resource_id == resource_id)]
 
     StorageAccountUpdateParameters = cmd.get_models('StorageAccountUpdateParameters')
     params = StorageAccountUpdateParameters(network_rule_set=rules)

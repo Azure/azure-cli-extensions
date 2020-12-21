@@ -7,6 +7,8 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+# pylint: disable=too-many-statements
+# pylint: disable=too-many-locals
 
 from azure.cli.core.commands import CliCommandType
 
@@ -22,7 +24,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'kusto_cluster_show')
         g.custom_command('create', 'kusto_cluster_create', supports_no_wait=True)
         g.custom_command('update', 'kusto_cluster_update', supports_no_wait=True)
-        g.custom_command('delete', 'kusto_cluster_delete', supports_no_wait=True)
+        g.custom_command('delete', 'kusto_cluster_delete', supports_no_wait=True, confirmation=True)
         g.custom_command('add-language-extension', 'kusto_cluster_add_language_extension', supports_no_wait=True)
         g.custom_command('detach-follower-database', 'kusto_cluster_detach_follower_database', supports_no_wait=True)
         g.custom_command('diagnose-virtual-network', 'kusto_cluster_diagnose_virtual_network', supports_no_wait=True)
@@ -46,7 +48,8 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'kusto_cluster_principal_assignment_show')
         g.custom_command('create', 'kusto_cluster_principal_assignment_create', supports_no_wait=True)
         g.custom_command('update', 'kusto_cluster_principal_assignment_update', supports_no_wait=True)
-        g.custom_command('delete', 'kusto_cluster_principal_assignment_delete', supports_no_wait=True)
+        g.custom_command('delete', 'kusto_cluster_principal_assignment_delete', supports_no_wait=True,
+                         confirmation=True)
         g.custom_wait_command('wait', 'kusto_cluster_principal_assignment_show')
 
     from azext_kusto.generated._client_factory import cf_database
@@ -58,7 +61,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'kusto_database_show')
         g.custom_command('create', 'kusto_database_create', supports_no_wait=True)
         g.custom_command('update', 'kusto_database_update', supports_no_wait=True)
-        g.custom_command('delete', 'kusto_database_delete', supports_no_wait=True)
+        g.custom_command('delete', 'kusto_database_delete', supports_no_wait=True, confirmation=True)
         g.custom_command('add-principal', 'kusto_database_add_principal')
         g.custom_command('list-principal', 'kusto_database_list_principal')
         g.custom_command('remove-principal', 'kusto_database_remove_principal')
@@ -75,7 +78,8 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'kusto_database_principal_assignment_show')
         g.custom_command('create', 'kusto_database_principal_assignment_create', supports_no_wait=True)
         g.custom_command('update', 'kusto_database_principal_assignment_update', supports_no_wait=True)
-        g.custom_command('delete', 'kusto_database_principal_assignment_delete', supports_no_wait=True)
+        g.custom_command('delete', 'kusto_database_principal_assignment_delete', supports_no_wait=True,
+                         confirmation=True)
         g.custom_wait_command('wait', 'kusto_database_principal_assignment_show')
 
     from azext_kusto.generated._client_factory import cf_attached_database_configuration
@@ -89,7 +93,8 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'kusto_attached_database_configuration_show')
         g.custom_command('create', 'kusto_attached_database_configuration_create', supports_no_wait=True)
         g.custom_command('update', 'kusto_attached_database_configuration_update', supports_no_wait=True)
-        g.custom_command('delete', 'kusto_attached_database_configuration_delete', supports_no_wait=True)
+        g.custom_command('delete', 'kusto_attached_database_configuration_delete', supports_no_wait=True,
+                         confirmation=True)
         g.custom_wait_command('wait', 'kusto_attached_database_configuration_show')
 
     from azext_kusto.generated._client_factory import cf_data_connection
@@ -107,7 +112,7 @@ def load_command_table(self, _):
         g.custom_command('event-grid update', 'kusto_data_connection_event_grid_update', supports_no_wait=True)
         g.custom_command('event-hub update', 'kusto_data_connection_event_hub_update', supports_no_wait=True)
         g.custom_command('iot-hub update', 'kusto_data_connection_iot_hub_update', supports_no_wait=True)
-        g.custom_command('delete', 'kusto_data_connection_delete', supports_no_wait=True)
+        g.custom_command('delete', 'kusto_data_connection_delete', supports_no_wait=True, confirmation=True)
         g.custom_command('event-grid data-connection-validation', 'kusto_data_connection_event_grid_data_connection_val'
                          'idation', supports_no_wait=True)
         g.custom_command('event-hub data-connection-validation', 'kusto_data_connection_event_hub_data_connection_valid'

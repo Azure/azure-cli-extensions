@@ -84,7 +84,7 @@ class Activity(msrest.serialization.Model):
         super(Activity, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
         self.name = kwargs['name']
-        self.type = 'Activity'
+        self.type = 'Activity'  # type: str
         self.description = kwargs.get('description', None)
         self.depends_on = kwargs.get('depends_on', None)
         self.user_properties = kwargs.get('user_properties', None)
@@ -342,7 +342,7 @@ class LinkedService(msrest.serialization.Model):
     """The Azure Data Factory nested object which contains the information and credential which can be used to connect with related store or compute resource.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AmazonMwsLinkedService, AmazonRedshiftLinkedService, AmazonS3LinkedService, AzureBatchLinkedService, AzureBlobFsLinkedService, AzureBlobStorageLinkedService, AzureDataExplorerLinkedService, AzureDataLakeAnalyticsLinkedService, AzureDataLakeStoreLinkedService, AzureDatabricksLinkedService, AzureFileStorageLinkedService, AzureFunctionLinkedService, AzureKeyVaultLinkedService, AzureMlLinkedService, AzureMlServiceLinkedService, AzureMariaDBLinkedService, AzureMySqlLinkedService, AzurePostgreSqlLinkedService, AzureSearchLinkedService, AzureSqlDWLinkedService, AzureSqlDatabaseLinkedService, AzureSqlMiLinkedService, AzureStorageLinkedService, AzureTableStorageLinkedService, CassandraLinkedService, CommonDataServiceForAppsLinkedService, ConcurLinkedService, CosmosDBLinkedService, CosmosDBMongoDBApiLinkedService, CouchbaseLinkedService, CustomDataSourceLinkedService, Db2LinkedService, DrillLinkedService, DynamicsLinkedService, DynamicsAxLinkedService, DynamicsCrmLinkedService, EloquaLinkedService, FileServerLinkedService, FtpServerLinkedService, GoogleAdWordsLinkedService, GoogleBigQueryLinkedService, GoogleCloudStorageLinkedService, GreenplumLinkedService, HBaseLinkedService, HdInsightLinkedService, HdInsightOnDemandLinkedService, HdfsLinkedService, HiveLinkedService, HttpLinkedService, HubspotLinkedService, ImpalaLinkedService, InformixLinkedService, JiraLinkedService, MagentoLinkedService, MariaDBLinkedService, MarketoLinkedService, MicrosoftAccessLinkedService, MongoDBLinkedService, MongoDBV2LinkedService, MySqlLinkedService, NetezzaLinkedService, ODataLinkedService, OdbcLinkedService, Office365LinkedService, OracleLinkedService, OracleServiceCloudLinkedService, PaypalLinkedService, PhoenixLinkedService, PostgreSqlLinkedService, PrestoLinkedService, QuickBooksLinkedService, ResponsysLinkedService, RestServiceLinkedService, SalesforceLinkedService, SalesforceMarketingCloudLinkedService, SalesforceServiceCloudLinkedService, SapBwLinkedService, SapCloudForCustomerLinkedService, SapEccLinkedService, SapHanaLinkedService, SapOpenHubLinkedService, SapTableLinkedService, ServiceNowLinkedService, SftpServerLinkedService, SharePointOnlineListLinkedService, ShopifyLinkedService, SnowflakeLinkedService, SparkLinkedService, SqlServerLinkedService, SquareLinkedService, SybaseLinkedService, TeradataLinkedService, VerticaLinkedService, WebLinkedService, XeroLinkedService, ZohoLinkedService.
+    sub-classes are: AmazonMwsLinkedService, AmazonRedshiftLinkedService, AmazonS3LinkedService, AzureBatchLinkedService, AzureBlobFsLinkedService, AzureBlobStorageLinkedService, AzureDataExplorerLinkedService, AzureDataLakeAnalyticsLinkedService, AzureDataLakeStoreLinkedService, AzureDatabricksLinkedService, AzureFileStorageLinkedService, AzureFunctionLinkedService, AzureKeyVaultLinkedService, AzureMlLinkedService, AzureMlServiceLinkedService, AzureMariaDBLinkedService, AzureMySQLLinkedService, AzurePostgreSQLLinkedService, AzureSearchLinkedService, AzureSQLDWLinkedService, AzureSQLDatabaseLinkedService, AzureSQLMiLinkedService, AzureStorageLinkedService, AzureTableStorageLinkedService, CassandraLinkedService, CommonDataServiceForAppsLinkedService, ConcurLinkedService, CosmosDBLinkedService, CosmosDBMongoDBApiLinkedService, CouchbaseLinkedService, CustomDataSourceLinkedService, Db2LinkedService, DrillLinkedService, DynamicsLinkedService, DynamicsAxLinkedService, DynamicsCrmLinkedService, EloquaLinkedService, FileServerLinkedService, FtpServerLinkedService, GoogleAdWordsLinkedService, GoogleBigQueryLinkedService, GoogleCloudStorageLinkedService, GreenplumLinkedService, HBaseLinkedService, HdInsightLinkedService, HdInsightOnDemandLinkedService, HdfsLinkedService, HiveLinkedService, HttpLinkedService, HubspotLinkedService, ImpalaLinkedService, InformixLinkedService, JiraLinkedService, MagentoLinkedService, MariaDBLinkedService, MarketoLinkedService, MicrosoftAccessLinkedService, MongoDBLinkedService, MongoDBV2LinkedService, MySQLLinkedService, NetezzaLinkedService, ODataLinkedService, OdbcLinkedService, Office365LinkedService, OracleLinkedService, OracleServiceCloudLinkedService, PaypalLinkedService, PhoenixLinkedService, PostgreSQLLinkedService, PrestoLinkedService, QuickBooksLinkedService, ResponsysLinkedService, RestServiceLinkedService, SalesforceLinkedService, SalesforceMarketingCloudLinkedService, SalesforceServiceCloudLinkedService, SapBwLinkedService, SapCloudForCustomerLinkedService, SapEccLinkedService, SapHanaLinkedService, SapOpenHubLinkedService, SapTableLinkedService, ServiceNowLinkedService, SftpServerLinkedService, SharePointOnlineListLinkedService, ShopifyLinkedService, SnowflakeLinkedService, SparkLinkedService, SQLServerLinkedService, SquareLinkedService, SybaseLinkedService, TeradataLinkedService, VerticaLinkedService, WebLinkedService, XeroLinkedService, ZohoLinkedService.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -375,7 +375,7 @@ class LinkedService(msrest.serialization.Model):
     }
 
     _subtype_map = {
-        'type': {'AmazonMWS': 'AmazonMwsLinkedService', 'AmazonRedshift': 'AmazonRedshiftLinkedService', 'AmazonS3': 'AmazonS3LinkedService', 'AzureBatch': 'AzureBatchLinkedService', 'AzureBlobFS': 'AzureBlobFsLinkedService', 'AzureBlobStorage': 'AzureBlobStorageLinkedService', 'AzureDataExplorer': 'AzureDataExplorerLinkedService', 'AzureDataLakeAnalytics': 'AzureDataLakeAnalyticsLinkedService', 'AzureDataLakeStore': 'AzureDataLakeStoreLinkedService', 'AzureDatabricks': 'AzureDatabricksLinkedService', 'AzureFileStorage': 'AzureFileStorageLinkedService', 'AzureFunction': 'AzureFunctionLinkedService', 'AzureKeyVault': 'AzureKeyVaultLinkedService', 'AzureML': 'AzureMlLinkedService', 'AzureMLService': 'AzureMlServiceLinkedService', 'AzureMariaDB': 'AzureMariaDBLinkedService', 'AzureMySql': 'AzureMySqlLinkedService', 'AzurePostgreSql': 'AzurePostgreSqlLinkedService', 'AzureSearch': 'AzureSearchLinkedService', 'AzureSqlDW': 'AzureSqlDWLinkedService', 'AzureSqlDatabase': 'AzureSqlDatabaseLinkedService', 'AzureSqlMI': 'AzureSqlMiLinkedService', 'AzureStorage': 'AzureStorageLinkedService', 'AzureTableStorage': 'AzureTableStorageLinkedService', 'Cassandra': 'CassandraLinkedService', 'CommonDataServiceForApps': 'CommonDataServiceForAppsLinkedService', 'Concur': 'ConcurLinkedService', 'CosmosDb': 'CosmosDBLinkedService', 'CosmosDbMongoDbApi': 'CosmosDBMongoDBApiLinkedService', 'Couchbase': 'CouchbaseLinkedService', 'CustomDataSource': 'CustomDataSourceLinkedService', 'Db2': 'Db2LinkedService', 'Drill': 'DrillLinkedService', 'Dynamics': 'DynamicsLinkedService', 'DynamicsAX': 'DynamicsAxLinkedService', 'DynamicsCrm': 'DynamicsCrmLinkedService', 'Eloqua': 'EloquaLinkedService', 'FileServer': 'FileServerLinkedService', 'FtpServer': 'FtpServerLinkedService', 'GoogleAdWords': 'GoogleAdWordsLinkedService', 'GoogleBigQuery': 'GoogleBigQueryLinkedService', 'GoogleCloudStorage': 'GoogleCloudStorageLinkedService', 'Greenplum': 'GreenplumLinkedService', 'HBase': 'HBaseLinkedService', 'HDInsight': 'HdInsightLinkedService', 'HDInsightOnDemand': 'HdInsightOnDemandLinkedService', 'Hdfs': 'HdfsLinkedService', 'Hive': 'HiveLinkedService', 'HttpServer': 'HttpLinkedService', 'Hubspot': 'HubspotLinkedService', 'Impala': 'ImpalaLinkedService', 'Informix': 'InformixLinkedService', 'Jira': 'JiraLinkedService', 'Magento': 'MagentoLinkedService', 'MariaDB': 'MariaDBLinkedService', 'Marketo': 'MarketoLinkedService', 'MicrosoftAccess': 'MicrosoftAccessLinkedService', 'MongoDb': 'MongoDBLinkedService', 'MongoDbV2': 'MongoDBV2LinkedService', 'MySql': 'MySqlLinkedService', 'Netezza': 'NetezzaLinkedService', 'OData': 'ODataLinkedService', 'Odbc': 'OdbcLinkedService', 'Office365': 'Office365LinkedService', 'Oracle': 'OracleLinkedService', 'OracleServiceCloud': 'OracleServiceCloudLinkedService', 'Paypal': 'PaypalLinkedService', 'Phoenix': 'PhoenixLinkedService', 'PostgreSql': 'PostgreSqlLinkedService', 'Presto': 'PrestoLinkedService', 'QuickBooks': 'QuickBooksLinkedService', 'Responsys': 'ResponsysLinkedService', 'RestService': 'RestServiceLinkedService', 'Salesforce': 'SalesforceLinkedService', 'SalesforceMarketingCloud': 'SalesforceMarketingCloudLinkedService', 'SalesforceServiceCloud': 'SalesforceServiceCloudLinkedService', 'SapBW': 'SapBwLinkedService', 'SapCloudForCustomer': 'SapCloudForCustomerLinkedService', 'SapEcc': 'SapEccLinkedService', 'SapHana': 'SapHanaLinkedService', 'SapOpenHub': 'SapOpenHubLinkedService', 'SapTable': 'SapTableLinkedService', 'ServiceNow': 'ServiceNowLinkedService', 'Sftp': 'SftpServerLinkedService', 'SharePointOnlineList': 'SharePointOnlineListLinkedService', 'Shopify': 'ShopifyLinkedService', 'Snowflake': 'SnowflakeLinkedService', 'Spark': 'SparkLinkedService', 'SqlServer': 'SqlServerLinkedService', 'Square': 'SquareLinkedService', 'Sybase': 'SybaseLinkedService', 'Teradata': 'TeradataLinkedService', 'Vertica': 'VerticaLinkedService', 'Web': 'WebLinkedService', 'Xero': 'XeroLinkedService', 'Zoho': 'ZohoLinkedService'}
+        'type': {'AmazonMWS': 'AmazonMwsLinkedService', 'AmazonRedshift': 'AmazonRedshiftLinkedService', 'AmazonS3': 'AmazonS3LinkedService', 'AzureBatch': 'AzureBatchLinkedService', 'AzureBlobFS': 'AzureBlobFsLinkedService', 'AzureBlobStorage': 'AzureBlobStorageLinkedService', 'AzureDataExplorer': 'AzureDataExplorerLinkedService', 'AzureDataLakeAnalytics': 'AzureDataLakeAnalyticsLinkedService', 'AzureDataLakeStore': 'AzureDataLakeStoreLinkedService', 'AzureDatabricks': 'AzureDatabricksLinkedService', 'AzureFileStorage': 'AzureFileStorageLinkedService', 'AzureFunction': 'AzureFunctionLinkedService', 'AzureKeyVault': 'AzureKeyVaultLinkedService', 'AzureML': 'AzureMlLinkedService', 'AzureMLService': 'AzureMlServiceLinkedService', 'AzureMariaDB': 'AzureMariaDBLinkedService', 'AzureMySql': 'AzureMySQLLinkedService', 'AzurePostgreSql': 'AzurePostgreSQLLinkedService', 'AzureSearch': 'AzureSearchLinkedService', 'AzureSqlDW': 'AzureSQLDWLinkedService', 'AzureSqlDatabase': 'AzureSQLDatabaseLinkedService', 'AzureSqlMI': 'AzureSQLMiLinkedService', 'AzureStorage': 'AzureStorageLinkedService', 'AzureTableStorage': 'AzureTableStorageLinkedService', 'Cassandra': 'CassandraLinkedService', 'CommonDataServiceForApps': 'CommonDataServiceForAppsLinkedService', 'Concur': 'ConcurLinkedService', 'CosmosDb': 'CosmosDBLinkedService', 'CosmosDbMongoDbApi': 'CosmosDBMongoDBApiLinkedService', 'Couchbase': 'CouchbaseLinkedService', 'CustomDataSource': 'CustomDataSourceLinkedService', 'Db2': 'Db2LinkedService', 'Drill': 'DrillLinkedService', 'Dynamics': 'DynamicsLinkedService', 'DynamicsAX': 'DynamicsAxLinkedService', 'DynamicsCrm': 'DynamicsCrmLinkedService', 'Eloqua': 'EloquaLinkedService', 'FileServer': 'FileServerLinkedService', 'FtpServer': 'FtpServerLinkedService', 'GoogleAdWords': 'GoogleAdWordsLinkedService', 'GoogleBigQuery': 'GoogleBigQueryLinkedService', 'GoogleCloudStorage': 'GoogleCloudStorageLinkedService', 'Greenplum': 'GreenplumLinkedService', 'HBase': 'HBaseLinkedService', 'HDInsight': 'HdInsightLinkedService', 'HDInsightOnDemand': 'HdInsightOnDemandLinkedService', 'Hdfs': 'HdfsLinkedService', 'Hive': 'HiveLinkedService', 'HttpServer': 'HttpLinkedService', 'Hubspot': 'HubspotLinkedService', 'Impala': 'ImpalaLinkedService', 'Informix': 'InformixLinkedService', 'Jira': 'JiraLinkedService', 'Magento': 'MagentoLinkedService', 'MariaDB': 'MariaDBLinkedService', 'Marketo': 'MarketoLinkedService', 'MicrosoftAccess': 'MicrosoftAccessLinkedService', 'MongoDb': 'MongoDBLinkedService', 'MongoDbV2': 'MongoDBV2LinkedService', 'MySql': 'MySQLLinkedService', 'Netezza': 'NetezzaLinkedService', 'OData': 'ODataLinkedService', 'Odbc': 'OdbcLinkedService', 'Office365': 'Office365LinkedService', 'Oracle': 'OracleLinkedService', 'OracleServiceCloud': 'OracleServiceCloudLinkedService', 'Paypal': 'PaypalLinkedService', 'Phoenix': 'PhoenixLinkedService', 'PostgreSql': 'PostgreSQLLinkedService', 'Presto': 'PrestoLinkedService', 'QuickBooks': 'QuickBooksLinkedService', 'Responsys': 'ResponsysLinkedService', 'RestService': 'RestServiceLinkedService', 'Salesforce': 'SalesforceLinkedService', 'SalesforceMarketingCloud': 'SalesforceMarketingCloudLinkedService', 'SalesforceServiceCloud': 'SalesforceServiceCloudLinkedService', 'SapBW': 'SapBwLinkedService', 'SapCloudForCustomer': 'SapCloudForCustomerLinkedService', 'SapEcc': 'SapEccLinkedService', 'SapHana': 'SapHanaLinkedService', 'SapOpenHub': 'SapOpenHubLinkedService', 'SapTable': 'SapTableLinkedService', 'ServiceNow': 'ServiceNowLinkedService', 'Sftp': 'SftpServerLinkedService', 'SharePointOnlineList': 'SharePointOnlineListLinkedService', 'Shopify': 'ShopifyLinkedService', 'Snowflake': 'SnowflakeLinkedService', 'Spark': 'SparkLinkedService', 'SqlServer': 'SQLServerLinkedService', 'Square': 'SquareLinkedService', 'Sybase': 'SybaseLinkedService', 'Teradata': 'TeradataLinkedService', 'Vertica': 'VerticaLinkedService', 'Web': 'WebLinkedService', 'Xero': 'XeroLinkedService', 'Zoho': 'ZohoLinkedService'}
     }
 
     def __init__(
@@ -384,7 +384,7 @@ class LinkedService(msrest.serialization.Model):
     ):
         super(LinkedService, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
-        self.type = 'LinkedService'
+        self.type = 'LinkedService'  # type: str
         self.connect_via = kwargs.get('connect_via', None)
         self.description = kwargs.get('description', None)
         self.parameters = kwargs.get('parameters', None)
@@ -472,7 +472,7 @@ class AmazonMwsLinkedService(LinkedService):
         **kwargs
     ):
         super(AmazonMwsLinkedService, self).__init__(**kwargs)
-        self.type = 'AmazonMWS'
+        self.type = 'AmazonMWS'  # type: str
         self.endpoint = kwargs['endpoint']
         self.marketplace_id = kwargs['marketplace_id']
         self.seller_id = kwargs['seller_id']
@@ -489,7 +489,7 @@ class Dataset(msrest.serialization.Model):
     """The Azure Data Factory nested object which identifies data within different data stores, such as tables, files, folders, and documents.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AmazonMwsObjectDataset, AmazonRedshiftTableDataset, AmazonS3Dataset, AvroDataset, AzureBlobDataset, AzureBlobFsDataset, AzureDataExplorerTableDataset, AzureDataLakeStoreDataset, AzureMariaDBTableDataset, AzureMySqlTableDataset, AzurePostgreSqlTableDataset, AzureSearchIndexDataset, AzureSqlDWTableDataset, AzureSqlMiTableDataset, AzureSqlTableDataset, AzureTableDataset, BinaryDataset, CassandraTableDataset, CommonDataServiceForAppsEntityDataset, ConcurObjectDataset, CosmosDBMongoDBApiCollectionDataset, CosmosDBSqlApiCollectionDataset, CouchbaseTableDataset, CustomDataset, Db2TableDataset, DelimitedTextDataset, DocumentDBCollectionDataset, DrillTableDataset, DynamicsAxResourceDataset, DynamicsCrmEntityDataset, DynamicsEntityDataset, EloquaObjectDataset, ExcelDataset, FileShareDataset, GoogleAdWordsObjectDataset, GoogleBigQueryObjectDataset, GreenplumTableDataset, HBaseObjectDataset, HiveObjectDataset, HttpDataset, HubspotObjectDataset, ImpalaObjectDataset, InformixTableDataset, JiraObjectDataset, JsonDataset, MagentoObjectDataset, MariaDBTableDataset, MarketoObjectDataset, MicrosoftAccessTableDataset, MongoDBCollectionDataset, MongoDBV2CollectionDataset, MySqlTableDataset, NetezzaTableDataset, ODataResourceDataset, OdbcTableDataset, Office365Dataset, OracleServiceCloudObjectDataset, OracleTableDataset, OrcDataset, ParquetDataset, PaypalObjectDataset, PhoenixObjectDataset, PostgreSqlTableDataset, PrestoObjectDataset, QuickBooksObjectDataset, RelationalTableDataset, ResponsysObjectDataset, RestResourceDataset, SalesforceMarketingCloudObjectDataset, SalesforceObjectDataset, SalesforceServiceCloudObjectDataset, SapBwCubeDataset, SapCloudForCustomerResourceDataset, SapEccResourceDataset, SapHanaTableDataset, SapOpenHubTableDataset, SapTableResourceDataset, ServiceNowObjectDataset, SharePointOnlineListResourceDataset, ShopifyObjectDataset, SnowflakeDataset, SparkObjectDataset, SqlServerTableDataset, SquareObjectDataset, SybaseTableDataset, TeradataTableDataset, VerticaTableDataset, WebTableDataset, XeroObjectDataset, XmlDataset, ZohoObjectDataset.
+    sub-classes are: AmazonMwsObjectDataset, AmazonRedshiftTableDataset, AmazonS3Dataset, AvroDataset, AzureBlobDataset, AzureBlobFsDataset, AzureDataExplorerTableDataset, AzureDataLakeStoreDataset, AzureMariaDBTableDataset, AzureMySQLTableDataset, AzurePostgreSQLTableDataset, AzureSearchIndexDataset, AzureSQLDWTableDataset, AzureSQLMiTableDataset, AzureSQLTableDataset, AzureTableDataset, BinaryDataset, CassandraTableDataset, CommonDataServiceForAppsEntityDataset, ConcurObjectDataset, CosmosDBMongoDBApiCollectionDataset, CosmosDBSQLApiCollectionDataset, CouchbaseTableDataset, CustomDataset, Db2TableDataset, DelimitedTextDataset, DocumentDBCollectionDataset, DrillTableDataset, DynamicsAxResourceDataset, DynamicsCrmEntityDataset, DynamicsEntityDataset, EloquaObjectDataset, ExcelDataset, FileShareDataset, GoogleAdWordsObjectDataset, GoogleBigQueryObjectDataset, GreenplumTableDataset, HBaseObjectDataset, HiveObjectDataset, HttpDataset, HubspotObjectDataset, ImpalaObjectDataset, InformixTableDataset, JiraObjectDataset, JsonDataset, MagentoObjectDataset, MariaDBTableDataset, MarketoObjectDataset, MicrosoftAccessTableDataset, MongoDBCollectionDataset, MongoDBV2CollectionDataset, MySQLTableDataset, NetezzaTableDataset, ODataResourceDataset, OdbcTableDataset, Office365Dataset, OracleServiceCloudObjectDataset, OracleTableDataset, OrcDataset, ParquetDataset, PaypalObjectDataset, PhoenixObjectDataset, PostgreSQLTableDataset, PrestoObjectDataset, QuickBooksObjectDataset, RelationalTableDataset, ResponsysObjectDataset, RestResourceDataset, SalesforceMarketingCloudObjectDataset, SalesforceObjectDataset, SalesforceServiceCloudObjectDataset, SapBwCubeDataset, SapCloudForCustomerResourceDataset, SapEccResourceDataset, SapHanaTableDataset, SapOpenHubTableDataset, SapTableResourceDataset, ServiceNowObjectDataset, SharePointOnlineListResourceDataset, ShopifyObjectDataset, SnowflakeDataset, SparkObjectDataset, SQLServerTableDataset, SquareObjectDataset, SybaseTableDataset, TeradataTableDataset, VerticaTableDataset, WebTableDataset, XeroObjectDataset, XmlDataset, ZohoObjectDataset.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -535,7 +535,7 @@ class Dataset(msrest.serialization.Model):
     }
 
     _subtype_map = {
-        'type': {'AmazonMWSObject': 'AmazonMwsObjectDataset', 'AmazonRedshiftTable': 'AmazonRedshiftTableDataset', 'AmazonS3Object': 'AmazonS3Dataset', 'Avro': 'AvroDataset', 'AzureBlob': 'AzureBlobDataset', 'AzureBlobFSFile': 'AzureBlobFsDataset', 'AzureDataExplorerTable': 'AzureDataExplorerTableDataset', 'AzureDataLakeStoreFile': 'AzureDataLakeStoreDataset', 'AzureMariaDBTable': 'AzureMariaDBTableDataset', 'AzureMySqlTable': 'AzureMySqlTableDataset', 'AzurePostgreSqlTable': 'AzurePostgreSqlTableDataset', 'AzureSearchIndex': 'AzureSearchIndexDataset', 'AzureSqlDWTable': 'AzureSqlDWTableDataset', 'AzureSqlMITable': 'AzureSqlMiTableDataset', 'AzureSqlTable': 'AzureSqlTableDataset', 'AzureTable': 'AzureTableDataset', 'Binary': 'BinaryDataset', 'CassandraTable': 'CassandraTableDataset', 'CommonDataServiceForAppsEntity': 'CommonDataServiceForAppsEntityDataset', 'ConcurObject': 'ConcurObjectDataset', 'CosmosDbMongoDbApiCollection': 'CosmosDBMongoDBApiCollectionDataset', 'CosmosDbSqlApiCollection': 'CosmosDBSqlApiCollectionDataset', 'CouchbaseTable': 'CouchbaseTableDataset', 'CustomDataset': 'CustomDataset', 'Db2Table': 'Db2TableDataset', 'DelimitedText': 'DelimitedTextDataset', 'DocumentDbCollection': 'DocumentDBCollectionDataset', 'DrillTable': 'DrillTableDataset', 'DynamicsAXResource': 'DynamicsAxResourceDataset', 'DynamicsCrmEntity': 'DynamicsCrmEntityDataset', 'DynamicsEntity': 'DynamicsEntityDataset', 'EloquaObject': 'EloquaObjectDataset', 'Excel': 'ExcelDataset', 'FileShare': 'FileShareDataset', 'GoogleAdWordsObject': 'GoogleAdWordsObjectDataset', 'GoogleBigQueryObject': 'GoogleBigQueryObjectDataset', 'GreenplumTable': 'GreenplumTableDataset', 'HBaseObject': 'HBaseObjectDataset', 'HiveObject': 'HiveObjectDataset', 'HttpFile': 'HttpDataset', 'HubspotObject': 'HubspotObjectDataset', 'ImpalaObject': 'ImpalaObjectDataset', 'InformixTable': 'InformixTableDataset', 'JiraObject': 'JiraObjectDataset', 'Json': 'JsonDataset', 'MagentoObject': 'MagentoObjectDataset', 'MariaDBTable': 'MariaDBTableDataset', 'MarketoObject': 'MarketoObjectDataset', 'MicrosoftAccessTable': 'MicrosoftAccessTableDataset', 'MongoDbCollection': 'MongoDBCollectionDataset', 'MongoDbV2Collection': 'MongoDBV2CollectionDataset', 'MySqlTable': 'MySqlTableDataset', 'NetezzaTable': 'NetezzaTableDataset', 'ODataResource': 'ODataResourceDataset', 'OdbcTable': 'OdbcTableDataset', 'Office365Table': 'Office365Dataset', 'OracleServiceCloudObject': 'OracleServiceCloudObjectDataset', 'OracleTable': 'OracleTableDataset', 'Orc': 'OrcDataset', 'Parquet': 'ParquetDataset', 'PaypalObject': 'PaypalObjectDataset', 'PhoenixObject': 'PhoenixObjectDataset', 'PostgreSqlTable': 'PostgreSqlTableDataset', 'PrestoObject': 'PrestoObjectDataset', 'QuickBooksObject': 'QuickBooksObjectDataset', 'RelationalTable': 'RelationalTableDataset', 'ResponsysObject': 'ResponsysObjectDataset', 'RestResource': 'RestResourceDataset', 'SalesforceMarketingCloudObject': 'SalesforceMarketingCloudObjectDataset', 'SalesforceObject': 'SalesforceObjectDataset', 'SalesforceServiceCloudObject': 'SalesforceServiceCloudObjectDataset', 'SapBwCube': 'SapBwCubeDataset', 'SapCloudForCustomerResource': 'SapCloudForCustomerResourceDataset', 'SapEccResource': 'SapEccResourceDataset', 'SapHanaTable': 'SapHanaTableDataset', 'SapOpenHubTable': 'SapOpenHubTableDataset', 'SapTableResource': 'SapTableResourceDataset', 'ServiceNowObject': 'ServiceNowObjectDataset', 'SharePointOnlineListResource': 'SharePointOnlineListResourceDataset', 'ShopifyObject': 'ShopifyObjectDataset', 'SnowflakeTable': 'SnowflakeDataset', 'SparkObject': 'SparkObjectDataset', 'SqlServerTable': 'SqlServerTableDataset', 'SquareObject': 'SquareObjectDataset', 'SybaseTable': 'SybaseTableDataset', 'TeradataTable': 'TeradataTableDataset', 'VerticaTable': 'VerticaTableDataset', 'WebTable': 'WebTableDataset', 'XeroObject': 'XeroObjectDataset', 'Xml': 'XmlDataset', 'ZohoObject': 'ZohoObjectDataset'}
+        'type': {'AmazonMWSObject': 'AmazonMwsObjectDataset', 'AmazonRedshiftTable': 'AmazonRedshiftTableDataset', 'AmazonS3Object': 'AmazonS3Dataset', 'Avro': 'AvroDataset', 'AzureBlob': 'AzureBlobDataset', 'AzureBlobFSFile': 'AzureBlobFsDataset', 'AzureDataExplorerTable': 'AzureDataExplorerTableDataset', 'AzureDataLakeStoreFile': 'AzureDataLakeStoreDataset', 'AzureMariaDBTable': 'AzureMariaDBTableDataset', 'AzureMySqlTable': 'AzureMySQLTableDataset', 'AzurePostgreSqlTable': 'AzurePostgreSQLTableDataset', 'AzureSearchIndex': 'AzureSearchIndexDataset', 'AzureSqlDWTable': 'AzureSQLDWTableDataset', 'AzureSqlMITable': 'AzureSQLMiTableDataset', 'AzureSqlTable': 'AzureSQLTableDataset', 'AzureTable': 'AzureTableDataset', 'Binary': 'BinaryDataset', 'CassandraTable': 'CassandraTableDataset', 'CommonDataServiceForAppsEntity': 'CommonDataServiceForAppsEntityDataset', 'ConcurObject': 'ConcurObjectDataset', 'CosmosDbMongoDbApiCollection': 'CosmosDBMongoDBApiCollectionDataset', 'CosmosDbSqlApiCollection': 'CosmosDBSQLApiCollectionDataset', 'CouchbaseTable': 'CouchbaseTableDataset', 'CustomDataset': 'CustomDataset', 'Db2Table': 'Db2TableDataset', 'DelimitedText': 'DelimitedTextDataset', 'DocumentDbCollection': 'DocumentDBCollectionDataset', 'DrillTable': 'DrillTableDataset', 'DynamicsAXResource': 'DynamicsAxResourceDataset', 'DynamicsCrmEntity': 'DynamicsCrmEntityDataset', 'DynamicsEntity': 'DynamicsEntityDataset', 'EloquaObject': 'EloquaObjectDataset', 'Excel': 'ExcelDataset', 'FileShare': 'FileShareDataset', 'GoogleAdWordsObject': 'GoogleAdWordsObjectDataset', 'GoogleBigQueryObject': 'GoogleBigQueryObjectDataset', 'GreenplumTable': 'GreenplumTableDataset', 'HBaseObject': 'HBaseObjectDataset', 'HiveObject': 'HiveObjectDataset', 'HttpFile': 'HttpDataset', 'HubspotObject': 'HubspotObjectDataset', 'ImpalaObject': 'ImpalaObjectDataset', 'InformixTable': 'InformixTableDataset', 'JiraObject': 'JiraObjectDataset', 'Json': 'JsonDataset', 'MagentoObject': 'MagentoObjectDataset', 'MariaDBTable': 'MariaDBTableDataset', 'MarketoObject': 'MarketoObjectDataset', 'MicrosoftAccessTable': 'MicrosoftAccessTableDataset', 'MongoDbCollection': 'MongoDBCollectionDataset', 'MongoDbV2Collection': 'MongoDBV2CollectionDataset', 'MySqlTable': 'MySQLTableDataset', 'NetezzaTable': 'NetezzaTableDataset', 'ODataResource': 'ODataResourceDataset', 'OdbcTable': 'OdbcTableDataset', 'Office365Table': 'Office365Dataset', 'OracleServiceCloudObject': 'OracleServiceCloudObjectDataset', 'OracleTable': 'OracleTableDataset', 'Orc': 'OrcDataset', 'Parquet': 'ParquetDataset', 'PaypalObject': 'PaypalObjectDataset', 'PhoenixObject': 'PhoenixObjectDataset', 'PostgreSqlTable': 'PostgreSQLTableDataset', 'PrestoObject': 'PrestoObjectDataset', 'QuickBooksObject': 'QuickBooksObjectDataset', 'RelationalTable': 'RelationalTableDataset', 'ResponsysObject': 'ResponsysObjectDataset', 'RestResource': 'RestResourceDataset', 'SalesforceMarketingCloudObject': 'SalesforceMarketingCloudObjectDataset', 'SalesforceObject': 'SalesforceObjectDataset', 'SalesforceServiceCloudObject': 'SalesforceServiceCloudObjectDataset', 'SapBwCube': 'SapBwCubeDataset', 'SapCloudForCustomerResource': 'SapCloudForCustomerResourceDataset', 'SapEccResource': 'SapEccResourceDataset', 'SapHanaTable': 'SapHanaTableDataset', 'SapOpenHubTable': 'SapOpenHubTableDataset', 'SapTableResource': 'SapTableResourceDataset', 'ServiceNowObject': 'ServiceNowObjectDataset', 'SharePointOnlineListResource': 'SharePointOnlineListResourceDataset', 'ShopifyObject': 'ShopifyObjectDataset', 'SnowflakeTable': 'SnowflakeDataset', 'SparkObject': 'SparkObjectDataset', 'SqlServerTable': 'SQLServerTableDataset', 'SquareObject': 'SquareObjectDataset', 'SybaseTable': 'SybaseTableDataset', 'TeradataTable': 'TeradataTableDataset', 'VerticaTable': 'VerticaTableDataset', 'WebTable': 'WebTableDataset', 'XeroObject': 'XeroObjectDataset', 'Xml': 'XmlDataset', 'ZohoObject': 'ZohoObjectDataset'}
     }
 
     def __init__(
@@ -544,7 +544,7 @@ class Dataset(msrest.serialization.Model):
     ):
         super(Dataset, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
-        self.type = 'Dataset'
+        self.type = 'Dataset'  # type: str
         self.description = kwargs.get('description', None)
         self.structure = kwargs.get('structure', None)
         self.schema = kwargs.get('schema', None)
@@ -608,7 +608,7 @@ class AmazonMwsObjectDataset(Dataset):
         **kwargs
     ):
         super(AmazonMwsObjectDataset, self).__init__(**kwargs)
-        self.type = 'AmazonMWSObject'
+        self.type = 'AmazonMWSObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -616,7 +616,7 @@ class CopySource(msrest.serialization.Model):
     """A copy activity source.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AvroSource, AzureBlobFsSource, AzureDataExplorerSource, AzureDataLakeStoreSource, BinarySource, BlobSource, CommonDataServiceForAppsSource, CosmosDBMongoDBApiSource, CosmosDBSqlApiSource, DelimitedTextSource, DocumentDBCollectionSource, DynamicsCrmSource, DynamicsSource, ExcelSource, FileSystemSource, HdfsSource, HttpSource, JsonSource, MicrosoftAccessSource, MongoDBSource, MongoDBV2Source, ODataSource, Office365Source, OracleSource, OrcSource, ParquetSource, RelationalSource, RestSource, SalesforceServiceCloudSource, SharePointOnlineListSource, SnowflakeSource, TabularSource, WebSource, XmlSource.
+    sub-classes are: AvroSource, AzureBlobFsSource, AzureDataExplorerSource, AzureDataLakeStoreSource, BinarySource, BlobSource, CommonDataServiceForAppsSource, CosmosDBMongoDBApiSource, CosmosDBSQLApiSource, DelimitedTextSource, DocumentDBCollectionSource, DynamicsCrmSource, DynamicsSource, ExcelSource, FileSystemSource, HdfsSource, HttpSource, JsonSource, MicrosoftAccessSource, MongoDBSource, MongoDBV2Source, ODataSource, Office365Source, OracleSource, OrcSource, ParquetSource, RelationalSource, RestSource, SalesforceServiceCloudSource, SharePointOnlineListSource, SnowflakeSource, TabularSource, WebSource, XmlSource.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -649,7 +649,7 @@ class CopySource(msrest.serialization.Model):
     }
 
     _subtype_map = {
-        'type': {'AvroSource': 'AvroSource', 'AzureBlobFSSource': 'AzureBlobFsSource', 'AzureDataExplorerSource': 'AzureDataExplorerSource', 'AzureDataLakeStoreSource': 'AzureDataLakeStoreSource', 'BinarySource': 'BinarySource', 'BlobSource': 'BlobSource', 'CommonDataServiceForAppsSource': 'CommonDataServiceForAppsSource', 'CosmosDbMongoDbApiSource': 'CosmosDBMongoDBApiSource', 'CosmosDbSqlApiSource': 'CosmosDBSqlApiSource', 'DelimitedTextSource': 'DelimitedTextSource', 'DocumentDbCollectionSource': 'DocumentDBCollectionSource', 'DynamicsCrmSource': 'DynamicsCrmSource', 'DynamicsSource': 'DynamicsSource', 'ExcelSource': 'ExcelSource', 'FileSystemSource': 'FileSystemSource', 'HdfsSource': 'HdfsSource', 'HttpSource': 'HttpSource', 'JsonSource': 'JsonSource', 'MicrosoftAccessSource': 'MicrosoftAccessSource', 'MongoDbSource': 'MongoDBSource', 'MongoDbV2Source': 'MongoDBV2Source', 'ODataSource': 'ODataSource', 'Office365Source': 'Office365Source', 'OracleSource': 'OracleSource', 'OrcSource': 'OrcSource', 'ParquetSource': 'ParquetSource', 'RelationalSource': 'RelationalSource', 'RestSource': 'RestSource', 'SalesforceServiceCloudSource': 'SalesforceServiceCloudSource', 'SharePointOnlineListSource': 'SharePointOnlineListSource', 'SnowflakeSource': 'SnowflakeSource', 'TabularSource': 'TabularSource', 'WebSource': 'WebSource', 'XmlSource': 'XmlSource'}
+        'type': {'AvroSource': 'AvroSource', 'AzureBlobFSSource': 'AzureBlobFsSource', 'AzureDataExplorerSource': 'AzureDataExplorerSource', 'AzureDataLakeStoreSource': 'AzureDataLakeStoreSource', 'BinarySource': 'BinarySource', 'BlobSource': 'BlobSource', 'CommonDataServiceForAppsSource': 'CommonDataServiceForAppsSource', 'CosmosDbMongoDbApiSource': 'CosmosDBMongoDBApiSource', 'CosmosDbSqlApiSource': 'CosmosDBSQLApiSource', 'DelimitedTextSource': 'DelimitedTextSource', 'DocumentDbCollectionSource': 'DocumentDBCollectionSource', 'DynamicsCrmSource': 'DynamicsCrmSource', 'DynamicsSource': 'DynamicsSource', 'ExcelSource': 'ExcelSource', 'FileSystemSource': 'FileSystemSource', 'HdfsSource': 'HdfsSource', 'HttpSource': 'HttpSource', 'JsonSource': 'JsonSource', 'MicrosoftAccessSource': 'MicrosoftAccessSource', 'MongoDbSource': 'MongoDBSource', 'MongoDbV2Source': 'MongoDBV2Source', 'ODataSource': 'ODataSource', 'Office365Source': 'Office365Source', 'OracleSource': 'OracleSource', 'OrcSource': 'OrcSource', 'ParquetSource': 'ParquetSource', 'RelationalSource': 'RelationalSource', 'RestSource': 'RestSource', 'SalesforceServiceCloudSource': 'SalesforceServiceCloudSource', 'SharePointOnlineListSource': 'SharePointOnlineListSource', 'SnowflakeSource': 'SnowflakeSource', 'TabularSource': 'TabularSource', 'WebSource': 'WebSource', 'XmlSource': 'XmlSource'}
     }
 
     def __init__(
@@ -658,7 +658,7 @@ class CopySource(msrest.serialization.Model):
     ):
         super(CopySource, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
-        self.type = 'CopySource'
+        self.type = 'CopySource'  # type: str
         self.source_retry_count = kwargs.get('source_retry_count', None)
         self.source_retry_wait = kwargs.get('source_retry_wait', None)
         self.max_concurrent_connections = kwargs.get('max_concurrent_connections', None)
@@ -668,7 +668,7 @@ class TabularSource(CopySource):
     """Copy activity sources of tabular type.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AmazonMwsSource, AmazonRedshiftSource, AzureMariaDBSource, AzureMySqlSource, AzurePostgreSqlSource, AzureSqlSource, AzureTableSource, CassandraSource, ConcurSource, CouchbaseSource, Db2Source, DrillSource, DynamicsAxSource, EloquaSource, GoogleAdWordsSource, GoogleBigQuerySource, GreenplumSource, HBaseSource, HiveSource, HubspotSource, ImpalaSource, InformixSource, JiraSource, MagentoSource, MariaDBSource, MarketoSource, MySqlSource, NetezzaSource, OdbcSource, OracleServiceCloudSource, PaypalSource, PhoenixSource, PostgreSqlSource, PrestoSource, QuickBooksSource, ResponsysSource, SalesforceMarketingCloudSource, SalesforceSource, SapBwSource, SapCloudForCustomerSource, SapEccSource, SapHanaSource, SapOpenHubSource, SapTableSource, ServiceNowSource, ShopifySource, SparkSource, SqlDWSource, SqlMiSource, SqlServerSource, SqlSource, SquareSource, SybaseSource, TeradataSource, VerticaSource, XeroSource, ZohoSource.
+    sub-classes are: AmazonMwsSource, AmazonRedshiftSource, AzureMariaDBSource, AzureMySQLSource, AzurePostgreSQLSource, AzureSQLSource, AzureTableSource, CassandraSource, ConcurSource, CouchbaseSource, Db2Source, DrillSource, DynamicsAxSource, EloquaSource, GoogleAdWordsSource, GoogleBigQuerySource, GreenplumSource, HBaseSource, HiveSource, HubspotSource, ImpalaSource, InformixSource, JiraSource, MagentoSource, MariaDBSource, MarketoSource, MySQLSource, NetezzaSource, OdbcSource, OracleServiceCloudSource, PaypalSource, PhoenixSource, PostgreSQLSource, PrestoSource, QuickBooksSource, ResponsysSource, SalesforceMarketingCloudSource, SalesforceSource, SapBwSource, SapCloudForCustomerSource, SapEccSource, SapHanaSource, SapOpenHubSource, SapTableSource, ServiceNowSource, ShopifySource, SparkSource, SQLDWSource, SQLMiSource, SQLServerSource, SQLSource, SquareSource, SybaseSource, TeradataSource, VerticaSource, XeroSource, ZohoSource.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -709,7 +709,7 @@ class TabularSource(CopySource):
     }
 
     _subtype_map = {
-        'type': {'AmazonMWSSource': 'AmazonMwsSource', 'AmazonRedshiftSource': 'AmazonRedshiftSource', 'AzureMariaDBSource': 'AzureMariaDBSource', 'AzureMySqlSource': 'AzureMySqlSource', 'AzurePostgreSqlSource': 'AzurePostgreSqlSource', 'AzureSqlSource': 'AzureSqlSource', 'AzureTableSource': 'AzureTableSource', 'CassandraSource': 'CassandraSource', 'ConcurSource': 'ConcurSource', 'CouchbaseSource': 'CouchbaseSource', 'Db2Source': 'Db2Source', 'DrillSource': 'DrillSource', 'DynamicsAXSource': 'DynamicsAxSource', 'EloquaSource': 'EloquaSource', 'GoogleAdWordsSource': 'GoogleAdWordsSource', 'GoogleBigQuerySource': 'GoogleBigQuerySource', 'GreenplumSource': 'GreenplumSource', 'HBaseSource': 'HBaseSource', 'HiveSource': 'HiveSource', 'HubspotSource': 'HubspotSource', 'ImpalaSource': 'ImpalaSource', 'InformixSource': 'InformixSource', 'JiraSource': 'JiraSource', 'MagentoSource': 'MagentoSource', 'MariaDBSource': 'MariaDBSource', 'MarketoSource': 'MarketoSource', 'MySqlSource': 'MySqlSource', 'NetezzaSource': 'NetezzaSource', 'OdbcSource': 'OdbcSource', 'OracleServiceCloudSource': 'OracleServiceCloudSource', 'PaypalSource': 'PaypalSource', 'PhoenixSource': 'PhoenixSource', 'PostgreSqlSource': 'PostgreSqlSource', 'PrestoSource': 'PrestoSource', 'QuickBooksSource': 'QuickBooksSource', 'ResponsysSource': 'ResponsysSource', 'SalesforceMarketingCloudSource': 'SalesforceMarketingCloudSource', 'SalesforceSource': 'SalesforceSource', 'SapBwSource': 'SapBwSource', 'SapCloudForCustomerSource': 'SapCloudForCustomerSource', 'SapEccSource': 'SapEccSource', 'SapHanaSource': 'SapHanaSource', 'SapOpenHubSource': 'SapOpenHubSource', 'SapTableSource': 'SapTableSource', 'ServiceNowSource': 'ServiceNowSource', 'ShopifySource': 'ShopifySource', 'SparkSource': 'SparkSource', 'SqlDWSource': 'SqlDWSource', 'SqlMISource': 'SqlMiSource', 'SqlServerSource': 'SqlServerSource', 'SqlSource': 'SqlSource', 'SquareSource': 'SquareSource', 'SybaseSource': 'SybaseSource', 'TeradataSource': 'TeradataSource', 'VerticaSource': 'VerticaSource', 'XeroSource': 'XeroSource', 'ZohoSource': 'ZohoSource'}
+        'type': {'AmazonMWSSource': 'AmazonMwsSource', 'AmazonRedshiftSource': 'AmazonRedshiftSource', 'AzureMariaDBSource': 'AzureMariaDBSource', 'AzureMySqlSource': 'AzureMySQLSource', 'AzurePostgreSqlSource': 'AzurePostgreSQLSource', 'AzureSqlSource': 'AzureSQLSource', 'AzureTableSource': 'AzureTableSource', 'CassandraSource': 'CassandraSource', 'ConcurSource': 'ConcurSource', 'CouchbaseSource': 'CouchbaseSource', 'Db2Source': 'Db2Source', 'DrillSource': 'DrillSource', 'DynamicsAXSource': 'DynamicsAxSource', 'EloquaSource': 'EloquaSource', 'GoogleAdWordsSource': 'GoogleAdWordsSource', 'GoogleBigQuerySource': 'GoogleBigQuerySource', 'GreenplumSource': 'GreenplumSource', 'HBaseSource': 'HBaseSource', 'HiveSource': 'HiveSource', 'HubspotSource': 'HubspotSource', 'ImpalaSource': 'ImpalaSource', 'InformixSource': 'InformixSource', 'JiraSource': 'JiraSource', 'MagentoSource': 'MagentoSource', 'MariaDBSource': 'MariaDBSource', 'MarketoSource': 'MarketoSource', 'MySqlSource': 'MySQLSource', 'NetezzaSource': 'NetezzaSource', 'OdbcSource': 'OdbcSource', 'OracleServiceCloudSource': 'OracleServiceCloudSource', 'PaypalSource': 'PaypalSource', 'PhoenixSource': 'PhoenixSource', 'PostgreSqlSource': 'PostgreSQLSource', 'PrestoSource': 'PrestoSource', 'QuickBooksSource': 'QuickBooksSource', 'ResponsysSource': 'ResponsysSource', 'SalesforceMarketingCloudSource': 'SalesforceMarketingCloudSource', 'SalesforceSource': 'SalesforceSource', 'SapBwSource': 'SapBwSource', 'SapCloudForCustomerSource': 'SapCloudForCustomerSource', 'SapEccSource': 'SapEccSource', 'SapHanaSource': 'SapHanaSource', 'SapOpenHubSource': 'SapOpenHubSource', 'SapTableSource': 'SapTableSource', 'ServiceNowSource': 'ServiceNowSource', 'ShopifySource': 'ShopifySource', 'SparkSource': 'SparkSource', 'SqlDWSource': 'SQLDWSource', 'SqlMISource': 'SQLMiSource', 'SqlServerSource': 'SQLServerSource', 'SqlSource': 'SQLSource', 'SquareSource': 'SquareSource', 'SybaseSource': 'SybaseSource', 'TeradataSource': 'TeradataSource', 'VerticaSource': 'VerticaSource', 'XeroSource': 'XeroSource', 'ZohoSource': 'ZohoSource'}
     }
 
     def __init__(
@@ -717,7 +717,7 @@ class TabularSource(CopySource):
         **kwargs
     ):
         super(TabularSource, self).__init__(**kwargs)
-        self.type = 'TabularSource'
+        self.type = 'TabularSource'  # type: str
         self.query_timeout = kwargs.get('query_timeout', None)
         self.additional_columns = kwargs.get('additional_columns', None)
 
@@ -772,7 +772,7 @@ class AmazonMwsSource(TabularSource):
         **kwargs
     ):
         super(AmazonMwsSource, self).__init__(**kwargs)
-        self.type = 'AmazonMWSSource'
+        self.type = 'AmazonMWSSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -840,7 +840,7 @@ class AmazonRedshiftLinkedService(LinkedService):
         **kwargs
     ):
         super(AmazonRedshiftLinkedService, self).__init__(**kwargs)
-        self.type = 'AmazonRedshift'
+        self.type = 'AmazonRedshift'  # type: str
         self.server = kwargs['server']
         self.username = kwargs.get('username', None)
         self.password = kwargs.get('password', None)
@@ -903,7 +903,7 @@ class AmazonRedshiftSource(TabularSource):
         **kwargs
     ):
         super(AmazonRedshiftSource, self).__init__(**kwargs)
-        self.type = 'AmazonRedshiftSource'
+        self.type = 'AmazonRedshiftSource'  # type: str
         self.query = kwargs.get('query', None)
         self.redshift_unload_settings = kwargs.get('redshift_unload_settings', None)
 
@@ -971,7 +971,7 @@ class AmazonRedshiftTableDataset(Dataset):
         **kwargs
     ):
         super(AmazonRedshiftTableDataset, self).__init__(**kwargs)
-        self.type = 'AmazonRedshiftTable'
+        self.type = 'AmazonRedshiftTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.table = kwargs.get('table', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
@@ -1059,7 +1059,7 @@ class AmazonS3Dataset(Dataset):
         **kwargs
     ):
         super(AmazonS3Dataset, self).__init__(**kwargs)
-        self.type = 'AmazonS3Object'
+        self.type = 'AmazonS3Object'  # type: str
         self.bucket_name = kwargs['bucket_name']
         self.key = kwargs.get('key', None)
         self.prefix = kwargs.get('prefix', None)
@@ -1126,7 +1126,7 @@ class AmazonS3LinkedService(LinkedService):
         **kwargs
     ):
         super(AmazonS3LinkedService, self).__init__(**kwargs)
-        self.type = 'AmazonS3'
+        self.type = 'AmazonS3'  # type: str
         self.access_key_id = kwargs.get('access_key_id', None)
         self.secret_access_key = kwargs.get('secret_access_key', None)
         self.service_url = kwargs.get('service_url', None)
@@ -1175,7 +1175,7 @@ class DatasetLocation(msrest.serialization.Model):
     ):
         super(DatasetLocation, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
-        self.type = 'DatasetLocation'
+        self.type = 'DatasetLocation'  # type: str
         self.folder_path = kwargs.get('folder_path', None)
         self.file_name = kwargs.get('file_name', None)
 
@@ -1222,7 +1222,7 @@ class AmazonS3Location(DatasetLocation):
         **kwargs
     ):
         super(AmazonS3Location, self).__init__(**kwargs)
-        self.type = 'AmazonS3Location'
+        self.type = 'AmazonS3Location'  # type: str
         self.bucket_name = kwargs.get('bucket_name', None)
         self.version = kwargs.get('version', None)
 
@@ -1265,7 +1265,7 @@ class StoreReadSettings(msrest.serialization.Model):
     ):
         super(StoreReadSettings, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
-        self.type = 'StoreReadSettings'
+        self.type = 'StoreReadSettings'  # type: str
         self.max_concurrent_connections = kwargs.get('max_concurrent_connections', None)
 
 
@@ -1339,7 +1339,7 @@ class AmazonS3ReadSettings(StoreReadSettings):
         **kwargs
     ):
         super(AmazonS3ReadSettings, self).__init__(**kwargs)
-        self.type = 'AmazonS3ReadSettings'
+        self.type = 'AmazonS3ReadSettings'  # type: str
         self.recursive = kwargs.get('recursive', None)
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
@@ -1397,7 +1397,7 @@ class AppendVariableActivity(Activity):
         **kwargs
     ):
         super(AppendVariableActivity, self).__init__(**kwargs)
-        self.type = 'AppendVariable'
+        self.type = 'AppendVariable'  # type: str
         self.variable_name = kwargs.get('variable_name', None)
         self.value = kwargs.get('value', None)
 
@@ -1465,7 +1465,7 @@ class AvroDataset(Dataset):
         **kwargs
     ):
         super(AvroDataset, self).__init__(**kwargs)
-        self.type = 'Avro'
+        self.type = 'Avro'  # type: str
         self.location = kwargs.get('location', None)
         self.avro_compression_codec = kwargs.get('avro_compression_codec', None)
         self.avro_compression_level = kwargs.get('avro_compression_level', None)
@@ -1511,7 +1511,7 @@ class DatasetStorageFormat(msrest.serialization.Model):
     ):
         super(DatasetStorageFormat, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
-        self.type = 'DatasetStorageFormat'
+        self.type = 'DatasetStorageFormat'  # type: str
         self.serializer = kwargs.get('serializer', None)
         self.deserializer = kwargs.get('deserializer', None)
 
@@ -1548,14 +1548,14 @@ class AvroFormat(DatasetStorageFormat):
         **kwargs
     ):
         super(AvroFormat, self).__init__(**kwargs)
-        self.type = 'AvroFormat'
+        self.type = 'AvroFormat'  # type: str
 
 
 class CopySink(msrest.serialization.Model):
     """A copy activity sink.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AvroSink, AzureBlobFsSink, AzureDataExplorerSink, AzureDataLakeStoreSink, AzureMySqlSink, AzurePostgreSqlSink, AzureQueueSink, AzureSearchIndexSink, AzureSqlSink, AzureTableSink, BinarySink, BlobSink, CommonDataServiceForAppsSink, CosmosDBMongoDBApiSink, CosmosDBSqlApiSink, DelimitedTextSink, DocumentDBCollectionSink, DynamicsCrmSink, DynamicsSink, FileSystemSink, InformixSink, JsonSink, MicrosoftAccessSink, OdbcSink, OracleSink, OrcSink, ParquetSink, SalesforceServiceCloudSink, SalesforceSink, SapCloudForCustomerSink, SnowflakeSink, SqlDWSink, SqlMiSink, SqlServerSink, SqlSink.
+    sub-classes are: AvroSink, AzureBlobFsSink, AzureDataExplorerSink, AzureDataLakeStoreSink, AzureMySQLSink, AzurePostgreSQLSink, AzureQueueSink, AzureSearchIndexSink, AzureSQLSink, AzureTableSink, BinarySink, BlobSink, CommonDataServiceForAppsSink, CosmosDBMongoDBApiSink, CosmosDBSQLApiSink, DelimitedTextSink, DocumentDBCollectionSink, DynamicsCrmSink, DynamicsSink, FileSystemSink, InformixSink, JsonSink, MicrosoftAccessSink, OdbcSink, OracleSink, OrcSink, ParquetSink, RestSink, SalesforceServiceCloudSink, SalesforceSink, SapCloudForCustomerSink, SnowflakeSink, SQLDWSink, SQLMiSink, SQLServerSink, SQLSink.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -1596,7 +1596,7 @@ class CopySink(msrest.serialization.Model):
     }
 
     _subtype_map = {
-        'type': {'AvroSink': 'AvroSink', 'AzureBlobFSSink': 'AzureBlobFsSink', 'AzureDataExplorerSink': 'AzureDataExplorerSink', 'AzureDataLakeStoreSink': 'AzureDataLakeStoreSink', 'AzureMySqlSink': 'AzureMySqlSink', 'AzurePostgreSqlSink': 'AzurePostgreSqlSink', 'AzureQueueSink': 'AzureQueueSink', 'AzureSearchIndexSink': 'AzureSearchIndexSink', 'AzureSqlSink': 'AzureSqlSink', 'AzureTableSink': 'AzureTableSink', 'BinarySink': 'BinarySink', 'BlobSink': 'BlobSink', 'CommonDataServiceForAppsSink': 'CommonDataServiceForAppsSink', 'CosmosDbMongoDbApiSink': 'CosmosDBMongoDBApiSink', 'CosmosDbSqlApiSink': 'CosmosDBSqlApiSink', 'DelimitedTextSink': 'DelimitedTextSink', 'DocumentDbCollectionSink': 'DocumentDBCollectionSink', 'DynamicsCrmSink': 'DynamicsCrmSink', 'DynamicsSink': 'DynamicsSink', 'FileSystemSink': 'FileSystemSink', 'InformixSink': 'InformixSink', 'JsonSink': 'JsonSink', 'MicrosoftAccessSink': 'MicrosoftAccessSink', 'OdbcSink': 'OdbcSink', 'OracleSink': 'OracleSink', 'OrcSink': 'OrcSink', 'ParquetSink': 'ParquetSink', 'SalesforceServiceCloudSink': 'SalesforceServiceCloudSink', 'SalesforceSink': 'SalesforceSink', 'SapCloudForCustomerSink': 'SapCloudForCustomerSink', 'SnowflakeSink': 'SnowflakeSink', 'SqlDWSink': 'SqlDWSink', 'SqlMISink': 'SqlMiSink', 'SqlServerSink': 'SqlServerSink', 'SqlSink': 'SqlSink'}
+        'type': {'AvroSink': 'AvroSink', 'AzureBlobFSSink': 'AzureBlobFsSink', 'AzureDataExplorerSink': 'AzureDataExplorerSink', 'AzureDataLakeStoreSink': 'AzureDataLakeStoreSink', 'AzureMySqlSink': 'AzureMySQLSink', 'AzurePostgreSqlSink': 'AzurePostgreSQLSink', 'AzureQueueSink': 'AzureQueueSink', 'AzureSearchIndexSink': 'AzureSearchIndexSink', 'AzureSqlSink': 'AzureSQLSink', 'AzureTableSink': 'AzureTableSink', 'BinarySink': 'BinarySink', 'BlobSink': 'BlobSink', 'CommonDataServiceForAppsSink': 'CommonDataServiceForAppsSink', 'CosmosDbMongoDbApiSink': 'CosmosDBMongoDBApiSink', 'CosmosDbSqlApiSink': 'CosmosDBSQLApiSink', 'DelimitedTextSink': 'DelimitedTextSink', 'DocumentDbCollectionSink': 'DocumentDBCollectionSink', 'DynamicsCrmSink': 'DynamicsCrmSink', 'DynamicsSink': 'DynamicsSink', 'FileSystemSink': 'FileSystemSink', 'InformixSink': 'InformixSink', 'JsonSink': 'JsonSink', 'MicrosoftAccessSink': 'MicrosoftAccessSink', 'OdbcSink': 'OdbcSink', 'OracleSink': 'OracleSink', 'OrcSink': 'OrcSink', 'ParquetSink': 'ParquetSink', 'RestSink': 'RestSink', 'SalesforceServiceCloudSink': 'SalesforceServiceCloudSink', 'SalesforceSink': 'SalesforceSink', 'SapCloudForCustomerSink': 'SapCloudForCustomerSink', 'SnowflakeSink': 'SnowflakeSink', 'SqlDWSink': 'SQLDWSink', 'SqlMISink': 'SQLMiSink', 'SqlServerSink': 'SQLServerSink', 'SqlSink': 'SQLSink'}
     }
 
     def __init__(
@@ -1605,7 +1605,7 @@ class CopySink(msrest.serialization.Model):
     ):
         super(CopySink, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
-        self.type = 'CopySink'
+        self.type = 'CopySink'  # type: str
         self.write_batch_size = kwargs.get('write_batch_size', None)
         self.write_batch_timeout = kwargs.get('write_batch_timeout', None)
         self.sink_retry_count = kwargs.get('sink_retry_count', None)
@@ -1665,7 +1665,7 @@ class AvroSink(CopySink):
         **kwargs
     ):
         super(AvroSink, self).__init__(**kwargs)
-        self.type = 'AvroSink'
+        self.type = 'AvroSink'  # type: str
         self.store_settings = kwargs.get('store_settings', None)
         self.format_settings = kwargs.get('format_settings', None)
 
@@ -1715,7 +1715,7 @@ class AvroSource(CopySource):
         **kwargs
     ):
         super(AvroSource, self).__init__(**kwargs)
-        self.type = 'AvroSource'
+        self.type = 'AvroSource'  # type: str
         self.store_settings = kwargs.get('store_settings', None)
         self.additional_columns = kwargs.get('additional_columns', None)
 
@@ -1754,7 +1754,7 @@ class FormatWriteSettings(msrest.serialization.Model):
     ):
         super(FormatWriteSettings, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
-        self.type = 'FormatWriteSettings'
+        self.type = 'FormatWriteSettings'  # type: str
 
 
 class AvroWriteSettings(FormatWriteSettings):
@@ -1789,9 +1789,71 @@ class AvroWriteSettings(FormatWriteSettings):
         **kwargs
     ):
         super(AvroWriteSettings, self).__init__(**kwargs)
-        self.type = 'AvroWriteSettings'
+        self.type = 'AvroWriteSettings'  # type: str
         self.record_name = kwargs.get('record_name', None)
         self.record_namespace = kwargs.get('record_namespace', None)
+
+
+class CustomSetupBase(msrest.serialization.Model):
+    """The base definition of the custom setup.
+
+    You probably want to use the sub-classes and not this class directly. Known
+    sub-classes are: AzPowerShellSetup, CmdkeySetup, ComponentSetup, EnvironmentVariableSetup.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param type: Required. The type of custom setup.Constant filled by server.
+    :type type: str
+    """
+
+    _validation = {
+        'type': {'required': True},
+    }
+
+    _attribute_map = {
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    _subtype_map = {
+        'type': {'AzPowerShellSetup': 'AzPowerShellSetup', 'CmdkeySetup': 'CmdkeySetup', 'ComponentSetup': 'ComponentSetup', 'EnvironmentVariableSetup': 'EnvironmentVariableSetup'}
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(CustomSetupBase, self).__init__(**kwargs)
+        self.type = None  # type: Optional[str]
+
+
+class AzPowerShellSetup(CustomSetupBase):
+    """The express custom setup of installing Azure PowerShell.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param type: Required. The type of custom setup.Constant filled by server.
+    :type type: str
+    :param version: Required. The required version of Azure PowerShell to install.
+    :type version: str
+    """
+
+    _validation = {
+        'type': {'required': True},
+        'version': {'required': True},
+    }
+
+    _attribute_map = {
+        'type': {'key': 'type', 'type': 'str'},
+        'version': {'key': 'typeProperties.version', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AzPowerShellSetup, self).__init__(**kwargs)
+        self.type = 'AzPowerShellSetup'  # type: str
+        self.version = kwargs['version']
 
 
 class AzureBatchLinkedService(LinkedService):
@@ -1859,7 +1921,7 @@ class AzureBatchLinkedService(LinkedService):
         **kwargs
     ):
         super(AzureBatchLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureBatch'
+        self.type = 'AzureBatch'  # type: str
         self.account_name = kwargs['account_name']
         self.access_key = kwargs.get('access_key', None)
         self.batch_uri = kwargs['batch_uri']
@@ -1945,7 +2007,7 @@ class AzureBlobDataset(Dataset):
         **kwargs
     ):
         super(AzureBlobDataset, self).__init__(**kwargs)
-        self.type = 'AzureBlob'
+        self.type = 'AzureBlob'  # type: str
         self.folder_path = kwargs.get('folder_path', None)
         self.table_root_location = kwargs.get('table_root_location', None)
         self.file_name = kwargs.get('file_name', None)
@@ -2020,7 +2082,7 @@ class AzureBlobFsDataset(Dataset):
         **kwargs
     ):
         super(AzureBlobFsDataset, self).__init__(**kwargs)
-        self.type = 'AzureBlobFSFile'
+        self.type = 'AzureBlobFSFile'  # type: str
         self.folder_path = kwargs.get('folder_path', None)
         self.file_name = kwargs.get('file_name', None)
         self.format = kwargs.get('format', None)
@@ -2060,6 +2122,10 @@ class AzureBlobFsLinkedService(LinkedService):
     :param tenant: The name or ID of the tenant to which the service principal belongs. Type:
      string (or Expression with resultType string).
     :type tenant: object
+    :param azure_cloud_type: Indicates the azure cloud type of the service principle auth. Allowed
+     values are AzurePublic, AzureChina, AzureUsGovernment, AzureGermany. Default value is the data
+     factory regions’ cloud type. Type: string (or Expression with resultType string).
+    :type azure_cloud_type: object
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -2083,6 +2149,7 @@ class AzureBlobFsLinkedService(LinkedService):
         'service_principal_id': {'key': 'typeProperties.servicePrincipalId', 'type': 'object'},
         'service_principal_key': {'key': 'typeProperties.servicePrincipalKey', 'type': 'SecretBase'},
         'tenant': {'key': 'typeProperties.tenant', 'type': 'object'},
+        'azure_cloud_type': {'key': 'typeProperties.azureCloudType', 'type': 'object'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
     }
 
@@ -2091,12 +2158,13 @@ class AzureBlobFsLinkedService(LinkedService):
         **kwargs
     ):
         super(AzureBlobFsLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureBlobFS'
+        self.type = 'AzureBlobFS'  # type: str
         self.url = kwargs['url']
         self.account_key = kwargs.get('account_key', None)
         self.service_principal_id = kwargs.get('service_principal_id', None)
         self.service_principal_key = kwargs.get('service_principal_key', None)
         self.tenant = kwargs.get('tenant', None)
+        self.azure_cloud_type = kwargs.get('azure_cloud_type', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
@@ -2138,7 +2206,7 @@ class AzureBlobFsLocation(DatasetLocation):
         **kwargs
     ):
         super(AzureBlobFsLocation, self).__init__(**kwargs)
-        self.type = 'AzureBlobFSLocation'
+        self.type = 'AzureBlobFSLocation'  # type: str
         self.file_system = kwargs.get('file_system', None)
 
 
@@ -2208,7 +2276,7 @@ class AzureBlobFsReadSettings(StoreReadSettings):
         **kwargs
     ):
         super(AzureBlobFsReadSettings, self).__init__(**kwargs)
-        self.type = 'AzureBlobFSReadSettings'
+        self.type = 'AzureBlobFSReadSettings'  # type: str
         self.recursive = kwargs.get('recursive', None)
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
@@ -2269,7 +2337,7 @@ class AzureBlobFsSink(CopySink):
         **kwargs
     ):
         super(AzureBlobFsSink, self).__init__(**kwargs)
-        self.type = 'AzureBlobFSSink'
+        self.type = 'AzureBlobFSSink'  # type: str
         self.copy_behavior = kwargs.get('copy_behavior', None)
 
 
@@ -2323,7 +2391,7 @@ class AzureBlobFsSource(CopySource):
         **kwargs
     ):
         super(AzureBlobFsSource, self).__init__(**kwargs)
-        self.type = 'AzureBlobFSSource'
+        self.type = 'AzureBlobFSSource'  # type: str
         self.treat_empty_as_null = kwargs.get('treat_empty_as_null', None)
         self.skip_header_line_count = kwargs.get('skip_header_line_count', None)
         self.recursive = kwargs.get('recursive', None)
@@ -2333,7 +2401,7 @@ class StoreWriteSettings(msrest.serialization.Model):
     """Connector write settings.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AzureBlobFsWriteSettings, AzureBlobStorageWriteSettings, AzureDataLakeStoreWriteSettings, FileServerWriteSettings, SftpWriteSettings.
+    sub-classes are: AzureBlobFsWriteSettings, AzureBlobStorageWriteSettings, AzureDataLakeStoreWriteSettings, AzureFileStorageWriteSettings, FileServerWriteSettings, SftpWriteSettings.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -2361,7 +2429,7 @@ class StoreWriteSettings(msrest.serialization.Model):
     }
 
     _subtype_map = {
-        'type': {'AzureBlobFSWriteSettings': 'AzureBlobFsWriteSettings', 'AzureBlobStorageWriteSettings': 'AzureBlobStorageWriteSettings', 'AzureDataLakeStoreWriteSettings': 'AzureDataLakeStoreWriteSettings', 'FileServerWriteSettings': 'FileServerWriteSettings', 'SftpWriteSettings': 'SftpWriteSettings'}
+        'type': {'AzureBlobFSWriteSettings': 'AzureBlobFsWriteSettings', 'AzureBlobStorageWriteSettings': 'AzureBlobStorageWriteSettings', 'AzureDataLakeStoreWriteSettings': 'AzureDataLakeStoreWriteSettings', 'AzureFileStorageWriteSettings': 'AzureFileStorageWriteSettings', 'FileServerWriteSettings': 'FileServerWriteSettings', 'SftpWriteSettings': 'SftpWriteSettings'}
     }
 
     def __init__(
@@ -2370,7 +2438,7 @@ class StoreWriteSettings(msrest.serialization.Model):
     ):
         super(StoreWriteSettings, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
-        self.type = 'StoreWriteSettings'
+        self.type = 'StoreWriteSettings'  # type: str
         self.max_concurrent_connections = kwargs.get('max_concurrent_connections', None)
         self.copy_behavior = kwargs.get('copy_behavior', None)
 
@@ -2412,7 +2480,7 @@ class AzureBlobFsWriteSettings(StoreWriteSettings):
         **kwargs
     ):
         super(AzureBlobFsWriteSettings, self).__init__(**kwargs)
-        self.type = 'AzureBlobFSWriteSettings'
+        self.type = 'AzureBlobFSWriteSettings'  # type: str
         self.block_size_in_mb = kwargs.get('block_size_in_mb', None)
 
 
@@ -2457,6 +2525,10 @@ class AzureBlobStorageLinkedService(LinkedService):
     :param tenant: The name or ID of the tenant to which the service principal belongs. Type:
      string (or Expression with resultType string).
     :type tenant: object
+    :param azure_cloud_type: Indicates the azure cloud type of the service principle auth. Allowed
+     values are AzurePublic, AzureChina, AzureUsGovernment, AzureGermany. Default value is the data
+     factory regions’ cloud type. Type: string (or Expression with resultType string).
+    :type azure_cloud_type: object
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -2482,6 +2554,7 @@ class AzureBlobStorageLinkedService(LinkedService):
         'service_principal_id': {'key': 'typeProperties.servicePrincipalId', 'type': 'object'},
         'service_principal_key': {'key': 'typeProperties.servicePrincipalKey', 'type': 'SecretBase'},
         'tenant': {'key': 'typeProperties.tenant', 'type': 'object'},
+        'azure_cloud_type': {'key': 'typeProperties.azureCloudType', 'type': 'object'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'str'},
     }
 
@@ -2490,7 +2563,7 @@ class AzureBlobStorageLinkedService(LinkedService):
         **kwargs
     ):
         super(AzureBlobStorageLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureBlobStorage'
+        self.type = 'AzureBlobStorage'  # type: str
         self.connection_string = kwargs.get('connection_string', None)
         self.account_key = kwargs.get('account_key', None)
         self.sas_uri = kwargs.get('sas_uri', None)
@@ -2499,6 +2572,7 @@ class AzureBlobStorageLinkedService(LinkedService):
         self.service_principal_id = kwargs.get('service_principal_id', None)
         self.service_principal_key = kwargs.get('service_principal_key', None)
         self.tenant = kwargs.get('tenant', None)
+        self.azure_cloud_type = kwargs.get('azure_cloud_type', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
@@ -2540,7 +2614,7 @@ class AzureBlobStorageLocation(DatasetLocation):
         **kwargs
     ):
         super(AzureBlobStorageLocation, self).__init__(**kwargs)
-        self.type = 'AzureBlobStorageLocation'
+        self.type = 'AzureBlobStorageLocation'  # type: str
         self.container = kwargs.get('container', None)
 
 
@@ -2614,7 +2688,7 @@ class AzureBlobStorageReadSettings(StoreReadSettings):
         **kwargs
     ):
         super(AzureBlobStorageReadSettings, self).__init__(**kwargs)
-        self.type = 'AzureBlobStorageReadSettings'
+        self.type = 'AzureBlobStorageReadSettings'  # type: str
         self.recursive = kwargs.get('recursive', None)
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
@@ -2664,7 +2738,7 @@ class AzureBlobStorageWriteSettings(StoreWriteSettings):
         **kwargs
     ):
         super(AzureBlobStorageWriteSettings, self).__init__(**kwargs)
-        self.type = 'AzureBlobStorageWriteSettings'
+        self.type = 'AzureBlobStorageWriteSettings'  # type: str
         self.block_size_in_mb = kwargs.get('block_size_in_mb', None)
 
 
@@ -2724,6 +2798,9 @@ class AzureDatabricksLinkedService(LinkedService):
     :param new_cluster_custom_tags: Additional tags for cluster resources. This property is ignored
      in instance pool configurations.
     :type new_cluster_custom_tags: dict[str, object]
+    :param new_cluster_log_destination: Specify a location to deliver Spark driver, worker, and
+     event logs. Type: string (or Expression with resultType string).
+    :type new_cluster_log_destination: object
     :param new_cluster_driver_node_type: The driver node type for the new job cluster. This
      property is ignored in instance pool configurations. Type: string (or Expression with
      resultType string).
@@ -2764,6 +2841,7 @@ class AzureDatabricksLinkedService(LinkedService):
         'new_cluster_spark_conf': {'key': 'typeProperties.newClusterSparkConf', 'type': '{object}'},
         'new_cluster_spark_env_vars': {'key': 'typeProperties.newClusterSparkEnvVars', 'type': '{object}'},
         'new_cluster_custom_tags': {'key': 'typeProperties.newClusterCustomTags', 'type': '{object}'},
+        'new_cluster_log_destination': {'key': 'typeProperties.newClusterLogDestination', 'type': 'object'},
         'new_cluster_driver_node_type': {'key': 'typeProperties.newClusterDriverNodeType', 'type': 'object'},
         'new_cluster_init_scripts': {'key': 'typeProperties.newClusterInitScripts', 'type': 'object'},
         'new_cluster_enable_elastic_disk': {'key': 'typeProperties.newClusterEnableElasticDisk', 'type': 'object'},
@@ -2775,7 +2853,7 @@ class AzureDatabricksLinkedService(LinkedService):
         **kwargs
     ):
         super(AzureDatabricksLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureDatabricks'
+        self.type = 'AzureDatabricks'  # type: str
         self.domain = kwargs['domain']
         self.access_token = kwargs['access_token']
         self.existing_cluster_id = kwargs.get('existing_cluster_id', None)
@@ -2786,6 +2864,7 @@ class AzureDatabricksLinkedService(LinkedService):
         self.new_cluster_spark_conf = kwargs.get('new_cluster_spark_conf', None)
         self.new_cluster_spark_env_vars = kwargs.get('new_cluster_spark_env_vars', None)
         self.new_cluster_custom_tags = kwargs.get('new_cluster_custom_tags', None)
+        self.new_cluster_log_destination = kwargs.get('new_cluster_log_destination', None)
         self.new_cluster_driver_node_type = kwargs.get('new_cluster_driver_node_type', None)
         self.new_cluster_init_scripts = kwargs.get('new_cluster_init_scripts', None)
         self.new_cluster_enable_elastic_disk = kwargs.get('new_cluster_enable_elastic_disk', None)
@@ -2796,7 +2875,7 @@ class ExecutionActivity(Activity):
     """Base class for all execution activities.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AzureDataExplorerCommandActivity, AzureFunctionActivity, AzureMlBatchExecutionActivity, AzureMlExecutePipelineActivity, AzureMlUpdateResourceActivity, CopyActivity, CustomActivity, DataLakeAnalyticsUsqlActivity, DatabricksNotebookActivity, DatabricksSparkJarActivity, DatabricksSparkPythonActivity, DeleteActivity, ExecuteDataFlowActivity, ExecuteSsisPackageActivity, GetMetadataActivity, HdInsightHiveActivity, HdInsightMapReduceActivity, HdInsightPigActivity, HdInsightSparkActivity, HdInsightStreamingActivity, LookupActivity, SqlServerStoredProcedureActivity, WebActivity.
+    sub-classes are: AzureDataExplorerCommandActivity, AzureFunctionActivity, AzureMlBatchExecutionActivity, AzureMlExecutePipelineActivity, AzureMlUpdateResourceActivity, CopyActivity, CustomActivity, DataLakeAnalyticsUsqlActivity, DatabricksNotebookActivity, DatabricksSparkJarActivity, DatabricksSparkPythonActivity, DeleteActivity, ExecuteDataFlowActivity, ExecuteSsisPackageActivity, GetMetadataActivity, HdInsightHiveActivity, HdInsightMapReduceActivity, HdInsightPigActivity, HdInsightSparkActivity, HdInsightStreamingActivity, LookupActivity, SQLServerStoredProcedureActivity, WebActivity.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -2836,7 +2915,7 @@ class ExecutionActivity(Activity):
     }
 
     _subtype_map = {
-        'type': {'AzureDataExplorerCommand': 'AzureDataExplorerCommandActivity', 'AzureFunctionActivity': 'AzureFunctionActivity', 'AzureMLBatchExecution': 'AzureMlBatchExecutionActivity', 'AzureMLExecutePipeline': 'AzureMlExecutePipelineActivity', 'AzureMLUpdateResource': 'AzureMlUpdateResourceActivity', 'Copy': 'CopyActivity', 'Custom': 'CustomActivity', 'DataLakeAnalyticsU-SQL': 'DataLakeAnalyticsUsqlActivity', 'DatabricksNotebook': 'DatabricksNotebookActivity', 'DatabricksSparkJar': 'DatabricksSparkJarActivity', 'DatabricksSparkPython': 'DatabricksSparkPythonActivity', 'Delete': 'DeleteActivity', 'ExecuteDataFlow': 'ExecuteDataFlowActivity', 'ExecuteSSISPackage': 'ExecuteSsisPackageActivity', 'GetMetadata': 'GetMetadataActivity', 'HDInsightHive': 'HdInsightHiveActivity', 'HDInsightMapReduce': 'HdInsightMapReduceActivity', 'HDInsightPig': 'HdInsightPigActivity', 'HDInsightSpark': 'HdInsightSparkActivity', 'HDInsightStreaming': 'HdInsightStreamingActivity', 'Lookup': 'LookupActivity', 'SqlServerStoredProcedure': 'SqlServerStoredProcedureActivity', 'WebActivity': 'WebActivity'}
+        'type': {'AzureDataExplorerCommand': 'AzureDataExplorerCommandActivity', 'AzureFunctionActivity': 'AzureFunctionActivity', 'AzureMLBatchExecution': 'AzureMlBatchExecutionActivity', 'AzureMLExecutePipeline': 'AzureMlExecutePipelineActivity', 'AzureMLUpdateResource': 'AzureMlUpdateResourceActivity', 'Copy': 'CopyActivity', 'Custom': 'CustomActivity', 'DataLakeAnalyticsU-SQL': 'DataLakeAnalyticsUsqlActivity', 'DatabricksNotebook': 'DatabricksNotebookActivity', 'DatabricksSparkJar': 'DatabricksSparkJarActivity', 'DatabricksSparkPython': 'DatabricksSparkPythonActivity', 'Delete': 'DeleteActivity', 'ExecuteDataFlow': 'ExecuteDataFlowActivity', 'ExecuteSSISPackage': 'ExecuteSsisPackageActivity', 'GetMetadata': 'GetMetadataActivity', 'HDInsightHive': 'HdInsightHiveActivity', 'HDInsightMapReduce': 'HdInsightMapReduceActivity', 'HDInsightPig': 'HdInsightPigActivity', 'HDInsightSpark': 'HdInsightSparkActivity', 'HDInsightStreaming': 'HdInsightStreamingActivity', 'Lookup': 'LookupActivity', 'SqlServerStoredProcedure': 'SQLServerStoredProcedureActivity', 'WebActivity': 'WebActivity'}
     }
 
     def __init__(
@@ -2844,7 +2923,7 @@ class ExecutionActivity(Activity):
         **kwargs
     ):
         super(ExecutionActivity, self).__init__(**kwargs)
-        self.type = 'Execution'
+        self.type = 'Execution'  # type: str
         self.linked_service_name = kwargs.get('linked_service_name', None)
         self.policy = kwargs.get('policy', None)
 
@@ -2903,7 +2982,7 @@ class AzureDataExplorerCommandActivity(ExecutionActivity):
         **kwargs
     ):
         super(AzureDataExplorerCommandActivity, self).__init__(**kwargs)
-        self.type = 'AzureDataExplorerCommand'
+        self.type = 'AzureDataExplorerCommand'  # type: str
         self.command = kwargs['command']
         self.command_timeout = kwargs.get('command_timeout', None)
 
@@ -2972,7 +3051,7 @@ class AzureDataExplorerLinkedService(LinkedService):
         **kwargs
     ):
         super(AzureDataExplorerLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureDataExplorer'
+        self.type = 'AzureDataExplorer'  # type: str
         self.endpoint = kwargs['endpoint']
         self.service_principal_id = kwargs['service_principal_id']
         self.service_principal_key = kwargs['service_principal_key']
@@ -3038,7 +3117,7 @@ class AzureDataExplorerSink(CopySink):
         **kwargs
     ):
         super(AzureDataExplorerSink, self).__init__(**kwargs)
-        self.type = 'AzureDataExplorerSink'
+        self.type = 'AzureDataExplorerSink'  # type: str
         self.ingestion_mapping_name = kwargs.get('ingestion_mapping_name', None)
         self.ingestion_mapping_as_json = kwargs.get('ingestion_mapping_as_json', None)
         self.flush_immediately = kwargs.get('flush_immediately', None)
@@ -3099,7 +3178,7 @@ class AzureDataExplorerSource(CopySource):
         **kwargs
     ):
         super(AzureDataExplorerSource, self).__init__(**kwargs)
-        self.type = 'AzureDataExplorerSource'
+        self.type = 'AzureDataExplorerSource'  # type: str
         self.query = kwargs['query']
         self.no_truncation = kwargs.get('no_truncation', None)
         self.query_timeout = kwargs.get('query_timeout', None)
@@ -3161,7 +3240,7 @@ class AzureDataExplorerTableDataset(Dataset):
         **kwargs
     ):
         super(AzureDataExplorerTableDataset, self).__init__(**kwargs)
-        self.type = 'AzureDataExplorerTable'
+        self.type = 'AzureDataExplorerTable'  # type: str
         self.table = kwargs.get('table', None)
 
 
@@ -3238,7 +3317,7 @@ class AzureDataLakeAnalyticsLinkedService(LinkedService):
         **kwargs
     ):
         super(AzureDataLakeAnalyticsLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureDataLakeAnalytics'
+        self.type = 'AzureDataLakeAnalytics'  # type: str
         self.account_name = kwargs['account_name']
         self.service_principal_id = kwargs.get('service_principal_id', None)
         self.service_principal_key = kwargs.get('service_principal_key', None)
@@ -3315,7 +3394,7 @@ class AzureDataLakeStoreDataset(Dataset):
         **kwargs
     ):
         super(AzureDataLakeStoreDataset, self).__init__(**kwargs)
-        self.type = 'AzureDataLakeStoreFile'
+        self.type = 'AzureDataLakeStoreFile'  # type: str
         self.folder_path = kwargs.get('folder_path', None)
         self.file_name = kwargs.get('file_name', None)
         self.format = kwargs.get('format', None)
@@ -3352,6 +3431,10 @@ class AzureDataLakeStoreLinkedService(LinkedService):
     :param tenant: The name or ID of the tenant to which the service principal belongs. Type:
      string (or Expression with resultType string).
     :type tenant: object
+    :param azure_cloud_type: Indicates the azure cloud type of the service principle auth. Allowed
+     values are AzurePublic, AzureChina, AzureUsGovernment, AzureGermany. Default value is the data
+     factory regions’ cloud type. Type: string (or Expression with resultType string).
+    :type azure_cloud_type: object
     :param account_name: Data Lake Store account name. Type: string (or Expression with resultType
      string).
     :type account_name: object
@@ -3383,6 +3466,7 @@ class AzureDataLakeStoreLinkedService(LinkedService):
         'service_principal_id': {'key': 'typeProperties.servicePrincipalId', 'type': 'object'},
         'service_principal_key': {'key': 'typeProperties.servicePrincipalKey', 'type': 'SecretBase'},
         'tenant': {'key': 'typeProperties.tenant', 'type': 'object'},
+        'azure_cloud_type': {'key': 'typeProperties.azureCloudType', 'type': 'object'},
         'account_name': {'key': 'typeProperties.accountName', 'type': 'object'},
         'subscription_id': {'key': 'typeProperties.subscriptionId', 'type': 'object'},
         'resource_group_name': {'key': 'typeProperties.resourceGroupName', 'type': 'object'},
@@ -3394,11 +3478,12 @@ class AzureDataLakeStoreLinkedService(LinkedService):
         **kwargs
     ):
         super(AzureDataLakeStoreLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureDataLakeStore'
+        self.type = 'AzureDataLakeStore'  # type: str
         self.data_lake_store_uri = kwargs['data_lake_store_uri']
         self.service_principal_id = kwargs.get('service_principal_id', None)
         self.service_principal_key = kwargs.get('service_principal_key', None)
         self.tenant = kwargs.get('tenant', None)
+        self.azure_cloud_type = kwargs.get('azure_cloud_type', None)
         self.account_name = kwargs.get('account_name', None)
         self.subscription_id = kwargs.get('subscription_id', None)
         self.resource_group_name = kwargs.get('resource_group_name', None)
@@ -3439,7 +3524,7 @@ class AzureDataLakeStoreLocation(DatasetLocation):
         **kwargs
     ):
         super(AzureDataLakeStoreLocation, self).__init__(**kwargs)
-        self.type = 'AzureDataLakeStoreLocation'
+        self.type = 'AzureDataLakeStoreLocation'  # type: str
 
 
 class AzureDataLakeStoreReadSettings(StoreReadSettings):
@@ -3518,7 +3603,7 @@ class AzureDataLakeStoreReadSettings(StoreReadSettings):
         **kwargs
     ):
         super(AzureDataLakeStoreReadSettings, self).__init__(**kwargs)
-        self.type = 'AzureDataLakeStoreReadSettings'
+        self.type = 'AzureDataLakeStoreReadSettings'  # type: str
         self.recursive = kwargs.get('recursive', None)
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
@@ -3584,7 +3669,7 @@ class AzureDataLakeStoreSink(CopySink):
         **kwargs
     ):
         super(AzureDataLakeStoreSink, self).__init__(**kwargs)
-        self.type = 'AzureDataLakeStoreSink'
+        self.type = 'AzureDataLakeStoreSink'  # type: str
         self.copy_behavior = kwargs.get('copy_behavior', None)
         self.enable_adls_single_file_parallel = kwargs.get('enable_adls_single_file_parallel', None)
 
@@ -3631,7 +3716,7 @@ class AzureDataLakeStoreSource(CopySource):
         **kwargs
     ):
         super(AzureDataLakeStoreSource, self).__init__(**kwargs)
-        self.type = 'AzureDataLakeStoreSource'
+        self.type = 'AzureDataLakeStoreSource'  # type: str
         self.recursive = kwargs.get('recursive', None)
 
 
@@ -3673,7 +3758,7 @@ class AzureDataLakeStoreWriteSettings(StoreWriteSettings):
         **kwargs
     ):
         super(AzureDataLakeStoreWriteSettings, self).__init__(**kwargs)
-        self.type = 'AzureDataLakeStoreWriteSettings'
+        self.type = 'AzureDataLakeStoreWriteSettings'  # type: str
         self.expiry_date_time = kwargs.get('expiry_date_time', None)
 
 
@@ -3715,6 +3800,9 @@ class AzureFileStorageLinkedService(LinkedService):
     :param file_share: The azure file share name. It is required when auth with
      accountKey/sasToken. Type: string (or Expression with resultType string).
     :type file_share: object
+    :param snapshot: The azure file share snapshot version. Type: string (or Expression with
+     resultType string).
+    :type snapshot: object
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -3740,6 +3828,7 @@ class AzureFileStorageLinkedService(LinkedService):
         'sas_uri': {'key': 'typeProperties.sasUri', 'type': 'object'},
         'sas_token': {'key': 'typeProperties.sasToken', 'type': 'AzureKeyVaultSecretReference'},
         'file_share': {'key': 'typeProperties.fileShare', 'type': 'object'},
+        'snapshot': {'key': 'typeProperties.snapshot', 'type': 'object'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
     }
 
@@ -3748,7 +3837,7 @@ class AzureFileStorageLinkedService(LinkedService):
         **kwargs
     ):
         super(AzureFileStorageLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureFileStorage'
+        self.type = 'AzureFileStorage'  # type: str
         self.host = kwargs.get('host', None)
         self.user_id = kwargs.get('user_id', None)
         self.password = kwargs.get('password', None)
@@ -3757,6 +3846,7 @@ class AzureFileStorageLinkedService(LinkedService):
         self.sas_uri = kwargs.get('sas_uri', None)
         self.sas_token = kwargs.get('sas_token', None)
         self.file_share = kwargs.get('file_share', None)
+        self.snapshot = kwargs.get('snapshot', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
@@ -3794,7 +3884,7 @@ class AzureFileStorageLocation(DatasetLocation):
         **kwargs
     ):
         super(AzureFileStorageLocation, self).__init__(**kwargs)
-        self.type = 'AzureFileStorageLocation'
+        self.type = 'AzureFileStorageLocation'  # type: str
 
 
 class AzureFileStorageReadSettings(StoreReadSettings):
@@ -3867,7 +3957,7 @@ class AzureFileStorageReadSettings(StoreReadSettings):
         **kwargs
     ):
         super(AzureFileStorageReadSettings, self).__init__(**kwargs)
-        self.type = 'AzureFileStorageReadSettings'
+        self.type = 'AzureFileStorageReadSettings'  # type: str
         self.recursive = kwargs.get('recursive', None)
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
@@ -3878,6 +3968,42 @@ class AzureFileStorageReadSettings(StoreReadSettings):
         self.delete_files_after_completion = kwargs.get('delete_files_after_completion', None)
         self.modified_datetime_start = kwargs.get('modified_datetime_start', None)
         self.modified_datetime_end = kwargs.get('modified_datetime_end', None)
+
+
+class AzureFileStorageWriteSettings(StoreWriteSettings):
+    """Azure File Storage write settings.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param additional_properties: Unmatched properties from the message are deserialized to this
+     collection.
+    :type additional_properties: dict[str, object]
+    :param type: Required. The write setting type.Constant filled by server.
+    :type type: str
+    :param max_concurrent_connections: The maximum concurrent connection count for the source data
+     store. Type: integer (or Expression with resultType integer).
+    :type max_concurrent_connections: object
+    :param copy_behavior: The type of copy behavior for copy sink.
+    :type copy_behavior: object
+    """
+
+    _validation = {
+        'type': {'required': True},
+    }
+
+    _attribute_map = {
+        'additional_properties': {'key': '', 'type': '{object}'},
+        'type': {'key': 'type', 'type': 'str'},
+        'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'copy_behavior': {'key': 'copyBehavior', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AzureFileStorageWriteSettings, self).__init__(**kwargs)
+        self.type = 'AzureFileStorageWriteSettings'  # type: str
 
 
 class AzureFunctionActivity(ExecutionActivity):
@@ -3944,7 +4070,7 @@ class AzureFunctionActivity(ExecutionActivity):
         **kwargs
     ):
         super(AzureFunctionActivity, self).__init__(**kwargs)
-        self.type = 'AzureFunctionActivity'
+        self.type = 'AzureFunctionActivity'  # type: str
         self.method = kwargs['method']
         self.function_name = kwargs['function_name']
         self.headers = kwargs.get('headers', None)
@@ -4002,7 +4128,7 @@ class AzureFunctionLinkedService(LinkedService):
         **kwargs
     ):
         super(AzureFunctionLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureFunction'
+        self.type = 'AzureFunction'  # type: str
         self.function_app_url = kwargs['function_app_url']
         self.function_key = kwargs.get('function_key', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
@@ -4051,7 +4177,7 @@ class AzureKeyVaultLinkedService(LinkedService):
         **kwargs
     ):
         super(AzureKeyVaultLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureKeyVault'
+        self.type = 'AzureKeyVault'  # type: str
         self.base_url = kwargs['base_url']
 
 
@@ -4084,7 +4210,7 @@ class SecretBase(msrest.serialization.Model):
         **kwargs
     ):
         super(SecretBase, self).__init__(**kwargs)
-        self.type = None
+        self.type = None  # type: Optional[str]
 
 
 class AzureKeyVaultSecretReference(SecretBase):
@@ -4122,7 +4248,7 @@ class AzureKeyVaultSecretReference(SecretBase):
         **kwargs
     ):
         super(AzureKeyVaultSecretReference, self).__init__(**kwargs)
-        self.type = 'AzureKeyVaultSecret'
+        self.type = 'AzureKeyVaultSecret'  # type: str
         self.store = kwargs['store']
         self.secret_name = kwargs['secret_name']
         self.secret_version = kwargs.get('secret_version', None)
@@ -4178,7 +4304,7 @@ class AzureMariaDBLinkedService(LinkedService):
         **kwargs
     ):
         super(AzureMariaDBLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureMariaDB'
+        self.type = 'AzureMariaDB'  # type: str
         self.connection_string = kwargs.get('connection_string', None)
         self.pwd = kwargs.get('pwd', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
@@ -4234,7 +4360,7 @@ class AzureMariaDBSource(TabularSource):
         **kwargs
     ):
         super(AzureMariaDBSource, self).__init__(**kwargs)
-        self.type = 'AzureMariaDBSource'
+        self.type = 'AzureMariaDBSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -4292,7 +4418,7 @@ class AzureMariaDBTableDataset(Dataset):
         **kwargs
     ):
         super(AzureMariaDBTableDataset, self).__init__(**kwargs)
-        self.type = 'AzureMariaDBTable'
+        self.type = 'AzureMariaDBTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -4361,7 +4487,7 @@ class AzureMlBatchExecutionActivity(ExecutionActivity):
         **kwargs
     ):
         super(AzureMlBatchExecutionActivity, self).__init__(**kwargs)
-        self.type = 'AzureMLBatchExecution'
+        self.type = 'AzureMLBatchExecution'  # type: str
         self.global_parameters = kwargs.get('global_parameters', None)
         self.web_service_outputs = kwargs.get('web_service_outputs', None)
         self.web_service_inputs = kwargs.get('web_service_inputs', None)
@@ -4439,7 +4565,7 @@ class AzureMlExecutePipelineActivity(ExecutionActivity):
         **kwargs
     ):
         super(AzureMlExecutePipelineActivity, self).__init__(**kwargs)
-        self.type = 'AzureMLExecutePipeline'
+        self.type = 'AzureMLExecutePipeline'  # type: str
         self.ml_pipeline_id = kwargs['ml_pipeline_id']
         self.experiment_name = kwargs.get('experiment_name', None)
         self.ml_pipeline_parameters = kwargs.get('ml_pipeline_parameters', None)
@@ -4516,7 +4642,7 @@ class AzureMlLinkedService(LinkedService):
         **kwargs
     ):
         super(AzureMlLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureML'
+        self.type = 'AzureML'  # type: str
         self.ml_endpoint = kwargs['ml_endpoint']
         self.api_key = kwargs['api_key']
         self.update_resource_endpoint = kwargs.get('update_resource_endpoint', None)
@@ -4597,7 +4723,7 @@ class AzureMlServiceLinkedService(LinkedService):
         **kwargs
     ):
         super(AzureMlServiceLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureMLService'
+        self.type = 'AzureMLService'  # type: str
         self.subscription_id = kwargs['subscription_id']
         self.resource_group_name = kwargs['resource_group_name']
         self.ml_workspace_name = kwargs['ml_workspace_name']
@@ -4669,7 +4795,7 @@ class AzureMlUpdateResourceActivity(ExecutionActivity):
         **kwargs
     ):
         super(AzureMlUpdateResourceActivity, self).__init__(**kwargs)
-        self.type = 'AzureMLUpdateResource'
+        self.type = 'AzureMLUpdateResource'  # type: str
         self.trained_model_name = kwargs['trained_model_name']
         self.trained_model_linked_service_name = kwargs['trained_model_linked_service_name']
         self.trained_model_file_path = kwargs['trained_model_file_path']
@@ -4707,7 +4833,7 @@ class AzureMlWebServiceFile(msrest.serialization.Model):
         self.linked_service_name = kwargs['linked_service_name']
 
 
-class AzureMySqlLinkedService(LinkedService):
+class AzureMySQLLinkedService(LinkedService):
     """Azure MySQL database linked service.
 
     All required parameters must be populated in order to send to Azure.
@@ -4757,14 +4883,14 @@ class AzureMySqlLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(AzureMySqlLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureMySql'
+        super(AzureMySQLLinkedService, self).__init__(**kwargs)
+        self.type = 'AzureMySql'  # type: str
         self.connection_string = kwargs['connection_string']
         self.password = kwargs.get('password', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class AzureMySqlSink(CopySink):
+class AzureMySQLSink(CopySink):
     """A copy activity Azure MySql sink.
 
     All required parameters must be populated in order to send to Azure.
@@ -4813,12 +4939,12 @@ class AzureMySqlSink(CopySink):
         self,
         **kwargs
     ):
-        super(AzureMySqlSink, self).__init__(**kwargs)
-        self.type = 'AzureMySqlSink'
+        super(AzureMySQLSink, self).__init__(**kwargs)
+        self.type = 'AzureMySqlSink'  # type: str
         self.pre_copy_script = kwargs.get('pre_copy_script', None)
 
 
-class AzureMySqlSource(TabularSource):
+class AzureMySQLSource(TabularSource):
     """A copy activity Azure MySQL source.
 
     All required parameters must be populated in order to send to Azure.
@@ -4866,12 +4992,12 @@ class AzureMySqlSource(TabularSource):
         self,
         **kwargs
     ):
-        super(AzureMySqlSource, self).__init__(**kwargs)
-        self.type = 'AzureMySqlSource'
+        super(AzureMySQLSource, self).__init__(**kwargs)
+        self.type = 'AzureMySqlSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
-class AzureMySqlTableDataset(Dataset):
+class AzureMySQLTableDataset(Dataset):
     """The Azure MySQL database dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -4929,13 +5055,13 @@ class AzureMySqlTableDataset(Dataset):
         self,
         **kwargs
     ):
-        super(AzureMySqlTableDataset, self).__init__(**kwargs)
-        self.type = 'AzureMySqlTable'
+        super(AzureMySQLTableDataset, self).__init__(**kwargs)
+        self.type = 'AzureMySqlTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.table = kwargs.get('table', None)
 
 
-class AzurePostgreSqlLinkedService(LinkedService):
+class AzurePostgreSQLLinkedService(LinkedService):
     """Azure PostgreSQL linked service.
 
     All required parameters must be populated in order to send to Azure.
@@ -4984,14 +5110,14 @@ class AzurePostgreSqlLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(AzurePostgreSqlLinkedService, self).__init__(**kwargs)
-        self.type = 'AzurePostgreSql'
+        super(AzurePostgreSQLLinkedService, self).__init__(**kwargs)
+        self.type = 'AzurePostgreSql'  # type: str
         self.connection_string = kwargs.get('connection_string', None)
         self.password = kwargs.get('password', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class AzurePostgreSqlSink(CopySink):
+class AzurePostgreSQLSink(CopySink):
     """A copy activity Azure PostgreSQL sink.
 
     All required parameters must be populated in order to send to Azure.
@@ -5040,12 +5166,12 @@ class AzurePostgreSqlSink(CopySink):
         self,
         **kwargs
     ):
-        super(AzurePostgreSqlSink, self).__init__(**kwargs)
-        self.type = 'AzurePostgreSqlSink'
+        super(AzurePostgreSQLSink, self).__init__(**kwargs)
+        self.type = 'AzurePostgreSqlSink'  # type: str
         self.pre_copy_script = kwargs.get('pre_copy_script', None)
 
 
-class AzurePostgreSqlSource(TabularSource):
+class AzurePostgreSQLSource(TabularSource):
     """A copy activity Azure PostgreSQL source.
 
     All required parameters must be populated in order to send to Azure.
@@ -5094,12 +5220,12 @@ class AzurePostgreSqlSource(TabularSource):
         self,
         **kwargs
     ):
-        super(AzurePostgreSqlSource, self).__init__(**kwargs)
-        self.type = 'AzurePostgreSqlSource'
+        super(AzurePostgreSQLSource, self).__init__(**kwargs)
+        self.type = 'AzurePostgreSqlSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
-class AzurePostgreSqlTableDataset(Dataset):
+class AzurePostgreSQLTableDataset(Dataset):
     """Azure PostgreSQL dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -5161,8 +5287,8 @@ class AzurePostgreSqlTableDataset(Dataset):
         self,
         **kwargs
     ):
-        super(AzurePostgreSqlTableDataset, self).__init__(**kwargs)
-        self.type = 'AzurePostgreSqlTable'
+        super(AzurePostgreSQLTableDataset, self).__init__(**kwargs)
+        self.type = 'AzurePostgreSqlTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.table = kwargs.get('table', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
@@ -5214,7 +5340,7 @@ class AzureQueueSink(CopySink):
         **kwargs
     ):
         super(AzureQueueSink, self).__init__(**kwargs)
-        self.type = 'AzureQueueSink'
+        self.type = 'AzureQueueSink'  # type: str
 
 
 class AzureSearchIndexDataset(Dataset):
@@ -5273,7 +5399,7 @@ class AzureSearchIndexDataset(Dataset):
         **kwargs
     ):
         super(AzureSearchIndexDataset, self).__init__(**kwargs)
-        self.type = 'AzureSearchIndex'
+        self.type = 'AzureSearchIndex'  # type: str
         self.index_name = kwargs['index_name']
 
 
@@ -5328,7 +5454,7 @@ class AzureSearchIndexSink(CopySink):
         **kwargs
     ):
         super(AzureSearchIndexSink, self).__init__(**kwargs)
-        self.type = 'AzureSearchIndexSink'
+        self.type = 'AzureSearchIndexSink'  # type: str
         self.write_behavior = kwargs.get('write_behavior', None)
 
 
@@ -5383,13 +5509,13 @@ class AzureSearchLinkedService(LinkedService):
         **kwargs
     ):
         super(AzureSearchLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureSearch'
+        self.type = 'AzureSearch'  # type: str
         self.url = kwargs['url']
         self.key = kwargs.get('key', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class AzureSqlDatabaseLinkedService(LinkedService):
+class AzureSQLDatabaseLinkedService(LinkedService):
     """Microsoft Azure SQL Database linked service.
 
     All required parameters must be populated in order to send to Azure.
@@ -5421,6 +5547,10 @@ class AzureSqlDatabaseLinkedService(LinkedService):
     :param tenant: The name or ID of the tenant to which the service principal belongs. Type:
      string (or Expression with resultType string).
     :type tenant: object
+    :param azure_cloud_type: Indicates the azure cloud type of the service principle auth. Allowed
+     values are AzurePublic, AzureChina, AzureUsGovernment, AzureGermany. Default value is the data
+     factory regions’ cloud type. Type: string (or Expression with resultType string).
+    :type azure_cloud_type: object
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -5444,6 +5574,7 @@ class AzureSqlDatabaseLinkedService(LinkedService):
         'service_principal_id': {'key': 'typeProperties.servicePrincipalId', 'type': 'object'},
         'service_principal_key': {'key': 'typeProperties.servicePrincipalKey', 'type': 'SecretBase'},
         'tenant': {'key': 'typeProperties.tenant', 'type': 'object'},
+        'azure_cloud_type': {'key': 'typeProperties.azureCloudType', 'type': 'object'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
     }
 
@@ -5451,17 +5582,18 @@ class AzureSqlDatabaseLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(AzureSqlDatabaseLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureSqlDatabase'
+        super(AzureSQLDatabaseLinkedService, self).__init__(**kwargs)
+        self.type = 'AzureSqlDatabase'  # type: str
         self.connection_string = kwargs['connection_string']
         self.password = kwargs.get('password', None)
         self.service_principal_id = kwargs.get('service_principal_id', None)
         self.service_principal_key = kwargs.get('service_principal_key', None)
         self.tenant = kwargs.get('tenant', None)
+        self.azure_cloud_type = kwargs.get('azure_cloud_type', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class AzureSqlDWLinkedService(LinkedService):
+class AzureSQLDWLinkedService(LinkedService):
     """Azure SQL Data Warehouse linked service.
 
     All required parameters must be populated in order to send to Azure.
@@ -5493,6 +5625,10 @@ class AzureSqlDWLinkedService(LinkedService):
     :param tenant: The name or ID of the tenant to which the service principal belongs. Type:
      string (or Expression with resultType string).
     :type tenant: object
+    :param azure_cloud_type: Indicates the azure cloud type of the service principle auth. Allowed
+     values are AzurePublic, AzureChina, AzureUsGovernment, AzureGermany. Default value is the data
+     factory regions’ cloud type. Type: string (or Expression with resultType string).
+    :type azure_cloud_type: object
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -5516,6 +5652,7 @@ class AzureSqlDWLinkedService(LinkedService):
         'service_principal_id': {'key': 'typeProperties.servicePrincipalId', 'type': 'object'},
         'service_principal_key': {'key': 'typeProperties.servicePrincipalKey', 'type': 'SecretBase'},
         'tenant': {'key': 'typeProperties.tenant', 'type': 'object'},
+        'azure_cloud_type': {'key': 'typeProperties.azureCloudType', 'type': 'object'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
     }
 
@@ -5523,17 +5660,18 @@ class AzureSqlDWLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(AzureSqlDWLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureSqlDW'
+        super(AzureSQLDWLinkedService, self).__init__(**kwargs)
+        self.type = 'AzureSqlDW'  # type: str
         self.connection_string = kwargs['connection_string']
         self.password = kwargs.get('password', None)
         self.service_principal_id = kwargs.get('service_principal_id', None)
         self.service_principal_key = kwargs.get('service_principal_key', None)
         self.tenant = kwargs.get('tenant', None)
+        self.azure_cloud_type = kwargs.get('azure_cloud_type', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class AzureSqlDWTableDataset(Dataset):
+class AzureSQLDWTableDataset(Dataset):
     """The Azure SQL Data Warehouse dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -5595,14 +5733,14 @@ class AzureSqlDWTableDataset(Dataset):
         self,
         **kwargs
     ):
-        super(AzureSqlDWTableDataset, self).__init__(**kwargs)
-        self.type = 'AzureSqlDWTable'
+        super(AzureSQLDWTableDataset, self).__init__(**kwargs)
+        self.type = 'AzureSqlDWTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
         self.table = kwargs.get('table', None)
 
 
-class AzureSqlMiLinkedService(LinkedService):
+class AzureSQLMiLinkedService(LinkedService):
     """Azure SQL Managed Instance linked service.
 
     All required parameters must be populated in order to send to Azure.
@@ -5634,6 +5772,10 @@ class AzureSqlMiLinkedService(LinkedService):
     :param tenant: The name or ID of the tenant to which the service principal belongs. Type:
      string (or Expression with resultType string).
     :type tenant: object
+    :param azure_cloud_type: Indicates the azure cloud type of the service principle auth. Allowed
+     values are AzurePublic, AzureChina, AzureUsGovernment, AzureGermany. Default value is the data
+     factory regions’ cloud type. Type: string (or Expression with resultType string).
+    :type azure_cloud_type: object
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -5657,6 +5799,7 @@ class AzureSqlMiLinkedService(LinkedService):
         'service_principal_id': {'key': 'typeProperties.servicePrincipalId', 'type': 'object'},
         'service_principal_key': {'key': 'typeProperties.servicePrincipalKey', 'type': 'SecretBase'},
         'tenant': {'key': 'typeProperties.tenant', 'type': 'object'},
+        'azure_cloud_type': {'key': 'typeProperties.azureCloudType', 'type': 'object'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
     }
 
@@ -5664,17 +5807,18 @@ class AzureSqlMiLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(AzureSqlMiLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureSqlMI'
+        super(AzureSQLMiLinkedService, self).__init__(**kwargs)
+        self.type = 'AzureSqlMI'  # type: str
         self.connection_string = kwargs['connection_string']
         self.password = kwargs.get('password', None)
         self.service_principal_id = kwargs.get('service_principal_id', None)
         self.service_principal_key = kwargs.get('service_principal_key', None)
         self.tenant = kwargs.get('tenant', None)
+        self.azure_cloud_type = kwargs.get('azure_cloud_type', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class AzureSqlMiTableDataset(Dataset):
+class AzureSQLMiTableDataset(Dataset):
     """The Azure SQL Managed Instance dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -5736,14 +5880,14 @@ class AzureSqlMiTableDataset(Dataset):
         self,
         **kwargs
     ):
-        super(AzureSqlMiTableDataset, self).__init__(**kwargs)
-        self.type = 'AzureSqlMITable'
+        super(AzureSQLMiTableDataset, self).__init__(**kwargs)
+        self.type = 'AzureSqlMITable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
         self.table = kwargs.get('table', None)
 
 
-class AzureSqlSink(CopySink):
+class AzureSQLSink(CopySink):
     """A copy activity Azure SQL sink.
 
     All required parameters must be populated in order to send to Azure.
@@ -5812,8 +5956,8 @@ class AzureSqlSink(CopySink):
         self,
         **kwargs
     ):
-        super(AzureSqlSink, self).__init__(**kwargs)
-        self.type = 'AzureSqlSink'
+        super(AzureSQLSink, self).__init__(**kwargs)
+        self.type = 'AzureSqlSink'  # type: str
         self.sql_writer_stored_procedure_name = kwargs.get('sql_writer_stored_procedure_name', None)
         self.sql_writer_table_type = kwargs.get('sql_writer_table_type', None)
         self.pre_copy_script = kwargs.get('pre_copy_script', None)
@@ -5822,7 +5966,7 @@ class AzureSqlSink(CopySink):
         self.table_option = kwargs.get('table_option', None)
 
 
-class AzureSqlSource(TabularSource):
+class AzureSQLSource(TabularSource):
     """A copy activity Azure SQL source.
 
     All required parameters must be populated in order to send to Azure.
@@ -5861,9 +6005,9 @@ class AzureSqlSource(TabularSource):
     :type produce_additional_types: object
     :param partition_option: The partition mechanism that will be used for Sql read in parallel.
      Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
-    :type partition_option: str or ~data_factory_management_client.models.SqlPartitionOption
+    :type partition_option: str or ~data_factory_management_client.models.SQLPartitionOption
     :param partition_settings: The settings that will be leveraged for Sql source partitioning.
-    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
+    :type partition_settings: ~data_factory_management_client.models.SQLPartitionSettings
     """
 
     _validation = {
@@ -5883,15 +6027,15 @@ class AzureSqlSource(TabularSource):
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
         'produce_additional_types': {'key': 'produceAdditionalTypes', 'type': 'object'},
         'partition_option': {'key': 'partitionOption', 'type': 'str'},
-        'partition_settings': {'key': 'partitionSettings', 'type': 'SqlPartitionSettings'},
+        'partition_settings': {'key': 'partitionSettings', 'type': 'SQLPartitionSettings'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(AzureSqlSource, self).__init__(**kwargs)
-        self.type = 'AzureSqlSource'
+        super(AzureSQLSource, self).__init__(**kwargs)
+        self.type = 'AzureSqlSource'  # type: str
         self.sql_reader_query = kwargs.get('sql_reader_query', None)
         self.sql_reader_stored_procedure_name = kwargs.get('sql_reader_stored_procedure_name', None)
         self.stored_procedure_parameters = kwargs.get('stored_procedure_parameters', None)
@@ -5900,7 +6044,7 @@ class AzureSqlSource(TabularSource):
         self.partition_settings = kwargs.get('partition_settings', None)
 
 
-class AzureSqlTableDataset(Dataset):
+class AzureSQLTableDataset(Dataset):
     """The Azure SQL Server database dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -5962,8 +6106,8 @@ class AzureSqlTableDataset(Dataset):
         self,
         **kwargs
     ):
-        super(AzureSqlTableDataset, self).__init__(**kwargs)
-        self.type = 'AzureSqlTable'
+        super(AzureSQLTableDataset, self).__init__(**kwargs)
+        self.type = 'AzureSqlTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
         self.table = kwargs.get('table', None)
@@ -6026,7 +6170,7 @@ class AzureStorageLinkedService(LinkedService):
         **kwargs
     ):
         super(AzureStorageLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureStorage'
+        self.type = 'AzureStorage'  # type: str
         self.connection_string = kwargs.get('connection_string', None)
         self.account_key = kwargs.get('account_key', None)
         self.sas_uri = kwargs.get('sas_uri', None)
@@ -6090,7 +6234,7 @@ class AzureTableDataset(Dataset):
         **kwargs
     ):
         super(AzureTableDataset, self).__init__(**kwargs)
-        self.type = 'AzureTable'
+        self.type = 'AzureTable'  # type: str
         self.table_name = kwargs['table_name']
 
 
@@ -6156,7 +6300,7 @@ class AzureTableSink(CopySink):
         **kwargs
     ):
         super(AzureTableSink, self).__init__(**kwargs)
-        self.type = 'AzureTableSink'
+        self.type = 'AzureTableSink'  # type: str
         self.azure_table_default_partition_key_value = kwargs.get('azure_table_default_partition_key_value', None)
         self.azure_table_partition_key_name = kwargs.get('azure_table_partition_key_name', None)
         self.azure_table_row_key_name = kwargs.get('azure_table_row_key_name', None)
@@ -6217,7 +6361,7 @@ class AzureTableSource(TabularSource):
         **kwargs
     ):
         super(AzureTableSource, self).__init__(**kwargs)
-        self.type = 'AzureTableSource'
+        self.type = 'AzureTableSource'  # type: str
         self.azure_table_source_query = kwargs.get('azure_table_source_query', None)
         self.azure_table_source_ignore_table_not_found = kwargs.get('azure_table_source_ignore_table_not_found', None)
 
@@ -6279,7 +6423,7 @@ class AzureTableStorageLinkedService(LinkedService):
         **kwargs
     ):
         super(AzureTableStorageLinkedService, self).__init__(**kwargs)
-        self.type = 'AzureTableStorage'
+        self.type = 'AzureTableStorage'  # type: str
         self.connection_string = kwargs.get('connection_string', None)
         self.account_key = kwargs.get('account_key', None)
         self.sas_uri = kwargs.get('sas_uri', None)
@@ -6344,7 +6488,7 @@ class BinaryDataset(Dataset):
         **kwargs
     ):
         super(BinaryDataset, self).__init__(**kwargs)
-        self.type = 'Binary'
+        self.type = 'Binary'  # type: str
         self.location = kwargs.get('location', None)
         self.compression = kwargs.get('compression', None)
 
@@ -6383,7 +6527,7 @@ class FormatReadSettings(msrest.serialization.Model):
     ):
         super(FormatReadSettings, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
-        self.type = 'FormatReadSettings'
+        self.type = 'FormatReadSettings'  # type: str
 
 
 class BinaryReadSettings(FormatReadSettings):
@@ -6415,7 +6559,7 @@ class BinaryReadSettings(FormatReadSettings):
         **kwargs
     ):
         super(BinaryReadSettings, self).__init__(**kwargs)
-        self.type = 'BinaryReadSettings'
+        self.type = 'BinaryReadSettings'  # type: str
         self.compression_properties = kwargs.get('compression_properties', None)
 
 
@@ -6468,7 +6612,7 @@ class BinarySink(CopySink):
         **kwargs
     ):
         super(BinarySink, self).__init__(**kwargs)
-        self.type = 'BinarySink'
+        self.type = 'BinarySink'  # type: str
         self.store_settings = kwargs.get('store_settings', None)
 
 
@@ -6516,7 +6660,7 @@ class BinarySource(CopySource):
         **kwargs
     ):
         super(BinarySource, self).__init__(**kwargs)
-        self.type = 'BinarySource'
+        self.type = 'BinarySource'  # type: str
         self.store_settings = kwargs.get('store_settings', None)
         self.format_settings = kwargs.get('format_settings', None)
 
@@ -6568,7 +6712,7 @@ class Trigger(msrest.serialization.Model):
     ):
         super(Trigger, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
-        self.type = 'Trigger'
+        self.type = 'Trigger'  # type: str
         self.description = kwargs.get('description', None)
         self.runtime_state = None
         self.annotations = kwargs.get('annotations', None)
@@ -6623,7 +6767,7 @@ class MultiplePipelineTrigger(Trigger):
         **kwargs
     ):
         super(MultiplePipelineTrigger, self).__init__(**kwargs)
-        self.type = 'MultiplePipelineTrigger'
+        self.type = 'MultiplePipelineTrigger'  # type: str
         self.pipelines = kwargs.get('pipelines', None)
 
 
@@ -6691,7 +6835,7 @@ class BlobEventsTrigger(MultiplePipelineTrigger):
         **kwargs
     ):
         super(BlobEventsTrigger, self).__init__(**kwargs)
-        self.type = 'BlobEventsTrigger'
+        self.type = 'BlobEventsTrigger'  # type: str
         self.blob_path_begins_with = kwargs.get('blob_path_begins_with', None)
         self.blob_path_ends_with = kwargs.get('blob_path_ends_with', None)
         self.ignore_empty_blobs = kwargs.get('ignore_empty_blobs', None)
@@ -6760,7 +6904,7 @@ class BlobSink(CopySink):
         **kwargs
     ):
         super(BlobSink, self).__init__(**kwargs)
-        self.type = 'BlobSink'
+        self.type = 'BlobSink'  # type: str
         self.blob_writer_overwrite_files = kwargs.get('blob_writer_overwrite_files', None)
         self.blob_writer_date_time_format = kwargs.get('blob_writer_date_time_format', None)
         self.blob_writer_add_header = kwargs.get('blob_writer_add_header', None)
@@ -6817,7 +6961,7 @@ class BlobSource(CopySource):
         **kwargs
     ):
         super(BlobSource, self).__init__(**kwargs)
-        self.type = 'BlobSource'
+        self.type = 'BlobSource'  # type: str
         self.treat_empty_as_null = kwargs.get('treat_empty_as_null', None)
         self.skip_header_line_count = kwargs.get('skip_header_line_count', None)
         self.recursive = kwargs.get('recursive', None)
@@ -6878,7 +7022,7 @@ class BlobTrigger(MultiplePipelineTrigger):
         **kwargs
     ):
         super(BlobTrigger, self).__init__(**kwargs)
-        self.type = 'BlobTrigger'
+        self.type = 'BlobTrigger'  # type: str
         self.folder_path = kwargs['folder_path']
         self.max_concurrency = kwargs['max_concurrency']
         self.linked_service = kwargs['linked_service']
@@ -6947,7 +7091,7 @@ class CassandraLinkedService(LinkedService):
         **kwargs
     ):
         super(CassandraLinkedService, self).__init__(**kwargs)
-        self.type = 'Cassandra'
+        self.type = 'Cassandra'  # type: str
         self.host = kwargs['host']
         self.authentication_type = kwargs.get('authentication_type', None)
         self.port = kwargs.get('port', None)
@@ -7015,7 +7159,7 @@ class CassandraSource(TabularSource):
         **kwargs
     ):
         super(CassandraSource, self).__init__(**kwargs)
-        self.type = 'CassandraSource'
+        self.type = 'CassandraSource'  # type: str
         self.query = kwargs.get('query', None)
         self.consistency_level = kwargs.get('consistency_level', None)
 
@@ -7079,7 +7223,7 @@ class CassandraTableDataset(Dataset):
         **kwargs
     ):
         super(CassandraTableDataset, self).__init__(**kwargs)
-        self.type = 'CassandraTable'
+        self.type = 'CassandraTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.keyspace = kwargs.get('keyspace', None)
 
@@ -7137,7 +7281,7 @@ class ChainingTrigger(Trigger):
         **kwargs
     ):
         super(ChainingTrigger, self).__init__(**kwargs)
-        self.type = 'ChainingTrigger'
+        self.type = 'ChainingTrigger'  # type: str
         self.pipeline = kwargs['pipeline']
         self.depends_on = kwargs['depends_on']
         self.run_dimension = kwargs['run_dimension']
@@ -7181,38 +7325,6 @@ class CloudError(msrest.serialization.Model):
         self.details = kwargs.get('details', None)
 
 
-class CustomSetupBase(msrest.serialization.Model):
-    """The base definition of the custom setup.
-
-    You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: CmdkeySetup, ComponentSetup, EnvironmentVariableSetup.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :param type: Required. The type of custom setup.Constant filled by server.
-    :type type: str
-    """
-
-    _validation = {
-        'type': {'required': True},
-    }
-
-    _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
-    }
-
-    _subtype_map = {
-        'type': {'CmdkeySetup': 'CmdkeySetup', 'ComponentSetup': 'ComponentSetup', 'EnvironmentVariableSetup': 'EnvironmentVariableSetup'}
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(CustomSetupBase, self).__init__(**kwargs)
-        self.type = None
-
-
 class CmdkeySetup(CustomSetupBase):
     """The custom setup of running cmdkey commands.
 
@@ -7247,7 +7359,7 @@ class CmdkeySetup(CustomSetupBase):
         **kwargs
     ):
         super(CmdkeySetup, self).__init__(**kwargs)
-        self.type = 'CmdkeySetup'
+        self.type = 'CmdkeySetup'  # type: str
         self.target_name = kwargs['target_name']
         self.user_name = kwargs['user_name']
         self.password = kwargs['password']
@@ -7308,7 +7420,7 @@ class CommonDataServiceForAppsEntityDataset(Dataset):
         **kwargs
     ):
         super(CommonDataServiceForAppsEntityDataset, self).__init__(**kwargs)
-        self.type = 'CommonDataServiceForAppsEntity'
+        self.type = 'CommonDataServiceForAppsEntity'  # type: str
         self.entity_name = kwargs.get('entity_name', None)
 
 
@@ -7417,7 +7529,7 @@ class CommonDataServiceForAppsLinkedService(LinkedService):
         **kwargs
     ):
         super(CommonDataServiceForAppsLinkedService, self).__init__(**kwargs)
-        self.type = 'CommonDataServiceForApps'
+        self.type = 'CommonDataServiceForApps'  # type: str
         self.deployment_type = kwargs['deployment_type']
         self.host_name = kwargs.get('host_name', None)
         self.port = kwargs.get('port', None)
@@ -7434,8 +7546,6 @@ class CommonDataServiceForAppsLinkedService(LinkedService):
 
 class CommonDataServiceForAppsSink(CopySink):
     """A copy activity Common Data Service for Apps sink.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -7459,8 +7569,9 @@ class CommonDataServiceForAppsSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
-    :ivar write_behavior: Required. The write behavior for the operation. Default value: "Upsert".
-    :vartype write_behavior: str
+    :param write_behavior: Required. The write behavior for the operation. Possible values include:
+     "Upsert".
+    :type write_behavior: str or ~data_factory_management_client.models.DynamicsSinkWriteBehavior
     :param ignore_null_values: The flag indicating whether to ignore null values from input dataset
      (except key fields) during write operation. Default is false. Type: boolean (or Expression with
      resultType boolean).
@@ -7472,7 +7583,7 @@ class CommonDataServiceForAppsSink(CopySink):
 
     _validation = {
         'type': {'required': True},
-        'write_behavior': {'required': True, 'constant': True},
+        'write_behavior': {'required': True},
     }
 
     _attribute_map = {
@@ -7488,14 +7599,13 @@ class CommonDataServiceForAppsSink(CopySink):
         'alternate_key_name': {'key': 'alternateKeyName', 'type': 'object'},
     }
 
-    write_behavior = "Upsert"
-
     def __init__(
         self,
         **kwargs
     ):
         super(CommonDataServiceForAppsSink, self).__init__(**kwargs)
-        self.type = 'CommonDataServiceForAppsSink'
+        self.type = 'CommonDataServiceForAppsSink'  # type: str
+        self.write_behavior = kwargs['write_behavior']
         self.ignore_null_values = kwargs.get('ignore_null_values', None)
         self.alternate_key_name = kwargs.get('alternate_key_name', None)
 
@@ -7546,7 +7656,7 @@ class CommonDataServiceForAppsSource(CopySource):
         **kwargs
     ):
         super(CommonDataServiceForAppsSource, self).__init__(**kwargs)
-        self.type = 'CommonDataServiceForAppsSource'
+        self.type = 'CommonDataServiceForAppsSource'  # type: str
         self.query = kwargs.get('query', None)
         self.additional_columns = kwargs.get('additional_columns', None)
 
@@ -7580,7 +7690,7 @@ class ComponentSetup(CustomSetupBase):
         **kwargs
     ):
         super(ComponentSetup, self).__init__(**kwargs)
-        self.type = 'ComponentSetup'
+        self.type = 'ComponentSetup'  # type: str
         self.component_name = kwargs['component_name']
         self.license_key = kwargs.get('license_key', None)
 
@@ -7619,7 +7729,7 @@ class CompressionReadSettings(msrest.serialization.Model):
     ):
         super(CompressionReadSettings, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
-        self.type = 'CompressionReadSettings'
+        self.type = 'CompressionReadSettings'  # type: str
 
 
 class ConcurLinkedService(LinkedService):
@@ -7690,7 +7800,7 @@ class ConcurLinkedService(LinkedService):
         **kwargs
     ):
         super(ConcurLinkedService, self).__init__(**kwargs)
-        self.type = 'Concur'
+        self.type = 'Concur'  # type: str
         self.client_id = kwargs['client_id']
         self.username = kwargs['username']
         self.password = kwargs.get('password', None)
@@ -7754,7 +7864,7 @@ class ConcurObjectDataset(Dataset):
         **kwargs
     ):
         super(ConcurObjectDataset, self).__init__(**kwargs)
-        self.type = 'ConcurObject'
+        self.type = 'ConcurObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -7808,8 +7918,43 @@ class ConcurSource(TabularSource):
         **kwargs
     ):
         super(ConcurSource, self).__init__(**kwargs)
-        self.type = 'ConcurSource'
+        self.type = 'ConcurSource'  # type: str
         self.query = kwargs.get('query', None)
+
+
+class ConnectionStateProperties(msrest.serialization.Model):
+    """The connection state of a managed private endpoint.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar actions_required: The actions required on the managed private endpoint.
+    :vartype actions_required: str
+    :ivar description: The managed private endpoint description.
+    :vartype description: str
+    :ivar status: The approval status.
+    :vartype status: str
+    """
+
+    _validation = {
+        'actions_required': {'readonly': True},
+        'description': {'readonly': True},
+        'status': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'actions_required': {'key': 'actionsRequired', 'type': 'str'},
+        'description': {'key': 'description', 'type': 'str'},
+        'status': {'key': 'status', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ConnectionStateProperties, self).__init__(**kwargs)
+        self.actions_required = None
+        self.description = None
+        self.status = None
 
 
 class ControlActivity(Activity):
@@ -7851,7 +7996,7 @@ class ControlActivity(Activity):
         **kwargs
     ):
         super(ControlActivity, self).__init__(**kwargs)
-        self.type = 'Container'
+        self.type = 'Container'  # type: str
 
 
 class CopyActivity(ExecutionActivity):
@@ -7958,7 +8103,7 @@ class CopyActivity(ExecutionActivity):
         **kwargs
     ):
         super(CopyActivity, self).__init__(**kwargs)
-        self.type = 'Copy'
+        self.type = 'Copy'  # type: str
         self.inputs = kwargs.get('inputs', None)
         self.outputs = kwargs.get('outputs', None)
         self.source = kwargs['source']
@@ -8011,7 +8156,7 @@ class CopyTranslator(msrest.serialization.Model):
     ):
         super(CopyTranslator, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
-        self.type = 'CopyTranslator'
+        self.type = 'CopyTranslator'  # type: str
 
 
 class CosmosDBLinkedService(LinkedService):
@@ -8072,7 +8217,7 @@ class CosmosDBLinkedService(LinkedService):
         **kwargs
     ):
         super(CosmosDBLinkedService, self).__init__(**kwargs)
-        self.type = 'CosmosDb'
+        self.type = 'CosmosDb'  # type: str
         self.connection_string = kwargs.get('connection_string', None)
         self.account_endpoint = kwargs.get('account_endpoint', None)
         self.database = kwargs.get('database', None)
@@ -8136,7 +8281,7 @@ class CosmosDBMongoDBApiCollectionDataset(Dataset):
         **kwargs
     ):
         super(CosmosDBMongoDBApiCollectionDataset, self).__init__(**kwargs)
-        self.type = 'CosmosDbMongoDbApiCollection'
+        self.type = 'CosmosDbMongoDbApiCollection'  # type: str
         self.collection = kwargs['collection']
 
 
@@ -8189,7 +8334,7 @@ class CosmosDBMongoDBApiLinkedService(LinkedService):
         **kwargs
     ):
         super(CosmosDBMongoDBApiLinkedService, self).__init__(**kwargs)
-        self.type = 'CosmosDbMongoDbApi'
+        self.type = 'CosmosDbMongoDbApi'  # type: str
         self.connection_string = kwargs['connection_string']
         self.database = kwargs['database']
 
@@ -8245,7 +8390,7 @@ class CosmosDBMongoDBApiSink(CopySink):
         **kwargs
     ):
         super(CosmosDBMongoDBApiSink, self).__init__(**kwargs)
-        self.type = 'CosmosDbMongoDbApiSink'
+        self.type = 'CosmosDbMongoDbApiSink'  # type: str
         self.write_behavior = kwargs.get('write_behavior', None)
 
 
@@ -8309,7 +8454,7 @@ class CosmosDBMongoDBApiSource(CopySource):
         **kwargs
     ):
         super(CosmosDBMongoDBApiSource, self).__init__(**kwargs)
-        self.type = 'CosmosDbMongoDbApiSource'
+        self.type = 'CosmosDbMongoDbApiSource'  # type: str
         self.filter = kwargs.get('filter', None)
         self.cursor_methods = kwargs.get('cursor_methods', None)
         self.batch_size = kwargs.get('batch_size', None)
@@ -8317,7 +8462,7 @@ class CosmosDBMongoDBApiSource(CopySource):
         self.additional_columns = kwargs.get('additional_columns', None)
 
 
-class CosmosDBSqlApiCollectionDataset(Dataset):
+class CosmosDBSQLApiCollectionDataset(Dataset):
     """Microsoft Azure CosmosDB (SQL API) Collection dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -8372,12 +8517,12 @@ class CosmosDBSqlApiCollectionDataset(Dataset):
         self,
         **kwargs
     ):
-        super(CosmosDBSqlApiCollectionDataset, self).__init__(**kwargs)
-        self.type = 'CosmosDbSqlApiCollection'
+        super(CosmosDBSQLApiCollectionDataset, self).__init__(**kwargs)
+        self.type = 'CosmosDbSqlApiCollection'  # type: str
         self.collection_name = kwargs['collection_name']
 
 
-class CosmosDBSqlApiSink(CopySink):
+class CosmosDBSQLApiSink(CopySink):
     """A copy activity Azure CosmosDB (SQL API) Collection sink.
 
     All required parameters must be populated in order to send to Azure.
@@ -8426,12 +8571,12 @@ class CosmosDBSqlApiSink(CopySink):
         self,
         **kwargs
     ):
-        super(CosmosDBSqlApiSink, self).__init__(**kwargs)
-        self.type = 'CosmosDbSqlApiSink'
+        super(CosmosDBSQLApiSink, self).__init__(**kwargs)
+        self.type = 'CosmosDbSqlApiSink'  # type: str
         self.write_behavior = kwargs.get('write_behavior', None)
 
 
-class CosmosDBSqlApiSource(CopySource):
+class CosmosDBSQLApiSource(CopySource):
     """A copy activity Azure CosmosDB (SQL API) Collection source.
 
     All required parameters must be populated in order to send to Azure.
@@ -8458,6 +8603,9 @@ class CosmosDBSqlApiSource(CopySource):
     :param preferred_regions: Preferred regions. Type: array of strings (or Expression with
      resultType array of strings).
     :type preferred_regions: object
+    :param detect_datetime: Whether detect primitive values as datetime values. Type: boolean (or
+     Expression with resultType boolean).
+    :type detect_datetime: object
     :param additional_columns: Specifies the additional columns to be added to source data. Type:
      array of objects (or Expression with resultType array of objects).
     :type additional_columns: list[~data_factory_management_client.models.AdditionalColumns]
@@ -8476,6 +8624,7 @@ class CosmosDBSqlApiSource(CopySource):
         'query': {'key': 'query', 'type': 'object'},
         'page_size': {'key': 'pageSize', 'type': 'object'},
         'preferred_regions': {'key': 'preferredRegions', 'type': 'object'},
+        'detect_datetime': {'key': 'detectDatetime', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
     }
 
@@ -8483,11 +8632,12 @@ class CosmosDBSqlApiSource(CopySource):
         self,
         **kwargs
     ):
-        super(CosmosDBSqlApiSource, self).__init__(**kwargs)
-        self.type = 'CosmosDbSqlApiSource'
+        super(CosmosDBSQLApiSource, self).__init__(**kwargs)
+        self.type = 'CosmosDbSqlApiSource'  # type: str
         self.query = kwargs.get('query', None)
         self.page_size = kwargs.get('page_size', None)
         self.preferred_regions = kwargs.get('preferred_regions', None)
+        self.detect_datetime = kwargs.get('detect_datetime', None)
         self.additional_columns = kwargs.get('additional_columns', None)
 
 
@@ -8541,7 +8691,7 @@ class CouchbaseLinkedService(LinkedService):
         **kwargs
     ):
         super(CouchbaseLinkedService, self).__init__(**kwargs)
-        self.type = 'Couchbase'
+        self.type = 'Couchbase'  # type: str
         self.connection_string = kwargs.get('connection_string', None)
         self.cred_string = kwargs.get('cred_string', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
@@ -8597,7 +8747,7 @@ class CouchbaseSource(TabularSource):
         **kwargs
     ):
         super(CouchbaseSource, self).__init__(**kwargs)
-        self.type = 'CouchbaseSource'
+        self.type = 'CouchbaseSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -8655,7 +8805,7 @@ class CouchbaseTableDataset(Dataset):
         **kwargs
     ):
         super(CouchbaseTableDataset, self).__init__(**kwargs)
-        self.type = 'CouchbaseTable'
+        self.type = 'CouchbaseTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -8847,7 +8997,7 @@ class CustomActivity(ExecutionActivity):
         **kwargs
     ):
         super(CustomActivity, self).__init__(**kwargs)
-        self.type = 'Custom'
+        self.type = 'Custom'  # type: str
         self.command = kwargs['command']
         self.resource_linked_service = kwargs.get('resource_linked_service', None)
         self.folder_path = kwargs.get('folder_path', None)
@@ -8933,7 +9083,7 @@ class CustomDataset(Dataset):
         **kwargs
     ):
         super(CustomDataset, self).__init__(**kwargs)
-        self.type = 'CustomDataset'
+        self.type = 'CustomDataset'  # type: str
         self.type_properties = kwargs.get('type_properties', None)
 
 
@@ -8979,7 +9129,7 @@ class CustomDataSourceLinkedService(LinkedService):
         **kwargs
     ):
         super(CustomDataSourceLinkedService, self).__init__(**kwargs)
-        self.type = 'CustomDataSource'
+        self.type = 'CustomDataSource'  # type: str
         self.type_properties = kwargs['type_properties']
 
 
@@ -9041,7 +9191,7 @@ class DatabricksNotebookActivity(ExecutionActivity):
         **kwargs
     ):
         super(DatabricksNotebookActivity, self).__init__(**kwargs)
-        self.type = 'DatabricksNotebook'
+        self.type = 'DatabricksNotebook'  # type: str
         self.notebook_path = kwargs['notebook_path']
         self.base_parameters = kwargs.get('base_parameters', None)
         self.libraries = kwargs.get('libraries', None)
@@ -9104,7 +9254,7 @@ class DatabricksSparkJarActivity(ExecutionActivity):
         **kwargs
     ):
         super(DatabricksSparkJarActivity, self).__init__(**kwargs)
-        self.type = 'DatabricksSparkJar'
+        self.type = 'DatabricksSparkJar'  # type: str
         self.main_class_name = kwargs['main_class_name']
         self.parameters = kwargs.get('parameters', None)
         self.libraries = kwargs.get('libraries', None)
@@ -9166,7 +9316,7 @@ class DatabricksSparkPythonActivity(ExecutionActivity):
         **kwargs
     ):
         super(DatabricksSparkPythonActivity, self).__init__(**kwargs)
-        self.type = 'DatabricksSparkPython'
+        self.type = 'DatabricksSparkPython'  # type: str
         self.python_file = kwargs['python_file']
         self.parameters = kwargs.get('parameters', None)
         self.libraries = kwargs.get('libraries', None)
@@ -9205,7 +9355,7 @@ class DataFlow(msrest.serialization.Model):
         **kwargs
     ):
         super(DataFlow, self).__init__(**kwargs)
-        self.type = None
+        self.type = None  # type: Optional[str]
         self.description = kwargs.get('description', None)
         self.annotations = kwargs.get('annotations', None)
         self.folder = kwargs.get('folder', None)
@@ -9319,8 +9469,9 @@ class DataFlowDebugPackage(msrest.serialization.Model):
     :type parameters_debug_settings_parameters: dict[str, object]
     :param dataset_parameters: Parameters for dataset.
     :type dataset_parameters: object
-    :param folder_path: Folder path for staging blob.
-    :type folder_path: str
+    :param folder_path: Folder path for staging blob. Type: string (or Expression with resultType
+     string).
+    :type folder_path: object
     :ivar type: Linked service reference type. Default value: "LinkedServiceReference".
     :vartype type: str
     :param reference_name: Reference LinkedService name.
@@ -9345,7 +9496,7 @@ class DataFlowDebugPackage(msrest.serialization.Model):
         'source_settings': {'key': 'debugSettings.sourceSettings', 'type': '[DataFlowSourceSetting]'},
         'parameters_debug_settings_parameters': {'key': 'debugSettings.parameters', 'type': '{object}'},
         'dataset_parameters': {'key': 'debugSettings.datasetParameters', 'type': 'object'},
-        'folder_path': {'key': 'staging.folderPath', 'type': 'str'},
+        'folder_path': {'key': 'staging.folderPath', 'type': 'object'},
         'type': {'key': 'staging.linkedService.type', 'type': 'str'},
         'reference_name': {'key': 'staging.linkedService.referenceName', 'type': 'str'},
         'parameters_staging_linked_service_parameters': {'key': 'staging.linkedService.parameters', 'type': '{object}'},
@@ -9790,8 +9941,9 @@ class DataFlowStagingInfo(msrest.serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :param folder_path: Folder path for staging blob.
-    :type folder_path: str
+    :param folder_path: Folder path for staging blob. Type: string (or Expression with resultType
+     string).
+    :type folder_path: object
     :ivar type: Linked service reference type. Default value: "LinkedServiceReference".
     :vartype type: str
     :param reference_name: Reference LinkedService name.
@@ -9805,7 +9957,7 @@ class DataFlowStagingInfo(msrest.serialization.Model):
     }
 
     _attribute_map = {
-        'folder_path': {'key': 'folderPath', 'type': 'str'},
+        'folder_path': {'key': 'folderPath', 'type': 'object'},
         'type': {'key': 'linkedService.type', 'type': 'str'},
         'reference_name': {'key': 'linkedService.referenceName', 'type': 'str'},
         'parameters': {'key': 'linkedService.parameters', 'type': '{object}'},
@@ -9897,7 +10049,7 @@ class DataLakeAnalyticsUsqlActivity(ExecutionActivity):
         **kwargs
     ):
         super(DataLakeAnalyticsUsqlActivity, self).__init__(**kwargs)
-        self.type = 'DataLakeAnalyticsU-SQL'
+        self.type = 'DataLakeAnalyticsU-SQL'  # type: str
         self.script_path = kwargs['script_path']
         self.script_linked_service = kwargs['script_linked_service']
         self.degree_of_parallelism = kwargs.get('degree_of_parallelism', None)
@@ -9941,7 +10093,7 @@ class DatasetCompression(msrest.serialization.Model):
     ):
         super(DatasetCompression, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
-        self.type = 'DatasetCompression'
+        self.type = 'DatasetCompression'  # type: str
 
 
 class DatasetBZip2Compression(DatasetCompression):
@@ -9970,7 +10122,7 @@ class DatasetBZip2Compression(DatasetCompression):
         **kwargs
     ):
         super(DatasetBZip2Compression, self).__init__(**kwargs)
-        self.type = 'BZip2'
+        self.type = 'BZip2'  # type: str
 
 
 class DatasetDataElement(msrest.serialization.Model):
@@ -10053,7 +10205,7 @@ class DatasetDeflateCompression(DatasetCompression):
         **kwargs
     ):
         super(DatasetDeflateCompression, self).__init__(**kwargs)
-        self.type = 'Deflate'
+        self.type = 'Deflate'  # type: str
         self.level = kwargs.get('level', None)
 
 
@@ -10105,7 +10257,7 @@ class DatasetGZipCompression(DatasetCompression):
         **kwargs
     ):
         super(DatasetGZipCompression, self).__init__(**kwargs)
-        self.type = 'GZip'
+        self.type = 'GZip'  # type: str
         self.level = kwargs.get('level', None)
 
 
@@ -10275,14 +10427,12 @@ class DatasetZipDeflateCompression(DatasetCompression):
         **kwargs
     ):
         super(DatasetZipDeflateCompression, self).__init__(**kwargs)
-        self.type = 'ZipDeflate'
+        self.type = 'ZipDeflate'  # type: str
         self.level = kwargs.get('level', None)
 
 
 class Db2LinkedService(LinkedService):
     """Linked service for DB2 data source.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -10309,9 +10459,9 @@ class Db2LinkedService(LinkedService):
     :param database: Database name for connection. It is mutually exclusive with connectionString
      property. Type: string (or Expression with resultType string).
     :type database: object
-    :ivar authentication_type: AuthenticationType to be used for connection. It is mutually
-     exclusive with connectionString property. Default value: "Basic".
-    :vartype authentication_type: str
+    :param authentication_type: AuthenticationType to be used for connection. It is mutually
+     exclusive with connectionString property. Possible values include: "Basic".
+    :type authentication_type: str or ~data_factory_management_client.models.Db2AuthenticationType
     :param username: Username for authentication. It is mutually exclusive with connectionString
      property. Type: string (or Expression with resultType string).
     :type username: object
@@ -10332,7 +10482,6 @@ class Db2LinkedService(LinkedService):
 
     _validation = {
         'type': {'required': True},
-        'authentication_type': {'constant': True},
     }
 
     _attribute_map = {
@@ -10353,17 +10502,16 @@ class Db2LinkedService(LinkedService):
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
     }
 
-    authentication_type = "Basic"
-
     def __init__(
         self,
         **kwargs
     ):
         super(Db2LinkedService, self).__init__(**kwargs)
-        self.type = 'Db2'
+        self.type = 'Db2'  # type: str
         self.connection_string = kwargs.get('connection_string', None)
         self.server = kwargs.get('server', None)
         self.database = kwargs.get('database', None)
+        self.authentication_type = kwargs.get('authentication_type', None)
         self.username = kwargs.get('username', None)
         self.password = kwargs.get('password', None)
         self.package_collection = kwargs.get('package_collection', None)
@@ -10420,7 +10568,7 @@ class Db2Source(TabularSource):
         **kwargs
     ):
         super(Db2Source, self).__init__(**kwargs)
-        self.type = 'Db2Source'
+        self.type = 'Db2Source'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -10486,7 +10634,7 @@ class Db2TableDataset(Dataset):
         **kwargs
     ):
         super(Db2TableDataset, self).__init__(**kwargs)
-        self.type = 'Db2Table'
+        self.type = 'Db2Table'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
         self.table = kwargs.get('table', None)
@@ -10561,7 +10709,7 @@ class DeleteActivity(ExecutionActivity):
         **kwargs
     ):
         super(DeleteActivity, self).__init__(**kwargs)
-        self.type = 'Delete'
+        self.type = 'Delete'  # type: str
         self.recursive = kwargs.get('recursive', None)
         self.max_concurrent_connections = kwargs.get('max_concurrent_connections', None)
         self.enable_logging = kwargs.get('enable_logging', None)
@@ -10679,7 +10827,7 @@ class DelimitedTextDataset(Dataset):
         **kwargs
     ):
         super(DelimitedTextDataset, self).__init__(**kwargs)
-        self.type = 'DelimitedText'
+        self.type = 'DelimitedText'  # type: str
         self.location = kwargs.get('location', None)
         self.column_delimiter = kwargs.get('column_delimiter', None)
         self.row_delimiter = kwargs.get('row_delimiter', None)
@@ -10725,7 +10873,7 @@ class DelimitedTextReadSettings(FormatReadSettings):
         **kwargs
     ):
         super(DelimitedTextReadSettings, self).__init__(**kwargs)
-        self.type = 'DelimitedTextReadSettings'
+        self.type = 'DelimitedTextReadSettings'  # type: str
         self.skip_line_count = kwargs.get('skip_line_count', None)
         self.compression_properties = kwargs.get('compression_properties', None)
 
@@ -10782,7 +10930,7 @@ class DelimitedTextSink(CopySink):
         **kwargs
     ):
         super(DelimitedTextSink, self).__init__(**kwargs)
-        self.type = 'DelimitedTextSink'
+        self.type = 'DelimitedTextSink'  # type: str
         self.store_settings = kwargs.get('store_settings', None)
         self.format_settings = kwargs.get('format_settings', None)
 
@@ -10835,7 +10983,7 @@ class DelimitedTextSource(CopySource):
         **kwargs
     ):
         super(DelimitedTextSource, self).__init__(**kwargs)
-        self.type = 'DelimitedTextSource'
+        self.type = 'DelimitedTextSource'  # type: str
         self.store_settings = kwargs.get('store_settings', None)
         self.format_settings = kwargs.get('format_settings', None)
         self.additional_columns = kwargs.get('additional_columns', None)
@@ -10876,7 +11024,7 @@ class DelimitedTextWriteSettings(FormatWriteSettings):
         **kwargs
     ):
         super(DelimitedTextWriteSettings, self).__init__(**kwargs)
-        self.type = 'DelimitedTextWriteSettings'
+        self.type = 'DelimitedTextWriteSettings'  # type: str
         self.quote_all_text = kwargs.get('quote_all_text', None)
         self.file_extension = kwargs['file_extension']
 
@@ -10910,7 +11058,7 @@ class DependencyReference(msrest.serialization.Model):
         **kwargs
     ):
         super(DependencyReference, self).__init__(**kwargs)
-        self.type = None
+        self.type = None  # type: Optional[str]
 
 
 class DistcpSettings(msrest.serialization.Model):
@@ -11007,7 +11155,7 @@ class DocumentDBCollectionDataset(Dataset):
         **kwargs
     ):
         super(DocumentDBCollectionDataset, self).__init__(**kwargs)
-        self.type = 'DocumentDbCollection'
+        self.type = 'DocumentDbCollection'  # type: str
         self.collection_name = kwargs['collection_name']
 
 
@@ -11065,7 +11213,7 @@ class DocumentDBCollectionSink(CopySink):
         **kwargs
     ):
         super(DocumentDBCollectionSink, self).__init__(**kwargs)
-        self.type = 'DocumentDbCollectionSink'
+        self.type = 'DocumentDbCollectionSink'  # type: str
         self.nesting_separator = kwargs.get('nesting_separator', None)
         self.write_behavior = kwargs.get('write_behavior', None)
 
@@ -11123,7 +11271,7 @@ class DocumentDBCollectionSource(CopySource):
         **kwargs
     ):
         super(DocumentDBCollectionSource, self).__init__(**kwargs)
-        self.type = 'DocumentDbCollectionSource'
+        self.type = 'DocumentDbCollectionSource'  # type: str
         self.query = kwargs.get('query', None)
         self.nesting_separator = kwargs.get('nesting_separator', None)
         self.query_timeout = kwargs.get('query_timeout', None)
@@ -11180,7 +11328,7 @@ class DrillLinkedService(LinkedService):
         **kwargs
     ):
         super(DrillLinkedService, self).__init__(**kwargs)
-        self.type = 'Drill'
+        self.type = 'Drill'  # type: str
         self.connection_string = kwargs.get('connection_string', None)
         self.pwd = kwargs.get('pwd', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
@@ -11236,7 +11384,7 @@ class DrillSource(TabularSource):
         **kwargs
     ):
         super(DrillSource, self).__init__(**kwargs)
-        self.type = 'DrillSource'
+        self.type = 'DrillSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -11302,7 +11450,7 @@ class DrillTableDataset(Dataset):
         **kwargs
     ):
         super(DrillTableDataset, self).__init__(**kwargs)
-        self.type = 'DrillTable'
+        self.type = 'DrillTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.table = kwargs.get('table', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
@@ -11430,7 +11578,7 @@ class DynamicsAxLinkedService(LinkedService):
         **kwargs
     ):
         super(DynamicsAxLinkedService, self).__init__(**kwargs)
-        self.type = 'DynamicsAX'
+        self.type = 'DynamicsAX'  # type: str
         self.url = kwargs['url']
         self.service_principal_id = kwargs['service_principal_id']
         self.service_principal_key = kwargs['service_principal_key']
@@ -11495,7 +11643,7 @@ class DynamicsAxResourceDataset(Dataset):
         **kwargs
     ):
         super(DynamicsAxResourceDataset, self).__init__(**kwargs)
-        self.type = 'DynamicsAXResource'
+        self.type = 'DynamicsAXResource'  # type: str
         self.path = kwargs['path']
 
 
@@ -11555,7 +11703,7 @@ class DynamicsAxSource(TabularSource):
         **kwargs
     ):
         super(DynamicsAxSource, self).__init__(**kwargs)
-        self.type = 'DynamicsAXSource'
+        self.type = 'DynamicsAXSource'  # type: str
         self.query = kwargs.get('query', None)
         self.http_request_timeout = kwargs.get('http_request_timeout', None)
 
@@ -11615,7 +11763,7 @@ class DynamicsCrmEntityDataset(Dataset):
         **kwargs
     ):
         super(DynamicsCrmEntityDataset, self).__init__(**kwargs)
-        self.type = 'DynamicsCrmEntity'
+        self.type = 'DynamicsCrmEntity'  # type: str
         self.entity_name = kwargs.get('entity_name', None)
 
 
@@ -11722,7 +11870,7 @@ class DynamicsCrmLinkedService(LinkedService):
         **kwargs
     ):
         super(DynamicsCrmLinkedService, self).__init__(**kwargs)
-        self.type = 'DynamicsCrm'
+        self.type = 'DynamicsCrm'  # type: str
         self.deployment_type = kwargs['deployment_type']
         self.host_name = kwargs.get('host_name', None)
         self.port = kwargs.get('port', None)
@@ -11739,8 +11887,6 @@ class DynamicsCrmLinkedService(LinkedService):
 
 class DynamicsCrmSink(CopySink):
     """A copy activity Dynamics CRM sink.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -11764,8 +11910,9 @@ class DynamicsCrmSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
-    :ivar write_behavior: Required. The write behavior for the operation. Default value: "Upsert".
-    :vartype write_behavior: str
+    :param write_behavior: Required. The write behavior for the operation. Possible values include:
+     "Upsert".
+    :type write_behavior: str or ~data_factory_management_client.models.DynamicsSinkWriteBehavior
     :param ignore_null_values: The flag indicating whether to ignore null values from input dataset
      (except key fields) during write operation. Default is false. Type: boolean (or Expression with
      resultType boolean).
@@ -11777,7 +11924,7 @@ class DynamicsCrmSink(CopySink):
 
     _validation = {
         'type': {'required': True},
-        'write_behavior': {'required': True, 'constant': True},
+        'write_behavior': {'required': True},
     }
 
     _attribute_map = {
@@ -11793,14 +11940,13 @@ class DynamicsCrmSink(CopySink):
         'alternate_key_name': {'key': 'alternateKeyName', 'type': 'object'},
     }
 
-    write_behavior = "Upsert"
-
     def __init__(
         self,
         **kwargs
     ):
         super(DynamicsCrmSink, self).__init__(**kwargs)
-        self.type = 'DynamicsCrmSink'
+        self.type = 'DynamicsCrmSink'  # type: str
+        self.write_behavior = kwargs['write_behavior']
         self.ignore_null_values = kwargs.get('ignore_null_values', None)
         self.alternate_key_name = kwargs.get('alternate_key_name', None)
 
@@ -11851,7 +11997,7 @@ class DynamicsCrmSource(CopySource):
         **kwargs
     ):
         super(DynamicsCrmSource, self).__init__(**kwargs)
-        self.type = 'DynamicsCrmSource'
+        self.type = 'DynamicsCrmSource'  # type: str
         self.query = kwargs.get('query', None)
         self.additional_columns = kwargs.get('additional_columns', None)
 
@@ -11911,7 +12057,7 @@ class DynamicsEntityDataset(Dataset):
         **kwargs
     ):
         super(DynamicsEntityDataset, self).__init__(**kwargs)
-        self.type = 'DynamicsEntity'
+        self.type = 'DynamicsEntity'  # type: str
         self.entity_name = kwargs.get('entity_name', None)
 
 
@@ -12015,7 +12161,7 @@ class DynamicsLinkedService(LinkedService):
         **kwargs
     ):
         super(DynamicsLinkedService, self).__init__(**kwargs)
-        self.type = 'Dynamics'
+        self.type = 'Dynamics'  # type: str
         self.deployment_type = kwargs['deployment_type']
         self.host_name = kwargs.get('host_name', None)
         self.port = kwargs.get('port', None)
@@ -12032,8 +12178,6 @@ class DynamicsLinkedService(LinkedService):
 
 class DynamicsSink(CopySink):
     """A copy activity Dynamics sink.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -12057,8 +12201,9 @@ class DynamicsSink(CopySink):
     :param max_concurrent_connections: The maximum concurrent connection count for the sink data
      store. Type: integer (or Expression with resultType integer).
     :type max_concurrent_connections: object
-    :ivar write_behavior: Required. The write behavior for the operation. Default value: "Upsert".
-    :vartype write_behavior: str
+    :param write_behavior: Required. The write behavior for the operation. Possible values include:
+     "Upsert".
+    :type write_behavior: str or ~data_factory_management_client.models.DynamicsSinkWriteBehavior
     :param ignore_null_values: The flag indicating whether ignore null values from input dataset
      (except key fields) during write operation. Default is false. Type: boolean (or Expression with
      resultType boolean).
@@ -12070,7 +12215,7 @@ class DynamicsSink(CopySink):
 
     _validation = {
         'type': {'required': True},
-        'write_behavior': {'required': True, 'constant': True},
+        'write_behavior': {'required': True},
     }
 
     _attribute_map = {
@@ -12086,14 +12231,13 @@ class DynamicsSink(CopySink):
         'alternate_key_name': {'key': 'alternateKeyName', 'type': 'object'},
     }
 
-    write_behavior = "Upsert"
-
     def __init__(
         self,
         **kwargs
     ):
         super(DynamicsSink, self).__init__(**kwargs)
-        self.type = 'DynamicsSink'
+        self.type = 'DynamicsSink'  # type: str
+        self.write_behavior = kwargs['write_behavior']
         self.ignore_null_values = kwargs.get('ignore_null_values', None)
         self.alternate_key_name = kwargs.get('alternate_key_name', None)
 
@@ -12144,7 +12288,7 @@ class DynamicsSource(CopySource):
         **kwargs
     ):
         super(DynamicsSource, self).__init__(**kwargs)
-        self.type = 'DynamicsSource'
+        self.type = 'DynamicsSource'  # type: str
         self.query = kwargs.get('query', None)
         self.additional_columns = kwargs.get('additional_columns', None)
 
@@ -12217,7 +12361,7 @@ class EloquaLinkedService(LinkedService):
         **kwargs
     ):
         super(EloquaLinkedService, self).__init__(**kwargs)
-        self.type = 'Eloqua'
+        self.type = 'Eloqua'  # type: str
         self.endpoint = kwargs['endpoint']
         self.username = kwargs['username']
         self.password = kwargs.get('password', None)
@@ -12281,7 +12425,7 @@ class EloquaObjectDataset(Dataset):
         **kwargs
     ):
         super(EloquaObjectDataset, self).__init__(**kwargs)
-        self.type = 'EloquaObject'
+        self.type = 'EloquaObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -12335,7 +12479,7 @@ class EloquaSource(TabularSource):
         **kwargs
     ):
         super(EloquaSource, self).__init__(**kwargs)
-        self.type = 'EloquaSource'
+        self.type = 'EloquaSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -12393,7 +12537,7 @@ class EnvironmentVariableSetup(CustomSetupBase):
         **kwargs
     ):
         super(EnvironmentVariableSetup, self).__init__(**kwargs)
-        self.type = 'EnvironmentVariableSetup'
+        self.type = 'EnvironmentVariableSetup'  # type: str
         self.variable_name = kwargs['variable_name']
         self.variable_value = kwargs['variable_value']
 
@@ -12471,7 +12615,7 @@ class ExcelDataset(Dataset):
         **kwargs
     ):
         super(ExcelDataset, self).__init__(**kwargs)
-        self.type = 'Excel'
+        self.type = 'Excel'  # type: str
         self.location = kwargs.get('location', None)
         self.sheet_name = kwargs.get('sheet_name', None)
         self.range = kwargs.get('range', None)
@@ -12525,7 +12669,7 @@ class ExcelSource(CopySource):
         **kwargs
     ):
         super(ExcelSource, self).__init__(**kwargs)
-        self.type = 'ExcelSource'
+        self.type = 'ExcelSource'  # type: str
         self.store_settings = kwargs.get('store_settings', None)
         self.additional_columns = kwargs.get('additional_columns', None)
 
@@ -12589,7 +12733,7 @@ class ExecuteDataFlowActivity(ExecutionActivity):
         **kwargs
     ):
         super(ExecuteDataFlowActivity, self).__init__(**kwargs)
-        self.type = 'ExecuteDataFlow'
+        self.type = 'ExecuteDataFlow'  # type: str
         self.data_flow = kwargs['data_flow']
         self.staging = kwargs.get('staging', None)
         self.integration_runtime = kwargs.get('integration_runtime', None)
@@ -12671,7 +12815,7 @@ class ExecutePipelineActivity(Activity):
         **kwargs
     ):
         super(ExecutePipelineActivity, self).__init__(**kwargs)
-        self.type = 'ExecutePipeline'
+        self.type = 'ExecutePipeline'  # type: str
         self.pipeline = kwargs['pipeline']
         self.parameters = kwargs.get('parameters', None)
         self.wait_on_completion = kwargs.get('wait_on_completion', None)
@@ -12768,7 +12912,7 @@ class ExecuteSsisPackageActivity(ExecutionActivity):
         **kwargs
     ):
         super(ExecuteSsisPackageActivity, self).__init__(**kwargs)
-        self.type = 'ExecuteSSISPackage'
+        self.type = 'ExecuteSSISPackage'  # type: str
         self.package_location = kwargs['package_location']
         self.runtime = kwargs.get('runtime', None)
         self.logging_level = kwargs.get('logging_level', None)
@@ -12817,7 +12961,59 @@ class ExportSettings(msrest.serialization.Model):
     ):
         super(ExportSettings, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
-        self.type = 'ExportSettings'
+        self.type = 'ExportSettings'  # type: str
+
+
+class ExposureControlBatchRequest(msrest.serialization.Model):
+    """A list of exposure control features.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param exposure_control_requests: Required. List of exposure control features.
+    :type exposure_control_requests:
+     list[~data_factory_management_client.models.ExposureControlRequest]
+    """
+
+    _validation = {
+        'exposure_control_requests': {'required': True},
+    }
+
+    _attribute_map = {
+        'exposure_control_requests': {'key': 'exposureControlRequests', 'type': '[ExposureControlRequest]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ExposureControlBatchRequest, self).__init__(**kwargs)
+        self.exposure_control_requests = kwargs['exposure_control_requests']
+
+
+class ExposureControlBatchResponse(msrest.serialization.Model):
+    """A list of exposure control feature values.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param exposure_control_responses: Required. List of exposure control feature values.
+    :type exposure_control_responses:
+     list[~data_factory_management_client.models.ExposureControlResponse]
+    """
+
+    _validation = {
+        'exposure_control_responses': {'required': True},
+    }
+
+    _attribute_map = {
+        'exposure_control_responses': {'key': 'exposureControlResponses', 'type': '[ExposureControlResponse]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ExposureControlBatchResponse, self).__init__(**kwargs)
+        self.exposure_control_responses = kwargs['exposure_control_responses']
 
 
 class ExposureControlRequest(msrest.serialization.Model):
@@ -13077,7 +13273,7 @@ class FactoryRepoConfiguration(msrest.serialization.Model):
         **kwargs
     ):
         super(FactoryRepoConfiguration, self).__init__(**kwargs)
-        self.type = None
+        self.type = None  # type: Optional[str]
         self.account_name = kwargs['account_name']
         self.repository_name = kwargs['repository_name']
         self.collaboration_branch = kwargs['collaboration_branch']
@@ -13129,7 +13325,7 @@ class FactoryGitHubConfiguration(FactoryRepoConfiguration):
         **kwargs
     ):
         super(FactoryGitHubConfiguration, self).__init__(**kwargs)
-        self.type = 'FactoryGitHubConfiguration'
+        self.type = 'FactoryGitHubConfiguration'  # type: str
         self.host_name = kwargs.get('host_name', None)
 
 
@@ -13295,7 +13491,7 @@ class FactoryVstsConfiguration(FactoryRepoConfiguration):
         **kwargs
     ):
         super(FactoryVstsConfiguration, self).__init__(**kwargs)
-        self.type = 'FactoryVSTSConfiguration'
+        self.type = 'FactoryVSTSConfiguration'  # type: str
         self.project_name = kwargs['project_name']
         self.tenant_id = kwargs.get('tenant_id', None)
 
@@ -13355,7 +13551,7 @@ class FileServerLinkedService(LinkedService):
         **kwargs
     ):
         super(FileServerLinkedService, self).__init__(**kwargs)
-        self.type = 'FileServer'
+        self.type = 'FileServer'  # type: str
         self.host = kwargs['host']
         self.user_id = kwargs.get('user_id', None)
         self.password = kwargs.get('password', None)
@@ -13396,7 +13592,7 @@ class FileServerLocation(DatasetLocation):
         **kwargs
     ):
         super(FileServerLocation, self).__init__(**kwargs)
-        self.type = 'FileServerLocation'
+        self.type = 'FileServerLocation'  # type: str
 
 
 class FileServerReadSettings(StoreReadSettings):
@@ -13469,7 +13665,7 @@ class FileServerReadSettings(StoreReadSettings):
         **kwargs
     ):
         super(FileServerReadSettings, self).__init__(**kwargs)
-        self.type = 'FileServerReadSettings'
+        self.type = 'FileServerReadSettings'  # type: str
         self.recursive = kwargs.get('recursive', None)
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
@@ -13515,7 +13711,7 @@ class FileServerWriteSettings(StoreWriteSettings):
         **kwargs
     ):
         super(FileServerWriteSettings, self).__init__(**kwargs)
-        self.type = 'FileServerWriteSettings'
+        self.type = 'FileServerWriteSettings'  # type: str
 
 
 class FileShareDataset(Dataset):
@@ -13595,7 +13791,7 @@ class FileShareDataset(Dataset):
         **kwargs
     ):
         super(FileShareDataset, self).__init__(**kwargs)
-        self.type = 'FileShare'
+        self.type = 'FileShare'  # type: str
         self.folder_path = kwargs.get('folder_path', None)
         self.file_name = kwargs.get('file_name', None)
         self.modified_datetime_start = kwargs.get('modified_datetime_start', None)
@@ -13654,7 +13850,7 @@ class FileSystemSink(CopySink):
         **kwargs
     ):
         super(FileSystemSink, self).__init__(**kwargs)
-        self.type = 'FileSystemSink'
+        self.type = 'FileSystemSink'  # type: str
         self.copy_behavior = kwargs.get('copy_behavior', None)
 
 
@@ -13704,7 +13900,7 @@ class FileSystemSource(CopySource):
         **kwargs
     ):
         super(FileSystemSource, self).__init__(**kwargs)
-        self.type = 'FileSystemSource'
+        self.type = 'FileSystemSource'  # type: str
         self.recursive = kwargs.get('recursive', None)
         self.additional_columns = kwargs.get('additional_columns', None)
 
@@ -13756,7 +13952,7 @@ class FilterActivity(Activity):
         **kwargs
     ):
         super(FilterActivity, self).__init__(**kwargs)
-        self.type = 'Filter'
+        self.type = 'Filter'  # type: str
         self.items = kwargs['items']
         self.condition = kwargs['condition']
 
@@ -13816,7 +14012,7 @@ class ForEachActivity(Activity):
         **kwargs
     ):
         super(ForEachActivity, self).__init__(**kwargs)
-        self.type = 'ForEach'
+        self.type = 'ForEach'  # type: str
         self.is_sequential = kwargs.get('is_sequential', None)
         self.batch_count = kwargs.get('batch_count', None)
         self.items = kwargs['items']
@@ -13884,7 +14080,7 @@ class FtpReadSettings(StoreReadSettings):
         **kwargs
     ):
         super(FtpReadSettings, self).__init__(**kwargs)
-        self.type = 'FtpReadSettings'
+        self.type = 'FtpReadSettings'  # type: str
         self.recursive = kwargs.get('recursive', None)
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
@@ -13967,7 +14163,7 @@ class FtpServerLinkedService(LinkedService):
         **kwargs
     ):
         super(FtpServerLinkedService, self).__init__(**kwargs)
-        self.type = 'FtpServer'
+        self.type = 'FtpServer'  # type: str
         self.host = kwargs['host']
         self.port = kwargs.get('port', None)
         self.authentication_type = kwargs.get('authentication_type', None)
@@ -14012,7 +14208,7 @@ class FtpServerLocation(DatasetLocation):
         **kwargs
     ):
         super(FtpServerLocation, self).__init__(**kwargs)
-        self.type = 'FtpServerLocation'
+        self.type = 'FtpServerLocation'  # type: str
 
 
 class GetDataFactoryOperationStatusResponse(msrest.serialization.Model):
@@ -14097,7 +14293,7 @@ class GetMetadataActivity(ExecutionActivity):
         **kwargs
     ):
         super(GetMetadataActivity, self).__init__(**kwargs)
-        self.type = 'GetMetadata'
+        self.type = 'GetMetadata'  # type: str
         self.dataset = kwargs['dataset']
         self.field_list = kwargs.get('field_list', None)
         self.store_settings = kwargs.get('store_settings', None)
@@ -14296,7 +14492,7 @@ class GoogleAdWordsLinkedService(LinkedService):
         **kwargs
     ):
         super(GoogleAdWordsLinkedService, self).__init__(**kwargs)
-        self.type = 'GoogleAdWords'
+        self.type = 'GoogleAdWords'  # type: str
         self.client_customer_id = kwargs['client_customer_id']
         self.developer_token = kwargs['developer_token']
         self.authentication_type = kwargs['authentication_type']
@@ -14364,7 +14560,7 @@ class GoogleAdWordsObjectDataset(Dataset):
         **kwargs
     ):
         super(GoogleAdWordsObjectDataset, self).__init__(**kwargs)
-        self.type = 'GoogleAdWordsObject'
+        self.type = 'GoogleAdWordsObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -14418,7 +14614,7 @@ class GoogleAdWordsSource(TabularSource):
         **kwargs
     ):
         super(GoogleAdWordsSource, self).__init__(**kwargs)
-        self.type = 'GoogleAdWordsSource'
+        self.type = 'GoogleAdWordsSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -14513,7 +14709,7 @@ class GoogleBigQueryLinkedService(LinkedService):
         **kwargs
     ):
         super(GoogleBigQueryLinkedService, self).__init__(**kwargs)
-        self.type = 'GoogleBigQuery'
+        self.type = 'GoogleBigQuery'  # type: str
         self.project = kwargs['project']
         self.additional_projects = kwargs.get('additional_projects', None)
         self.request_google_drive_scope = kwargs.get('request_google_drive_scope', None)
@@ -14591,7 +14787,7 @@ class GoogleBigQueryObjectDataset(Dataset):
         **kwargs
     ):
         super(GoogleBigQueryObjectDataset, self).__init__(**kwargs)
-        self.type = 'GoogleBigQueryObject'
+        self.type = 'GoogleBigQueryObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.table = kwargs.get('table', None)
         self.dataset = kwargs.get('dataset', None)
@@ -14647,7 +14843,7 @@ class GoogleBigQuerySource(TabularSource):
         **kwargs
     ):
         super(GoogleBigQuerySource, self).__init__(**kwargs)
-        self.type = 'GoogleBigQuerySource'
+        self.type = 'GoogleBigQuerySource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -14708,7 +14904,7 @@ class GoogleCloudStorageLinkedService(LinkedService):
         **kwargs
     ):
         super(GoogleCloudStorageLinkedService, self).__init__(**kwargs)
-        self.type = 'GoogleCloudStorage'
+        self.type = 'GoogleCloudStorage'  # type: str
         self.access_key_id = kwargs.get('access_key_id', None)
         self.secret_access_key = kwargs.get('secret_access_key', None)
         self.service_url = kwargs.get('service_url', None)
@@ -14757,7 +14953,7 @@ class GoogleCloudStorageLocation(DatasetLocation):
         **kwargs
     ):
         super(GoogleCloudStorageLocation, self).__init__(**kwargs)
-        self.type = 'GoogleCloudStorageLocation'
+        self.type = 'GoogleCloudStorageLocation'  # type: str
         self.bucket_name = kwargs.get('bucket_name', None)
         self.version = kwargs.get('version', None)
 
@@ -14832,7 +15028,7 @@ class GoogleCloudStorageReadSettings(StoreReadSettings):
         **kwargs
     ):
         super(GoogleCloudStorageReadSettings, self).__init__(**kwargs)
-        self.type = 'GoogleCloudStorageReadSettings'
+        self.type = 'GoogleCloudStorageReadSettings'  # type: str
         self.recursive = kwargs.get('recursive', None)
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
@@ -14895,7 +15091,7 @@ class GreenplumLinkedService(LinkedService):
         **kwargs
     ):
         super(GreenplumLinkedService, self).__init__(**kwargs)
-        self.type = 'Greenplum'
+        self.type = 'Greenplum'  # type: str
         self.connection_string = kwargs.get('connection_string', None)
         self.pwd = kwargs.get('pwd', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
@@ -14951,7 +15147,7 @@ class GreenplumSource(TabularSource):
         **kwargs
     ):
         super(GreenplumSource, self).__init__(**kwargs)
-        self.type = 'GreenplumSource'
+        self.type = 'GreenplumSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -15017,7 +15213,7 @@ class GreenplumTableDataset(Dataset):
         **kwargs
     ):
         super(GreenplumTableDataset, self).__init__(**kwargs)
-        self.type = 'GreenplumTable'
+        self.type = 'GreenplumTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.table = kwargs.get('table', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
@@ -15107,7 +15303,7 @@ class HBaseLinkedService(LinkedService):
         **kwargs
     ):
         super(HBaseLinkedService, self).__init__(**kwargs)
-        self.type = 'HBase'
+        self.type = 'HBase'  # type: str
         self.host = kwargs['host']
         self.port = kwargs.get('port', None)
         self.http_path = kwargs.get('http_path', None)
@@ -15175,7 +15371,7 @@ class HBaseObjectDataset(Dataset):
         **kwargs
     ):
         super(HBaseObjectDataset, self).__init__(**kwargs)
-        self.type = 'HBaseObject'
+        self.type = 'HBaseObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -15229,7 +15425,7 @@ class HBaseSource(TabularSource):
         **kwargs
     ):
         super(HBaseSource, self).__init__(**kwargs)
-        self.type = 'HBaseSource'
+        self.type = 'HBaseSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -15292,7 +15488,7 @@ class HdfsLinkedService(LinkedService):
         **kwargs
     ):
         super(HdfsLinkedService, self).__init__(**kwargs)
-        self.type = 'Hdfs'
+        self.type = 'Hdfs'  # type: str
         self.url = kwargs['url']
         self.authentication_type = kwargs.get('authentication_type', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
@@ -15334,7 +15530,7 @@ class HdfsLocation(DatasetLocation):
         **kwargs
     ):
         super(HdfsLocation, self).__init__(**kwargs)
-        self.type = 'HdfsLocation'
+        self.type = 'HdfsLocation'  # type: str
 
 
 class HdfsReadSettings(StoreReadSettings):
@@ -15376,6 +15572,9 @@ class HdfsReadSettings(StoreReadSettings):
     :type modified_datetime_end: object
     :param distcp_settings: Specifies Distcp-related settings.
     :type distcp_settings: ~data_factory_management_client.models.DistcpSettings
+    :param delete_files_after_completion: Indicates whether the source files need to be deleted
+     after copy completion. Default is false. Type: boolean (or Expression with resultType boolean).
+    :type delete_files_after_completion: object
     """
 
     _validation = {
@@ -15395,6 +15594,7 @@ class HdfsReadSettings(StoreReadSettings):
         'modified_datetime_start': {'key': 'modifiedDatetimeStart', 'type': 'object'},
         'modified_datetime_end': {'key': 'modifiedDatetimeEnd', 'type': 'object'},
         'distcp_settings': {'key': 'distcpSettings', 'type': 'DistcpSettings'},
+        'delete_files_after_completion': {'key': 'deleteFilesAfterCompletion', 'type': 'object'},
     }
 
     def __init__(
@@ -15402,7 +15602,7 @@ class HdfsReadSettings(StoreReadSettings):
         **kwargs
     ):
         super(HdfsReadSettings, self).__init__(**kwargs)
-        self.type = 'HdfsReadSettings'
+        self.type = 'HdfsReadSettings'  # type: str
         self.recursive = kwargs.get('recursive', None)
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
@@ -15412,6 +15612,7 @@ class HdfsReadSettings(StoreReadSettings):
         self.modified_datetime_start = kwargs.get('modified_datetime_start', None)
         self.modified_datetime_end = kwargs.get('modified_datetime_end', None)
         self.distcp_settings = kwargs.get('distcp_settings', None)
+        self.delete_files_after_completion = kwargs.get('delete_files_after_completion', None)
 
 
 class HdfsSource(CopySource):
@@ -15459,7 +15660,7 @@ class HdfsSource(CopySource):
         **kwargs
     ):
         super(HdfsSource, self).__init__(**kwargs)
-        self.type = 'HdfsSource'
+        self.type = 'HdfsSource'  # type: str
         self.recursive = kwargs.get('recursive', None)
         self.distcp_settings = kwargs.get('distcp_settings', None)
 
@@ -15536,7 +15737,7 @@ class HdInsightHiveActivity(ExecutionActivity):
         **kwargs
     ):
         super(HdInsightHiveActivity, self).__init__(**kwargs)
-        self.type = 'HDInsightHive'
+        self.type = 'HDInsightHive'  # type: str
         self.storage_linked_services = kwargs.get('storage_linked_services', None)
         self.arguments = kwargs.get('arguments', None)
         self.get_debug_info = kwargs.get('get_debug_info', None)
@@ -15618,7 +15819,7 @@ class HdInsightLinkedService(LinkedService):
         **kwargs
     ):
         super(HdInsightLinkedService, self).__init__(**kwargs)
-        self.type = 'HDInsight'
+        self.type = 'HDInsight'  # type: str
         self.cluster_uri = kwargs['cluster_uri']
         self.user_name = kwargs.get('user_name', None)
         self.password = kwargs.get('password', None)
@@ -15702,7 +15903,7 @@ class HdInsightMapReduceActivity(ExecutionActivity):
         **kwargs
     ):
         super(HdInsightMapReduceActivity, self).__init__(**kwargs)
-        self.type = 'HDInsightMapReduce'
+        self.type = 'HDInsightMapReduce'  # type: str
         self.storage_linked_services = kwargs.get('storage_linked_services', None)
         self.arguments = kwargs.get('arguments', None)
         self.get_debug_info = kwargs.get('get_debug_info', None)
@@ -15892,7 +16093,7 @@ class HdInsightOnDemandLinkedService(LinkedService):
         **kwargs
     ):
         super(HdInsightOnDemandLinkedService, self).__init__(**kwargs)
-        self.type = 'HDInsightOnDemand'
+        self.type = 'HDInsightOnDemand'  # type: str
         self.cluster_size = kwargs['cluster_size']
         self.time_to_live = kwargs['time_to_live']
         self.version = kwargs['version']
@@ -15994,7 +16195,7 @@ class HdInsightPigActivity(ExecutionActivity):
         **kwargs
     ):
         super(HdInsightPigActivity, self).__init__(**kwargs)
-        self.type = 'HDInsightPig'
+        self.type = 'HDInsightPig'  # type: str
         self.storage_linked_services = kwargs.get('storage_linked_services', None)
         self.arguments = kwargs.get('arguments', None)
         self.get_debug_info = kwargs.get('get_debug_info', None)
@@ -16079,7 +16280,7 @@ class HdInsightSparkActivity(ExecutionActivity):
         **kwargs
     ):
         super(HdInsightSparkActivity, self).__init__(**kwargs)
-        self.type = 'HDInsightSpark'
+        self.type = 'HDInsightSpark'  # type: str
         self.root_path = kwargs['root_path']
         self.entry_file_path = kwargs['entry_file_path']
         self.arguments = kwargs.get('arguments', None)
@@ -16180,7 +16381,7 @@ class HdInsightStreamingActivity(ExecutionActivity):
         **kwargs
     ):
         super(HdInsightStreamingActivity, self).__init__(**kwargs)
-        self.type = 'HDInsightStreaming'
+        self.type = 'HDInsightStreaming'  # type: str
         self.storage_linked_services = kwargs.get('storage_linked_services', None)
         self.arguments = kwargs.get('arguments', None)
         self.get_debug_info = kwargs.get('get_debug_info', None)
@@ -16303,7 +16504,7 @@ class HiveLinkedService(LinkedService):
         **kwargs
     ):
         super(HiveLinkedService, self).__init__(**kwargs)
-        self.type = 'Hive'
+        self.type = 'Hive'  # type: str
         self.host = kwargs['host']
         self.port = kwargs.get('port', None)
         self.server_type = kwargs.get('server_type', None)
@@ -16385,7 +16586,7 @@ class HiveObjectDataset(Dataset):
         **kwargs
     ):
         super(HiveObjectDataset, self).__init__(**kwargs)
-        self.type = 'HiveObject'
+        self.type = 'HiveObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.table = kwargs.get('table', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
@@ -16441,7 +16642,7 @@ class HiveSource(TabularSource):
         **kwargs
     ):
         super(HiveSource, self).__init__(**kwargs)
-        self.type = 'HiveSource'
+        self.type = 'HiveSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -16521,7 +16722,7 @@ class HttpDataset(Dataset):
         **kwargs
     ):
         super(HttpDataset, self).__init__(**kwargs)
-        self.type = 'HttpFile'
+        self.type = 'HttpFile'  # type: str
         self.relative_url = kwargs.get('relative_url', None)
         self.request_method = kwargs.get('request_method', None)
         self.request_body = kwargs.get('request_body', None)
@@ -16606,7 +16807,7 @@ class HttpLinkedService(LinkedService):
         **kwargs
     ):
         super(HttpLinkedService, self).__init__(**kwargs)
-        self.type = 'HttpServer'
+        self.type = 'HttpServer'  # type: str
         self.url = kwargs['url']
         self.authentication_type = kwargs.get('authentication_type', None)
         self.user_name = kwargs.get('user_name', None)
@@ -16670,7 +16871,7 @@ class HttpReadSettings(StoreReadSettings):
         **kwargs
     ):
         super(HttpReadSettings, self).__init__(**kwargs)
-        self.type = 'HttpReadSettings'
+        self.type = 'HttpReadSettings'  # type: str
         self.request_method = kwargs.get('request_method', None)
         self.request_body = kwargs.get('request_body', None)
         self.additional_headers = kwargs.get('additional_headers', None)
@@ -16717,7 +16918,7 @@ class HttpServerLocation(DatasetLocation):
         **kwargs
     ):
         super(HttpServerLocation, self).__init__(**kwargs)
-        self.type = 'HttpServerLocation'
+        self.type = 'HttpServerLocation'  # type: str
         self.relative_url = kwargs.get('relative_url', None)
 
 
@@ -16765,7 +16966,7 @@ class HttpSource(CopySource):
         **kwargs
     ):
         super(HttpSource, self).__init__(**kwargs)
-        self.type = 'HttpSource'
+        self.type = 'HttpSource'  # type: str
         self.http_request_timeout = kwargs.get('http_request_timeout', None)
 
 
@@ -16840,7 +17041,7 @@ class HubspotLinkedService(LinkedService):
         **kwargs
     ):
         super(HubspotLinkedService, self).__init__(**kwargs)
-        self.type = 'Hubspot'
+        self.type = 'Hubspot'  # type: str
         self.client_id = kwargs['client_id']
         self.client_secret = kwargs.get('client_secret', None)
         self.access_token = kwargs.get('access_token', None)
@@ -16905,7 +17106,7 @@ class HubspotObjectDataset(Dataset):
         **kwargs
     ):
         super(HubspotObjectDataset, self).__init__(**kwargs)
-        self.type = 'HubspotObject'
+        self.type = 'HubspotObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -16959,7 +17160,7 @@ class HubspotSource(TabularSource):
         **kwargs
     ):
         super(HubspotSource, self).__init__(**kwargs)
-        self.type = 'HubspotSource'
+        self.type = 'HubspotSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -17016,7 +17217,7 @@ class IfConditionActivity(Activity):
         **kwargs
     ):
         super(IfConditionActivity, self).__init__(**kwargs)
-        self.type = 'IfCondition'
+        self.type = 'IfCondition'  # type: str
         self.expression = kwargs['expression']
         self.if_true_activities = kwargs.get('if_true_activities', None)
         self.if_false_activities = kwargs.get('if_false_activities', None)
@@ -17108,7 +17309,7 @@ class ImpalaLinkedService(LinkedService):
         **kwargs
     ):
         super(ImpalaLinkedService, self).__init__(**kwargs)
-        self.type = 'Impala'
+        self.type = 'Impala'  # type: str
         self.host = kwargs['host']
         self.port = kwargs.get('port', None)
         self.authentication_type = kwargs['authentication_type']
@@ -17185,7 +17386,7 @@ class ImpalaObjectDataset(Dataset):
         **kwargs
     ):
         super(ImpalaObjectDataset, self).__init__(**kwargs)
-        self.type = 'ImpalaObject'
+        self.type = 'ImpalaObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.table = kwargs.get('table', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
@@ -17241,7 +17442,7 @@ class ImpalaSource(TabularSource):
         **kwargs
     ):
         super(ImpalaSource, self).__init__(**kwargs)
-        self.type = 'ImpalaSource'
+        self.type = 'ImpalaSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -17279,7 +17480,7 @@ class ImportSettings(msrest.serialization.Model):
     ):
         super(ImportSettings, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
-        self.type = 'ImportSettings'
+        self.type = 'ImportSettings'  # type: str
 
 
 class InformixLinkedService(LinkedService):
@@ -17347,7 +17548,7 @@ class InformixLinkedService(LinkedService):
         **kwargs
     ):
         super(InformixLinkedService, self).__init__(**kwargs)
-        self.type = 'Informix'
+        self.type = 'Informix'  # type: str
         self.connection_string = kwargs['connection_string']
         self.authentication_type = kwargs.get('authentication_type', None)
         self.credential = kwargs.get('credential', None)
@@ -17406,7 +17607,7 @@ class InformixSink(CopySink):
         **kwargs
     ):
         super(InformixSink, self).__init__(**kwargs)
-        self.type = 'InformixSink'
+        self.type = 'InformixSink'  # type: str
         self.pre_copy_script = kwargs.get('pre_copy_script', None)
 
 
@@ -17459,7 +17660,7 @@ class InformixSource(TabularSource):
         **kwargs
     ):
         super(InformixSource, self).__init__(**kwargs)
-        self.type = 'InformixSource'
+        self.type = 'InformixSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -17518,7 +17719,7 @@ class InformixTableDataset(Dataset):
         **kwargs
     ):
         super(InformixTableDataset, self).__init__(**kwargs)
-        self.type = 'InformixTable'
+        self.type = 'InformixTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -17560,7 +17761,7 @@ class IntegrationRuntime(msrest.serialization.Model):
     ):
         super(IntegrationRuntime, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
-        self.type = 'IntegrationRuntime'
+        self.type = 'IntegrationRuntime'  # type: str
         self.description = kwargs.get('description', None)
 
 
@@ -18207,7 +18408,7 @@ class IntegrationRuntimeStatus(msrest.serialization.Model):
     ):
         super(IntegrationRuntimeStatus, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
-        self.type = 'IntegrationRuntimeStatus'
+        self.type = 'IntegrationRuntimeStatus'  # type: str
         self.data_factory_name = None
         self.state = None
 
@@ -18379,7 +18580,7 @@ class JiraLinkedService(LinkedService):
         **kwargs
     ):
         super(JiraLinkedService, self).__init__(**kwargs)
-        self.type = 'Jira'
+        self.type = 'Jira'  # type: str
         self.host = kwargs['host']
         self.port = kwargs.get('port', None)
         self.username = kwargs['username']
@@ -18444,7 +18645,7 @@ class JiraObjectDataset(Dataset):
         **kwargs
     ):
         super(JiraObjectDataset, self).__init__(**kwargs)
-        self.type = 'JiraObject'
+        self.type = 'JiraObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -18498,7 +18699,7 @@ class JiraSource(TabularSource):
         **kwargs
     ):
         super(JiraSource, self).__init__(**kwargs)
-        self.type = 'JiraSource'
+        self.type = 'JiraSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -18566,7 +18767,7 @@ class JsonDataset(Dataset):
         **kwargs
     ):
         super(JsonDataset, self).__init__(**kwargs)
-        self.type = 'Json'
+        self.type = 'Json'  # type: str
         self.location = kwargs.get('location', None)
         self.encoding_name = kwargs.get('encoding_name', None)
         self.compression = kwargs.get('compression', None)
@@ -18631,7 +18832,7 @@ class JsonFormat(DatasetStorageFormat):
         **kwargs
     ):
         super(JsonFormat, self).__init__(**kwargs)
-        self.type = 'JsonFormat'
+        self.type = 'JsonFormat'  # type: str
         self.file_pattern = kwargs.get('file_pattern', None)
         self.nesting_separator = kwargs.get('nesting_separator', None)
         self.encoding_name = kwargs.get('encoding_name', None)
@@ -18668,7 +18869,7 @@ class JsonReadSettings(FormatReadSettings):
         **kwargs
     ):
         super(JsonReadSettings, self).__init__(**kwargs)
-        self.type = 'JsonReadSettings'
+        self.type = 'JsonReadSettings'  # type: str
         self.compression_properties = kwargs.get('compression_properties', None)
 
 
@@ -18724,7 +18925,7 @@ class JsonSink(CopySink):
         **kwargs
     ):
         super(JsonSink, self).__init__(**kwargs)
-        self.type = 'JsonSink'
+        self.type = 'JsonSink'  # type: str
         self.store_settings = kwargs.get('store_settings', None)
         self.format_settings = kwargs.get('format_settings', None)
 
@@ -18777,7 +18978,7 @@ class JsonSource(CopySource):
         **kwargs
     ):
         super(JsonSource, self).__init__(**kwargs)
-        self.type = 'JsonSource'
+        self.type = 'JsonSource'  # type: str
         self.store_settings = kwargs.get('store_settings', None)
         self.format_settings = kwargs.get('format_settings', None)
         self.additional_columns = kwargs.get('additional_columns', None)
@@ -18814,7 +19015,7 @@ class JsonWriteSettings(FormatWriteSettings):
         **kwargs
     ):
         super(JsonWriteSettings, self).__init__(**kwargs)
-        self.type = 'JsonWriteSettings'
+        self.type = 'JsonWriteSettings'  # type: str
         self.file_pattern = kwargs.get('file_pattern', None)
 
 
@@ -18895,7 +19096,7 @@ class LinkedIntegrationRuntimeType(msrest.serialization.Model):
         **kwargs
     ):
         super(LinkedIntegrationRuntimeType, self).__init__(**kwargs)
-        self.authorization_type = None
+        self.authorization_type = None  # type: Optional[str]
 
 
 class LinkedIntegrationRuntimeKeyAuthorization(LinkedIntegrationRuntimeType):
@@ -18925,7 +19126,7 @@ class LinkedIntegrationRuntimeKeyAuthorization(LinkedIntegrationRuntimeType):
         **kwargs
     ):
         super(LinkedIntegrationRuntimeKeyAuthorization, self).__init__(**kwargs)
-        self.authorization_type = 'Key'
+        self.authorization_type = 'Key'  # type: str
         self.key = kwargs['key']
 
 
@@ -18956,7 +19157,7 @@ class LinkedIntegrationRuntimeRbacAuthorization(LinkedIntegrationRuntimeType):
         **kwargs
     ):
         super(LinkedIntegrationRuntimeRbacAuthorization, self).__init__(**kwargs)
-        self.authorization_type = 'RBAC'
+        self.authorization_type = 'RBAC'  # type: str
         self.resource_id = kwargs['resource_id']
 
 
@@ -19135,6 +19336,12 @@ class LogStorageSettings(msrest.serialization.Model):
     :param path: The path to storage for storing detailed logs of activity execution. Type: string
      (or Expression with resultType string).
     :type path: object
+    :param log_level: Gets or sets the log level, support: Info, Warning. Type: string (or
+     Expression with resultType string).
+    :type log_level: object
+    :param enable_reliable_logging: Specifies whether to enable reliable logging. Type: boolean (or
+     Expression with resultType boolean).
+    :type enable_reliable_logging: object
     """
 
     _validation = {
@@ -19145,6 +19352,8 @@ class LogStorageSettings(msrest.serialization.Model):
         'additional_properties': {'key': '', 'type': '{object}'},
         'linked_service_name': {'key': 'linkedServiceName', 'type': 'LinkedServiceReference'},
         'path': {'key': 'path', 'type': 'object'},
+        'log_level': {'key': 'logLevel', 'type': 'object'},
+        'enable_reliable_logging': {'key': 'enableReliableLogging', 'type': 'object'},
     }
 
     def __init__(
@@ -19155,6 +19364,8 @@ class LogStorageSettings(msrest.serialization.Model):
         self.additional_properties = kwargs.get('additional_properties', None)
         self.linked_service_name = kwargs['linked_service_name']
         self.path = kwargs.get('path', None)
+        self.log_level = kwargs.get('log_level', None)
+        self.enable_reliable_logging = kwargs.get('enable_reliable_logging', None)
 
 
 class LookupActivity(ExecutionActivity):
@@ -19214,7 +19425,7 @@ class LookupActivity(ExecutionActivity):
         **kwargs
     ):
         super(LookupActivity, self).__init__(**kwargs)
-        self.type = 'Lookup'
+        self.type = 'Lookup'  # type: str
         self.source = kwargs['source']
         self.dataset = kwargs['dataset']
         self.first_row_only = kwargs.get('first_row_only', None)
@@ -19283,7 +19494,7 @@ class MagentoLinkedService(LinkedService):
         **kwargs
     ):
         super(MagentoLinkedService, self).__init__(**kwargs)
-        self.type = 'Magento'
+        self.type = 'Magento'  # type: str
         self.host = kwargs['host']
         self.access_token = kwargs.get('access_token', None)
         self.use_encrypted_endpoints = kwargs.get('use_encrypted_endpoints', None)
@@ -19346,7 +19557,7 @@ class MagentoObjectDataset(Dataset):
         **kwargs
     ):
         super(MagentoObjectDataset, self).__init__(**kwargs)
-        self.type = 'MagentoObject'
+        self.type = 'MagentoObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -19400,7 +19611,7 @@ class MagentoSource(TabularSource):
         **kwargs
     ):
         super(MagentoSource, self).__init__(**kwargs)
-        self.type = 'MagentoSource'
+        self.type = 'MagentoSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -19449,7 +19660,7 @@ class ManagedIntegrationRuntime(IntegrationRuntime):
         **kwargs
     ):
         super(ManagedIntegrationRuntime, self).__init__(**kwargs)
-        self.type = 'Managed'
+        self.type = 'Managed'  # type: str
         self.state = None
         self.compute_properties = kwargs.get('compute_properties', None)
         self.ssis_properties = kwargs.get('ssis_properties', None)
@@ -19653,11 +19864,262 @@ class ManagedIntegrationRuntimeStatus(IntegrationRuntimeStatus):
         **kwargs
     ):
         super(ManagedIntegrationRuntimeStatus, self).__init__(**kwargs)
-        self.type = 'Managed'
+        self.type = 'Managed'  # type: str
         self.create_time = None
         self.nodes = None
         self.other_errors = None
         self.last_operation = None
+
+
+class ManagedPrivateEndpoint(msrest.serialization.Model):
+    """Properties of a managed private endpoint.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :param additional_properties: Unmatched properties from the message are deserialized to this
+     collection.
+    :type additional_properties: dict[str, object]
+    :param connection_state: The managed private endpoint connection state.
+    :type connection_state: ~data_factory_management_client.models.ConnectionStateProperties
+    :param fqdns: Fully qualified domain names.
+    :type fqdns: list[str]
+    :param group_id: The groupId to which the managed private endpoint is created.
+    :type group_id: str
+    :ivar is_reserved: Denotes whether the managed private endpoint is reserved.
+    :vartype is_reserved: bool
+    :param private_link_resource_id: The ARM resource ID of the resource to which the managed
+     private endpoint is created.
+    :type private_link_resource_id: str
+    :ivar provisioning_state: The managed private endpoint provisioning state.
+    :vartype provisioning_state: str
+    """
+
+    _validation = {
+        'is_reserved': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'additional_properties': {'key': '', 'type': '{object}'},
+        'connection_state': {'key': 'connectionState', 'type': 'ConnectionStateProperties'},
+        'fqdns': {'key': 'fqdns', 'type': '[str]'},
+        'group_id': {'key': 'groupId', 'type': 'str'},
+        'is_reserved': {'key': 'isReserved', 'type': 'bool'},
+        'private_link_resource_id': {'key': 'privateLinkResourceId', 'type': 'str'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ManagedPrivateEndpoint, self).__init__(**kwargs)
+        self.additional_properties = kwargs.get('additional_properties', None)
+        self.connection_state = kwargs.get('connection_state', None)
+        self.fqdns = kwargs.get('fqdns', None)
+        self.group_id = kwargs.get('group_id', None)
+        self.is_reserved = None
+        self.private_link_resource_id = kwargs.get('private_link_resource_id', None)
+        self.provisioning_state = None
+
+
+class ManagedPrivateEndpointListResponse(msrest.serialization.Model):
+    """A list of managed private endpoint resources.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param value: Required. List of managed private endpoints.
+    :type value: list[~data_factory_management_client.models.ManagedPrivateEndpointResource]
+    :param next_link: The link to the next page of results, if any remaining results exist.
+    :type next_link: str
+    """
+
+    _validation = {
+        'value': {'required': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[ManagedPrivateEndpointResource]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ManagedPrivateEndpointListResponse, self).__init__(**kwargs)
+        self.value = kwargs['value']
+        self.next_link = kwargs.get('next_link', None)
+
+
+class ManagedPrivateEndpointResource(SubResource):
+    """Managed private endpoint resource type.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: The resource identifier.
+    :vartype id: str
+    :ivar name: The resource name.
+    :vartype name: str
+    :ivar type: The resource type.
+    :vartype type: str
+    :ivar etag: Etag identifies change in the resource.
+    :vartype etag: str
+    :param connection_state: The managed private endpoint connection state.
+    :type connection_state: ~data_factory_management_client.models.ConnectionStateProperties
+    :param fqdns: Fully qualified domain names.
+    :type fqdns: list[str]
+    :param group_id: The groupId to which the managed private endpoint is created.
+    :type group_id: str
+    :ivar is_reserved: Denotes whether the managed private endpoint is reserved.
+    :vartype is_reserved: bool
+    :param private_link_resource_id: The ARM resource ID of the resource to which the managed
+     private endpoint is created.
+    :type private_link_resource_id: str
+    :ivar provisioning_state: The managed private endpoint provisioning state.
+    :vartype provisioning_state: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'etag': {'readonly': True},
+        'is_reserved': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'etag': {'key': 'etag', 'type': 'str'},
+        'connection_state': {'key': 'properties.connectionState', 'type': 'ConnectionStateProperties'},
+        'fqdns': {'key': 'properties.fqdns', 'type': '[str]'},
+        'group_id': {'key': 'properties.groupId', 'type': 'str'},
+        'is_reserved': {'key': 'properties.isReserved', 'type': 'bool'},
+        'private_link_resource_id': {'key': 'properties.privateLinkResourceId', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ManagedPrivateEndpointResource, self).__init__(**kwargs)
+        self.connection_state = kwargs.get('connection_state', None)
+        self.fqdns = kwargs.get('fqdns', None)
+        self.group_id = kwargs.get('group_id', None)
+        self.is_reserved = None
+        self.private_link_resource_id = kwargs.get('private_link_resource_id', None)
+        self.provisioning_state = None
+
+
+class ManagedVirtualNetwork(msrest.serialization.Model):
+    """A managed Virtual Network associated with the Azure Data Factory.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :param additional_properties: Unmatched properties from the message are deserialized to this
+     collection.
+    :type additional_properties: dict[str, object]
+    :ivar v_net_id: Managed Virtual Network ID.
+    :vartype v_net_id: str
+    :ivar alias: Managed Virtual Network alias.
+    :vartype alias: str
+    """
+
+    _validation = {
+        'v_net_id': {'readonly': True},
+        'alias': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'additional_properties': {'key': '', 'type': '{object}'},
+        'v_net_id': {'key': 'vNetId', 'type': 'str'},
+        'alias': {'key': 'alias', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ManagedVirtualNetwork, self).__init__(**kwargs)
+        self.additional_properties = kwargs.get('additional_properties', None)
+        self.v_net_id = None
+        self.alias = None
+
+
+class ManagedVirtualNetworkListResponse(msrest.serialization.Model):
+    """A list of managed Virtual Network resources.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param value: Required. List of managed Virtual Networks.
+    :type value: list[~data_factory_management_client.models.ManagedVirtualNetworkResource]
+    :param next_link: The link to the next page of results, if any remaining results exist.
+    :type next_link: str
+    """
+
+    _validation = {
+        'value': {'required': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[ManagedVirtualNetworkResource]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ManagedVirtualNetworkListResponse, self).__init__(**kwargs)
+        self.value = kwargs['value']
+        self.next_link = kwargs.get('next_link', None)
+
+
+class ManagedVirtualNetworkResource(SubResource):
+    """Managed Virtual Network resource type.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar id: The resource identifier.
+    :vartype id: str
+    :ivar name: The resource name.
+    :vartype name: str
+    :ivar type: The resource type.
+    :vartype type: str
+    :ivar etag: Etag identifies change in the resource.
+    :vartype etag: str
+    :param properties: Required. Managed Virtual Network properties.
+    :type properties: ~data_factory_management_client.models.ManagedVirtualNetwork
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'etag': {'readonly': True},
+        'properties': {'required': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'etag': {'key': 'etag', 'type': 'str'},
+        'properties': {'key': 'properties', 'type': 'ManagedVirtualNetwork'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ManagedVirtualNetworkResource, self).__init__(**kwargs)
+        self.properties = kwargs['properties']
 
 
 class MappingDataFlow(DataFlow):
@@ -19698,7 +20160,7 @@ class MappingDataFlow(DataFlow):
         **kwargs
     ):
         super(MappingDataFlow, self).__init__(**kwargs)
-        self.type = 'MappingDataFlow'
+        self.type = 'MappingDataFlow'  # type: str
         self.sources = kwargs.get('sources', None)
         self.sinks = kwargs.get('sinks', None)
         self.transformations = kwargs.get('transformations', None)
@@ -19755,7 +20217,7 @@ class MariaDBLinkedService(LinkedService):
         **kwargs
     ):
         super(MariaDBLinkedService, self).__init__(**kwargs)
-        self.type = 'MariaDB'
+        self.type = 'MariaDB'  # type: str
         self.connection_string = kwargs.get('connection_string', None)
         self.pwd = kwargs.get('pwd', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
@@ -19811,7 +20273,7 @@ class MariaDBSource(TabularSource):
         **kwargs
     ):
         super(MariaDBSource, self).__init__(**kwargs)
-        self.type = 'MariaDBSource'
+        self.type = 'MariaDBSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -19869,7 +20331,7 @@ class MariaDBTableDataset(Dataset):
         **kwargs
     ):
         super(MariaDBTableDataset, self).__init__(**kwargs)
-        self.type = 'MariaDBTable'
+        self.type = 'MariaDBTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -19940,7 +20402,7 @@ class MarketoLinkedService(LinkedService):
         **kwargs
     ):
         super(MarketoLinkedService, self).__init__(**kwargs)
-        self.type = 'Marketo'
+        self.type = 'Marketo'  # type: str
         self.endpoint = kwargs['endpoint']
         self.client_id = kwargs['client_id']
         self.client_secret = kwargs.get('client_secret', None)
@@ -20004,7 +20466,7 @@ class MarketoObjectDataset(Dataset):
         **kwargs
     ):
         super(MarketoObjectDataset, self).__init__(**kwargs)
-        self.type = 'MarketoObject'
+        self.type = 'MarketoObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -20058,7 +20520,7 @@ class MarketoSource(TabularSource):
         **kwargs
     ):
         super(MarketoSource, self).__init__(**kwargs)
-        self.type = 'MarketoSource'
+        self.type = 'MarketoSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -20127,7 +20589,7 @@ class MicrosoftAccessLinkedService(LinkedService):
         **kwargs
     ):
         super(MicrosoftAccessLinkedService, self).__init__(**kwargs)
-        self.type = 'MicrosoftAccess'
+        self.type = 'MicrosoftAccess'  # type: str
         self.connection_string = kwargs['connection_string']
         self.authentication_type = kwargs.get('authentication_type', None)
         self.credential = kwargs.get('credential', None)
@@ -20186,7 +20648,7 @@ class MicrosoftAccessSink(CopySink):
         **kwargs
     ):
         super(MicrosoftAccessSink, self).__init__(**kwargs)
-        self.type = 'MicrosoftAccessSink'
+        self.type = 'MicrosoftAccessSink'  # type: str
         self.pre_copy_script = kwargs.get('pre_copy_script', None)
 
 
@@ -20235,7 +20697,7 @@ class MicrosoftAccessSource(CopySource):
         **kwargs
     ):
         super(MicrosoftAccessSource, self).__init__(**kwargs)
-        self.type = 'MicrosoftAccessSource'
+        self.type = 'MicrosoftAccessSource'  # type: str
         self.query = kwargs.get('query', None)
         self.additional_columns = kwargs.get('additional_columns', None)
 
@@ -20295,7 +20757,7 @@ class MicrosoftAccessTableDataset(Dataset):
         **kwargs
     ):
         super(MicrosoftAccessTableDataset, self).__init__(**kwargs)
-        self.type = 'MicrosoftAccessTable'
+        self.type = 'MicrosoftAccessTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -20355,7 +20817,7 @@ class MongoDBCollectionDataset(Dataset):
         **kwargs
     ):
         super(MongoDBCollectionDataset, self).__init__(**kwargs)
-        self.type = 'MongoDbCollection'
+        self.type = 'MongoDbCollection'  # type: str
         self.collection_name = kwargs['collection_name']
 
 
@@ -20483,7 +20945,7 @@ class MongoDBLinkedService(LinkedService):
         **kwargs
     ):
         super(MongoDBLinkedService, self).__init__(**kwargs)
-        self.type = 'MongoDb'
+        self.type = 'MongoDb'  # type: str
         self.server = kwargs['server']
         self.authentication_type = kwargs.get('authentication_type', None)
         self.database_name = kwargs['database_name']
@@ -20542,7 +21004,7 @@ class MongoDBSource(CopySource):
         **kwargs
     ):
         super(MongoDBSource, self).__init__(**kwargs)
-        self.type = 'MongoDbSource'
+        self.type = 'MongoDbSource'  # type: str
         self.query = kwargs.get('query', None)
         self.additional_columns = kwargs.get('additional_columns', None)
 
@@ -20603,7 +21065,7 @@ class MongoDBV2CollectionDataset(Dataset):
         **kwargs
     ):
         super(MongoDBV2CollectionDataset, self).__init__(**kwargs)
-        self.type = 'MongoDbV2Collection'
+        self.type = 'MongoDbV2Collection'  # type: str
         self.collection = kwargs['collection']
 
 
@@ -20655,7 +21117,7 @@ class MongoDBV2LinkedService(LinkedService):
         **kwargs
     ):
         super(MongoDBV2LinkedService, self).__init__(**kwargs)
-        self.type = 'MongoDbV2'
+        self.type = 'MongoDbV2'  # type: str
         self.connection_string = kwargs['connection_string']
         self.database = kwargs['database']
 
@@ -20720,7 +21182,7 @@ class MongoDBV2Source(CopySource):
         **kwargs
     ):
         super(MongoDBV2Source, self).__init__(**kwargs)
-        self.type = 'MongoDbV2Source'
+        self.type = 'MongoDbV2Source'  # type: str
         self.filter = kwargs.get('filter', None)
         self.cursor_methods = kwargs.get('cursor_methods', None)
         self.batch_size = kwargs.get('batch_size', None)
@@ -20728,7 +21190,7 @@ class MongoDBV2Source(CopySource):
         self.additional_columns = kwargs.get('additional_columns', None)
 
 
-class MySqlLinkedService(LinkedService):
+class MySQLLinkedService(LinkedService):
     """Linked service for MySQL data source.
 
     All required parameters must be populated in order to send to Azure.
@@ -20777,14 +21239,14 @@ class MySqlLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(MySqlLinkedService, self).__init__(**kwargs)
-        self.type = 'MySql'
+        super(MySQLLinkedService, self).__init__(**kwargs)
+        self.type = 'MySql'  # type: str
         self.connection_string = kwargs['connection_string']
         self.password = kwargs.get('password', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class MySqlSource(TabularSource):
+class MySQLSource(TabularSource):
     """A copy activity source for MySQL databases.
 
     All required parameters must be populated in order to send to Azure.
@@ -20832,12 +21294,12 @@ class MySqlSource(TabularSource):
         self,
         **kwargs
     ):
-        super(MySqlSource, self).__init__(**kwargs)
-        self.type = 'MySqlSource'
+        super(MySQLSource, self).__init__(**kwargs)
+        self.type = 'MySqlSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
-class MySqlTableDataset(Dataset):
+class MySQLTableDataset(Dataset):
     """The MySQL table dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -20890,8 +21352,8 @@ class MySqlTableDataset(Dataset):
         self,
         **kwargs
     ):
-        super(MySqlTableDataset, self).__init__(**kwargs)
-        self.type = 'MySqlTable'
+        super(MySQLTableDataset, self).__init__(**kwargs)
+        self.type = 'MySqlTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -20945,7 +21407,7 @@ class NetezzaLinkedService(LinkedService):
         **kwargs
     ):
         super(NetezzaLinkedService, self).__init__(**kwargs)
-        self.type = 'Netezza'
+        self.type = 'Netezza'  # type: str
         self.connection_string = kwargs.get('connection_string', None)
         self.pwd = kwargs.get('pwd', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
@@ -21040,7 +21502,7 @@ class NetezzaSource(TabularSource):
         **kwargs
     ):
         super(NetezzaSource, self).__init__(**kwargs)
-        self.type = 'NetezzaSource'
+        self.type = 'NetezzaSource'  # type: str
         self.query = kwargs.get('query', None)
         self.partition_option = kwargs.get('partition_option', None)
         self.partition_settings = kwargs.get('partition_settings', None)
@@ -21109,7 +21571,7 @@ class NetezzaTableDataset(Dataset):
         **kwargs
     ):
         super(NetezzaTableDataset, self).__init__(**kwargs)
-        self.type = 'NetezzaTable'
+        self.type = 'NetezzaTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.table = kwargs.get('table', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
@@ -21152,13 +21614,17 @@ class ODataLinkedService(LinkedService):
     :param service_principal_id: Specify the application id of your application registered in Azure
      Active Directory. Type: string (or Expression with resultType string).
     :type service_principal_id: object
+    :param azure_cloud_type: Indicates the azure cloud type of the service principle auth. Allowed
+     values are AzurePublic, AzureChina, AzureUsGovernment, AzureGermany. Default value is the data
+     factory regions’ cloud type. Type: string (or Expression with resultType string).
+    :type azure_cloud_type: object
     :param aad_resource_id: Specify the resource you are requesting authorization to use Directory.
      Type: string (or Expression with resultType string).
     :type aad_resource_id: object
     :param aad_service_principal_credential_type: Specify the credential type (key or cert) is used
      for service principal. Possible values include: "ServicePrincipalKey", "ServicePrincipalCert".
     :type aad_service_principal_credential_type: str or
-     ~data_factory_management_client.models.ODataAadServicePrincipalCredentialType
+     ~data_factory_management_client.models.ODataAADServicePrincipalCredentialType
     :param service_principal_key: Specify the secret of your application registered in Azure Active
      Directory. Type: string (or Expression with resultType string).
     :type service_principal_key: ~data_factory_management_client.models.SecretBase
@@ -21195,6 +21661,7 @@ class ODataLinkedService(LinkedService):
         'password': {'key': 'typeProperties.password', 'type': 'SecretBase'},
         'tenant': {'key': 'typeProperties.tenant', 'type': 'object'},
         'service_principal_id': {'key': 'typeProperties.servicePrincipalId', 'type': 'object'},
+        'azure_cloud_type': {'key': 'typeProperties.azureCloudType', 'type': 'object'},
         'aad_resource_id': {'key': 'typeProperties.aadResourceId', 'type': 'object'},
         'aad_service_principal_credential_type': {'key': 'typeProperties.aadServicePrincipalCredentialType', 'type': 'str'},
         'service_principal_key': {'key': 'typeProperties.servicePrincipalKey', 'type': 'SecretBase'},
@@ -21208,13 +21675,14 @@ class ODataLinkedService(LinkedService):
         **kwargs
     ):
         super(ODataLinkedService, self).__init__(**kwargs)
-        self.type = 'OData'
+        self.type = 'OData'  # type: str
         self.url = kwargs['url']
         self.authentication_type = kwargs.get('authentication_type', None)
         self.user_name = kwargs.get('user_name', None)
         self.password = kwargs.get('password', None)
         self.tenant = kwargs.get('tenant', None)
         self.service_principal_id = kwargs.get('service_principal_id', None)
+        self.azure_cloud_type = kwargs.get('azure_cloud_type', None)
         self.aad_resource_id = kwargs.get('aad_resource_id', None)
         self.aad_service_principal_credential_type = kwargs.get('aad_service_principal_credential_type', None)
         self.service_principal_key = kwargs.get('service_principal_key', None)
@@ -21277,7 +21745,7 @@ class ODataResourceDataset(Dataset):
         **kwargs
     ):
         super(ODataResourceDataset, self).__init__(**kwargs)
-        self.type = 'ODataResource'
+        self.type = 'ODataResource'  # type: str
         self.path = kwargs.get('path', None)
 
 
@@ -21333,7 +21801,7 @@ class ODataSource(CopySource):
         **kwargs
     ):
         super(ODataSource, self).__init__(**kwargs)
-        self.type = 'ODataSource'
+        self.type = 'ODataSource'  # type: str
         self.query = kwargs.get('query', None)
         self.http_request_timeout = kwargs.get('http_request_timeout', None)
         self.additional_columns = kwargs.get('additional_columns', None)
@@ -21403,7 +21871,7 @@ class OdbcLinkedService(LinkedService):
         **kwargs
     ):
         super(OdbcLinkedService, self).__init__(**kwargs)
-        self.type = 'Odbc'
+        self.type = 'Odbc'  # type: str
         self.connection_string = kwargs['connection_string']
         self.authentication_type = kwargs.get('authentication_type', None)
         self.credential = kwargs.get('credential', None)
@@ -21462,7 +21930,7 @@ class OdbcSink(CopySink):
         **kwargs
     ):
         super(OdbcSink, self).__init__(**kwargs)
-        self.type = 'OdbcSink'
+        self.type = 'OdbcSink'  # type: str
         self.pre_copy_script = kwargs.get('pre_copy_script', None)
 
 
@@ -21515,7 +21983,7 @@ class OdbcSource(TabularSource):
         **kwargs
     ):
         super(OdbcSource, self).__init__(**kwargs)
-        self.type = 'OdbcSource'
+        self.type = 'OdbcSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -21573,7 +22041,7 @@ class OdbcTableDataset(Dataset):
         **kwargs
     ):
         super(OdbcTableDataset, self).__init__(**kwargs)
-        self.type = 'OdbcTable'
+        self.type = 'OdbcTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -21637,7 +22105,7 @@ class Office365Dataset(Dataset):
         **kwargs
     ):
         super(Office365Dataset, self).__init__(**kwargs)
-        self.type = 'Office365Table'
+        self.type = 'Office365Table'  # type: str
         self.table_name = kwargs['table_name']
         self.predicate = kwargs.get('predicate', None)
 
@@ -21704,7 +22172,7 @@ class Office365LinkedService(LinkedService):
         **kwargs
     ):
         super(Office365LinkedService, self).__init__(**kwargs)
-        self.type = 'Office365'
+        self.type = 'Office365'  # type: str
         self.office365_tenant_id = kwargs['office365_tenant_id']
         self.service_principal_tenant_id = kwargs['service_principal_tenant_id']
         self.service_principal_id = kwargs['service_principal_id']
@@ -21775,7 +22243,7 @@ class Office365Source(CopySource):
         **kwargs
     ):
         super(Office365Source, self).__init__(**kwargs)
-        self.type = 'Office365Source'
+        self.type = 'Office365Source'  # type: str
         self.allowed_groups = kwargs.get('allowed_groups', None)
         self.user_scope_filter_uri = kwargs.get('user_scope_filter_uri', None)
         self.date_filter_column = kwargs.get('date_filter_column', None)
@@ -22078,7 +22546,7 @@ class OracleLinkedService(LinkedService):
         **kwargs
     ):
         super(OracleLinkedService, self).__init__(**kwargs)
-        self.type = 'Oracle'
+        self.type = 'Oracle'  # type: str
         self.connection_string = kwargs['connection_string']
         self.password = kwargs.get('password', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
@@ -22190,7 +22658,7 @@ class OracleServiceCloudLinkedService(LinkedService):
         **kwargs
     ):
         super(OracleServiceCloudLinkedService, self).__init__(**kwargs)
-        self.type = 'OracleServiceCloud'
+        self.type = 'OracleServiceCloud'  # type: str
         self.host = kwargs['host']
         self.username = kwargs['username']
         self.password = kwargs['password']
@@ -22254,7 +22722,7 @@ class OracleServiceCloudObjectDataset(Dataset):
         **kwargs
     ):
         super(OracleServiceCloudObjectDataset, self).__init__(**kwargs)
-        self.type = 'OracleServiceCloudObject'
+        self.type = 'OracleServiceCloudObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -22308,7 +22776,7 @@ class OracleServiceCloudSource(TabularSource):
         **kwargs
     ):
         super(OracleServiceCloudSource, self).__init__(**kwargs)
-        self.type = 'OracleServiceCloudSource'
+        self.type = 'OracleServiceCloudSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -22362,7 +22830,7 @@ class OracleSink(CopySink):
         **kwargs
     ):
         super(OracleSink, self).__init__(**kwargs)
-        self.type = 'OracleSink'
+        self.type = 'OracleSink'  # type: str
         self.pre_copy_script = kwargs.get('pre_copy_script', None)
 
 
@@ -22423,7 +22891,7 @@ class OracleSource(CopySource):
         **kwargs
     ):
         super(OracleSource, self).__init__(**kwargs)
-        self.type = 'OracleSource'
+        self.type = 'OracleSource'  # type: str
         self.oracle_reader_query = kwargs.get('oracle_reader_query', None)
         self.query_timeout = kwargs.get('query_timeout', None)
         self.partition_option = kwargs.get('partition_option', None)
@@ -22494,7 +22962,7 @@ class OracleTableDataset(Dataset):
         **kwargs
     ):
         super(OracleTableDataset, self).__init__(**kwargs)
-        self.type = 'OracleTable'
+        self.type = 'OracleTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
         self.table = kwargs.get('table', None)
@@ -22557,7 +23025,7 @@ class OrcDataset(Dataset):
         **kwargs
     ):
         super(OrcDataset, self).__init__(**kwargs)
-        self.type = 'Orc'
+        self.type = 'Orc'  # type: str
         self.location = kwargs.get('location', None)
         self.orc_compression_codec = kwargs.get('orc_compression_codec', None)
 
@@ -22594,7 +23062,7 @@ class OrcFormat(DatasetStorageFormat):
         **kwargs
     ):
         super(OrcFormat, self).__init__(**kwargs)
-        self.type = 'OrcFormat'
+        self.type = 'OrcFormat'  # type: str
 
 
 class OrcSink(CopySink):
@@ -22646,7 +23114,7 @@ class OrcSink(CopySink):
         **kwargs
     ):
         super(OrcSink, self).__init__(**kwargs)
-        self.type = 'OrcSink'
+        self.type = 'OrcSink'  # type: str
         self.store_settings = kwargs.get('store_settings', None)
 
 
@@ -22695,7 +23163,7 @@ class OrcSource(CopySource):
         **kwargs
     ):
         super(OrcSource, self).__init__(**kwargs)
-        self.type = 'OrcSource'
+        self.type = 'OrcSource'  # type: str
         self.store_settings = kwargs.get('store_settings', None)
         self.additional_columns = kwargs.get('additional_columns', None)
 
@@ -22818,7 +23286,7 @@ class ParquetDataset(Dataset):
         **kwargs
     ):
         super(ParquetDataset, self).__init__(**kwargs)
-        self.type = 'Parquet'
+        self.type = 'Parquet'  # type: str
         self.location = kwargs.get('location', None)
         self.compression_codec = kwargs.get('compression_codec', None)
 
@@ -22855,7 +23323,7 @@ class ParquetFormat(DatasetStorageFormat):
         **kwargs
     ):
         super(ParquetFormat, self).__init__(**kwargs)
-        self.type = 'ParquetFormat'
+        self.type = 'ParquetFormat'  # type: str
 
 
 class ParquetSink(CopySink):
@@ -22907,7 +23375,7 @@ class ParquetSink(CopySink):
         **kwargs
     ):
         super(ParquetSink, self).__init__(**kwargs)
-        self.type = 'ParquetSink'
+        self.type = 'ParquetSink'  # type: str
         self.store_settings = kwargs.get('store_settings', None)
 
 
@@ -22956,7 +23424,7 @@ class ParquetSource(CopySource):
         **kwargs
     ):
         super(ParquetSource, self).__init__(**kwargs)
-        self.type = 'ParquetSource'
+        self.type = 'ParquetSource'  # type: str
         self.store_settings = kwargs.get('store_settings', None)
         self.additional_columns = kwargs.get('additional_columns', None)
 
@@ -23028,7 +23496,7 @@ class PaypalLinkedService(LinkedService):
         **kwargs
     ):
         super(PaypalLinkedService, self).__init__(**kwargs)
-        self.type = 'Paypal'
+        self.type = 'Paypal'  # type: str
         self.host = kwargs['host']
         self.client_id = kwargs['client_id']
         self.client_secret = kwargs.get('client_secret', None)
@@ -23092,7 +23560,7 @@ class PaypalObjectDataset(Dataset):
         **kwargs
     ):
         super(PaypalObjectDataset, self).__init__(**kwargs)
-        self.type = 'PaypalObject'
+        self.type = 'PaypalObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -23146,7 +23614,7 @@ class PaypalSource(TabularSource):
         **kwargs
     ):
         super(PaypalSource, self).__init__(**kwargs)
-        self.type = 'PaypalSource'
+        self.type = 'PaypalSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -23241,7 +23709,7 @@ class PhoenixLinkedService(LinkedService):
         **kwargs
     ):
         super(PhoenixLinkedService, self).__init__(**kwargs)
-        self.type = 'Phoenix'
+        self.type = 'Phoenix'  # type: str
         self.host = kwargs['host']
         self.port = kwargs.get('port', None)
         self.http_path = kwargs.get('http_path', None)
@@ -23319,7 +23787,7 @@ class PhoenixObjectDataset(Dataset):
         **kwargs
     ):
         super(PhoenixObjectDataset, self).__init__(**kwargs)
-        self.type = 'PhoenixObject'
+        self.type = 'PhoenixObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.table = kwargs.get('table', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
@@ -23375,7 +23843,7 @@ class PhoenixSource(TabularSource):
         **kwargs
     ):
         super(PhoenixSource, self).__init__(**kwargs)
-        self.type = 'PhoenixSource'
+        self.type = 'PhoenixSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -23475,8 +23943,8 @@ class PipelineResource(SubResource):
     :type annotations: list[object]
     :param run_dimensions: Dimensions emitted by Pipeline.
     :type run_dimensions: dict[str, object]
-    :param name_properties_folder_name: The name of the folder that this Pipeline is in.
-    :type name_properties_folder_name: str
+    :param name_folder_name: The name of the folder that this Pipeline is in.
+    :type name_folder_name: str
     """
 
     _validation = {
@@ -23500,7 +23968,7 @@ class PipelineResource(SubResource):
         'concurrency': {'key': 'properties.concurrency', 'type': 'int'},
         'annotations': {'key': 'properties.annotations', 'type': '[object]'},
         'run_dimensions': {'key': 'properties.runDimensions', 'type': '{object}'},
-        'name_properties_folder_name': {'key': 'properties.folder.name', 'type': 'str'},
+        'name_folder_name': {'key': 'folder.name', 'type': 'str'},
     }
 
     def __init__(
@@ -23516,7 +23984,7 @@ class PipelineResource(SubResource):
         self.concurrency = kwargs.get('concurrency', None)
         self.annotations = kwargs.get('annotations', None)
         self.run_dimensions = kwargs.get('run_dimensions', None)
-        self.name_properties_folder_name = kwargs.get('name_properties_folder_name', None)
+        self.name_folder_name = kwargs.get('name_folder_name', None)
 
 
 class PipelineRun(msrest.serialization.Model):
@@ -23716,7 +24184,7 @@ class PolybaseSettings(msrest.serialization.Model):
         self.use_type_default = kwargs.get('use_type_default', None)
 
 
-class PostgreSqlLinkedService(LinkedService):
+class PostgreSQLLinkedService(LinkedService):
     """Linked service for PostgreSQL data source.
 
     All required parameters must be populated in order to send to Azure.
@@ -23765,14 +24233,14 @@ class PostgreSqlLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(PostgreSqlLinkedService, self).__init__(**kwargs)
-        self.type = 'PostgreSql'
+        super(PostgreSQLLinkedService, self).__init__(**kwargs)
+        self.type = 'PostgreSql'  # type: str
         self.connection_string = kwargs['connection_string']
         self.password = kwargs.get('password', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class PostgreSqlSource(TabularSource):
+class PostgreSQLSource(TabularSource):
     """A copy activity source for PostgreSQL databases.
 
     All required parameters must be populated in order to send to Azure.
@@ -23820,12 +24288,12 @@ class PostgreSqlSource(TabularSource):
         self,
         **kwargs
     ):
-        super(PostgreSqlSource, self).__init__(**kwargs)
-        self.type = 'PostgreSqlSource'
+        super(PostgreSQLSource, self).__init__(**kwargs)
+        self.type = 'PostgreSqlSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
-class PostgreSqlTableDataset(Dataset):
+class PostgreSQLTableDataset(Dataset):
     """The PostgreSQL table dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -23886,8 +24354,8 @@ class PostgreSqlTableDataset(Dataset):
         self,
         **kwargs
     ):
-        super(PostgreSqlTableDataset, self).__init__(**kwargs)
-        self.type = 'PostgreSqlTable'
+        super(PostgreSQLTableDataset, self).__init__(**kwargs)
+        self.type = 'PostgreSqlTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.table = kwargs.get('table', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
@@ -23990,7 +24458,7 @@ class PrestoLinkedService(LinkedService):
         **kwargs
     ):
         super(PrestoLinkedService, self).__init__(**kwargs)
-        self.type = 'Presto'
+        self.type = 'Presto'  # type: str
         self.host = kwargs['host']
         self.server_version = kwargs['server_version']
         self.catalog = kwargs['catalog']
@@ -24070,7 +24538,7 @@ class PrestoObjectDataset(Dataset):
         **kwargs
     ):
         super(PrestoObjectDataset, self).__init__(**kwargs)
-        self.type = 'PrestoObject'
+        self.type = 'PrestoObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.table = kwargs.get('table', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
@@ -24126,7 +24594,7 @@ class PrestoSource(TabularSource):
         **kwargs
     ):
         super(PrestoSource, self).__init__(**kwargs)
-        self.type = 'PrestoSource'
+        self.type = 'PrestoSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -24171,18 +24639,20 @@ class QuickBooksLinkedService(LinkedService):
     :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
-    :param endpoint: Required. The endpoint of the QuickBooks server. (i.e.
-     quickbooks.api.intuit.com).
+    :param connection_properties: Properties used to connect to QuickBooks. It is mutually
+     exclusive with any other properties in the linked service. Type: object.
+    :type connection_properties: object
+    :param endpoint: The endpoint of the QuickBooks server. (i.e. quickbooks.api.intuit.com).
     :type endpoint: object
-    :param company_id: Required. The company ID of the QuickBooks company to authorize.
+    :param company_id: The company ID of the QuickBooks company to authorize.
     :type company_id: object
-    :param consumer_key: Required. The consumer key for OAuth 1.0 authentication.
+    :param consumer_key: The consumer key for OAuth 1.0 authentication.
     :type consumer_key: object
-    :param consumer_secret: Required. The consumer secret for OAuth 1.0 authentication.
+    :param consumer_secret: The consumer secret for OAuth 1.0 authentication.
     :type consumer_secret: ~data_factory_management_client.models.SecretBase
-    :param access_token: Required. The access token for OAuth 1.0 authentication.
+    :param access_token: The access token for OAuth 1.0 authentication.
     :type access_token: ~data_factory_management_client.models.SecretBase
-    :param access_token_secret: Required. The access token secret for OAuth 1.0 authentication.
+    :param access_token_secret: The access token secret for OAuth 1.0 authentication.
     :type access_token_secret: ~data_factory_management_client.models.SecretBase
     :param use_encrypted_endpoints: Specifies whether the data source endpoints are encrypted using
      HTTPS. The default value is true.
@@ -24195,12 +24665,6 @@ class QuickBooksLinkedService(LinkedService):
 
     _validation = {
         'type': {'required': True},
-        'endpoint': {'required': True},
-        'company_id': {'required': True},
-        'consumer_key': {'required': True},
-        'consumer_secret': {'required': True},
-        'access_token': {'required': True},
-        'access_token_secret': {'required': True},
     }
 
     _attribute_map = {
@@ -24210,6 +24674,7 @@ class QuickBooksLinkedService(LinkedService):
         'description': {'key': 'description', 'type': 'str'},
         'parameters': {'key': 'parameters', 'type': '{ParameterSpecification}'},
         'annotations': {'key': 'annotations', 'type': '[object]'},
+        'connection_properties': {'key': 'typeProperties.connectionProperties', 'type': 'object'},
         'endpoint': {'key': 'typeProperties.endpoint', 'type': 'object'},
         'company_id': {'key': 'typeProperties.companyId', 'type': 'object'},
         'consumer_key': {'key': 'typeProperties.consumerKey', 'type': 'object'},
@@ -24225,13 +24690,14 @@ class QuickBooksLinkedService(LinkedService):
         **kwargs
     ):
         super(QuickBooksLinkedService, self).__init__(**kwargs)
-        self.type = 'QuickBooks'
-        self.endpoint = kwargs['endpoint']
-        self.company_id = kwargs['company_id']
-        self.consumer_key = kwargs['consumer_key']
-        self.consumer_secret = kwargs['consumer_secret']
-        self.access_token = kwargs['access_token']
-        self.access_token_secret = kwargs['access_token_secret']
+        self.type = 'QuickBooks'  # type: str
+        self.connection_properties = kwargs.get('connection_properties', None)
+        self.endpoint = kwargs.get('endpoint', None)
+        self.company_id = kwargs.get('company_id', None)
+        self.consumer_key = kwargs.get('consumer_key', None)
+        self.consumer_secret = kwargs.get('consumer_secret', None)
+        self.access_token = kwargs.get('access_token', None)
+        self.access_token_secret = kwargs.get('access_token_secret', None)
         self.use_encrypted_endpoints = kwargs.get('use_encrypted_endpoints', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
@@ -24290,7 +24756,7 @@ class QuickBooksObjectDataset(Dataset):
         **kwargs
     ):
         super(QuickBooksObjectDataset, self).__init__(**kwargs)
-        self.type = 'QuickBooksObject'
+        self.type = 'QuickBooksObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -24344,7 +24810,7 @@ class QuickBooksSource(TabularSource):
         **kwargs
     ):
         super(QuickBooksSource, self).__init__(**kwargs)
-        self.type = 'QuickBooksSource'
+        self.type = 'QuickBooksSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -24534,7 +25000,7 @@ class RelationalSource(CopySource):
         **kwargs
     ):
         super(RelationalSource, self).__init__(**kwargs)
-        self.type = 'RelationalSource'
+        self.type = 'RelationalSource'  # type: str
         self.query = kwargs.get('query', None)
         self.additional_columns = kwargs.get('additional_columns', None)
 
@@ -24594,7 +25060,7 @@ class RelationalTableDataset(Dataset):
         **kwargs
     ):
         super(RelationalTableDataset, self).__init__(**kwargs)
-        self.type = 'RelationalTable'
+        self.type = 'RelationalTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -24656,7 +25122,7 @@ class RerunTumblingWindowTrigger(Trigger):
         **kwargs
     ):
         super(RerunTumblingWindowTrigger, self).__init__(**kwargs)
-        self.type = 'RerunTumblingWindowTrigger'
+        self.type = 'RerunTumblingWindowTrigger'  # type: str
         self.parent_trigger = kwargs['parent_trigger']
         self.requested_start_time = kwargs['requested_start_time']
         self.requested_end_time = kwargs['requested_end_time']
@@ -24733,7 +25199,7 @@ class ResponsysLinkedService(LinkedService):
         **kwargs
     ):
         super(ResponsysLinkedService, self).__init__(**kwargs)
-        self.type = 'Responsys'
+        self.type = 'Responsys'  # type: str
         self.endpoint = kwargs['endpoint']
         self.client_id = kwargs['client_id']
         self.client_secret = kwargs.get('client_secret', None)
@@ -24797,7 +25263,7 @@ class ResponsysObjectDataset(Dataset):
         **kwargs
     ):
         super(ResponsysObjectDataset, self).__init__(**kwargs)
-        self.type = 'ResponsysObject'
+        self.type = 'ResponsysObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -24851,7 +25317,7 @@ class ResponsysSource(TabularSource):
         **kwargs
     ):
         super(ResponsysSource, self).__init__(**kwargs)
-        self.type = 'ResponsysSource'
+        self.type = 'ResponsysSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -24926,7 +25392,7 @@ class RestResourceDataset(Dataset):
         **kwargs
     ):
         super(RestResourceDataset, self).__init__(**kwargs)
-        self.type = 'RestResource'
+        self.type = 'RestResource'  # type: str
         self.relative_url = kwargs.get('relative_url', None)
         self.request_method = kwargs.get('request_method', None)
         self.request_body = kwargs.get('request_body', None)
@@ -24976,6 +25442,10 @@ class RestServiceLinkedService(LinkedService):
     :param tenant: The tenant information (domain name or tenant ID) used in AadServicePrincipal
      authentication type under which your application resides.
     :type tenant: object
+    :param azure_cloud_type: Indicates the azure cloud type of the service principle auth. Allowed
+     values are AzurePublic, AzureChina, AzureUsGovernment, AzureGermany. Default value is the data
+     factory regions’ cloud type. Type: string (or Expression with resultType string).
+    :type azure_cloud_type: object
     :param aad_resource_id: The resource you are requesting authorization to use.
     :type aad_resource_id: object
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
@@ -25005,6 +25475,7 @@ class RestServiceLinkedService(LinkedService):
         'service_principal_id': {'key': 'typeProperties.servicePrincipalId', 'type': 'object'},
         'service_principal_key': {'key': 'typeProperties.servicePrincipalKey', 'type': 'SecretBase'},
         'tenant': {'key': 'typeProperties.tenant', 'type': 'object'},
+        'azure_cloud_type': {'key': 'typeProperties.azureCloudType', 'type': 'object'},
         'aad_resource_id': {'key': 'typeProperties.aadResourceId', 'type': 'object'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
     }
@@ -25014,7 +25485,7 @@ class RestServiceLinkedService(LinkedService):
         **kwargs
     ):
         super(RestServiceLinkedService, self).__init__(**kwargs)
-        self.type = 'RestService'
+        self.type = 'RestService'  # type: str
         self.url = kwargs['url']
         self.enable_server_certificate_validation = kwargs.get('enable_server_certificate_validation', None)
         self.authentication_type = kwargs['authentication_type']
@@ -25023,8 +25494,90 @@ class RestServiceLinkedService(LinkedService):
         self.service_principal_id = kwargs.get('service_principal_id', None)
         self.service_principal_key = kwargs.get('service_principal_key', None)
         self.tenant = kwargs.get('tenant', None)
+        self.azure_cloud_type = kwargs.get('azure_cloud_type', None)
         self.aad_resource_id = kwargs.get('aad_resource_id', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
+
+
+class RestSink(CopySink):
+    """A copy activity Rest service Sink.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param additional_properties: Unmatched properties from the message are deserialized to this
+     collection.
+    :type additional_properties: dict[str, object]
+    :param type: Required. Copy sink type.Constant filled by server.
+    :type type: str
+    :param write_batch_size: Write batch size. Type: integer (or Expression with resultType
+     integer), minimum: 0.
+    :type write_batch_size: object
+    :param write_batch_timeout: Write batch timeout. Type: string (or Expression with resultType
+     string), pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
+    :type write_batch_timeout: object
+    :param sink_retry_count: Sink retry count. Type: integer (or Expression with resultType
+     integer).
+    :type sink_retry_count: object
+    :param sink_retry_wait: Sink retry wait. Type: string (or Expression with resultType string),
+     pattern: ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
+    :type sink_retry_wait: object
+    :param max_concurrent_connections: The maximum concurrent connection count for the sink data
+     store. Type: integer (or Expression with resultType integer).
+    :type max_concurrent_connections: object
+    :param request_method: The HTTP method used to call the RESTful API. The default is POST. Type:
+     string (or Expression with resultType string).
+    :type request_method: object
+    :param additional_headers: The additional HTTP headers in the request to the RESTful API. Type:
+     string (or Expression with resultType string).
+    :type additional_headers: object
+    :param http_request_timeout: The timeout (TimeSpan) to get an HTTP response. It is the timeout
+     to get a response, not the timeout to read response data. Default value: 00:01:40. Type: string
+     (or Expression with resultType string), pattern:
+     ((\d+).)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).
+    :type http_request_timeout: object
+    :param request_interval: The time to await before sending next request, in milliseconds.
+    :type request_interval: object
+    :param compression_type: Compression Type to Send data in compressed format with Optimal
+     Compression Level, Default is None. And The Only Supported option is Gzip.
+    :type compression_type: object
+    :param wrap_request_json_in_an_object: Wraps Request Array Json into an Object before calling
+     the rest endpoint , Default is false. ex: if true request content sample format is { rows:[]}
+     else the format is [].
+    :type wrap_request_json_in_an_object: object
+    """
+
+    _validation = {
+        'type': {'required': True},
+    }
+
+    _attribute_map = {
+        'additional_properties': {'key': '', 'type': '{object}'},
+        'type': {'key': 'type', 'type': 'str'},
+        'write_batch_size': {'key': 'writeBatchSize', 'type': 'object'},
+        'write_batch_timeout': {'key': 'writeBatchTimeout', 'type': 'object'},
+        'sink_retry_count': {'key': 'sinkRetryCount', 'type': 'object'},
+        'sink_retry_wait': {'key': 'sinkRetryWait', 'type': 'object'},
+        'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
+        'request_method': {'key': 'requestMethod', 'type': 'object'},
+        'additional_headers': {'key': 'additionalHeaders', 'type': 'object'},
+        'http_request_timeout': {'key': 'httpRequestTimeout', 'type': 'object'},
+        'request_interval': {'key': 'requestInterval', 'type': 'object'},
+        'compression_type': {'key': 'compressionType', 'type': 'object'},
+        'wrap_request_json_in_an_object': {'key': 'wrapRequestJsonInAnObject', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(RestSink, self).__init__(**kwargs)
+        self.type = 'RestSink'  # type: str
+        self.request_method = kwargs.get('request_method', None)
+        self.additional_headers = kwargs.get('additional_headers', None)
+        self.http_request_timeout = kwargs.get('http_request_timeout', None)
+        self.request_interval = kwargs.get('request_interval', None)
+        self.compression_type = kwargs.get('compression_type', None)
+        self.wrap_request_json_in_an_object = kwargs.get('wrap_request_json_in_an_object', None)
 
 
 class RestSource(CopySource):
@@ -25094,7 +25647,7 @@ class RestSource(CopySource):
         **kwargs
     ):
         super(RestSource, self).__init__(**kwargs)
-        self.type = 'RestSource'
+        self.type = 'RestSource'  # type: str
         self.request_method = kwargs.get('request_method', None)
         self.request_body = kwargs.get('request_body', None)
         self.additional_headers = kwargs.get('additional_headers', None)
@@ -25316,7 +25869,7 @@ class SalesforceLinkedService(LinkedService):
         **kwargs
     ):
         super(SalesforceLinkedService, self).__init__(**kwargs)
-        self.type = 'Salesforce'
+        self.type = 'Salesforce'  # type: str
         self.environment_url = kwargs.get('environment_url', None)
         self.username = kwargs.get('username', None)
         self.password = kwargs.get('password', None)
@@ -25343,8 +25896,11 @@ class SalesforceMarketingCloudLinkedService(LinkedService):
     :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
-    :param client_id: Required. The client ID associated with the Salesforce Marketing Cloud
-     application. Type: string (or Expression with resultType string).
+    :param connection_properties: Properties used to connect to Salesforce Marketing Cloud. It is
+     mutually exclusive with any other properties in the linked service. Type: object.
+    :type connection_properties: object
+    :param client_id: The client ID associated with the Salesforce Marketing Cloud application.
+     Type: string (or Expression with resultType string).
     :type client_id: object
     :param client_secret: The client secret associated with the Salesforce Marketing Cloud
      application. Type: string (or Expression with resultType string).
@@ -25368,7 +25924,6 @@ class SalesforceMarketingCloudLinkedService(LinkedService):
 
     _validation = {
         'type': {'required': True},
-        'client_id': {'required': True},
     }
 
     _attribute_map = {
@@ -25378,6 +25933,7 @@ class SalesforceMarketingCloudLinkedService(LinkedService):
         'description': {'key': 'description', 'type': 'str'},
         'parameters': {'key': 'parameters', 'type': '{ParameterSpecification}'},
         'annotations': {'key': 'annotations', 'type': '[object]'},
+        'connection_properties': {'key': 'typeProperties.connectionProperties', 'type': 'object'},
         'client_id': {'key': 'typeProperties.clientId', 'type': 'object'},
         'client_secret': {'key': 'typeProperties.clientSecret', 'type': 'SecretBase'},
         'use_encrypted_endpoints': {'key': 'typeProperties.useEncryptedEndpoints', 'type': 'object'},
@@ -25391,8 +25947,9 @@ class SalesforceMarketingCloudLinkedService(LinkedService):
         **kwargs
     ):
         super(SalesforceMarketingCloudLinkedService, self).__init__(**kwargs)
-        self.type = 'SalesforceMarketingCloud'
-        self.client_id = kwargs['client_id']
+        self.type = 'SalesforceMarketingCloud'  # type: str
+        self.connection_properties = kwargs.get('connection_properties', None)
+        self.client_id = kwargs.get('client_id', None)
         self.client_secret = kwargs.get('client_secret', None)
         self.use_encrypted_endpoints = kwargs.get('use_encrypted_endpoints', None)
         self.use_host_verification = kwargs.get('use_host_verification', None)
@@ -25454,7 +26011,7 @@ class SalesforceMarketingCloudObjectDataset(Dataset):
         **kwargs
     ):
         super(SalesforceMarketingCloudObjectDataset, self).__init__(**kwargs)
-        self.type = 'SalesforceMarketingCloudObject'
+        self.type = 'SalesforceMarketingCloudObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -25508,7 +26065,7 @@ class SalesforceMarketingCloudSource(TabularSource):
         **kwargs
     ):
         super(SalesforceMarketingCloudSource, self).__init__(**kwargs)
-        self.type = 'SalesforceMarketingCloudSource'
+        self.type = 'SalesforceMarketingCloudSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -25567,7 +26124,7 @@ class SalesforceObjectDataset(Dataset):
         **kwargs
     ):
         super(SalesforceObjectDataset, self).__init__(**kwargs)
-        self.type = 'SalesforceObject'
+        self.type = 'SalesforceObject'  # type: str
         self.object_api_name = kwargs.get('object_api_name', None)
 
 
@@ -25638,7 +26195,7 @@ class SalesforceServiceCloudLinkedService(LinkedService):
         **kwargs
     ):
         super(SalesforceServiceCloudLinkedService, self).__init__(**kwargs)
-        self.type = 'SalesforceServiceCloud'
+        self.type = 'SalesforceServiceCloud'  # type: str
         self.environment_url = kwargs.get('environment_url', None)
         self.username = kwargs.get('username', None)
         self.password = kwargs.get('password', None)
@@ -25703,7 +26260,7 @@ class SalesforceServiceCloudObjectDataset(Dataset):
         **kwargs
     ):
         super(SalesforceServiceCloudObjectDataset, self).__init__(**kwargs)
-        self.type = 'SalesforceServiceCloudObject'
+        self.type = 'SalesforceServiceCloudObject'  # type: str
         self.object_api_name = kwargs.get('object_api_name', None)
 
 
@@ -25769,7 +26326,7 @@ class SalesforceServiceCloudSink(CopySink):
         **kwargs
     ):
         super(SalesforceServiceCloudSink, self).__init__(**kwargs)
-        self.type = 'SalesforceServiceCloudSink'
+        self.type = 'SalesforceServiceCloudSink'  # type: str
         self.write_behavior = kwargs.get('write_behavior', None)
         self.external_id_field_name = kwargs.get('external_id_field_name', None)
         self.ignore_null_values = kwargs.get('ignore_null_values', None)
@@ -25824,7 +26381,7 @@ class SalesforceServiceCloudSource(CopySource):
         **kwargs
     ):
         super(SalesforceServiceCloudSource, self).__init__(**kwargs)
-        self.type = 'SalesforceServiceCloudSource'
+        self.type = 'SalesforceServiceCloudSource'  # type: str
         self.query = kwargs.get('query', None)
         self.read_behavior = kwargs.get('read_behavior', None)
         self.additional_columns = kwargs.get('additional_columns', None)
@@ -25892,7 +26449,7 @@ class SalesforceSink(CopySink):
         **kwargs
     ):
         super(SalesforceSink, self).__init__(**kwargs)
-        self.type = 'SalesforceSink'
+        self.type = 'SalesforceSink'  # type: str
         self.write_behavior = kwargs.get('write_behavior', None)
         self.external_id_field_name = kwargs.get('external_id_field_name', None)
         self.ignore_null_values = kwargs.get('ignore_null_values', None)
@@ -25951,7 +26508,7 @@ class SalesforceSource(TabularSource):
         **kwargs
     ):
         super(SalesforceSource, self).__init__(**kwargs)
-        self.type = 'SalesforceSource'
+        self.type = 'SalesforceSource'  # type: str
         self.query = kwargs.get('query', None)
         self.read_behavior = kwargs.get('read_behavior', None)
 
@@ -26007,7 +26564,7 @@ class SapBwCubeDataset(Dataset):
         **kwargs
     ):
         super(SapBwCubeDataset, self).__init__(**kwargs)
-        self.type = 'SapBwCube'
+        self.type = 'SapBwCube'  # type: str
 
 
 class SapBwLinkedService(LinkedService):
@@ -26075,7 +26632,7 @@ class SapBwLinkedService(LinkedService):
         **kwargs
     ):
         super(SapBwLinkedService, self).__init__(**kwargs)
-        self.type = 'SapBW'
+        self.type = 'SapBW'  # type: str
         self.server = kwargs['server']
         self.system_number = kwargs['system_number']
         self.client_id = kwargs['client_id']
@@ -26133,7 +26690,7 @@ class SapBwSource(TabularSource):
         **kwargs
     ):
         super(SapBwSource, self).__init__(**kwargs)
-        self.type = 'SapBwSource'
+        self.type = 'SapBwSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -26193,7 +26750,7 @@ class SapCloudForCustomerLinkedService(LinkedService):
         **kwargs
     ):
         super(SapCloudForCustomerLinkedService, self).__init__(**kwargs)
-        self.type = 'SapCloudForCustomer'
+        self.type = 'SapCloudForCustomer'  # type: str
         self.url = kwargs['url']
         self.username = kwargs.get('username', None)
         self.password = kwargs.get('password', None)
@@ -26256,7 +26813,7 @@ class SapCloudForCustomerResourceDataset(Dataset):
         **kwargs
     ):
         super(SapCloudForCustomerResourceDataset, self).__init__(**kwargs)
-        self.type = 'SapCloudForCustomerResource'
+        self.type = 'SapCloudForCustomerResource'  # type: str
         self.path = kwargs['path']
 
 
@@ -26317,7 +26874,7 @@ class SapCloudForCustomerSink(CopySink):
         **kwargs
     ):
         super(SapCloudForCustomerSink, self).__init__(**kwargs)
-        self.type = 'SapCloudForCustomerSink'
+        self.type = 'SapCloudForCustomerSink'  # type: str
         self.write_behavior = kwargs.get('write_behavior', None)
         self.http_request_timeout = kwargs.get('http_request_timeout', None)
 
@@ -26378,7 +26935,7 @@ class SapCloudForCustomerSource(TabularSource):
         **kwargs
     ):
         super(SapCloudForCustomerSource, self).__init__(**kwargs)
-        self.type = 'SapCloudForCustomerSource'
+        self.type = 'SapCloudForCustomerSource'  # type: str
         self.query = kwargs.get('query', None)
         self.http_request_timeout = kwargs.get('http_request_timeout', None)
 
@@ -26439,7 +26996,7 @@ class SapEccLinkedService(LinkedService):
         **kwargs
     ):
         super(SapEccLinkedService, self).__init__(**kwargs)
-        self.type = 'SapEcc'
+        self.type = 'SapEcc'  # type: str
         self.url = kwargs['url']
         self.username = kwargs.get('username', None)
         self.password = kwargs.get('password', None)
@@ -26502,7 +27059,7 @@ class SapEccResourceDataset(Dataset):
         **kwargs
     ):
         super(SapEccResourceDataset, self).__init__(**kwargs)
-        self.type = 'SapEccResource'
+        self.type = 'SapEccResource'  # type: str
         self.path = kwargs['path']
 
 
@@ -26562,7 +27119,7 @@ class SapEccSource(TabularSource):
         **kwargs
     ):
         super(SapEccSource, self).__init__(**kwargs)
-        self.type = 'SapEccSource'
+        self.type = 'SapEccSource'  # type: str
         self.query = kwargs.get('query', None)
         self.http_request_timeout = kwargs.get('http_request_timeout', None)
 
@@ -26630,7 +27187,7 @@ class SapHanaLinkedService(LinkedService):
         **kwargs
     ):
         super(SapHanaLinkedService, self).__init__(**kwargs)
-        self.type = 'SapHana'
+        self.type = 'SapHana'  # type: str
         self.connection_string = kwargs.get('connection_string', None)
         self.server = kwargs.get('server', None)
         self.authentication_type = kwargs.get('authentication_type', None)
@@ -26720,7 +27277,7 @@ class SapHanaSource(TabularSource):
         **kwargs
     ):
         super(SapHanaSource, self).__init__(**kwargs)
-        self.type = 'SapHanaSource'
+        self.type = 'SapHanaSource'  # type: str
         self.query = kwargs.get('query', None)
         self.packet_size = kwargs.get('packet_size', None)
         self.partition_option = kwargs.get('partition_option', None)
@@ -26785,7 +27342,7 @@ class SapHanaTableDataset(Dataset):
         **kwargs
     ):
         super(SapHanaTableDataset, self).__init__(**kwargs)
-        self.type = 'SapHanaTable'
+        self.type = 'SapHanaTable'  # type: str
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
         self.table = kwargs.get('table', None)
 
@@ -26808,26 +27365,38 @@ class SapOpenHubLinkedService(LinkedService):
     :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
-    :param server: Required. Host name of the SAP BW instance where the open hub destination is
-     located. Type: string (or Expression with resultType string).
+    :param server: Host name of the SAP BW instance where the open hub destination is located.
+     Type: string (or Expression with resultType string).
     :type server: object
-    :param system_number: Required. System number of the BW system where the open hub destination
-     is located. (Usually a two-digit decimal number represented as a string.) Type: string (or
-     Expression with resultType string).
+    :param system_number: System number of the BW system where the open hub destination is located.
+     (Usually a two-digit decimal number represented as a string.) Type: string (or Expression with
+     resultType string).
     :type system_number: object
-    :param client_id: Required. Client ID of the client on the BW system where the open hub
-     destination is located. (Usually a three-digit decimal number represented as a string) Type:
-     string (or Expression with resultType string).
+    :param client_id: Client ID of the client on the BW system where the open hub destination is
+     located. (Usually a three-digit decimal number represented as a string) Type: string (or
+     Expression with resultType string).
     :type client_id: object
     :param language: Language of the BW system where the open hub destination is located. The
      default value is EN. Type: string (or Expression with resultType string).
     :type language: object
+    :param system_id: SystemID of the SAP system where the table is located. Type: string (or
+     Expression with resultType string).
+    :type system_id: object
     :param user_name: Username to access the SAP BW server where the open hub destination is
      located. Type: string (or Expression with resultType string).
     :type user_name: object
     :param password: Password to access the SAP BW server where the open hub destination is
      located.
     :type password: ~data_factory_management_client.models.SecretBase
+    :param message_server: The hostname of the SAP Message Server. Type: string (or Expression with
+     resultType string).
+    :type message_server: object
+    :param message_server_service: The service name or port number of the Message Server. Type:
+     string (or Expression with resultType string).
+    :type message_server_service: object
+    :param logon_group: The Logon Group for the SAP System. Type: string (or Expression with
+     resultType string).
+    :type logon_group: object
     :param encrypted_credential: The encrypted credential used for authentication. Credentials are
      encrypted using the integration runtime credential manager. Type: string (or Expression with
      resultType string).
@@ -26836,9 +27405,6 @@ class SapOpenHubLinkedService(LinkedService):
 
     _validation = {
         'type': {'required': True},
-        'server': {'required': True},
-        'system_number': {'required': True},
-        'client_id': {'required': True},
     }
 
     _attribute_map = {
@@ -26852,8 +27418,12 @@ class SapOpenHubLinkedService(LinkedService):
         'system_number': {'key': 'typeProperties.systemNumber', 'type': 'object'},
         'client_id': {'key': 'typeProperties.clientId', 'type': 'object'},
         'language': {'key': 'typeProperties.language', 'type': 'object'},
+        'system_id': {'key': 'typeProperties.systemId', 'type': 'object'},
         'user_name': {'key': 'typeProperties.userName', 'type': 'object'},
         'password': {'key': 'typeProperties.password', 'type': 'SecretBase'},
+        'message_server': {'key': 'typeProperties.messageServer', 'type': 'object'},
+        'message_server_service': {'key': 'typeProperties.messageServerService', 'type': 'object'},
+        'logon_group': {'key': 'typeProperties.logonGroup', 'type': 'object'},
         'encrypted_credential': {'key': 'typeProperties.encryptedCredential', 'type': 'object'},
     }
 
@@ -26862,13 +27432,17 @@ class SapOpenHubLinkedService(LinkedService):
         **kwargs
     ):
         super(SapOpenHubLinkedService, self).__init__(**kwargs)
-        self.type = 'SapOpenHub'
-        self.server = kwargs['server']
-        self.system_number = kwargs['system_number']
-        self.client_id = kwargs['client_id']
+        self.type = 'SapOpenHub'  # type: str
+        self.server = kwargs.get('server', None)
+        self.system_number = kwargs.get('system_number', None)
+        self.client_id = kwargs.get('client_id', None)
         self.language = kwargs.get('language', None)
+        self.system_id = kwargs.get('system_id', None)
         self.user_name = kwargs.get('user_name', None)
         self.password = kwargs.get('password', None)
+        self.message_server = kwargs.get('message_server', None)
+        self.message_server_service = kwargs.get('message_server_service', None)
+        self.logon_group = kwargs.get('logon_group', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
@@ -26904,6 +27478,13 @@ class SapOpenHubSource(TabularSource):
      requestId larger than the value of this property will be retrieved. The default value is 0.
      Type: integer (or Expression with resultType integer ).
     :type base_request_id: object
+    :param custom_rfc_read_table_function_module: Specifies the custom RFC function module that
+     will be used to read data from SAP Table. Type: string (or Expression with resultType string).
+    :type custom_rfc_read_table_function_module: object
+    :param sap_data_column_delimiter: The single character that will be used as delimiter passed to
+     SAP RFC as well as splitting the output data retrieved. Type: string (or Expression with
+     resultType string).
+    :type sap_data_column_delimiter: object
     """
 
     _validation = {
@@ -26920,6 +27501,8 @@ class SapOpenHubSource(TabularSource):
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
         'exclude_last_request': {'key': 'excludeLastRequest', 'type': 'object'},
         'base_request_id': {'key': 'baseRequestId', 'type': 'object'},
+        'custom_rfc_read_table_function_module': {'key': 'customRfcReadTableFunctionModule', 'type': 'object'},
+        'sap_data_column_delimiter': {'key': 'sapDataColumnDelimiter', 'type': 'object'},
     }
 
     def __init__(
@@ -26927,9 +27510,11 @@ class SapOpenHubSource(TabularSource):
         **kwargs
     ):
         super(SapOpenHubSource, self).__init__(**kwargs)
-        self.type = 'SapOpenHubSource'
+        self.type = 'SapOpenHubSource'  # type: str
         self.exclude_last_request = kwargs.get('exclude_last_request', None)
         self.base_request_id = kwargs.get('base_request_id', None)
+        self.custom_rfc_read_table_function_module = kwargs.get('custom_rfc_read_table_function_module', None)
+        self.sap_data_column_delimiter = kwargs.get('sap_data_column_delimiter', None)
 
 
 class SapOpenHubTableDataset(Dataset):
@@ -26997,7 +27582,7 @@ class SapOpenHubTableDataset(Dataset):
         **kwargs
     ):
         super(SapOpenHubTableDataset, self).__init__(**kwargs)
-        self.type = 'SapOpenHubTable'
+        self.type = 'SapOpenHubTable'  # type: str
         self.open_hub_destination_name = kwargs['open_hub_destination_name']
         self.exclude_last_request = kwargs.get('exclude_last_request', None)
         self.base_request_id = kwargs.get('base_request_id', None)
@@ -27107,7 +27692,7 @@ class SapTableLinkedService(LinkedService):
         **kwargs
     ):
         super(SapTableLinkedService, self).__init__(**kwargs)
-        self.type = 'SapTable'
+        self.type = 'SapTable'  # type: str
         self.server = kwargs.get('server', None)
         self.system_number = kwargs.get('system_number', None)
         self.client_id = kwargs.get('client_id', None)
@@ -27219,7 +27804,7 @@ class SapTableResourceDataset(Dataset):
         **kwargs
     ):
         super(SapTableResourceDataset, self).__init__(**kwargs)
-        self.type = 'SapTableResource'
+        self.type = 'SapTableResource'  # type: str
         self.table_name = kwargs['table_name']
 
 
@@ -27266,6 +27851,10 @@ class SapTableSource(TabularSource):
     :param custom_rfc_read_table_function_module: Specifies the custom RFC function module that
      will be used to read data from SAP Table. Type: string (or Expression with resultType string).
     :type custom_rfc_read_table_function_module: object
+    :param sap_data_column_delimiter: The single character that will be used as delimiter passed to
+     SAP RFC as well as splitting the output data retrieved. Type: string (or Expression with
+     resultType string).
+    :type sap_data_column_delimiter: object
     :param partition_option: The partition mechanism that will be used for SAP table read in
      parallel. Possible values include: "None", "PartitionOnInt", "PartitionOnCalendarYear",
      "PartitionOnCalendarMonth", "PartitionOnCalendarDate", "PartitionOnTime".
@@ -27293,6 +27882,7 @@ class SapTableSource(TabularSource):
         'rfc_table_options': {'key': 'rfcTableOptions', 'type': 'object'},
         'batch_size': {'key': 'batchSize', 'type': 'object'},
         'custom_rfc_read_table_function_module': {'key': 'customRfcReadTableFunctionModule', 'type': 'object'},
+        'sap_data_column_delimiter': {'key': 'sapDataColumnDelimiter', 'type': 'object'},
         'partition_option': {'key': 'partitionOption', 'type': 'str'},
         'partition_settings': {'key': 'partitionSettings', 'type': 'SapTablePartitionSettings'},
     }
@@ -27302,13 +27892,14 @@ class SapTableSource(TabularSource):
         **kwargs
     ):
         super(SapTableSource, self).__init__(**kwargs)
-        self.type = 'SapTableSource'
+        self.type = 'SapTableSource'  # type: str
         self.row_count = kwargs.get('row_count', None)
         self.row_skips = kwargs.get('row_skips', None)
         self.rfc_table_fields = kwargs.get('rfc_table_fields', None)
         self.rfc_table_options = kwargs.get('rfc_table_options', None)
         self.batch_size = kwargs.get('batch_size', None)
         self.custom_rfc_read_table_function_module = kwargs.get('custom_rfc_read_table_function_module', None)
+        self.sap_data_column_delimiter = kwargs.get('sap_data_column_delimiter', None)
         self.partition_option = kwargs.get('partition_option', None)
         self.partition_settings = kwargs.get('partition_settings', None)
 
@@ -27359,7 +27950,7 @@ class ScheduleTrigger(MultiplePipelineTrigger):
         **kwargs
     ):
         super(ScheduleTrigger, self).__init__(**kwargs)
-        self.type = 'ScheduleTrigger'
+        self.type = 'ScheduleTrigger'  # type: str
         self.recurrence = kwargs['recurrence']
 
 
@@ -27474,7 +28065,7 @@ class SecureString(SecretBase):
         **kwargs
     ):
         super(SecureString, self).__init__(**kwargs)
-        self.type = 'SecureString'
+        self.type = 'SecureString'  # type: str
         self.value = kwargs['value']
 
 
@@ -27510,7 +28101,7 @@ class SelfDependencyTumblingWindowTriggerReference(DependencyReference):
         **kwargs
     ):
         super(SelfDependencyTumblingWindowTriggerReference, self).__init__(**kwargs)
-        self.type = 'SelfDependencyTumblingWindowTriggerReference'
+        self.type = 'SelfDependencyTumblingWindowTriggerReference'  # type: str
         self.offset = kwargs['offset']
         self.size = kwargs.get('size', None)
 
@@ -27548,7 +28139,7 @@ class SelfHostedIntegrationRuntime(IntegrationRuntime):
         **kwargs
     ):
         super(SelfHostedIntegrationRuntime, self).__init__(**kwargs)
-        self.type = 'SelfHosted'
+        self.type = 'SelfHosted'  # type: str
         self.linked_info = kwargs.get('linked_info', None)
 
 
@@ -27785,7 +28376,7 @@ class SelfHostedIntegrationRuntimeStatus(IntegrationRuntimeStatus):
         **kwargs
     ):
         super(SelfHostedIntegrationRuntimeStatus, self).__init__(**kwargs)
-        self.type = 'SelfHosted'
+        self.type = 'SelfHosted'  # type: str
         self.create_time = None
         self.task_queue_id = None
         self.internal_channel_encryption = None
@@ -27885,7 +28476,7 @@ class ServiceNowLinkedService(LinkedService):
         **kwargs
     ):
         super(ServiceNowLinkedService, self).__init__(**kwargs)
-        self.type = 'ServiceNow'
+        self.type = 'ServiceNow'  # type: str
         self.endpoint = kwargs['endpoint']
         self.authentication_type = kwargs['authentication_type']
         self.username = kwargs.get('username', None)
@@ -27952,7 +28543,7 @@ class ServiceNowObjectDataset(Dataset):
         **kwargs
     ):
         super(ServiceNowObjectDataset, self).__init__(**kwargs)
-        self.type = 'ServiceNowObject'
+        self.type = 'ServiceNowObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -28006,7 +28597,7 @@ class ServiceNowSource(TabularSource):
         **kwargs
     ):
         super(ServiceNowSource, self).__init__(**kwargs)
-        self.type = 'ServiceNowSource'
+        self.type = 'ServiceNowSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -28055,7 +28646,7 @@ class SetVariableActivity(Activity):
         **kwargs
     ):
         super(SetVariableActivity, self).__init__(**kwargs)
-        self.type = 'SetVariable'
+        self.type = 'SetVariable'  # type: str
         self.variable_name = kwargs.get('variable_name', None)
         self.value = kwargs.get('value', None)
 
@@ -28094,7 +28685,7 @@ class SftpLocation(DatasetLocation):
         **kwargs
     ):
         super(SftpLocation, self).__init__(**kwargs)
-        self.type = 'SftpLocation'
+        self.type = 'SftpLocation'  # type: str
 
 
 class SftpReadSettings(StoreReadSettings):
@@ -28163,7 +28754,7 @@ class SftpReadSettings(StoreReadSettings):
         **kwargs
     ):
         super(SftpReadSettings, self).__init__(**kwargs)
-        self.type = 'SftpReadSettings'
+        self.type = 'SftpReadSettings'  # type: str
         self.recursive = kwargs.get('recursive', None)
         self.wildcard_folder_path = kwargs.get('wildcard_folder_path', None)
         self.wildcard_file_name = kwargs.get('wildcard_file_name', None)
@@ -28262,7 +28853,7 @@ class SftpServerLinkedService(LinkedService):
         **kwargs
     ):
         super(SftpServerLinkedService, self).__init__(**kwargs)
-        self.type = 'Sftp'
+        self.type = 'Sftp'  # type: str
         self.host = kwargs['host']
         self.port = kwargs.get('port', None)
         self.authentication_type = kwargs.get('authentication_type', None)
@@ -28318,7 +28909,7 @@ class SftpWriteSettings(StoreWriteSettings):
         **kwargs
     ):
         super(SftpWriteSettings, self).__init__(**kwargs)
-        self.type = 'SftpWriteSettings'
+        self.type = 'SftpWriteSettings'  # type: str
         self.operation_timeout = kwargs.get('operation_timeout', None)
         self.use_temp_file_rename = kwargs.get('use_temp_file_rename', None)
 
@@ -28389,7 +28980,7 @@ class SharePointOnlineListLinkedService(LinkedService):
         **kwargs
     ):
         super(SharePointOnlineListLinkedService, self).__init__(**kwargs)
-        self.type = 'SharePointOnlineList'
+        self.type = 'SharePointOnlineList'  # type: str
         self.site_url = kwargs['site_url']
         self.tenant_id = kwargs['tenant_id']
         self.service_principal_id = kwargs['service_principal_id']
@@ -28452,7 +29043,7 @@ class SharePointOnlineListResourceDataset(Dataset):
         **kwargs
     ):
         super(SharePointOnlineListResourceDataset, self).__init__(**kwargs)
-        self.type = 'SharePointOnlineListResource'
+        self.type = 'SharePointOnlineListResource'  # type: str
         self.list_name = kwargs.get('list_name', None)
 
 
@@ -28503,7 +29094,7 @@ class SharePointOnlineListSource(CopySource):
         **kwargs
     ):
         super(SharePointOnlineListSource, self).__init__(**kwargs)
-        self.type = 'SharePointOnlineListSource'
+        self.type = 'SharePointOnlineListSource'  # type: str
         self.query = kwargs.get('query', None)
         self.http_request_timeout = kwargs.get('http_request_timeout', None)
 
@@ -28572,7 +29163,7 @@ class ShopifyLinkedService(LinkedService):
         **kwargs
     ):
         super(ShopifyLinkedService, self).__init__(**kwargs)
-        self.type = 'Shopify'
+        self.type = 'Shopify'  # type: str
         self.host = kwargs['host']
         self.access_token = kwargs.get('access_token', None)
         self.use_encrypted_endpoints = kwargs.get('use_encrypted_endpoints', None)
@@ -28635,7 +29226,7 @@ class ShopifyObjectDataset(Dataset):
         **kwargs
     ):
         super(ShopifyObjectDataset, self).__init__(**kwargs)
-        self.type = 'ShopifyObject'
+        self.type = 'ShopifyObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -28689,7 +29280,7 @@ class ShopifySource(TabularSource):
         **kwargs
     ):
         super(ShopifySource, self).__init__(**kwargs)
-        self.type = 'ShopifySource'
+        self.type = 'ShopifySource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -28777,7 +29368,7 @@ class SnowflakeDataset(Dataset):
         **kwargs
     ):
         super(SnowflakeDataset, self).__init__(**kwargs)
-        self.type = 'SnowflakeTable'
+        self.type = 'SnowflakeTable'  # type: str
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
         self.table = kwargs.get('table', None)
 
@@ -28820,7 +29411,7 @@ class SnowflakeExportCopyCommand(ExportSettings):
         **kwargs
     ):
         super(SnowflakeExportCopyCommand, self).__init__(**kwargs)
-        self.type = 'SnowflakeExportCopyCommand'
+        self.type = 'SnowflakeExportCopyCommand'  # type: str
         self.additional_copy_options = kwargs.get('additional_copy_options', None)
         self.additional_format_options = kwargs.get('additional_format_options', None)
 
@@ -28863,7 +29454,7 @@ class SnowflakeImportCopyCommand(ImportSettings):
         **kwargs
     ):
         super(SnowflakeImportCopyCommand, self).__init__(**kwargs)
-        self.type = 'SnowflakeImportCopyCommand'
+        self.type = 'SnowflakeImportCopyCommand'  # type: str
         self.additional_copy_options = kwargs.get('additional_copy_options', None)
         self.additional_format_options = kwargs.get('additional_format_options', None)
 
@@ -28919,7 +29510,7 @@ class SnowflakeLinkedService(LinkedService):
         **kwargs
     ):
         super(SnowflakeLinkedService, self).__init__(**kwargs)
-        self.type = 'Snowflake'
+        self.type = 'Snowflake'  # type: str
         self.connection_string = kwargs['connection_string']
         self.password = kwargs.get('password', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
@@ -28978,7 +29569,7 @@ class SnowflakeSink(CopySink):
         **kwargs
     ):
         super(SnowflakeSink, self).__init__(**kwargs)
-        self.type = 'SnowflakeSink'
+        self.type = 'SnowflakeSink'  # type: str
         self.pre_copy_script = kwargs.get('pre_copy_script', None)
         self.import_settings = kwargs.get('import_settings', None)
 
@@ -29027,7 +29618,7 @@ class SnowflakeSource(CopySource):
         **kwargs
     ):
         super(SnowflakeSource, self).__init__(**kwargs)
-        self.type = 'SnowflakeSource'
+        self.type = 'SnowflakeSource'  # type: str
         self.query = kwargs.get('query', None)
         self.export_settings = kwargs.get('export_settings', None)
 
@@ -29131,7 +29722,7 @@ class SparkLinkedService(LinkedService):
         **kwargs
     ):
         super(SparkLinkedService, self).__init__(**kwargs)
-        self.type = 'Spark'
+        self.type = 'Spark'  # type: str
         self.host = kwargs['host']
         self.port = kwargs['port']
         self.server_type = kwargs.get('server_type', None)
@@ -29210,7 +29801,7 @@ class SparkObjectDataset(Dataset):
         **kwargs
     ):
         super(SparkObjectDataset, self).__init__(**kwargs)
-        self.type = 'SparkObject'
+        self.type = 'SparkObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.table = kwargs.get('table', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
@@ -29266,11 +29857,11 @@ class SparkSource(TabularSource):
         **kwargs
     ):
         super(SparkSource, self).__init__(**kwargs)
-        self.type = 'SparkSource'
+        self.type = 'SparkSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
-class SqlDWSink(CopySink):
+class SQLDWSink(CopySink):
     """A copy activity SQL Data Warehouse sink.
 
     All required parameters must be populated in order to send to Azure.
@@ -29338,8 +29929,8 @@ class SqlDWSink(CopySink):
         self,
         **kwargs
     ):
-        super(SqlDWSink, self).__init__(**kwargs)
-        self.type = 'SqlDWSink'
+        super(SQLDWSink, self).__init__(**kwargs)
+        self.type = 'SqlDWSink'  # type: str
         self.pre_copy_script = kwargs.get('pre_copy_script', None)
         self.allow_poly_base = kwargs.get('allow_poly_base', None)
         self.poly_base_settings = kwargs.get('poly_base_settings', None)
@@ -29348,7 +29939,7 @@ class SqlDWSink(CopySink):
         self.table_option = kwargs.get('table_option', None)
 
 
-class SqlDWSource(TabularSource):
+class SQLDWSource(TabularSource):
     """A copy activity SQL Data Warehouse source.
 
     All required parameters must be populated in order to send to Azure.
@@ -29386,9 +29977,9 @@ class SqlDWSource(TabularSource):
     :type stored_procedure_parameters: object
     :param partition_option: The partition mechanism that will be used for Sql read in parallel.
      Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
-    :type partition_option: str or ~data_factory_management_client.models.SqlPartitionOption
+    :type partition_option: str or ~data_factory_management_client.models.SQLPartitionOption
     :param partition_settings: The settings that will be leveraged for Sql source partitioning.
-    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
+    :type partition_settings: ~data_factory_management_client.models.SQLPartitionSettings
     """
 
     _validation = {
@@ -29407,15 +29998,15 @@ class SqlDWSource(TabularSource):
         'sql_reader_stored_procedure_name': {'key': 'sqlReaderStoredProcedureName', 'type': 'object'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': 'object'},
         'partition_option': {'key': 'partitionOption', 'type': 'str'},
-        'partition_settings': {'key': 'partitionSettings', 'type': 'SqlPartitionSettings'},
+        'partition_settings': {'key': 'partitionSettings', 'type': 'SQLPartitionSettings'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(SqlDWSource, self).__init__(**kwargs)
-        self.type = 'SqlDWSource'
+        super(SQLDWSource, self).__init__(**kwargs)
+        self.type = 'SqlDWSource'  # type: str
         self.sql_reader_query = kwargs.get('sql_reader_query', None)
         self.sql_reader_stored_procedure_name = kwargs.get('sql_reader_stored_procedure_name', None)
         self.stored_procedure_parameters = kwargs.get('stored_procedure_parameters', None)
@@ -29423,7 +30014,7 @@ class SqlDWSource(TabularSource):
         self.partition_settings = kwargs.get('partition_settings', None)
 
 
-class SqlMiSink(CopySink):
+class SQLMiSink(CopySink):
     """A copy activity Azure SQL Managed Instance sink.
 
     All required parameters must be populated in order to send to Azure.
@@ -29492,8 +30083,8 @@ class SqlMiSink(CopySink):
         self,
         **kwargs
     ):
-        super(SqlMiSink, self).__init__(**kwargs)
-        self.type = 'SqlMISink'
+        super(SQLMiSink, self).__init__(**kwargs)
+        self.type = 'SqlMISink'  # type: str
         self.sql_writer_stored_procedure_name = kwargs.get('sql_writer_stored_procedure_name', None)
         self.sql_writer_table_type = kwargs.get('sql_writer_table_type', None)
         self.pre_copy_script = kwargs.get('pre_copy_script', None)
@@ -29502,7 +30093,7 @@ class SqlMiSink(CopySink):
         self.table_option = kwargs.get('table_option', None)
 
 
-class SqlMiSource(TabularSource):
+class SQLMiSource(TabularSource):
     """A copy activity Azure SQL Managed Instance source.
 
     All required parameters must be populated in order to send to Azure.
@@ -29541,9 +30132,9 @@ class SqlMiSource(TabularSource):
     :type produce_additional_types: object
     :param partition_option: The partition mechanism that will be used for Sql read in parallel.
      Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
-    :type partition_option: str or ~data_factory_management_client.models.SqlPartitionOption
+    :type partition_option: str or ~data_factory_management_client.models.SQLPartitionOption
     :param partition_settings: The settings that will be leveraged for Sql source partitioning.
-    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
+    :type partition_settings: ~data_factory_management_client.models.SQLPartitionSettings
     """
 
     _validation = {
@@ -29563,15 +30154,15 @@ class SqlMiSource(TabularSource):
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
         'produce_additional_types': {'key': 'produceAdditionalTypes', 'type': 'object'},
         'partition_option': {'key': 'partitionOption', 'type': 'str'},
-        'partition_settings': {'key': 'partitionSettings', 'type': 'SqlPartitionSettings'},
+        'partition_settings': {'key': 'partitionSettings', 'type': 'SQLPartitionSettings'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(SqlMiSource, self).__init__(**kwargs)
-        self.type = 'SqlMISource'
+        super(SQLMiSource, self).__init__(**kwargs)
+        self.type = 'SqlMISource'  # type: str
         self.sql_reader_query = kwargs.get('sql_reader_query', None)
         self.sql_reader_stored_procedure_name = kwargs.get('sql_reader_stored_procedure_name', None)
         self.stored_procedure_parameters = kwargs.get('stored_procedure_parameters', None)
@@ -29580,7 +30171,7 @@ class SqlMiSource(TabularSource):
         self.partition_settings = kwargs.get('partition_settings', None)
 
 
-class SqlPartitionSettings(msrest.serialization.Model):
+class SQLPartitionSettings(msrest.serialization.Model):
     """The settings that will be leveraged for Sql source partitioning.
 
     :param partition_column_name: The name of the column in integer or datetime type that will be
@@ -29609,13 +30200,13 @@ class SqlPartitionSettings(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        super(SqlPartitionSettings, self).__init__(**kwargs)
+        super(SQLPartitionSettings, self).__init__(**kwargs)
         self.partition_column_name = kwargs.get('partition_column_name', None)
         self.partition_upper_bound = kwargs.get('partition_upper_bound', None)
         self.partition_lower_bound = kwargs.get('partition_lower_bound', None)
 
 
-class SqlServerLinkedService(LinkedService):
+class SQLServerLinkedService(LinkedService):
     """SQL Server linked service.
 
     All required parameters must be populated in order to send to Azure.
@@ -29669,15 +30260,15 @@ class SqlServerLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(SqlServerLinkedService, self).__init__(**kwargs)
-        self.type = 'SqlServer'
+        super(SQLServerLinkedService, self).__init__(**kwargs)
+        self.type = 'SqlServer'  # type: str
         self.connection_string = kwargs['connection_string']
         self.user_name = kwargs.get('user_name', None)
         self.password = kwargs.get('password', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class SqlServerSink(CopySink):
+class SQLServerSink(CopySink):
     """A copy activity SQL server sink.
 
     All required parameters must be populated in order to send to Azure.
@@ -29746,8 +30337,8 @@ class SqlServerSink(CopySink):
         self,
         **kwargs
     ):
-        super(SqlServerSink, self).__init__(**kwargs)
-        self.type = 'SqlServerSink'
+        super(SQLServerSink, self).__init__(**kwargs)
+        self.type = 'SqlServerSink'  # type: str
         self.sql_writer_stored_procedure_name = kwargs.get('sql_writer_stored_procedure_name', None)
         self.sql_writer_table_type = kwargs.get('sql_writer_table_type', None)
         self.pre_copy_script = kwargs.get('pre_copy_script', None)
@@ -29756,7 +30347,7 @@ class SqlServerSink(CopySink):
         self.table_option = kwargs.get('table_option', None)
 
 
-class SqlServerSource(TabularSource):
+class SQLServerSource(TabularSource):
     """A copy activity SQL server source.
 
     All required parameters must be populated in order to send to Azure.
@@ -29795,9 +30386,9 @@ class SqlServerSource(TabularSource):
     :type produce_additional_types: object
     :param partition_option: The partition mechanism that will be used for Sql read in parallel.
      Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
-    :type partition_option: str or ~data_factory_management_client.models.SqlPartitionOption
+    :type partition_option: str or ~data_factory_management_client.models.SQLPartitionOption
     :param partition_settings: The settings that will be leveraged for Sql source partitioning.
-    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
+    :type partition_settings: ~data_factory_management_client.models.SQLPartitionSettings
     """
 
     _validation = {
@@ -29817,15 +30408,15 @@ class SqlServerSource(TabularSource):
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
         'produce_additional_types': {'key': 'produceAdditionalTypes', 'type': 'object'},
         'partition_option': {'key': 'partitionOption', 'type': 'str'},
-        'partition_settings': {'key': 'partitionSettings', 'type': 'SqlPartitionSettings'},
+        'partition_settings': {'key': 'partitionSettings', 'type': 'SQLPartitionSettings'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(SqlServerSource, self).__init__(**kwargs)
-        self.type = 'SqlServerSource'
+        super(SQLServerSource, self).__init__(**kwargs)
+        self.type = 'SqlServerSource'  # type: str
         self.sql_reader_query = kwargs.get('sql_reader_query', None)
         self.sql_reader_stored_procedure_name = kwargs.get('sql_reader_stored_procedure_name', None)
         self.stored_procedure_parameters = kwargs.get('stored_procedure_parameters', None)
@@ -29834,7 +30425,7 @@ class SqlServerSource(TabularSource):
         self.partition_settings = kwargs.get('partition_settings', None)
 
 
-class SqlServerStoredProcedureActivity(ExecutionActivity):
+class SQLServerStoredProcedureActivity(ExecutionActivity):
     """SQL stored procedure activity type.
 
     All required parameters must be populated in order to send to Azure.
@@ -29888,13 +30479,13 @@ class SqlServerStoredProcedureActivity(ExecutionActivity):
         self,
         **kwargs
     ):
-        super(SqlServerStoredProcedureActivity, self).__init__(**kwargs)
-        self.type = 'SqlServerStoredProcedure'
+        super(SQLServerStoredProcedureActivity, self).__init__(**kwargs)
+        self.type = 'SqlServerStoredProcedure'  # type: str
         self.stored_procedure_name = kwargs['stored_procedure_name']
         self.stored_procedure_parameters = kwargs.get('stored_procedure_parameters', None)
 
 
-class SqlServerTableDataset(Dataset):
+class SQLServerTableDataset(Dataset):
     """The on-premises SQL Server dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -29956,14 +30547,14 @@ class SqlServerTableDataset(Dataset):
         self,
         **kwargs
     ):
-        super(SqlServerTableDataset, self).__init__(**kwargs)
-        self.type = 'SqlServerTable'
+        super(SQLServerTableDataset, self).__init__(**kwargs)
+        self.type = 'SqlServerTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
         self.table = kwargs.get('table', None)
 
 
-class SqlSink(CopySink):
+class SQLSink(CopySink):
     """A copy activity SQL sink.
 
     All required parameters must be populated in order to send to Azure.
@@ -30032,8 +30623,8 @@ class SqlSink(CopySink):
         self,
         **kwargs
     ):
-        super(SqlSink, self).__init__(**kwargs)
-        self.type = 'SqlSink'
+        super(SQLSink, self).__init__(**kwargs)
+        self.type = 'SqlSink'  # type: str
         self.sql_writer_stored_procedure_name = kwargs.get('sql_writer_stored_procedure_name', None)
         self.sql_writer_table_type = kwargs.get('sql_writer_table_type', None)
         self.pre_copy_script = kwargs.get('pre_copy_script', None)
@@ -30042,7 +30633,7 @@ class SqlSink(CopySink):
         self.table_option = kwargs.get('table_option', None)
 
 
-class SqlSource(TabularSource):
+class SQLSource(TabularSource):
     """A copy activity SQL source.
 
     All required parameters must be populated in order to send to Azure.
@@ -30083,9 +30674,9 @@ class SqlSource(TabularSource):
     :type isolation_level: object
     :param partition_option: The partition mechanism that will be used for Sql read in parallel.
      Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
-    :type partition_option: str or ~data_factory_management_client.models.SqlPartitionOption
+    :type partition_option: str or ~data_factory_management_client.models.SQLPartitionOption
     :param partition_settings: The settings that will be leveraged for Sql source partitioning.
-    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
+    :type partition_settings: ~data_factory_management_client.models.SQLPartitionSettings
     """
 
     _validation = {
@@ -30105,15 +30696,15 @@ class SqlSource(TabularSource):
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
         'isolation_level': {'key': 'isolationLevel', 'type': 'object'},
         'partition_option': {'key': 'partitionOption', 'type': 'str'},
-        'partition_settings': {'key': 'partitionSettings', 'type': 'SqlPartitionSettings'},
+        'partition_settings': {'key': 'partitionSettings', 'type': 'SQLPartitionSettings'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(SqlSource, self).__init__(**kwargs)
-        self.type = 'SqlSource'
+        super(SQLSource, self).__init__(**kwargs)
+        self.type = 'SqlSource'  # type: str
         self.sql_reader_query = kwargs.get('sql_reader_query', None)
         self.sql_reader_stored_procedure_name = kwargs.get('sql_reader_stored_procedure_name', None)
         self.stored_procedure_parameters = kwargs.get('stored_procedure_parameters', None)
@@ -30140,14 +30731,17 @@ class SquareLinkedService(LinkedService):
     :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
-    :param host: Required. The URL of the Square instance. (i.e. mystore.mysquare.com).
+    :param connection_properties: Properties used to connect to Square. It is mutually exclusive
+     with any other properties in the linked service. Type: object.
+    :type connection_properties: object
+    :param host: The URL of the Square instance. (i.e. mystore.mysquare.com).
     :type host: object
-    :param client_id: Required. The client ID associated with your Square application.
+    :param client_id: The client ID associated with your Square application.
     :type client_id: object
     :param client_secret: The client secret associated with your Square application.
     :type client_secret: ~data_factory_management_client.models.SecretBase
-    :param redirect_uri: Required. The redirect URL assigned in the Square application dashboard.
-     (i.e. http://localhost:2500).
+    :param redirect_uri: The redirect URL assigned in the Square application dashboard. (i.e.
+     http://localhost:2500).
     :type redirect_uri: object
     :param use_encrypted_endpoints: Specifies whether the data source endpoints are encrypted using
      HTTPS. The default value is true.
@@ -30167,9 +30761,6 @@ class SquareLinkedService(LinkedService):
 
     _validation = {
         'type': {'required': True},
-        'host': {'required': True},
-        'client_id': {'required': True},
-        'redirect_uri': {'required': True},
     }
 
     _attribute_map = {
@@ -30179,6 +30770,7 @@ class SquareLinkedService(LinkedService):
         'description': {'key': 'description', 'type': 'str'},
         'parameters': {'key': 'parameters', 'type': '{ParameterSpecification}'},
         'annotations': {'key': 'annotations', 'type': '[object]'},
+        'connection_properties': {'key': 'typeProperties.connectionProperties', 'type': 'object'},
         'host': {'key': 'typeProperties.host', 'type': 'object'},
         'client_id': {'key': 'typeProperties.clientId', 'type': 'object'},
         'client_secret': {'key': 'typeProperties.clientSecret', 'type': 'SecretBase'},
@@ -30194,11 +30786,12 @@ class SquareLinkedService(LinkedService):
         **kwargs
     ):
         super(SquareLinkedService, self).__init__(**kwargs)
-        self.type = 'Square'
-        self.host = kwargs['host']
-        self.client_id = kwargs['client_id']
+        self.type = 'Square'  # type: str
+        self.connection_properties = kwargs.get('connection_properties', None)
+        self.host = kwargs.get('host', None)
+        self.client_id = kwargs.get('client_id', None)
         self.client_secret = kwargs.get('client_secret', None)
-        self.redirect_uri = kwargs['redirect_uri']
+        self.redirect_uri = kwargs.get('redirect_uri', None)
         self.use_encrypted_endpoints = kwargs.get('use_encrypted_endpoints', None)
         self.use_host_verification = kwargs.get('use_host_verification', None)
         self.use_peer_verification = kwargs.get('use_peer_verification', None)
@@ -30259,7 +30852,7 @@ class SquareObjectDataset(Dataset):
         **kwargs
     ):
         super(SquareObjectDataset, self).__init__(**kwargs)
-        self.type = 'SquareObject'
+        self.type = 'SquareObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -30313,7 +30906,7 @@ class SquareSource(TabularSource):
         **kwargs
     ):
         super(SquareSource, self).__init__(**kwargs)
-        self.type = 'SquareSource'
+        self.type = 'SquareSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -30431,7 +31024,7 @@ class SsisObjectMetadata(msrest.serialization.Model):
         **kwargs
     ):
         super(SsisObjectMetadata, self).__init__(**kwargs)
-        self.type = None
+        self.type = None  # type: Optional[str]
         self.id = kwargs.get('id', None)
         self.name = kwargs.get('name', None)
         self.description = kwargs.get('description', None)
@@ -30475,7 +31068,7 @@ class SsisEnvironment(SsisObjectMetadata):
         **kwargs
     ):
         super(SsisEnvironment, self).__init__(**kwargs)
-        self.type = 'Environment'
+        self.type = 'Environment'  # type: str
         self.folder_id = kwargs.get('folder_id', None)
         self.variables = kwargs.get('variables', None)
 
@@ -30604,21 +31197,19 @@ class SsisFolder(SsisObjectMetadata):
         **kwargs
     ):
         super(SsisFolder, self).__init__(**kwargs)
-        self.type = 'Folder'
+        self.type = 'Folder'  # type: str
 
 
 class SsisLogLocation(msrest.serialization.Model):
     """SSIS package execution log location.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
 
     All required parameters must be populated in order to send to Azure.
 
     :param log_path: Required. The SSIS package execution log path. Type: string (or Expression
      with resultType string).
     :type log_path: object
-    :ivar type: Required. The type of SSIS log location. Default value: "File".
-    :vartype type: str
+    :param type: Required. The type of SSIS log location. Possible values include: "File".
+    :type type: str or ~data_factory_management_client.models.SsisLogLocationType
     :param access_credential: The package execution log access credential.
     :type access_credential: ~data_factory_management_client.models.SsisAccessCredential
     :param log_refresh_interval: Specifies the interval to refresh log. The default interval is 5
@@ -30629,7 +31220,7 @@ class SsisLogLocation(msrest.serialization.Model):
 
     _validation = {
         'log_path': {'required': True},
-        'type': {'required': True, 'constant': True},
+        'type': {'required': True},
     }
 
     _attribute_map = {
@@ -30639,14 +31230,13 @@ class SsisLogLocation(msrest.serialization.Model):
         'log_refresh_interval': {'key': 'typeProperties.logRefreshInterval', 'type': 'object'},
     }
 
-    type = "File"
-
     def __init__(
         self,
         **kwargs
     ):
         super(SsisLogLocation, self).__init__(**kwargs)
         self.log_path = kwargs['log_path']
+        self.type = kwargs['type']
         self.access_credential = kwargs.get('access_credential', None)
         self.log_refresh_interval = kwargs.get('log_refresh_interval', None)
 
@@ -30749,7 +31339,7 @@ class SsisPackage(SsisObjectMetadata):
         **kwargs
     ):
         super(SsisPackage, self).__init__(**kwargs)
-        self.type = 'Package'
+        self.type = 'Package'  # type: str
         self.folder_id = kwargs.get('folder_id', None)
         self.project_version = kwargs.get('project_version', None)
         self.project_id = kwargs.get('project_id', None)
@@ -30923,7 +31513,7 @@ class SsisProject(SsisObjectMetadata):
         **kwargs
     ):
         super(SsisProject, self).__init__(**kwargs)
-        self.type = 'Project'
+        self.type = 'Project'  # type: str
         self.folder_id = kwargs.get('folder_id', None)
         self.version = kwargs.get('version', None)
         self.environment_refs = kwargs.get('environment_refs', None)
@@ -31122,7 +31712,7 @@ class SwitchActivity(Activity):
         **kwargs
     ):
         super(SwitchActivity, self).__init__(**kwargs)
-        self.type = 'Switch'
+        self.type = 'Switch'  # type: str
         self.on = kwargs['on']
         self.cases = kwargs.get('cases', None)
         self.default_activities = kwargs.get('default_activities', None)
@@ -31219,7 +31809,7 @@ class SybaseLinkedService(LinkedService):
         **kwargs
     ):
         super(SybaseLinkedService, self).__init__(**kwargs)
-        self.type = 'Sybase'
+        self.type = 'Sybase'  # type: str
         self.server = kwargs['server']
         self.database = kwargs['database']
         self.schema = kwargs.get('schema', None)
@@ -31278,7 +31868,7 @@ class SybaseSource(TabularSource):
         **kwargs
     ):
         super(SybaseSource, self).__init__(**kwargs)
-        self.type = 'SybaseSource'
+        self.type = 'SybaseSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -31336,7 +31926,7 @@ class SybaseTableDataset(Dataset):
         **kwargs
     ):
         super(SybaseTableDataset, self).__init__(**kwargs)
-        self.type = 'SybaseTable'
+        self.type = 'SybaseTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -31399,7 +31989,7 @@ class TabularTranslator(CopyTranslator):
         **kwargs
     ):
         super(TabularTranslator, self).__init__(**kwargs)
-        self.type = 'TabularTranslator'
+        self.type = 'TabularTranslator'  # type: str
         self.column_mappings = kwargs.get('column_mappings', None)
         self.schema_mapping = kwargs.get('schema_mapping', None)
         self.collection_reference = kwargs.get('collection_reference', None)
@@ -31471,7 +32061,7 @@ class TeradataLinkedService(LinkedService):
         **kwargs
     ):
         super(TeradataLinkedService, self).__init__(**kwargs)
-        self.type = 'Teradata'
+        self.type = 'Teradata'  # type: str
         self.connection_string = kwargs.get('connection_string', None)
         self.server = kwargs.get('server', None)
         self.authentication_type = kwargs.get('authentication_type', None)
@@ -31569,7 +32159,7 @@ class TeradataSource(TabularSource):
         **kwargs
     ):
         super(TeradataSource, self).__init__(**kwargs)
-        self.type = 'TeradataSource'
+        self.type = 'TeradataSource'  # type: str
         self.query = kwargs.get('query', None)
         self.partition_option = kwargs.get('partition_option', None)
         self.partition_settings = kwargs.get('partition_settings', None)
@@ -31633,7 +32223,7 @@ class TeradataTableDataset(Dataset):
         **kwargs
     ):
         super(TeradataTableDataset, self).__init__(**kwargs)
-        self.type = 'TeradataTable'
+        self.type = 'TeradataTable'  # type: str
         self.database = kwargs.get('database', None)
         self.table = kwargs.get('table', None)
 
@@ -31706,7 +32296,7 @@ class TextFormat(DatasetStorageFormat):
         **kwargs
     ):
         super(TextFormat, self).__init__(**kwargs)
-        self.type = 'TextFormat'
+        self.type = 'TextFormat'  # type: str
         self.column_delimiter = kwargs.get('column_delimiter', None)
         self.row_delimiter = kwargs.get('row_delimiter', None)
         self.escape_char = kwargs.get('escape_char', None)
@@ -31751,7 +32341,7 @@ class TriggerDependencyReference(DependencyReference):
         **kwargs
     ):
         super(TriggerDependencyReference, self).__init__(**kwargs)
-        self.type = 'TriggerDependencyReference'
+        self.type = 'TriggerDependencyReference'  # type: str
         self.reference_trigger = kwargs['reference_trigger']
 
 
@@ -32155,7 +32745,7 @@ class TumblingWindowTrigger(Trigger):
         **kwargs
     ):
         super(TumblingWindowTrigger, self).__init__(**kwargs)
-        self.type = 'TumblingWindowTrigger'
+        self.type = 'TumblingWindowTrigger'  # type: str
         self.pipeline = kwargs['pipeline']
         self.frequency = kwargs['frequency']
         self.interval = kwargs['interval']
@@ -32203,7 +32793,7 @@ class TumblingWindowTriggerDependencyReference(TriggerDependencyReference):
         **kwargs
     ):
         super(TumblingWindowTriggerDependencyReference, self).__init__(**kwargs)
-        self.type = 'TumblingWindowTriggerDependencyReference'
+        self.type = 'TumblingWindowTriggerDependencyReference'  # type: str
         self.offset = kwargs.get('offset', None)
         self.size = kwargs.get('size', None)
 
@@ -32308,7 +32898,7 @@ class UntilActivity(Activity):
         **kwargs
     ):
         super(UntilActivity, self).__init__(**kwargs)
-        self.type = 'Until'
+        self.type = 'Until'  # type: str
         self.expression = kwargs['expression']
         self.timeout = kwargs.get('timeout', None)
         self.activities = kwargs['activities']
@@ -32496,7 +33086,7 @@ class ValidationActivity(Activity):
         **kwargs
     ):
         super(ValidationActivity, self).__init__(**kwargs)
-        self.type = 'Validation'
+        self.type = 'Validation'  # type: str
         self.timeout = kwargs.get('timeout', None)
         self.sleep = kwargs.get('sleep', None)
         self.minimum_size = kwargs.get('minimum_size', None)
@@ -32583,7 +33173,7 @@ class VerticaLinkedService(LinkedService):
         **kwargs
     ):
         super(VerticaLinkedService, self).__init__(**kwargs)
-        self.type = 'Vertica'
+        self.type = 'Vertica'  # type: str
         self.connection_string = kwargs.get('connection_string', None)
         self.pwd = kwargs.get('pwd', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
@@ -32639,7 +33229,7 @@ class VerticaSource(TabularSource):
         **kwargs
     ):
         super(VerticaSource, self).__init__(**kwargs)
-        self.type = 'VerticaSource'
+        self.type = 'VerticaSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -32706,7 +33296,7 @@ class VerticaTableDataset(Dataset):
         **kwargs
     ):
         super(VerticaTableDataset, self).__init__(**kwargs)
-        self.type = 'VerticaTable'
+        self.type = 'VerticaTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.table = kwargs.get('table', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
@@ -32755,7 +33345,7 @@ class WaitActivity(Activity):
         **kwargs
     ):
         super(WaitActivity, self).__init__(**kwargs)
-        self.type = 'Wait'
+        self.type = 'Wait'  # type: str
         self.wait_time_in_seconds = kwargs['wait_time_in_seconds']
 
 
@@ -32835,7 +33425,7 @@ class WebActivity(ExecutionActivity):
         **kwargs
     ):
         super(WebActivity, self).__init__(**kwargs)
-        self.type = 'WebActivity'
+        self.type = 'WebActivity'  # type: str
         self.method = kwargs['method']
         self.url = kwargs['url']
         self.headers = kwargs.get('headers', None)
@@ -32925,7 +33515,7 @@ class WebLinkedServiceTypeProperties(msrest.serialization.Model):
     ):
         super(WebLinkedServiceTypeProperties, self).__init__(**kwargs)
         self.url = kwargs['url']
-        self.authentication_type = None
+        self.authentication_type = None  # type: Optional[str]
 
 
 class WebAnonymousAuthentication(WebLinkedServiceTypeProperties):
@@ -32957,7 +33547,7 @@ class WebAnonymousAuthentication(WebLinkedServiceTypeProperties):
         **kwargs
     ):
         super(WebAnonymousAuthentication, self).__init__(**kwargs)
-        self.authentication_type = 'Anonymous'
+        self.authentication_type = 'Anonymous'  # type: str
 
 
 class WebBasicAuthentication(WebLinkedServiceTypeProperties):
@@ -32998,7 +33588,7 @@ class WebBasicAuthentication(WebLinkedServiceTypeProperties):
         **kwargs
     ):
         super(WebBasicAuthentication, self).__init__(**kwargs)
-        self.authentication_type = 'Basic'
+        self.authentication_type = 'Basic'  # type: str
         self.username = kwargs['username']
         self.password = kwargs['password']
 
@@ -33040,15 +33630,13 @@ class WebClientCertificateAuthentication(WebLinkedServiceTypeProperties):
         **kwargs
     ):
         super(WebClientCertificateAuthentication, self).__init__(**kwargs)
-        self.authentication_type = 'ClientCertificate'
+        self.authentication_type = 'ClientCertificate'  # type: str
         self.pfx = kwargs['pfx']
         self.password = kwargs['password']
 
 
 class WebHookActivity(Activity):
     """WebHook activity.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -33065,8 +33653,8 @@ class WebHookActivity(Activity):
     :type depends_on: list[~data_factory_management_client.models.ActivityDependency]
     :param user_properties: Activity user properties.
     :type user_properties: list[~data_factory_management_client.models.UserProperty]
-    :ivar method: Required. Rest API method for target endpoint. Default value: "POST".
-    :vartype method: str
+    :param method: Required. Rest API method for target endpoint. Possible values include: "POST".
+    :type method: str or ~data_factory_management_client.models.WebHookActivityMethod
     :param url: Required. WebHook activity target endpoint and path. Type: string (or Expression
      with resultType string).
     :type url: object
@@ -33083,17 +33671,17 @@ class WebHookActivity(Activity):
     :type body: object
     :param authentication: Authentication method used for calling the endpoint.
     :type authentication: ~data_factory_management_client.models.WebActivityAuthentication
-    :param report_status_on_call_back: When set to true,
-     statusCode, output and error in callback request body will be
-     consumed by activity. The activity can be marked as failed by setting statusCode >= 400 in
-     callback request. Default is false. Type: boolean (or Expression with resultType boolean).
+    :param report_status_on_call_back: When set to true, statusCode, output and error in callback
+     request body will be consumed by activity. The activity can be marked as failed by setting
+     statusCode >= 400 in callback request. Default is false. Type: boolean (or Expression with
+     resultType boolean).
     :type report_status_on_call_back: object
     """
 
     _validation = {
         'name': {'required': True},
         'type': {'required': True},
-        'method': {'required': True, 'constant': True},
+        'method': {'required': True},
         'url': {'required': True},
     }
 
@@ -33113,14 +33701,13 @@ class WebHookActivity(Activity):
         'report_status_on_call_back': {'key': 'typeProperties.reportStatusOnCallBack', 'type': 'object'},
     }
 
-    method = "POST"
-
     def __init__(
         self,
         **kwargs
     ):
         super(WebHookActivity, self).__init__(**kwargs)
-        self.type = 'WebHook'
+        self.type = 'WebHook'  # type: str
+        self.method = kwargs['method']
         self.url = kwargs['url']
         self.timeout = kwargs.get('timeout', None)
         self.headers = kwargs.get('headers', None)
@@ -33171,7 +33758,7 @@ class WebLinkedService(LinkedService):
         **kwargs
     ):
         super(WebLinkedService, self).__init__(**kwargs)
-        self.type = 'Web'
+        self.type = 'Web'  # type: str
         self.type_properties = kwargs['type_properties']
 
 
@@ -33217,7 +33804,7 @@ class WebSource(CopySource):
         **kwargs
     ):
         super(WebSource, self).__init__(**kwargs)
-        self.type = 'WebSource'
+        self.type = 'WebSource'  # type: str
         self.additional_columns = kwargs.get('additional_columns', None)
 
 
@@ -33281,7 +33868,7 @@ class WebTableDataset(Dataset):
         **kwargs
     ):
         super(WebTableDataset, self).__init__(**kwargs)
-        self.type = 'WebTable'
+        self.type = 'WebTable'  # type: str
         self.index = kwargs['index']
         self.path = kwargs.get('path', None)
 
@@ -33304,7 +33891,10 @@ class XeroLinkedService(LinkedService):
     :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
-    :param host: Required. The endpoint of the Xero server. (i.e. api.xero.com).
+    :param connection_properties: Properties used to connect to Xero. It is mutually exclusive with
+     any other properties in the linked service. Type: object.
+    :type connection_properties: object
+    :param host: The endpoint of the Xero server. (i.e. api.xero.com).
     :type host: object
     :param consumer_key: The consumer key associated with the Xero application.
     :type consumer_key: ~data_factory_management_client.models.SecretBase
@@ -33330,7 +33920,6 @@ class XeroLinkedService(LinkedService):
 
     _validation = {
         'type': {'required': True},
-        'host': {'required': True},
     }
 
     _attribute_map = {
@@ -33340,6 +33929,7 @@ class XeroLinkedService(LinkedService):
         'description': {'key': 'description', 'type': 'str'},
         'parameters': {'key': 'parameters', 'type': '{ParameterSpecification}'},
         'annotations': {'key': 'annotations', 'type': '[object]'},
+        'connection_properties': {'key': 'typeProperties.connectionProperties', 'type': 'object'},
         'host': {'key': 'typeProperties.host', 'type': 'object'},
         'consumer_key': {'key': 'typeProperties.consumerKey', 'type': 'SecretBase'},
         'private_key': {'key': 'typeProperties.privateKey', 'type': 'SecretBase'},
@@ -33354,8 +33944,9 @@ class XeroLinkedService(LinkedService):
         **kwargs
     ):
         super(XeroLinkedService, self).__init__(**kwargs)
-        self.type = 'Xero'
-        self.host = kwargs['host']
+        self.type = 'Xero'  # type: str
+        self.connection_properties = kwargs.get('connection_properties', None)
+        self.host = kwargs.get('host', None)
         self.consumer_key = kwargs.get('consumer_key', None)
         self.private_key = kwargs.get('private_key', None)
         self.use_encrypted_endpoints = kwargs.get('use_encrypted_endpoints', None)
@@ -33418,7 +34009,7 @@ class XeroObjectDataset(Dataset):
         **kwargs
     ):
         super(XeroObjectDataset, self).__init__(**kwargs)
-        self.type = 'XeroObject'
+        self.type = 'XeroObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -33472,7 +34063,7 @@ class XeroSource(TabularSource):
         **kwargs
     ):
         super(XeroSource, self).__init__(**kwargs)
-        self.type = 'XeroSource'
+        self.type = 'XeroSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
@@ -33543,7 +34134,7 @@ class XmlDataset(Dataset):
         **kwargs
     ):
         super(XmlDataset, self).__init__(**kwargs)
-        self.type = 'Xml'
+        self.type = 'Xml'  # type: str
         self.location = kwargs.get('location', None)
         self.encoding_name = kwargs.get('encoding_name', None)
         self.null_value = kwargs.get('null_value', None)
@@ -33565,6 +34156,12 @@ class XmlReadSettings(FormatReadSettings):
     :param validation_mode: Indicates what validation method is used when reading the xml files.
      Allowed values: 'none', 'xsd', or 'dtd'. Type: string (or Expression with resultType string).
     :type validation_mode: object
+    :param detect_data_type: Indicates whether type detection is enabled when reading the xml
+     files. Type: boolean (or Expression with resultType boolean).
+    :type detect_data_type: object
+    :param namespaces: Indicates whether namespace is enabled when reading the xml files. Type:
+     boolean (or Expression with resultType boolean).
+    :type namespaces: object
     :param namespace_prefixes: Namespace uri to prefix mappings to override the prefixes in column
      names when namespace is enabled, if no prefix is defined for a namespace uri, the prefix of xml
      element/attribute name in the xml data file will be used. Example:
@@ -33581,6 +34178,8 @@ class XmlReadSettings(FormatReadSettings):
         'type': {'key': 'type', 'type': 'str'},
         'compression_properties': {'key': 'compressionProperties', 'type': 'CompressionReadSettings'},
         'validation_mode': {'key': 'validationMode', 'type': 'object'},
+        'detect_data_type': {'key': 'detectDataType', 'type': 'object'},
+        'namespaces': {'key': 'namespaces', 'type': 'object'},
         'namespace_prefixes': {'key': 'namespacePrefixes', 'type': 'object'},
     }
 
@@ -33589,9 +34188,11 @@ class XmlReadSettings(FormatReadSettings):
         **kwargs
     ):
         super(XmlReadSettings, self).__init__(**kwargs)
-        self.type = 'XmlReadSettings'
+        self.type = 'XmlReadSettings'  # type: str
         self.compression_properties = kwargs.get('compression_properties', None)
         self.validation_mode = kwargs.get('validation_mode', None)
+        self.detect_data_type = kwargs.get('detect_data_type', None)
+        self.namespaces = kwargs.get('namespaces', None)
         self.namespace_prefixes = kwargs.get('namespace_prefixes', None)
 
 
@@ -33643,7 +34244,7 @@ class XmlSource(CopySource):
         **kwargs
     ):
         super(XmlSource, self).__init__(**kwargs)
-        self.type = 'XmlSource'
+        self.type = 'XmlSource'  # type: str
         self.store_settings = kwargs.get('store_settings', None)
         self.format_settings = kwargs.get('format_settings', None)
         self.additional_columns = kwargs.get('additional_columns', None)
@@ -33679,7 +34280,7 @@ class ZipDeflateReadSettings(CompressionReadSettings):
         **kwargs
     ):
         super(ZipDeflateReadSettings, self).__init__(**kwargs)
-        self.type = 'ZipDeflateReadSettings'
+        self.type = 'ZipDeflateReadSettings'  # type: str
         self.preserve_zip_file_name_as_folder = kwargs.get('preserve_zip_file_name_as_folder', None)
 
 
@@ -33701,7 +34302,10 @@ class ZohoLinkedService(LinkedService):
     :type parameters: dict[str, ~data_factory_management_client.models.ParameterSpecification]
     :param annotations: List of tags that can be used for describing the linked service.
     :type annotations: list[object]
-    :param endpoint: Required. The endpoint of the Zoho server. (i.e. crm.zoho.com/crm/private).
+    :param connection_properties: Properties used to connect to Zoho. It is mutually exclusive with
+     any other properties in the linked service. Type: object.
+    :type connection_properties: object
+    :param endpoint: The endpoint of the Zoho server. (i.e. crm.zoho.com/crm/private).
     :type endpoint: object
     :param access_token: The access token for Zoho authentication.
     :type access_token: ~data_factory_management_client.models.SecretBase
@@ -33723,7 +34327,6 @@ class ZohoLinkedService(LinkedService):
 
     _validation = {
         'type': {'required': True},
-        'endpoint': {'required': True},
     }
 
     _attribute_map = {
@@ -33733,6 +34336,7 @@ class ZohoLinkedService(LinkedService):
         'description': {'key': 'description', 'type': 'str'},
         'parameters': {'key': 'parameters', 'type': '{ParameterSpecification}'},
         'annotations': {'key': 'annotations', 'type': '[object]'},
+        'connection_properties': {'key': 'typeProperties.connectionProperties', 'type': 'object'},
         'endpoint': {'key': 'typeProperties.endpoint', 'type': 'object'},
         'access_token': {'key': 'typeProperties.accessToken', 'type': 'SecretBase'},
         'use_encrypted_endpoints': {'key': 'typeProperties.useEncryptedEndpoints', 'type': 'object'},
@@ -33746,8 +34350,9 @@ class ZohoLinkedService(LinkedService):
         **kwargs
     ):
         super(ZohoLinkedService, self).__init__(**kwargs)
-        self.type = 'Zoho'
-        self.endpoint = kwargs['endpoint']
+        self.type = 'Zoho'  # type: str
+        self.connection_properties = kwargs.get('connection_properties', None)
+        self.endpoint = kwargs.get('endpoint', None)
         self.access_token = kwargs.get('access_token', None)
         self.use_encrypted_endpoints = kwargs.get('use_encrypted_endpoints', None)
         self.use_host_verification = kwargs.get('use_host_verification', None)
@@ -33809,7 +34414,7 @@ class ZohoObjectDataset(Dataset):
         **kwargs
     ):
         super(ZohoObjectDataset, self).__init__(**kwargs)
-        self.type = 'ZohoObject'
+        self.type = 'ZohoObject'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
 
@@ -33863,5 +34468,5 @@ class ZohoSource(TabularSource):
         **kwargs
     ):
         super(ZohoSource, self).__init__(**kwargs)
-        self.type = 'ZohoSource'
+        self.type = 'ZohoSource'  # type: str
         self.query = kwargs.get('query', None)

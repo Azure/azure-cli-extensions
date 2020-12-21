@@ -40,7 +40,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
-
     # Main command calling block
     try:
         # Fetch source VM data
@@ -69,6 +68,11 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             raise SkuNotAvailableError('Failed to find compatible VM size for source VM\'s OS disk within given region and subscription.')
         create_repair_vm_command += ' --size {sku}'.format(sku=sku)
 
+        # Set availability zone for vm
+        if source_vm.zones:
+            zone = source_vm.zones[0]
+            create_repair_vm_command += ' --zone {zone}'.format(zone=zone)
+
         # Create new resource group
         create_resource_group_command = 'az group create -l {loc} -n {group_name}' \
                                         .format(loc=source_vm.location, group_name=repair_group_name)
@@ -86,25 +90,29 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # Only add hyperV variable when available
             if hyperV_generation:
                 copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation)
-            # Validate create vm create command to validate parameters before runnning copy disk command
-            validate_create_vm_command = create_repair_vm_command + ' --validate'
-
-            logger.info('Validating VM template before continuing...')
-            _call_az_command(validate_create_vm_command, secure_params=[repair_password, repair_username])
+            # Set availability zone for vm when available
+            if source_vm.zones:
+                zone = source_vm.zones[0]
+                copy_disk_command += ' --zone {zone}'.format(zone=zone)
+            # Copy OS Disk
             logger.info('Copying OS disk of source VM...')
             copy_disk_id = _call_az_command(copy_disk_command).strip('\n')
-
-            attach_disk_command = 'az vm disk attach -g {g} --vm-name {repair} --name {id}' \
-                                  .format(g=repair_group_name, repair=repair_vm_name, id=copy_disk_id)
-
+            # Add copied OS Disk to VM creat command so that the VM is created with the disk attached
+            create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
+            # Validate create vm create command to validate parameters before runnning copy disk command
+            validate_create_vm_command = create_repair_vm_command + ' --validate'
+            logger.info('Validating VM template before continuing...')
+            _call_az_command(validate_create_vm_command, secure_params=[repair_password, repair_username])
+            # Create repair VM
             logger.info('Creating repair VM...')
             _call_az_command(create_repair_vm_command, secure_params=[repair_password, repair_username])
-            logger.info('Attaching copied disk to repair VM...')
-            _call_az_command(attach_disk_command)
 
             # Handle encrypted VM cases
             if unlock_encrypted_vm:
-                _unlock_singlepass_encrypted_disk(source_vm, resource_group_name, repair_vm_name, repair_group_name, copy_disk_name, is_linux)
+                stdout, stderr = _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux)
+                logger.debug('Unlock script STDOUT:\n%s', stdout)
+                if stderr:
+                    logger.warning('Encryption unlock script error was generated:\n%s', stderr)
 
         # UNMANAGED DISK
         else:

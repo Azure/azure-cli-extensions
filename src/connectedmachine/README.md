@@ -54,7 +54,7 @@ az connectedmachine delete \
 ##### Create or Update a Machine Extension
 
 ```sh
-az connectedmachine machine-extension create \
+az connectedmachine extension create \
     --machine-name "myMachine" \
     --name "customScriptExtension" \
     --location "eastus2euap" \
@@ -68,7 +68,7 @@ az connectedmachine machine-extension create \
 ##### Get all Machine Extensions
 
 ```sh
-az connectedmachine machine-extension list \
+az connectedmachine extension list \
     --machine-name "myMachine" \
     --resource-group "myResourceGroup"
 ```
@@ -76,7 +76,7 @@ az connectedmachine machine-extension list \
 ##### Get a Machine Extension
 
 ```sh
-az connectedmachine machine-extension show \
+az connectedmachine extension show \
     --machine-name "myMachine" \
     --name "CustomScriptExtension" \
     --resource-group "myResourceGroup"
@@ -85,7 +85,7 @@ az connectedmachine machine-extension show \
 ##### Update a Machine Extension
 
 ```sh
-az connectedmachine machine-extension update \
+az connectedmachine extension update \
     --machine-name "myMachine" \
     --name "CustomScriptExtension" \
     --type "CustomScriptExtension" \
@@ -97,7 +97,7 @@ az connectedmachine machine-extension update \
 ##### Delete a Machine Extension
 
 ```sh
-az connectedmachine machine-extension delete \
+az connectedmachine extension delete \
     --machine-name "myMachine" \
     --name "MMA" \
     --resource-group "myResourceGroup"

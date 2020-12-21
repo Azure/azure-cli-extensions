@@ -118,6 +118,14 @@ aks update:
     load_balancer_outbound_ports:
       rule_exclusions:
       - option_length_too_long
+    enable_managed_identity:
+      rule_exclusions:
+      - option_length_too_long
+attestation policy set:
+  parameters:
+    new_attestation_policy:
+      rule_exclusions:
+      - option_length_too_long
 batch job create:
   parameters:
     job_manager_task_command_line:
@@ -179,7 +187,7 @@ blockchain member update:
       - option_length_too_long
 blueprint assignment create:
   parameters:
-    identity_user_assigned_identities:
+    user_assigned_identity:
       rule_exclusions:
       - option_length_too_long
     locks_excluded_principals:
@@ -187,10 +195,7 @@ blueprint assignment create:
       - option_length_too_long
 blueprint assignment update:
   parameters:
-    identity_type:
-      rule_exclusions:
-      - no_parameter_defaults_for_update_commands
-    identity_user_assigned_identities:
+    user_assigned_identity:
       rule_exclusions:
       - option_length_too_long
     locks_excluded_principals:
@@ -260,6 +265,48 @@ databricks workspace vnet-peering update:
       rule_exclusions:
       - option_length_too_long
     allow_virtual_network_access:
+      rule_exclusions:
+      - option_length_too_long
+datadog monitor create:
+  parameters:
+    datadog_organization_properties:
+      rule_exclusions:
+      - option_length_too_long
+    marketplace_subscription_status:
+      rule_exclusions:
+      - option_length_too_long
+datadog tag-rule create:
+  parameters:
+    log_rules_filtering_tags:
+      rule_exclusions:
+      - option_length_too_long
+    log_rules_send_aad_logs:
+      rule_exclusions:
+      - option_length_too_long
+    log_rules_send_resource_logs:
+      rule_exclusions:
+      - option_length_too_long
+    log_rules_send_subscription_logs:
+      rule_exclusions:
+      - option_length_too_long
+    metric_rules_filtering_tags:
+      rule_exclusions:
+      - option_length_too_long
+datadog tag-rule update:
+  parameters:
+    log_rules_filtering_tags:
+      rule_exclusions:
+      - option_length_too_long
+    log_rules_send_aad_logs:
+      rule_exclusions:
+      - option_length_too_long
+    log_rules_send_resource_logs:
+      rule_exclusions:
+      - option_length_too_long
+    log_rules_send_subscription_logs:
+      rule_exclusions:
+      - option_length_too_long
+    metric_rules_filtering_tags:
       rule_exclusions:
       - option_length_too_long
 datafactory factory configure-factory-repo:
@@ -804,6 +851,50 @@ guestconfig guest-configuration-hcrp-assignment-report show:
     guest_configuration_assignment_name:
       rule_exclusions:
       - option_length_too_long
+healthcareapis private-endpoint-connection create:
+  parameters:
+    private_link_service_connection_state_actions_required:
+      rule_exclusions:
+        - option_length_too_long
+    private_link_service_connection_state_description:
+      rule_exclusions:
+        - option_length_too_long
+    private_link_service_connection_state_status:
+      rule_exclusions:
+        - option_length_too_long
+healthcareapis private-endpoint-connection update:
+  parameters:
+    private_link_service_connection_state_actions_required:
+      rule_exclusions:
+        - option_length_too_long
+    private_link_service_connection_state_description:
+      rule_exclusions:
+        - option_length_too_long
+    private_link_service_connection_state_status:
+      rule_exclusions:
+        - option_length_too_long
+healthcareapis service create:
+  parameters:
+    authentication_configuration:
+      rule_exclusions:
+        - option_length_too_long
+    cosmos_db_configuration:
+      rule_exclusions:
+        - option_length_too_long
+    export_configuration_storage_account_name:
+      rule_exclusions:
+        - option_length_too_long
+    private_endpoint_connections:
+      rule_exclusions:
+        - option_length_too_long
+    public_network_access:
+      rule_exclusions:
+        - option_length_too_long
+healthcareapis service update:
+  parameters:
+    public_network_access:
+      rule_exclusions:
+        - option_length_too_long
 image copy:
   parameters:
     source_resource_group_name:
@@ -1754,6 +1845,68 @@ sapmonitor provider-instance delete:
 sapmonitor provider-instance show:
   parameters:
     provider_instance_name:
+      rule_exclusions:
+      - option_length_too_long
+sentinel alert-rule create:
+  parameters:
+    logic_app_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    microsoft_security_incident_creation_alert_rule:
+      rule_exclusions:
+      - option_length_too_long
+sentinel alert-rule update:
+  parameters:
+    microsoft_security_incident_creation_alert_rule:
+      rule_exclusions:
+      - option_length_too_long
+sentinel alert-rule-template show:
+  parameters:
+    alert_rule_template_id:
+      rule_exclusions:
+      - option_length_too_long
+sentinel data-connector create:
+  parameters:
+    aws_cloud_trail_data_connector:
+      rule_exclusions:
+      - option_length_too_long
+    office_data_connector:
+      rule_exclusions:
+      - option_length_too_long
+sentinel data-connector update:
+  parameters:
+    aws_cloud_trail_data_connector:
+      rule_exclusions:
+      - option_length_too_long
+    office_data_connector:
+      rule_exclusions:
+      - option_length_too_long
+sentinel incident create:
+  parameters:
+    classification_comment:
+      rule_exclusions:
+      - option_length_too_long
+    classification_reason:
+      rule_exclusions:
+      - option_length_too_long
+    first_activity_time_utc:
+      rule_exclusions:
+      - option_length_too_long
+    last_activity_time_utc:
+      rule_exclusions:
+      - option_length_too_long
+sentinel incident update:
+  parameters:
+    classification_comment:
+      rule_exclusions:
+      - option_length_too_long
+    classification_reason:
+      rule_exclusions:
+      - option_length_too_long
+    first_activity_time_utc:
+      rule_exclusions:
+      - option_length_too_long
+    last_activity_time_utc:
       rule_exclusions:
       - option_length_too_long
 spring-cloud app create:
