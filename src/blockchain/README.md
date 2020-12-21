@@ -4,7 +4,7 @@ Microsoft Azure CLI 'blockchain' Extension
 This package is for the 'blockchain' extension.
 i.e. 'az blockchain'
 #### Install:
-Install CLI first: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest
+Install CLI first: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli
 
 #### Install blockchain extension. (Pre-request)
 

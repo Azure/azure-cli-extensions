@@ -25,6 +25,14 @@ class ProvisioningState(str, Enum):
     move_failed = "MoveFailed"
 
 
+class ManagedIdentityType(str, Enum):
+
+    none = "None"
+    system_assigned = "SystemAssigned"
+    user_assigned = "UserAssigned"
+    system_assigned_user_assigned = "SystemAssigned,UserAssigned"
+
+
 class ConfigServerState(str, Enum):
 
     not_available = "NotAvailable"
@@ -34,20 +42,12 @@ class ConfigServerState(str, Enum):
     updating = "Updating"
 
 
-class TraceProxyState(str, Enum):
+class MonitoringSettingState(str, Enum):
 
     not_available = "NotAvailable"
     failed = "Failed"
     succeeded = "Succeeded"
     updating = "Updating"
-
-
-class ManagedIdentityType(str, Enum):
-
-    none = "None"
-    system_assigned = "SystemAssigned"
-    user_assigned = "UserAssigned"
-    system_assigned_user_assigned = "SystemAssigned,UserAssigned"
 
 
 class TestKeyType(str, Enum):
