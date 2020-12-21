@@ -394,36 +394,3 @@ class StorageContainerScenarioTest(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('length(@)', 1))
         self.storage_cmd('storage container list --include-deleted ', account_info) \
             .assert_with_checks(JMESPathCheck('length(@)', 1))
-
-    @ResourceGroupPreparer()
-    @StorageAccountPreparer()
-    def test_storage_blob_upload(self, resource_group, storage_account):
-        file_size_kb = 128
-        local_file = self.create_temp_file(file_size_kb, full_random=True)
-
-        account_info = self.get_account_info(group=resource_group, name=storage_account)
-        container = self.create_container(account_info, prefix='cont', length=10)
-        blob_name = self.create_random_name(prefix='blob', length=24)
-
-        # test upload through file path
-        self.storage_cmd('storage blob upload -c {} -f "{}" -n {}', account_info, container, local_file, blob_name)
-
-        self.storage_cmd('storage blob exists -n {} -c {}', account_info, blob_name, container)\
-            .assert_with_checks(JMESPathCheck('exists', True))
-
-        self.storage_cmd('storage blob show -n {} -c {}', account_info, blob_name, container)\
-            .assert_with_checks(JMESPathCheck('properties.contentLength', file_size_kb * 1024))\
-            .assert_with_checks(JMESPathCheck('name'), blob_name)
-
-        # test upload from stream
-        with open(local_file, 'rb') as data:
-            self.storage_cmd('storage blob upload -c {} --data {} -n {}', account_info, container, data, blob_name)
-        self.storage_cmd('storage blob show -n {} -c {}', account_info, blob_name, container)\
-            .assert_with_checks(JMESPathCheck('properties.contentLength', file_size_kb * 1024))\
-            .assert_with_checks(JMESPathCheck('name'), blob_name)
-
-        # test upload from string
-        self.storage_cmd('storage blob upload -c {} --data {} -n {}', account_info, container, "test", blob_name)
-        self.storage_cmd('storage blob show -n {} -c {}', account_info, blob_name, container)\
-            .assert_with_checks(JMESPathCheck('properties.contentLength', 4))\
-            .assert_with_checks(JMESPathCheck('name'), blob_name)

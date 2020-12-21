@@ -592,7 +592,7 @@ def upload_blob(cmd, client, data, container_name=None, blob_name=None, blob_typ
                 if_modified_since=None, if_unmodified_since=None, if_match=None, if_none_match=None,
                 timeout=None, progress_callback=None, encryption_scope=None, overwrite=None, length=None, **kwargs):
     """Upload a blob to a container."""
-
+    from azure.core.exceptions import ResourceExistsError
     upload_args = {
         'blob_type': transform_blob_type(cmd, blob_type),
         'lease': lease_id,
@@ -626,9 +626,13 @@ def upload_blob(cmd, client, data, container_name=None, blob_name=None, blob_typ
 
     # Because the contents of the uploaded file may be too large, it should be passed into the a stream object,
     # upload_blob() read file data in batches to avoid OOM problems
-
-    response = client.upload_blob(data=data, length=length, metadata=metadata, encryption_scope=encryption_scope,
-                                  **upload_args, **kwargs)
+    try:
+        response = client.upload_blob(data=data, length=length, metadata=metadata, encryption_scope=encryption_scope,
+                                      **upload_args, **kwargs)
+    except ResourceExistsError as ex:
+        from azure.cli.core.azclierror import AzureResponseError
+        raise AzureResponseError("{}\nIf you want to overwrite the existing one, please add--overwrite in your command."
+                                 .format(ex.message))
 
     # PageBlobChunkUploader verifies the file when uploading the chunk data, If the contents of the file are
     # all null byte("\x00"), the file will not be uploaded, and the response will be none.

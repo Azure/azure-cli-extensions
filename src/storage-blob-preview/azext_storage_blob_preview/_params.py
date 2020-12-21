@@ -418,9 +418,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
         c.extra('file_path', options_list=('--file', '-f'), type=file_type, completer=FilesCompleter(),
                 help='Path of the file to upload as the blob content.', validator=validate_upload_blob)
-        c.argument('data', help='The blob data to upload.', required=False, is_preview=True)
+        c.argument('data', help='The blob data to upload.', required=False, is_preview=True, min_api='2019-02-02')
         c.argument('length', type=int, help='Number of bytes to read from the stream. This is optional, but should be '
-                   'supplied for optimal performance.', is_preview=True)
+                   'supplied for optimal performance. Cooperate with --data.', is_preview=True, min_api='2019-02-02')
         c.argument('overwrite', arg_type=get_three_state_flag(),
                    help='Whether the blob to be uploaded should overwrite the current data. If True, upload_blob will '
                    'overwrite the existing data. If set to False, the operation will fail with ResourceExistsError. '
