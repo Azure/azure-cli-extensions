@@ -450,18 +450,6 @@ def download_blob(client, file_path, open_mode='wb', progress_callback=None, soc
     return blob
 
 
-def exists(cmd, client, **kwargs):
-    from azure.core.exceptions import HttpResponseError
-    try:
-        client.get_blob_properties(**kwargs)
-        return True
-    except HttpResponseError as ex:
-        from azure.cli.command_modules.storage.track2_util import _dont_fail_on_exist
-        StorageErrorCode = cmd.get_models("_shared.models#StorageErrorCode",
-                                          resource_type=CUSTOM_DATA_STORAGE_BLOB)
-        return _dont_fail_on_exist(ex, StorageErrorCode.blob_not_found)
-
-
 def generate_sas_blob_uri(client, cmd, container_name, blob_name, permission=None,
                           expiry=None, start=None, id=None, ip=None,  # pylint: disable=redefined-builtin
                           protocol=None, cache_control=None, content_disposition=None,
