@@ -5,6 +5,7 @@
 
 import os
 import unittest
+from datetime import datetime, timedelta
 
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (JMESPathCheck, JMESPathCheckExists,
@@ -364,3 +365,66 @@ class StorageContainerScenarioTest(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('length(@)', 1))
         self.storage_cmd('storage container list --include-deleted ', account_info) \
             .assert_with_checks(JMESPathCheck('length(@)', 1))
+
+
+class StorageBlobURLScenarioTest(StorageScenarioMixin, ScenarioTest):
+    @ResourceGroupPreparer(name_prefix='clitest')
+    @StorageAccountPreparer(kind='StorageV2', name_prefix='clitest', location='eastus2')
+    def test_storage_blob_url_scenarios(self, resource_group, storage_account):
+        account_info = self.get_account_info(resource_group, storage_account)
+        container = self.create_container(account_info, prefix="con1")
+
+        local_file1 = self.create_temp_file(128)
+        local_file2 = self.create_temp_file(64)
+        blob_name1 = "/".join(["dir", self.create_random_name(prefix='blob', length=24)])
+
+        self.cmd('storage account blob-service-properties update -n {sa} -g {rg} --container-delete-retention-days 7 '
+                 '--enable-container-delete-retention',
+                 checks={
+                     JMESPathCheck('containerDeleteRetentionPolicy.days', 7),
+                     JMESPathCheck('containerDeleteRetentionPolicy.enabled', True)
+                 })
+
+        # Prepare blob
+        self.storage_cmd('storage blob upload -c {} -f "{}" -n {} ', account_info,
+                         container, local_file1, blob_name1)
+
+        expiry = (datetime.utcnow() + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%MZ')
+        blob_uri = self.storage_cmd('storage blob generate-sas -n {} -c {} --expiry {} --permissions '
+                                    'rwad --https-only --full-uri -o tsv',
+                                    account_info, blob_name1, container, expiry).output.strip()
+
+        self.cmd('storage blob exists --blob-url {}'.format(blob_uri), checks=JMESPathCheck('exists', True))
+        self.cmd('storage blob show --blob-url {}'.format(blob_uri), checks=[
+            JMESPathCheck('name', blob_name1),
+            JMESPathCheck('properties.contentLength', 128 * 1024),
+            JMESPathCheck('properties.blobTier', None)])
+
+        self.cmd('storage blob upload -f "{}" --blob-url {}'.format(local_file2, blob_uri))
+
+        self.cmd('storage blob show --blob-url {}'.format(blob_uri), checks=[
+            JMESPathCheck('name', blob_name1),
+            JMESPathCheck('properties.contentLength', 64 * 1024)])
+        local_dir = self.create_temp_dir()
+        downloaded = os.path.join(local_dir, 'test.file')
+        self.cmd('storage blob download --blob-url {} -f "{}"'.format(blob_uri, downloaded))
+        self.assertTrue(os.path.isfile(downloaded), 'The file is not downloaded.')
+        self.assertEqual(64 * 1024, os.stat(downloaded).st_size,
+                         'The download file size is not right.')
+
+        self.cmd('storage blob set-tier --blob-url {} --tier Hot'.format(blob_uri))
+        self.cmd('storage blob show --blob-url {}'.format(blob_uri), checks=[
+            JMESPathCheck('name', blob_name1),
+            JMESPathCheck('properties.contentLength', 128 * 1024),
+            JMESPathCheck('properties.blobTier', "Hot")])
+
+        self.cmd('storage blob snapshot --blob-url {}'.format(blob_uri), checks=JMESPathCheckExists('snapshot'))
+        self.storage_cmd('storage blob list -c {}', account_info, container).assert_with_checks(JMESPathCheck('length(@)', 1))
+
+        self.cmd('storage blob delete --blob-url {}'.format(blob_uri))
+
+        self.storage_cmd('storage blob list -c {}', account_info, container).assert_with_checks(
+            JMESPathCheck('length(@)', 0))
+        self.cmd('storage blob undelete --blob-url {}'.format(blob_uri))
+        self.storage_cmd('storage blob list -c {}', account_info, container).assert_with_checks(
+            JMESPathCheck('length(@)', 1))
