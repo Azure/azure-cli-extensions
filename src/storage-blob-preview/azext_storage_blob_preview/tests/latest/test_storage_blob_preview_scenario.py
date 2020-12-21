@@ -298,7 +298,7 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('name', blob_name),
                                 JMESPathCheck('properties.blobType', 'BlockBlob'),
                                 JMESPathCheck('properties.contentLength', 128 * 1024))
-        # test with string
+        # test with data
         test_string = "testupload"
         length = len(test_string)
         from azure.core.exceptions import ResourceExistsError
@@ -312,15 +312,6 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('name', blob_name),
                                 JMESPathCheck('properties.blobType', 'BlockBlob'),
                                 JMESPathCheck('properties.contentLength', length))
-        # test with stream
-        with open(local_file, 'rb') as data:
-
-            self.storage_cmd('storage blob upload -c {} --data "{}" -n {} --overwrite', account_info,
-                             container, data, blob_name)
-        self.storage_cmd('storage blob show -c {} -n {} ', account_info, container, blob_name) \
-            .assert_with_checks(JMESPathCheck('name', blob_name),
-                                JMESPathCheck('properties.blobType', 'BlockBlob'),
-                                JMESPathCheck('properties.contentLength', 128 * 1024))
 
 
 class StorageContainerScenarioTest(StorageScenarioMixin, ScenarioTest):

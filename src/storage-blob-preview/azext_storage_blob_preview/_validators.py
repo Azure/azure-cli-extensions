@@ -371,10 +371,11 @@ def validate_source_url(cmd, namespace):  # pylint: disable=too-many-statements
 
 
 def validate_blob_type(namespace):
-    if not namespace.blob_type and namespace.file_path and namespace.file_path.endswith('.vhd'):
-        namespace.blob_type = 'page'
-    else:
-        namespace.blob_type = 'block'
+    if not namespace.blob_type:
+        if namespace.file_path and namespace.file_path.endswith('.vhd'):
+            namespace.blob_type = 'page'
+        else:
+            namespace.blob_type = 'block'
 
 
 def validate_storage_data_plane_list(namespace):
