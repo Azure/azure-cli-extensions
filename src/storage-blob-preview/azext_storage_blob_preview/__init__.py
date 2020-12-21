@@ -128,9 +128,12 @@ class StorageArgumentContext(AzArgumentContext):
                    help='Specify a SQL where clause on blob tags to operate only on blobs with a matching value.')
 
     def register_blob_arguments(self):
-        self.extra('blob_name', required=True)
-        self.extra('container_name', required=True)
+        self.extra('blob_name')
+        self.extra('container_name')
         self.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+        self.extra('blob_url', help='The full endpoint URL to the Blob, including SAS token and snapshot if used. '
+                   'This could be either the primary endpoint, or the secondary endpoint depending on the current '
+                   '`location_mode`.')
 
     def register_container_arguments(self):
         self.extra('container_name', required=True)
