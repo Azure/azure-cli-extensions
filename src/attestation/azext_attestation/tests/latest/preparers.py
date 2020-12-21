@@ -10,8 +10,8 @@
 
 import os
 from datetime import datetime
-from azure.cli.testsdk.preparers import NoTrafficRecordingPreparer
 from azure_devtools.scenario_tests import SingleValueReplacer
+from azure.cli.testsdk.preparers import NoTrafficRecordingPreparer
 from azure.cli.testsdk.exceptions import CliTestError
 from azure.cli.testsdk.reverse_dependency import get_dummy_cli
 
@@ -72,7 +72,7 @@ class VirtualNetworkPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
                 'az network vnet delete --name {} --resource-group {}'.format(name, self.resource_group_name))
 
 
-class VnetSubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
+class VnetSubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):  # pylint: disable=too-many-instance-attributes
     def __init__(self, name_prefix='clitest.vn',
                  parameter_name='subnet',
                  resource_group_name=None,
@@ -118,7 +118,7 @@ class VnetSubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         pass
 
 
-class VnetNicPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
+class VnetNicPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):  # pylint: disable=too-many-instance-attributes
     def __init__(self, name_prefix='clitest.nic',
                  parameter_name='subnet',
                  resource_group_name=None,

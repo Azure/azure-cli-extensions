@@ -14,14 +14,15 @@ from msrest.exceptions import HttpOperationError
 
 
 class ErrorResponse(Model):
-    """The error response that indicates why an operation has failed.
+    """The resource management error response.
 
-    :param error:
-    :type error: ~azure.mgmt.hybridkubernetes.models.ErrorDetails
+    :param error: The error object.
+    :type error:
+     ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ErrorResponseError
     """
 
     _attribute_map = {
-        'error': {'key': 'error', 'type': 'ErrorDetails'},
+        'error': {'key': 'error', 'type': 'ErrorResponseError'},
     }
 
     def __init__(self, *, error=None, **kwargs) -> None:

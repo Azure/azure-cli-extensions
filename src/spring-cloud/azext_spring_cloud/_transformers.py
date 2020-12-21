@@ -32,7 +32,7 @@ def transform_app_table_output(result):
 
         if 'activeDeployment' in item['properties']:
             isStarted = item['properties']['activeDeployment']['properties']['status'].upper() == "RUNNING"
-            instance_count = item['properties']['activeDeployment']['properties']['deploymentSettings']['instanceCount']
+            instance_count = item['properties']['activeDeployment']['sku']['capacity']
             instances = item['properties']['activeDeployment']['properties']['instances']
             if instances is None:
                 instances = []
@@ -61,7 +61,7 @@ def transform_spring_cloud_deployment_output(result):
 
     for item in result:
         isStarted = item['properties']['status'].upper() == "RUNNING"
-        instance_count = item['properties']['deploymentSettings']['instanceCount']
+        instance_count = item['sku']['capacity']
         instances = item['properties']['instances']
         if instances is None:
             instances = []
