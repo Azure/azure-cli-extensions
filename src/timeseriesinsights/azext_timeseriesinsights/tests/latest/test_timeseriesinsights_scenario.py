@@ -145,17 +145,96 @@ def call_scenario(test, rg):
 @try_manual
 class TimeseriesinsightsScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='clitesttimeseriesinsights_rg1'[:7], key='rg', parameter_name='rg')
-    def test_timeseriesinsights_Scenario(self, rg):
+    # @ResourceGroupPreparer(name_prefix='clitesttimeseriesinsights_rg1'[:7], key='rg', parameter_name='rg')
+    # def test_timeseriesinsights_Scenario(self, rg):
+    #
+    #     self.kwargs.update({
+    #         'myEnvironment': 'env1',
+    #         'myEventSource': 'es1',
+    #         'myReferenceDataSet': 'rds1',
+    #         'myAccessPolicy': 'ap1',
+    #     })
+    #
+    #     call_scenario(self, rg)
+    #     calc_coverage(__file__)
+    #     raise_if()
 
+    @ResourceGroupPreparer(name_prefix='clitsi.rg', key='rg', parameter_name='rg')
+    def test_timeseriesinsights_environment_gen1(self, rg):
         self.kwargs.update({
-            'myEnvironment': 'env1',
-            'myEventSource': 'es1',
-            'myReferenceDataSet': 'rds1',
-            'myAccessPolicy': 'ap1',
+            'rg': rg,
+            'env1': self.create_random_name('cli-test-tsi-env1', 24),
         })
 
-        call_scenario(self, rg)
-        calc_coverage(__file__)
-        raise_if()
+        # Test `environment gen1 create` with optional arguments
+        self.cmd('az timeseriesinsights environment gen1 create '
+                 '--resource-group {rg} '
+                 '--name {env1} '
+                 '--sku name=S1 capacity=1 '
+                 '--data-retention-time "P31D" '
+                 '--partition-key-properties name="DeviceId1" type="String" '
+                 '--storage-limit-exceeded-behavior PauseIngress',
+                 checks=[self.check('name', '{env1}'),
+                         self.check('sku.name', 'S1'),
+                         self.check('sku.capacity', 1),
+                         self.check('partitionKeyProperties', [{"name": "DeviceId1", "type": "String"}]),
+                         self.check('storageLimitExceededBehavior', 'PauseIngress'),
+                         self.check('dataRetentionTime', '31 days, 0:00:00')
+                 ])
 
+        self.cmd('az timeseriesinsights environment show '
+                 '--resource-group {rg} '
+                 '--name {env1}',
+                 checks=[self.check('name', '{env1}')])
+
+        self.cmd('az timeseriesinsights environment gen1 update --resource-group {rg} --name {env1} '
+                 '--sku name=S1 capacity=2',
+                 checks=[self.check('sku.capacity', '2')])
+
+        self.cmd('az timeseriesinsights environment gen1 update --resource-group {rg} --name {env1} '
+                 '--storage-limit-exceeded-behavior PurgeOldData',
+                 checks=[self.check('properties.storageLimitExceededBehavior', 'PurgeOldData')])
+
+        self.cmd('az timeseriesinsights environment gen1 update --resource-group {rg} --name {env1} '
+                          '--tags key1=value1 key2=value2',
+                 checks=[]
+                 )
+
+        self.cmd('az timeseriesinsights environment list '
+                 '--resource-group {rg}',
+                 checks=[self.check('length(value)', 1)])
+
+        self.cmd('az timeseriesinsights environment list',
+                 checks=[self.check("length(value[?name=='{env1}'])", 1)])
+
+        self.cmd('az timeseriesinsights environment delete '
+                 '--resource-group {rg} '
+                 '--name {env1} --yes',
+                 checks=[])
+
+        self.cmd('az timeseriesinsights environment list '
+                 '--resource-group {rg}',
+                 checks=[self.check('length(value)', 0)])
+
+    @ResourceGroupPreparer(name_prefix='clitsi.rg', key='rg', parameter_name='rg')
+    def test_timeseriesinsights_environment_gen2(self, rg):
+        self.kwargs.update({
+            'rg': rg,
+            'env': self.create_random_name('cli-test-tsi-env2', 24),
+        })
+
+        # # Test `environment gen2 create` with optional arguments
+        # self.cmd('az timeseriesinsights environment gen2 create '
+        #          '--resource-group {rg} '
+        #          '--name {env1} '
+        #          '--sku name=S1 capacity=1 '
+        #          '--data-retention-time "P31D" '
+        #          '--partition-key-properties name="DeviceId1" type="String" '
+        #          '--storage-limit-exceeded-behavior PauseIngress',
+        #          checks=[self.check('name', '{env1}'),
+        #                  self.check('sku.name', 'S1'),
+        #                  self.check('sku.capacity', 1),
+        #                  self.check('properties.partitionKeyProperties', [{"name": "DeviceId1", "type": "String"}]),
+        #                  self.check('properties.storageLimitExceededBehavior', 'PauseIngress')])
+        #
+        #

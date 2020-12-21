@@ -51,7 +51,7 @@ def timeseriesinsights_environment_gen1_create(client,
     parameters['storage_limit_exceeded_behavior'] = storage_limit_exceeded_behavior
     parameters['partition_key_properties'] = partition_key_properties
     return sdk_no_wait(no_wait,
-                       client.create_or_update,
+                       client.begin_create_or_update,
                        resource_group_name=resource_group_name,
                        environment_name=environment_name,
                        parameters=parameters)
@@ -122,7 +122,7 @@ def timeseriesinsights_environment_gen2_create(client,
     parameters['storage_configuration'] = storage_configuration
     parameters['warm_store_configuration'] = warm_store_configuration
     return sdk_no_wait(no_wait,
-                       client.create_or_update,
+                       client.begin_create_or_update,
                        resource_group_name=resource_group_name,
                        environment_name=environment_name,
                        parameters=parameters)

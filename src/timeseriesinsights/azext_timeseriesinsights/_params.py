@@ -51,7 +51,7 @@ def load_arguments(self, _):
                    'ingress rate, and the billing rate.')
         c.argument('data_retention_time', help='ISO8601 timespan specifying the minimum number of days the '
                    'environment\'s events will be available for query.')
-        c.argument('storage_limit_exceeded_behavior', options_list=['--limit-exceeded-behavior'], arg_type=get_enum_type(['PurgeOldData', 'PauseIngress']),
+        c.argument('storage_limit_exceeded_behavior', arg_type=get_enum_type(['PurgeOldData', 'PauseIngress']),
                    help='The behavior the Time Series Insights service should take when the environment\'s capacity '
                    'has been exceeded. If "PauseIngress" is specified, new events will not be read from the event '
                    'source. If "PurgeOldData" is specified, new events will continue to be read and old events will be '
