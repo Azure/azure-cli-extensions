@@ -22,7 +22,6 @@ def pipeline_run_output_format(result):
 
 
 def _import_pipeline_format_group(item):
-    print(item)
     return OrderedDict([
         ('NAME', _get_value(item, 'name')),
         ('PROVISIONING_STATE', _get_value(item, 'provisioningState')),
@@ -32,7 +31,6 @@ def _import_pipeline_format_group(item):
 
 
 def _export_pipeline_format_group(item):
-    print(item)
     return OrderedDict([
         ('NAME', _get_value(item, 'name')),
         ('PROVISIONING_STATE', _get_value(item, 'provisioningState')),
@@ -41,7 +39,6 @@ def _export_pipeline_format_group(item):
 
 
 def _pipeline_run_format_group(item):
-    print(item)
     if "importPipelines" in _get_value(item, 'request', 'pipelineResourceId'):
         return OrderedDict([
             ('NAME', _get_value(item, 'name')),
@@ -81,6 +78,7 @@ def _get_value(item, *args):
         return str(item) if item or item == 0 else ' '
     except (KeyError, TypeError, IndexError):
         return ' '
+
 
 def _get_duration(start_time, finish_time):
     '''Takes datetime strings and returns duration'''
