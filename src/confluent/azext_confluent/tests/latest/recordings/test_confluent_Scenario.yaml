@@ -14,7 +14,7 @@ interactions:
       - AZURECLI/2.15.1 (MSI) azsdk-python-confluentmanagementclient/unknown Python/3.6.6
         (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Confluent/agreements?api-version=2020-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Confluent/agreements?api-version=2020-03-01-preview
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Confluent/agreements/marketplace","name":"marketplace","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"Microsoft","product":"marketplace","plan":"marketplace","licenseTextLink":"https://azure.microsoft.com/en-us/support/legal/marketplace-terms/","privacyPolicyLink":"http://www.microsoft.com/privacy","retrieveDatetime":null,"signature":"ASDFGHJKLBDR","accepted":false}},{"id":"/subscriptions/{subscriptionId}/providers/Microsoft.Confluent/agreements/default","name":"confluent","type":"Microsoft.MarketplaceOrdering/offertypes","properties":{"publisher":"Confluent","product":"marketplace","plan":"confluent","licenseTextLink":"https://www.confluent.io/marketplace-terms-of-service/","privacyPolicyLink":"https://assets.confluent.io/m/1353b6c3146e5feb/original/20200911-Confluent_Privacy_Statement.pdf","retrieveDatetime":null,"signature":"ASDFGHJKLBPG","accepted":false}}]}'
@@ -69,14 +69,14 @@ interactions:
       - AZURECLI/2.15.1 (MSI) azsdk-python-confluentmanagementclient/unknown Python/3.6.6
         (Windows-10-10.0.19041-SP0)
     method: PUT
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization?api-version=2020-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization?api-version=2020-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization","name":"myOrganization","type":"Microsoft.Confluent/organizations","location":"eastus2euap","tags":{"environment":"Dev"},"properties":{"createdTime":"2020-12-14T07:03:08.5565832Z","provisioningState":"Accepted","organizationId":null,"ssoUrl":null,"offerDetail":{"publisherId":"confluentinc","id":"confluent-cloud-azure-stag","planId":"confluent-cloud-azure-payg-stag","planName":"Confluent
         Cloud - Pay as you Go","termUnit":"P1M","status":"Started"},"userDetail":{"firstName":"contoso","lastName":"zhou","emailAddress":"contoso@microsoft.com"}}}'
     headers:
       azure-asyncoperation:
-      - https://eastus2euap.management.azure.com/providers/Microsoft.Confluent/locations/EASTUS2EUAP/operationStatuses/5a8d8fa0-98c3-4140-86be-b4852679ba53?api-version=2020-03-01-preview
+      - https://management.azure.com/providers/Microsoft.Confluent/locations/EASTUS2EUAP/operationStatuses/5a8d8fa0-98c3-4140-86be-b4852679ba53?api-version=2020-03-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -123,7 +123,7 @@ interactions:
       - AZURECLI/2.15.1 (MSI) azsdk-python-confluentmanagementclient/unknown Python/3.6.6
         (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization?api-version=2020-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization?api-version=2020-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization","name":"myOrganization","type":"Microsoft.Confluent/organizations","location":"eastus2euap","tags":{"environment":"Dev"},"properties":{"createdTime":"2020-12-14T07:03:08.5565832Z","provisioningState":"Creating","organizationId":null,"ssoUrl":null,"offerDetail":{"publisherId":"confluentinc","id":"confluent-cloud-azure-stag","planId":"confluent-cloud-azure-payg-stag","planName":"Confluent
@@ -173,7 +173,7 @@ interactions:
       - AZURECLI/2.15.1 (MSI) azsdk-python-confluentmanagementclient/unknown Python/3.6.6
         (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization?api-version=2020-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization?api-version=2020-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization","name":"myOrganization","type":"Microsoft.Confluent/organizations","location":"eastus2euap","tags":{"environment":"Dev"},"properties":{"createdTime":"2020-12-14T07:03:08.5565832Z","provisioningState":"Succeeded","organizationId":"a1c08098-d6bd-4c82-aae3-bbbfcff1dbcd","ssoUrl":"https://stag.cpdev.cloud/login/sso/azure-ad-oidc","offerDetail":{"publisherId":"confluentinc","id":"confluent-cloud-azure-stag","planId":"confluent-cloud-azure-payg-stag","planName":"Confluent
@@ -223,7 +223,7 @@ interactions:
       - AZURECLI/2.15.1 (MSI) azsdk-python-confluentmanagementclient/unknown Python/3.6.6
         (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization?api-version=2020-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization?api-version=2020-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization","name":"myOrganization","type":"Microsoft.Confluent/organizations","location":"eastus2euap","tags":{"environment":"Dev"},"properties":{"createdTime":"2020-12-14T07:03:08.5565832Z","provisioningState":"Succeeded","organizationId":"a1c08098-d6bd-4c82-aae3-bbbfcff1dbcd","ssoUrl":"https://stag.cpdev.cloud/login/sso/azure-ad-oidc","offerDetail":{"publisherId":"confluentinc","id":"confluent-cloud-azure-stag","planId":"confluent-cloud-azure-payg-stag","planName":"Confluent
@@ -273,7 +273,7 @@ interactions:
       - AZURECLI/2.15.1 (MSI) azsdk-python-confluentmanagementclient/unknown Python/3.6.6
         (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations?api-version=2020-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations?api-version=2020-03-01-preview
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization","name":"myOrganization","type":"Microsoft.Confluent/organizations","location":"eastus2euap","tags":{"environment":"Dev"},"properties":{"createdTime":"2020-12-14T07:03:08.5565832Z","provisioningState":"Succeeded","organizationId":"a1c08098-d6bd-4c82-aae3-bbbfcff1dbcd","ssoUrl":"https://stag.cpdev.cloud/login/sso/azure-ad-oidc","offerDetail":{"publisherId":"confluentinc","id":"confluent-cloud-azure-stag","planId":"confluent-cloud-azure-payg-stag","planName":"Confluent
@@ -321,7 +321,7 @@ interactions:
       - AZURECLI/2.15.1 (MSI) azsdk-python-confluentmanagementclient/unknown Python/3.6.6
         (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations?api-version=2020-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations?api-version=2020-03-01-preview
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization","name":"myOrganization","type":"Microsoft.Confluent/organizations","location":"eastus2euap","tags":{"environment":"Dev"},"properties":{"createdTime":"2020-12-14T07:03:08.5565832Z","provisioningState":"Succeeded","organizationId":"a1c08098-d6bd-4c82-aae3-bbbfcff1dbcd","ssoUrl":"https://stag.cpdev.cloud/login/sso/azure-ad-oidc","offerDetail":{"publisherId":"confluentinc","id":"confluent-cloud-azure-stag","planId":"confluent-cloud-azure-payg-stag","planName":"Confluent
@@ -373,7 +373,7 @@ interactions:
       - AZURECLI/2.15.1 (MSI) azsdk-python-confluentmanagementclient/unknown Python/3.6.6
         (Windows-10-10.0.19041-SP0)
     method: PATCH
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization?api-version=2020-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization?api-version=2020-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization","name":"myOrganization","type":"Microsoft.Confluent/organizations","location":"eastus2euap","tags":{"client":"dev-client","env":"dev"},"properties":{"createdTime":"2020-12-14T07:03:08.5565832Z","provisioningState":"Succeeded","organizationId":"a1c08098-d6bd-4c82-aae3-bbbfcff1dbcd","ssoUrl":"https://stag.cpdev.cloud/login/sso/azure-ad-oidc","offerDetail":{"publisherId":"confluentinc","id":"confluent-cloud-azure-stag","planId":"confluent-cloud-azure-payg-stag","planName":"Confluent
@@ -427,7 +427,7 @@ interactions:
       - AZURECLI/2.15.1 (MSI) azsdk-python-confluentmanagementclient/unknown Python/3.6.6
         (Windows-10-10.0.19041-SP0)
     method: DELETE
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization?api-version=2020-03-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Confluent/organizations/myOrganization?api-version=2020-03-01-preview
   response:
     body:
       string: 'null'
@@ -445,7 +445,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://eastus2euap.management.azure.com/providers/Microsoft.Confluent/locations/EASTUS2EUAP/operationStatuses/8336f9d9-c696-43a2-a4e6-90db0a0882d1?api-version=2020-03-01-preview
+      - https://management.azure.com/providers/Microsoft.Confluent/locations/EASTUS2EUAP/operationStatuses/8336f9d9-c696-43a2-a4e6-90db0a0882d1?api-version=2020-03-01-preview
       pragma:
       - no-cache
       request-context:
