@@ -398,7 +398,7 @@ class StorageBlobURLScenarioTest(StorageScenarioMixin, ScenarioTest):
         self.cmd('storage blob show --blob-url {}'.format(blob_uri), checks=[
             JMESPathCheck('name', blob_name1),
             JMESPathCheck('properties.contentLength', 128 * 1024),
-            JMESPathCheck('properties.blobTier', None)])
+            JMESPathCheck('properties.blobTier', 'Hot')])
 
         self.cmd('storage blob upload -f "{}" --blob-url {}'.format(local_file2, blob_uri))
 
@@ -412,11 +412,11 @@ class StorageBlobURLScenarioTest(StorageScenarioMixin, ScenarioTest):
         self.assertEqual(64 * 1024, os.stat(downloaded).st_size,
                          'The download file size is not right.')
 
-        self.cmd('storage blob set-tier --blob-url {} --tier Hot'.format(blob_uri))
+        self.cmd('storage blob set-tier --blob-url {} --tier Cool'.format(blob_uri))
         self.cmd('storage blob show --blob-url {}'.format(blob_uri), checks=[
             JMESPathCheck('name', blob_name1),
             JMESPathCheck('properties.contentLength', 128 * 1024),
-            JMESPathCheck('properties.blobTier', "Hot")])
+            JMESPathCheck('properties.blobTier', "Cool")])
 
         self.cmd('storage blob snapshot --blob-url {}'.format(blob_uri), checks=JMESPathCheckExists('snapshot'))
         self.storage_cmd('storage blob list -c {}', account_info, container).assert_with_checks(JMESPathCheck('length(@)', 1))
