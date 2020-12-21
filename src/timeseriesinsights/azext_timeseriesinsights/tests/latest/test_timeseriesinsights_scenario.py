@@ -10,7 +10,7 @@
 
 import os
 from azure.cli.testsdk import ScenarioTest
-from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk import ResourceGroupPreparer, StorageAccountPreparer
 from .example_steps import step_environment_gen1_create
 from .example_steps import step_environment_list
 from .example_steps import step_environment_show
@@ -159,10 +159,9 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
     #     calc_coverage(__file__)
     #     raise_if()
 
-    @ResourceGroupPreparer(name_prefix='clitsi.rg', key='rg', parameter_name='rg')
-    def test_timeseriesinsights_environment_gen1(self, rg):
+    @ResourceGroupPreparer(name_prefix='clitsi.rg')
+    def test_timeseriesinsights_environment_gen1(self, resource_group):
         self.kwargs.update({
-            'rg': rg,
             'env1': self.create_random_name('cli-test-tsi-env1', 24),
         })
 
@@ -216,25 +215,35 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
                  '--resource-group {rg}',
                  checks=[self.check('length(value)', 0)])
 
-    @ResourceGroupPreparer(name_prefix='clitsi.rg', key='rg', parameter_name='rg')
-    def test_timeseriesinsights_environment_gen2(self, rg):
+    @ResourceGroupPreparer(name_prefix='clitsi.rg')
+    @StorageAccountPreparer()
+    def test_timeseriesinsights_environment_gen2(self, resource_group, storage_account):
         self.kwargs.update({
-            'rg': rg,
             'env': self.create_random_name('cli-test-tsi-env2', 24),
         })
 
-        # # Test `environment gen2 create` with optional arguments
-        # self.cmd('az timeseriesinsights environment gen2 create '
-        #          '--resource-group {rg} '
-        #          '--name {env1} '
-        #          '--sku name=S1 capacity=1 '
-        #          '--data-retention-time "P31D" '
-        #          '--partition-key-properties name="DeviceId1" type="String" '
-        #          '--storage-limit-exceeded-behavior PauseIngress',
-        #          checks=[self.check('name', '{env1}'),
-        #                  self.check('sku.name', 'S1'),
-        #                  self.check('sku.capacity', 1),
-        #                  self.check('properties.partitionKeyProperties', [{"name": "DeviceId1", "type": "String"}]),
-        #                  self.check('properties.storageLimitExceededBehavior', 'PauseIngress')])
-        #
-        #
+        # Test environment longterm create
+        key = self.cmd('az storage account keys list -g {rg} -n {sa}  --query "[0].value" --output tsv').output
+
+        # Test `environment gen2 create` with optional arguments
+        self.cmd('az timeseriesinsights environment gen2 create '
+                 '--resource-group {rg} '
+                 '--name {env} '
+                 '--sku name=L1 capacity=1 '
+                 '--time-series-id-properties name=DeviceId1 type=String '
+                 '--storage-configuration account-name={sa} management-key=' + key,
+                 checks=[self.check('name', '{env}'),
+                         self.check('sku.name', 'L1'),
+                         self.check('sku.capacity', 1),
+                         self.check('timeSeriesIdProperties[0].name', 'DeviceId1'),
+                         self.check('timeSeriesIdProperties[0].type', 'String')])
+
+        self.cmd('az timeseriesinsights environment show '
+                 '--resource-group {rg} '
+                 '--name {env}',
+                 checks=[self.check('name', '{env}')])
+
+        self.cmd('az timeseriesinsights environment gen2 update --resource-group {rg} --name {env} '
+                 '--warm-store-configuration data-retention=P30D '
+                 '--storage-configuration account-name={sa} management-key=' + key,
+                 checks=[self.check('warmStoreConfiguration.dataRetention', "30 days, 0:00:00")])

@@ -131,8 +131,6 @@ def timeseriesinsights_environment_gen2_create(client,
 def timeseriesinsights_environment_gen2_update(client,
                                                resource_group_name,
                                                environment_name,
-                                               sku=None,
-                                               time_series_id_properties=None,
                                                storage_configuration=None,
                                                tags=None,
                                                warm_store_configuration=None,
@@ -143,10 +141,6 @@ def timeseriesinsights_environment_gen2_update(client,
         raise InvalidArgumentValueError('Instance kind value is "{}", not match "{}"'.format(body['kind'], 'Gen2'))
 
     put_parameters = {}
-    if sku is not None:
-        put_parameters['sku'] = sku
-    if time_series_id_properties is not None:
-        put_parameters['time_series_id_properties'] = time_series_id_properties
     if storage_configuration is not None:
         put_parameters['storage_configuration'] = storage_configuration
     if warm_store_configuration is not None:
@@ -160,6 +154,9 @@ def timeseriesinsights_environment_gen2_update(client,
             patch_parameters['tags'] = tags
 
     if put_parameters:
+        if 'storage_configuration' not in put_parameters:
+            raise InvalidArgumentValueError('--storage-configuration is required')
+        body.update(put_parameters)
         return sdk_no_wait(no_wait,
                            client.begin_create_or_update,
                            resource_group_name=resource_group_name,

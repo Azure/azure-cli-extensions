@@ -68,7 +68,7 @@ Currently, only a single partition key property is supported."
 
             Multiple actions can be specified by using more than one --partition-key-properties argument.
     examples:
-      - name: EnvironmentsCreate
+      - name: EnvironmentsGen1Create
         text: |-
                az timeseriesinsights environment gen1 create --name "env1" --location "West US" --data-retention-time \
 "P31D" --partition-key-properties name="DeviceId1" type="String" --sku name="S1" capacity=1 --resource-group "rg1"
@@ -98,7 +98,7 @@ Currently, only a single partition key property is supported."
 
             Multiple actions can be specified by using more than one --partition-key-properties argument.
     examples:
-      - name: EnvironmentsUpdate
+      - name: EnvironmentsGen1Update
         text: |-
                az timeseriesinsights environment gen1 update --name "env1" --sku name="S1" capacity=2 \
                --resource-group "rg1"
@@ -120,10 +120,10 @@ helps['timeseriesinsights environment gen2 create'] = """
 
             name: Required. The name of this SKU.
             capacity: Required. The capacity of the sku. 
-      - name: --time-series-id-properties
+      - name: --id-properties --time-series-id-properties
         short-summary: "The list of event properties which will be used to define the environment's time series id."
         long-summary: |
-            Usage: --time-series-id-properties name=XX type=XX
+            Usage: --time-series-id-properties name=XX type=String
 
             name: The name of the property.
             type: The type of the property.
@@ -146,28 +146,18 @@ retain a copy of the environment's data available for faster query."
 
             data-retention: Required. ISO8601 timespan specifying the number of days the environment's events will be \
 available for query from the warm store.
+    examples:
+      - name: EnvironmentsGen2Create
+        text: |-
+               az timeseriesinsights environment gen2 create --name "env2" --location westus --resource-group "rg1" \
+               --sku name="L1" capacity=1 --time-series-id-properties name=idName type=String \
+               --storage-configuration account-name=your-account-name  management-key=your-account-key
 """
 
 helps['timeseriesinsights environment gen2 update'] = """
     type: command
     short-summary: "Create a gen2 environment in the specified subscription and resource group."
     parameters:
-      - name: --sku
-        short-summary: "The sku determines the type of environment, L1."
-        long-summary: |
-            Usage: --sku name=XX capacity=XX
-
-            name: Required. The name of this SKU.
-            capacity: Required. The capacity of the sku. 
-      - name: --time-series-id-properties
-        short-summary: "The list of event properties which will be used to define the environment's time series id."
-        long-summary: |
-            Usage: --time-series-id-properties name=XX type=XX
-
-            name: The name of the property.
-            type: The type of the property.
-
-            Multiple actions can be specified by using more than one --time-series-id-properties argument.
       - name: --storage-configuration
         short-summary: "The storage configuration provides the connection details that allows the Time Series Insights \
 service to connect to the customer storage account that is used to store the environment's data."
@@ -185,6 +175,12 @@ retain a copy of the environment's data available for faster query."
 
             data-retention: Required. ISO8601 timespan specifying the number of days the environment's events will be \
 available for query from the warm store.
+    examples:
+      - name: EnvironmentsGen2Update
+        text: |-
+               az timeseriesinsights environment gen2 update --name "env2" --resource-group "rg1" \
+               --warm-store-configuration data-retention=P30D \
+               --storage-configuration account-name=your-account-name management-key=your-account-key
 """
 
 helps['timeseriesinsights environment delete'] = """
