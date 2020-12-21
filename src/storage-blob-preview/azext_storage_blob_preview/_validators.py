@@ -407,9 +407,15 @@ def get_content_setting_validator(settings_class, update, guess_from_file=None):
                 container = ns.get('container_name')
                 blob = ns.get('blob_name')
                 lease_id = ns.get('lease_id')
-                client = cf_blob_client(cmd.cli_ctx, connection_string=cs, account_name=account, account_key=key,
-                                        token_credential=token_credential, sas_token=sas, container=container,
-                                        blob=blob)
+                client_kwargs = {
+                    'connection_string': cs,
+                    'account_name': account,
+                    'account_key': key,
+                    'token_credential': token_credential,
+                    'sas_token': sas,
+                    'container_name': container,
+                    'blob_name': blob}
+                client = cf_blob_client(cmd.cli_ctx, client_kwargs)
 
                 props = client.get_blob_properties(lease=lease_id).content_settings
 

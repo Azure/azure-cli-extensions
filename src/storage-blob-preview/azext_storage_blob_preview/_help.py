@@ -141,5 +141,5 @@ long-summary: >
     set in the delete retention policy.
 examples:
   - name:  Restore soft-deleted blob.
-    text: az storage blob metadata update -n myblob -c mycontainer --metadata a=b c=d
+    text: az storage blob undelete -n myblob -c mycontainer --account-name mystorageaccount --account-key 0000-0000
 """

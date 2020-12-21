@@ -26,7 +26,8 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         )
 
     blob_service_mgmt_sdk = CliCommandType(
-        operations_tmpl='azext_storage_blob_preview.vendored_sdks.azure_mgmt_storage.operations#BlobServicesOperations.{}',
+        operations_tmpl='azext_storage_blob_preview.vendored_sdks.azure_mgmt_storage.operations#'
+                        'BlobServicesOperations.{}',
         client_factory=cf_mgmt_blob_services,
         resource_type=CUSTOM_MGMT_STORAGE
     )
@@ -45,7 +46,8 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                  custom_func_name='update_blob_service_properties')
 
     management_policy_sdk = CliCommandType(
-        operations_tmpl='azext_storage_blob_preview.vendored_sdks.azure_mgmt_storage.operations#ManagementPoliciesOperations.{}',
+        operations_tmpl='azext_storage_blob_preview.vendored_sdks.azure_mgmt_storage.operations#'
+                        'ManagementPoliciesOperations.{}',
         client_factory=cf_mgmt_policy,
         resource_type=ResourceType.MGMT_STORAGE
     )

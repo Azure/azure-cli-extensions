@@ -586,6 +586,7 @@ def snapshot_blob(client, metadata=None, **kwargs):
     return client.get_blob_properties()
 
 
+# pylint: disable=too-many-locals
 def upload_blob(cmd, client, file_path, container_name=None, blob_name=None, blob_type=None,
                 metadata=None, validate_content=False, maxsize_condition=None, max_connections=2, lease_id=None,
                 if_modified_since=None, if_unmodified_since=None, if_match=None, if_none_match=None,
@@ -620,8 +621,7 @@ def upload_blob(cmd, client, file_path, container_name=None, blob_name=None, blo
 
     # used to check for the preconditions as upload_append_blob() cannot
     if blob_type == 'append':
-        from azure.core.exceptions import HttpResponseError
-        if exists(cmd, client, timeout=timeout):
+        if client.exists(timeout=timeout):
             client.get_blob_properties(**check_blob_args)
 
     # Because the contents of the uploaded file may be too large, it should be passed into the a stream object,

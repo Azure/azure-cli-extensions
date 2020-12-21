@@ -135,6 +135,11 @@ class StorageArgumentContext(AzArgumentContext):
                    'This could be either the primary endpoint, or the secondary endpoint depending on the current '
                    '`location_mode`.')
 
+    def register_lease_blob_arguments(self):
+        self.extra('blob_name', required=True)
+        self.extra('container_name', required=True)
+        self.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+
     def register_container_arguments(self):
         self.extra('container_name', required=True)
         self.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)

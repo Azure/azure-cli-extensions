@@ -37,10 +37,6 @@ def cf_sa(cli_ctx, _):
     return storage_client_factory(cli_ctx).storage_accounts
 
 
-def cf_mgmt_policy(cli_ctx, _):
-    return storage_client_factory(cli_ctx).management_policies
-
-
 def get_account_url(cli_ctx, account_name, service):
     from knack.util import CLIError
     if account_name is None:
