@@ -6,7 +6,7 @@
 # --------------------------------------------------------------------------
 
 from azure.core.paging import PageIterator, ItemPaged
-from azure.storage.blob._deserialize import get_blob_properties_from_generated_code
+from ._deserialize import get_blob_properties_from_generated_code
 from ._generated.models import StorageErrorException, BlobItemInternal, BlobPrefix as GenBlobPrefix
 from ._models import BlobProperties
 from ._shared.models import DictMixin
@@ -24,7 +24,7 @@ class BlobPropertiesPaged(PageIterator):
     :ivar str location_mode: The location mode being used to list results. The available
         options include "primary" and "secondary".
     :ivar current_page: The current page of listed results.
-    :vartype current_page: list(~azure.storage.blob.BlobProperties)
+    :vartype current_page: list(~.BlobProperties)
     :ivar str container: The container that the blobs are listed from.
     :ivar str delimiter: A delimiting character used for hierarchy listing.
 
@@ -138,7 +138,7 @@ class BlobPrefix(ItemPaged, DictMixin):
     :ivar str location_mode: The location mode being used to list results. The available
         options include "primary" and "secondary".
     :ivar current_page: The current page of listed results.
-    :vartype current_page: list(~azure.storage.blob.BlobProperties)
+    :vartype current_page: list(~.BlobProperties)
     :ivar str container: The container that the blobs are listed from.
     :ivar str delimiter: A delimiting character used for hierarchy listing.
 
