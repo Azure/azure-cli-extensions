@@ -132,3 +132,14 @@ long-summary: >
     Each call to this operation replaces all existing tags attached to the blob. To remove all
     tags from the blob, call this operation with no tags set.
 """
+
+helps['storage blob undelete'] = """
+type: command
+short-summary: Restore soft-deleted blobs or snapshots.
+long-summary: >
+    Operation will only be successful if used within the specified number of days
+    set in the delete retention policy.
+examples:
+  - name:  Restore soft-deleted blob.
+    text: az storage blob metadata update -n myblob -c mycontainer --metadata a=b c=d
+"""

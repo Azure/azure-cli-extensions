@@ -219,6 +219,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.extra('lease', lease_type)
         c.extra('snapshot', snapshot_type)
         c.extra('version_id', version_id_type)
+        c.argument('delete_snapshots', arg_type=get_enum_type(['only', 'include']),
+                   help='Required if the blob has associated snapshots. "only": Deletes only the blobs snapshots. '
+                        '"include": Deletes the blob along with all snapshots.')
 
     with self.argument_context('storage blob download') as c:
         from ._validators import add_progress_callback_v2
