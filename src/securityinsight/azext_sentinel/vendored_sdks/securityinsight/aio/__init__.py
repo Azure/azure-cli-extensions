@@ -9,10 +9,5 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-<<<<<<< HEAD:src/securityinsight/azext_sentinel/vendored_sdks/securityinsight/aio/__init__.py
 from ._security_insights import SecurityInsights
 __all__ = ['SecurityInsights']
-=======
-VERSION = "0.2.0"
-
->>>>>>> personal/peizhou/convert-api:src/healthcareapis/azext_healthcareapis/vendored_sdks/healthcareapis/version.py
