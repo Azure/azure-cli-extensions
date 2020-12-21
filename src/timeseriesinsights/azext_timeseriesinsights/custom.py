@@ -64,32 +64,26 @@ def timeseriesinsights_environment_gen1_update(client,
                                                data_retention_time=None,
                                                tags=None,
                                                storage_limit_exceeded_behavior=None,
-                                               partition_key_properties=None,
                                                no_wait=False):
     instance = timeseriesinsights_environment_show(client, resource_group_name, environment_name)
     body = instance.as_dict(keep_readonly=False)
     if body['kind'] != 'Gen1':
         raise InvalidArgumentValueError('Instance kind value is "{}", not match "{}"'.format(body['kind'], 'Gen1'))
 
-    put_parameters = {}
+    patch_parameters = {
+        'kind': 'Gen1'
+    }
     if sku is not None:
-        put_parameters['sku'] = sku
+        patch_parameters['sku'] = sku
     if data_retention_time is not None:
-        put_parameters['data_retention_time'] = data_retention_time
+        patch_parameters['data_retention_time'] = data_retention_time
     if storage_limit_exceeded_behavior is not None:
-        put_parameters['storage_limit_exceeded_behavior'] = storage_limit_exceeded_behavior
-    if partition_key_properties is not None:
-        put_parameters['partition_key_properties'] = partition_key_properties
-
-    patch_parameters = {}
+        patch_parameters['storage_limit_exceeded_behavior'] = storage_limit_exceeded_behavior
     if tags is not None:
-        if put_parameters:
-            put_parameters['tags'] = tags
-        else:
-            patch_parameters['tags'] = tags
+        patch_parameters['tags'] = tags
 
-    if put_parameters:
-        body.update(put_parameters)
+    if len(patch_parameters) > 2:   # Only a single event source property can be updated per PATCH request
+        body.update(patch_parameters)
         return sdk_no_wait(no_wait,
                            client.begin_create_or_update,
                            resource_group_name=resource_group_name,
@@ -140,23 +134,21 @@ def timeseriesinsights_environment_gen2_update(client,
     if body['kind'] != 'Gen2':
         raise InvalidArgumentValueError('Instance kind value is "{}", not match "{}"'.format(body['kind'], 'Gen2'))
 
-    put_parameters = {}
+    patch_parameters = {
+        'kind': 'Gen2'
+    }
     if storage_configuration is not None:
-        put_parameters['storage_configuration'] = storage_configuration
+        patch_parameters['storage_configuration'] = storage_configuration
     if warm_store_configuration is not None:
-        put_parameters['warm_store_configuration'] = warm_store_configuration
+        patch_parameters['warm_store_configuration'] = warm_store_configuration
 
-    patch_parameters = {}
     if tags is not None:
-        if put_parameters:
-            put_parameters['tags'] = tags
-        else:
-            patch_parameters['tags'] = tags
+        patch_parameters['tags'] = tags
 
-    if put_parameters:
-        if 'storage_configuration' not in put_parameters:
-            raise InvalidArgumentValueError('--storage-configuration is required')
-        body.update(put_parameters)
+    if len(patch_parameters) > 2:   # Only a single event source property can be updated per PATCH request
+        if 'storage_configuration' not in patch_parameters:
+            raise InvalidArgumentValueError('--storage-configuration is required for multi properties update')
+        body.update(patch_parameters)
         return sdk_no_wait(no_wait,
                            client.begin_create_or_update,
                            resource_group_name=resource_group_name,
@@ -231,12 +223,6 @@ def timeseriesinsights_event_source_event_hub_update(client,
                                                      resource_group_name,
                                                      environment_name,
                                                      event_source_name,
-
-                                                     event_source_resource_id=None,
-                                                     service_bus_namespace=None,
-                                                     event_hub_name=None,
-                                                     consumer_group_name=None,
-                                                     key_name=None,
                                                      shared_access_key=None,
                                                      local_timestamp=None,
                                                      timestamp_property_name=None,
@@ -247,33 +233,22 @@ def timeseriesinsights_event_source_event_hub_update(client,
         raise InvalidArgumentValueError('Instance kind value is "{}", not match "{}"'.format(
             body['kind'], 'Microsoft.EventHub'))
 
-    put_parameters = {}
-    if event_source_resource_id is not None:
-        put_parameters['event_source_resource_id'] = event_source_resource_id
-    if service_bus_namespace is not None:
-        put_parameters['service_bus_namespace'] = service_bus_namespace
-    if event_hub_name is not None:
-        put_parameters['event_hub_name'] = event_hub_name
-    if consumer_group_name is not None:
-        put_parameters['consumer_group_name'] = consumer_group_name
-    if key_name is not None:
-        put_parameters['key_name'] = key_name
-    if shared_access_key is not None:
-        put_parameters['shared_access_key'] = shared_access_key
-    if local_timestamp is not None:
-        put_parameters['local_timestamp'] = local_timestamp
-    if timestamp_property_name is not None:
-        put_parameters['timestamp_property_name'] = timestamp_property_name
-
-    patch_parameters = {}
+    patch_parameters = {
+        'kind': 'Microsoft.EventHub'
+    }
     if tags is not None:
-        if put_parameters:
-            put_parameters['tags'] = tags
-        else:
-            patch_parameters['tags'] = tags
+        patch_parameters['tags'] = tags
+    if shared_access_key is not None:
+        patch_parameters['shared_access_key'] = shared_access_key
+    if local_timestamp is not None:
+        patch_parameters['local_timestamp'] = local_timestamp
+    if timestamp_property_name is not None:
+        patch_parameters['timestamp_property_name'] = timestamp_property_name
 
-    if put_parameters:
-        body.update(put_parameters)
+    if len(patch_parameters) > 2:   # Only a single event source property can be updated per PATCH request
+        body.update(patch_parameters)
+        if 'shared_access_key' not in patch_parameters:
+            raise InvalidArgumentValueError('--shared-access-key is required for multi properties update')
         return client.create_or_update(resource_group_name=resource_group_name,
                                        environment_name=environment_name,
                                        event_source_name=event_source_name,
@@ -319,11 +294,6 @@ def timeseriesinsights_event_source_iot_hub_update(client,
                                                    resource_group_name,
                                                    environment_name,
                                                    event_source_name,
-
-                                                   event_source_resource_id=None,
-                                                   iot_hub_name=None,
-                                                   consumer_group_name=None,
-                                                   key_name=None,
                                                    shared_access_key=None,
                                                    local_timestamp=None,
                                                    timestamp_property_name=None,
@@ -334,31 +304,22 @@ def timeseriesinsights_event_source_iot_hub_update(client,
         raise InvalidArgumentValueError('Instance kind value is "{}", not match "{}"'.format(
             body['kind'], 'Microsoft.IoTHub'))
 
-    put_parameters = {}
-    if event_source_resource_id is not None:
-        put_parameters['event_source_resource_id'] = event_source_resource_id
-    if iot_hub_name is not None:
-        put_parameters['iot_hub_name'] = iot_hub_name
-    if consumer_group_name is not None:
-        put_parameters['consumer_group_name'] = consumer_group_name
-    if key_name is not None:
-        put_parameters['key_name'] = key_name
-    if shared_access_key is not None:
-        put_parameters['shared_access_key'] = shared_access_key
-    if local_timestamp is not None:
-        put_parameters['local_timestamp'] = local_timestamp
-    if timestamp_property_name is not None:
-        put_parameters['timestamp_property_name'] = timestamp_property_name
-
-    patch_parameters = {}
+    patch_parameters = {
+        'kind': 'Microsoft.IoTHub'
+    }
     if tags is not None:
-        if put_parameters:
-            put_parameters['tags'] = tags
-        else:
-            patch_parameters['tags'] = tags
+        patch_parameters['tags'] = tags
+    if shared_access_key is not None:
+        patch_parameters['shared_access_key'] = shared_access_key
+    if local_timestamp is not None:
+        patch_parameters['local_timestamp'] = local_timestamp
+    if timestamp_property_name is not None:
+        patch_parameters['timestamp_property_name'] = timestamp_property_name
 
-    if put_parameters:
-        body.update(put_parameters)
+    if len(patch_parameters) > 2:     # Only a single event source property can be updated per PATCH request
+        body.update(patch_parameters)
+        if 'shared_access_key' not in patch_parameters:
+            raise InvalidArgumentValueError('--shared-access-key is required for multi properties update')
         return client.create_or_update(resource_group_name=resource_group_name,
                                        environment_name=environment_name,
                                        event_source_name=event_source_name,

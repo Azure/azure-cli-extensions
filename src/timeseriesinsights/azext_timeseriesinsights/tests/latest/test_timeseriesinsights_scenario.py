@@ -11,153 +11,23 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer, StorageAccountPreparer
-from .example_steps import step_environment_gen1_create
-from .example_steps import step_environment_list
-from .example_steps import step_environment_show
-from .example_steps import step_environment_update
-from .example_steps import step_access_policy_create
-from .example_steps import step_access_policy_list
-from .example_steps import step_access_policy_show
-from .example_steps import step_access_policy_update
-from .example_steps import step_access_policy_delete
-from .example_steps import step_event_source_microsoft__event_hub_create
-from .example_steps import step_event_source_show
-from .example_steps import step_event_source_list
-from .example_steps import step_event_source_update
-from .example_steps import step_event_source_delete
-from .example_steps import step_reference_data_set_create
-from .example_steps import step_reference_data_set_show
-from .example_steps import step_reference_data_set_list
-from .example_steps import step_reference_data_set_update
-from .example_steps import step_reference_data_set_delete
-from .example_steps import step_environment_delete
-from .. import (
-    try_manual,
-    raise_if,
-    calc_coverage
-)
-
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-# Env setup_scenario
-@try_manual
-def setup_scenario(test, rg):
-    pass
-
-
-# Env cleanup_scenario
-@try_manual
-def cleanup_scenario(test, rg):
-    pass
-
-
-# Testcase: Scenario
-@try_manual
-def call_scenario(test, rg):
-    setup_scenario(test, rg)
-    step_environment_gen1_create(test, rg, checks=[])
-    step_environment_list(test, rg, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_environment_list(test, rg, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_environment_show(test, rg, checks=[
-        test.check("name", "{myEnvironment}", case_sensitive=False),
-        test.check("location", "West US", case_sensitive=False),
-        test.check("dataRetentionTime", "P31D", case_sensitive=False),
-        test.check("sku.name", "S1", case_sensitive=False),
-        test.check("sku.capacity", 1),
-    ])
-    step_environment_update(test, rg, checks=[
-        test.check("name", "{myEnvironment}", case_sensitive=False),
-        test.check("location", "West US", case_sensitive=False),
-        test.check("dataRetentionTime", "P31D", case_sensitive=False),
-        test.check("tags.someTag", "someTagValue", case_sensitive=False),
-    ])
-    step_access_policy_create(test, rg, checks=[
-        test.check("name", "{myAccessPolicy}", case_sensitive=False),
-        test.check("description", "some description", case_sensitive=False),
-        test.check("principalObjectId", "aGuid", case_sensitive=False),
-    ])
-    step_access_policy_list(test, rg, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_access_policy_show(test, rg, checks=[
-        test.check("name", "{myAccessPolicy}", case_sensitive=False),
-        test.check("description", "some description", case_sensitive=False),
-        test.check("principalObjectId", "aGuid", case_sensitive=False),
-    ])
-    step_access_policy_update(test, rg, checks=[
-        test.check("name", "{myAccessPolicy}", case_sensitive=False),
-        test.check("description", "some description", case_sensitive=False),
-        test.check("principalObjectId", "aGuid", case_sensitive=False),
-    ])
-    step_access_policy_delete(test, rg, checks=[])
-    step_event_source_microsoft__event_hub_create(test, rg, checks=[])
-    step_event_source_show(test, rg, checks=[
-        test.check("name", "{myEventSource}", case_sensitive=False),
-        test.check("location", "West US", case_sensitive=False),
-        test.check("consumerGroupName", "cgn", case_sensitive=False),
-        test.check("eventHubName", "ehn", case_sensitive=False),
-        test.check("eventSourceResourceId", "somePathInArm", case_sensitive=False),
-        test.check("keyName", "managementKey", case_sensitive=False),
-        test.check("serviceBusNamespace", "sbn", case_sensitive=False),
-    ])
-    step_event_source_list(test, rg, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_event_source_update(test, rg, checks=[
-        test.check("name", "{myEventSource}", case_sensitive=False),
-        test.check("location", "West US", case_sensitive=False),
-        test.check("consumerGroupName", "cgn", case_sensitive=False),
-        test.check("eventHubName", "ehn", case_sensitive=False),
-        test.check("eventSourceResourceId", "somePathInArm", case_sensitive=False),
-        test.check("keyName", "managementKey", case_sensitive=False),
-        test.check("serviceBusNamespace", "sbn", case_sensitive=False),
-        test.check("tags.someKey", "someValue", case_sensitive=False),
-    ])
-    step_event_source_delete(test, rg, checks=[])
-    step_reference_data_set_create(test, rg, checks=[
-        test.check("location", "West US", case_sensitive=False),
-        test.check("name", "{myReferenceDataSet}", case_sensitive=False),
-    ])
-    step_reference_data_set_show(test, rg, checks=[
-        test.check("location", "West US", case_sensitive=False),
-        test.check("name", "{myReferenceDataSet}", case_sensitive=False),
-    ])
-    step_reference_data_set_list(test, rg, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_reference_data_set_update(test, rg, checks=[
-        test.check("location", "West US", case_sensitive=False),
-        test.check("name", "{myReferenceDataSet}", case_sensitive=False),
-        test.check("tags.someKey", "someValue", case_sensitive=False),
-    ])
-    step_reference_data_set_delete(test, rg, checks=[])
-    step_environment_delete(test, rg, checks=[])
-    cleanup_scenario(test, rg)
-
-
-# Test class for Scenario
-@try_manual
 class TimeseriesinsightsScenarioTest(ScenarioTest):
 
-    # @ResourceGroupPreparer(name_prefix='clitesttimeseriesinsights_rg1'[:7], key='rg', parameter_name='rg')
-    # def test_timeseriesinsights_Scenario(self, rg):
-    #
-    #     self.kwargs.update({
-    #         'myEnvironment': 'env1',
-    #         'myEventSource': 'es1',
-    #         'myReferenceDataSet': 'rds1',
-    #         'myAccessPolicy': 'ap1',
-    #     })
-    #
-    #     call_scenario(self, rg)
-    #     calc_coverage(__file__)
-    #     raise_if()
+    def _create_timeseriesinsights_environment(self):
+        self.kwargs.update({
+            'env': self.create_random_name('cli-test-tsi-env', 24),
+        })
+        return self.cmd('az timeseriesinsights environment gen1 create '
+                        '--resource-group {rg} '
+                        '--name {env} '
+                        '--sku name=S1 capacity=1 '
+                        '--data-retention-time "P31D" '
+                        '--partition-key-properties name="DeviceId1" type="String" '
+                        '--storage-limit-exceeded-behavior PauseIngress')
 
     @ResourceGroupPreparer(name_prefix='clitsi.rg')
     def test_timeseriesinsights_environment_gen1(self, resource_group):
@@ -179,7 +49,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
                          self.check('partitionKeyProperties', [{"name": "DeviceId1", "type": "String"}]),
                          self.check('storageLimitExceededBehavior', 'PauseIngress'),
                          self.check('dataRetentionTime', '31 days, 0:00:00')
-                 ])
+                         ])
 
         self.cmd('az timeseriesinsights environment show '
                  '--resource-group {rg} '
@@ -195,7 +65,14 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
                  checks=[self.check('properties.storageLimitExceededBehavior', 'PurgeOldData')])
 
         self.cmd('az timeseriesinsights environment gen1 update --resource-group {rg} --name {env1} '
-                          '--tags key1=value1 key2=value2',
+                 '--storage-limit-exceeded-behavior PauseIngress '
+                 '--sku name=S1 capacity=1',
+                 checks=[
+                     self.check('properties.storageLimitExceededBehavior', 'PauseIngress'),
+                     self.check('sku.capacity', '1')])
+
+        self.cmd('az timeseriesinsights environment gen1 update --resource-group {rg} --name {env1} '
+                 '--tags key1=value1 key2=value2',
                  checks=[]
                  )
 
@@ -247,3 +124,108 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
                  '--warm-store-configuration data-retention=P30D '
                  '--storage-configuration account-name={sa} management-key=' + key,
                  checks=[self.check('warmStoreConfiguration.dataRetention', "30 days, 0:00:00")])
+
+    @ResourceGroupPreparer(name_prefix='clitsi.rg')
+    def test_timeseriesinsights_event_source_eventhub(self, resource_group):
+        self.kwargs.update({
+            'es': self.create_random_name('cli-test-tsi-es', 24),  # time series insights event source
+            'ehns': self.create_random_name('cli-test-tsi-ehns', 24),  # event hub namespace
+            'eh': self.create_random_name('cli-test-tsi-eh', 24),  # event hub
+            'loc': 'westus'
+        })
+
+        self._create_timeseriesinsights_environment()
+
+        # Create
+
+        # Prepare the event hub
+        self.cmd('az eventhubs namespace create -g {rg} -n {ehns}')
+        result = self.cmd('az eventhubs eventhub create -g {rg} -n {eh} --namespace-name {ehns}').get_output_in_json()
+        self.kwargs["es_resource_id"] = result["id"]
+        result = self.cmd(
+            'az eventhubs namespace authorization-rule keys list -g {rg} --namespace-name {ehns} -n RootManageSharedAccessKey').get_output_in_json()
+        self.kwargs["shared_access_key"] = result["primaryKey"]
+
+        self.cmd('az timeseriesinsights event-source eventhub create -g {rg} --environment-name {env} --name {es} '
+                 '--event-hub-name {eh} '
+                 '--service-bus-namespace {ehns} '
+                 '--key-name RootManageSharedAccessKey '
+                 '--shared-access-key {shared_access_key} '
+                 '--event-source-resource-id {es_resource_id} '
+                 '--consumer-group-name "cgn"',
+                 checks=[self.check('timestampPropertyName', None)])
+
+        self.cmd('az timeseriesinsights event-source eventhub update -g {rg} --environment-name {env} --name {es} '
+                 '--timestamp-property-name DeviceId1',
+                 checks=[self.check('timestampPropertyName', 'DeviceId1')])
+
+        # Renew a key
+        self.kwargs["shared_access_key"] = self.cmd(
+            'az eventhubs namespace authorization-rule keys renew -g {rg} --namespace-name {ehns} -n RootManageSharedAccessKey --key PrimaryKey --query primaryKey --output tsv').output
+
+        self.cmd('az timeseriesinsights event-source eventhub update -g {rg} --environment-name {env} --name {es} '
+                 '--shared-access-key {shared_access_key} '
+                 '--tags test=tag '
+                 '--timestamp-property-name DeviceId1 ',
+                 checks=[self.check('timestampPropertyName', 'DeviceId1')])
+
+        # List
+        self.cmd('az timeseriesinsights event-source list -g {rg} --environment-name {env}',
+                 checks=[self.check('length(value)', 1)])
+
+        # Show
+        self.cmd('az timeseriesinsights event-source show -g {rg} --environment-name {env} -n {es}')
+
+        # Delete
+        self.cmd('az timeseriesinsights event-source delete -g {rg} --environment-name {env} -n {es} --yes')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_timeseriesinsights')
+    def test_timeseriesinsights_event_source_iothub(self):
+        self.kwargs.update({
+            'es': self.create_random_name('cli-test-tsi-es', 24),  # time series insights event source
+            'iothub': self.create_random_name('cli-test-tsi-iothub', 24),  # iot hub
+            'loc': 'westus'
+        })
+
+        self._create_timeseriesinsights_environment()
+
+        # Create
+        # Prepare the iot hub
+        result = self.cmd('az iot hub create -g {rg} -n {iothub}').get_output_in_json()
+        self.kwargs["es_resource_id"] = result["id"]
+        self.kwargs["key_name"] = "iothubowner"
+        self.kwargs["shared_access_key"] = self.cmd(
+            "az iot hub policy list -g {rg} --hub-name {iothub} --query \"[?keyName=='iothubowner']\".primaryKey --output tsv").output
+
+        # Test --timestamp-property-name is not given
+        self.cmd('az timeseriesinsights event-source iothub create -g {rg} --environment-name {env} --name {es} '
+                 '--consumer-group-name "cgn" '
+                 '--iot-hub-name {iothub} '
+                 '--key-name {key_name} --shared-access-key {shared_access_key} '
+                 '--event-source-resource-id {es_resource_id}',
+                 checks=[self.check('timestampPropertyName', None)])
+
+        # Test --timestamp-property-name is not given
+        self.cmd('az timeseriesinsights event-source iothub update -g {rg} --environment-name {env} --name {es} '
+                 '--timestamp-property-name timestampProp',
+                 checks=[self.check('timestampPropertyName', 'timestampProp')])
+
+        self.kwargs["shared_access_key"] = self.cmd(
+            'az iot hub policy renew-key -g {rg} --hub-name {iothub} -n {key_name} '
+            '--renew-key primary --query primaryKey --output tsv').output
+
+        self.cmd('az timeseriesinsights event-source iothub update -g {rg} --environment-name {env} --name {es} '
+                 '--shared-access-key {shared_access_key} '
+                 '--tags test=tag '
+                 '--timestamp-property-name DeviceId1 ',
+                 checks=[self.check('timestampPropertyName', 'DeviceId1')])
+
+        # List
+        self.cmd('az timeseriesinsights event-source list -g {rg} --environment-name {env}',
+                 checks=[self.check('length(@)', 1)])
+
+        # Show
+        self.cmd('az timeseriesinsights event-source show -g {rg} --environment-name {env} -n {es}')
+
+        # Delete
+        self.cmd('az timeseriesinsights event-source delete -g {rg} --environment-name {env} -n {es} --yes')

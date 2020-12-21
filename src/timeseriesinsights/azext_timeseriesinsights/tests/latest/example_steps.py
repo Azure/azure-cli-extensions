@@ -19,7 +19,7 @@ def step_environment_gen1_create(test, rg, checks=None):
         checks = []
     test.cmd('az timeseriesinsights environment gen1 create '
              '--name "{myEnvironment}" '
-             '--location "West US" '
+             '--location westus '
              '--data-retention-time "P31D" '
              '--partition-key-properties name="DeviceId1" type="String" '
              '--sku name="S1" capacity=1 '
@@ -142,7 +142,7 @@ def step_event_source_microsoft__event_hub_create(test, rg, checks=None):
     test.cmd('az timeseriesinsights event-source microsoft.-event-hub create '
              '--environment-name "{myEnvironment}" '
              '--name "{myEventSource}" '
-             '--location "West US" '
+             '--location westus '
              '--consumer-group-name "cgn" '
              '--event-hub-name "ehn" '
              '--event-source-resource-id "somePathInArm" '
@@ -209,7 +209,7 @@ def step_reference_data_set_create(test, rg, checks=None):
         checks = []
     test.cmd('az timeseriesinsights reference-data-set create '
              '--environment-name "{myEnvironment}" '
-             '--location "West US" '
+             '--location westus '
              '--key-properties name="DeviceId1" type="String" '
              '--key-properties name="DeviceFloor" type="Double" '
              '--name "{myReferenceDataSet}" '

@@ -70,7 +70,10 @@ Currently, only a single partition key property is supported."
     examples:
       - name: EnvironmentsGen1Create
         text: |-
-               az timeseriesinsights environment gen1 create --name "env1" --location "West US" --data-retention-time \
+               az timeseriesinsights environment gen1 create --name "env1" --location westus
+                
+                
+                --data-retention-time \
 "P31D" --partition-key-properties name="DeviceId1" type="String" --sku name="S1" capacity=1 --resource-group "rg1"
 """
 
@@ -87,21 +90,11 @@ environments the sku determines the capacity of the environment, the ingress rat
             name: Required. The name of this SKU.
             capacity: Required. The capacity of the sku. This value can be changed to support scale out of \
             environments after they have been created.
-      - name: --partition-key-properties
-        short-summary: "The list of event properties which will be used to partition data in the environment. \
-Currently, only a single partition key property is supported."
-        long-summary: |
-            Usage: --partition-key-properties name=XX type=XX
-
-            name: The name of the property.
-            type: The type of the property.
-
-            Multiple actions can be specified by using more than one --partition-key-properties argument.
     examples:
       - name: EnvironmentsGen1Update
         text: |-
                az timeseriesinsights environment gen1 update --name "env1" --sku name="S1" capacity=2 \
-               --resource-group "rg1"
+               --resource-group "rg1" --data-retention-time "P30D" --storage-limit-exceeded-behavior PurgeOldData
 """
 
 helps['timeseriesinsights environment gen2'] = """
@@ -242,7 +235,7 @@ helps['timeseriesinsights event-source eventhub create'] = """
       - name: CreateEventHubEventSource
         text: |-
                az timeseriesinsights event-source eventhub create --environment-name "env1" --name "es1" \
---location "West US" --consumer-group-name "cgn" --event-hub-name "ehn" --event-source-resource-id "somePathInArm" \
+--location westus --consumer-group-name "cgn" --event-hub-name "ehn" --event-source-resource-id "somePathInArm" \
 --key-name "managementKey" --service-bus-namespace "sbn" --shared-access-key "someSecretvalue" \
 --timestamp-property-name "someTimestampProperty" --resource-group "rg1"
 """
@@ -323,7 +316,7 @@ helps['timeseriesinsights reference-data-set create'] = """
     examples:
       - name: ReferenceDataSetsCreate
         text: |-
-               az timeseriesinsights reference-data-set create --environment-name "env1" --location "West US" \
+               az timeseriesinsights reference-data-set create --environment-name "env1" --location westus \
 --key-properties name="DeviceId1" type="String" --key-properties name="DeviceFloor" type="Double" --name "rds1" \
 --resource-group "rg1"
 """
