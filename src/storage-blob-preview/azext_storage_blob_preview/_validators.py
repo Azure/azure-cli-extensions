@@ -1035,3 +1035,10 @@ def validate_match_condition(namespace):
     if namespace.if_none_match:
         namespace = _if_none_match(if_none_match=namespace.if_none_match, **namespace)
         del namespace.if_none_match
+
+
+def validate_blob_arguments(namespace):
+    from azure.cli.core.azclierror import RequiredArgumentMissingError
+    if not namespace.blob_url and not all([namespace.blob_name, namespace.container_name]):
+        raise RequiredArgumentMissingError(
+            "Please specify --blob-url or combination of blob name, container name and storage account arguments.")
