@@ -23,7 +23,7 @@ class BlobPropertiesPaged(AsyncPageIterator):
     :ivar str location_mode: The location mode being used to list results. The available
         options include "primary" and "secondary".
     :ivar current_page: The current page of listed results.
-    :vartype current_page: list(~azure.storage.blob.models.BlobProperties)
+    :vartype current_page: list(~.models.BlobProperties)
     :ivar str container: The container that the blobs are listed from.
     :ivar str delimiter: A delimiting character used for hierarchy listing.
 
@@ -110,7 +110,7 @@ class BlobPrefix(AsyncItemPaged, DictMixin):
     :ivar str location_mode: The location mode being used to list results. The available
         options include "primary" and "secondary".
     :ivar current_page: The current page of listed results.
-    :vartype current_page: list(~azure.storage.blob.models.BlobProperties)
+    :vartype current_page: list(~.models.BlobProperties)
     :ivar str container: The container that the blobs are listed from.
     :ivar str delimiter: A delimiting character used for hierarchy listing.
     :param callable command: Function to retrieve the next page of items.

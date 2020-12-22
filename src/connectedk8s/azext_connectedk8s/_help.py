@@ -33,6 +33,8 @@ helps['connectedk8s update'] = """
     examples:
     - name: Update proxy values for the agents
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName  --proxy-cert /path/to/crt --proxy-https https://proxy-url --proxy-http http://proxy-url --proxy-skip-range excludedIP,excludedCIDR,exampleCIDRfollowed,10.0.0.0/24
+    - name: Disable proxy settings for agents
+      text: az connectedk8s update --disable-proxy
 """
 
 helps['connectedk8s list'] = """

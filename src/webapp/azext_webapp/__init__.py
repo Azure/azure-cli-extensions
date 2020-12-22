@@ -25,7 +25,7 @@ class WebappExtCommandLoader(AzCommandsLoader):
         with self.command_group('webapp') as g:
             g.custom_command('container up', 'create_deploy_container_app', exception_handler=ex_handler_factory())
             g.custom_command('remote-connection create', 'create_tunnel')
-            g.custom_command('deploy', 'enable_one_deploy')
+            g.custom_command('deploy', 'perform_onedeploy')
 
         with self.command_group('webapp scan') as g:
             g.custom_command('start', 'start_scan')
@@ -66,10 +66,14 @@ class WebappExtCommandLoader(AzCommandsLoader):
 
         with self.argument_context('webapp deploy') as c:
             c.argument('name', options_list=['--name'], help='Name of the webapp to connect to')
-            c.argument('src', options_list=['--src'], help='Path of the file to be deployed')
-            c.argument('deploy_type', options_list=['--type'], help='Type of deployment requested')
-            c.argument('is_async', options_list=['--async'], help='Asynchronous deployment', type=bool)
+            c.argument('src_path', options_list=['--src-path'], help='Path of the file to be deployed. Example: /mnt/apps/myapp.war')
+            c.argument('src_url', options_list=['--src-url'], help='url to download the package from. Example: http://mysite.com/files/myapp.war?key=123')
+            c.argument('type', options_list=['--type'], help='Type of deployment requested')
+            c.argument('async', options_list=['--async'], help='Asynchronous deployment', type=bool)
             c.argument('target_path', options_list=['--target-path'], help='Target path relative to wwwroot to which the file will be deployed to.')
+            c.argument('restart', options_list=['--restart'], help='restart or not. default behavior is to restart.', type=bool)
+            c.argument('clean', options_list=['--clean'], help='clean or not. default is target-type specific.', type=bool)
+            c.argument('ignore_stack', options_list=['--ignore-stack'], help='should override the default stack check', type=bool)
             c.argument('timeout', options_list=['--timeout'], help='Timeout for operation in milliseconds')
             c.argument('slot', help="Name of the deployment slot to use")
 
