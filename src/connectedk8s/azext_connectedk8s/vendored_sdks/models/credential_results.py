@@ -18,19 +18,26 @@ class CredentialResults(Model):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
+    :ivar hybrid_connection_config: Contains the REP (rendezvous endpoint) and
+     “Sender” access token.
+    :vartype hybrid_connection_config:
+     ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.HybridConnectionConfig
     :ivar kubeconfigs: Base64-encoded Kubernetes configuration file.
     :vartype kubeconfigs:
-     list[~azure.mgmt.hybridkubernetes.models.CredentialResult]
+     list[~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.CredentialResult]
     """
 
     _validation = {
+        'hybrid_connection_config': {'readonly': True},
         'kubeconfigs': {'readonly': True},
     }
 
     _attribute_map = {
+        'hybrid_connection_config': {'key': 'hybridConnectionConfig', 'type': 'HybridConnectionConfig'},
         'kubeconfigs': {'key': 'kubeconfigs', 'type': '[CredentialResult]'},
     }
 
     def __init__(self, **kwargs):
         super(CredentialResults, self).__init__(**kwargs)
+        self.hybrid_connection_config = None
         self.kubeconfigs = None
