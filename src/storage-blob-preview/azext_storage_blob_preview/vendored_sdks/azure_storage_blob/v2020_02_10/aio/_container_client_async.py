@@ -131,7 +131,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
             A dict with name_value pairs to associate with the
             container as metadata. Example:{'Category':'test'}
         :type metadata: dict[str, str]
-        :param ~azure.storage.blob.PublicAccess public_access:
+        :param ~.PublicAccess public_access:
             Possible values include: 'container', 'blob'.
         :keyword container_encryption_scope:
             Specifies the default encryption scope to set on the container and use for
@@ -139,7 +139,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
 
             .. versionadded:: 12.2.0
 
-        :paramtype container_encryption_scope: dict or ~azure.storage.blob.ContainerEncryptionScope
+        :paramtype container_encryption_scope: dict or ~.ContainerEncryptionScope
         :keyword int timeout:
             The timeout parameter is expressed in seconds.
         :rtype: None
@@ -180,7 +180,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
             If specified, delete_container only succeeds if the
             container's lease is active and matches this ID.
             Required if the container has an active lease.
-        :paramtype lease: ~azure.storage.blob.aio.BlobLeaseClient or str
+        :paramtype lease: ~.aio.BlobLeaseClient or str
         :keyword ~datetime.datetime if_modified_since:
             A DateTime value. Azure expects the date value passed in to be UTC.
             If timezone is included, any non-UTC datetimes will be converted to UTC.
@@ -263,7 +263,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
         :keyword int timeout:
             The timeout parameter is expressed in seconds.
         :returns: A BlobLeaseClient object, that can be run in a context manager.
-        :rtype: ~azure.storage.blob.aio.BlobLeaseClient
+        :rtype: ~.aio.BlobLeaseClient
 
         .. admonition:: Example:
 
@@ -305,11 +305,11 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
         :keyword lease:
             If specified, get_container_properties only succeeds if the
             container's lease is active and matches this ID.
-        :paramtype lease: ~azure.storage.blob.aio.BlobLeaseClient or str
+        :paramtype lease: ~.aio.BlobLeaseClient or str
         :keyword int timeout:
             The timeout parameter is expressed in seconds.
         :return: Properties for the specified container within a container object.
-        :rtype: ~azure.storage.blob.ContainerProperties
+        :rtype: ~.ContainerProperties
 
         .. admonition:: Example:
 
@@ -352,7 +352,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
         :keyword lease:
             If specified, set_container_metadata only succeeds if the
             container's lease is active and matches this ID.
-        :paramtype lease: ~azure.storage.blob.aio.BlobLeaseClient or str
+        :paramtype lease: ~.aio.BlobLeaseClient or str
         :keyword ~datetime.datetime if_modified_since:
             A DateTime value. Azure expects the date value passed in to be UTC.
             If timezone is included, any non-UTC datetimes will be converted to UTC.
@@ -398,7 +398,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
         :keyword lease:
             If specified, get_container_access_policy only succeeds if the
             container's lease is active and matches this ID.
-        :paramtype lease: ~azure.storage.blob.aio.BlobLeaseClient or str
+        :paramtype lease: ~.aio.BlobLeaseClient or str
         :keyword int timeout:
             The timeout parameter is expressed in seconds.
         :returns: Access policy information in a dict.
@@ -443,13 +443,13 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
             A dictionary of access policies to associate with the container. The
             dictionary may contain up to 5 elements. An empty dictionary
             will clear the access policies set on the service.
-        :type signed_identifiers: dict[str, ~azure.storage.blob.AccessPolicy]
-        :param ~azure.storage.blob.PublicAccess public_access:
+        :type signed_identifiers: dict[str, ~.AccessPolicy]
+        :param ~.PublicAccess public_access:
             Possible values include: 'container', 'blob'.
         :keyword lease:
             Required if the container has an active lease. Value can be a BlobLeaseClient object
             or the lease ID as a string.
-        :paramtype lease: ~azure.storage.blob.aio.BlobLeaseClient or str
+        :paramtype lease: ~.aio.BlobLeaseClient or str
         :keyword ~datetime.datetime if_modified_since:
             A datetime value. Azure expects the date value passed in to be UTC.
             If timezone is included, any non-UTC datetimes will be converted to UTC.
@@ -520,7 +520,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
         :keyword int timeout:
             The timeout parameter is expressed in seconds.
         :returns: An iterable (auto-paging) response of BlobProperties.
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.storage.blob.BlobProperties]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~.BlobProperties]
 
         .. admonition:: Example:
 
@@ -575,7 +575,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
         :keyword int timeout:
             The timeout parameter is expressed in seconds.
         :returns: An iterable (auto-paging) response of BlobProperties.
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.storage.blob.BlobProperties]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~.BlobProperties]
         """
         if include and not isinstance(include, list):
             include = [include]
@@ -608,9 +608,9 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
 
         :param name: The blob with which to interact. If specified, this value will override
             a blob value specified in the blob URL.
-        :type name: str or ~azure.storage.blob.BlobProperties
+        :type name: str or ~.BlobProperties
         :param data: The blob data to upload.
-        :param ~azure.storage.blob.BlobType blob_type: The type of the blob. This can be
+        :param ~.BlobType blob_type: The type of the blob. This can be
             either BlockBlob, PageBlob or AppendBlob. The default value is BlockBlob.
         :param int length:
             Number of bytes to read from the stream. This is optional, but
@@ -624,7 +624,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
             blob types: if set to False and the data already exists, an error will not be raised
             and the data will be appended to the existing blob. If set overwrite=True, then the existing
             append blob will be deleted, and a new one created. Defaults to False.
-        :keyword ~azure.storage.blob.ContentSettings content_settings:
+        :keyword ~.ContentSettings content_settings:
             ContentSettings object used to set blob properties. Used to set content type, encoding,
             language, disposition, md5, and cache control.
         :keyword bool validate_content:
@@ -639,7 +639,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
         :keyword lease:
             Required if the container has an active lease. Value can be a BlobLeaseClient object
             or the lease ID as a string.
-        :paramtype lease: ~azure.storage.blob.aio.BlobLeaseClient or str
+        :paramtype lease: ~.aio.BlobLeaseClient or str
         :keyword ~datetime.datetime if_modified_since:
             A DateTime value. Azure expects the date value passed in to be UTC.
             If timezone is included, any non-UTC datetimes will be converted to UTC.
@@ -657,7 +657,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
             and act according to the condition specified by the `match_condition` parameter.
         :keyword ~azure.core.MatchConditions match_condition:
             The match condition to use upon the etag.
-        :keyword str if_tags_match_condition
+        :keyword str if_tags_match_condition:
             Specify a SQL where clause on blob tags to operate only on blob with a matching value.
             eg. "\"tagname\"='my tag'"
 
@@ -667,11 +667,11 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
             The timeout parameter is expressed in seconds. This method may make
             multiple calls to the Azure service and the timeout will apply to
             each call individually.
-        :keyword ~azure.storage.blob.PremiumPageBlobTier premium_page_blob_tier:
+        :keyword ~.PremiumPageBlobTier premium_page_blob_tier:
             A page blob tier value to set the blob to. The tier correlates to the size of the
             blob and number of allowed IOPS. This is only applicable to page blobs on
             premium storage accounts.
-        :keyword ~azure.storage.blob.StandardBlobTier standard_blob_tier:
+        :keyword ~.StandardBlobTier standard_blob_tier:
             A standard blob tier value to set the blob to. For this version of the library,
             this is only applicable to block blobs on standard storage accounts.
         :keyword int maxsize_condition:
@@ -683,7 +683,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
         :keyword int max_concurrency:
             Maximum number of parallel connections to use when the blob size exceeds
             64MB.
-        :keyword ~azure.storage.blob.CustomerProvidedEncryptionKey cpk:
+        :keyword ~.CustomerProvidedEncryptionKey cpk:
             Encrypts the data on the service-side with the given key.
             Use of customer-provided keys must be done over HTTPS.
             As the encryption key itself is provided in the request,
@@ -699,7 +699,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
         :keyword str encoding:
             Defaults to UTF-8.
         :returns: A BlobClient to interact with the newly uploaded blob.
-        :rtype: ~azure.storage.blob.aio.BlobClient
+        :rtype: ~.aio.BlobClient
 
         .. admonition:: Example:
 
@@ -747,15 +747,22 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
 
         :param blob: The blob with which to interact. If specified, this value will override
             a blob value specified in the blob URL.
-        :type blob: str or ~azure.storage.blob.BlobProperties
+        :type blob: str or ~.BlobProperties
         :param str delete_snapshots:
             Required if the blob has associated snapshots. Values include:
              - "only": Deletes only the blobs snapshots.
              - "include": Deletes the blob along with all snapshots.
+        :keyword str version_id:
+            The version id parameter is an opaque DateTime
+            value that, when present, specifies the version of the blob to delete.
+
+            .. versionadded:: 12.4.0
+            This keyword argument was introduced in API version '2019-12-12'.
+
         :keyword lease:
             Required if the blob has an active lease. Value can be a Lease object
             or the lease ID as a string.
-        :paramtype lease: ~azure.storage.blob.aio.BlobLeaseClient or str
+        :paramtype lease: ~.aio.BlobLeaseClient or str
         :keyword ~datetime.datetime if_modified_since:
             A DateTime value. Azure expects the date value passed in to be UTC.
             If timezone is included, any non-UTC datetimes will be converted to UTC.
@@ -773,7 +780,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
             and act according to the condition specified by the `match_condition` parameter.
         :keyword ~azure.core.MatchConditions match_condition:
             The match condition to use upon the etag.
-        :keyword str if_tags_match_condition
+        :keyword str if_tags_match_condition:
             Specify a SQL where clause on blob tags to operate only on blob with a matching value.
             eg. "\"tagname\"='my tag'"
 
@@ -800,7 +807,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
 
         :param blob: The blob with which to interact. If specified, this value will override
             a blob value specified in the blob URL.
-        :type blob: str or ~azure.storage.blob.BlobProperties
+        :type blob: str or ~.BlobProperties
         :param int offset:
             Start of byte range to use for downloading a section of the blob.
             Must be set if length is provided.
@@ -820,7 +827,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
             Required if the blob has an active lease. If specified, download_blob only
             succeeds if the blob's lease is active and matches this ID. Value can be a
             BlobLeaseClient object or the lease ID as a string.
-        :paramtype lease: ~azure.storage.blob.aio.BlobLeaseClient or str
+        :paramtype lease: ~.aio.BlobLeaseClient or str
         :keyword ~datetime.datetime if_modified_since:
             A DateTime value. Azure expects the date value passed in to be UTC.
             If timezone is included, any non-UTC datetimes will be converted to UTC.
@@ -838,13 +845,13 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
             and act according to the condition specified by the `match_condition` parameter.
         :keyword ~azure.core.MatchConditions match_condition:
             The match condition to use upon the etag.
-        :keyword str if_tags_match_condition
+        :keyword str if_tags_match_condition:
             Specify a SQL where clause on blob tags to operate only on blob with a matching value.
             eg. "\"tagname\"='my tag'"
 
             .. versionadded:: 12.4.0
 
-        :keyword ~azure.storage.blob.CustomerProvidedEncryptionKey cpk:
+        :keyword ~.CustomerProvidedEncryptionKey cpk:
             Encrypts the data on the service-side with the given key.
             Use of customer-provided keys must be done over HTTPS.
             As the encryption key itself is provided in the request,
@@ -858,7 +865,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
             multiple calls to the Azure service and the timeout will apply to
             each call individually.
         :returns: A streaming object. (StorageStreamDownloader)
-        :rtype: ~azure.storage.blob.aio.StorageStreamDownloader
+        :rtype: ~.aio.StorageStreamDownloader
         """
         blob_client = self.get_blob_client(blob) # type: ignore
         kwargs.setdefault('merge_span', True)
@@ -910,7 +917,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
                 timeout for subrequest:
                     key: 'timeout', value type: int
 
-        :type blobs: list[str], list[dict], or list[~azure.storage.blob.BlobProperties]
+        :type blobs: list[str], list[dict], or list[~.BlobProperties]
         :keyword str delete_snapshots:
             Required if a blob has associated snapshots. Values include:
              - "only": Deletes only the blobs snapshots.
@@ -927,7 +934,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
             If a date is passed in without timezone info, it is assumed to be UTC.
             Specify this header to perform the operation only if
             the resource has not been modified since the specified date/time.
-        :keyword str if_tags_match_condition
+        :keyword str if_tags_match_condition:
             Specify a SQL where clause on blob tags to operate only on blob with a matching value.
             eg. "\"tagname\"='my tag'"
 
@@ -982,7 +989,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
                 If you want to set different tier on different blobs please set this positional parameter to None.
                 Then the blob tier on every BlobProperties will be taken.
 
-        :type standard_blob_tier: str or ~azure.storage.blob.StandardBlobTier
+        :type standard_blob_tier: str or ~.StandardBlobTier
         :param blobs:
             The blobs with which to interact. This can be a single blob, or multiple values can
             be supplied, where each value is either the name of the blob (str) or BlobProperties.
@@ -1002,10 +1009,10 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
                 timeout for subrequest:
                     key: 'timeout', value type: int
 
-        :type blobs: list[str], list[dict], or list[~azure.storage.blob.BlobProperties]
-        :keyword ~azure.storage.blob.RehydratePriority rehydrate_priority:
+        :type blobs: list[str], list[dict], or list[~.BlobProperties]
+        :keyword ~.RehydratePriority rehydrate_priority:
             Indicates the priority with which to rehydrate an archived blob
-        :keyword str if_tags_match_condition
+        :keyword str if_tags_match_condition:
             Specify a SQL where clause on blob tags to operate only on blob with a matching value.
             eg. "\"tagname\"='my tag'"
 
@@ -1042,7 +1049,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
                 If you want to set different tier on different blobs please set this positional parameter to None.
                 Then the blob tier on every BlobProperties will be taken.
 
-        :type premium_page_blob_tier: ~azure.storage.blob.PremiumPageBlobTier
+        :type premium_page_blob_tier: ~.PremiumPageBlobTier
         :param blobs: The blobs with which to interact. This can be a single blob, or multiple values can
             be supplied, where each value is either the name of the blob (str) or BlobProperties.
 
@@ -1058,7 +1065,7 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
                 timeout for subrequest:
                     key: 'timeout', value type: int
 
-        :type blobs: list[str], list[dict], or list[~azure.storage.blob.BlobProperties]
+        :type blobs: list[str], list[dict], or list[~.BlobProperties]
         :keyword int timeout:
             The timeout parameter is expressed in seconds. This method may make
             multiple calls to the Azure service and the timeout will apply to
@@ -1085,12 +1092,12 @@ class ContainerClient(AsyncStorageAccountHostsMixin, ContainerClientBase):
 
         :param blob:
             The blob with which to interact.
-        :type blob: str or ~azure.storage.blob.BlobProperties
+        :type blob: str or ~.BlobProperties
         :param str snapshot:
             The optional blob snapshot on which to operate. This can be the snapshot ID string
             or the response returned from :func:`~BlobClient.create_snapshot()`.
         :returns: A BlobClient.
-        :rtype: ~azure.storage.blob.aio.BlobClient
+        :rtype: ~.aio.BlobClient
 
         .. admonition:: Example:
 

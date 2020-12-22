@@ -450,18 +450,6 @@ def download_blob(client, file_path, open_mode='wb', progress_callback=None, soc
     return blob
 
 
-def exists(cmd, client, **kwargs):
-    from azure.core.exceptions import HttpResponseError
-    try:
-        client.get_blob_properties(**kwargs)
-        return True
-    except HttpResponseError as ex:
-        from azure.cli.command_modules.storage.track2_util import _dont_fail_on_exist
-        StorageErrorCode = cmd.get_models("_shared.models#StorageErrorCode",
-                                          resource_type=CUSTOM_DATA_STORAGE_BLOB)
-        return _dont_fail_on_exist(ex, StorageErrorCode.blob_not_found)
-
-
 def generate_sas_blob_uri(client, cmd, container_name, blob_name, permission=None,
                           expiry=None, start=None, id=None, ip=None,  # pylint: disable=redefined-builtin
                           protocol=None, cache_control=None, content_disposition=None,
@@ -598,6 +586,7 @@ def snapshot_blob(client, metadata=None, **kwargs):
     return client.get_blob_properties()
 
 
+# pylint: disable=too-many-locals
 def upload_blob(cmd, client, file_path, container_name=None, blob_name=None, blob_type=None,
                 metadata=None, validate_content=False, maxsize_condition=None, max_connections=2, lease_id=None,
                 if_modified_since=None, if_unmodified_since=None, if_match=None, if_none_match=None,
@@ -632,8 +621,7 @@ def upload_blob(cmd, client, file_path, container_name=None, blob_name=None, blo
 
     # used to check for the preconditions as upload_append_blob() cannot
     if blob_type == 'append':
-        from azure.core.exceptions import HttpResponseError
-        if exists(cmd, client, timeout=timeout):
+        if client.exists(timeout=timeout):
             client.get_blob_properties(**check_blob_args)
 
     # Because the contents of the uploaded file may be too large, it should be passed into the a stream object,

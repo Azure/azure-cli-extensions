@@ -26,9 +26,9 @@ from ._validators import (
 def load_arguments(self, _):
 
     AzureFirewallNetworkRuleProtocol, AzureFirewallRCActionType, \
-        AzureFirewallNatRCActionType = \
+        AzureFirewallNatRCActionType, FirewallPolicySkuTier = \
         self.get_models('AzureFirewallNetworkRuleProtocol', 'AzureFirewallRCActionType',
-                        'AzureFirewallNatRCActionType')
+                        'AzureFirewallNatRCActionType', 'FirewallPolicySkuTier')
 
     firewall_name_type = CLIArgumentType(options_list=['--firewall-name', '-f'], metavar='NAME', help='Azure Firewall name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/azureFirewalls'))
     collection_name_type = CLIArgumentType(options_list=['--collection-name', '-c'], help='Name of the rule collection.', id_part='child_name_1')
@@ -159,6 +159,7 @@ def load_arguments(self, _):
         c.argument('firewall_policy_name', options_list=['--name', '-n'], help='The name of the Firewall Policy.')
         c.argument('base_policy', validator=validate_firewall_policy, help='The name or ID of parent firewall policy from which rules are inherited.')
         c.argument('threat_intel_mode', arg_type=get_enum_type(['Alert', 'Deny', 'Off']), help='The operation mode for Threat Intelligence.')
+        c.argument('sku', arg_type=get_enum_type(FirewallPolicySkuTier), help='SKU of Firewall policy', is_preview=True)
 
     with self.argument_context('network firewall policy', arg_group='Threat Intel Allowlist') as c:
         c.argument('ip_addresses', nargs='+', help='Space-separated list of IPv4 addresses.')
@@ -193,6 +194,8 @@ def load_arguments(self, _):
 
     with self.argument_context('network firewall policy rule-collection-group collection', arg_group='Application Rule') as c:
         c.argument('target_fqdns', nargs='+', help='Space-separated list of FQDNs for this rule.', validator=validate_rule_group_collection)
+        c.argument('target_urls', nargs='+', help='Space-separated list of target urls for this rule')
+        c.argument('enable_terminate_tls', arg_type=get_three_state_flag(), help='Enable flag to terminate TLS connection for this rule')
         c.argument('fqdn_tags', nargs='+', help='Space-separated list of FQDN tags for this rule.', validator=validate_rule_group_collection)
         c.argument('protocols', nargs='+', validator=validate_application_rule_protocols, help='Space-separated list of protocols and port numbers to use, in PROTOCOL=PORT format. Valid protocols are Http, Https.')
 
