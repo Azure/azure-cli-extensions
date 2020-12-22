@@ -100,7 +100,7 @@ def load_command_table(self, _):
         g.custom_command('unbind', 'domain_unbind')
 
     with self.command_group('spring-cloud app-insights', is_preview=True, client_factory=cf_spring_cloud_20201101preview) as g:
-        g.custom_command('update', 'app_insights_update', supports_no_wait=True)
+        g.custom_command('update', 'app_insights_update')
         g.custom_show_command('show', 'app_insights_show')
 
     with self.command_group('spring-cloud'):
