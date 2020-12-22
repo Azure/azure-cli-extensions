@@ -677,6 +677,7 @@ def app_unset_deployment(cmd, client, resource_group, service, name):
     if not active_deployment_name:
         raise CLIError(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
 
+    # It's designed to use empty string for active_deployment_name to unset active deployment
     properties = models.AppResourceProperties(active_deployment_name="")
 
     resource = client.services.get(resource_group, service)
