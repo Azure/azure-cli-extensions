@@ -158,7 +158,7 @@ def load_arguments(self, _):
         c.argument('reference_data_set_name', options_list=['--name', '-n', '--reference-data-set-name'], type=str,
                    help='The name of the Time Series Insights reference data set associated with the specified '
                    'environment.', id_part='child_name_1')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
         c.argument('key_properties', action=AddKeyProperties, nargs='+', help='The list of key properties for the '

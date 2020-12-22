@@ -143,7 +143,8 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
         result = self.cmd('az eventhubs eventhub create -g {rg} -n {eh} --namespace-name {ehns}').get_output_in_json()
         self.kwargs["es_resource_id"] = result["id"]
         result = self.cmd(
-            'az eventhubs namespace authorization-rule keys list -g {rg} --namespace-name {ehns} -n RootManageSharedAccessKey').get_output_in_json()
+            'az eventhubs namespace authorization-rule keys list -g {rg} --namespace-name {ehns} '
+            '-n RootManageSharedAccessKey').get_output_in_json()
         self.kwargs["shared_access_key"] = result["primaryKey"]
 
         self.cmd('az timeseriesinsights event-source eventhub create -g {rg} --environment-name {env} --name {es} '
@@ -161,7 +162,8 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
 
         # Renew a key
         self.kwargs["shared_access_key"] = self.cmd(
-            'az eventhubs namespace authorization-rule keys renew -g {rg} --namespace-name {ehns} -n RootManageSharedAccessKey --key PrimaryKey --query primaryKey --output tsv').output
+            'az eventhubs namespace authorization-rule keys renew -g {rg} --namespace-name {ehns} '
+            '-n RootManageSharedAccessKey --key PrimaryKey --query primaryKey --output tsv').output
 
         self.cmd('az timeseriesinsights event-source eventhub update -g {rg} --environment-name {env} --name {es} '
                  '--shared-access-key {shared_access_key} '
@@ -179,7 +181,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
         # Delete
         self.cmd('az timeseriesinsights event-source delete -g {rg} --environment-name {env} -n {es} --yes')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_timeseriesinsights')
+    @ResourceGroupPreparer(name_prefix='clitsi.rg')
     def test_timeseriesinsights_event_source_iothub(self):
         self.kwargs.update({
             'es': self.create_random_name('cli-test-tsi-es', 24),  # time series insights event source
@@ -229,3 +231,85 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
 
         # Delete
         self.cmd('az timeseriesinsights event-source delete -g {rg} --environment-name {env} -n {es} --yes')
+
+    @ResourceGroupPreparer(name_prefix='clitsi.rg')
+    def test_timeseriesinsights_reference_data_set(self):
+        self.kwargs.update({
+            'rds': self.create_random_name('clitesttsirds', 24),  # time series insights event source
+            'rds2': self.create_random_name('clitesttsirds2', 24),
+        })
+
+        self._create_timeseriesinsights_environment()
+
+        # Create
+        self.cmd('az timeseriesinsights reference-data-set create -g {rg} --environment-name {env} --name {rds} '
+                 '--key-properties name=DeviceFloor type=Double '
+                 '--data-string-comparison-behavior Ordinal',
+                 checks=[
+                     self.check('keyProperties[0].name', 'DeviceFloor'),
+                     self.check('keyProperties[0].type', 'Double'),
+                     self.check('dataStringComparisonBehavior', 'Ordinal')
+                 ])
+
+        self.cmd('az timeseriesinsights reference-data-set create -g {rg} --environment-name {env} --name {rds2} '
+                 '--key-properties name=DeviceId1 type=String '
+                 '--key-properties name=DeviceFloor type=Double '
+                 '--data-string-comparison-behavior OrdinalIgnoreCase',
+                 checks=[
+                     self.check('length(keyProperties)', 2),
+                     self.check('dataStringComparisonBehavior', 'OrdinalIgnoreCase')
+                 ])
+
+        # Update
+        self.cmd('az timeseriesinsights reference-data-set update -g {rg} --environment-name {env} --name {rds} '
+                 '--tags mykey=myvalue',
+                 checks=[
+                     self.check('tags.mykey', 'myvalue')
+                 ])
+
+        # List
+        self.cmd('az timeseriesinsights reference-data-set list -g {rg} --environment-name {env}',
+                 checks=[self.check('length(value)', 2)])
+
+        # Show
+        self.cmd('az timeseriesinsights reference-data-set show -g {rg} --environment-name {env} -n {rds}')
+
+        # Delete
+        self.cmd('az timeseriesinsights reference-data-set delete -g {rg} --environment-name {env} -n {rds} --yes')
+
+    @ResourceGroupPreparer(name_prefix='clitsi.rg')
+    def test_timeseriesinsights_access_policy(self):
+        self.kwargs.update({
+        })
+
+        self._create_timeseriesinsights_environment()
+
+        # Create
+        self.cmd(
+            'az timeseriesinsights access-policy create -g {rg} --environment-name {env} --name ap1 '
+            '--principal-object-id 001 --description "some description" --roles Contributor Reader',
+            checks=[
+                self.check('description', 'some description'),
+                self.check('principalObjectId', '001'),
+                self.check('length(roles)', 2)
+            ])
+
+        # Update
+        self.cmd(
+            'az timeseriesinsights access-policy update -g {rg} --environment-name {env} --name ap1 '
+            '--description "some description updated" --roles Contributor',
+            checks=[
+                self.check('description', 'some description updated'),
+                self.check('length(roles)', 1)
+            ])
+
+        # Show
+        self.cmd('az timeseriesinsights access-policy show -g {rg} --environment-name {env} --name ap1',
+                 checks=[])
+        # List
+        self.cmd('az timeseriesinsights access-policy list -g {rg} --environment-name {env}',
+                 checks=[self.check('length(value)', 1)])
+
+        # Delete
+        self.cmd('az timeseriesinsights access-policy delete -g {rg} --environment-name {env} --name ap1 --yes',
+                 checks=[])
