@@ -76,13 +76,6 @@ def load_arguments(self, _):
         c.argument('dns_servers', nargs='+', help='Space-separated list of DNS server IP addresses')
         c.argument('enable_dns_proxy', arg_type=get_three_state_flag(), help='Enable DNS Proxy')
 
-    with self.argument_context('network firewall', arg_group='Intrustion Detection') as c:
-        c.argument('intrusion_detection_mode',
-                   is_preview=True,
-                   options_list=['--detection-mode'],
-                   arg_type=get_enum_type(FirewallPolicyIntrusionDetectionStateType),
-                   help='Intrusion detection general state')
-
     with self.argument_context('network firewall threat-intel-allowlist') as c:
         c.argument('ip_addresses', nargs='+', validator=process_threat_intel_allowlist_ip_addresses, help='Space-separated list of IPv4 addresses.')
         c.argument('fqdns', nargs='+', validator=process_threat_intel_allowlist_fqdns, help='Space-separated list of FQDNs.')
@@ -171,6 +164,13 @@ def load_arguments(self, _):
     with self.argument_context('network firewall policy', arg_group='Threat Intel Allowlist') as c:
         c.argument('ip_addresses', nargs='+', help='Space-separated list of IPv4 addresses.')
         c.argument('fqdns', nargs='+', help='Space-separated list of FQDNs.')
+
+    with self.argument_context('network firewall policy', arg_group='Intrustion Detection') as c:
+        c.argument('intrusion_detection_mode',
+                   is_preview=True,
+                   options_list=['--detect-mode'],
+                   arg_type=get_enum_type(FirewallPolicyIntrusionDetectionStateType),
+                   help='Intrusion detection general state')
 
     with self.argument_context('network firewall policy rule-collection-group') as c:
         c.argument('firewall_policy_name', options_list=['--policy-name'], help='The name of the Firewall Policy.')

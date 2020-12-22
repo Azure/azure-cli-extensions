@@ -113,7 +113,7 @@ def load_command_table(self, _):
     # endregion
 
     # region AzureFirewallPolicies
-    with self.command_group('network firewall policy', network_firewall_policies_sdk, resource_type=CUSTOM_FIREWALL, is_preview=True, min_api='2019-07-01') as g:
+    with self.command_group('network firewall policy', network_firewall_policies_sdk, resource_type=CUSTOM_FIREWALL, min_api='2019-07-01') as g:
         g.custom_command('create', 'create_azure_firewall_policies')
         g.command('delete', 'delete')
         g.custom_command('list', 'list_azure_firewall_policies')
