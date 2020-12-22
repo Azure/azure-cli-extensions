@@ -36,7 +36,7 @@ class AppPlatformManagementClientConfiguration(AzureConfiguration):
         if subscription_id is None:
             raise ValueError("Parameter 'subscription_id' must not be None.")
         if not base_url:
-            base_url = 'https://eastus2euap.management.azure.com'
+            base_url = 'https://management.azure.com'
 
         super(AppPlatformManagementClientConfiguration, self).__init__(base_url)
 
