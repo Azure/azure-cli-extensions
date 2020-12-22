@@ -7,9 +7,10 @@ from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
 from ._client_factory import (cf_sa, cf_blob_data_gen_update,
                               blob_data_service_factory, adls_blob_data_service_factory,
-                              cf_sa_blob_inventory, cf_mgmt_file_services, cf_share_client, cf_share_file_client)
+                              cf_sa_blob_inventory, cf_mgmt_file_services, cf_share_client, cf_share_file_client,
+                              cf_adls_service)
 from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_MGMT_PREVIEW_STORAGE,
-                       CUSTOM_DATA_STORAGE_FILESHARE)
+                       CUSTOM_DATA_STORAGE_FILESHARE, CUSTOM_DATA_STORAGE_FILEDATALAKE)
 
 
 def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements
@@ -205,3 +206,13 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_custom_command('upload', 'storage_file_upload', transform=transform_file_upload)
         g.storage_custom_command('upload-batch', 'storage_file_upload_batch',
                                  custom_command_type=get_custom_sdk('file', client_factory=cf_share_client))
+
+    adls_fs_service_sdk = CliCommandType(
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage_filedatalake._data_lake_service_client#'
+                        'BlobServiceClient.{}',
+        client_factory=cf_adls_service,
+        resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE
+    )
+    with self.command_group('storage fs service-properties', command_type=adls_fs_service_sdk) as g:
+        g.show_command('show', 'get_service_properties')
+        g.command('update', 'set_service_properties')
