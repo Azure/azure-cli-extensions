@@ -267,7 +267,7 @@ helps['healthcareapis acr add'] = """
     examples:
       - name: Acr_Add
         text: |-
-               az healthcareapis acr add --login_servers "test1.azurecr.io test2.azurecr.io test3.azurecr.io" --resource-group "rgname" \
+               az healthcareapis acr add --login-servers "test1.azurecr.io test2.azurecr.io test3.azurecr.io" --resource-group "rgname" \
 --resource-name "service1"
 """
 
@@ -277,7 +277,7 @@ helps['healthcareapis acr remove'] = """
     examples:
       - name: Acr_Remove
         text: |-
-               az healthcareapis acr remove --login_servers "test1.azurecr.io test2.azurecr.io"  --resource-group "rgname" \
+               az healthcareapis acr remove --login-servers "test1.azurecr.io test2.azurecr.io"  --resource-group "rgname" \
 --resource-name "service1"
 """
 
@@ -287,7 +287,7 @@ helps['healthcareapis acr reset'] = """
     examples:
       - name: Acr_Reset
         text: |-
-               az healthcareapis acr reset --login_servers "test1.azurecr.io" --resource-group "rgname" \
+               az healthcareapis acr reset --login-servers "test1.azurecr.io" --resource-group "rgname" \
 --resource-name "service1"
       - name: Acr_Reset_To_Empty
         text: |-
