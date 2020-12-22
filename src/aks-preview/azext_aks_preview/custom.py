@@ -994,9 +994,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         enable_managed_identity = False
     if not enable_managed_identity:
         principal_obj = _ensure_aks_service_principal(cmd.cli_ctx,
-                                                    service_principal=service_principal, client_secret=client_secret,
-                                                    subscription_id=subscription_id, dns_name_prefix=dns_name_prefix,
-                                                    location=location, name=name)
+                                                      service_principal=service_principal, client_secret=client_secret,
+                                                      subscription_id=subscription_id, dns_name_prefix=dns_name_prefix,
+                                                      location=location, name=name)
         service_principal_profile = ManagedClusterServicePrincipalProfile(
             client_id=principal_obj.get("service_principal"),
             secret=principal_obj.get("client_secret"))
@@ -1031,6 +1031,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                    'the role assignment will take some time to take effect, see '
                    'https://docs.microsoft.com/en-us/azure/aks/use-managed-identity, '
                    'proceed to create cluster with system assigned identity?')
+            from knack.prompting import prompt_y_n
             if not yes and not prompt_y_n(msg, default="n"):
                 return None
             need_post_creation_vnet_permission_granting = True
@@ -2401,14 +2402,13 @@ def _add_virtual_node_role_assignment(cmd, result, vnet_subnet_id):
         service_principal_msi_id = result.service_principal_profile.client_id
         is_service_principal = True
     elif (
-            (hasattr(result, 'identity')) and
-            (result.identity.type.lower() != 'none')
+            (hasattr(result, 'addon_profiles')) and
+            (addon_name in result.addon_profiles) and
+            (hasattr(result.addon_profiles[addon_name], 'identity')) and
+            (hasattr(result.addon_profiles[addon_name].identity, 'object_id'))
     ):
-        logger.info('cluster identity exists, using it')
-        if result.identity.type.lower() == 'systemassigned':
-            service_principal_msi_id = result.identity.principal_id
-        elif result.identity.type.lower() == 'userassigned':
-            service_principal_msi_id = list(result.identity.user_assigned_identities.values())[0].principal_id
+        logger.info('virtual node MSI exists, using it')
+        service_principal_msi_id = result.addon_profiles[addon_name].identity.object_id
         is_service_principal = False
 
     if service_principal_msi_id is not None:
@@ -3169,10 +3169,10 @@ def _put_managed_cluster_ensuring_permission(
 ):
     # some addons require post cluster creation role assigment
     need_post_creation_role_assignment = (monitoring_addon_enabled or
-                                         ingress_appgw_addon_enabled or
-                                         (enable_managed_identity and attach_acr) or
-                                         virtual_node_addon_enabled or
-                                         need_grant_vnet_permission_to_cluster_identity)
+                                          ingress_appgw_addon_enabled or
+                                          (enable_managed_identity and attach_acr) or
+                                          virtual_node_addon_enabled or
+                                          need_grant_vnet_permission_to_cluster_identity)
     if need_post_creation_role_assignment:
         # adding a wait here since we rely on the result for role assignment
         cluster = LongRunningOperation(cmd.cli_ctx)(client.create_or_update(
@@ -3198,10 +3198,10 @@ def _put_managed_cluster_ensuring_permission(
             _add_virtual_node_role_assignment(cmd, cluster, vnet_subnet_id)
         if need_grant_vnet_permission_to_cluster_identity:
             if not _create_role_assignment(cmd.cli_ctx, 'Network Contributor',
-                                            cluster.identity.principal_id, scope=vnet_subnet_id,
-                                            resolve_assignee=False):
+                                           cluster.identity.principal_id, scope=vnet_subnet_id,
+                                           resolve_assignee=False):
                 logger.warning('Could not create a role assignment for subnet. '
-                                'Are you an Owner on this subscription?')
+                               'Are you an Owner on this subscription?')
 
         if enable_managed_identity and attach_acr:
             # Attach ACR to cluster enabled managed identity
