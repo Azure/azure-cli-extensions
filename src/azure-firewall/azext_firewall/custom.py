@@ -537,7 +537,7 @@ def update_azure_firewall_policies(cmd,
                                    instance, tags=None, threat_intel_mode=None, ip_addresses=None,
                                    fqdns=None,
                                    dns_servers=None, enable_dns_proxy=None,
-                                   sku=None):
+                                   sku=None, intrusion_detection_mode=None):
 
     (FirewallPolicyThreatIntelWhitelist, FirewallPolicySku) = cmd.get_models('FirewallPolicyThreatIntelWhitelist', 'FirewallPolicySku')
     if tags is not None:
@@ -561,9 +561,20 @@ def update_azure_firewall_policies(cmd,
         instance.threat_intel_whitelist.ip_addresses = ip_addresses
     if fqdns is not None:
         instance.threat_intel_whitelist.fqdns = fqdns
-    if sku is not None and cmd.supported_api_version(min_api='2020-07-01'):
+    if cmd.supported_api_version(min_api='2020-07-01'):
         if sku is not None:
             instance.sku = FirewallPolicySku(tier=sku)
+
+        if intrusion_detection_mode is not None:
+            if instance.intrusion_detection is not None:
+                instance.intrusion_detection.mode = intrusion_detection_mode
+            else:
+                (FirewallPolicyIntrusionDetection, FirewallPolicyIntrusionDetectionConfiguration) = \
+                    cmd.get_models('FirewallPolicyIntrusionDetection', 'FirewallPolicyIntrusionDetectionConfiguration')
+                instance.intrusion_detection = FirewallPolicyIntrusionDetection(
+                    mode=intrusion_detection_mode,
+                    configuration=FirewallPolicyIntrusionDetectionConfiguration()
+                )
 
     return instance
 
