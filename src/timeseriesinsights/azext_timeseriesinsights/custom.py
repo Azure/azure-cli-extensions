@@ -89,12 +89,11 @@ def timeseriesinsights_environment_gen1_update(client,
                            resource_group_name=resource_group_name,
                            environment_name=environment_name,
                            parameters=body)
-    else:
-        return sdk_no_wait(no_wait,
-                           client.begin_update,
-                           resource_group_name=resource_group_name,
-                           environment_name=environment_name,
-                           environment_update_parameters=patch_parameters)
+    return sdk_no_wait(no_wait,
+                       client.begin_update,
+                       resource_group_name=resource_group_name,
+                       environment_name=environment_name,
+                       environment_update_parameters=patch_parameters)
 
 
 def timeseriesinsights_environment_gen2_create(client,
@@ -154,12 +153,11 @@ def timeseriesinsights_environment_gen2_update(client,
                            resource_group_name=resource_group_name,
                            environment_name=environment_name,
                            parameters=body)
-    else:
-        return sdk_no_wait(no_wait,
-                           client.begin_update,
-                           resource_group_name=resource_group_name,
-                           environment_name=environment_name,
-                           environment_update_parameters=patch_parameters)
+    return sdk_no_wait(no_wait,
+                       client.begin_update,
+                       resource_group_name=resource_group_name,
+                       environment_name=environment_name,
+                       environment_update_parameters=patch_parameters)
 
 
 def timeseriesinsights_event_source_list(client,
@@ -253,11 +251,10 @@ def timeseriesinsights_event_source_event_hub_update(client,
                                        environment_name=environment_name,
                                        event_source_name=event_source_name,
                                        parameters=body)
-    else:
-        return client.update(resource_group_name=resource_group_name,
-                             environment_name=environment_name,
-                             event_source_name=event_source_name,
-                             event_source_update_parameters=patch_parameters)
+    return client.update(resource_group_name=resource_group_name,
+                         environment_name=environment_name,
+                         event_source_name=event_source_name,
+                         event_source_update_parameters=patch_parameters)
 
 
 def timeseriesinsights_event_source_iot_hub_create(client,
@@ -324,11 +321,10 @@ def timeseriesinsights_event_source_iot_hub_update(client,
                                        environment_name=environment_name,
                                        event_source_name=event_source_name,
                                        parameters=body)
-    else:
-        return client.update(resource_group_name=resource_group_name,
-                             environment_name=environment_name,
-                             event_source_name=event_source_name,
-                             event_source_update_parameters=patch_parameters)
+    return client.update(resource_group_name=resource_group_name,
+                         environment_name=environment_name,
+                         event_source_name=event_source_name,
+                         event_source_update_parameters=patch_parameters)
 
 
 def timeseriesinsights_reference_data_set_list(client,

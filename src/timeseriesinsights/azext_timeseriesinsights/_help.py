@@ -109,7 +109,7 @@ helps['timeseriesinsights environment gen2 create'] = """
             Usage: --sku name=XX capacity=XX
 
             name: Required. The name of this SKU.
-            capacity: Required. The capacity of the sku. 
+            capacity: Required. The capacity of the sku.
       - name: --id-properties --time-series-id-properties
         short-summary: "The list of event properties which will be used to define the environment's time series id."
         long-summary: |

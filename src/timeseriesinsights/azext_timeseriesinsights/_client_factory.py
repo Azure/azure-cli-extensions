@@ -11,6 +11,7 @@ def cf_timeseriesinsights_cl(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx,
                                    TimeSeriesInsightsClient)
 
+
 def cf_environment(cli_ctx, *_):
     return cf_timeseriesinsights_cl(cli_ctx).environments
 
