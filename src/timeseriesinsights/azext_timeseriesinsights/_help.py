@@ -57,7 +57,7 @@ environments the sku determines the capacity of the environment, the ingress rat
             name: Required. The name of this SKU.
             capacity: Required. The capacity of the sku. This value can be changed to support scale out of \
             environments after they have been created.
-      - name: --partition-key-properties
+      - name: --key-properties --partition-key-properties
         short-summary: "The list of event properties which will be used to partition data in the environment. \
 Currently, only a single partition key property is supported."
         long-summary: |
@@ -70,10 +70,7 @@ Currently, only a single partition key property is supported."
     examples:
       - name: EnvironmentsGen1Create
         text: |-
-               az timeseriesinsights environment gen1 create --name "env1" --location westus
-                
-                
-                --data-retention-time \
+               az timeseriesinsights environment gen1 create --name "env1" --location westus --data-retention-time \
 "P31D" --partition-key-properties name="DeviceId1" type="String" --sku name="S1" capacity=1 --resource-group "rg1"
 """
 
@@ -122,7 +119,7 @@ helps['timeseriesinsights environment gen2 create'] = """
             type: The type of the property.
 
             Multiple actions can be specified by using more than one --time-series-id-properties argument.
-      - name: --storage-configuration
+      - name: --storage-config --storage-configuration
         short-summary: "The storage configuration provides the connection details that allows the Time Series Insights \
 service to connect to the customer storage account that is used to store the environment's data."
         long-summary: |
@@ -131,7 +128,7 @@ service to connect to the customer storage account that is used to store the env
             account-name: Required. The name of the storage account that will hold the environment's Gen2 data.
             management-key: Required. The value of the management key that grants the Time Series Insights service \
 write access to the storage account. This property is not shown in environment responses.
-      - name: --warm-store-configuration
+      - name: --warm-store-config --warm-store-configuration
         short-summary: "The warm store configuration provides the details to create a warm store cache that will \
 retain a copy of the environment's data available for faster query."
         long-summary: |
@@ -151,7 +148,7 @@ helps['timeseriesinsights environment gen2 update'] = """
     type: command
     short-summary: "Create a gen2 environment in the specified subscription and resource group."
     parameters:
-      - name: --storage-configuration
+      - name: --storage-config --storage-configuration
         short-summary: "The storage configuration provides the connection details that allows the Time Series Insights \
 service to connect to the customer storage account that is used to store the environment's data."
         long-summary: |
@@ -160,7 +157,7 @@ service to connect to the customer storage account that is used to store the env
             account-name: Required. The name of the storage account that will hold the environment's Gen2 data.
             management-key: Required. The value of the management key that grants the Time Series Insights service \
 write access to the storage account. This property is not shown in environment responses.
-      - name: --warm-store-configuration
+      - name: --warm-store-config --warm-store-configuration
         short-summary: "The warm store configuration provides the details to create a warm store cache that will \
 retain a copy of the environment's data available for faster query."
         long-summary: |

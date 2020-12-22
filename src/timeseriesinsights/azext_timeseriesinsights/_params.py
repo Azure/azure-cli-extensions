@@ -51,12 +51,16 @@ def load_arguments(self, _):
                    'ingress rate, and the billing rate.')
         c.argument('data_retention_time', help='ISO8601 timespan specifying the minimum number of days the '
                    'environment\'s events will be available for query.')
-        c.argument('storage_limit_exceeded_behavior', arg_type=get_enum_type(['PurgeOldData', 'PauseIngress']),
+        c.argument('storage_limit_exceeded_behavior',
+                   options_list=['--exceeded-behavior', '--storage-limit-exceeded-behavior'],
+                   arg_type=get_enum_type(['PurgeOldData', 'PauseIngress']),
                    help='The behavior the Time Series Insights service should take when the environment\'s capacity '
                    'has been exceeded. If "PauseIngress" is specified, new events will not be read from the event '
                    'source. If "PurgeOldData" is specified, new events will continue to be read and old events will be '
                    'deleted from the environment. The default behavior is PurgeOldData.')
-        c.argument('partition_key_properties', action=AddPartitionKeyProperties, nargs='+', help='The list of event '
+        c.argument('partition_key_properties',
+                   options_list=['--key-properties', '--partition-key-properties'],
+                   action=AddPartitionKeyProperties, nargs='+', help='The list of event '
                    'properties which will be used to partition data in the environment. Currently, only a single '
                    'partition key property is supported.')
 
@@ -75,10 +79,12 @@ def load_arguments(self, _):
         c.argument('time_series_id_properties', options_list=['--id-properties', '--time-series-id-properties'],
                    action=AddTimeSeriesIdProperties, nargs='+', help='The list of event properties which will be used'
                    ' to define the environment\'s time series id.')
-        c.argument('storage_configuration', action=AddStorageConfiguration, nargs='+', help='The storage configuration '
+        c.argument('storage_configuration', options_list=['--storage-config', '--storage-configuration'],
+                   action=AddStorageConfiguration, nargs='+', help='The storage configuration '
                    'provides the connection details that allows the Time Series Insights service to connect to the '
                    'customer storage account that is used to store the environment\'s data.')
-        c.argument('warm_store_configuration', action=AddWarmStoreConfiguration, nargs='+', help='The warm store '
+        c.argument('warm_store_configuration', options_list=['--warm-store-config', '--warm-store-configuration'],
+                   action=AddWarmStoreConfiguration, nargs='+', help='The warm store '
                    'configuration provides the details to create a warm store cache that will retain a copy of the '
                    'environment\'s data available for faster query.')
 
@@ -109,7 +115,8 @@ def load_arguments(self, _):
                    'empty-string is specified, the event creation time will be used.')
         c.argument('event_source_resource_id', options_list=['--resource-id', '--event-source-resource-id'], type=str,
                    help='The resource id of the event source in Azure Resource Manager.')
-        c.argument('service_bus_namespace', type=str, help='The name of the service bus that contains the event hub.')
+        c.argument('service_bus_namespace', options_list=['--namespace', '--service-bus-namespace'], type=str,
+                   help='The name of the service bus that contains the event hub.')
         c.argument('event_hub_name', type=str, help='The name of the event hub.')
         c.argument('consumer_group_name', type=str, help='The name of the event hub\'s consumer group that holds the '
                    'partitions from which events will be read.')
