@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.72
+++++++
+* Create MSI clusters by default.
+
 0.4.71
 ++++++
 * Add support using custom private dns zone resource id for parameter '--private-dns-zone'
