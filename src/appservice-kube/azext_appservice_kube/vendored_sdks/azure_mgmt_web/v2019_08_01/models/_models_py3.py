@@ -282,8 +282,8 @@ class ApiKVReference(Model):
     :type secret_name: str
     :param secret_version:
     :type secret_version: str
-    :param identity_type: Possible values include: 'None', 'SystemAssigned',
-     'UserAssigned'
+    :param identity_type: Possible values include: 'SystemAssigned',
+     'UserAssigned', 'SystemAssigned, UserAssigned', 'None'
     :type identity_type: str or
      ~azure.mgmt.web.v2019_08_01.models.ManagedServiceIdentityType
     :param details:
@@ -452,27 +452,6 @@ class ApplicationStackResource(ProxyOnlyResource):
         self.dependency = dependency
         self.major_versions = major_versions
         self.frameworks = frameworks
-
-
-class AppLogsConfiguration(Model):
-    """AppLogsConfiguration.
-
-    :param destination:
-    :type destination: str
-    :param log_analytics_configuration:
-    :type log_analytics_configuration:
-     ~azure.mgmt.web.v2019_08_01.models.LogAnalyticsConfiguration
-    """
-
-    _attribute_map = {
-        'destination': {'key': 'destination', 'type': 'str'},
-        'log_analytics_configuration': {'key': 'logAnalyticsConfiguration', 'type': 'LogAnalyticsConfiguration'},
-    }
-
-    def __init__(self, *, destination: str=None, log_analytics_configuration=None, **kwargs) -> None:
-        super(AppLogsConfiguration, self).__init__(**kwargs)
-        self.destination = destination
-        self.log_analytics_configuration = log_analytics_configuration
 
 
 class AppServiceCertificate(Model):
@@ -1795,10 +1774,6 @@ class AppServicePlan(Resource):
      'InProgress', 'Deleting'
     :vartype provisioning_state: str or
      ~azure.mgmt.web.v2019_08_01.models.ProvisioningState
-    :param kube_environment_profile: Specification for the Kubernetes
-     Environment to use for the App Service plan.
-    :type kube_environment_profile:
-     ~azure.mgmt.web.v2019_08_01.models.KubeEnvironmentProfile
     :param sku:
     :type sku: ~azure.mgmt.web.v2019_08_01.models.SkuDescription
     """
@@ -1843,11 +1818,10 @@ class AppServicePlan(Resource):
         'target_worker_count': {'key': 'properties.targetWorkerCount', 'type': 'int'},
         'target_worker_size_id': {'key': 'properties.targetWorkerSizeId', 'type': 'int'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'ProvisioningState'},
-        'kube_environment_profile': {'key': 'properties.kubeEnvironmentProfile', 'type': 'KubeEnvironmentProfile'},
         'sku': {'key': 'sku', 'type': 'SkuDescription'},
     }
 
-    def __init__(self, *, location: str, kind: str=None, tags=None, worker_tier_name: str=None, hosting_environment_profile=None, per_site_scaling: bool=False, maximum_elastic_worker_count: int=None, is_spot: bool=None, spot_expiration_time=None, free_offer_expiration_time=None, reserved: bool=False, is_xenon: bool=False, hyper_v: bool=False, target_worker_count: int=None, target_worker_size_id: int=None, kube_environment_profile=None, sku=None, **kwargs) -> None:
+    def __init__(self, *, location: str, kind: str=None, tags=None, worker_tier_name: str=None, hosting_environment_profile=None, per_site_scaling: bool=False, maximum_elastic_worker_count: int=None, is_spot: bool=None, spot_expiration_time=None, free_offer_expiration_time=None, reserved: bool=False, is_xenon: bool=False, hyper_v: bool=False, target_worker_count: int=None, target_worker_size_id: int=None, sku=None, **kwargs) -> None:
         super(AppServicePlan, self).__init__(kind=kind, location=location, tags=tags, **kwargs)
         self.worker_tier_name = worker_tier_name
         self.status = None
@@ -1868,7 +1842,6 @@ class AppServicePlan(Resource):
         self.target_worker_count = target_worker_count
         self.target_worker_size_id = target_worker_size_id
         self.provisioning_state = None
-        self.kube_environment_profile = kube_environment_profile
         self.sku = sku
 
 
@@ -1924,8 +1897,10 @@ class AppServicePlanPatchResource(ProxyOnlyResource):
     :type free_offer_expiration_time: datetime
     :ivar resource_group: Resource group of the App Service plan.
     :vartype resource_group: str
-    :param reserved: If Linux app service plan <code>true</code>,
-     <code>false</code> otherwise. Default value: False .
+    :param reserved: This needs to set to <code>true</code> when creating a
+     Linux App Service Plan, along with <code>kind</code> set to
+     <code>Linux</code>. It should be <code>false</code> otherwise. Default
+     value: False .
     :type reserved: bool
     :param is_xenon: Obsolete: If Hyper-V container app service plan
      <code>true</code>, <code>false</code> otherwise. Default value: False .
@@ -1942,10 +1917,6 @@ class AppServicePlanPatchResource(ProxyOnlyResource):
      'InProgress', 'Deleting'
     :vartype provisioning_state: str or
      ~azure.mgmt.web.v2019_08_01.models.ProvisioningState
-    :param kube_environment_profile: Specification for the Kubernetes
-     Environment to use for the App Service plan.
-    :type kube_environment_profile:
-     ~azure.mgmt.web.v2019_08_01.models.KubeEnvironmentProfile
     """
 
     _validation = {
@@ -1985,10 +1956,9 @@ class AppServicePlanPatchResource(ProxyOnlyResource):
         'target_worker_count': {'key': 'properties.targetWorkerCount', 'type': 'int'},
         'target_worker_size_id': {'key': 'properties.targetWorkerSizeId', 'type': 'int'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'ProvisioningState'},
-        'kube_environment_profile': {'key': 'properties.kubeEnvironmentProfile', 'type': 'KubeEnvironmentProfile'},
     }
 
-    def __init__(self, *, kind: str=None, worker_tier_name: str=None, hosting_environment_profile=None, per_site_scaling: bool=False, maximum_elastic_worker_count: int=None, is_spot: bool=None, spot_expiration_time=None, free_offer_expiration_time=None, reserved: bool=False, is_xenon: bool=False, hyper_v: bool=False, target_worker_count: int=None, target_worker_size_id: int=None, kube_environment_profile=None, **kwargs) -> None:
+    def __init__(self, *, kind: str=None, worker_tier_name: str=None, hosting_environment_profile=None, per_site_scaling: bool=False, maximum_elastic_worker_count: int=None, is_spot: bool=None, spot_expiration_time=None, free_offer_expiration_time=None, reserved: bool=False, is_xenon: bool=False, hyper_v: bool=False, target_worker_count: int=None, target_worker_size_id: int=None, **kwargs) -> None:
         super(AppServicePlanPatchResource, self).__init__(kind=kind, **kwargs)
         self.worker_tier_name = worker_tier_name
         self.status = None
@@ -2009,55 +1979,6 @@ class AppServicePlanPatchResource(ProxyOnlyResource):
         self.target_worker_count = target_worker_count
         self.target_worker_size_id = target_worker_size_id
         self.provisioning_state = None
-        self.kube_environment_profile = kube_environment_profile
-
-
-class ArcConfiguration(Model):
-    """ArcConfiguration.
-
-    :param artifacts_storage_type: Possible values include: 'LocalNode',
-     'NetworkFileSystem'
-    :type artifacts_storage_type: str or
-     ~azure.mgmt.web.v2019_08_01.models.StorageType
-    :param artifact_storage_class_name:
-    :type artifact_storage_class_name: str
-    :param artifact_storage_mount_path:
-    :type artifact_storage_mount_path: str
-    :param artifact_storage_node_name:
-    :type artifact_storage_node_name: str
-    :param front_end_service_configuration:
-    :type front_end_service_configuration:
-     ~azure.mgmt.web.v2019_08_01.models.FrontEndConfiguration
-    :param app_logs_configuration:
-    :type app_logs_configuration:
-     ~azure.mgmt.web.v2019_08_01.models.AppLogsConfiguration
-    :param kube_config:
-    :type kube_config: str
-    :param aks_engine_resource_group:
-    :type aks_engine_resource_group: str
-    """
-
-    _attribute_map = {
-        'artifacts_storage_type': {'key': 'artifactsStorageType', 'type': 'StorageType'},
-        'artifact_storage_class_name': {'key': 'artifactStorageClassName', 'type': 'str'},
-        'artifact_storage_mount_path': {'key': 'artifactStorageMountPath', 'type': 'str'},
-        'artifact_storage_node_name': {'key': 'artifactStorageNodeName', 'type': 'str'},
-        'front_end_service_configuration': {'key': 'frontEndServiceConfiguration', 'type': 'FrontEndConfiguration'},
-        'app_logs_configuration': {'key': 'appLogsConfiguration', 'type': 'AppLogsConfiguration'},
-        'kube_config': {'key': 'kubeConfig', 'type': 'str'},
-        'aks_engine_resource_group': {'key': 'aksEngineResourceGroup', 'type': 'str'},
-    }
-
-    def __init__(self, *, artifacts_storage_type=None, artifact_storage_class_name: str=None, artifact_storage_mount_path: str=None, artifact_storage_node_name: str=None, front_end_service_configuration=None, app_logs_configuration=None, kube_config: str=None, aks_engine_resource_group: str=None, **kwargs) -> None:
-        super(ArcConfiguration, self).__init__(**kwargs)
-        self.artifacts_storage_type = artifacts_storage_type
-        self.artifact_storage_class_name = artifact_storage_class_name
-        self.artifact_storage_mount_path = artifact_storage_mount_path
-        self.artifact_storage_node_name = artifact_storage_node_name
-        self.front_end_service_configuration = front_end_service_configuration
-        self.app_logs_configuration = app_logs_configuration
-        self.kube_config = kube_config
-        self.aks_engine_resource_group = aks_engine_resource_group
 
 
 class ArmIdWrapper(Model):
@@ -3778,6 +3699,94 @@ class CsmOperationDisplay(Model):
         self.description = description
 
 
+class CsmPublishingCredentialsPoliciesCollection(ProxyOnlyResource):
+    """Publishing Credentials Policies collection.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar id: Resource Id.
+    :vartype id: str
+    :ivar name: Resource Name.
+    :vartype name: str
+    :param kind: Kind of resource.
+    :type kind: str
+    :ivar type: Resource type.
+    :vartype type: str
+    :param ftp: Required. Whether FTP is allowed.
+    :type ftp:
+     ~azure.mgmt.web.v2019_08_01.models.CsmPublishingCredentialsPoliciesEntity
+    :param scm: Required. Whether Scm Basic Auth is allowed.
+    :type scm:
+     ~azure.mgmt.web.v2019_08_01.models.CsmPublishingCredentialsPoliciesEntity
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'ftp': {'required': True},
+        'scm': {'required': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'kind': {'key': 'kind', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'ftp': {'key': 'properties.ftp', 'type': 'CsmPublishingCredentialsPoliciesEntity'},
+        'scm': {'key': 'properties.scm', 'type': 'CsmPublishingCredentialsPoliciesEntity'},
+    }
+
+    def __init__(self, *, ftp, scm, kind: str=None, **kwargs) -> None:
+        super(CsmPublishingCredentialsPoliciesCollection, self).__init__(kind=kind, **kwargs)
+        self.ftp = ftp
+        self.scm = scm
+
+
+class CsmPublishingCredentialsPoliciesEntity(ProxyOnlyResource):
+    """Publishing Credentials Policies parameters.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar id: Resource Id.
+    :vartype id: str
+    :ivar name: Resource Name.
+    :vartype name: str
+    :param kind: Kind of resource.
+    :type kind: str
+    :ivar type: Resource type.
+    :vartype type: str
+    :param allow: Required. <code>true</code> to allow access to a publishing
+     method; otherwise, <code>false</code>.
+    :type allow: bool
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'allow': {'required': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'kind': {'key': 'kind', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'allow': {'key': 'properties.allow', 'type': 'bool'},
+    }
+
+    def __init__(self, *, allow: bool, kind: str=None, **kwargs) -> None:
+        super(CsmPublishingCredentialsPoliciesEntity, self).__init__(kind=kind, **kwargs)
+        self.allow = allow
+
+
 class CsmPublishingProfileOptions(Model):
     """Publishing options for requested profile.
 
@@ -5453,22 +5462,6 @@ class Experiments(Model):
         self.ramp_up_rules = ramp_up_rules
 
 
-class ExtendedLocation(Model):
-    """ExtendedLocation.
-
-    :param custom_location:
-    :type custom_location: str
-    """
-
-    _attribute_map = {
-        'custom_location': {'key': 'customLocation', 'type': 'str'},
-    }
-
-    def __init__(self, *, custom_location: str=None, **kwargs) -> None:
-        super(ExtendedLocation, self).__init__(**kwargs)
-        self.custom_location = custom_location
-
-
 class FileSystemApplicationLogsConfig(Model):
     """Application logs to file system configuration.
 
@@ -5518,22 +5511,6 @@ class FileSystemHttpLogsConfig(Model):
         self.retention_in_mb = retention_in_mb
         self.retention_in_days = retention_in_days
         self.enabled = enabled
-
-
-class FrontEndConfiguration(Model):
-    """FrontEndConfiguration.
-
-    :param kind: Possible values include: 'NodePort', 'LoadBalancer'
-    :type kind: str or ~azure.mgmt.web.v2019_08_01.models.FrontEndServiceType
-    """
-
-    _attribute_map = {
-        'kind': {'key': 'kind', 'type': 'FrontEndServiceType'},
-    }
-
-    def __init__(self, *, kind=None, **kwargs) -> None:
-        super(FrontEndConfiguration, self).__init__(**kwargs)
-        self.kind = kind
 
 
 class FunctionEnvelope(ProxyOnlyResource):
@@ -6313,16 +6290,6 @@ class IpSecurityRestriction(Model):
     :type name: str
     :param description: IP restriction rule description.
     :type description: str
-    :param x_forwarded_hosts:
-    :type x_forwarded_hosts: list[str]
-    :param x_forwarded_fors: X-Forwarded-For
-     (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For#Examples).
-     The matching logic is ..
-     - If the property is null or empty (default), any forwarded-for chains (or
-     lack of) are allowed.
-     - If any address (excluding port number) in the chain (comma separated)
-     matches the CIDR defined by the property.
-    :type x_forwarded_fors: list[str]
     """
 
     _attribute_map = {
@@ -6336,11 +6303,9 @@ class IpSecurityRestriction(Model):
         'priority': {'key': 'priority', 'type': 'int'},
         'name': {'key': 'name', 'type': 'str'},
         'description': {'key': 'description', 'type': 'str'},
-        'x_forwarded_hosts': {'key': 'xForwardedHosts', 'type': '[str]'},
-        'x_forwarded_fors': {'key': 'xForwardedFors', 'type': '[str]'},
     }
 
-    def __init__(self, *, ip_address: str=None, subnet_mask: str=None, vnet_subnet_resource_id: str=None, vnet_traffic_tag: int=None, subnet_traffic_tag: int=None, action: str=None, tag=None, priority: int=None, name: str=None, description: str=None, x_forwarded_hosts=None, x_forwarded_fors=None, **kwargs) -> None:
+    def __init__(self, *, ip_address: str=None, subnet_mask: str=None, vnet_subnet_resource_id: str=None, vnet_traffic_tag: int=None, subnet_traffic_tag: int=None, action: str=None, tag=None, priority: int=None, name: str=None, description: str=None, **kwargs) -> None:
         super(IpSecurityRestriction, self).__init__(**kwargs)
         self.ip_address = ip_address
         self.subnet_mask = subnet_mask
@@ -6352,8 +6317,6 @@ class IpSecurityRestriction(Model):
         self.priority = priority
         self.name = name
         self.description = description
-        self.x_forwarded_hosts = x_forwarded_hosts
-        self.x_forwarded_fors = x_forwarded_fors
 
 
 class KeyInfo(Model):
@@ -6440,8 +6403,8 @@ class KeyVaultReferenceResource(ProxyOnlyResource):
     :type secret_name: str
     :param secret_version:
     :type secret_version: str
-    :param identity_type: Possible values include: 'None', 'SystemAssigned',
-     'UserAssigned'
+    :param identity_type: Possible values include: 'SystemAssigned',
+     'UserAssigned', 'SystemAssigned, UserAssigned', 'None'
     :type identity_type: str or
      ~azure.mgmt.web.v2019_08_01.models.ManagedServiceIdentityType
     :param details:
@@ -6489,237 +6452,6 @@ class KeyVaultReferenceResource(ProxyOnlyResource):
         self.location = location
 
 
-class KubeEnvironment(Resource):
-    """A Kubernetes cluster specialized for web workloads by Azure App Service.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :ivar id: Resource Id.
-    :vartype id: str
-    :ivar name: Resource Name.
-    :vartype name: str
-    :param kind: Kind of resource.
-    :type kind: str
-    :param location: Required. Resource Location.
-    :type location: str
-    :ivar type: Resource type.
-    :vartype type: str
-    :param tags: Resource tags.
-    :type tags: dict[str, str]
-    :param extended_location:
-    :type extended_location:
-     ~azure.mgmt.web.v2019_08_01.models.ExtendedLocation
-    :ivar provisioning_state: Provisioning state of the Kubernetes
-     Environment. Possible values include: 'Succeeded', 'Failed', 'Canceled',
-     'Waiting', 'InitializationInProgress', 'ARMDeploymentInProgress',
-     'ARMDeploymentFinished', 'InfrastructureSetupInProgress',
-     'InfrastructureSetupComplete', 'ScheduledForDelete', 'DeletionInProgress',
-     'UpgradeRequested', 'UpgradeFailed', 'InitializationFailed'
-    :vartype provisioning_state: str or
-     ~azure.mgmt.web.v2019_08_01.models.K8SEProvisioningState
-    :param node_pools: Required. Description of node pools with VM sizes,
-     number of instances in each pool, and maximum instance counts for
-     autoscaling.
-    :type node_pools: list[~azure.mgmt.web.v2019_08_01.models.KubeNodePool]
-    :ivar subscription_id: Subscription of the Kubernetes Environment.
-    :vartype subscription_id: str
-    :ivar aks_cluster_resource_group: Resource group of the Kubernetes
-     Environment.
-    :vartype aks_cluster_resource_group: str
-    :ivar kubernetes_version: Kubernetes version of the AKS cluster
-    :vartype kubernetes_version: str
-    :ivar deployment_errors: Any errors that occurred during deployment or
-     deployment validation
-    :vartype deployment_errors: str
-    :param internal_load_balancer_enabled: Only visible within Vnet/Subnet
-    :type internal_load_balancer_enabled: bool
-    :param vnet_subnet_id: Vnet/Subnet of the Kube Nodes/Pods/Services
-    :type vnet_subnet_id: str
-    :param network_plugin: Use 'kubenet' (default) or 'azure' network
-     configuration
-     if VnetSubnetID is not specified (using default vnet/subnet), only
-     'kubenet' is supported
-     See
-     https://docs.microsoft.com/en-us/azure/aks/concepts-network#azure-virtual-networks.
-     Possible values include: 'kubenet', 'azure'
-    :type network_plugin: str or
-     ~azure.mgmt.web.v2019_08_01.models.K8SENetworkPlugin
-    :param service_cidr: Address space to be used by services
-     (nodeport/clusterip/loadbalancer)
-     It must be within the vnet but not used by subnet
-     This is required if VnetSubnetID is specified
-    :type service_cidr: str
-    :param dns_service_ip: Kubernetes Dns Service IP within ServiceCidr
-     (commonly, .10 address)
-     This is required if VnetSubnetID is specified
-    :type dns_service_ip: str
-    :param docker_bridge_cidr: This lets AKS nodes communicate with the
-     underlying management platform.
-     This IP address must NOT be within the virtual network IP address range of
-     your cluster,
-     and shouldn't overlap with other address ranges in use on your network.
-     Default (by AKS) is 172.17.0.1/16. If your VNET overlapped with this, you
-     must specify others
-    :type docker_bridge_cidr: str
-    :param service_principal_client_id: Service Principal Client ID
-    :type service_principal_client_id: str
-    :param service_principal_client_secret: Service Principal Client Secret
-    :type service_principal_client_secret: str
-    :param static_ip: Static IP of the KubeEnvironment
-    :type static_ip: str
-    :param default_certificate_provision_start_time: Time when
-     DefaultCertificateProvisioning is started, used to
-     determine timeout for certificate provisioning
-    :type default_certificate_provision_start_time: str
-    :param log_analytics_workspace_id:
-    :type log_analytics_workspace_id: str
-    :param compute_platform:
-    :type compute_platform: str
-    :param namespace:
-    :type namespace: str
-    :param arc_configuration: Cluster configuration which determines the ARC
-     cluster
-     components types. Eg: Choosing between BuildService kind,
-     FrontEnd Service ArtifactsStorageType etc.
-    :type arc_configuration:
-     ~azure.mgmt.web.v2019_08_01.models.ArcConfiguration
-    :param aks_resource_id:
-    :type aks_resource_id: str
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'location': {'required': True},
-        'type': {'readonly': True},
-        'provisioning_state': {'readonly': True},
-        'node_pools': {'required': True},
-        'subscription_id': {'readonly': True},
-        'aks_cluster_resource_group': {'readonly': True},
-        'kubernetes_version': {'readonly': True},
-        'deployment_errors': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'kind': {'key': 'kind', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'extended_location': {'key': 'properties.extendedLocation', 'type': 'ExtendedLocation'},
-        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'K8SEProvisioningState'},
-        'node_pools': {'key': 'properties.nodePools', 'type': '[KubeNodePool]'},
-        'subscription_id': {'key': 'properties.subscriptionId', 'type': 'str'},
-        'aks_cluster_resource_group': {'key': 'properties.aksClusterResourceGroup', 'type': 'str'},
-        'kubernetes_version': {'key': 'properties.kubernetesVersion', 'type': 'str'},
-        'deployment_errors': {'key': 'properties.deploymentErrors', 'type': 'str'},
-        'internal_load_balancer_enabled': {'key': 'properties.internalLoadBalancerEnabled', 'type': 'bool'},
-        'vnet_subnet_id': {'key': 'properties.vnetSubnetID', 'type': 'str'},
-        'network_plugin': {'key': 'properties.networkPlugin', 'type': 'K8SENetworkPlugin'},
-        'service_cidr': {'key': 'properties.serviceCidr', 'type': 'str'},
-        'dns_service_ip': {'key': 'properties.dnsServiceIP', 'type': 'str'},
-        'docker_bridge_cidr': {'key': 'properties.dockerBridgeCidr', 'type': 'str'},
-        'service_principal_client_id': {'key': 'properties.servicePrincipalClientId', 'type': 'str'},
-        'service_principal_client_secret': {'key': 'properties.servicePrincipalClientSecret', 'type': 'str'},
-        'static_ip': {'key': 'properties.staticIp', 'type': 'str'},
-        'default_certificate_provision_start_time': {'key': 'properties.defaultCertificateProvisionStartTime', 'type': 'str'},
-        'log_analytics_workspace_id': {'key': 'properties.logAnalyticsWorkspaceID', 'type': 'str'},
-        'compute_platform': {'key': 'properties.computePlatform', 'type': 'str'},
-        'namespace': {'key': 'properties.namespace', 'type': 'str'},
-        'arc_configuration': {'key': 'properties.arcConfiguration', 'type': 'ArcConfiguration'},
-        'aks_resource_id': {'key': 'properties.aksResourceID', 'type': 'str'},
-    }
-
-    def __init__(self, *, location: str, node_pools, kind: str=None, tags=None, extended_location=None, internal_load_balancer_enabled: bool=None, vnet_subnet_id: str=None, network_plugin=None, service_cidr: str=None, dns_service_ip: str=None, docker_bridge_cidr: str=None, service_principal_client_id: str=None, service_principal_client_secret: str=None, static_ip: str=None, default_certificate_provision_start_time: str=None, log_analytics_workspace_id: str=None, compute_platform: str=None, namespace: str=None, arc_configuration=None, aks_resource_id: str=None, **kwargs) -> None:
-        super(KubeEnvironment, self).__init__(kind=kind, location=location, tags=tags, **kwargs)
-        self.extended_location = extended_location
-        self.provisioning_state = None
-        self.node_pools = node_pools
-        self.subscription_id = None
-        self.aks_cluster_resource_group = None
-        self.kubernetes_version = None
-        self.deployment_errors = None
-        self.internal_load_balancer_enabled = internal_load_balancer_enabled
-        self.vnet_subnet_id = vnet_subnet_id
-        self.network_plugin = network_plugin
-        self.service_cidr = service_cidr
-        self.dns_service_ip = dns_service_ip
-        self.docker_bridge_cidr = docker_bridge_cidr
-        self.service_principal_client_id = service_principal_client_id
-        self.service_principal_client_secret = service_principal_client_secret
-        self.static_ip = static_ip
-        self.default_certificate_provision_start_time = default_certificate_provision_start_time
-        self.log_analytics_workspace_id = log_analytics_workspace_id
-        self.compute_platform = compute_platform
-        self.namespace = namespace
-        self.arc_configuration = arc_configuration
-        self.aks_resource_id = aks_resource_id
-
-
-class KubeEnvironmentProfile(Model):
-    """Specification for a Kubernetes Environment to use for this resource.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    :param id: Resource ID of the Kubernetes Environment.
-    :type id: str
-    :ivar name: Name of the Kubernetes Environment.
-    :vartype name: str
-    :ivar type: Resource type of the Kubernetes Environment.
-    :vartype type: str
-    """
-
-    _validation = {
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-    }
-
-    def __init__(self, *, id: str=None, **kwargs) -> None:
-        super(KubeEnvironmentProfile, self).__init__(**kwargs)
-        self.id = id
-        self.name = None
-        self.type = None
-
-
-class KubeNodePool(Model):
-    """Node pool of a Kubernetes Environment.
-
-    :param vm_size: VM size of the node pool instances.
-    :type vm_size: str
-    :param node_count: Number of instances in the node pool.
-    :type node_count: int
-    :param max_node_count: Maximum number of instances for autoscaling.
-    :type max_node_count: int
-    :param name: Name of the node pool.
-    :type name: str
-    """
-
-    _attribute_map = {
-        'vm_size': {'key': 'vmSize', 'type': 'str'},
-        'node_count': {'key': 'nodeCount', 'type': 'int'},
-        'max_node_count': {'key': 'maxNodeCount', 'type': 'int'},
-        'name': {'key': 'name', 'type': 'str'},
-    }
-
-    def __init__(self, *, vm_size: str=None, node_count: int=None, max_node_count: int=None, name: str=None, **kwargs) -> None:
-        super(KubeNodePool, self).__init__(**kwargs)
-        self.vm_size = vm_size
-        self.node_count = node_count
-        self.max_node_count = max_node_count
-        self.name = name
-
-
 class LocalizableString(Model):
     """Localizable string object containing the name and a localized value.
 
@@ -6740,26 +6472,6 @@ class LocalizableString(Model):
         self.localized_value = localized_value
 
 
-class LogAnalyticsConfiguration(Model):
-    """LogAnalyticsConfiguration.
-
-    :param customer_id:
-    :type customer_id: str
-    :param shared_key:
-    :type shared_key: str
-    """
-
-    _attribute_map = {
-        'customer_id': {'key': 'customerId', 'type': 'str'},
-        'shared_key': {'key': 'sharedKey', 'type': 'str'},
-    }
-
-    def __init__(self, *, customer_id: str=None, shared_key: str=None, **kwargs) -> None:
-        super(LogAnalyticsConfiguration, self).__init__(**kwargs)
-        self.customer_id = customer_id
-        self.shared_key = shared_key
-
-
 class LogSpecification(Model):
     """Log Definition of a single resource metric.
 
@@ -6769,23 +6481,19 @@ class LogSpecification(Model):
     :type display_name: str
     :param blob_duration:
     :type blob_duration: str
-    :param log_filter_pattern:
-    :type log_filter_pattern: str
     """
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
         'display_name': {'key': 'displayName', 'type': 'str'},
         'blob_duration': {'key': 'blobDuration', 'type': 'str'},
-        'log_filter_pattern': {'key': 'logFilterPattern', 'type': 'str'},
     }
 
-    def __init__(self, *, name: str=None, display_name: str=None, blob_duration: str=None, log_filter_pattern: str=None, **kwargs) -> None:
+    def __init__(self, *, name: str=None, display_name: str=None, blob_duration: str=None, **kwargs) -> None:
         super(LogSpecification, self).__init__(**kwargs)
         self.name = name
         self.display_name = display_name
         self.blob_duration = blob_duration
-        self.log_filter_pattern = log_filter_pattern
 
 
 class ManagedServiceIdentity(Model):
@@ -6795,7 +6503,7 @@ class ManagedServiceIdentity(Model):
     sending a request.
 
     :param type: Type of managed service identity. Possible values include:
-     'None', 'SystemAssigned', 'UserAssigned'
+     'SystemAssigned', 'UserAssigned', 'SystemAssigned, UserAssigned', 'None'
     :type type: str or
      ~azure.mgmt.web.v2019_08_01.models.ManagedServiceIdentityType
     :ivar tenant_id: Tenant of managed service identity.
@@ -9418,14 +9126,6 @@ class Site(Resource):
      authentication (TLS mutual authentication); otherwise, <code>false</code>.
      Default is <code>false</code>.
     :type client_cert_enabled: bool
-    :param client_cert_mode: This composes with ClientCertEnabled setting.
-     - ClientCertEnabled: false means ClientCert is ignored.
-     - ClientCertEnabled: true and ClientCertMode: Required means ClientCert is
-     required.
-     - ClientCertEnabled: true and ClientCertMode: Optional means ClientCert is
-     optional or accepted. Possible values include: 'Required', 'Optional'
-    :type client_cert_mode: str or
-     ~azure.mgmt.web.v2019_08_01.models.ClientCertMode
     :param client_cert_exclusion_paths: client certificate authentication
      comma-separated exclusion paths
     :type client_cert_exclusion_paths: str
@@ -9534,7 +9234,6 @@ class Site(Resource):
         'hosting_environment_profile': {'key': 'properties.hostingEnvironmentProfile', 'type': 'HostingEnvironmentProfile'},
         'client_affinity_enabled': {'key': 'properties.clientAffinityEnabled', 'type': 'bool'},
         'client_cert_enabled': {'key': 'properties.clientCertEnabled', 'type': 'bool'},
-        'client_cert_mode': {'key': 'properties.clientCertMode', 'type': 'ClientCertMode'},
         'client_cert_exclusion_paths': {'key': 'properties.clientCertExclusionPaths', 'type': 'str'},
         'host_names_disabled': {'key': 'properties.hostNamesDisabled', 'type': 'bool'},
         'outbound_ip_addresses': {'key': 'properties.outboundIpAddresses', 'type': 'str'},
@@ -9554,7 +9253,7 @@ class Site(Resource):
         'identity': {'key': 'identity', 'type': 'ManagedServiceIdentity'},
     }
 
-    def __init__(self, *, location: str, kind: str=None, tags=None, enabled: bool=None, host_name_ssl_states=None, server_farm_id: str=None, reserved: bool=False, is_xenon: bool=False, hyper_v: bool=False, site_config=None, scm_site_also_stopped: bool=False, hosting_environment_profile=None, client_affinity_enabled: bool=None, client_cert_enabled: bool=None, client_cert_mode=None, client_cert_exclusion_paths: str=None, host_names_disabled: bool=None, container_size: int=None, daily_memory_time_quota: int=None, cloning_info=None, https_only: bool=None, redundancy_mode=None, identity=None, **kwargs) -> None:
+    def __init__(self, *, location: str, kind: str=None, tags=None, enabled: bool=None, host_name_ssl_states=None, server_farm_id: str=None, reserved: bool=False, is_xenon: bool=False, hyper_v: bool=False, site_config=None, scm_site_also_stopped: bool=False, hosting_environment_profile=None, client_affinity_enabled: bool=None, client_cert_enabled: bool=None, client_cert_exclusion_paths: str=None, host_names_disabled: bool=None, container_size: int=None, daily_memory_time_quota: int=None, cloning_info=None, https_only: bool=None, redundancy_mode=None, identity=None, **kwargs) -> None:
         super(Site, self).__init__(kind=kind, location=location, tags=tags, **kwargs)
         self.state = None
         self.host_names = None
@@ -9576,7 +9275,6 @@ class Site(Resource):
         self.hosting_environment_profile = hosting_environment_profile
         self.client_affinity_enabled = client_affinity_enabled
         self.client_cert_enabled = client_cert_enabled
-        self.client_cert_mode = client_cert_mode
         self.client_cert_exclusion_paths = client_cert_exclusion_paths
         self.host_names_disabled = host_names_disabled
         self.outbound_ip_addresses = None
@@ -9920,6 +9618,12 @@ class SiteConfig(Model):
     :param http_logging_enabled: <code>true</code> if HTTP logging is enabled;
      otherwise, <code>false</code>.
     :type http_logging_enabled: bool
+    :param acr_use_managed_identity_creds: Flag to use Managed Identity Creds
+     for ACR pull
+    :type acr_use_managed_identity_creds: bool
+    :param acr_user_managed_identity_id: If using user managed identity, the
+     user managed identity ClientId
+    :type acr_user_managed_identity_id: str
     :param logs_directory_size_limit: HTTP logs directory size limit.
     :type logs_directory_size_limit: int
     :param detailed_error_logging_enabled: <code>true</code> if detailed error
@@ -9929,9 +9633,6 @@ class SiteConfig(Model):
     :type publishing_username: str
     :param app_settings: Application settings.
     :type app_settings: list[~azure.mgmt.web.v2019_08_01.models.NameValuePair]
-    :param azure_storage_accounts: AzureStorageAccounts.
-    :type azure_storage_accounts: dict[str,
-     ~azure.mgmt.web.v2019_08_01.models.AzureStorageInfoValue]
     :param connection_strings: Connection strings.
     :type connection_strings:
      list[~azure.mgmt.web.v2019_08_01.models.ConnStringInfo]
@@ -10033,23 +9734,6 @@ class SiteConfig(Model):
     :type pre_warmed_instance_count: int
     :param health_check_path: Health check path
     :type health_check_path: str
-    :param functions_runtime_scale_monitoring_enabled: Gets or sets a value
-     indicating whether functions runtime scale monitoring is enabled. When
-     enabled,
-     the ScaleController will not monitor event sources directly, but will
-     instead call to the
-     runtime to get scale status.
-    :type functions_runtime_scale_monitoring_enabled: bool
-    :param website_time_zone: Sets the time zone a site uses for generating
-     timestamps. Compatible with Linux and Windows App Service. Setting the
-     WEBSITE_TIME_ZONE app setting takes precedence over this config. For
-     Linux, expects tz database values https://www.iana.org/time-zones (for a
-     quick reference see
-     https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). For
-     Windows, expects one of the time zones listed under
-     HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Time
-     Zones
-    :type website_time_zone: str
     """
 
     _validation = {
@@ -10072,11 +9756,12 @@ class SiteConfig(Model):
         'remote_debugging_enabled': {'key': 'remoteDebuggingEnabled', 'type': 'bool'},
         'remote_debugging_version': {'key': 'remoteDebuggingVersion', 'type': 'str'},
         'http_logging_enabled': {'key': 'httpLoggingEnabled', 'type': 'bool'},
+        'acr_use_managed_identity_creds': {'key': 'acrUseManagedIdentityCreds', 'type': 'bool'},
+        'acr_user_managed_identity_id': {'key': 'acrUserManagedIdentityID', 'type': 'str'},
         'logs_directory_size_limit': {'key': 'logsDirectorySizeLimit', 'type': 'int'},
         'detailed_error_logging_enabled': {'key': 'detailedErrorLoggingEnabled', 'type': 'bool'},
         'publishing_username': {'key': 'publishingUsername', 'type': 'str'},
         'app_settings': {'key': 'appSettings', 'type': '[NameValuePair]'},
-        'azure_storage_accounts': {'key': 'azureStorageAccounts', 'type': '{AzureStorageInfoValue}'},
         'connection_strings': {'key': 'connectionStrings', 'type': '[ConnStringInfo]'},
         'machine_key': {'key': 'machineKey', 'type': 'SiteMachineKey'},
         'handler_mappings': {'key': 'handlerMappings', 'type': '[HandlerMapping]'},
@@ -10114,11 +9799,9 @@ class SiteConfig(Model):
         'ftps_state': {'key': 'ftpsState', 'type': 'str'},
         'pre_warmed_instance_count': {'key': 'preWarmedInstanceCount', 'type': 'int'},
         'health_check_path': {'key': 'healthCheckPath', 'type': 'str'},
-        'functions_runtime_scale_monitoring_enabled': {'key': 'functionsRuntimeScaleMonitoringEnabled', 'type': 'bool'},
-        'website_time_zone': {'key': 'websiteTimeZone', 'type': 'str'},
     }
 
-    def __init__(self, *, number_of_workers: int=None, default_documents=None, net_framework_version: str="v4.6", php_version: str=None, python_version: str=None, node_version: str=None, power_shell_version: str=None, linux_fx_version: str=None, windows_fx_version: str=None, request_tracing_enabled: bool=None, request_tracing_expiration_time=None, remote_debugging_enabled: bool=None, remote_debugging_version: str=None, http_logging_enabled: bool=None, logs_directory_size_limit: int=None, detailed_error_logging_enabled: bool=None, publishing_username: str=None, app_settings=None, azure_storage_accounts=None, connection_strings=None, handler_mappings=None, document_root: str=None, scm_type=None, use32_bit_worker_process: bool=None, web_sockets_enabled: bool=None, always_on: bool=None, java_version: str=None, java_container: str=None, java_container_version: str=None, app_command_line: str=None, managed_pipeline_mode=None, virtual_applications=None, load_balancing=None, experiments=None, limits=None, auto_heal_enabled: bool=None, auto_heal_rules=None, tracing_options: str=None, vnet_name: str=None, cors=None, push=None, api_definition=None, api_management_config=None, auto_swap_slot_name: str=None, local_my_sql_enabled: bool=False, managed_service_identity_id: int=None, x_managed_service_identity_id: int=None, ip_security_restrictions=None, scm_ip_security_restrictions=None, scm_ip_security_restrictions_use_main: bool=None, http20_enabled: bool=True, min_tls_version=None, ftps_state=None, pre_warmed_instance_count: int=None, health_check_path: str=None, functions_runtime_scale_monitoring_enabled: bool=None, website_time_zone: str=None, **kwargs) -> None:
+    def __init__(self, *, number_of_workers: int=None, default_documents=None, net_framework_version: str="v4.6", php_version: str=None, python_version: str=None, node_version: str=None, power_shell_version: str=None, linux_fx_version: str=None, windows_fx_version: str=None, request_tracing_enabled: bool=None, request_tracing_expiration_time=None, remote_debugging_enabled: bool=None, remote_debugging_version: str=None, http_logging_enabled: bool=None, acr_use_managed_identity_creds: bool=None, acr_user_managed_identity_id: str=None, logs_directory_size_limit: int=None, detailed_error_logging_enabled: bool=None, publishing_username: str=None, app_settings=None, connection_strings=None, handler_mappings=None, document_root: str=None, scm_type=None, use32_bit_worker_process: bool=None, web_sockets_enabled: bool=None, always_on: bool=None, java_version: str=None, java_container: str=None, java_container_version: str=None, app_command_line: str=None, managed_pipeline_mode=None, virtual_applications=None, load_balancing=None, experiments=None, limits=None, auto_heal_enabled: bool=None, auto_heal_rules=None, tracing_options: str=None, vnet_name: str=None, cors=None, push=None, api_definition=None, api_management_config=None, auto_swap_slot_name: str=None, local_my_sql_enabled: bool=False, managed_service_identity_id: int=None, x_managed_service_identity_id: int=None, ip_security_restrictions=None, scm_ip_security_restrictions=None, scm_ip_security_restrictions_use_main: bool=None, http20_enabled: bool=True, min_tls_version=None, ftps_state=None, pre_warmed_instance_count: int=None, health_check_path: str=None, **kwargs) -> None:
         super(SiteConfig, self).__init__(**kwargs)
         self.number_of_workers = number_of_workers
         self.default_documents = default_documents
@@ -10134,11 +9817,12 @@ class SiteConfig(Model):
         self.remote_debugging_enabled = remote_debugging_enabled
         self.remote_debugging_version = remote_debugging_version
         self.http_logging_enabled = http_logging_enabled
+        self.acr_use_managed_identity_creds = acr_use_managed_identity_creds
+        self.acr_user_managed_identity_id = acr_user_managed_identity_id
         self.logs_directory_size_limit = logs_directory_size_limit
         self.detailed_error_logging_enabled = detailed_error_logging_enabled
         self.publishing_username = publishing_username
         self.app_settings = app_settings
-        self.azure_storage_accounts = azure_storage_accounts
         self.connection_strings = connection_strings
         self.machine_key = None
         self.handler_mappings = handler_mappings
@@ -10176,8 +9860,6 @@ class SiteConfig(Model):
         self.ftps_state = ftps_state
         self.pre_warmed_instance_count = pre_warmed_instance_count
         self.health_check_path = health_check_path
-        self.functions_runtime_scale_monitoring_enabled = functions_runtime_scale_monitoring_enabled
-        self.website_time_zone = website_time_zone
 
 
 class SiteConfigResource(ProxyOnlyResource):
@@ -10226,6 +9908,12 @@ class SiteConfigResource(ProxyOnlyResource):
     :param http_logging_enabled: <code>true</code> if HTTP logging is enabled;
      otherwise, <code>false</code>.
     :type http_logging_enabled: bool
+    :param acr_use_managed_identity_creds: Flag to use Managed Identity Creds
+     for ACR pull
+    :type acr_use_managed_identity_creds: bool
+    :param acr_user_managed_identity_id: If using user managed identity, the
+     user managed identity ClientId
+    :type acr_user_managed_identity_id: str
     :param logs_directory_size_limit: HTTP logs directory size limit.
     :type logs_directory_size_limit: int
     :param detailed_error_logging_enabled: <code>true</code> if detailed error
@@ -10235,9 +9923,6 @@ class SiteConfigResource(ProxyOnlyResource):
     :type publishing_username: str
     :param app_settings: Application settings.
     :type app_settings: list[~azure.mgmt.web.v2019_08_01.models.NameValuePair]
-    :param azure_storage_accounts: AzureStorageAccounts.
-    :type azure_storage_accounts: dict[str,
-     ~azure.mgmt.web.v2019_08_01.models.AzureStorageInfoValue]
     :param connection_strings: Connection strings.
     :type connection_strings:
      list[~azure.mgmt.web.v2019_08_01.models.ConnStringInfo]
@@ -10339,23 +10024,6 @@ class SiteConfigResource(ProxyOnlyResource):
     :type pre_warmed_instance_count: int
     :param health_check_path: Health check path
     :type health_check_path: str
-    :param functions_runtime_scale_monitoring_enabled: Gets or sets a value
-     indicating whether functions runtime scale monitoring is enabled. When
-     enabled,
-     the ScaleController will not monitor event sources directly, but will
-     instead call to the
-     runtime to get scale status.
-    :type functions_runtime_scale_monitoring_enabled: bool
-    :param website_time_zone: Sets the time zone a site uses for generating
-     timestamps. Compatible with Linux and Windows App Service. Setting the
-     WEBSITE_TIME_ZONE app setting takes precedence over this config. For
-     Linux, expects tz database values https://www.iana.org/time-zones (for a
-     quick reference see
-     https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). For
-     Windows, expects one of the time zones listed under
-     HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Time
-     Zones
-    :type website_time_zone: str
     """
 
     _validation = {
@@ -10385,11 +10053,12 @@ class SiteConfigResource(ProxyOnlyResource):
         'remote_debugging_enabled': {'key': 'properties.remoteDebuggingEnabled', 'type': 'bool'},
         'remote_debugging_version': {'key': 'properties.remoteDebuggingVersion', 'type': 'str'},
         'http_logging_enabled': {'key': 'properties.httpLoggingEnabled', 'type': 'bool'},
+        'acr_use_managed_identity_creds': {'key': 'properties.acrUseManagedIdentityCreds', 'type': 'bool'},
+        'acr_user_managed_identity_id': {'key': 'properties.acrUserManagedIdentityID', 'type': 'str'},
         'logs_directory_size_limit': {'key': 'properties.logsDirectorySizeLimit', 'type': 'int'},
         'detailed_error_logging_enabled': {'key': 'properties.detailedErrorLoggingEnabled', 'type': 'bool'},
         'publishing_username': {'key': 'properties.publishingUsername', 'type': 'str'},
         'app_settings': {'key': 'properties.appSettings', 'type': '[NameValuePair]'},
-        'azure_storage_accounts': {'key': 'properties.azureStorageAccounts', 'type': '{AzureStorageInfoValue}'},
         'connection_strings': {'key': 'properties.connectionStrings', 'type': '[ConnStringInfo]'},
         'machine_key': {'key': 'properties.machineKey', 'type': 'SiteMachineKey'},
         'handler_mappings': {'key': 'properties.handlerMappings', 'type': '[HandlerMapping]'},
@@ -10427,11 +10096,9 @@ class SiteConfigResource(ProxyOnlyResource):
         'ftps_state': {'key': 'properties.ftpsState', 'type': 'str'},
         'pre_warmed_instance_count': {'key': 'properties.preWarmedInstanceCount', 'type': 'int'},
         'health_check_path': {'key': 'properties.healthCheckPath', 'type': 'str'},
-        'functions_runtime_scale_monitoring_enabled': {'key': 'properties.functionsRuntimeScaleMonitoringEnabled', 'type': 'bool'},
-        'website_time_zone': {'key': 'properties.websiteTimeZone', 'type': 'str'},
     }
 
-    def __init__(self, *, kind: str=None, number_of_workers: int=None, default_documents=None, net_framework_version: str="v4.6", php_version: str=None, python_version: str=None, node_version: str=None, power_shell_version: str=None, linux_fx_version: str=None, windows_fx_version: str=None, request_tracing_enabled: bool=None, request_tracing_expiration_time=None, remote_debugging_enabled: bool=None, remote_debugging_version: str=None, http_logging_enabled: bool=None, logs_directory_size_limit: int=None, detailed_error_logging_enabled: bool=None, publishing_username: str=None, app_settings=None, azure_storage_accounts=None, connection_strings=None, handler_mappings=None, document_root: str=None, scm_type=None, use32_bit_worker_process: bool=None, web_sockets_enabled: bool=None, always_on: bool=None, java_version: str=None, java_container: str=None, java_container_version: str=None, app_command_line: str=None, managed_pipeline_mode=None, virtual_applications=None, load_balancing=None, experiments=None, limits=None, auto_heal_enabled: bool=None, auto_heal_rules=None, tracing_options: str=None, vnet_name: str=None, cors=None, push=None, api_definition=None, api_management_config=None, auto_swap_slot_name: str=None, local_my_sql_enabled: bool=False, managed_service_identity_id: int=None, x_managed_service_identity_id: int=None, ip_security_restrictions=None, scm_ip_security_restrictions=None, scm_ip_security_restrictions_use_main: bool=None, http20_enabled: bool=True, min_tls_version=None, ftps_state=None, pre_warmed_instance_count: int=None, health_check_path: str=None, functions_runtime_scale_monitoring_enabled: bool=None, website_time_zone: str=None, **kwargs) -> None:
+    def __init__(self, *, kind: str=None, number_of_workers: int=None, default_documents=None, net_framework_version: str="v4.6", php_version: str=None, python_version: str=None, node_version: str=None, power_shell_version: str=None, linux_fx_version: str=None, windows_fx_version: str=None, request_tracing_enabled: bool=None, request_tracing_expiration_time=None, remote_debugging_enabled: bool=None, remote_debugging_version: str=None, http_logging_enabled: bool=None, acr_use_managed_identity_creds: bool=None, acr_user_managed_identity_id: str=None, logs_directory_size_limit: int=None, detailed_error_logging_enabled: bool=None, publishing_username: str=None, app_settings=None, connection_strings=None, handler_mappings=None, document_root: str=None, scm_type=None, use32_bit_worker_process: bool=None, web_sockets_enabled: bool=None, always_on: bool=None, java_version: str=None, java_container: str=None, java_container_version: str=None, app_command_line: str=None, managed_pipeline_mode=None, virtual_applications=None, load_balancing=None, experiments=None, limits=None, auto_heal_enabled: bool=None, auto_heal_rules=None, tracing_options: str=None, vnet_name: str=None, cors=None, push=None, api_definition=None, api_management_config=None, auto_swap_slot_name: str=None, local_my_sql_enabled: bool=False, managed_service_identity_id: int=None, x_managed_service_identity_id: int=None, ip_security_restrictions=None, scm_ip_security_restrictions=None, scm_ip_security_restrictions_use_main: bool=None, http20_enabled: bool=True, min_tls_version=None, ftps_state=None, pre_warmed_instance_count: int=None, health_check_path: str=None, **kwargs) -> None:
         super(SiteConfigResource, self).__init__(kind=kind, **kwargs)
         self.number_of_workers = number_of_workers
         self.default_documents = default_documents
@@ -10447,11 +10114,12 @@ class SiteConfigResource(ProxyOnlyResource):
         self.remote_debugging_enabled = remote_debugging_enabled
         self.remote_debugging_version = remote_debugging_version
         self.http_logging_enabled = http_logging_enabled
+        self.acr_use_managed_identity_creds = acr_use_managed_identity_creds
+        self.acr_user_managed_identity_id = acr_user_managed_identity_id
         self.logs_directory_size_limit = logs_directory_size_limit
         self.detailed_error_logging_enabled = detailed_error_logging_enabled
         self.publishing_username = publishing_username
         self.app_settings = app_settings
-        self.azure_storage_accounts = azure_storage_accounts
         self.connection_strings = connection_strings
         self.machine_key = None
         self.handler_mappings = handler_mappings
@@ -10489,8 +10157,6 @@ class SiteConfigResource(ProxyOnlyResource):
         self.ftps_state = ftps_state
         self.pre_warmed_instance_count = pre_warmed_instance_count
         self.health_check_path = health_check_path
-        self.functions_runtime_scale_monitoring_enabled = functions_runtime_scale_monitoring_enabled
-        self.website_time_zone = website_time_zone
 
 
 class SiteConfigurationSnapshotInfo(ProxyOnlyResource):
@@ -11194,9 +10860,6 @@ class SkuCapacity(Model):
     :type minimum: int
     :param maximum: Maximum number of workers for this App Service plan SKU.
     :type maximum: int
-    :param elastic_maximum: Maximum number of Elastic workers for this App
-     Service plan SKU.
-    :type elastic_maximum: int
     :param default: Default number of workers for this App Service plan SKU.
     :type default: int
     :param scale_type: Available scale configurations for an App Service plan.
@@ -11206,16 +10869,14 @@ class SkuCapacity(Model):
     _attribute_map = {
         'minimum': {'key': 'minimum', 'type': 'int'},
         'maximum': {'key': 'maximum', 'type': 'int'},
-        'elastic_maximum': {'key': 'elasticMaximum', 'type': 'int'},
         'default': {'key': 'default', 'type': 'int'},
         'scale_type': {'key': 'scaleType', 'type': 'str'},
     }
 
-    def __init__(self, *, minimum: int=None, maximum: int=None, elastic_maximum: int=None, default: int=None, scale_type: str=None, **kwargs) -> None:
+    def __init__(self, *, minimum: int=None, maximum: int=None, default: int=None, scale_type: str=None, **kwargs) -> None:
         super(SkuCapacity, self).__init__(**kwargs)
         self.minimum = minimum
         self.maximum = maximum
-        self.elastic_maximum = elastic_maximum
         self.default = default
         self.scale_type = scale_type
 

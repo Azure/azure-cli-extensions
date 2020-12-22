@@ -176,9 +176,6 @@ def load_arguments(self, _):
 
     with self.argument_context('appservice kube update') as c:
         c.argument('kube_name', arg_type=name_arg_type, help='Name of the kubernetes environment.')
-        c.argument('client_id', help='Service principal client id.')
-        c.argument('client_secret', help='Service principal client secret.')
-        c.argument('workspace_id', help='Log analytics workspace ID')
         c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('appservice kube delete') as c:

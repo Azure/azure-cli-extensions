@@ -60,16 +60,6 @@ helps['appservice kube create'] = """
               --client-secret MyServicePrincipalClientSecret
 """
 
-helps['appservice kube update'] = """
-    type: command
-    short-summary: Update a Kubernetes Environment.
-    examples:
-    - name: Update the Kubernetes Environment's Log Analytics workspace ID.
-      text: |
-          az appservice kube update -n MyKubeEnvironment -g MyResourceGroup \\
-              --workspace-id MyLogAnalyticsWorkspaceResourceId
-"""
-
 helps['appservice kube show'] = """
     type: command
     short-summary: Show the details of a kubernetes environment.

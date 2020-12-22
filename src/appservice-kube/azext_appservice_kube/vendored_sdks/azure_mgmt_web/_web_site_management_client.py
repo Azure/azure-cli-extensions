@@ -46,7 +46,7 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
     :type profile: azure.profiles.KnownProfiles
     """
 
-    DEFAULT_API_VERSION = '2019-08-01'
+    DEFAULT_API_VERSION = '2020-06-01'
     _PROFILE_TAG = "azure.mgmt.web.WebSiteManagementClient"
     LATEST_PROFILE = ProfileDefinition({
         _PROFILE_TAG: {
@@ -82,6 +82,7 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
            * 2018-02-01: :mod:`v2018_02_01.models<azure.mgmt.web.v2018_02_01.models>`
            * 2018-11-01: :mod:`v2018_11_01.models<azure.mgmt.web.v2018_11_01.models>`
            * 2019-08-01: :mod:`v2019_08_01.models<azure.mgmt.web.v2019_08_01.models>`
+           * 2020-06-01: :mod:`v2020_06_01.models<azure.mgmt.web.v2020_06_01.models>`
         """
         if api_version == '2015-04-01':
             from .v2015_04_01 import models
@@ -107,6 +108,9 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
         elif api_version == '2019-08-01':
             from .v2019_08_01 import models
             return models
+        elif api_version == '2020-06-01':
+            from .v2020_06_01 import models
+            return models
         raise NotImplementedError("APIVersion {} is not available".format(api_version))
 
     @property
@@ -116,6 +120,7 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
            * 2015-08-01: :class:`AppServiceCertificateOrdersOperations<azure.mgmt.web.v2015_08_01.operations.AppServiceCertificateOrdersOperations>`
            * 2018-02-01: :class:`AppServiceCertificateOrdersOperations<azure.mgmt.web.v2018_02_01.operations.AppServiceCertificateOrdersOperations>`
            * 2019-08-01: :class:`AppServiceCertificateOrdersOperations<azure.mgmt.web.v2019_08_01.operations.AppServiceCertificateOrdersOperations>`
+           * 2020-06-01: :class:`AppServiceCertificateOrdersOperations<azure.mgmt.web.v2020_06_01.operations.AppServiceCertificateOrdersOperations>`
         """
         api_version = self._get_api_version('app_service_certificate_orders')
         if api_version == '2015-08-01':
@@ -124,6 +129,8 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
             from .v2018_02_01.operations import AppServiceCertificateOrdersOperations as OperationClass
         elif api_version == '2019-08-01':
             from .v2019_08_01.operations import AppServiceCertificateOrdersOperations as OperationClass
+        elif api_version == '2020-06-01':
+            from .v2020_06_01.operations import AppServiceCertificateOrdersOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -135,6 +142,7 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
            * 2016-09-01: :class:`AppServiceEnvironmentsOperations<azure.mgmt.web.v2016_09_01.operations.AppServiceEnvironmentsOperations>`
            * 2018-02-01: :class:`AppServiceEnvironmentsOperations<azure.mgmt.web.v2018_02_01.operations.AppServiceEnvironmentsOperations>`
            * 2019-08-01: :class:`AppServiceEnvironmentsOperations<azure.mgmt.web.v2019_08_01.operations.AppServiceEnvironmentsOperations>`
+           * 2020-06-01: :class:`AppServiceEnvironmentsOperations<azure.mgmt.web.v2020_06_01.operations.AppServiceEnvironmentsOperations>`
         """
         api_version = self._get_api_version('app_service_environments')
         if api_version == '2016-09-01':
@@ -143,6 +151,8 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
             from .v2018_02_01.operations import AppServiceEnvironmentsOperations as OperationClass
         elif api_version == '2019-08-01':
             from .v2019_08_01.operations import AppServiceEnvironmentsOperations as OperationClass
+        elif api_version == '2020-06-01':
+            from .v2020_06_01.operations import AppServiceEnvironmentsOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -154,6 +164,7 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
            * 2016-09-01: :class:`AppServicePlansOperations<azure.mgmt.web.v2016_09_01.operations.AppServicePlansOperations>`
            * 2018-02-01: :class:`AppServicePlansOperations<azure.mgmt.web.v2018_02_01.operations.AppServicePlansOperations>`
            * 2019-08-01: :class:`AppServicePlansOperations<azure.mgmt.web.v2019_08_01.operations.AppServicePlansOperations>`
+           * 2020-06-01: :class:`AppServicePlansOperations<azure.mgmt.web.v2020_06_01.operations.AppServicePlansOperations>`
         """
         api_version = self._get_api_version('app_service_plans')
         if api_version == '2016-09-01':
@@ -162,6 +173,8 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
             from .v2018_02_01.operations import AppServicePlansOperations as OperationClass
         elif api_version == '2019-08-01':
             from .v2019_08_01.operations import AppServicePlansOperations as OperationClass
+        elif api_version == '2020-06-01':
+            from .v2020_06_01.operations import AppServicePlansOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -186,6 +199,7 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
            * 2015-08-01: :class:`CertificateRegistrationProviderOperations<azure.mgmt.web.v2015_08_01.operations.CertificateRegistrationProviderOperations>`
            * 2018-02-01: :class:`CertificateRegistrationProviderOperations<azure.mgmt.web.v2018_02_01.operations.CertificateRegistrationProviderOperations>`
            * 2019-08-01: :class:`CertificateRegistrationProviderOperations<azure.mgmt.web.v2019_08_01.operations.CertificateRegistrationProviderOperations>`
+           * 2020-06-01: :class:`CertificateRegistrationProviderOperations<azure.mgmt.web.v2020_06_01.operations.CertificateRegistrationProviderOperations>`
         """
         api_version = self._get_api_version('certificate_registration_provider')
         if api_version == '2015-08-01':
@@ -194,6 +208,8 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
             from .v2018_02_01.operations import CertificateRegistrationProviderOperations as OperationClass
         elif api_version == '2019-08-01':
             from .v2019_08_01.operations import CertificateRegistrationProviderOperations as OperationClass
+        elif api_version == '2020-06-01':
+            from .v2020_06_01.operations import CertificateRegistrationProviderOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -206,6 +222,7 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
            * 2018-02-01: :class:`CertificatesOperations<azure.mgmt.web.v2018_02_01.operations.CertificatesOperations>`
            * 2018-11-01: :class:`CertificatesOperations<azure.mgmt.web.v2018_11_01.operations.CertificatesOperations>`
            * 2019-08-01: :class:`CertificatesOperations<azure.mgmt.web.v2019_08_01.operations.CertificatesOperations>`
+           * 2020-06-01: :class:`CertificatesOperations<azure.mgmt.web.v2020_06_01.operations.CertificatesOperations>`
         """
         api_version = self._get_api_version('certificates')
         if api_version == '2016-03-01':
@@ -216,6 +233,8 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
             from .v2018_11_01.operations import CertificatesOperations as OperationClass
         elif api_version == '2019-08-01':
             from .v2019_08_01.operations import CertificatesOperations as OperationClass
+        elif api_version == '2020-06-01':
+            from .v2020_06_01.operations import CertificatesOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -227,6 +246,7 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
            * 2016-03-01: :class:`DeletedWebAppsOperations<azure.mgmt.web.v2016_03_01.operations.DeletedWebAppsOperations>`
            * 2018-02-01: :class:`DeletedWebAppsOperations<azure.mgmt.web.v2018_02_01.operations.DeletedWebAppsOperations>`
            * 2019-08-01: :class:`DeletedWebAppsOperations<azure.mgmt.web.v2019_08_01.operations.DeletedWebAppsOperations>`
+           * 2020-06-01: :class:`DeletedWebAppsOperations<azure.mgmt.web.v2020_06_01.operations.DeletedWebAppsOperations>`
         """
         api_version = self._get_api_version('deleted_web_apps')
         if api_version == '2016-03-01':
@@ -235,6 +255,8 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
             from .v2018_02_01.operations import DeletedWebAppsOperations as OperationClass
         elif api_version == '2019-08-01':
             from .v2019_08_01.operations import DeletedWebAppsOperations as OperationClass
+        elif api_version == '2020-06-01':
+            from .v2020_06_01.operations import DeletedWebAppsOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -246,6 +268,7 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
            * 2016-03-01: :class:`DiagnosticsOperations<azure.mgmt.web.v2016_03_01.operations.DiagnosticsOperations>`
            * 2018-02-01: :class:`DiagnosticsOperations<azure.mgmt.web.v2018_02_01.operations.DiagnosticsOperations>`
            * 2019-08-01: :class:`DiagnosticsOperations<azure.mgmt.web.v2019_08_01.operations.DiagnosticsOperations>`
+           * 2020-06-01: :class:`DiagnosticsOperations<azure.mgmt.web.v2020_06_01.operations.DiagnosticsOperations>`
         """
         api_version = self._get_api_version('diagnostics')
         if api_version == '2016-03-01':
@@ -254,6 +277,8 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
             from .v2018_02_01.operations import DiagnosticsOperations as OperationClass
         elif api_version == '2019-08-01':
             from .v2019_08_01.operations import DiagnosticsOperations as OperationClass
+        elif api_version == '2020-06-01':
+            from .v2020_06_01.operations import DiagnosticsOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -265,6 +290,7 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
            * 2015-04-01: :class:`DomainRegistrationProviderOperations<azure.mgmt.web.v2015_04_01.operations.DomainRegistrationProviderOperations>`
            * 2018-02-01: :class:`DomainRegistrationProviderOperations<azure.mgmt.web.v2018_02_01.operations.DomainRegistrationProviderOperations>`
            * 2019-08-01: :class:`DomainRegistrationProviderOperations<azure.mgmt.web.v2019_08_01.operations.DomainRegistrationProviderOperations>`
+           * 2020-06-01: :class:`DomainRegistrationProviderOperations<azure.mgmt.web.v2020_06_01.operations.DomainRegistrationProviderOperations>`
         """
         api_version = self._get_api_version('domain_registration_provider')
         if api_version == '2015-04-01':
@@ -273,6 +299,8 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
             from .v2018_02_01.operations import DomainRegistrationProviderOperations as OperationClass
         elif api_version == '2019-08-01':
             from .v2019_08_01.operations import DomainRegistrationProviderOperations as OperationClass
+        elif api_version == '2020-06-01':
+            from .v2020_06_01.operations import DomainRegistrationProviderOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -284,6 +312,7 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
            * 2015-04-01: :class:`DomainsOperations<azure.mgmt.web.v2015_04_01.operations.DomainsOperations>`
            * 2018-02-01: :class:`DomainsOperations<azure.mgmt.web.v2018_02_01.operations.DomainsOperations>`
            * 2019-08-01: :class:`DomainsOperations<azure.mgmt.web.v2019_08_01.operations.DomainsOperations>`
+           * 2020-06-01: :class:`DomainsOperations<azure.mgmt.web.v2020_06_01.operations.DomainsOperations>`
         """
         api_version = self._get_api_version('domains')
         if api_version == '2015-04-01':
@@ -292,6 +321,8 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
             from .v2018_02_01.operations import DomainsOperations as OperationClass
         elif api_version == '2019-08-01':
             from .v2019_08_01.operations import DomainsOperations as OperationClass
+        elif api_version == '2020-06-01':
+            from .v2020_06_01.operations import DomainsOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -300,11 +331,11 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
     def kube_environments(self):
         """Instance depends on the API version:
 
-           * 2019-08-01: :class:`KubeEnvironmentsOperations<azure.mgmt.web.v2019_08_01.operations.KubeEnvironmentsOperations>`
+           * 2020-06-01: :class:`KubeEnvironmentsOperations<azure.mgmt.web.v2020_06_01.operations.KubeEnvironmentsOperations>`
         """
         api_version = self._get_api_version('kube_environments')
-        if api_version == '2019-08-01':
-            from .v2019_08_01.operations import KubeEnvironmentsOperations as OperationClass
+        if api_version == '2020-06-01':
+            from .v2020_06_01.operations import KubeEnvironmentsOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -316,6 +347,7 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
            * 2016-03-01: :class:`ProviderOperations<azure.mgmt.web.v2016_03_01.operations.ProviderOperations>`
            * 2018-02-01: :class:`ProviderOperations<azure.mgmt.web.v2018_02_01.operations.ProviderOperations>`
            * 2019-08-01: :class:`ProviderOperations<azure.mgmt.web.v2019_08_01.operations.ProviderOperations>`
+           * 2020-06-01: :class:`ProviderOperations<azure.mgmt.web.v2020_06_01.operations.ProviderOperations>`
         """
         api_version = self._get_api_version('provider')
         if api_version == '2016-03-01':
@@ -324,6 +356,8 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
             from .v2018_02_01.operations import ProviderOperations as OperationClass
         elif api_version == '2019-08-01':
             from .v2019_08_01.operations import ProviderOperations as OperationClass
+        elif api_version == '2020-06-01':
+            from .v2020_06_01.operations import ProviderOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -335,6 +369,7 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
            * 2016-03-01: :class:`RecommendationsOperations<azure.mgmt.web.v2016_03_01.operations.RecommendationsOperations>`
            * 2018-02-01: :class:`RecommendationsOperations<azure.mgmt.web.v2018_02_01.operations.RecommendationsOperations>`
            * 2019-08-01: :class:`RecommendationsOperations<azure.mgmt.web.v2019_08_01.operations.RecommendationsOperations>`
+           * 2020-06-01: :class:`RecommendationsOperations<azure.mgmt.web.v2020_06_01.operations.RecommendationsOperations>`
         """
         api_version = self._get_api_version('recommendations')
         if api_version == '2016-03-01':
@@ -343,6 +378,8 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
             from .v2018_02_01.operations import RecommendationsOperations as OperationClass
         elif api_version == '2019-08-01':
             from .v2019_08_01.operations import RecommendationsOperations as OperationClass
+        elif api_version == '2020-06-01':
+            from .v2020_06_01.operations import RecommendationsOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -354,6 +391,7 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
            * 2016-03-01: :class:`ResourceHealthMetadataOperations<azure.mgmt.web.v2016_03_01.operations.ResourceHealthMetadataOperations>`
            * 2018-02-01: :class:`ResourceHealthMetadataOperations<azure.mgmt.web.v2018_02_01.operations.ResourceHealthMetadataOperations>`
            * 2019-08-01: :class:`ResourceHealthMetadataOperations<azure.mgmt.web.v2019_08_01.operations.ResourceHealthMetadataOperations>`
+           * 2020-06-01: :class:`ResourceHealthMetadataOperations<azure.mgmt.web.v2020_06_01.operations.ResourceHealthMetadataOperations>`
         """
         api_version = self._get_api_version('resource_health_metadata')
         if api_version == '2016-03-01':
@@ -362,6 +400,8 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
             from .v2018_02_01.operations import ResourceHealthMetadataOperations as OperationClass
         elif api_version == '2019-08-01':
             from .v2019_08_01.operations import ResourceHealthMetadataOperations as OperationClass
+        elif api_version == '2020-06-01':
+            from .v2020_06_01.operations import ResourceHealthMetadataOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -371,10 +411,13 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
         """Instance depends on the API version:
 
            * 2019-08-01: :class:`StaticSitesOperations<azure.mgmt.web.v2019_08_01.operations.StaticSitesOperations>`
+           * 2020-06-01: :class:`StaticSitesOperations<azure.mgmt.web.v2020_06_01.operations.StaticSitesOperations>`
         """
         api_version = self._get_api_version('static_sites')
         if api_version == '2019-08-01':
             from .v2019_08_01.operations import StaticSitesOperations as OperationClass
+        elif api_version == '2020-06-01':
+            from .v2020_06_01.operations import StaticSitesOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -386,6 +429,7 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
            * 2015-04-01: :class:`TopLevelDomainsOperations<azure.mgmt.web.v2015_04_01.operations.TopLevelDomainsOperations>`
            * 2018-02-01: :class:`TopLevelDomainsOperations<azure.mgmt.web.v2018_02_01.operations.TopLevelDomainsOperations>`
            * 2019-08-01: :class:`TopLevelDomainsOperations<azure.mgmt.web.v2019_08_01.operations.TopLevelDomainsOperations>`
+           * 2020-06-01: :class:`TopLevelDomainsOperations<azure.mgmt.web.v2020_06_01.operations.TopLevelDomainsOperations>`
         """
         api_version = self._get_api_version('top_level_domains')
         if api_version == '2015-04-01':
@@ -394,6 +438,8 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
             from .v2018_02_01.operations import TopLevelDomainsOperations as OperationClass
         elif api_version == '2019-08-01':
             from .v2019_08_01.operations import TopLevelDomainsOperations as OperationClass
+        elif api_version == '2020-06-01':
+            from .v2020_06_01.operations import TopLevelDomainsOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
@@ -405,6 +451,7 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
            * 2016-08-01: :class:`WebAppsOperations<azure.mgmt.web.v2016_08_01.operations.WebAppsOperations>`
            * 2018-02-01: :class:`WebAppsOperations<azure.mgmt.web.v2018_02_01.operations.WebAppsOperations>`
            * 2019-08-01: :class:`WebAppsOperations<azure.mgmt.web.v2019_08_01.operations.WebAppsOperations>`
+           * 2020-06-01: :class:`WebAppsOperations<azure.mgmt.web.v2020_06_01.operations.WebAppsOperations>`
         """
         api_version = self._get_api_version('web_apps')
         if api_version == '2016-08-01':
@@ -413,6 +460,8 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, MultiApiCl
             from .v2018_02_01.operations import WebAppsOperations as OperationClass
         elif api_version == '2019-08-01':
             from .v2019_08_01.operations import WebAppsOperations as OperationClass
+        elif api_version == '2020-06-01':
+            from .v2020_06_01.operations import WebAppsOperations as OperationClass
         else:
             raise NotImplementedError("APIVersion {} is not available".format(api_version))
         return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))

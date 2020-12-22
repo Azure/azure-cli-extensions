@@ -22,6 +22,7 @@ from .operations import DomainRegistrationProviderOperations
 from .operations import CertificatesOperations
 from .operations import DeletedWebAppsOperations
 from .operations import DiagnosticsOperations
+from .operations import KubeEnvironmentsOperations
 from .operations import ProviderOperations
 from .operations import RecommendationsOperations
 from .operations import WebAppsOperations
@@ -39,35 +40,37 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, SDKClient)
     :vartype config: WebSiteManagementClientConfiguration
 
     :ivar app_service_certificate_orders: AppServiceCertificateOrders operations
-    :vartype app_service_certificate_orders: azure.mgmt.web.v2019_08_01.operations.AppServiceCertificateOrdersOperations
+    :vartype app_service_certificate_orders: azure.mgmt.web.v2020_06_01.operations.AppServiceCertificateOrdersOperations
     :ivar certificate_registration_provider: CertificateRegistrationProvider operations
-    :vartype certificate_registration_provider: azure.mgmt.web.v2019_08_01.operations.CertificateRegistrationProviderOperations
+    :vartype certificate_registration_provider: azure.mgmt.web.v2020_06_01.operations.CertificateRegistrationProviderOperations
     :ivar domains: Domains operations
-    :vartype domains: azure.mgmt.web.v2019_08_01.operations.DomainsOperations
+    :vartype domains: azure.mgmt.web.v2020_06_01.operations.DomainsOperations
     :ivar top_level_domains: TopLevelDomains operations
-    :vartype top_level_domains: azure.mgmt.web.v2019_08_01.operations.TopLevelDomainsOperations
+    :vartype top_level_domains: azure.mgmt.web.v2020_06_01.operations.TopLevelDomainsOperations
     :ivar domain_registration_provider: DomainRegistrationProvider operations
-    :vartype domain_registration_provider: azure.mgmt.web.v2019_08_01.operations.DomainRegistrationProviderOperations
+    :vartype domain_registration_provider: azure.mgmt.web.v2020_06_01.operations.DomainRegistrationProviderOperations
     :ivar certificates: Certificates operations
-    :vartype certificates: azure.mgmt.web.v2019_08_01.operations.CertificatesOperations
+    :vartype certificates: azure.mgmt.web.v2020_06_01.operations.CertificatesOperations
     :ivar deleted_web_apps: DeletedWebApps operations
-    :vartype deleted_web_apps: azure.mgmt.web.v2019_08_01.operations.DeletedWebAppsOperations
+    :vartype deleted_web_apps: azure.mgmt.web.v2020_06_01.operations.DeletedWebAppsOperations
     :ivar diagnostics: Diagnostics operations
-    :vartype diagnostics: azure.mgmt.web.v2019_08_01.operations.DiagnosticsOperations
+    :vartype diagnostics: azure.mgmt.web.v2020_06_01.operations.DiagnosticsOperations
+    :ivar kube_environments: KubeEnvironments operations
+    :vartype kube_environments: azure.mgmt.web.v2020_06_01.operations.KubeEnvironmentsOperations
     :ivar provider: Provider operations
-    :vartype provider: azure.mgmt.web.v2019_08_01.operations.ProviderOperations
+    :vartype provider: azure.mgmt.web.v2020_06_01.operations.ProviderOperations
     :ivar recommendations: Recommendations operations
-    :vartype recommendations: azure.mgmt.web.v2019_08_01.operations.RecommendationsOperations
+    :vartype recommendations: azure.mgmt.web.v2020_06_01.operations.RecommendationsOperations
     :ivar web_apps: WebApps operations
-    :vartype web_apps: azure.mgmt.web.v2019_08_01.operations.WebAppsOperations
+    :vartype web_apps: azure.mgmt.web.v2020_06_01.operations.WebAppsOperations
     :ivar static_sites: StaticSites operations
-    :vartype static_sites: azure.mgmt.web.v2019_08_01.operations.StaticSitesOperations
+    :vartype static_sites: azure.mgmt.web.v2020_06_01.operations.StaticSitesOperations
     :ivar app_service_environments: AppServiceEnvironments operations
-    :vartype app_service_environments: azure.mgmt.web.v2019_08_01.operations.AppServiceEnvironmentsOperations
+    :vartype app_service_environments: azure.mgmt.web.v2020_06_01.operations.AppServiceEnvironmentsOperations
     :ivar app_service_plans: AppServicePlans operations
-    :vartype app_service_plans: azure.mgmt.web.v2019_08_01.operations.AppServicePlansOperations
+    :vartype app_service_plans: azure.mgmt.web.v2020_06_01.operations.AppServicePlansOperations
     :ivar resource_health_metadata: ResourceHealthMetadata operations
-    :vartype resource_health_metadata: azure.mgmt.web.v2019_08_01.operations.ResourceHealthMetadataOperations
+    :vartype resource_health_metadata: azure.mgmt.web.v2020_06_01.operations.ResourceHealthMetadataOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -85,7 +88,7 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, SDKClient)
         super(WebSiteManagementClient, self).__init__(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
-        self.api_version = '2019-08-01'
+        self.api_version = '2020-06-01'
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
@@ -104,6 +107,8 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, SDKClient)
         self.deleted_web_apps = DeletedWebAppsOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.diagnostics = DiagnosticsOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.kube_environments = KubeEnvironmentsOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.provider = ProviderOperations(
             self._client, self.config, self._serialize, self._deserialize)

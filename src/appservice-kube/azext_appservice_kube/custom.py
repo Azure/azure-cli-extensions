@@ -65,62 +65,28 @@ def create_kube_environment(cmd,
                             resource_group_name,
                             aks=None,
                             static_ip=None,
-                            client_id=None,
-                            client_secret=None,
-                            node_count=3,
-                            max_count=3,
                             location=None,
-                            nodepool_name='nodepool1',
-                            node_vm_size='Standard_DS2_v2',
-                            network_plugin='kubenet',
                             internal_load_balancing=False,
-                            subnet=None,
-                            vnet_name=None,
-                            dns_service_ip=None,
-                            service_cidr=None,
-                            docker_bridge_cidr=None,
-                            workspace_id=None,
                             tags=None,
                             no_wait=False):
 
-    KubeEnvironment, KubeNodePool = cmd.get_models('KubeEnvironment', 'KubeNodePool')
+    KubeEnvironment = cmd.get_models('KubeEnvironment')
     location = location or _get_location_from_resource_group(cmd.cli_ctx, resource_group_name)
-
-    if subnet is not None:
-        subnet_id = validate_subnet_id(cmd.cli_ctx, subnet, vnet_name, resource_group_name)
-    else:
-        subnet_id = None
 
     if aks is not None:
         aks_id = validate_aks_id(cmd.cli_ctx, aks, resource_group_name)
     else:
         aks_id = None
 
-    if aks_id and not static_ip:
-        raise CLIError('Usage error: --static-ip must be specified when using --aks')
+    if not internal_load_balancing and not static_ip:
+        raise CLIError('Usage error: --static-ip must be specified when not using --internal_load_balancing')
 
     # TODO: add some verifications
-    # TODO: support creating service principal automatically
-
-    node_pool_def = KubeNodePool(
-        vm_size=node_vm_size,
-        node_count=node_count,
-        max_node_count=max_count,
-        name=nodepool_name)
 
     kube_def = KubeEnvironment(
         location=location,
         tags=tags,
-        node_pools=[node_pool_def],
         internal_load_balancer_enabled=internal_load_balancing,
-        vnet_subnet_id=subnet_id,
-        network_plugin=network_plugin,
-        service_cidr=service_cidr,
-        dns_service_ip=dns_service_ip,
-        docker_bridge_cidr=docker_bridge_cidr,
-        service_principal_client_id=client_id,
-        service_principal_client_secret=client_secret,
-        log_analytics_workspace_id=workspace_id,
         aks_resource_id=aks_id,
         static_ip=static_ip)
 
@@ -136,9 +102,6 @@ def list_kube_environments(client, resource_group_name=None):
 def update_kube_environment(cmd,
                             kube_name,
                             resource_group_name,
-                            client_id=None,
-                            client_secret=None,
-                            workspace_id=None,
                             tags=None,
                             no_wait=False):
     raise CLIError("Update is not yet supported for Kubernetes Environments.")

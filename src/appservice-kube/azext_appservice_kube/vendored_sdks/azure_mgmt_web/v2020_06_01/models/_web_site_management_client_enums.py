@@ -93,6 +93,7 @@ class IpFilterTag(str, Enum):
 
     default = "Default"
     xff_proxy = "XffProxy"
+    service_tag = "ServiceTag"
 
 
 class AutoHealActionType(str, Enum):
@@ -190,6 +191,12 @@ class SiteAvailabilityState(str, Enum):
     disaster_recovery_mode = "DisasterRecoveryMode"
 
 
+class ClientCertMode(str, Enum):
+
+    required = "Required"
+    optional = "Optional"
+
+
 class RedundancyMode(str, Enum):
 
     none = "None"
@@ -269,11 +276,12 @@ class HostingEnvironmentStatus(str, Enum):
     deleting = "Deleting"
 
 
-class InternalLoadBalancingMode(str, Enum):
+class LoadBalancingMode(str, Enum):
 
     none = "None"
     web = "Web"
     publishing = "Publishing"
+    web_publishing = "Web,Publishing"
 
 
 class ComputeModeOptions(str, Enum):
@@ -337,6 +345,32 @@ class RenderingType(str, Enum):
     time_series_per_instance = "TimeSeriesPerInstance"
 
 
+class StorageType(str, Enum):
+
+    local_node = "LocalNode"
+    network_file_system = "NetworkFileSystem"
+
+
+class FrontEndServiceType(str, Enum):
+
+    node_port = "NodePort"
+    load_balancer = "LoadBalancer"
+
+
+class KubeEnvironmentProvisioningState(str, Enum):
+
+    succeeded = "Succeeded"
+    failed = "Failed"
+    canceled = "Canceled"
+    waiting = "Waiting"
+    initialization_in_progress = "InitializationInProgress"
+    infrastructure_setup_in_progress = "InfrastructureSetupInProgress"
+    infrastructure_setup_complete = "InfrastructureSetupComplete"
+    scheduled_for_delete = "ScheduledForDelete"
+    upgrade_requested = "UpgradeRequested"
+    upgrade_failed = "UpgradeFailed"
+
+
 class ResourceScopeType(str, Enum):
 
     server_farm = "ServerFarm"
@@ -393,29 +427,6 @@ class ValidateResourceTypes(str, Enum):
 
     server_farm = "ServerFarm"
     site = "Site"
-
-
-class ResolveStatus(str, Enum):
-
-    initialized = "Initialized"
-    resolved = "Resolved"
-    invalid_syntax = "InvalidSyntax"
-    msi_not_enabled = "MSINotEnabled"
-    vault_not_found = "VaultNotFound"
-    secret_not_found = "SecretNotFound"
-    secret_version_not_found = "SecretVersionNotFound"
-    access_to_key_vault_denied = "AccessToKeyVaultDenied"
-    other_reasons = "OtherReasons"
-
-
-class ConfigReferenceSource(str, Enum):
-
-    key_vault = "KeyVault"
-
-
-class ConfigReferenceLocation(str, Enum):
-
-    application_setting = "ApplicationSetting"
 
 
 class LogLevel(str, Enum):
@@ -483,6 +494,12 @@ class WebJobType(str, Enum):
     triggered = "Triggered"
 
 
+class CookieExpirationConvention(str, Enum):
+
+    fixed_time = "FixedTime"
+    identity_provider_derived = "IdentityProviderDerived"
+
+
 class PublishingProfileFormat(str, Enum):
 
     file_zilla3 = "FileZilla3"
@@ -495,6 +512,26 @@ class DnsVerificationTestResult(str, Enum):
     passed = "Passed"
     failed = "Failed"
     skipped = "Skipped"
+
+
+class ClientCredentialMethod(str, Enum):
+
+    client_secret_post = "ClientSecretPost"
+
+
+class ForwardProxyConvention(str, Enum):
+
+    no_proxy = "NoProxy"
+    standard = "Standard"
+    custom = "Custom"
+
+
+class UnauthenticatedClientActionV2(str, Enum):
+
+    redirect_to_login_page = "RedirectToLoginPage"
+    allow_anonymous = "AllowAnonymous"
+    return401 = "Return401"
+    return403 = "Return403"
 
 
 class MSDeployLogEntryType(str, Enum):
@@ -548,6 +585,7 @@ class BuiltInAuthenticationProvider(str, Enum):
     google = "Google"
     microsoft_account = "MicrosoftAccount"
     twitter = "Twitter"
+    github = "Github"
 
 
 class CloneAbilityResult(str, Enum):

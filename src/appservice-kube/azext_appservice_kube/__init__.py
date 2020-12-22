@@ -14,7 +14,7 @@ class AppserviceCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        register_resource_type('latest', CUSTOM_MGMT_APPSERVICE, '2019-08-01')
+        register_resource_type('latest', CUSTOM_MGMT_APPSERVICE, '2020-06-01')
 
         appservice_kube_custom = CliCommandType(
             operations_tmpl='azext_appservice_kube.custom#{}')

@@ -17,6 +17,7 @@ from ._domain_registration_provider_operations import DomainRegistrationProvider
 from ._certificates_operations import CertificatesOperations
 from ._deleted_web_apps_operations import DeletedWebAppsOperations
 from ._diagnostics_operations import DiagnosticsOperations
+from ._kube_environments_operations import KubeEnvironmentsOperations
 from ._provider_operations import ProviderOperations
 from ._recommendations_operations import RecommendationsOperations
 from ._web_apps_operations import WebAppsOperations
@@ -35,6 +36,7 @@ __all__ = [
     'CertificatesOperations',
     'DeletedWebAppsOperations',
     'DiagnosticsOperations',
+    'KubeEnvironmentsOperations',
     'ProviderOperations',
     'RecommendationsOperations',
     'WebAppsOperations',
