@@ -255,11 +255,22 @@ helps['timeseriesinsights event-source iothub'] = """
 helps['timeseriesinsights event-source iothub create'] = """
     type: command
     short-summary: "Create an event source under the specified environment."
+    examples:
+      - name: CreateIotHubEventSource
+        text: |-
+               az timeseriesinsights event-source iothub create -g "rg" --environment-name "env1" --name "eventsource" \
+--consumer-group-name "consumer-group" --iot-hub-name "iothub" \
+--key-name "key-name" --shared-access-key "someSecretvalue" --event-source-resource-id "resource-id"
 """
 
 helps['timeseriesinsights event-source iothub update'] = """
     type: command
     short-summary: "Update an event source under the specified environment."
+    examples:
+      - name: UpdateIotHubEventSource
+        text: |-
+               az timeseriesinsights event-source iothub update -g "rg" --environment-name "env1" --name "eventsource" \
+ --timestamp-property-name timestampProp --shared-access-key "someSecretvalue" --tags test=tag
 """
 
 helps['timeseriesinsights event-source delete'] = """
