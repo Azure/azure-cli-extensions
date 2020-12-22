@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.1.7
+++++++
+* Update kube environments SDK
+* Delete old parameters no longer in API
+
 0.1.6
 ++++++
 * Update SDK to fix appservice kube delete command
