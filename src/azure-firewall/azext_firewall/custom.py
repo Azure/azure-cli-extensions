@@ -67,7 +67,8 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                           tags=None, zones=None, private_ranges=None, firewall_policy=None,
                           virtual_hub=None, sku=None,
                           dns_servers=None, enable_dns_proxy=None,
-                          threat_intel_mode=None, hub_public_ip_count=None, allow_active_ftp=None):
+                          threat_intel_mode=None, hub_public_ip_count=None, allow_active_ftp=None,
+                          intrusion_detection_mode=None):
     if firewall_policy and any([enable_dns_proxy, dns_servers]):
         raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
     if sku and sku.lower() == 'azfw_hub' and not all([virtual_hub, hub_public_ip_count]):
@@ -116,6 +117,20 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
         if firewall.additional_properties is None:
             firewall.additional_properties = {}
         firewall.additional_properties['Network.FTP.AllowActiveFTP'] = "true"
+
+    if cmd.supported_api_version(min_api='2020-07-01'):
+        if intrusion_detection_mode is not None:
+
+            print('-' * 100)
+            print(intrusion_detection_mode)
+
+            (FirewallPolicyIntrusionDetection,
+             FirewallPolicyIntrusionDetectionConfiguration) = \
+                 cmd.get_models('FirewallPolicyIntrusionDetection', 'FirewallPolicyIntrusionDetectionConfiguration')
+            firewall.intrusion_detection = FirewallPolicyIntrusionDetection(
+                mode=intrusion_detection_mode,
+                configuration=FirewallPolicyIntrusionDetectionConfiguration()
+            )
 
     return client.create_or_update(resource_group_name, azure_firewall_name, firewall)
 

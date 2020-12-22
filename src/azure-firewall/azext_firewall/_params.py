@@ -26,9 +26,9 @@ from ._validators import (
 def load_arguments(self, _):
 
     AzureFirewallNetworkRuleProtocol, AzureFirewallRCActionType, \
-        AzureFirewallNatRCActionType, FirewallPolicySkuTier = \
+        AzureFirewallNatRCActionType, FirewallPolicySkuTier, FirewallPolicyIntrusionDetectionStateType = \
         self.get_models('AzureFirewallNetworkRuleProtocol', 'AzureFirewallRCActionType',
-                        'AzureFirewallNatRCActionType', 'FirewallPolicySkuTier')
+                        'AzureFirewallNatRCActionType', 'FirewallPolicySkuTier', 'FirewallPolicyIntrusionDetectionStateType')
 
     firewall_name_type = CLIArgumentType(options_list=['--firewall-name', '-f'], metavar='NAME', help='Azure Firewall name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/azureFirewalls'))
     collection_name_type = CLIArgumentType(options_list=['--collection-name', '-c'], help='Name of the rule collection.', id_part='child_name_1')
@@ -75,6 +75,13 @@ def load_arguments(self, _):
     with self.argument_context('network firewall', arg_group='DNS') as c:
         c.argument('dns_servers', nargs='+', help='Space-separated list of DNS server IP addresses')
         c.argument('enable_dns_proxy', arg_type=get_three_state_flag(), help='Enable DNS Proxy')
+
+    with self.argument_context('network firewall', arg_group='Intrustion Detection') as c:
+        c.argument('intrusion_detection_mode',
+                   is_preview=True,
+                   options_list=['--detection-mode'],
+                   arg_type=get_enum_type(FirewallPolicyIntrusionDetectionStateType),
+                   help='Intrusion detection general state')
 
     with self.argument_context('network firewall threat-intel-allowlist') as c:
         c.argument('ip_addresses', nargs='+', validator=process_threat_intel_allowlist_ip_addresses, help='Space-separated list of IPv4 addresses.')
@@ -194,8 +201,8 @@ def load_arguments(self, _):
 
     with self.argument_context('network firewall policy rule-collection-group collection', arg_group='Application Rule') as c:
         c.argument('target_fqdns', nargs='+', help='Space-separated list of FQDNs for this rule.', validator=validate_rule_group_collection)
-        c.argument('target_urls', nargs='+', help='Space-separated list of target urls for this rule')
-        c.argument('enable_terminate_tls', arg_type=get_three_state_flag(), help='Enable flag to terminate TLS connection for this rule')
+        c.argument('target_urls', nargs='+', help='Space-separated list of target urls for this rule', is_preview=True)
+        c.argument('enable_terminate_tls', arg_type=get_three_state_flag(), help='Enable flag to terminate TLS connection for this rule', is_preview=True)
         c.argument('fqdn_tags', nargs='+', help='Space-separated list of FQDN tags for this rule.', validator=validate_rule_group_collection)
         c.argument('protocols', nargs='+', validator=validate_application_rule_protocols, help='Space-separated list of protocols and port numbers to use, in PROTOCOL=PORT format. Valid protocols are Http, Https.')
 
