@@ -181,15 +181,15 @@ def load_arguments(self, _):
         c.argument('signature_mode', options_list=['--mode'], help='The signature state', arg_type=get_enum_type(FirewallPolicyIntrusionDetectionStateType))
         c.argument('signature_id', help='Signature id')
 
-    with self.argument_context('network firewall policy intrusion-detection', min_api='2020-07-01', arg_group='Traffic Bypass') as c:
-        c.argument('bypass_rule_name', help='Name of the bypass traffic rule')
-        c.argument('bypass_rule_description', help='Description of the bypass traffic rule')
-        c.argument('bypass_rule_protocol', arg_type=get_enum_type(FirewallPolicyIntrusionDetectionProtocol), help='The rule bypass protocol')
-        c.argument('bypass_rule_source_addresses', nargs='+', help='Space-separated list of source IP addresses or ranges for this rule')
-        c.argument('bypass_rule_destination_addresses', nargs='+', help='Space-separated list of destination IP addresses or ranges for this rule')
-        c.argument('bypass_rule_destination_ports', nargs='+', help='Space-separated list of destination ports or ranges')
-        c.argument('bypass_rule_source_ip_groups', nargs='+', help='Space-separated list of source IpGroups for this rule')
-        c.argument('bypass_rule_destination_ip_groups', nargs='+', help='Space-separated list of destination IpGroups for this rule')
+    with self.argument_context('network firewall policy intrusion-detection', min_api='2020-07-01', arg_group='Traffic Bypass Rule') as c:
+        c.argument('bypass_rule_name', options_list=['--rule-name'], help='Name of the bypass traffic rule')
+        c.argument('bypass_rule_description', options_list=['--rule-description'], help='Description of the bypass traffic rule')
+        c.argument('bypass_rule_protocol', options_list=['--rule-protocol'], arg_type=get_enum_type(FirewallPolicyIntrusionDetectionProtocol), help='The rule bypass protocol')
+        c.argument('bypass_rule_source_addresses', options_list=['--rule-src-addresses'], nargs='+', help='Space-separated list of source IP addresses or ranges for this rule')
+        c.argument('bypass_rule_destination_addresses', options_list=['--rule-dest-addresses'], nargs='+', help='Space-separated list of destination IP addresses or ranges for this rule')
+        c.argument('bypass_rule_destination_ports', options_list=['--rule-dest-ports'], nargs='+', help='Space-separated list of destination ports or ranges')
+        c.argument('bypass_rule_source_ip_groups', options_list=['--rule-src-ip-groups'], nargs='+', help='Space-separated list of source IpGroups for this rule')
+        c.argument('bypass_rule_destination_ip_groups', options_list=['--rule-dest-ip-groups'], nargs='+', help='Space-separated list of destination IpGroups for this rule')
 
     with self.argument_context('network firewall policy rule-collection-group') as c:
         c.argument('firewall_policy_name', options_list=['--policy-name'], help='The name of the Firewall Policy.')
