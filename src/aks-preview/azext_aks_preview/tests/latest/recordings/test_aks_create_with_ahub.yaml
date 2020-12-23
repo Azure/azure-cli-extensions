@@ -54,8 +54,8 @@ interactions:
       "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser", "ssh": {"publicKeys":
       [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC9UcFabPpTYCg1O8RxBb8fHSKj0mBQtC9Daee/uyFl+cR0ODv5RvMDPyR2HC1nTM3L7S/vvOjEXUZ8Xzrs7t4qJshpvIdCbrV8TWKObO92NOkLyGKOVMomyZtXXULVnhcjn6wekRExCMeh5FNSts2C+xiM2JsGaVpmfL7gjY79D/sCfqGpCv+YUAA02OEnnQDDDInh2zz73lg557xUiHyCIHWWVRxf9Lci8aFkUck97MirEM/dNSrLueBmh52gcm9f21bMve/QlQSdMov2nBY5KqONq8kKvw7MXI6xZvnPFYmDashIVWtYBHY/RBTpQkgN/tghuStNktL73TSWgE/P"}]}},
       "windowsProfile": {"adminUsername": "azureuser1", "adminPassword": "replace-Password1234$",
-      "licenseType": "Windows_Server"}, "servicePrincipalProfile": {"clientId": "c5470614-805b-46d4-a570-d87427b61d8d",
-      "secret": "yyyy"}, "addonProfiles": {}, "enableRBAC": true,
+      "licenseType": "Windows_Server"}, "servicePrincipalProfile": {"clientId": "00000000-0000-0000-0000-000000000001",
+      "secret": "fake-secret"}, "addonProfiles": {}, "enableRBAC": true,
       "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin": "azure",
       "outboundType": "loadBalancer", "loadBalancerSku": "standard"}}}'
     headers:
@@ -1274,7 +1274,7 @@ interactions:
       false, "name": "npwin"}], "linuxProfile": {"adminUsername": "azureuser", "ssh":
       {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC9UcFabPpTYCg1O8RxBb8fHSKj0mBQtC9Daee/uyFl+cR0ODv5RvMDPyR2HC1nTM3L7S/vvOjEXUZ8Xzrs7t4qJshpvIdCbrV8TWKObO92NOkLyGKOVMomyZtXXULVnhcjn6wekRExCMeh5FNSts2C+xiM2JsGaVpmfL7gjY79D/sCfqGpCv+YUAA02OEnnQDDDInh2zz73lg557xUiHyCIHWWVRxf9Lci8aFkUck97MirEM/dNSrLueBmh52gcm9f21bMve/QlQSdMov2nBY5KqONq8kKvw7MXI6xZvnPFYmDashIVWtYBHY/RBTpQkgN/tghuStNktL73TSWgE/P"}]}},
       "windowsProfile": {"adminUsername": "azureuser1", "licenseType": "None"}, "servicePrincipalProfile":
-      {"clientId": "c5470614-805b-46d4-a570-d87427b61d8d"}, "addonProfiles": {"KubeDashboard":
+      {"clientId": "00000000-0000-0000-0000-000000000001":
       {"enabled": true}}, "nodeResourceGroup": "MC_clitest000001_cliakstest000001_westus2",
       "enableRBAC": true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
       "azure", "serviceCidr": "10.0.0.0/16", "dnsServiceIP": "10.0.0.10", "dockerBridgeCidr":
