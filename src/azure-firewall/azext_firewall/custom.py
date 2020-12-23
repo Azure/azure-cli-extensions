@@ -590,7 +590,15 @@ def add_firewall_policy_intrusion_detection_config(cmd,
                                                    resource_group_name,
                                                    firewall_policy_name,
                                                    signature_id=None,
-                                                   signature_mode=None):
+                                                   signature_mode=None,
+                                                   bypass_rule_name=None,
+                                                   bypass_rule_description=None,
+                                                   bypass_rule_protocol=None,
+                                                   bypass_rule_source_addresses=None,
+                                                   bypass_rule_destination_addresses=None,
+                                                   bypass_rule_destination_ports=None,
+                                                   bypass_rule_source_ip_groups=None,
+                                                   bypass_rule_destination_ip_groups=None):
 
     from azure.cli.core.azclierror import RequiredArgumentMissingError, InvalidArgumentValueError
 
@@ -600,22 +608,41 @@ def add_firewall_policy_intrusion_detection_config(cmd,
     if firewall_policy.intrusion_detection is None:
         raise RequiredArgumentMissingError('Intrusion detection mode is not set. Setting it by update command first')
 
-    FirewallPolicyIntrusionDetectionSignatureSpecification = \
-        cmd.get_models('FirewallPolicyIntrusionDetectionSignatureSpecification')
-
     if signature_id is not None and signature_mode is not None:
         for overrided_signature in firewall_policy.intrusion_detection.configuration.signature_overrides:
             if overrided_signature.id == signature_id:
                 raise InvalidArgumentValueError(
                     'Signature ID {} exists. Delete it first or try update instead'.format(signature_id))
 
+        FirewallPolicyIntrusionDetectionSignatureSpecification = \
+            cmd.get_models('FirewallPolicyIntrusionDetectionSignatureSpecification')
         signature_override = FirewallPolicyIntrusionDetectionSignatureSpecification(
             id=signature_id,
             mode=signature_mode
         )
         firewall_policy.intrusion_detection.configuration.signature_overrides.append(signature_override)
 
-    return client.create_or_update(resource_group_name, firewall_policy_name, firewall_policy)
+    if bypass_rule_name is not None:
+        FirewallPolicyIntrusionDetectionBypassTrafficSpecifications = \
+            cmd.get_models('FirewallPolicyIntrusionDetectionBypassTrafficSpecifications')
+        bypass_traffic = FirewallPolicyIntrusionDetectionBypassTrafficSpecifications(
+            name=bypass_rule_name,
+            description=bypass_rule_description,
+            protocol=bypass_rule_protocol,
+            source_addresses=bypass_rule_source_addresses,
+            destination_addresses=bypass_rule_destination_addresses,
+            destination_ports=bypass_rule_destination_ports,
+            source_ip_groups=bypass_rule_source_ip_groups,
+            destination_ip_groups=bypass_rule_destination_ip_groups,
+        )
+        firewall_policy.intrusion_detection.configuration.bypass_traffic_settings.append(bypass_traffic)
+
+    result = sdk_no_wait(False,
+                         client.create_or_update,
+                         resource_group_name,
+                         firewall_policy_name,
+                         firewall_policy).result()
+    return result.intrusion_detection.configuration
 
 
 def list_firewall_policy_intrusion_detection_config(cmd, resource_group_name, firewall_policy_name):
@@ -631,7 +658,8 @@ def list_firewall_policy_intrusion_detection_config(cmd, resource_group_name, fi
 def remove_firewall_policy_intrusion_detection_config(cmd,
                                                       resource_group_name,
                                                       firewall_policy_name,
-                                                      signature_id=None):
+                                                      signature_id=None,
+                                                      bypass_rule_name=None):
     from azure.cli.core.azclierror import RequiredArgumentMissingError, InvalidArgumentValueError
 
     client = network_client_factory(cmd.cli_ctx).firewall_policies
@@ -647,7 +675,19 @@ def remove_firewall_policy_intrusion_detection_config(cmd,
             raise InvalidArgumentValueError("Signature ID {} doesn't exist".format(signature_id))
         firewall_policy.intrusion_detection.configuration.signature_overrides = new_signatures
 
-    return client.create_or_update(resource_group_name, firewall_policy_name, firewall_policy)
+    if bypass_rule_name is not None:
+        bypass_settings = firewall_policy.intrusion_detection.configuration.bypass_traffic_settings
+        new_bypass_settings = [s for s in bypass_settings if s.name != bypass_rule_name]
+        if len(bypass_settings) == len(new_bypass_settings):
+            raise InvalidArgumentValueError("Bypass rule with name {} doesn't exist".format(signature_id))
+        firewall_policy.intrusion_detection.configuration.bypass_traffic_settings = new_bypass_settings
+
+    result = sdk_no_wait(False,
+                         client.create_or_update,
+                         resource_group_name,
+                         firewall_policy_name,
+                         firewall_policy).result()
+    return result.intrusion_detection.configuration
 
 
 def create_azure_firewall_policy_rule_collection_group(cmd, resource_group_name, firewall_policy_name,
