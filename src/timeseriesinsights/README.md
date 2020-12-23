@@ -45,12 +45,22 @@ az tsi environment delete --name "env1" --resource-group "rg1"
 ```
 #### timeseriesinsights event-source
 ##### Event Hub Create
-```
-az tsi event-source eventhub create --environment-name "env1" --name "es1" --location westus --consumer-group-name "cgn" --event-hub-name "ehn" --event-source-resource-id "somePathInArm" --key-name "managementKey" --service-bus-namespace "sbn" --shared-access-key "someSecretvalue" --timestamp-property-name "someTimestampProperty" --resource-group "rg1"
+```sh
+ehns={eventhub_namespace}
+eh={eventhub_name}
+az eventhubs namespace create -g $rg -n $ehns
+es_resource_id=$(az eventhubs eventhub create -g $rg -n $eh --namespace-name $ehns --query id --output tsv)
+shared_access_key=$(az eventhubs namespace authorization-rule keys list -g $rg --namespace-name $ehns -n RootManageSharedAccessKey --query primaryKey --output tsv)
+
+az tsi event-source eventhub create --environment-name $env --name {es1} --location westus --consumer-group-name "cgn" --event-hub-name $eh --event-source-resource-id $es_resource_id --key-name RootManageSharedAccessKey --service-bus-namespace $ehns --shared-access-key $shared_access_key --timestamp-property-name {someTimestampProperty} --resource-group $rg
 ```
 ##### Iot Hub Create
-```
-az tsi event-source iothub create -g "rg" --environment-name "env1" --name "eventsource" --consumer-group-name "consumer-group" --iot-hub-name "iothub" --key-name "key-name" --shared-access-key "someSecretvalue" --event-source-resource-id "resource-id"
+```sh
+iothub={iothub_name}
+es_resource_id=$(az iot hub create -g $rg -n $iothub --query id --output tsv)
+shared_access_key=$(az iot hub policy list -g $rg --hub-name $iothub --query "[?keyName=='iothubowner'].primaryKey" --output tsv)
+
+az tsi event-source iothub create -g $rg --environment-name $env --name {eventsource} --consumer-group-name {consumer-group} --iot-hub-name $iothub --key-name iothubowner --shared-access-key $shared_access_key --event-source-resource-id $es_resource_id
 ```
 ##### Event Hub Update
 ```
