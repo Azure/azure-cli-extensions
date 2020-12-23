@@ -367,14 +367,16 @@ class AzureFirewallScenario(ScenarioTest):
         })
         self.cmd('network firewall policy create -g {rg} -n {policy} -l {location} '
                  '--ip-addresses 101.0.0.0 101.0.0.1 --fqdns *.microsoft.com '
-                 '--sku Premium',
+                 '--sku Premium '
+                 '--detect-mode Deny',
                  checks=[
                      self.check('type', 'Microsoft.Network/FirewallPolicies'),
                      self.check('name', '{policy}'),
                      self.check('threatIntelWhitelist.fqdns[0]', '*.microsoft.com'),
                      self.check('threatIntelWhitelist.ipAddresses[0]', '101.0.0.0'),
                      self.check('threatIntelWhitelist.ipAddresses[1]', '101.0.0.1'),
-                     self.check('sku.tier', 'Premium')
+                     self.check('sku.tier', 'Premium'),
+                     self.check('intrusionDetection.mode', 'Deny'),
                  ])
 
         self.cmd('network firewall policy show -g {rg} -n {policy}', checks=[
@@ -390,14 +392,16 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall policy list')
 
         self.cmd('network firewall policy update -g {rg} -n {policy} --threat-intel-mode Deny '
-                 '--ip-addresses 102.0.0.0 102.0.0.1 --fqdns *.google.com',
+                 '--ip-addresses 102.0.0.0 102.0.0.1 --fqdns *.google.com '
+                 '--detect-mode Off',
                  checks=[
                      self.check('type', 'Microsoft.Network/FirewallPolicies'),
                      self.check('name', '{policy}'),
                      self.check('threatIntelMode', 'Deny'),
                      self.check('threatIntelWhitelist.fqdns[0]', '*.google.com'),
                      self.check('threatIntelWhitelist.ipAddresses[0]', '102.0.0.0'),
-                     self.check('threatIntelWhitelist.ipAddresses[1]', '102.0.0.1')
+                     self.check('threatIntelWhitelist.ipAddresses[1]', '102.0.0.1'),
+                     self.check('intrusionDetection.mode', 'Off'),
                  ])
 
         self.cmd('network firewall policy rule-collection-group create -g {rg} --priority {collection_group_priority} --policy-name {policy} -n {collectiongroup}', checks=[
