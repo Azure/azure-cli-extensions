@@ -1007,7 +1007,7 @@ class Database(Resource):
     ):
         super(Database, self).__init__(**kwargs)
         self.location = location
-        self.kind: str = 'Database'
+        self.kind = 'Database'  # type: str
 
 
 class DatabaseListResult(msrest.serialization.Model):
@@ -1342,7 +1342,7 @@ class DataConnection(Resource):
     ):
         super(DataConnection, self).__init__(**kwargs)
         self.location = location
-        self.kind: str = 'DataConnection'
+        self.kind = 'DataConnection'  # type: str
 
 
 class DataConnectionCheckNameRequest(msrest.serialization.Model):
@@ -1579,7 +1579,7 @@ class EventGridDataConnection(DataConnection):
         **kwargs
     ):
         super(EventGridDataConnection, self).__init__(location=location, **kwargs)
-        self.kind: str = 'EventGrid'
+        self.kind = 'EventGrid'  # type: str
         self.storage_account_resource_id = storage_account_resource_id
         self.event_hub_resource_id = event_hub_resource_id
         self.consumer_group = consumer_group
@@ -1669,7 +1669,7 @@ class EventHubDataConnection(DataConnection):
         **kwargs
     ):
         super(EventHubDataConnection, self).__init__(location=location, **kwargs)
-        self.kind: str = 'EventHub'
+        self.kind = 'EventHub'  # type: str
         self.event_hub_resource_id = event_hub_resource_id
         self.consumer_group = consumer_group
         self.table_name = table_name
@@ -1821,7 +1821,7 @@ class IotHubDataConnection(DataConnection):
         **kwargs
     ):
         super(IotHubDataConnection, self).__init__(location=location, **kwargs)
-        self.kind: str = 'IotHub'
+        self.kind = 'IotHub'  # type: str
         self.iot_hub_resource_id = iot_hub_resource_id
         self.consumer_group = consumer_group
         self.table_name = table_name
@@ -2190,7 +2190,7 @@ class ReadOnlyFollowingDatabase(Database):
         **kwargs
     ):
         super(ReadOnlyFollowingDatabase, self).__init__(location=location, **kwargs)
-        self.kind: str = 'ReadOnlyFollowing'
+        self.kind = 'ReadOnlyFollowing'  # type: str
         self.provisioning_state = None
         self.soft_delete_period = None
         self.hot_cache_period = hot_cache_period
@@ -2267,7 +2267,7 @@ class ReadWriteDatabase(Database):
         **kwargs
     ):
         super(ReadWriteDatabase, self).__init__(location=location, **kwargs)
-        self.kind: str = 'ReadWrite'
+        self.kind = 'ReadWrite'  # type: str
         self.provisioning_state = None
         self.soft_delete_period = soft_delete_period
         self.hot_cache_period = hot_cache_period

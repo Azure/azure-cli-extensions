@@ -9,10 +9,10 @@ from typing import Any, AsyncIterable, Callable, Dict, Generic, Optional, TypeVa
 import warnings
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
-from azure.core.polling import AsyncNoPolling, AsyncPollingMethod, async_poller
+from azure.core.polling import AsyncLROPoller, AsyncNoPolling, AsyncPollingMethod
 from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
@@ -61,11 +61,18 @@ class IntegrationRuntimeOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeListResponse"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
+        accept = "application/json"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
             if not next_link:
                 # Construct URL
                 url = self.list_by_factory.metadata['url']  # type: ignore
@@ -79,15 +86,11 @@ class IntegrationRuntimeOperations:
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         async def extract_data(pipeline_response):
@@ -142,12 +145,15 @@ class IntegrationRuntimeOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeResource"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
 
-        _integration_runtime = models.IntegrationRuntimeResource(properties=properties)
+        integration_runtime = models.IntegrationRuntimeResource(properties=properties)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
         url = self.create_or_update.metadata['url']  # type: ignore
@@ -168,14 +174,12 @@ class IntegrationRuntimeOperations:
         if if_match is not None:
             header_parameters['If-Match'] = self._serialize.header("if_match", if_match, 'str')
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_integration_runtime, 'IntegrationRuntimeResource')
+        body_content = self._serialize.body(integration_runtime, 'IntegrationRuntimeResource')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -198,7 +202,7 @@ class IntegrationRuntimeOperations:
         integration_runtime_name: str,
         if_none_match: Optional[str] = None,
         **kwargs
-    ) -> "models.IntegrationRuntimeResource":
+    ) -> Optional["models.IntegrationRuntimeResource"]:
         """Gets an integration runtime.
 
         :param resource_group_name: The resource group name.
@@ -216,10 +220,13 @@ class IntegrationRuntimeOperations:
         :rtype: ~data_factory_management_client.models.IntegrationRuntimeResource or None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeResource"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.IntegrationRuntimeResource"]]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
+        accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -239,9 +246,8 @@ class IntegrationRuntimeOperations:
         header_parameters = {}  # type: Dict[str, Any]
         if if_none_match is not None:
             header_parameters['If-None-Match'] = self._serialize.header("if_none_match", if_none_match, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -289,12 +295,15 @@ class IntegrationRuntimeOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeResource"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
 
-        _update_integration_runtime_request = models.UpdateIntegrationRuntimeRequest(auto_update=auto_update, update_delay_offset=update_delay_offset)
+        update_integration_runtime_request = models.UpdateIntegrationRuntimeRequest(auto_update=auto_update, update_delay_offset=update_delay_offset)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
         url = self.update.metadata['url']  # type: ignore
@@ -313,14 +322,12 @@ class IntegrationRuntimeOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_update_integration_runtime_request, 'UpdateIntegrationRuntimeRequest')
+        body_content = self._serialize.body(update_integration_runtime_request, 'UpdateIntegrationRuntimeRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -357,9 +364,12 @@ class IntegrationRuntimeOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
+        accept = "application/json"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
@@ -377,8 +387,8 @@ class IntegrationRuntimeOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -413,9 +423,12 @@ class IntegrationRuntimeOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeStatusResponse"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
+        accept = "application/json"
 
         # Construct URL
         url = self.get_status.metadata['url']  # type: ignore
@@ -433,9 +446,8 @@ class IntegrationRuntimeOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -459,7 +471,8 @@ class IntegrationRuntimeOperations:
         integration_runtime_name: str,
         **kwargs
     ) -> "models.IntegrationRuntimeConnectionInfo":
-        """Gets the on-premises integration runtime connection information for encrypting the on-premises data source credentials.
+        """Gets the on-premises integration runtime connection information for encrypting the on-premises
+        data source credentials.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
@@ -473,9 +486,12 @@ class IntegrationRuntimeOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeConnectionInfo"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
+        accept = "application/json"
 
         # Construct URL
         url = self.get_connection_info.metadata['url']  # type: ignore
@@ -493,9 +509,8 @@ class IntegrationRuntimeOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -536,12 +551,15 @@ class IntegrationRuntimeOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeAuthKeys"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
 
-        _regenerate_key_parameters = models.IntegrationRuntimeRegenerateKeyParameters(key_name=key_name)
+        regenerate_key_parameters = models.IntegrationRuntimeRegenerateKeyParameters(key_name=key_name)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
         url = self.regenerate_auth_key.metadata['url']  # type: ignore
@@ -560,14 +578,12 @@ class IntegrationRuntimeOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_regenerate_key_parameters, 'IntegrationRuntimeRegenerateKeyParameters')
+        body_content = self._serialize.body(regenerate_key_parameters, 'IntegrationRuntimeRegenerateKeyParameters')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -604,9 +620,12 @@ class IntegrationRuntimeOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeAuthKeys"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
+        accept = "application/json"
 
         # Construct URL
         url = self.list_auth_key.metadata['url']  # type: ignore
@@ -624,9 +643,8 @@ class IntegrationRuntimeOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -649,11 +667,14 @@ class IntegrationRuntimeOperations:
         factory_name: str,
         integration_runtime_name: str,
         **kwargs
-    ) -> "models.IntegrationRuntimeStatusResponse":
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeStatusResponse"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+    ) -> Optional["models.IntegrationRuntimeStatusResponse"]:
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.IntegrationRuntimeStatusResponse"]]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
+        accept = "application/json"
 
         # Construct URL
         url = self._start_initial.metadata['url']  # type: ignore
@@ -671,9 +692,8 @@ class IntegrationRuntimeOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -692,13 +712,13 @@ class IntegrationRuntimeOperations:
         return deserialized
     _start_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/start'}  # type: ignore
 
-    async def start(
+    async def begin_start(
         self,
         resource_group_name: str,
         factory_name: str,
         integration_runtime_name: str,
         **kwargs
-    ) -> "models.IntegrationRuntimeStatusResponse":
+    ) -> AsyncLROPoller["models.IntegrationRuntimeStatusResponse"]:
         """Starts a ManagedReserved type integration runtime.
 
         :param resource_group_name: The resource group name.
@@ -708,12 +728,13 @@ class IntegrationRuntimeOperations:
         :param integration_runtime_name: The integration runtime name.
         :type integration_runtime_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: IntegrationRuntimeStatusResponse, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.IntegrationRuntimeStatusResponse
+        :return: An instance of AsyncLROPoller that returns either IntegrationRuntimeStatusResponse or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~data_factory_management_client.models.IntegrationRuntimeStatusResponse]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -722,13 +743,15 @@ class IntegrationRuntimeOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = await self._start_initial(
-            resource_group_name=resource_group_name,
-            factory_name=factory_name,
-            integration_runtime_name=integration_runtime_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._start_initial(
+                resource_group_name=resource_group_name,
+                factory_name=factory_name,
+                integration_runtime_name=integration_runtime_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -740,11 +763,26 @@ class IntegrationRuntimeOperations:
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+        }
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
-        return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
-    start.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/start'}  # type: ignore
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_start.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/start'}  # type: ignore
 
     async def _stop_initial(
         self,
@@ -754,9 +792,12 @@ class IntegrationRuntimeOperations:
         **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
+        accept = "application/json"
 
         # Construct URL
         url = self._stop_initial.metadata['url']  # type: ignore
@@ -774,8 +815,8 @@ class IntegrationRuntimeOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -789,13 +830,13 @@ class IntegrationRuntimeOperations:
 
     _stop_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/stop'}  # type: ignore
 
-    async def stop(
+    async def begin_stop(
         self,
         resource_group_name: str,
         factory_name: str,
         integration_runtime_name: str,
         **kwargs
-    ) -> None:
+    ) -> AsyncLROPoller[None]:
         """Stops a ManagedReserved type integration runtime.
 
         :param resource_group_name: The resource group name.
@@ -805,12 +846,13 @@ class IntegrationRuntimeOperations:
         :param integration_runtime_name: The integration runtime name.
         :type integration_runtime_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: None, or the result of cls(response)
-        :rtype: None
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -819,13 +861,15 @@ class IntegrationRuntimeOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = await self._stop_initial(
-            resource_group_name=resource_group_name,
-            factory_name=factory_name,
-            integration_runtime_name=integration_runtime_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._stop_initial(
+                resource_group_name=resource_group_name,
+                factory_name=factory_name,
+                integration_runtime_name=integration_runtime_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -834,11 +878,26 @@ class IntegrationRuntimeOperations:
             if cls:
                 return cls(pipeline_response, None, {})
 
-        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+        }
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
-        return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
-    stop.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/stop'}  # type: ignore
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_stop.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/stop'}  # type: ignore
 
     async def sync_credentials(
         self,
@@ -847,7 +906,10 @@ class IntegrationRuntimeOperations:
         integration_runtime_name: str,
         **kwargs
     ) -> None:
-        """Force the integration runtime to synchronize credentials across integration runtime nodes, and this will override the credentials across all worker nodes with those available on the dispatcher node. If you already have the latest credential backup file, you should manually import it (preferred) on any self-hosted integration runtime node than using this API directly.
+        """Force the integration runtime to synchronize credentials across integration runtime nodes, and
+        this will override the credentials across all worker nodes with those available on the
+        dispatcher node. If you already have the latest credential backup file, you should manually
+        import it (preferred) on any self-hosted integration runtime node than using this API directly.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
@@ -861,9 +923,12 @@ class IntegrationRuntimeOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
+        accept = "application/json"
 
         # Construct URL
         url = self.sync_credentials.metadata['url']  # type: ignore
@@ -881,8 +946,8 @@ class IntegrationRuntimeOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -903,7 +968,8 @@ class IntegrationRuntimeOperations:
         integration_runtime_name: str,
         **kwargs
     ) -> "models.IntegrationRuntimeMonitoringData":
-        """Get the integration runtime monitoring data, which includes the monitor data for all the nodes under this integration runtime.
+        """Get the integration runtime monitoring data, which includes the monitor data for all the nodes
+        under this integration runtime.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
@@ -917,9 +983,12 @@ class IntegrationRuntimeOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeMonitoringData"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
+        accept = "application/json"
 
         # Construct URL
         url = self.get_monitoring_data.metadata['url']  # type: ignore
@@ -937,9 +1006,8 @@ class IntegrationRuntimeOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -977,9 +1045,12 @@ class IntegrationRuntimeOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
+        accept = "application/json"
 
         # Construct URL
         url = self.upgrade.metadata['url']  # type: ignore
@@ -997,8 +1068,8 @@ class IntegrationRuntimeOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -1020,7 +1091,8 @@ class IntegrationRuntimeOperations:
         linked_factory_name: str,
         **kwargs
     ) -> None:
-        """Remove all linked integration runtimes under specific data factory in a self-hosted integration runtime.
+        """Remove all linked integration runtimes under specific data factory in a self-hosted integration
+        runtime.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
@@ -1036,12 +1108,15 @@ class IntegrationRuntimeOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
 
-        _linked_integration_runtime_request = models.LinkedIntegrationRuntimeRequest(linked_factory_name=linked_factory_name)
+        linked_integration_runtime_request = models.LinkedIntegrationRuntimeRequest(linked_factory_name=linked_factory_name)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
         url = self.remove_link.metadata['url']  # type: ignore
@@ -1060,13 +1135,12 @@ class IntegrationRuntimeOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_linked_integration_runtime_request, 'LinkedIntegrationRuntimeRequest')
+        body_content = self._serialize.body(linked_integration_runtime_request, 'LinkedIntegrationRuntimeRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -1115,12 +1189,15 @@ class IntegrationRuntimeOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.IntegrationRuntimeStatusResponse"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
 
-        _create_linked_integration_runtime_request = models.CreateLinkedIntegrationRuntimeRequest(name=name, subscription_id=subscription_id, data_factory_name=data_factory_name, data_factory_location=data_factory_location)
+        create_linked_integration_runtime_request = models.CreateLinkedIntegrationRuntimeRequest(name=name, subscription_id=subscription_id, data_factory_name=data_factory_name, data_factory_location=data_factory_location)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
         url = self.create_linked_integration_runtime.metadata['url']  # type: ignore
@@ -1139,14 +1216,12 @@ class IntegrationRuntimeOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_create_linked_integration_runtime_request, 'CreateLinkedIntegrationRuntimeRequest')
+        body_content = self._serialize.body(create_linked_integration_runtime_request, 'CreateLinkedIntegrationRuntimeRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 

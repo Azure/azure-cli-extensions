@@ -11,7 +11,7 @@
 
 def cf_datafactory_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from ..vendored_sdks.datafactory import DataFactoryManagementClient
+    from azext_datafactory.vendored_sdks.datafactory import DataFactoryManagementClient
     return get_mgmt_service_client(cli_ctx,
                                    DataFactoryManagementClient)
 
@@ -54,3 +54,11 @@ def cf_trigger(cli_ctx, *_):
 
 def cf_trigger_run(cli_ctx, *_):
     return cf_datafactory_cl(cli_ctx).trigger_run
+
+
+def cf_managed_virtual_network(cli_ctx, *_):
+    return cf_datafactory_cl(cli_ctx).managed_virtual_network
+
+
+def cf_managed_private_endpoint(cli_ctx, *_):
+    return cf_datafactory_cl(cli_ctx).managed_private_endpoint

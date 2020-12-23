@@ -43,10 +43,10 @@ def step_integration_runtime_managed_create(test, rg):
              '--name "{myIntegrationRuntime}" '
              '--resource-group "{rg}" '
              '--description "Managed Integration Runtime" '
-             '--type-properties-compute-properties "{{\\"location\\":'
+             '--compute-properties "{{\\"location\\":'
              '\\"East US 2\\",\\"nodeSize\\":\\"Standard_D2_v3\\",'
              '\\"numberOfNodes\\":1,\\"maxParallelExecutionsPerNode\\":2}}" '
-             '--type-properties-ssis-properties "{{\\"edition\\":\\"Standard'
+             '--ssis-properties "{{\\"edition\\":\\"Standard'
              '\\",\\"licenseType\\":\\"LicenseIncluded\\"}}" ',
              checks=[
                  test.check('name', "{myIntegrationRuntime}"),

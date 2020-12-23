@@ -20,16 +20,15 @@ def load_command_table(self, _):
         operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._factory_operations#FactoryOperations.{'
         '}',
         client_factory=cf_factory)
-    with self.command_group('datafactory factory', datafactory_factory, client_factory=cf_factory,
-                            is_experimental=True) as g:
-        g.custom_command('list', 'datafactory_factory_list')
-        g.custom_show_command('show', 'datafactory_factory_show')
-        g.custom_command('create', 'datafactory_factory_create')
-        g.custom_command('update', 'datafactory_factory_update')
-        g.custom_command('delete', 'datafactory_factory_delete')
-        g.custom_command('configure-factory-repo', 'datafactory_factory_configure_factory_repo')
-        g.custom_command('get-data-plane-access', 'datafactory_factory_get_data_plane_access')
-        g.custom_command('get-git-hub-access-token', 'datafactory_factory_get_git_hub_access_token')
+    with self.command_group('datafactory', datafactory_factory, client_factory=cf_factory, is_experimental=True) as g:
+        g.custom_command('list', 'datafactory_list')
+        g.custom_show_command('show', 'datafactory_show')
+        g.custom_command('create', 'datafactory_create')
+        g.custom_command('update', 'datafactory_update')
+        g.custom_command('delete', 'datafactory_delete', confirmation=True)
+        g.custom_command('configure-factory-repo', 'datafactory_configure_factory_repo')
+        g.custom_command('get-data-plane-access', 'datafactory_get_data_plane_access')
+        g.custom_command('get-git-hub-access-token', 'datafactory_get_git_hub_access_token')
 
     from azext_datafactory.generated._client_factory import cf_integration_runtime
     datafactory_integration_runtime = CliCommandType(
@@ -37,7 +36,7 @@ def load_command_table(self, _):
         'tionRuntimeOperations.{}',
         client_factory=cf_integration_runtime)
     with self.command_group('datafactory integration-runtime', datafactory_integration_runtime,
-                            client_factory=cf_integration_runtime, is_experimental=True) as g:
+                            client_factory=cf_integration_runtime) as g:
         g.custom_command('list', 'datafactory_integration_runtime_list')
         g.custom_show_command('show', 'datafactory_integration_runtime_show')
         g.custom_command('linked-integration-runtime create', 'datafactory_integration_runtime_linked_integration_runti'
@@ -45,7 +44,7 @@ def load_command_table(self, _):
         g.custom_command('managed create', 'datafactory_integration_runtime_managed_create')
         g.custom_command('self-hosted create', 'datafactory_integration_runtime_self_hosted_create')
         g.custom_command('update', 'datafactory_integration_runtime_update')
-        g.custom_command('delete', 'datafactory_integration_runtime_delete')
+        g.custom_command('delete', 'datafactory_integration_runtime_delete', confirmation=True)
         g.custom_command('get-connection-info', 'datafactory_integration_runtime_get_connection_info')
         g.custom_command('get-monitoring-data', 'datafactory_integration_runtime_get_monitoring_data')
         g.custom_command('get-status', 'datafactory_integration_runtime_get_status')
@@ -64,10 +63,10 @@ def load_command_table(self, _):
         'tegrationRuntimeNodeOperations.{}',
         client_factory=cf_integration_runtime_node)
     with self.command_group('datafactory integration-runtime-node', datafactory_integration_runtime_node,
-                            client_factory=cf_integration_runtime_node, is_experimental=True) as g:
+                            client_factory=cf_integration_runtime_node) as g:
         g.custom_show_command('show', 'datafactory_integration_runtime_node_show')
         g.custom_command('update', 'datafactory_integration_runtime_node_update')
-        g.custom_command('delete', 'datafactory_integration_runtime_node_delete')
+        g.custom_command('delete', 'datafactory_integration_runtime_node_delete', confirmation=True)
         g.custom_command('get-ip-address', 'datafactory_integration_runtime_node_get_ip_address')
 
     from azext_datafactory.generated._client_factory import cf_linked_service
@@ -75,37 +74,39 @@ def load_command_table(self, _):
         operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._linked_service_operations#LinkedServic'
         'eOperations.{}',
         client_factory=cf_linked_service)
-    with self.command_group('datafactory linked-service', datafactory_linked_service, client_factory=cf_linked_service,
-                            is_experimental=True) as g:
+    with self.command_group('datafactory linked-service', datafactory_linked_service,
+                            client_factory=cf_linked_service) as g:
         g.custom_command('list', 'datafactory_linked_service_list')
         g.custom_show_command('show', 'datafactory_linked_service_show')
         g.custom_command('create', 'datafactory_linked_service_create')
-        g.custom_command('delete', 'datafactory_linked_service_delete')
+        g.generic_update_command('update', setter_arg_name='properties',
+                                 custom_func_name='datafactory_linked_service_update')
+        g.custom_command('delete', 'datafactory_linked_service_delete', confirmation=True)
 
     from azext_datafactory.generated._client_factory import cf_dataset
     datafactory_dataset = CliCommandType(
         operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._dataset_operations#DatasetOperations.{'
         '}',
         client_factory=cf_dataset)
-    with self.command_group('datafactory dataset', datafactory_dataset, client_factory=cf_dataset,
-                            is_experimental=True) as g:
+    with self.command_group('datafactory dataset', datafactory_dataset, client_factory=cf_dataset) as g:
         g.custom_command('list', 'datafactory_dataset_list')
         g.custom_show_command('show', 'datafactory_dataset_show')
         g.custom_command('create', 'datafactory_dataset_create')
-        g.custom_command('delete', 'datafactory_dataset_delete')
+        g.generic_update_command('update', setter_arg_name='properties',
+                                 custom_func_name='datafactory_dataset_update')
+        g.custom_command('delete', 'datafactory_dataset_delete', confirmation=True)
 
     from azext_datafactory.generated._client_factory import cf_pipeline
     datafactory_pipeline = CliCommandType(
         operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._pipeline_operations#PipelineOperations'
         '.{}',
         client_factory=cf_pipeline)
-    with self.command_group('datafactory pipeline', datafactory_pipeline, client_factory=cf_pipeline,
-                            is_experimental=True) as g:
+    with self.command_group('datafactory pipeline', datafactory_pipeline, client_factory=cf_pipeline) as g:
         g.custom_command('list', 'datafactory_pipeline_list')
         g.custom_show_command('show', 'datafactory_pipeline_show')
         g.custom_command('create', 'datafactory_pipeline_create')
         g.generic_update_command('update', setter_arg_name='pipeline', custom_func_name='datafactory_pipeline_update')
-        g.custom_command('delete', 'datafactory_pipeline_delete')
+        g.custom_command('delete', 'datafactory_pipeline_delete', confirmation=True)
         g.custom_command('create-run', 'datafactory_pipeline_create_run')
 
     from azext_datafactory.generated._client_factory import cf_pipeline_run
@@ -113,8 +114,8 @@ def load_command_table(self, _):
         operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._pipeline_run_operations#PipelineRunOpe'
         'rations.{}',
         client_factory=cf_pipeline_run)
-    with self.command_group('datafactory pipeline-run', datafactory_pipeline_run, client_factory=cf_pipeline_run,
-                            is_experimental=True) as g:
+    with self.command_group('datafactory pipeline-run', datafactory_pipeline_run,
+                            client_factory=cf_pipeline_run) as g:
         g.custom_show_command('show', 'datafactory_pipeline_run_show')
         g.custom_command('cancel', 'datafactory_pipeline_run_cancel')
         g.custom_command('query-by-factory', 'datafactory_pipeline_run_query_by_factory')
@@ -124,8 +125,8 @@ def load_command_table(self, _):
         operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._activity_run_operations#ActivityRunOpe'
         'rations.{}',
         client_factory=cf_activity_run)
-    with self.command_group('datafactory activity-run', datafactory_activity_run, client_factory=cf_activity_run,
-                            is_experimental=True) as g:
+    with self.command_group('datafactory activity-run', datafactory_activity_run,
+                            client_factory=cf_activity_run) as g:
         g.custom_command('query-by-pipeline-run', 'datafactory_activity_run_query_by_pipeline_run')
 
     from azext_datafactory.generated._client_factory import cf_trigger
@@ -133,12 +134,13 @@ def load_command_table(self, _):
         operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._trigger_operations#TriggerOperations.{'
         '}',
         client_factory=cf_trigger)
-    with self.command_group('datafactory trigger', datafactory_trigger, client_factory=cf_trigger,
-                            is_experimental=True) as g:
+    with self.command_group('datafactory trigger', datafactory_trigger, client_factory=cf_trigger) as g:
         g.custom_command('list', 'datafactory_trigger_list')
         g.custom_show_command('show', 'datafactory_trigger_show')
         g.custom_command('create', 'datafactory_trigger_create')
-        g.custom_command('delete', 'datafactory_trigger_delete')
+        g.generic_update_command('update', setter_arg_name='properties',
+                                 custom_func_name='datafactory_trigger_update')
+        g.custom_command('delete', 'datafactory_trigger_delete', confirmation=True)
         g.custom_command('get-event-subscription-status', 'datafactory_trigger_get_event_subscription_status')
         g.custom_command('query-by-factory', 'datafactory_trigger_query_by_factory')
         g.custom_command('start', 'datafactory_trigger_start', supports_no_wait=True)
@@ -153,7 +155,32 @@ def load_command_table(self, _):
         operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._trigger_run_operations#TriggerRunOpera'
         'tions.{}',
         client_factory=cf_trigger_run)
-    with self.command_group('datafactory trigger-run', datafactory_trigger_run, client_factory=cf_trigger_run,
-                            is_experimental=True) as g:
+    with self.command_group('datafactory trigger-run', datafactory_trigger_run, client_factory=cf_trigger_run) as g:
+        g.custom_command('cancel', 'datafactory_trigger_run_cancel')
         g.custom_command('query-by-factory', 'datafactory_trigger_run_query_by_factory')
         g.custom_command('rerun', 'datafactory_trigger_run_rerun')
+
+    from azext_datafactory.generated._client_factory import cf_managed_virtual_network
+    datafactory_managed_virtual_network = CliCommandType(
+        operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._managed_virtual_network_operations#Man'
+        'agedVirtualNetworkOperations.{}',
+        client_factory=cf_managed_virtual_network)
+    with self.command_group('datafactory managed-virtual-network', datafactory_managed_virtual_network,
+                            client_factory=cf_managed_virtual_network) as g:
+        g.custom_command('list', 'datafactory_managed_virtual_network_list')
+        g.custom_show_command('show', 'datafactory_managed_virtual_network_show')
+        g.custom_command('create', 'datafactory_managed_virtual_network_create')
+        g.custom_command('update', 'datafactory_managed_virtual_network_update')
+
+    from azext_datafactory.generated._client_factory import cf_managed_private_endpoint
+    datafactory_managed_private_endpoint = CliCommandType(
+        operations_tmpl='azext_datafactory.vendored_sdks.datafactory.operations._managed_private_endpoint_operations#Ma'
+        'nagedPrivateEndpointOperations.{}',
+        client_factory=cf_managed_private_endpoint)
+    with self.command_group('datafactory managed-private-endpoint', datafactory_managed_private_endpoint,
+                            client_factory=cf_managed_private_endpoint) as g:
+        g.custom_command('list', 'datafactory_managed_private_endpoint_list')
+        g.custom_show_command('show', 'datafactory_managed_private_endpoint_show')
+        g.custom_command('create', 'datafactory_managed_private_endpoint_create')
+        g.custom_command('update', 'datafactory_managed_private_endpoint_update')
+        g.custom_command('delete', 'datafactory_managed_private_endpoint_delete', confirmation=True)
