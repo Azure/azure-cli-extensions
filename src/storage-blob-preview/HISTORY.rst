@@ -6,6 +6,7 @@ Release History
 ++++++
 * Support blob url for blob related commands
 * az storage blob delete: Support --delete-snapshots with only and include values
+* az storage blob upload: Support data directly uploading with --data
 
 0.3.0
 ++++++
