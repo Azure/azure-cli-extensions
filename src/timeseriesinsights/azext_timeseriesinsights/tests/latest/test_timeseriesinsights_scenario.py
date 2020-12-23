@@ -21,7 +21,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
         self.kwargs.update({
             'env': self.create_random_name('cli-test-tsi-env', 24),
         })
-        return self.cmd('az timeseriesinsights environment gen1 create '
+        return self.cmd('az tsi env gen1 create '
                         '--resource-group {rg} '
                         '--name {env} '
                         '--sku name=S1 capacity=1 '
@@ -36,7 +36,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
         })
 
         # Test `environment gen1 create` with optional arguments
-        self.cmd('az timeseriesinsights environment gen1 create '
+        self.cmd('az tsi env gen1 create '
                  '--resource-group {rg} '
                  '--name {env1} '
                  '--sku name=S1 capacity=1 '
@@ -51,44 +51,44 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
                          self.check('dataRetentionTime', '31 days, 0:00:00')
                          ])
 
-        self.cmd('az timeseriesinsights environment show '
+        self.cmd('az tsi env show '
                  '--resource-group {rg} '
                  '--name {env1}',
                  checks=[self.check('name', '{env1}')])
 
-        self.cmd('az timeseriesinsights environment gen1 update --resource-group {rg} --name {env1} '
+        self.cmd('az tsi env gen1 update --resource-group {rg} --name {env1} '
                  '--sku name=S1 capacity=2',
                  checks=[self.check('sku.capacity', '2')])
 
-        self.cmd('az timeseriesinsights environment gen1 update --resource-group {rg} --name {env1} '
+        self.cmd('az tsi env gen1 update --resource-group {rg} --name {env1} '
                  '--storage-limit-exceeded-behavior PurgeOldData',
                  checks=[self.check('properties.storageLimitExceededBehavior', 'PurgeOldData')])
 
-        self.cmd('az timeseriesinsights environment gen1 update --resource-group {rg} --name {env1} '
+        self.cmd('az tsi env gen1 update --resource-group {rg} --name {env1} '
                  '--storage-limit-exceeded-behavior PauseIngress '
                  '--sku name=S1 capacity=1',
                  checks=[
                      self.check('properties.storageLimitExceededBehavior', 'PauseIngress'),
                      self.check('sku.capacity', '1')])
 
-        self.cmd('az timeseriesinsights environment gen1 update --resource-group {rg} --name {env1} '
+        self.cmd('az tsi env gen1 update --resource-group {rg} --name {env1} '
                  '--tags key1=value1 key2=value2',
                  checks=[]
                  )
 
-        self.cmd('az timeseriesinsights environment list '
+        self.cmd('az tsi env list '
                  '--resource-group {rg}',
                  checks=[self.check('length(value)', 1)])
 
-        self.cmd('az timeseriesinsights environment list',
+        self.cmd('az tsi env list',
                  checks=[self.check("length(value[?name=='{env1}'])", 1)])
 
-        self.cmd('az timeseriesinsights environment delete '
+        self.cmd('az tsi env delete '
                  '--resource-group {rg} '
                  '--name {env1} --yes',
                  checks=[])
 
-        self.cmd('az timeseriesinsights environment list '
+        self.cmd('az tsi env list '
                  '--resource-group {rg}',
                  checks=[self.check('length(value)', 0)])
 
@@ -103,7 +103,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
         key = self.cmd('az storage account keys list -g {rg} -n {sa}  --query "[0].value" --output tsv').output
 
         # Test `environment gen2 create` with optional arguments
-        self.cmd('az timeseriesinsights environment gen2 create '
+        self.cmd('az tsi env gen2 create '
                  '--resource-group {rg} '
                  '--name {env} '
                  '--sku name=L1 capacity=1 '
@@ -115,12 +115,12 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
                          self.check('timeSeriesIdProperties[0].name', 'DeviceId1'),
                          self.check('timeSeriesIdProperties[0].type', 'String')])
 
-        self.cmd('az timeseriesinsights environment show '
+        self.cmd('az tsi env show '
                  '--resource-group {rg} '
                  '--name {env}',
                  checks=[self.check('name', '{env}')])
 
-        self.cmd('az timeseriesinsights environment gen2 update --resource-group {rg} --name {env} '
+        self.cmd('az tsi env gen2 update --resource-group {rg} --name {env} '
                  '--warm-store-configuration data-retention=P30D '
                  '--storage-configuration account-name={sa} management-key=' + key,
                  checks=[self.check('warmStoreConfiguration.dataRetention', "30 days, 0:00:00")])
@@ -147,7 +147,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
             '-n RootManageSharedAccessKey').get_output_in_json()
         self.kwargs["shared_access_key"] = result["primaryKey"]
 
-        self.cmd('az timeseriesinsights event-source eventhub create -g {rg} --environment-name {env} --name {es} '
+        self.cmd('az tsi event-source eventhub create -g {rg} --environment-name {env} --name {es} '
                  '--event-hub-name {eh} '
                  '--service-bus-namespace {ehns} '
                  '--key-name RootManageSharedAccessKey '
@@ -156,7 +156,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
                  '--consumer-group-name "cgn"',
                  checks=[self.check('timestampPropertyName', None)])
 
-        self.cmd('az timeseriesinsights event-source eventhub update -g {rg} --environment-name {env} --name {es} '
+        self.cmd('az tsi event-source eventhub update -g {rg} --environment-name {env} --name {es} '
                  '--timestamp-property-name DeviceId1',
                  checks=[self.check('timestampPropertyName', 'DeviceId1')])
 
@@ -165,21 +165,21 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
             'az eventhubs namespace authorization-rule keys renew -g {rg} --namespace-name {ehns} '
             '-n RootManageSharedAccessKey --key PrimaryKey --query primaryKey --output tsv').output
 
-        self.cmd('az timeseriesinsights event-source eventhub update -g {rg} --environment-name {env} --name {es} '
+        self.cmd('az tsi event-source eventhub update -g {rg} --environment-name {env} --name {es} '
                  '--shared-access-key {shared_access_key} '
                  '--tags test=tag '
                  '--timestamp-property-name DeviceId1 ',
                  checks=[self.check('timestampPropertyName', 'DeviceId1')])
 
         # List
-        self.cmd('az timeseriesinsights event-source list -g {rg} --environment-name {env}',
+        self.cmd('az tsi event-source list -g {rg} --environment-name {env}',
                  checks=[self.check('length(value)', 1)])
 
         # Show
-        self.cmd('az timeseriesinsights event-source show -g {rg} --environment-name {env} -n {es}')
+        self.cmd('az tsi event-source show -g {rg} --environment-name {env} -n {es}')
 
         # Delete
-        self.cmd('az timeseriesinsights event-source delete -g {rg} --environment-name {env} -n {es} --yes')
+        self.cmd('az tsi event-source delete -g {rg} --environment-name {env} -n {es} --yes')
 
     @ResourceGroupPreparer(name_prefix='clitsi.rg')
     def test_timeseriesinsights_event_source_iothub(self):
@@ -200,7 +200,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
             "az iot hub policy list -g {rg} --hub-name {iothub} --query \"[?keyName=='iothubowner']\".primaryKey --output tsv").output
 
         # Test --timestamp-property-name is not given
-        self.cmd('az timeseriesinsights event-source iothub create -g {rg} --environment-name {env} --name {es} '
+        self.cmd('az tsi event-source iothub create -g {rg} --environment-name {env} --name {es} '
                  '--consumer-group-name "cgn" '
                  '--iot-hub-name {iothub} '
                  '--key-name {key_name} --shared-access-key {shared_access_key} '
@@ -208,7 +208,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
                  checks=[self.check('timestampPropertyName', None)])
 
         # Test --timestamp-property-name is not given
-        self.cmd('az timeseriesinsights event-source iothub update -g {rg} --environment-name {env} --name {es} '
+        self.cmd('az tsi event-source iothub update -g {rg} --environment-name {env} --name {es} '
                  '--timestamp-property-name timestampProp',
                  checks=[self.check('timestampPropertyName', 'timestampProp')])
 
@@ -216,21 +216,21 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
             'az iot hub policy renew-key -g {rg} --hub-name {iothub} -n {key_name} '
             '--renew-key primary --query primaryKey --output tsv').output
 
-        self.cmd('az timeseriesinsights event-source iothub update -g {rg} --environment-name {env} --name {es} '
+        self.cmd('az tsi event-source iothub update -g {rg} --environment-name {env} --name {es} '
                  '--shared-access-key {shared_access_key} '
                  '--tags test=tag '
                  '--timestamp-property-name DeviceId1 ',
                  checks=[self.check('timestampPropertyName', 'DeviceId1')])
 
         # List
-        self.cmd('az timeseriesinsights event-source list -g {rg} --environment-name {env}',
+        self.cmd('az tsi event-source list -g {rg} --environment-name {env}',
                  checks=[self.check('length(@)', 1)])
 
         # Show
-        self.cmd('az timeseriesinsights event-source show -g {rg} --environment-name {env} -n {es}')
+        self.cmd('az tsi event-source show -g {rg} --environment-name {env} -n {es}')
 
         # Delete
-        self.cmd('az timeseriesinsights event-source delete -g {rg} --environment-name {env} -n {es} --yes')
+        self.cmd('az tsi event-source delete -g {rg} --environment-name {env} -n {es} --yes')
 
     @ResourceGroupPreparer(name_prefix='clitsi.rg')
     def test_timeseriesinsights_reference_data_set(self):
@@ -242,7 +242,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
         self._create_timeseriesinsights_environment()
 
         # Create
-        self.cmd('az timeseriesinsights reference-data-set create -g {rg} --environment-name {env} --name {rds} '
+        self.cmd('az tsi reference-data-set create -g {rg} --environment-name {env} --name {rds} '
                  '--key-properties name=DeviceFloor type=Double '
                  '--data-string-comparison-behavior Ordinal',
                  checks=[
@@ -251,7 +251,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
                      self.check('dataStringComparisonBehavior', 'Ordinal')
                  ])
 
-        self.cmd('az timeseriesinsights reference-data-set create -g {rg} --environment-name {env} --name {rds2} '
+        self.cmd('az tsi reference-data-set create -g {rg} --environment-name {env} --name {rds2} '
                  '--key-properties name=DeviceId1 type=String '
                  '--key-properties name=DeviceFloor type=Double '
                  '--data-string-comparison-behavior OrdinalIgnoreCase',
@@ -261,21 +261,21 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
                  ])
 
         # Update
-        self.cmd('az timeseriesinsights reference-data-set update -g {rg} --environment-name {env} --name {rds} '
+        self.cmd('az tsi reference-data-set update -g {rg} --environment-name {env} --name {rds} '
                  '--tags mykey=myvalue',
                  checks=[
                      self.check('tags.mykey', 'myvalue')
                  ])
 
         # List
-        self.cmd('az timeseriesinsights reference-data-set list -g {rg} --environment-name {env}',
+        self.cmd('az tsi reference-data-set list -g {rg} --environment-name {env}',
                  checks=[self.check('length(value)', 2)])
 
         # Show
-        self.cmd('az timeseriesinsights reference-data-set show -g {rg} --environment-name {env} -n {rds}')
+        self.cmd('az tsi reference-data-set show -g {rg} --environment-name {env} -n {rds}')
 
         # Delete
-        self.cmd('az timeseriesinsights reference-data-set delete -g {rg} --environment-name {env} -n {rds} --yes')
+        self.cmd('az tsi reference-data-set delete -g {rg} --environment-name {env} -n {rds} --yes')
 
     @ResourceGroupPreparer(name_prefix='clitsi.rg')
     def test_timeseriesinsights_access_policy(self):
@@ -286,7 +286,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
 
         # Create
         self.cmd(
-            'az timeseriesinsights access-policy create -g {rg} --environment-name {env} --name ap1 '
+            'az tsi access-policy create -g {rg} --environment-name {env} --name ap1 '
             '--principal-object-id 001 --description "some description" --roles Contributor Reader',
             checks=[
                 self.check('description', 'some description'),
@@ -296,7 +296,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
 
         # Update
         self.cmd(
-            'az timeseriesinsights access-policy update -g {rg} --environment-name {env} --name ap1 '
+            'az tsi access-policy update -g {rg} --environment-name {env} --name ap1 '
             '--description "some description updated" --roles Contributor',
             checks=[
                 self.check('description', 'some description updated'),
@@ -304,12 +304,12 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
             ])
 
         # Show
-        self.cmd('az timeseriesinsights access-policy show -g {rg} --environment-name {env} --name ap1',
+        self.cmd('az tsi access-policy show -g {rg} --environment-name {env} --name ap1',
                  checks=[])
         # List
-        self.cmd('az timeseriesinsights access-policy list -g {rg} --environment-name {env}',
+        self.cmd('az tsi access-policy list -g {rg} --environment-name {env}',
                  checks=[self.check('length(value)', 1)])
 
         # Delete
-        self.cmd('az timeseriesinsights access-policy delete -g {rg} --environment-name {env} --name ap1 --yes',
+        self.cmd('az tsi access-policy delete -g {rg} --environment-name {env} --name ap1 --yes',
                  checks=[])

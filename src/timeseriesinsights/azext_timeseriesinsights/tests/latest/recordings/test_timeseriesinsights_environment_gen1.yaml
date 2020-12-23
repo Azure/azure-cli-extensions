@@ -7,7 +7,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights environment gen1 create
+      - tsi env gen1 create
       Connection:
       - keep-alive
       ParameterSetName:
@@ -22,7 +22,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitsi.rg000001?api-version=2020-06-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001","name":"clitsi.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2020-12-21T08:36:01Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001","name":"clitsi.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2020-12-23T06:15:38Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -31,7 +31,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Dec 2020 08:36:05 GMT
+      - Wed, 23 Dec 2020 06:15:42 GMT
       expires:
       - '-1'
       pragma:
@@ -55,7 +55,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights environment gen1 create
+      - tsi env gen1 create
       Connection:
       - keep-alive
       Content-Length:
@@ -72,7 +72,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002?api-version=2020-05-15
   response:
     body:
-      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-21T08:36:21.3548871+00:00","provisioningState":"Accepted","dataAccessId":"d7c05da6-63cc-457a-b715-fccb76adaca8","dataAccessFqdn":"d7c05da6-63cc-457a-b715-fccb76adaca8.env.timeseries.azure.com","requestApiVersion":"2020-05-15"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-23T06:15:58.1090603+00:00","provisioningState":"Accepted","dataAccessId":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6","dataAccessFqdn":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6.env.timeseries.azure.com","requestApiVersion":"2020-05-15"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
     headers:
       cache-control:
       - no-cache
@@ -81,7 +81,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 21 Dec 2020 08:36:22 GMT
+      - Wed, 23 Dec 2020 06:15:59 GMT
       expires:
       - '-1'
       pragma:
@@ -93,7 +93,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -105,7 +105,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights environment gen1 create
+      - tsi env gen1 create
       Connection:
       - keep-alive
       ParameterSetName:
@@ -118,7 +118,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002?api-version=2020-05-15
   response:
     body:
-      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-21T08:36:21.3548871Z","provisioningState":"Creating","requestApiVersion":"2020-05-15","dataAccessId":"d7c05da6-63cc-457a-b715-fccb76adaca8","dataAccessFqdn":"d7c05da6-63cc-457a-b715-fccb76adaca8.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-23T06:15:58.1090603Z","provisioningState":"Creating","requestApiVersion":"2020-05-15","dataAccessId":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6","dataAccessFqdn":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
     headers:
       cache-control:
       - no-cache
@@ -127,7 +127,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 21 Dec 2020 08:36:53 GMT
+      - Wed, 23 Dec 2020 06:16:30 GMT
       expires:
       - '-1'
       pragma:
@@ -153,7 +153,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights environment gen1 create
+      - tsi env gen1 create
       Connection:
       - keep-alive
       ParameterSetName:
@@ -166,7 +166,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002?api-version=2020-05-15
   response:
     body:
-      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-21T08:36:21.3548871Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"d7c05da6-63cc-457a-b715-fccb76adaca8","dataAccessFqdn":"d7c05da6-63cc-457a-b715-fccb76adaca8.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-23T06:15:58.1090603Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6","dataAccessFqdn":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
     headers:
       cache-control:
       - no-cache
@@ -175,7 +175,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 21 Dec 2020 08:37:23 GMT
+      - Wed, 23 Dec 2020 06:17:00 GMT
       expires:
       - '-1'
       pragma:
@@ -201,7 +201,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights environment show
+      - tsi env show
       Connection:
       - keep-alive
       ParameterSetName:
@@ -213,7 +213,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002?api-version=2020-05-15
   response:
     body:
-      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-21T08:36:21.3548871Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"d7c05da6-63cc-457a-b715-fccb76adaca8","dataAccessFqdn":"d7c05da6-63cc-457a-b715-fccb76adaca8.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-23T06:15:58.1090603Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6","dataAccessFqdn":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
     headers:
       cache-control:
       - no-cache
@@ -222,7 +222,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 21 Dec 2020 08:37:25 GMT
+      - Wed, 23 Dec 2020 06:17:02 GMT
       expires:
       - '-1'
       pragma:
@@ -248,7 +248,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights environment gen1 update
+      - tsi env gen1 update
       Connection:
       - keep-alive
       ParameterSetName:
@@ -260,7 +260,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002?api-version=2020-05-15
   response:
     body:
-      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-21T08:36:21.3548871Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"d7c05da6-63cc-457a-b715-fccb76adaca8","dataAccessFqdn":"d7c05da6-63cc-457a-b715-fccb76adaca8.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-23T06:15:58.1090603Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6","dataAccessFqdn":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
     headers:
       cache-control:
       - no-cache
@@ -269,7 +269,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 21 Dec 2020 08:37:27 GMT
+      - Wed, 23 Dec 2020 06:17:04 GMT
       expires:
       - '-1'
       pragma:
@@ -295,7 +295,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights environment gen1 update
+      - tsi env gen1 update
       Connection:
       - keep-alive
       Content-Length:
@@ -311,7 +311,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002?api-version=2020-05-15
   response:
     body:
-      string: '{"sku":{"name":"S1","capacity":2},"kind":"Gen1","location":"westus","tags":{},"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-21T08:36:21.3548871Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"d7c05da6-63cc-457a-b715-fccb76adaca8","dataAccessFqdn":"d7c05da6-63cc-457a-b715-fccb76adaca8.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+      string: '{"sku":{"name":"S1","capacity":2},"kind":"Gen1","location":"westus","tags":{},"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-23T06:15:58.1090603Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6","dataAccessFqdn":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
     headers:
       cache-control:
       - no-cache
@@ -320,7 +320,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 21 Dec 2020 08:37:32 GMT
+      - Wed, 23 Dec 2020 06:17:09 GMT
       expires:
       - '-1'
       pragma:
@@ -348,7 +348,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights environment gen1 update
+      - tsi env gen1 update
       Connection:
       - keep-alive
       ParameterSetName:
@@ -360,7 +360,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002?api-version=2020-05-15
   response:
     body:
-      string: '{"sku":{"name":"S1","capacity":2},"kind":"Gen1","location":"westus","tags":{},"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-21T08:36:21.3548871Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"d7c05da6-63cc-457a-b715-fccb76adaca8","dataAccessFqdn":"d7c05da6-63cc-457a-b715-fccb76adaca8.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+      string: '{"sku":{"name":"S1","capacity":2},"kind":"Gen1","location":"westus","tags":{},"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-23T06:15:58.1090603Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6","dataAccessFqdn":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
     headers:
       cache-control:
       - no-cache
@@ -369,7 +369,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 21 Dec 2020 08:37:33 GMT
+      - Wed, 23 Dec 2020 06:17:11 GMT
       expires:
       - '-1'
       pragma:
@@ -395,7 +395,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights environment gen1 update
+      - tsi env gen1 update
       Connection:
       - keep-alive
       Content-Length:
@@ -411,7 +411,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002?api-version=2020-05-15
   response:
     body:
-      string: '{"sku":{"name":"S1","capacity":2},"kind":"Gen1","location":"westus","tags":{},"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PurgeOldData","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-21T08:36:21.3548871Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"d7c05da6-63cc-457a-b715-fccb76adaca8","dataAccessFqdn":"d7c05da6-63cc-457a-b715-fccb76adaca8.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+      string: '{"sku":{"name":"S1","capacity":2},"kind":"Gen1","location":"westus","tags":{},"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PurgeOldData","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-23T06:15:58.1090603Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6","dataAccessFqdn":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
     headers:
       cache-control:
       - no-cache
@@ -420,7 +420,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 21 Dec 2020 08:37:34 GMT
+      - Wed, 23 Dec 2020 06:17:12 GMT
       expires:
       - '-1'
       pragma:
@@ -436,7 +436,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -448,7 +448,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights environment gen1 update
+      - tsi env gen1 update
       Connection:
       - keep-alive
       ParameterSetName:
@@ -460,7 +460,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002?api-version=2020-05-15
   response:
     body:
-      string: '{"sku":{"name":"S1","capacity":2},"kind":"Gen1","location":"westus","tags":{},"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PurgeOldData","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-21T08:36:21.3548871Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"d7c05da6-63cc-457a-b715-fccb76adaca8","dataAccessFqdn":"d7c05da6-63cc-457a-b715-fccb76adaca8.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+      string: '{"sku":{"name":"S1","capacity":2},"kind":"Gen1","location":"westus","tags":{},"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PurgeOldData","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-23T06:15:58.1090603Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6","dataAccessFqdn":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
     headers:
       cache-control:
       - no-cache
@@ -469,7 +469,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 21 Dec 2020 08:37:36 GMT
+      - Wed, 23 Dec 2020 06:17:13 GMT
       expires:
       - '-1'
       pragma:
@@ -497,7 +497,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights environment gen1 update
+      - tsi env gen1 update
       Connection:
       - keep-alive
       Content-Length:
@@ -513,7 +513,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002?api-version=2020-05-15
   response:
     body:
-      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":{},"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-21T08:36:21.3548871Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"d7c05da6-63cc-457a-b715-fccb76adaca8","dataAccessFqdn":"d7c05da6-63cc-457a-b715-fccb76adaca8.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":{},"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-23T06:15:58.1090603Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6","dataAccessFqdn":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
     headers:
       cache-control:
       - no-cache
@@ -522,7 +522,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 21 Dec 2020 08:37:41 GMT
+      - Wed, 23 Dec 2020 06:17:18 GMT
       expires:
       - '-1'
       pragma:
@@ -550,7 +550,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights environment gen1 update
+      - tsi env gen1 update
       Connection:
       - keep-alive
       ParameterSetName:
@@ -562,7 +562,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002?api-version=2020-05-15
   response:
     body:
-      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":{},"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-21T08:36:21.3548871Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"d7c05da6-63cc-457a-b715-fccb76adaca8","dataAccessFqdn":"d7c05da6-63cc-457a-b715-fccb76adaca8.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":{},"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-23T06:15:58.1090603Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6","dataAccessFqdn":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
     headers:
       cache-control:
       - no-cache
@@ -571,7 +571,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 21 Dec 2020 08:37:43 GMT
+      - Wed, 23 Dec 2020 06:17:20 GMT
       expires:
       - '-1'
       pragma:
@@ -597,7 +597,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights environment gen1 update
+      - tsi env gen1 update
       Connection:
       - keep-alive
       Content-Length:
@@ -613,7 +613,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002?api-version=2020-05-15
   response:
     body:
-      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":{"key1":"value1","key2":"value2"},"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-21T08:36:21.3548871Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"d7c05da6-63cc-457a-b715-fccb76adaca8","dataAccessFqdn":"d7c05da6-63cc-457a-b715-fccb76adaca8.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
+      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":{"key1":"value1","key2":"value2"},"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-23T06:15:58.1090603Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6","dataAccessFqdn":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}'
     headers:
       cache-control:
       - no-cache
@@ -622,7 +622,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 21 Dec 2020 08:37:47 GMT
+      - Wed, 23 Dec 2020 06:17:25 GMT
       expires:
       - '-1'
       pragma:
@@ -638,7 +638,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -650,7 +650,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights environment list
+      - tsi env list
       Connection:
       - keep-alive
       ParameterSetName:
@@ -662,7 +662,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments?api-version=2020-05-15
   response:
     body:
-      string: '{"value":[{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":{"key1":"value1","key2":"value2"},"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-21T08:36:21.3548871Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"d7c05da6-63cc-457a-b715-fccb76adaca8","dataAccessFqdn":"d7c05da6-63cc-457a-b715-fccb76adaca8.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}]}'
+      string: '{"value":[{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":{"key1":"value1","key2":"value2"},"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-23T06:15:58.1090603Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6","dataAccessFqdn":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"}]}'
     headers:
       cache-control:
       - no-cache
@@ -671,7 +671,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 21 Dec 2020 08:37:47 GMT
+      - Wed, 23 Dec 2020 06:17:27 GMT
       expires:
       - '-1'
       pragma:
@@ -697,7 +697,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights environment list
+      - tsi env list
       Connection:
       - keep-alive
       User-Agent:
@@ -707,16 +707,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.TimeSeriesInsights/environments?api-version=2020-05-15
   response:
     body:
-      string: '{"value":[{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":{"key1":"value1","key2":"value2"},"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-21T08:36:21.3548871Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"d7c05da6-63cc-457a-b715-fccb76adaca8","dataAccessFqdn":"d7c05da6-63cc-457a-b715-fccb76adaca8.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"},{"sku":{"name":"S1","capacity":2},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P30D","storageLimitExceededBehavior":"PurgeOldData","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-21T05:19:32.7673441Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"b7495685-1a68-475b-8cc6-cb8fdfd31f75","dataAccessFqdn":"b7495685-1a68-475b-8cc6-cb8fdfd31f75.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kairu/providers/Microsoft.TimeSeriesInsights/environments/kairu2","name":"kairu2","type":"Microsoft.TimeSeriesInsights/Environments"},{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-21T02:35:07.3711244Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"4bfd6cda-fac3-4284-b9b8-6c7540e8c852","dataAccessFqdn":"4bfd6cda-fac3-4284-b9b8-6c7540e8c852.env.timeseries.azure.com","storageLimitExceededBehavior":"PurgeOldData"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kairu/providers/Microsoft.TimeSeriesInsights/environments/kairu1","name":"kairu1","type":"Microsoft.TimeSeriesInsights/Environments"},{"sku":{"name":"L1","capacity":1},"kind":"Gen2","location":"westus","tags":null,"properties":{"timeSeriesIdProperties":[{"name":"DeviceId1","type":"String"}],"storageConfiguration":{"accountName":"kairu"},"warmStoreConfiguration":{"dataRetention":"P30D"},"creationTime":"2020-12-21T03:35:53.8367023Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"a95bc480-5e00-4c1b-8dd8-897ef6d101e1","dataAccessFqdn":"a95bc480-5e00-4c1b-8dd8-897ef6d101e1.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/kairu/providers/Microsoft.TimeSeriesInsights/environments/kairu","name":"kairu","type":"Microsoft.TimeSeriesInsights/Environments"}]}'
+      string: '{"value":[{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":{"key1":"value1","key2":"value2"},"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-23T06:15:58.1090603Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6","dataAccessFqdn":"b2c7f438-c4a1-4029-bb7f-75f1619e9ba6.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env1000002","name":"cli-test-tsi-env1000002","type":"Microsoft.TimeSeriesInsights/Environments"},{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2020-12-23T06:14:22.0708549Z","provisioningState":"Deleting","requestApiVersion":"2020-05-15","dataAccessId":"5aa3a4c0-d0f8-44bb-aead-d388f0d4d965","dataAccessFqdn":"5aa3a4c0-d0f8-44bb-aead-d388f0d4d965.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg7dpcvvrhecnrwt3wikxrlnjwke2bh53ulolfuiwsdwzsrdjye55suiohlf4snkdhiz/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-envwqwd6sa6","name":"cli-test-tsi-envwqwd6sa6","type":"Microsoft.TimeSeriesInsights/Environments"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2908'
+      - '1621'
       content-type:
       - application/json
       date:
-      - Mon, 21 Dec 2020 08:37:49 GMT
+      - Wed, 23 Dec 2020 06:17:28 GMT
       expires:
       - '-1'
       pragma:
@@ -742,7 +742,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights environment delete
+      - tsi env delete
       Connection:
       - keep-alive
       Content-Length:
@@ -763,7 +763,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 21 Dec 2020 08:37:54 GMT
+      - Wed, 23 Dec 2020 06:17:32 GMT
       expires:
       - '-1'
       pragma:
@@ -787,7 +787,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - timeseriesinsights environment list
+      - tsi env list
       Connection:
       - keep-alive
       ParameterSetName:
@@ -808,7 +808,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 21 Dec 2020 08:37:55 GMT
+      - Wed, 23 Dec 2020 06:17:32 GMT
       expires:
       - '-1'
       pragma:

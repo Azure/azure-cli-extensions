@@ -29,7 +29,7 @@ from azext_timeseriesinsights.action import (
 
 def load_arguments(self, _):
 
-    with self.argument_context('timeseriesinsights environment') as c:
+    with self.argument_context('tsi env') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='The name '
                    'of the Time Series Insights environment associated with the specified resource group.', id_part=''
@@ -37,10 +37,10 @@ def load_arguments(self, _):
         c.argument('expand', type=str, help='Setting $expand=status will include the status of the internal services '
                    'of the environment in the Time Series Insights service.')
 
-    with self.argument_context('timeseriesinsights environment list') as c:
+    with self.argument_context('tsi env list') as c:
         c.argument('environment_name', id_part=None)
 
-    with self.argument_context('timeseriesinsights environment gen1') as c:
+    with self.argument_context('tsi env gen1') as c:
         c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='Name of the'
                    ' environment', id_part='name')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
@@ -64,10 +64,10 @@ def load_arguments(self, _):
                    'properties which will be used to partition data in the environment. Currently, only a single '
                    'partition key property is supported.')
 
-    with self.argument_context('timeseriesinsights environment gen1 create') as c:
+    with self.argument_context('tsi env gen1 create') as c:
         c.argument('environment_name', id_part=None)
 
-    with self.argument_context('timeseriesinsights environment gen2') as c:
+    with self.argument_context('tsi env gen2') as c:
         c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='Name of the'
                    ' environment', id_part='name')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
@@ -88,10 +88,10 @@ def load_arguments(self, _):
                    'configuration provides the details to create a warm store cache that will retain a copy of the '
                    'environment\'s data available for faster query.')
 
-    with self.argument_context('timeseriesinsights environment gen2 create') as c:
+    with self.argument_context('tsi env gen2 create') as c:
         c.argument('environment_name', id_part=None)
 
-    with self.argument_context('timeseriesinsights event-source') as c:
+    with self.argument_context('tsi event-source') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('environment_name', type=str, help='The name of the Time Series '
                    'Insights environment associated with the specified resource group.', id_part='name')
@@ -99,10 +99,10 @@ def load_arguments(self, _):
                    'of the Time Series Insights event source associated with the specified environment.',
                    id_part='child_name_1')
 
-    with self.argument_context('timeseriesinsights event-source list') as c:
+    with self.argument_context('tsi event-source list') as c:
         c.argument('environment_name', id_part=None)
 
-    with self.argument_context('timeseriesinsights event-source eventhub') as c:
+    with self.argument_context('tsi event-source eventhub') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
@@ -127,11 +127,11 @@ def load_arguments(self, _):
                    'Insights service read access to the event hub. This property is not shown in event source '
                    'responses.')
 
-    with self.argument_context('timeseriesinsights event-source eventhub create') as c:
+    with self.argument_context('tsi event-source eventhub create') as c:
         c.argument('environment_name', id_part=None)
         c.argument('event_source_name', id_part=None)
 
-    with self.argument_context('timeseriesinsights event-source iothub') as c:
+    with self.argument_context('tsi event-source iothub') as c:
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
@@ -154,11 +154,11 @@ def load_arguments(self, _):
                    'Series Insights service read access to the iot hub. This property is not shown in event source '
                    'responses.')
 
-    with self.argument_context('timeseriesinsights event-source iothub create') as c:
+    with self.argument_context('tsi event-source iothub create') as c:
         c.argument('environment_name', id_part=None)
         c.argument('event_source_name', id_part=None)
 
-    with self.argument_context('timeseriesinsights reference-data-set') as c:
+    with self.argument_context('tsi reference-data-set') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('environment_name', type=str, help='The name of the Time Series Insights environment associated '
                    'with the specified resource group.', id_part='name')
@@ -178,14 +178,14 @@ def load_arguments(self, _):
                    'reference data with events or while adding new reference data. When \'OrdinalIgnoreCase\' is set, '
                    'case insensitive comparison will be used.')
 
-    with self.argument_context('timeseriesinsights reference-data-set create') as c:
+    with self.argument_context('tsi reference-data-set create') as c:
         c.argument('environment_name', id_part=None)
         c.argument('reference_data_set_name', id_part=None)
 
-    with self.argument_context('timeseriesinsights reference-data-set list') as c:
+    with self.argument_context('tsi reference-data-set list') as c:
         c.argument('environment_name', id_part=None)
 
-    with self.argument_context('timeseriesinsights access-policy') as c:
+    with self.argument_context('tsi access-policy') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('environment_name', type=str, help='The name of the Time Series Insights environment associated '
                    'with the specified resource group.', id_part='name')
@@ -196,9 +196,9 @@ def load_arguments(self, _):
         c.argument('description', type=str, help='An description of the access policy.')
         c.argument('roles', nargs='+', help='The list of roles the principal is assigned on the environment.')
 
-    with self.argument_context('timeseriesinsights access-policy create') as c:
+    with self.argument_context('tsi access-policy create') as c:
         c.argument('environment_name', id_part=None)
         c.argument('access_policy_name', id_part=None)
 
-    with self.argument_context('timeseriesinsights access-policy list') as c:
+    with self.argument_context('tsi access-policy list') as c:
         c.argument('environment_name', id_part=None)

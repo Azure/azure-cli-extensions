@@ -7,44 +7,44 @@
 
 from knack.help_files import helps
 
-helps['timeseriesinsights'] = """
+helps['tsi'] = """
     type: group
     short-summary: Manage Azure Time Series Insights.
 """
 
-helps['timeseriesinsights environment'] = """
+helps['tsi env'] = """
     type: group
     short-summary: Manage environment with timeseriesinsights
 """
 
-helps['timeseriesinsights environment list'] = """
+helps['tsi env list'] = """
     type: command
     short-summary: "List all the available environments associated with the subscription and within the specified \
     resource group."
     examples:
       - name: EnvironmentsByResourceGroup
         text: |-
-               az timeseriesinsights environment list --resource-group "rg1"
+               az tsi env list --resource-group "rg1"
       - name: EnvironmentsBySubscription
         text: |-
-               az timeseriesinsights environment list
+               az tsi env list
 """
 
-helps['timeseriesinsights environment show'] = """
+helps['tsi env show'] = """
     type: command
     short-summary: "Show the environment with the specified name in the specified subscription and resource group."
     examples:
       - name: EnvironmentsGet
         text: |-
-               az timeseriesinsights environment show --name "env1" --resource-group "rg1"
+               az tsi env show --name "env1" --resource-group "rg1"
 """
 
-helps['timeseriesinsights environment gen1'] = """
+helps['tsi env gen1'] = """
     type: group
     short-summary: "Manage a gen1 environment in the specified subscription and resource group."
 """
 
-helps['timeseriesinsights environment gen1 create'] = """
+helps['tsi env gen1 create'] = """
     type: command
     short-summary: "Create a gen1 environment in the specified subscription and resource group."
     parameters:
@@ -70,11 +70,11 @@ Currently, only a single partition key property is supported."
     examples:
       - name: EnvironmentsGen1Create
         text: |-
-               az timeseriesinsights environment gen1 create --name "env1" --location westus --data-retention-time \
+               az tsi env gen1 create --name "env1" --location westus --data-retention-time \
 "P31D" --partition-key-properties name="DeviceId1" type="String" --sku name="S1" capacity=1 --resource-group "rg1"
 """
 
-helps['timeseriesinsights environment gen1 update'] = """
+helps['tsi env gen1 update'] = """
     type: command
     short-summary: "Update a gen1 environment in the specified subscription and resource group."
     parameters:
@@ -90,16 +90,16 @@ environments the sku determines the capacity of the environment, the ingress rat
     examples:
       - name: EnvironmentsGen1Update
         text: |-
-               az timeseriesinsights environment gen1 update --name "env1" --sku name="S1" capacity=2 \
+               az tsi env gen1 update --name "env1" --sku name="S1" capacity=2 \
                --resource-group "rg1" --data-retention-time "P30D" --storage-limit-exceeded-behavior PurgeOldData
 """
 
-helps['timeseriesinsights environment gen2'] = """
+helps['tsi env gen2'] = """
     type: group
     short-summary: Manage a gen2 environment in the specified subscription and resource group.
 """
 
-helps['timeseriesinsights environment gen2 create'] = """
+helps['tsi env gen2 create'] = """
     type: command
     short-summary: "Create a gen2 environment in the specified subscription and resource group."
     parameters:
@@ -139,12 +139,12 @@ available for query from the warm store.
     examples:
       - name: EnvironmentsGen2Create
         text: |-
-               az timeseriesinsights environment gen2 create --name "env2" --location westus --resource-group "rg1" \
+               az tsi env gen2 create --name "env2" --location westus --resource-group "rg1" \
                --sku name="L1" capacity=1 --time-series-id-properties name=idName type=String \
                --storage-configuration account-name=your-account-name  management-key=your-account-key
 """
 
-helps['timeseriesinsights environment gen2 update'] = """
+helps['tsi env gen2 update'] = """
     type: command
     short-summary: "Create a gen2 environment in the specified subscription and resource group."
     parameters:
@@ -168,147 +168,147 @@ available for query from the warm store.
     examples:
       - name: EnvironmentsGen2Update
         text: |-
-               az timeseriesinsights environment gen2 update --name "env2" --resource-group "rg1" \
+               az tsi env gen2 update --name "env2" --resource-group "rg1" \
                --warm-store-configuration data-retention=P30D \
                --storage-configuration account-name=your-account-name management-key=your-account-key
 """
 
-helps['timeseriesinsights environment delete'] = """
+helps['tsi env delete'] = """
     type: command
     short-summary: "Delete the environment with the specified name in the specified subscription and resource group."
     examples:
       - name: EnvironmentsDelete
         text: |-
-               az timeseriesinsights environment delete --name "env1" --resource-group "rg1"
+               az tsi env delete --name "env1" --resource-group "rg1"
 """
 
-helps['timeseriesinsights environment wait'] = """
+helps['tsi env wait'] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the timeseriesinsights environment is met.
     examples:
       - name: Pause executing next line of CLI script until the timeseriesinsights environment is successfully \
 created.
         text: |-
-               az timeseriesinsights environment wait --name "env1" --resource-group "rg1" --created
+               az tsi env wait --name "env1" --resource-group "rg1" --created
       - name: Pause executing next line of CLI script until the timeseriesinsights environment is successfully \
 updated.
         text: |-
-               az timeseriesinsights environment wait --name "env1" --resource-group "rg1" --updated
+               az tsi env wait --name "env1" --resource-group "rg1" --updated
 """
 
-helps['timeseriesinsights event-source'] = """
+helps['tsi event-source'] = """
     type: group
     short-summary: Manage event source with timeseriesinsights
 """
 
-helps['timeseriesinsights event-source list'] = """
+helps['tsi event-source list'] = """
     type: command
     short-summary: "List all the available event sources associated with the subscription and within the specified \
 resource group and environment."
     examples:
       - name: ListEventSourcesByEnvironment
         text: |-
-               az timeseriesinsights event-source list --environment-name "env1" --resource-group "rg1"
+               az tsi event-source list --environment-name "env1" --resource-group "rg1"
 """
 
-helps['timeseriesinsights event-source show'] = """
+helps['tsi event-source show'] = """
     type: command
     short-summary: "Show the event source with the specified name in the specified environment."
     examples:
       - name: GetEventHubEventSource
         text: |-
-               az timeseriesinsights event-source show --environment-name "env1" --name "es1" --resource-group "rg1"
+               az tsi event-source show --environment-name "env1" --name "es1" --resource-group "rg1"
 """
 
-helps['timeseriesinsights event-source eventhub'] = """
+helps['tsi event-source eventhub'] = """
     type: group
     short-summary: Manage event source with timeseriesinsights sub group event-hub
 """
 
-helps['timeseriesinsights event-source eventhub create'] = """
+helps['tsi event-source eventhub create'] = """
     type: command
     short-summary: "Create an event source under the specified environment."
     examples:
       - name: CreateEventHubEventSource
         text: |-
-               az timeseriesinsights event-source eventhub create --environment-name "env1" --name "es1" \
+               az tsi event-source eventhub create --environment-name "env1" --name "es1" \
 --location westus --consumer-group-name "cgn" --event-hub-name "ehn" --event-source-resource-id "somePathInArm" \
 --key-name "managementKey" --service-bus-namespace "sbn" --shared-access-key "someSecretvalue" \
 --timestamp-property-name "someTimestampProperty" --resource-group "rg1"
 """
 
-helps['timeseriesinsights event-source eventhub update'] = """
+helps['tsi event-source eventhub update'] = """
     type: command
     short-summary: "Update an event source under the specified environment."
     examples:
       - name: UpdateEventHubEventSource
         text: |-
-               az timeseriesinsights event-source eventhub update --environment-name "env1" --name "es1" \
+               az tsi event-source eventhub update --environment-name "env1" --name "es1" \
 --shared-access-key "someSecretvalue" --timestamp-property-name "someTimestampProperty" --resource-group "rg1"
 """
 
-helps['timeseriesinsights event-source iothub'] = """
+helps['tsi event-source iothub'] = """
     type: group
     short-summary: Manage event source with timeseriesinsights sub group iot-hub
 """
 
-helps['timeseriesinsights event-source iothub create'] = """
+helps['tsi event-source iothub create'] = """
     type: command
     short-summary: "Create an event source under the specified environment."
     examples:
       - name: CreateIotHubEventSource
         text: |-
-               az timeseriesinsights event-source iothub create -g "rg" --environment-name "env1" --name "eventsource" \
+               az tsi event-source iothub create -g "rg" --environment-name "env1" --name "eventsource" \
 --consumer-group-name "consumer-group" --iot-hub-name "iothub" \
 --key-name "key-name" --shared-access-key "someSecretvalue" --event-source-resource-id "resource-id"
 """
 
-helps['timeseriesinsights event-source iothub update'] = """
+helps['tsi event-source iothub update'] = """
     type: command
     short-summary: "Update an event source under the specified environment."
     examples:
       - name: UpdateIotHubEventSource
         text: |-
-               az timeseriesinsights event-source iothub update -g "rg" --environment-name "env1" --name "eventsource" \
+               az tsi event-source iothub update -g "rg" --environment-name "env1" --name "eventsource" \
  --timestamp-property-name timestampProp --shared-access-key "someSecretvalue" --tags test=tag
 """
 
-helps['timeseriesinsights event-source delete'] = """
+helps['tsi event-source delete'] = """
     type: command
     short-summary: "Delete the event source with the specified name in the specified subscription, resource group, \
 and environment."
     examples:
       - name: DeleteEventSource
         text: |-
-               az timeseriesinsights event-source delete --environment-name "env1" --name "es1" --resource-group "rg1"
+               az tsi event-source delete --environment-name "env1" --name "es1" --resource-group "rg1"
 """
 
-helps['timeseriesinsights reference-data-set'] = """
+helps['tsi reference-data-set'] = """
     type: group
     short-summary: Manage reference data set with timeseriesinsights
 """
 
-helps['timeseriesinsights reference-data-set list'] = """
+helps['tsi reference-data-set list'] = """
     type: command
     short-summary: "List all the available reference data sets associated with the subscription and within the \
 specified resource group and environment."
     examples:
       - name: ReferenceDataSetsListByEnvironment
         text: |-
-               az timeseriesinsights reference-data-set list --environment-name "env1" --resource-group "rg1"
+               az tsi reference-data-set list --environment-name "env1" --resource-group "rg1"
 """
 
-helps['timeseriesinsights reference-data-set show'] = """
+helps['tsi reference-data-set show'] = """
     type: command
     short-summary: "Show the reference data set with the specified name in the specified environment."
     examples:
       - name: ReferenceDataSetsGet
         text: |-
-               az timeseriesinsights reference-data-set show --environment-name "env1" --name "rds1" --resource-group \
+               az tsi reference-data-set show --environment-name "env1" --name "rds1" --resource-group \
 "rg1"
 """
 
-helps['timeseriesinsights reference-data-set create'] = """
+helps['tsi reference-data-set create'] = """
     type: command
     short-summary: "Create a reference data set in the specified environment."
     parameters:
@@ -324,84 +324,84 @@ helps['timeseriesinsights reference-data-set create'] = """
     examples:
       - name: ReferenceDataSetsCreate
         text: |-
-               az timeseriesinsights reference-data-set create --environment-name "env1" --location westus \
+               az tsi reference-data-set create --environment-name "env1" --location westus \
 --key-properties name="DeviceId1" type="String" --key-properties name="DeviceFloor" type="Double" --name "rds1" \
 --resource-group "rg1"
 """
 
-helps['timeseriesinsights reference-data-set update'] = """
+helps['tsi reference-data-set update'] = """
     type: command
     short-summary: "Update the reference data set with the specified name in the specified subscription, resource \
 group, and environment."
     examples:
       - name: ReferenceDataSetsUpdate
         text: |-
-               az timeseriesinsights reference-data-set update --environment-name "env1" --name "rds1" --tags \
+               az tsi reference-data-set update --environment-name "env1" --name "rds1" --tags \
 someKey="someValue" --resource-group "rg1"
 """
 
-helps['timeseriesinsights reference-data-set delete'] = """
+helps['tsi reference-data-set delete'] = """
     type: command
     short-summary: "Delete the reference data set with the specified name in the specified subscription, resource \
 group, and environment."
     examples:
       - name: ReferenceDataSetsDelete
         text: |-
-               az timeseriesinsights reference-data-set delete --environment-name "env1" --name "rds1" \
+               az tsi reference-data-set delete --environment-name "env1" --name "rds1" \
 --resource-group "rg1"
 """
 
-helps['timeseriesinsights access-policy'] = """
+helps['tsi access-policy'] = """
     type: group
     short-summary: Manage access policy with timeseriesinsights
 """
 
-helps['timeseriesinsights access-policy list'] = """
+helps['tsi access-policy list'] = """
     type: command
     short-summary: "List all the available access policies associated with the environment."
     examples:
       - name: AccessPoliciesByEnvironment
         text: |-
-               az timeseriesinsights access-policy list --environment-name "env1" --resource-group "rg1"
+               az tsi access-policy list --environment-name "env1" --resource-group "rg1"
 """
 
-helps['timeseriesinsights access-policy show'] = """
+helps['tsi access-policy show'] = """
     type: command
     short-summary: "Show the access policy with the specified name in the specified environment."
     examples:
       - name: AccessPoliciesGet
         text: |-
-               az timeseriesinsights access-policy show --name "ap1" --environment-name "env1" --resource-group "rg1"
+               az tsi access-policy show --name "ap1" --environment-name "env1" --resource-group "rg1"
 """
 
-helps['timeseriesinsights access-policy create'] = """
+helps['tsi access-policy create'] = """
     type: command
     short-summary: "Create an access policy in the specified environment."
     examples:
       - name: AccessPoliciesCreate
         text: |-
-               az timeseriesinsights access-policy create --name "ap1" --environment-name "env1" --description "some \
+               az tsi access-policy create --name "ap1" --environment-name "env1" --description "some \
 description" --principal-object-id "aGuid" --roles "Reader" --resource-group "rg1"
 """
 
-helps['timeseriesinsights access-policy update'] = """
+helps['tsi access-policy update'] = """
     type: command
     short-summary: "Update the access policy with the specified name in the specified subscription, resource group, \
 and environment."
     examples:
       - name: AccessPoliciesUpdate
         text: |-
-               az timeseriesinsights access-policy update --name "ap1" --roles "Reader" --roles "Contributor" \
+               az tsi access-policy update --name "ap1" --roles "Reader" --roles "Contributor" \
 --environment-name "env1" --resource-group "rg1"
 """
 
-helps['timeseriesinsights access-policy delete'] = """
+helps['tsi access-policy delete'] = """
     type: command
     short-summary: "Delete the access policy with the specified name in the specified subscription, resource group, \
 and environment."
     examples:
       - name: AccessPoliciesDelete
         text: |-
-               az timeseriesinsights access-policy delete --name "ap1" --environment-name "env1" --resource-group \
+               az tsi access-policy delete --name "ap1" --environment-name "env1" --resource-group \
 "rg1"
 """
