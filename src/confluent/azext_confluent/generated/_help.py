@@ -12,18 +12,18 @@
 from knack.help_files import helps
 
 
-helps['confluent term'] = """
+helps['confluent terms'] = """
     type: group
     short-summary: Manage marketplace agreement with confluent
 """
 
-helps['confluent term list'] = """
+helps['confluent terms list'] = """
     type: command
     short-summary: "List Confluent marketplace agreements in the subscription."
     examples:
       - name: MarketplaceAgreements_List
         text: |-
-               az confluent term list
+               az confluent terms list
 """
 
 helps['confluent organization'] = """

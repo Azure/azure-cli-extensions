@@ -12,7 +12,7 @@
 from azure.cli.core.util import sdk_no_wait
 
 
-def confluent_term_list(client):
+def confluent_terms_list(client):
     return client.list()
 
 

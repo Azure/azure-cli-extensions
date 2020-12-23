@@ -14,10 +14,10 @@ from .. import try_manual
 
 # EXAMPLE: /MarketplaceAgreements/get/MarketplaceAgreements_List
 @try_manual
-def step_term_list(test, rg, checks=None):  # pylint: disable=unused-argument
+def step_terms_list(test, rg, checks=None):  # pylint: disable=unused-argument
     if checks is None:
         checks = []
-    test.cmd('az confluent term list',
+    test.cmd('az confluent terms list',
              checks=checks)
 
 
