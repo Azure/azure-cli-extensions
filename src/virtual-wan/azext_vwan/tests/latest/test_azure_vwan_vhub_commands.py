@@ -48,20 +48,26 @@ class AzureVWanVHubScenario(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vhub_connection')
     def test_azure_vhub_connection_basic_scenario(self, resource_group):
         self.kwargs.update({
-            'vnet': 'clitestvnet',
-            'vwan': 'clitestvwan',
-            'vhub': 'clitestvhub',
-            'connection': 'clitestvhubconnection',
+            'vnet': 'clitestvnet2',
+            'vwan': 'clitestvwan2',
+            'vhub': 'clitestvhub2',
+            'connection': 'clitestvhubconnection2',
             'rg': resource_group
         })
 
         self.cmd('network vnet create -g {rg} -n {vnet}')
         self.cmd('network vwan create -n {vwan} -g {rg} --type Standard')
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.5.0.0/16 -l westus --sku Standard')
-        self.cmd('network vhub connection create --resource-group {rg} --vhub-name {vhub} --name {connection} --remote-vnet {vnet}', checks=[
+        self.cmd('network vhub connection create -g {rg} --vhub-name {vhub} --name {connection} --remote-vnet {vnet}', checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('name', self.kwargs.get('connection'))
         ])
+        self.cmd('network vhub connection list -g {rg} --vhub-name {vhub}', checks=self.check('length(@)', 1))
+        self.cmd('network vhub connection show -g {rg} --vhub-name {vhub} --name {connection}')
+        self.cmd('network vhub connection update -g {rg} --vhub-name {vhub} --name {connection} --labels x1 x2',
+                 checks=self.check('length(routingConfiguration.propagatedRouteTables.labels)', 2))
+        self.cmd('network vhub connection delete -g {rg} --vhub-name {vhub} --name {connection} -y')
+        self.cmd('network vhub connection list -g {rg} --vhub-name {vhub}', checks=self.check('length(@)', 0))
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vpn_server_config', location='westcentralus')
     def test_azure_vpn_server_config_basic_scenario(self, resource_group):
@@ -184,7 +190,9 @@ class AzureVWanVHubScenario(ScenarioTest):
                  '--vhub {vhub} --vpn-server-config {vserverconfig} --address-space 10.0.0.0/24 11.0.0.0/24 --no-wait')
         self.cmd('az network p2s-vpn-gateway wait -g {rg} -n {vp2sgateway} --created')
         self.cmd('az network p2s-vpn-gateway update -g {rg} -n {vp2sgateway} --scale-unit 3 '
-                 '--vpn-server-config {vserverconfig2} --address-space 13.0.0.0/24 12.0.0.0/24')
+                 '--vpn-server-config {vserverconfig2} --address-space 13.0.0.0/24 12.0.0.0/24 --labels x1 x2 x3',
+                 checks=self.check(
+                     'length(p2SconnectionConfigurations[0].routingConfiguration.propagatedRouteTables.labels)', 3))
         self.cmd('az network p2s-vpn-gateway list -g {rg}', checks=[
             self.check('length(@)', 1)
         ])
@@ -287,6 +295,9 @@ class AzureVWanVHubScenario(ScenarioTest):
                  checks=[
                      self.check('length(@)', 1)
                  ])
+
+        self.cmd('network vpn-gateway connection -g {rg} --gateway-name {vpngateway} -n {connection} --labels x1 x2',
+                 checks=self.check('length(routingConfiguration.propagatedRouteTables.labels)', 2))
 
         self.cmd('network vpn-gateway connection delete '
                  '-g {rg} '

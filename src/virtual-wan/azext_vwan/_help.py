@@ -5,7 +5,6 @@
 
 from knack.help_files import helps
 
-
 # region VirtualHub
 helps['network vhub'] = """
     type: group
@@ -91,6 +90,22 @@ helps['network vhub connection delete'] = """
     - name: Delete a virtual hub VNet connection.
       text: |
           az network vhub connection delete -n MyConnection --vhub-name MyHub -g MyRG
+"""
+
+helps['network vhub connection update'] = """
+    type: command
+    short-summary: Update settings of a virtual hub connection.
+    examples:
+    - name: Add labels of a virtual hub connection.
+      text: |
+          az network vhub connection update -n MyConnection --vhub-name MyHub -g MyRG --labels Newlabel1 Newlabel2
+    - name: Add labels of a virtual hub connection.
+      text: |
+          az network vhub connection update -n MyConnection --vhub-name MyHub -g MyRG --add routingConfiguration.propagatedRouteTables.labels Newlabel1 Newlabel2
+    - name: Reset labels of a virtual hub connection.
+      text: |
+          az network vhub connection update -n MyConnection --vhub-name MyHub -g MyRG --set routingConfiguration.propagatedRouteTables.labels[0]=Newlabel1
+          
 """
 
 helps['network vhub connection wait'] = """
@@ -314,6 +329,21 @@ helps['network vpn-gateway connection delete'] = """
             az network vpn-gateway connection delete -g MyRG -n MyConnection --gateway-name MyGateway
 """
 
+helps['network vpn-gateway connection update'] = """
+    type: command
+    short-summary: Update settings of VPN gateway connection.
+    examples:
+      - name: Update settings of VPN gateway connection.
+        text: |
+            az network vpn-gateway connection update -g MyRG -n MyConnection --gateway-name MyGateway --labels NewLabel1 NewLabels2
+      - name: Add labels of VPN gateway connection.
+        text: |
+            az network vpn-gateway connection update -g MyRG -n MyConnection --gateway-name MyGateway --add routingConfiguration.propagatedRouteTables.labels Newlabel1 Newlabel2
+      - name: Reset labels of VPN gateway connection.
+        text: |
+            az network vpn-gateway connection update -g MyRG -n MyConnection --gateway-name MyGateway --set routingConfiguration.propagatedRouteTables.labels[0]=Newlabel1   
+"""
+
 helps['network vpn-gateway connection wait'] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the site-to-site VPN gateway connection is met.
@@ -478,6 +508,9 @@ helps['network p2s-vpn-gateway show'] = """
 helps['network p2s-vpn-gateway update'] = """
     type: command
     short-summary: Update settings of a point-to-site VPN gateway.
+      - name: Update settings of a point-to-site VPN gateway with routing configuration.
+        text: |
+            az network p2s-vpn-gateway create -g MyRG -n MyP2SVPNGateway --labels Newlabel1 Newlabel2 Newlabel3    
 """
 
 helps['network p2s-vpn-gateway delete'] = """
