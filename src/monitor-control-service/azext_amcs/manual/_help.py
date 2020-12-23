@@ -304,9 +304,7 @@ transfer-period="PT5M" streams="Microsoft-Perf" \
 --syslog name="cronSyslog" facility-names="cron" log-levels="Debug" log-levels="Critical" log-levels="Emergency" \
 streams="Microsoft-Syslog" \
 --windows-event-logs name="cloudSecurityTeamEvents" transfer-period="PT1M" streams="Microsoft-WindowsEvent" \
-x-path-queries="Security!" \
-
-
+x-path-queries="Security!"
 """
 
 helps['monitor data-collection rule delete'] = """
