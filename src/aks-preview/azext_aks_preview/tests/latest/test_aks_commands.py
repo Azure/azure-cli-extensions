@@ -5,6 +5,7 @@
 
 import unittest
 import os
+from .recording_processors import KeyReplacer
 
 from azure.cli.testsdk import (
     ResourceGroupPreparer, RoleBasedServicePrincipalPreparer, ScenarioTest, live_only)
@@ -17,6 +18,11 @@ def _get_test_data_file(filename):
 
 
 class AzureKubernetesServiceScenarioTest(ScenarioTest):
+    def __init__(self, method_name):
+        super(AzureKubernetesServiceScenarioTest, self).__init__(
+            method_name, recording_processors=[KeyReplacer()]
+        )
+
     @live_only()  # without live only fails with need az login
     @AllowLargeResponse()
     def test_get_version(self):
