@@ -301,8 +301,8 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
         # test with data
         test_string = "testupload"
         length = len(test_string)
-        from azure.core.exceptions import ResourceExistsError
-        with self.assertRaises(ResourceExistsError):
+        from azure.cli.core.azclierror import AzureResponseError
+        with self.assertRaises(AzureResponseError):
             self.storage_cmd('storage blob upload -c {} --data "{}" --length {} -n {} ', account_info,
                              container, test_string, length, blob_name)
 

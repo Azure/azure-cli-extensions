@@ -587,10 +587,11 @@ def snapshot_blob(client, metadata=None, **kwargs):
 
 
 # pylint: disable=too-many-locals
-def upload_blob(cmd, client, data, container_name=None, blob_name=None, blob_type=None,
+def upload_blob(cmd, client, file_path=None, container_name=None, blob_name=None, blob_type=None,
                 metadata=None, validate_content=False, maxsize_condition=None, max_connections=2, lease_id=None,
                 if_modified_since=None, if_unmodified_since=None, if_match=None, if_none_match=None,
-                timeout=None, progress_callback=None, encryption_scope=None, overwrite=None, length=None, **kwargs):
+                timeout=None, progress_callback=None, encryption_scope=None, overwrite=None, data=None,
+                length=None, **kwargs):
     """Upload a blob to a container."""
     from azure.core.exceptions import ResourceExistsError
     upload_args = {
@@ -627,8 +628,16 @@ def upload_blob(cmd, client, data, container_name=None, blob_name=None, blob_typ
     # Because the contents of the uploaded file may be too large, it should be passed into the a stream object,
     # upload_blob() read file data in batches to avoid OOM problems
     try:
-        response = client.upload_blob(data=data, length=length, metadata=metadata, encryption_scope=encryption_scope,
-                                      **upload_args, **kwargs)
+        if file_path:
+            length = os.path.getsize(file_path)
+            with open(file_path, 'rb') as stream:
+                response = client.upload_blob(data=stream, length=length, metadata=metadata,
+                                              encryption_scope=encryption_scope,
+                                              **upload_args, **kwargs)
+        if data is not None:
+            response = client.upload_blob(data=data, length=length, metadata=metadata,
+                                          encryption_scope=encryption_scope,
+                                          **upload_args, **kwargs)
     except ResourceExistsError as ex:
         from azure.cli.core.azclierror import AzureResponseError
         raise AzureResponseError("{}\nIf you want to overwrite the existing one, please add--overwrite in your command."

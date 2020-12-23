@@ -1053,6 +1053,3 @@ def validate_upload_blob(namespace):
         raise InvalidArgumentValueError("usage error: please only specify one of --file and --data to upload.")
     if not namespace.file_path and not namespace.data:
         raise InvalidArgumentValueError("usage error: please specify one of --file and --data to upload.")
-    if namespace.file_path is not None:
-        namespace.data = open(namespace.file_path, 'rb')
-    del namespace.file_path
