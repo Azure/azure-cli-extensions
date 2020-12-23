@@ -524,7 +524,8 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
         if intrusion_detection_mode is not None:
             (FirewallPolicyIntrusionDetection,
              FirewallPolicyIntrusionDetectionConfiguration) = \
-                 cmd.get_models('FirewallPolicyIntrusionDetection', 'FirewallPolicyIntrusionDetectionConfiguration')
+                cmd.get_models('FirewallPolicyIntrusionDetection',
+                               'FirewallPolicyIntrusionDetectionConfiguration')
             firewall_policy.intrusion_detection = FirewallPolicyIntrusionDetection(
                 mode=intrusion_detection_mode,
                 configuration=FirewallPolicyIntrusionDetectionConfiguration()
