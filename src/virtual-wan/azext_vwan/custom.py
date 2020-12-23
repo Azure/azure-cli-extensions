@@ -177,6 +177,7 @@ def update_hub_vnet_connection(instance, cmd, associated_route_table=None, propa
 
     return instance
 
+
 # pylint: disable=too-many-locals
 def create_hub_vnet_connection(cmd, resource_group_name, virtual_hub_name, connection_name,
                                remote_virtual_network, allow_hub_to_remote_vnet_transit=None,
@@ -495,7 +496,9 @@ def update_vpn_gateway(instance, cmd, virtual_hub=None, tags=None, scale_unit=No
 
     return instance
 
-def update_vpn_gateway_connection(instance, cmd, associated_route_table=None, propagated_route_tables=None, labels=None):
+
+def update_vpn_gateway_connection(instance, cmd, associated_route_table=None, propagated_route_tables=None,
+                                  labels=None):
     SubResource = cmd.get_models('SubResource')
 
     ids = [SubResource(id=propagated_route_table) for propagated_route_table in
@@ -507,6 +510,7 @@ def update_vpn_gateway_connection(instance, cmd, associated_route_table=None, pr
         c.set_param('routing_configuration.propagated_route_tables.ids', ids, False)
 
     return instance
+
 
 def create_vpn_gateway_connection(cmd, resource_group_name, gateway_name, connection_name,
                                   remote_vpn_site, routing_weight=None, protocol_type=None,
