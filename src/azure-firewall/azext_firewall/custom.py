@@ -586,6 +586,70 @@ def list_azure_firewall_policies(cmd, resource_group_name=None):
     return client.list_all()
 
 
+def add_firewall_policy_intrusion_detection_config(cmd,
+                                                   resource_group_name,
+                                                   firewall_policy_name,
+                                                   signature_id=None,
+                                                   signature_mode=None):
+
+    from azure.cli.core.azclierror import RequiredArgumentMissingError, InvalidArgumentValueError
+
+    client = network_client_factory(cmd.cli_ctx).firewall_policies
+    firewall_policy = client.get(resource_group_name, firewall_policy_name)
+
+    if firewall_policy.intrusion_detection is None:
+        raise RequiredArgumentMissingError('Intrusion detection mode is not set. Setting it by update command first')
+
+    FirewallPolicyIntrusionDetectionSignatureSpecification = \
+        cmd.get_models('FirewallPolicyIntrusionDetectionSignatureSpecification')
+
+    if signature_id is not None and signature_mode is not None:
+        for overrided_signature in firewall_policy.intrusion_detection.configuration.signature_overrides:
+            if overrided_signature.id == signature_id:
+                raise InvalidArgumentValueError(
+                    'Signature ID {} exists. Delete it first or try update instead'.format(signature_id))
+
+        signature_override = FirewallPolicyIntrusionDetectionSignatureSpecification(
+            id=signature_id,
+            mode=signature_mode
+        )
+        firewall_policy.intrusion_detection.configuration.signature_overrides.append(signature_override)
+
+    return client.create_or_update(resource_group_name, firewall_policy_name, firewall_policy)
+
+
+def list_firewall_policy_intrusion_detection_config(cmd, resource_group_name, firewall_policy_name):
+    client = network_client_factory(cmd.cli_ctx).firewall_policies
+    firewall_policy = client.get(resource_group_name, firewall_policy_name)
+
+    if firewall_policy.intrusion_detection is None:
+        return []
+
+    return firewall_policy.intrusion_detection.configuration
+
+
+def remove_firewall_policy_intrusion_detection_config(cmd,
+                                                      resource_group_name,
+                                                      firewall_policy_name,
+                                                      signature_id=None):
+    from azure.cli.core.azclierror import RequiredArgumentMissingError, InvalidArgumentValueError
+
+    client = network_client_factory(cmd.cli_ctx).firewall_policies
+    firewall_policy = client.get(resource_group_name, firewall_policy_name)
+
+    if firewall_policy.intrusion_detection is None:
+        raise RequiredArgumentMissingError('Intrusion detection mode is not set. Setting it by update command first')
+
+    if signature_id is not None:
+        signatures = firewall_policy.intrusion_detection.configuration.signature_overrides
+        new_signatures = [s for s in signatures if s.id != signature_id]
+        if len(signatures) == len(new_signatures):
+            raise InvalidArgumentValueError("Signature ID {} doesn't exist".format(signature_id))
+        firewall_policy.intrusion_detection.configuration.signature_overrides = new_signatures
+
+    return client.create_or_update(resource_group_name, firewall_policy_name, firewall_policy)
+
+
 def create_azure_firewall_policy_rule_collection_group(cmd, resource_group_name, firewall_policy_name,
                                                        rule_collection_group_name, priority):
     client = network_client_factory(cmd.cli_ctx).firewall_policy_rule_collection_groups

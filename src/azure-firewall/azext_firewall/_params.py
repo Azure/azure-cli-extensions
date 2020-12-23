@@ -172,6 +172,13 @@ def load_arguments(self, _):
                    arg_type=get_enum_type(FirewallPolicyIntrusionDetectionStateType),
                    help='Intrusion detection general state')
 
+    with self.argument_context('network firewall policy intrusion-detection', min_api='2020-07-01') as c:
+        c.argument('firewall_policy_name', options_list=['--policy-name'], help='The name of the Firewall Policy.')
+
+    with self.argument_context('network firewall policy intrusion-detection', min_api='2020-07-01', arg_group='Intrusion Signature Override') as c:
+        c.argument('signature_mode', options_list=['--mode'], help='The signature state', arg_type=get_enum_type(FirewallPolicyIntrusionDetectionStateType))
+        c.argument('signature_id', help='Signature id')
+
     with self.argument_context('network firewall policy rule-collection-group') as c:
         c.argument('firewall_policy_name', options_list=['--policy-name'], help='The name of the Firewall Policy.')
         c.argument('rule_collection_group_name', options_list=['--name', '-n'], help='The name of the Firewall Policy Rule Collection Group.')
