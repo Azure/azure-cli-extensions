@@ -8,7 +8,7 @@
 from typing import TYPE_CHECKING
 import warnings
 
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
@@ -58,7 +58,7 @@ class GuestConfigurationHcrpAssignmentOperations(object):
         assignment=None,  # type: Optional["models.AssignmentInfo"]
         vm=None,  # type: Optional["models.VmInfo"]
         resources=None,  # type: Optional[List["models.AssignmentReportResource"]]
-        guest_configuration_navigation_name=None,  # type: Optional[str]
+        kind=None,  # type: Optional[Union[str, "models.Kind"]]
         version=None,  # type: Optional[str]
         configuration_parameter=None,  # type: Optional[List["models.ConfigurationParameter"]]
         configuration_setting=None,  # type: Optional["models.ConfigurationSetting"]
@@ -66,12 +66,15 @@ class GuestConfigurationHcrpAssignmentOperations(object):
     ):
         # type: (...) -> "models.GuestConfigurationAssignment"
         cls = kwargs.pop('cls', None)  # type: ClsType["models.GuestConfigurationAssignment"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
 
-        _parameters = models.GuestConfigurationAssignment(name=name, location=location, context=context, assignment=assignment, vm=vm, resources=resources, name_properties_guest_configuration_name=guest_configuration_navigation_name, version=version, configuration_parameter=configuration_parameter, configuration_setting=configuration_setting)
+        parameters = models.GuestConfigurationAssignment(name=name, location=location, context=context, assignment=assignment, vm=vm, resources=resources, kind=kind, version=version, configuration_parameter=configuration_parameter, configuration_setting=configuration_setting)
         api_version = "2020-06-25"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
         url = self._create_or_update_initial.metadata['url']  # type: ignore
@@ -90,14 +93,12 @@ class GuestConfigurationHcrpAssignmentOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_parameters, 'GuestConfigurationAssignment')
+        body_content = self._serialize.body(parameters, 'GuestConfigurationAssignment')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -106,7 +107,6 @@ class GuestConfigurationHcrpAssignmentOperations(object):
             error = self._deserialize(models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
             deserialized = self._deserialize('GuestConfigurationAssignment', pipeline_response)
 
@@ -130,13 +130,13 @@ class GuestConfigurationHcrpAssignmentOperations(object):
         assignment=None,  # type: Optional["models.AssignmentInfo"]
         vm=None,  # type: Optional["models.VmInfo"]
         resources=None,  # type: Optional[List["models.AssignmentReportResource"]]
-        guest_configuration_navigation_name=None,  # type: Optional[str]
+        kind=None,  # type: Optional[Union[str, "models.Kind"]]
         version=None,  # type: Optional[str]
         configuration_parameter=None,  # type: Optional[List["models.ConfigurationParameter"]]
         configuration_setting=None,  # type: Optional["models.ConfigurationSetting"]
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
+        # type: (...) -> LROPoller["models.GuestConfigurationAssignment"]
         """Creates an association between a ARC machine and guest configuration.
 
         :param guest_configuration_assignment_name: Name of the guest configuration assignment.
@@ -150,17 +150,17 @@ class GuestConfigurationHcrpAssignmentOperations(object):
         :param location: Region where the VM is located.
         :type location: str
         :param context: The source which initiated the guest configuration assignment. Ex: Azure
-     Policy.
+         Policy.
         :type context: str
         :param assignment: Configuration details of the guest configuration assignment.
         :type assignment: ~guest_configuration_client.models.AssignmentInfo
         :param vm: Information about the VM.
         :type vm: ~guest_configuration_client.models.VmInfo
         :param resources: The list of resources for which guest configuration assignment compliance is
-     checked.
+         checked.
         :type resources: list[~guest_configuration_client.models.AssignmentReportResource]
-        :param guest_configuration_navigation_name: Name of the guest configuration.
-        :type guest_configuration_navigation_name: str
+        :param kind: Kind of the guest configuration. For example:DSC.
+        :type kind: str or ~guest_configuration_client.models.Kind
         :param version: Version of the guest configuration.
         :type version: str
         :param configuration_parameter: The configuration parameters for the guest configuration.
@@ -168,6 +168,7 @@ class GuestConfigurationHcrpAssignmentOperations(object):
         :param configuration_setting: The configuration setting for the guest configuration.
         :type configuration_setting: ~guest_configuration_client.models.ConfigurationSetting
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -182,23 +183,25 @@ class GuestConfigurationHcrpAssignmentOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._create_or_update_initial(
-            guest_configuration_assignment_name=guest_configuration_assignment_name,
-            resource_group_name=resource_group_name,
-            machine_name=machine_name,
-            name=name,
-            location=location,
-            context=context,
-            assignment=assignment,
-            vm=vm,
-            resources=resources,
-            guest_configuration_navigation_name=guest_configuration_navigation_name,
-            version=version,
-            configuration_parameter=configuration_parameter,
-            configuration_setting=configuration_setting,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._create_or_update_initial(
+                guest_configuration_assignment_name=guest_configuration_assignment_name,
+                resource_group_name=resource_group_name,
+                machine_name=machine_name,
+                name=name,
+                location=location,
+                context=context,
+                assignment=assignment,
+                vm=vm,
+                resources=resources,
+                kind=kind,
+                version=version,
+                configuration_parameter=configuration_parameter,
+                configuration_setting=configuration_setting,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -210,10 +213,25 @@ class GuestConfigurationHcrpAssignmentOperations(object):
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
+        path_format_arguments = {
+            'guestConfigurationAssignmentName': self._serialize.url("guest_configuration_assignment_name", guest_configuration_assignment_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', pattern=r'^[-\w\._]+$'),
+            'machineName': self._serialize.url("machine_name", machine_name, 'str'),
+        }
+
+        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}'}  # type: ignore
 
     def get(
@@ -238,9 +256,12 @@ class GuestConfigurationHcrpAssignmentOperations(object):
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.GuestConfigurationAssignment"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-06-25"
+        accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -258,9 +279,8 @@ class GuestConfigurationHcrpAssignmentOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -287,9 +307,12 @@ class GuestConfigurationHcrpAssignmentOperations(object):
     ):
         # type: (...) -> None
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-06-25"
+        accept = "application/json"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
@@ -307,8 +330,8 @@ class GuestConfigurationHcrpAssignmentOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -330,7 +353,7 @@ class GuestConfigurationHcrpAssignmentOperations(object):
         machine_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller
+        # type: (...) -> LROPoller[None]
         """Delete a guest configuration assignment.
 
         :param resource_group_name: The resource group name.
@@ -340,6 +363,7 @@ class GuestConfigurationHcrpAssignmentOperations(object):
         :param machine_name: The name of the ARC machine.
         :type machine_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
@@ -354,13 +378,15 @@ class GuestConfigurationHcrpAssignmentOperations(object):
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = self._delete_initial(
-            resource_group_name=resource_group_name,
-            guest_configuration_assignment_name=guest_configuration_assignment_name,
-            machine_name=machine_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = self._delete_initial(
+                resource_group_name=resource_group_name,
+                guest_configuration_assignment_name=guest_configuration_assignment_name,
+                machine_name=machine_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -369,10 +395,25 @@ class GuestConfigurationHcrpAssignmentOperations(object):
             if cls:
                 return cls(pipeline_response, None, {})
 
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
+        path_format_arguments = {
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', pattern=r'^[-\w\._]+$'),
+            'guestConfigurationAssignmentName': self._serialize.url("guest_configuration_assignment_name", guest_configuration_assignment_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'machineName': self._serialize.url("machine_name", machine_name, 'str'),
+        }
+
+        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}'}  # type: ignore
 
     def list(
@@ -394,11 +435,18 @@ class GuestConfigurationHcrpAssignmentOperations(object):
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.GuestConfigurationAssignmentList"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-06-25"
+        accept = "application/json"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
             if not next_link:
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
@@ -412,15 +460,11 @@ class GuestConfigurationHcrpAssignmentOperations(object):
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):

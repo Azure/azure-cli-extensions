@@ -9,23 +9,24 @@
 # --------------------------------------------------------------------------
 
 
-def cf_guestconfig(cli_ctx, *_):
+def cf_guestconfig_cl(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from ..vendored_sdks.guestconfig import GuestConfigurationClient
-    return get_mgmt_service_client(cli_ctx, GuestConfigurationClient)
+    return get_mgmt_service_client(cli_ctx,
+                                   GuestConfigurationClient)
 
 
 def cf_guest_configuration_assignment(cli_ctx, *_):
-    return cf_guestconfig(cli_ctx).guest_configuration_assignment
+    return cf_guestconfig_cl(cli_ctx).guest_configuration_assignment
 
 
 def cf_guest_configuration_assignment_report(cli_ctx, *_):
-    return cf_guestconfig(cli_ctx).guest_configuration_assignment_report
+    return cf_guestconfig_cl(cli_ctx).guest_configuration_assignment_report
 
 
 def cf_guest_configuration_hcrp_assignment(cli_ctx, *_):
-    return cf_guestconfig(cli_ctx).guest_configuration_hcrp_assignment
+    return cf_guestconfig_cl(cli_ctx).guest_configuration_hcrp_assignment
 
 
 def cf_guest_configuration_hcrp_assignment_report(cli_ctx, *_):
-    return cf_guestconfig(cli_ctx).guest_configuration_hcrp_assignment_report
+    return cf_guestconfig_cl(cli_ctx).guest_configuration_hcrp_assignment_report

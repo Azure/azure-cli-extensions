@@ -6,11 +6,11 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._guest_configuration_assignment_operations_async import GuestConfigurationAssignmentOperations
-from ._guest_configuration_assignment_report_operations_async import GuestConfigurationAssignmentReportOperations
-from ._guest_configuration_hcrp_assignment_operations_async import GuestConfigurationHcrpAssignmentOperations
-from ._guest_configuration_hcrp_assignment_report_operations_async import GuestConfigurationHcrpAssignmentReportOperations
-from ._operation_operations_async import OperationOperations
+from ._guest_configuration_assignment_operations import GuestConfigurationAssignmentOperations
+from ._guest_configuration_assignment_report_operations import GuestConfigurationAssignmentReportOperations
+from ._guest_configuration_hcrp_assignment_operations import GuestConfigurationHcrpAssignmentOperations
+from ._guest_configuration_hcrp_assignment_report_operations import GuestConfigurationHcrpAssignmentReportOperations
+from ._operation_operations import OperationOperations
 
 __all__ = [
     'GuestConfigurationAssignmentOperations',

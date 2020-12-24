@@ -9,9 +9,6 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 
-import json
-from azure.cli.core.util import sdk_no_wait
-
 
 def guestconfig_guest_configuration_assignment_list(client,
                                                     resource_group_name,
@@ -27,82 +24,6 @@ def guestconfig_guest_configuration_assignment_show(client,
     return client.get(resource_group_name=resource_group_name,
                       guest_configuration_assignment_name=guest_configuration_assignment_name,
                       vm_name=vm_name)
-
-
-def guestconfig_guest_configuration_assignment_create(client,
-                                                      guest_configuration_assignment_name,
-                                                      resource_group_name,
-                                                      vm_name,
-                                                      name=None,
-                                                      location=None,
-                                                      context=None,
-                                                      latest_assignment_report_assignment=None,
-                                                      guest_configuration_name=None,
-                                                      guest_configuration_version=None,
-                                                      guest_configuration_configuration_parameter=None,
-                                                      guest_configuration_configuration_setting=None,
-                                                      no_wait=False):
-    if isinstance(latest_assignment_report_assignment, str):
-        latest_assignment_report_assignment = json.loads(latest_assignment_report_assignment)
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       guest_configuration_assignment_name=guest_configuration_assignment_name,
-                       resource_group_name=resource_group_name,
-                       vm_name=vm_name,
-                       name=name,
-                       location=location,
-                       context=context,
-                       assignment=latest_assignment_report_assignment,
-                       vm=json.loads("{}"),
-                       resources="{}",
-                       guest_configuration_navigation_name=guest_configuration_name,
-                       version=guest_configuration_version,
-                       configuration_parameter=guest_configuration_configuration_parameter,
-                       configuration_setting=guest_configuration_configuration_setting)
-
-
-def guestconfig_guest_configuration_assignment_update(client,
-                                                      guest_configuration_assignment_name,
-                                                      resource_group_name,
-                                                      vm_name,
-                                                      name=None,
-                                                      location=None,
-                                                      context=None,
-                                                      latest_assignment_report_assignment=None,
-                                                      guest_configuration_name=None,
-                                                      guest_configuration_version=None,
-                                                      guest_configuration_configuration_parameter=None,
-                                                      guest_configuration_configuration_setting=None,
-                                                      no_wait=False):
-    if isinstance(latest_assignment_report_assignment, str):
-        latest_assignment_report_assignment = json.loads(latest_assignment_report_assignment)
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       guest_configuration_assignment_name=guest_configuration_assignment_name,
-                       resource_group_name=resource_group_name,
-                       vm_name=vm_name,
-                       name=name,
-                       location=location,
-                       context=context,
-                       assignment=latest_assignment_report_assignment,
-                       vm=json.loads("{}"),
-                       resources="{}",
-                       guest_configuration_navigation_name=guest_configuration_name,
-                       version=guest_configuration_version,
-                       configuration_parameter=guest_configuration_configuration_parameter,
-                       configuration_setting=guest_configuration_configuration_setting)
-
-
-def guestconfig_guest_configuration_assignment_delete(client,
-                                                      resource_group_name,
-                                                      guest_configuration_assignment_name,
-                                                      vm_name,
-                                                      no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_delete,
-                       resource_group_name=resource_group_name,
-                       guest_configuration_assignment_name=guest_configuration_assignment_name,
-                       vm_name=vm_name)
 
 
 def guestconfig_guest_configuration_assignment_report_list(client,
@@ -139,82 +60,6 @@ def guestconfig_guest_configuration_hcrp_assignment_show(client,
     return client.get(resource_group_name=resource_group_name,
                       guest_configuration_assignment_name=guest_configuration_assignment_name,
                       machine_name=machine_name)
-
-
-def guestconfig_guest_configuration_hcrp_assignment_create(client,
-                                                           guest_configuration_assignment_name,
-                                                           resource_group_name,
-                                                           machine_name,
-                                                           name=None,
-                                                           location=None,
-                                                           context=None,
-                                                           latest_assignment_report_assignment=None,
-                                                           guest_configuration_name=None,
-                                                           guest_configuration_version=None,
-                                                           guest_configuration_configuration_parameter=None,
-                                                           guest_configuration_configuration_setting=None,
-                                                           no_wait=False):
-    if isinstance(latest_assignment_report_assignment, str):
-        latest_assignment_report_assignment = json.loads(latest_assignment_report_assignment)
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       guest_configuration_assignment_name=guest_configuration_assignment_name,
-                       resource_group_name=resource_group_name,
-                       machine_name=machine_name,
-                       name=name,
-                       location=location,
-                       context=context,
-                       assignment=latest_assignment_report_assignment,
-                       vm=json.loads("{}"),
-                       resources="{}",
-                       guest_configuration_navigation_name=guest_configuration_name,
-                       version=guest_configuration_version,
-                       configuration_parameter=guest_configuration_configuration_parameter,
-                       configuration_setting=guest_configuration_configuration_setting)
-
-
-def guestconfig_guest_configuration_hcrp_assignment_update(client,
-                                                           guest_configuration_assignment_name,
-                                                           resource_group_name,
-                                                           machine_name,
-                                                           name=None,
-                                                           location=None,
-                                                           context=None,
-                                                           latest_assignment_report_assignment=None,
-                                                           guest_configuration_name=None,
-                                                           guest_configuration_version=None,
-                                                           guest_configuration_configuration_parameter=None,
-                                                           guest_configuration_configuration_setting=None,
-                                                           no_wait=False):
-    if isinstance(latest_assignment_report_assignment, str):
-        latest_assignment_report_assignment = json.loads(latest_assignment_report_assignment)
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       guest_configuration_assignment_name=guest_configuration_assignment_name,
-                       resource_group_name=resource_group_name,
-                       machine_name=machine_name,
-                       name=name,
-                       location=location,
-                       context=context,
-                       assignment=latest_assignment_report_assignment,
-                       vm=json.loads("{}"),
-                       resources="{}",
-                       guest_configuration_navigation_name=guest_configuration_name,
-                       version=guest_configuration_version,
-                       configuration_parameter=guest_configuration_configuration_parameter,
-                       configuration_setting=guest_configuration_configuration_setting)
-
-
-def guestconfig_guest_configuration_hcrp_assignment_delete(client,
-                                                           resource_group_name,
-                                                           guest_configuration_assignment_name,
-                                                           machine_name,
-                                                           no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_delete,
-                       resource_group_name=resource_group_name,
-                       guest_configuration_assignment_name=guest_configuration_assignment_name,
-                       machine_name=machine_name)
 
 
 def guestconfig_guest_configuration_hcrp_assignment_report_list(client,

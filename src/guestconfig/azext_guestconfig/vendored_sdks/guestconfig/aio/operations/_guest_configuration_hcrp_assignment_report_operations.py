@@ -8,7 +8,7 @@
 from typing import Any, Callable, Dict, Generic, Optional, TypeVar
 import warnings
 
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core.exceptions import ARMErrorFormat
@@ -18,8 +18,8 @@ from ... import models
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class GuestConfigurationAssignmentReportOperations:
-    """GuestConfigurationAssignmentReportOperations async operations.
+class GuestConfigurationHcrpAssignmentReportOperations:
+    """GuestConfigurationHcrpAssignmentReportOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -44,7 +44,7 @@ class GuestConfigurationAssignmentReportOperations:
         self,
         resource_group_name: str,
         guest_configuration_assignment_name: str,
-        vm_name: str,
+        machine_name: str,
         **kwargs
     ) -> "models.GuestConfigurationAssignmentReportList":
         """List all reports for the guest configuration assignment, latest report first.
@@ -53,17 +53,20 @@ class GuestConfigurationAssignmentReportOperations:
         :type resource_group_name: str
         :param guest_configuration_assignment_name: The guest configuration assignment name.
         :type guest_configuration_assignment_name: str
-        :param vm_name: The name of the virtual machine.
-        :type vm_name: str
+        :param machine_name: The name of the ARC machine.
+        :type machine_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: GuestConfigurationAssignmentReportList, or the result of cls(response)
         :rtype: ~guest_configuration_client.models.GuestConfigurationAssignmentReportList
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.GuestConfigurationAssignmentReportList"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-06-25"
+        accept = "application/json"
 
         # Construct URL
         url = self.list.metadata['url']  # type: ignore
@@ -71,7 +74,7 @@ class GuestConfigurationAssignmentReportOperations:
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', pattern=r'^[-\w\._]+$'),
             'guestConfigurationAssignmentName': self._serialize.url("guest_configuration_assignment_name", guest_configuration_assignment_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'vmName': self._serialize.url("vm_name", vm_name, 'str'),
+            'machineName': self._serialize.url("machine_name", machine_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -81,9 +84,8 @@ class GuestConfigurationAssignmentReportOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -99,14 +101,14 @@ class GuestConfigurationAssignmentReportOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}/reports'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}/reports'}  # type: ignore
 
     async def get(
         self,
         resource_group_name: str,
         guest_configuration_assignment_name: str,
         report_id: str,
-        vm_name: str,
+        machine_name: str,
         **kwargs
     ) -> "models.GuestConfigurationAssignmentReport":
         """Get a report for the guest configuration assignment, by reportId.
@@ -117,17 +119,20 @@ class GuestConfigurationAssignmentReportOperations:
         :type guest_configuration_assignment_name: str
         :param report_id: The GUID for the guest configuration assignment report.
         :type report_id: str
-        :param vm_name: The name of the virtual machine.
-        :type vm_name: str
+        :param machine_name: The name of the ARC machine.
+        :type machine_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: GuestConfigurationAssignmentReport, or the result of cls(response)
         :rtype: ~guest_configuration_client.models.GuestConfigurationAssignmentReport
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.GuestConfigurationAssignmentReport"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-06-25"
+        accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -136,7 +141,7 @@ class GuestConfigurationAssignmentReportOperations:
             'guestConfigurationAssignmentName': self._serialize.url("guest_configuration_assignment_name", guest_configuration_assignment_name, 'str'),
             'reportId': self._serialize.url("report_id", report_id, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'vmName': self._serialize.url("vm_name", vm_name, 'str'),
+            'machineName': self._serialize.url("machine_name", machine_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -146,9 +151,8 @@ class GuestConfigurationAssignmentReportOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -164,4 +168,4 @@ class GuestConfigurationAssignmentReportOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}/reports/{reportId}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}/reports/{reportId}'}  # type: ignore

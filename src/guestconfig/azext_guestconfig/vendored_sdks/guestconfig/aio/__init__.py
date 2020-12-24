@@ -6,5 +6,5 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._guest_configuration_client_async import GuestConfigurationClient
+from ._guest_configuration_client import GuestConfigurationClient
 __all__ = ['GuestConfigurationClient']

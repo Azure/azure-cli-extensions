@@ -15,12 +15,12 @@ if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials_async import AsyncTokenCredential
 
-from ._configuration_async import GuestConfigurationClientConfiguration
-from .operations_async import GuestConfigurationAssignmentOperations
-from .operations_async import GuestConfigurationAssignmentReportOperations
-from .operations_async import GuestConfigurationHcrpAssignmentOperations
-from .operations_async import GuestConfigurationHcrpAssignmentReportOperations
-from .operations_async import OperationOperations
+from ._configuration import GuestConfigurationClientConfiguration
+from .operations import GuestConfigurationAssignmentOperations
+from .operations import GuestConfigurationAssignmentReportOperations
+from .operations import GuestConfigurationHcrpAssignmentOperations
+from .operations import GuestConfigurationHcrpAssignmentReportOperations
+from .operations import OperationOperations
 from .. import models
 
 
@@ -28,15 +28,15 @@ class GuestConfigurationClient(object):
     """Guest Configuration Client.
 
     :ivar guest_configuration_assignment: GuestConfigurationAssignmentOperations operations
-    :vartype guest_configuration_assignment: guest_configuration_client.aio.operations_async.GuestConfigurationAssignmentOperations
+    :vartype guest_configuration_assignment: guest_configuration_client.aio.operations.GuestConfigurationAssignmentOperations
     :ivar guest_configuration_assignment_report: GuestConfigurationAssignmentReportOperations operations
-    :vartype guest_configuration_assignment_report: guest_configuration_client.aio.operations_async.GuestConfigurationAssignmentReportOperations
+    :vartype guest_configuration_assignment_report: guest_configuration_client.aio.operations.GuestConfigurationAssignmentReportOperations
     :ivar guest_configuration_hcrp_assignment: GuestConfigurationHcrpAssignmentOperations operations
-    :vartype guest_configuration_hcrp_assignment: guest_configuration_client.aio.operations_async.GuestConfigurationHcrpAssignmentOperations
+    :vartype guest_configuration_hcrp_assignment: guest_configuration_client.aio.operations.GuestConfigurationHcrpAssignmentOperations
     :ivar guest_configuration_hcrp_assignment_report: GuestConfigurationHcrpAssignmentReportOperations operations
-    :vartype guest_configuration_hcrp_assignment_report: guest_configuration_client.aio.operations_async.GuestConfigurationHcrpAssignmentReportOperations
+    :vartype guest_configuration_hcrp_assignment_report: guest_configuration_client.aio.operations.GuestConfigurationHcrpAssignmentReportOperations
     :ivar operation: OperationOperations operations
-    :vartype operation: guest_configuration_client.aio.operations_async.OperationOperations
+    :vartype operation: guest_configuration_client.aio.operations.OperationOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: Subscription ID which uniquely identify Microsoft Azure subscription. The subscription ID forms part of the URI for every service call.
