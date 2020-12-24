@@ -356,6 +356,77 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('threatIntelWhitelist.ipAddresses[1]', '102.0.0.1')
                  ])
 
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_intrusion_detection')
+    def test_azure_firewall_policy_intrusion_detection(self, resource_group):
+        self.kwargs.update({
+            'policy': 'myFirewallPolicy',
+            'rg': resource_group,
+        })
+
+        self.cmd('network firewall policy create -g {rg} -n {policy} --sku Premium --detect-mode Off',
+                 checks=[
+                     self.check('sku.tier', 'Premium'),
+                     self.check('intrusionDetection.mode', 'Off'),
+                     self.check('intrusionDetection.configuration.bypassTrafficSettings', []),
+                     self.check('intrusionDetection.configuration.signatureOverrides', []),
+                 ])
+
+        self.cmd('network firewall policy update -g {rg} -n {policy} --detect-mode Alert',
+                 checks=[
+                     self.check('intrusionDetection.mode', 'Alert'),
+                     self.check('intrusionDetection.configuration.bypassTrafficSettings', []),
+                     self.check('intrusionDetection.configuration.signatureOverrides', []),
+                 ])
+
+        self.cmd('network firewall policy intrusion-detection add -g {rg} --policy-name {policy} --mode Deny --signature-id 10001',
+                 checks=[
+                     self.check('bypassTrafficSettings', []),
+                     self.check('length(signatureOverrides)', 1),
+                     self.check('signatureOverrides[0]', {'id': '10001', 'mode': 'Deny'}),
+                 ])
+
+        self.cmd('network firewall policy intrusion-detection add -g {rg} --policy-name {policy} --mode Alert --signature-id 20001',
+                 checks=[
+                     self.check('bypassTrafficSettings', []),
+                     self.check('length(signatureOverrides)', 2),
+                     self.check('signatureOverrides[0]', {'id': '10001', 'mode': 'Deny'}),
+                     self.check('signatureOverrides[1]', {'id': '20001', 'mode': 'Alert'}),
+                 ])
+
+        self.cmd('network firewall policy intrusion-detection add -g {rg} --policy-name {policy} '
+                 '--rule-name bypass-rule-1 '
+                 '--rule-protocol TCP '
+                 '--rule-src-addresses 10.0.0.12 10.0.0.15 '
+                 '--rule-dest-addresses 192.168.0.103 192.168.0.104 '
+                 '--rule-dest-ports 8080 9090 5432',
+                 checks=[
+                     self.check('length(bypassTrafficSettings)', 1),
+                     self.check('bypassTrafficSettings[0].description', None),
+                     self.check('bypassTrafficSettings[0].destinationAddresses', ['192.168.0.103', '192.168.0.104']),
+                     self.check('bypassTrafficSettings[0].destinationIpGroups', None),
+                     self.check('bypassTrafficSettings[0].protocol', 'TCP'),
+                     self.check('bypassTrafficSettings[0].destinationPorts', ['8080', '9090', '5432']),
+                     self.check('length(signatureOverrides)', 2),
+                     self.check('signatureOverrides[0]', {'id': '10001', 'mode': 'Deny'}),
+                     self.check('signatureOverrides[1]', {'id': '20001', 'mode': 'Alert'}),
+                 ])
+
+        self.cmd('network firewall policy intrusion-detection list -g {rg} --policy-name {policy}',
+                 checks=[
+                     self.check('length(bypassTrafficSettings)', 1),
+                     self.check('length(signatureOverrides)', 2),
+                 ])
+
+        self.cmd('network firewall policy intrusion-detection remove -g {rg} --policy-name {policy} '
+                 '--rule-name bypass-rule-1 '
+                 '--signature-id 10001')
+
+        self.cmd('network firewall policy intrusion-detection list -g {rg} --policy-name {policy}',
+                 checks=[
+                     self.check('length(bypassTrafficSettings)', 0),
+                     self.check('length(signatureOverrides)', 1),
+                 ])
+
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='centralus')
     def test_azure_firewall_policy(self, resource_group, resource_group_location):
         self.kwargs.update({
@@ -367,14 +438,16 @@ class AzureFirewallScenario(ScenarioTest):
         })
         self.cmd('network firewall policy create -g {rg} -n {policy} -l {location} '
                  '--ip-addresses 101.0.0.0 101.0.0.1 --fqdns *.microsoft.com '
-                 '--sku Premium',
+                 '--sku Premium '
+                 '--detect-mode Deny',
                  checks=[
                      self.check('type', 'Microsoft.Network/FirewallPolicies'),
                      self.check('name', '{policy}'),
                      self.check('threatIntelWhitelist.fqdns[0]', '*.microsoft.com'),
                      self.check('threatIntelWhitelist.ipAddresses[0]', '101.0.0.0'),
                      self.check('threatIntelWhitelist.ipAddresses[1]', '101.0.0.1'),
-                     self.check('sku.tier', 'Premium')
+                     self.check('sku.tier', 'Premium'),
+                     self.check('intrusionDetection.mode', 'Deny'),
                  ])
 
         self.cmd('network firewall policy show -g {rg} -n {policy}', checks=[
@@ -390,14 +463,16 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall policy list')
 
         self.cmd('network firewall policy update -g {rg} -n {policy} --threat-intel-mode Deny '
-                 '--ip-addresses 102.0.0.0 102.0.0.1 --fqdns *.google.com',
+                 '--ip-addresses 102.0.0.0 102.0.0.1 --fqdns *.google.com '
+                 '--detect-mode Off',
                  checks=[
                      self.check('type', 'Microsoft.Network/FirewallPolicies'),
                      self.check('name', '{policy}'),
                      self.check('threatIntelMode', 'Deny'),
                      self.check('threatIntelWhitelist.fqdns[0]', '*.google.com'),
                      self.check('threatIntelWhitelist.ipAddresses[0]', '102.0.0.0'),
-                     self.check('threatIntelWhitelist.ipAddresses[1]', '102.0.0.1')
+                     self.check('threatIntelWhitelist.ipAddresses[1]', '102.0.0.1'),
+                     self.check('intrusionDetection.mode', 'Off'),
                  ])
 
         self.cmd('network firewall policy rule-collection-group create -g {rg} --priority {collection_group_priority} --policy-name {policy} -n {collectiongroup}', checks=[
