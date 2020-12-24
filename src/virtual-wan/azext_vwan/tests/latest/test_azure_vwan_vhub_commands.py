@@ -296,8 +296,9 @@ class AzureVWanVHubScenario(ScenarioTest):
                      self.check('length(@)', 1)
                  ])
 
-        self.cmd('network vpn-gateway connection -g {rg} --gateway-name {vpngateway} -n {connection} --labels x1 x2',
-                 checks=self.check('length(routingConfiguration.propagatedRouteTables.labels)', 2))
+        self.cmd(
+            'network vpn-gateway connection update -g {rg} --gateway-name {vpngateway} -n {connection} --labels x1 x2',
+            checks=self.check('length(routingConfiguration.propagatedRouteTables.labels)', 2))
 
         self.cmd('network vpn-gateway connection delete '
                  '-g {rg} '
