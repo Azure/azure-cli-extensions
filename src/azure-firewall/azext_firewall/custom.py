@@ -492,7 +492,8 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
                                    threat_intel_mode=None, location=None, tags=None, ip_addresses=None,
                                    fqdns=None,
                                    dns_servers=None, enable_dns_proxy=None,
-                                   sku=None, intrusion_detection_mode=None):
+                                   sku=None, intrusion_detection_mode=None,
+                                   key_vault_secret_id=None, certificate_name=None):
     client = network_client_factory(cmd.cli_ctx).firewall_policies
     (FirewallPolicy,
      SubResource,
@@ -531,6 +532,13 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
                 configuration=FirewallPolicyIntrusionDetectionConfiguration()
             )
 
+        if certificate_name is not None and key_vault_secret_id is not None:
+            FirewallPolicyTransportSecurity, FirewallPolicyCertificateAuthority = \
+                cmd.get_models('FirewallPolicyTransportSecurity', 'FirewallPolicyCertificateAuthority')
+            certificate_auth = FirewallPolicyCertificateAuthority(key_vault_secret_id=key_vault_secret_id,
+                                                                  name=certificate_name)
+            firewall_policy.transport_security = FirewallPolicyTransportSecurity(certificate_authority=certificate_auth)
+
     return client.create_or_update(resource_group_name, firewall_policy_name, firewall_policy)
 
 
@@ -538,7 +546,8 @@ def update_azure_firewall_policies(cmd,
                                    instance, tags=None, threat_intel_mode=None, ip_addresses=None,
                                    fqdns=None,
                                    dns_servers=None, enable_dns_proxy=None,
-                                   sku=None, intrusion_detection_mode=None):
+                                   sku=None, intrusion_detection_mode=None,
+                                   key_vault_secret_id=None, certificate_name=None):
 
     (FirewallPolicyThreatIntelWhitelist, FirewallPolicySku) = cmd.get_models('FirewallPolicyThreatIntelWhitelist', 'FirewallPolicySku')
     if tags is not None:
@@ -576,6 +585,12 @@ def update_azure_firewall_policies(cmd,
                     mode=intrusion_detection_mode,
                     configuration=FirewallPolicyIntrusionDetectionConfiguration()
                 )
+        if certificate_name is not None and key_vault_secret_id is not None:
+            FirewallPolicyTransportSecurity, FirewallPolicyCertificateAuthority = \
+                cmd.get_models('FirewallPolicyTransportSecurity', 'FirewallPolicyCertificateAuthority')
+            certificate_auth = FirewallPolicyCertificateAuthority(key_vault_secret_id=key_vault_secret_id,
+                                                                  name=certificate_name)
+            instance.transport_security = FirewallPolicyTransportSecurity(certificate_authority=certificate_auth)
 
     return instance
 
