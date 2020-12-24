@@ -31,13 +31,26 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 # Env setup_scenario
 @try_manual
 def setup_scenario(test, rg_2, rg):
-    pass
+    test.kwargs.update({
+        'nsg': 'aadds-nsg-test',
+        'vn': 'vnet1',
+        'vn_2': 'vnet2'
+    })
+    test.cmd('az network nsg create --name {nsg} --resource-group {rg_2}')
+    test.cmd('az network nsg rule create -n AllowPSRemoting -g {rg_2} --nsg-name {nsg} --priority 301 '
+             '--access Allow --protocol Tcp --direction Inbound --destination-port-ranges 5986 '
+             '--source-address-prefixes AzureActiveDirectoryDomainServices')
+    test.cmd('az network vnet create -g {rg_2} -n {vn} --nsg {nsg} --subnet-name default '
+             '--address-prefixes 10.0.0.0/16')
+    test.cmd('az network vnet create -g {rg_2} -n {vn_2} --nsg {nsg} --subnet-name default '
+             '--address-prefixes 10.1.0.0/16')
 
 
 # Env cleanup_scenario
 @try_manual
 def cleanup_scenario(test, rg_2, rg):
-    pass
+    test.cmd('az network vnet delete -g {rg_2} -n {vn}')
+    test.cmd('az network vnet delete -g {rg_2} -n {vn_2}')
 
 
 # Testcase: Scenario
@@ -109,8 +122,6 @@ class AdScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitestad_TestNetworkResourceGroup'[:7], key='rg_2', parameter_name='rg_2')
     @ResourceGroupPreparer(name_prefix='clitestad_TestResourceGroup'[:7], key='rg', parameter_name='rg')
-    @VirtualNetworkPreparer(name_prefix='clitestad_TestVnetWUS'[:7], key='vn', resource_group_key='rg_2')
-    @VirtualNetworkPreparer(name_prefix='clitestad_TestVnetEUS'[:7], key='vn_2', resource_group_key='rg_2')
     def test_ad_Scenario(self, rg_2, rg):
         call_scenario(self, rg_2, rg)
         calc_coverage(__file__)
