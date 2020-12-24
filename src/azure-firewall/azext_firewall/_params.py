@@ -174,7 +174,7 @@ def load_arguments(self, _):
                    arg_type=get_enum_type(FirewallPolicyIntrusionDetectionStateType),
                    help='Intrusion detection general state')
 
-    with self.argument_context('network firewall policy', arg_group='Transport Security') as c:
+    with self.argument_context('network firewall policy', arg_group='Transport Security', is_preview=True) as c:
         c.argument('key_vault_secret_id',
                    help="Secret Id of (base-64 encoded unencrypted pfx) Secret or Certificate object stored in KeyVault")
         c.argument('certificate_name', options_list=['--cert-name'], help='Name of the CA certificate')
