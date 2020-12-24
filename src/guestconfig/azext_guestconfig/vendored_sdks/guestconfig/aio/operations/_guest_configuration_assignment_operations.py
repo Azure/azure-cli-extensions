@@ -9,10 +9,10 @@ from typing import Any, AsyncIterable, Callable, Dict, Generic, List, Optional, 
 import warnings
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
-from azure.core.polling import AsyncNoPolling, AsyncPollingMethod, async_poller
+from azure.core.polling import AsyncLROPoller, AsyncNoPolling, AsyncPollingMethod
 from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
@@ -21,8 +21,8 @@ from ... import models
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class GuestConfigurationHcrpAssignmentOperations:
-    """GuestConfigurationHcrpAssignmentOperations async operations.
+class GuestConfigurationAssignmentOperations:
+    """GuestConfigurationAssignmentOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -47,26 +47,29 @@ class GuestConfigurationHcrpAssignmentOperations:
         self,
         guest_configuration_assignment_name: str,
         resource_group_name: str,
-        machine_name: str,
+        vm_name: str,
         name: Optional[str] = None,
         location: Optional[str] = None,
         context: Optional[str] = None,
         assignment: Optional["models.AssignmentInfo"] = None,
         vm: Optional["models.VmInfo"] = None,
         resources: Optional[List["models.AssignmentReportResource"]] = None,
-        guest_configuration_navigation_name: Optional[str] = None,
+        kind: Optional[Union[str, "models.Kind"]] = None,
         version: Optional[str] = None,
         configuration_parameter: Optional[List["models.ConfigurationParameter"]] = None,
         configuration_setting: Optional["models.ConfigurationSetting"] = None,
         **kwargs
     ) -> "models.GuestConfigurationAssignment":
         cls = kwargs.pop('cls', None)  # type: ClsType["models.GuestConfigurationAssignment"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
 
-        _parameters = models.GuestConfigurationAssignment(name=name, location=location, context=context, assignment=assignment, vm=vm, resources=resources, name_properties_guest_configuration_name=guest_configuration_navigation_name, version=version, configuration_parameter=configuration_parameter, configuration_setting=configuration_setting)
+        parameters = models.GuestConfigurationAssignment(name=name, location=location, context=context, assignment=assignment, vm=vm, resources=resources, kind=kind, version=version, configuration_parameter=configuration_parameter, configuration_setting=configuration_setting)
         api_version = "2020-06-25"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
         url = self._create_or_update_initial.metadata['url']  # type: ignore
@@ -74,7 +77,7 @@ class GuestConfigurationHcrpAssignmentOperations:
             'guestConfigurationAssignmentName': self._serialize.url("guest_configuration_assignment_name", guest_configuration_assignment_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', pattern=r'^[-\w\._]+$'),
-            'machineName': self._serialize.url("machine_name", machine_name, 'str'),
+            'vmName': self._serialize.url("vm_name", vm_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -85,14 +88,12 @@ class GuestConfigurationHcrpAssignmentOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_parameters, 'GuestConfigurationAssignment')
+        body_content = self._serialize.body(parameters, 'GuestConfigurationAssignment')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -101,7 +102,6 @@ class GuestConfigurationHcrpAssignmentOperations:
             error = self._deserialize(models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = None
         if response.status_code == 200:
             deserialized = self._deserialize('GuestConfigurationAssignment', pipeline_response)
 
@@ -112,49 +112,49 @@ class GuestConfigurationHcrpAssignmentOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}'}  # type: ignore
+    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}'}  # type: ignore
 
-    async def create_or_update(
+    async def begin_create_or_update(
         self,
         guest_configuration_assignment_name: str,
         resource_group_name: str,
-        machine_name: str,
+        vm_name: str,
         name: Optional[str] = None,
         location: Optional[str] = None,
         context: Optional[str] = None,
         assignment: Optional["models.AssignmentInfo"] = None,
         vm: Optional["models.VmInfo"] = None,
         resources: Optional[List["models.AssignmentReportResource"]] = None,
-        guest_configuration_navigation_name: Optional[str] = None,
+        kind: Optional[Union[str, "models.Kind"]] = None,
         version: Optional[str] = None,
         configuration_parameter: Optional[List["models.ConfigurationParameter"]] = None,
         configuration_setting: Optional["models.ConfigurationSetting"] = None,
         **kwargs
-    ) -> "models.GuestConfigurationAssignment":
-        """Creates an association between a ARC machine and guest configuration.
+    ) -> AsyncLROPoller["models.GuestConfigurationAssignment"]:
+        """Creates an association between a VM and guest configuration.
 
         :param guest_configuration_assignment_name: Name of the guest configuration assignment.
         :type guest_configuration_assignment_name: str
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
-        :param machine_name: The name of the ARC machine.
-        :type machine_name: str
+        :param vm_name: The name of the virtual machine.
+        :type vm_name: str
         :param name: Name of the guest configuration assignment.
         :type name: str
         :param location: Region where the VM is located.
         :type location: str
         :param context: The source which initiated the guest configuration assignment. Ex: Azure
-     Policy.
+         Policy.
         :type context: str
         :param assignment: Configuration details of the guest configuration assignment.
         :type assignment: ~guest_configuration_client.models.AssignmentInfo
         :param vm: Information about the VM.
         :type vm: ~guest_configuration_client.models.VmInfo
         :param resources: The list of resources for which guest configuration assignment compliance is
-     checked.
+         checked.
         :type resources: list[~guest_configuration_client.models.AssignmentReportResource]
-        :param guest_configuration_navigation_name: Name of the guest configuration.
-        :type guest_configuration_navigation_name: str
+        :param kind: Kind of the guest configuration. For example:DSC.
+        :type kind: str or ~guest_configuration_client.models.Kind
         :param version: Version of the guest configuration.
         :type version: str
         :param configuration_parameter: The configuration parameters for the guest configuration.
@@ -162,12 +162,13 @@ class GuestConfigurationHcrpAssignmentOperations:
         :param configuration_setting: The configuration setting for the guest configuration.
         :type configuration_setting: ~guest_configuration_client.models.ConfigurationSetting
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: GuestConfigurationAssignment, or the result of cls(response)
-        :rtype: ~guest_configuration_client.models.GuestConfigurationAssignment
+        :return: An instance of AsyncLROPoller that returns either GuestConfigurationAssignment or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~guest_configuration_client.models.GuestConfigurationAssignment]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -176,23 +177,25 @@ class GuestConfigurationHcrpAssignmentOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = await self._create_or_update_initial(
-            guest_configuration_assignment_name=guest_configuration_assignment_name,
-            resource_group_name=resource_group_name,
-            machine_name=machine_name,
-            name=name,
-            location=location,
-            context=context,
-            assignment=assignment,
-            vm=vm,
-            resources=resources,
-            guest_configuration_navigation_name=guest_configuration_navigation_name,
-            version=version,
-            configuration_parameter=configuration_parameter,
-            configuration_setting=configuration_setting,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._create_or_update_initial(
+                guest_configuration_assignment_name=guest_configuration_assignment_name,
+                resource_group_name=resource_group_name,
+                vm_name=vm_name,
+                name=name,
+                location=location,
+                context=context,
+                assignment=assignment,
+                vm=vm,
+                resources=resources,
+                kind=kind,
+                version=version,
+                configuration_parameter=configuration_parameter,
+                configuration_setting=configuration_setting,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -204,17 +207,32 @@ class GuestConfigurationHcrpAssignmentOperations:
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
+        path_format_arguments = {
+            'guestConfigurationAssignmentName': self._serialize.url("guest_configuration_assignment_name", guest_configuration_assignment_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', pattern=r'^[-\w\._]+$'),
+            'vmName': self._serialize.url("vm_name", vm_name, 'str'),
+        }
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
-        return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}'}  # type: ignore
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}'}  # type: ignore
 
     async def get(
         self,
         resource_group_name: str,
         guest_configuration_assignment_name: str,
-        machine_name: str,
+        vm_name: str,
         **kwargs
     ) -> "models.GuestConfigurationAssignment":
         """Get information about a guest configuration assignment.
@@ -223,17 +241,20 @@ class GuestConfigurationHcrpAssignmentOperations:
         :type resource_group_name: str
         :param guest_configuration_assignment_name: The guest configuration assignment name.
         :type guest_configuration_assignment_name: str
-        :param machine_name: The name of the ARC machine.
-        :type machine_name: str
+        :param vm_name: The name of the virtual machine.
+        :type vm_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: GuestConfigurationAssignment, or the result of cls(response)
         :rtype: ~guest_configuration_client.models.GuestConfigurationAssignment
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.GuestConfigurationAssignment"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-06-25"
+        accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -241,7 +262,7 @@ class GuestConfigurationHcrpAssignmentOperations:
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', pattern=r'^[-\w\._]+$'),
             'guestConfigurationAssignmentName': self._serialize.url("guest_configuration_assignment_name", guest_configuration_assignment_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'machineName': self._serialize.url("machine_name", machine_name, 'str'),
+            'vmName': self._serialize.url("vm_name", vm_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -251,9 +272,8 @@ class GuestConfigurationHcrpAssignmentOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -269,19 +289,22 @@ class GuestConfigurationHcrpAssignmentOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}'}  # type: ignore
 
     async def _delete_initial(
         self,
         resource_group_name: str,
         guest_configuration_assignment_name: str,
-        machine_name: str,
+        vm_name: str,
         **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-06-25"
+        accept = "application/json"
 
         # Construct URL
         url = self._delete_initial.metadata['url']  # type: ignore
@@ -289,7 +312,7 @@ class GuestConfigurationHcrpAssignmentOperations:
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', pattern=r'^[-\w\._]+$'),
             'guestConfigurationAssignmentName': self._serialize.url("guest_configuration_assignment_name", guest_configuration_assignment_name, 'str'),
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'machineName': self._serialize.url("machine_name", machine_name, 'str'),
+            'vmName': self._serialize.url("vm_name", vm_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -299,8 +322,8 @@ class GuestConfigurationHcrpAssignmentOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        # Construct and send request
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
@@ -313,30 +336,31 @@ class GuestConfigurationHcrpAssignmentOperations:
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}'}  # type: ignore
+    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}'}  # type: ignore
 
-    async def delete(
+    async def begin_delete(
         self,
         resource_group_name: str,
         guest_configuration_assignment_name: str,
-        machine_name: str,
+        vm_name: str,
         **kwargs
-    ) -> None:
+    ) -> AsyncLROPoller[None]:
         """Delete a guest configuration assignment.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
         :param guest_configuration_assignment_name: Name of the guest configuration assignment.
         :type guest_configuration_assignment_name: str
-        :param machine_name: The name of the ARC machine.
-        :type machine_name: str
+        :param vm_name: The name of the virtual machine.
+        :type vm_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: None, or the result of cls(response)
-        :rtype: None
+        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -345,13 +369,15 @@ class GuestConfigurationHcrpAssignmentOperations:
             'polling_interval',
             self._config.polling_interval
         )
-        raw_result = await self._delete_initial(
-            resource_group_name=resource_group_name,
-            guest_configuration_assignment_name=guest_configuration_assignment_name,
-            machine_name=machine_name,
-            cls=lambda x,y,z: x,
-            **kwargs
-        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._delete_initial(
+                resource_group_name=resource_group_name,
+                guest_configuration_assignment_name=guest_configuration_assignment_name,
+                vm_name=vm_name,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
 
         kwargs.pop('error_map', None)
         kwargs.pop('content_type', None)
@@ -360,57 +386,75 @@ class GuestConfigurationHcrpAssignmentOperations:
             if cls:
                 return cls(pipeline_response, None, {})
 
-        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
+        path_format_arguments = {
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', pattern=r'^[-\w\._]+$'),
+            'guestConfigurationAssignmentName': self._serialize.url("guest_configuration_assignment_name", guest_configuration_assignment_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'vmName': self._serialize.url("vm_name", vm_name, 'str'),
+        }
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
-        return await async_poller(self._client, raw_result, get_long_running_output, polling_method)
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}'}  # type: ignore
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments/{guestConfigurationAssignmentName}'}  # type: ignore
 
     def list(
         self,
         resource_group_name: str,
-        machine_name: str,
+        vm_name: str,
         **kwargs
     ) -> AsyncIterable["models.GuestConfigurationAssignmentList"]:
-        """List all guest configuration assignments for an ARC machine.
+        """List all guest configuration assignments for a virtual machine.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
-        :param machine_name: The name of the ARC machine.
-        :type machine_name: str
+        :param vm_name: The name of the virtual machine.
+        :type vm_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either GuestConfigurationAssignmentList or the result of cls(response)
         :rtype: ~azure.core.async_paging.AsyncItemPaged[~guest_configuration_client.models.GuestConfigurationAssignmentList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.GuestConfigurationAssignmentList"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-06-25"
+        accept = "application/json"
 
         def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
             if not next_link:
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', pattern=r'^[-\w\._]+$'),
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'machineName': self._serialize.url("machine_name", machine_name, 'str'),
+                    'vmName': self._serialize.url("vm_name", vm_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
-
-            # Construct and send request
-            request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             return request
 
         async def extract_data(pipeline_response):
@@ -436,4 +480,4 @@ class GuestConfigurationHcrpAssignmentOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/providers/Microsoft.GuestConfiguration/guestConfigurationAssignments'}  # type: ignore

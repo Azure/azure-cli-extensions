@@ -101,6 +101,8 @@ class AssignmentReportResource(msrest.serialization.Model):
     :ivar compliance_status: A value indicating compliance status of the machine for the assigned
      guest configuration. Possible values include: "Compliant", "NonCompliant", "Pending".
     :vartype compliance_status: str or ~guest_configuration_client.models.ComplianceStatus
+    :ivar resource_id: Name of the guest configuration assignment resource setting.
+    :vartype resource_id: str
     :param reasons: Compliance reason and reason code for a resource.
     :type reasons:
      list[~guest_configuration_client.models.AssignmentReportResourceComplianceReason]
@@ -110,11 +112,13 @@ class AssignmentReportResource(msrest.serialization.Model):
 
     _validation = {
         'compliance_status': {'readonly': True},
+        'resource_id': {'readonly': True},
         'properties': {'readonly': True},
     }
 
     _attribute_map = {
         'compliance_status': {'key': 'complianceStatus', 'type': 'str'},
+        'resource_id': {'key': 'resourceId', 'type': 'str'},
         'reasons': {'key': 'reasons', 'type': '[AssignmentReportResourceComplianceReason]'},
         'properties': {'key': 'properties', 'type': 'object'},
     }
@@ -125,6 +129,7 @@ class AssignmentReportResource(msrest.serialization.Model):
     ):
         super(AssignmentReportResource, self).__init__(**kwargs)
         self.compliance_status = None
+        self.resource_id = None
         self.reasons = kwargs.get('reasons', None)
         self.properties = None
 
@@ -406,8 +411,8 @@ class GuestConfigurationAssignment(Resource):
     :param resources: The list of resources for which guest configuration assignment compliance is
      checked.
     :type resources: list[~guest_configuration_client.models.AssignmentReportResource]
-    :ivar kind: Kind of the guest configuration. For example:DSC. Default value: "DSC".
-    :vartype kind: str
+    :param kind: Kind of the guest configuration. For example:DSC. Possible values include: "DSC".
+    :type kind: str or ~guest_configuration_client.models.Kind
     :param name_properties_guest_configuration_name: Name of the guest configuration.
     :type name_properties_guest_configuration_name: str
     :param version: Version of the guest configuration.
@@ -438,7 +443,6 @@ class GuestConfigurationAssignment(Resource):
         'end_time': {'readonly': True},
         'compliance_status_properties_latest_assignment_report_compliance_status': {'readonly': True},
         'operation_type': {'readonly': True},
-        'kind': {'constant': True},
         'content_uri': {'readonly': True},
         'content_hash': {'readonly': True},
     }
@@ -473,8 +477,6 @@ class GuestConfigurationAssignment(Resource):
         'configuration_setting': {'key': 'properties.guestConfiguration.configurationSetting', 'type': 'ConfigurationSetting'},
     }
 
-    kind = "DSC"
-
     def __init__(
         self,
         **kwargs
@@ -496,6 +498,7 @@ class GuestConfigurationAssignment(Resource):
         self.compliance_status_properties_latest_assignment_report_compliance_status = None
         self.operation_type = None
         self.resources = kwargs.get('resources', None)
+        self.kind = kwargs.get('kind', None)
         self.name_properties_guest_configuration_name = kwargs.get('name_properties_guest_configuration_name', None)
         self.version = kwargs.get('version', None)
         self.content_uri = None

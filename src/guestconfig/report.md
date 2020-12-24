@@ -1,160 +1,159 @@
 # Azure CLI Module Creation Report
 
-### guestconfig guest-configuration-assignment create
+## EXTENSION
+|CLI Extension|Command Groups|
+|---------|------------|
+|az guestconfig|[groups](#CommandGroups)
 
-create a guestconfig guest-configuration-assignment.
+## GROUPS
+### <a name="CommandGroups">Command groups in `az guestconfig` extension </a>
+|CLI Command Group|Group Swagger name|Commands|
+|---------|------------|--------|
+|az guestconfig guest-configuration-assignment|GuestConfigurationAssignments|[commands](#CommandsInGuestConfigurationAssignments)|
+|az guestconfig guest-configuration-assignment-report|GuestConfigurationAssignmentReports|[commands](#CommandsInGuestConfigurationAssignmentReports)|
+|az guestconfig guest-configuration-hcrp-assignment|GuestConfigurationHCRPAssignments|[commands](#CommandsInGuestConfigurationHCRPAssignments)|
+|az guestconfig guest-configuration-hcrp-assignment-report|GuestConfigurationHCRPAssignmentReports|[commands](#CommandsInGuestConfigurationHCRPAssignmentReports)|
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--guest-configuration-assignment-name**|string|Name of the guest configuration assignment.|guest_configuration_assignment_name|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|
-|**--vm-name**|string|The name of the virtual machine.|vm_name|
-|**--name**|string|Name of the guest configuration assignment.|name|
-|**--location**|string|Region where the VM is located.|location|
-|**--context**|string|The source which initiated the guest configuration assignment. Ex: Azure Policy|context|
-|**--latest-assignment-report-assignment**|object|Configuration details of the guest configuration assignment.|assignment|
-|**--guest-configuration-name**|string|Name of the guest configuration.|name_properties_guest_configuration_name|
-|**--guest-configuration-version**|string|Version of the guest configuration.|version|
-|**--guest-configuration-configuration-parameter**|array|The configuration parameters for the guest configuration.|configuration_parameter|
-|**--guest-configuration-configuration-setting**|object|The configuration setting for the guest configuration.|configuration_setting|
-### guestconfig guest-configuration-assignment delete
+## COMMANDS
+### <a name="CommandsInGuestConfigurationAssignments">Commands in `az guestconfig guest-configuration-assignment` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az guestconfig guest-configuration-assignment list](#GuestConfigurationAssignmentsList)|List|[Parameters](#ParametersGuestConfigurationAssignmentsList)|[Example](#ExamplesGuestConfigurationAssignmentsList)|
+|[az guestconfig guest-configuration-assignment show](#GuestConfigurationAssignmentsGet)|Get|[Parameters](#ParametersGuestConfigurationAssignmentsGet)|[Example](#ExamplesGuestConfigurationAssignmentsGet)|
 
-delete a guestconfig guest-configuration-assignment.
+### <a name="CommandsInGuestConfigurationAssignmentReports">Commands in `az guestconfig guest-configuration-assignment-report` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az guestconfig guest-configuration-assignment-report list](#GuestConfigurationAssignmentReportsList)|List|[Parameters](#ParametersGuestConfigurationAssignmentReportsList)|[Example](#ExamplesGuestConfigurationAssignmentReportsList)|
+|[az guestconfig guest-configuration-assignment-report show](#GuestConfigurationAssignmentReportsGet)|Get|[Parameters](#ParametersGuestConfigurationAssignmentReportsGet)|[Example](#ExamplesGuestConfigurationAssignmentReportsGet)|
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|
-|**--guest-configuration-assignment-name**|string|Name of the guest configuration assignment|guest_configuration_assignment_name|
-|**--vm-name**|string|The name of the virtual machine.|vm_name|
-### guestconfig guest-configuration-assignment list
+### <a name="CommandsInGuestConfigurationHCRPAssignments">Commands in `az guestconfig guest-configuration-hcrp-assignment` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az guestconfig guest-configuration-hcrp-assignment list](#GuestConfigurationHCRPAssignmentsList)|List|[Parameters](#ParametersGuestConfigurationHCRPAssignmentsList)|[Example](#ExamplesGuestConfigurationHCRPAssignmentsList)|
+|[az guestconfig guest-configuration-hcrp-assignment show](#GuestConfigurationHCRPAssignmentsGet)|Get|[Parameters](#ParametersGuestConfigurationHCRPAssignmentsGet)|[Example](#ExamplesGuestConfigurationHCRPAssignmentsGet)|
 
-list a guestconfig guest-configuration-assignment.
+### <a name="CommandsInGuestConfigurationHCRPAssignmentReports">Commands in `az guestconfig guest-configuration-hcrp-assignment-report` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az guestconfig guest-configuration-hcrp-assignment-report list](#GuestConfigurationHCRPAssignmentReportsList)|List|[Parameters](#ParametersGuestConfigurationHCRPAssignmentReportsList)|[Example](#ExamplesGuestConfigurationHCRPAssignmentReportsList)|
+|[az guestconfig guest-configuration-hcrp-assignment-report show](#GuestConfigurationHCRPAssignmentReportsGet)|Get|[Parameters](#ParametersGuestConfigurationHCRPAssignmentReportsGet)|[Example](#ExamplesGuestConfigurationHCRPAssignmentReportsGet)|
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|
-|**--vm-name**|string|The name of the virtual machine.|vm_name|
-### guestconfig guest-configuration-assignment show
 
-show a guestconfig guest-configuration-assignment.
+## COMMAND DETAILS
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|
-|**--guest-configuration-assignment-name**|string|The guest configuration assignment name.|guest_configuration_assignment_name|
-|**--vm-name**|string|The name of the virtual machine.|vm_name|
-### guestconfig guest-configuration-assignment update
+### group `az guestconfig guest-configuration-assignment`
+#### <a name="GuestConfigurationAssignmentsList">Command `az guestconfig guest-configuration-assignment list`</a>
 
-create a guestconfig guest-configuration-assignment.
+##### <a name="ExamplesGuestConfigurationAssignmentsList">Example</a>
+```
+az guestconfig guest-configuration-assignment list --resource-group "myResourceGroupName" --vm-name "myVMName"
+```
+##### <a name="ParametersGuestConfigurationAssignmentsList">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--vm-name**|string|The name of the virtual machine.|vm_name|vmName|
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--guest-configuration-assignment-name**|string|Name of the guest configuration assignment.|guest_configuration_assignment_name|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|
-|**--vm-name**|string|The name of the virtual machine.|vm_name|
-|**--name**|string|Name of the guest configuration assignment.|name|
-|**--location**|string|Region where the VM is located.|location|
-|**--context**|string|The source which initiated the guest configuration assignment. Ex: Azure Policy|context|
-|**--latest-assignment-report-assignment**|object|Configuration details of the guest configuration assignment.|assignment|
-|**--guest-configuration-name**|string|Name of the guest configuration.|name_properties_guest_configuration_name|
-|**--guest-configuration-version**|string|Version of the guest configuration.|version|
-|**--guest-configuration-configuration-parameter**|array|The configuration parameters for the guest configuration.|configuration_parameter|
-|**--guest-configuration-configuration-setting**|object|The configuration setting for the guest configuration.|configuration_setting|
-### guestconfig guest-configuration-assignment-report list
+#### <a name="GuestConfigurationAssignmentsGet">Command `az guestconfig guest-configuration-assignment show`</a>
 
-list a guestconfig guest-configuration-assignment-report.
+##### <a name="ExamplesGuestConfigurationAssignmentsGet">Example</a>
+```
+az guestconfig guest-configuration-assignment show --name "SecureProtocol" --resource-group "myResourceGroupName" \
+--vm-name "myVMName"
+```
+##### <a name="ParametersGuestConfigurationAssignmentsGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--guest-configuration-assignment-name**|string|The guest configuration assignment name.|guest_configuration_assignment_name|guestConfigurationAssignmentName|
+|**--vm-name**|string|The name of the virtual machine.|vm_name|vmName|
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|
-|**--guest-configuration-assignment-name**|string|The guest configuration assignment name.|guest_configuration_assignment_name|
-|**--vm-name**|string|The name of the virtual machine.|vm_name|
-### guestconfig guest-configuration-assignment-report show
+### group `az guestconfig guest-configuration-assignment-report`
+#### <a name="GuestConfigurationAssignmentReportsList">Command `az guestconfig guest-configuration-assignment-report list`</a>
 
-show a guestconfig guest-configuration-assignment-report.
+##### <a name="ExamplesGuestConfigurationAssignmentReportsList">Example</a>
+```
+az guestconfig guest-configuration-assignment-report list --guest-configuration-assignment-name "AuditSecureProtocol" \
+--resource-group "myResourceGroupName" --vm-name "myVMName"
+```
+##### <a name="ParametersGuestConfigurationAssignmentReportsList">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--guest-configuration-assignment-name**|string|The guest configuration assignment name.|guest_configuration_assignment_name|guestConfigurationAssignmentName|
+|**--vm-name**|string|The name of the virtual machine.|vm_name|vmName|
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|
-|**--guest-configuration-assignment-name**|string|The guest configuration assignment name.|guest_configuration_assignment_name|
-|**--report-id**|string|The GUID for the guest configuration assignment report.|report_id|
-|**--vm-name**|string|The name of the virtual machine.|vm_name|
-### guestconfig guest-configuration-hcrp-assignment create
+#### <a name="GuestConfigurationAssignmentReportsGet">Command `az guestconfig guest-configuration-assignment-report show`</a>
 
-create a guestconfig guest-configuration-hcrp-assignment.
+##### <a name="ExamplesGuestConfigurationAssignmentReportsGet">Example</a>
+```
+az guestconfig guest-configuration-assignment-report show --guest-configuration-assignment-name "AuditSecureProtocol" \
+--report-id "7367cbb8-ae99-47d0-a33b-a283564d2cb1" --resource-group "myResourceGroupName" --vm-name "myvm"
+```
+##### <a name="ParametersGuestConfigurationAssignmentReportsGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--guest-configuration-assignment-name**|string|The guest configuration assignment name.|guest_configuration_assignment_name|guestConfigurationAssignmentName|
+|**--report-id**|string|The GUID for the guest configuration assignment report.|report_id|reportId|
+|**--vm-name**|string|The name of the virtual machine.|vm_name|vmName|
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--guest-configuration-assignment-name**|string|Name of the guest configuration assignment.|guest_configuration_assignment_name|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|
-|**--machine-name**|string|The name of the ARC machine.|machine_name|
-|**--name**|string|Name of the guest configuration assignment.|name|
-|**--location**|string|Region where the VM is located.|location|
-|**--context**|string|The source which initiated the guest configuration assignment. Ex: Azure Policy|context|
-|**--latest-assignment-report-assignment**|object|Configuration details of the guest configuration assignment.|assignment|
-|**--guest-configuration-name**|string|Name of the guest configuration.|name_properties_guest_configuration_name|
-|**--guest-configuration-version**|string|Version of the guest configuration.|version|
-|**--guest-configuration-configuration-parameter**|array|The configuration parameters for the guest configuration.|configuration_parameter|
-|**--guest-configuration-configuration-setting**|object|The configuration setting for the guest configuration.|configuration_setting|
-### guestconfig guest-configuration-hcrp-assignment delete
+### group `az guestconfig guest-configuration-hcrp-assignment`
+#### <a name="GuestConfigurationHCRPAssignmentsList">Command `az guestconfig guest-configuration-hcrp-assignment list`</a>
 
-delete a guestconfig guest-configuration-hcrp-assignment.
+##### <a name="ExamplesGuestConfigurationHCRPAssignmentsList">Example</a>
+```
+az guestconfig guest-configuration-hcrp-assignment list --machine-name "myMachineName" --resource-group \
+"myResourceGroupName"
+```
+##### <a name="ParametersGuestConfigurationHCRPAssignmentsList">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--machine-name**|string|The name of the ARC machine.|machine_name|machineName|
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|
-|**--guest-configuration-assignment-name**|string|Name of the guest configuration assignment|guest_configuration_assignment_name|
-|**--machine-name**|string|The name of the ARC machine.|machine_name|
-### guestconfig guest-configuration-hcrp-assignment list
+#### <a name="GuestConfigurationHCRPAssignmentsGet">Command `az guestconfig guest-configuration-hcrp-assignment show`</a>
 
-list a guestconfig guest-configuration-hcrp-assignment.
+##### <a name="ExamplesGuestConfigurationHCRPAssignmentsGet">Example</a>
+```
+az guestconfig guest-configuration-hcrp-assignment show --guest-configuration-assignment-name "SecureProtocol" \
+--machine-name "myMachineName" --resource-group "myResourceGroupName"
+```
+##### <a name="ParametersGuestConfigurationHCRPAssignmentsGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--guest-configuration-assignment-name**|string|The guest configuration assignment name.|guest_configuration_assignment_name|guestConfigurationAssignmentName|
+|**--machine-name**|string|The name of the ARC machine.|machine_name|machineName|
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|
-|**--machine-name**|string|The name of the ARC machine.|machine_name|
-### guestconfig guest-configuration-hcrp-assignment show
+### group `az guestconfig guest-configuration-hcrp-assignment-report`
+#### <a name="GuestConfigurationHCRPAssignmentReportsList">Command `az guestconfig guest-configuration-hcrp-assignment-report list`</a>
 
-show a guestconfig guest-configuration-hcrp-assignment.
+##### <a name="ExamplesGuestConfigurationHCRPAssignmentReportsList">Example</a>
+```
+az guestconfig guest-configuration-hcrp-assignment-report list --guest-configuration-assignment-name \
+"AuditSecureProtocol" --machine-name "myMachineName" --resource-group "myResourceGroupName"
+```
+##### <a name="ParametersGuestConfigurationHCRPAssignmentReportsList">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--guest-configuration-assignment-name**|string|The guest configuration assignment name.|guest_configuration_assignment_name|guestConfigurationAssignmentName|
+|**--machine-name**|string|The name of the ARC machine.|machine_name|machineName|
 
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|
-|**--guest-configuration-assignment-name**|string|The guest configuration assignment name.|guest_configuration_assignment_name|
-|**--machine-name**|string|The name of the ARC machine.|machine_name|
-### guestconfig guest-configuration-hcrp-assignment update
+#### <a name="GuestConfigurationHCRPAssignmentReportsGet">Command `az guestconfig guest-configuration-hcrp-assignment-report show`</a>
 
-create a guestconfig guest-configuration-hcrp-assignment.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--guest-configuration-assignment-name**|string|Name of the guest configuration assignment.|guest_configuration_assignment_name|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|
-|**--machine-name**|string|The name of the ARC machine.|machine_name|
-|**--name**|string|Name of the guest configuration assignment.|name|
-|**--location**|string|Region where the VM is located.|location|
-|**--context**|string|The source which initiated the guest configuration assignment. Ex: Azure Policy|context|
-|**--latest-assignment-report-assignment**|object|Configuration details of the guest configuration assignment.|assignment|
-|**--guest-configuration-name**|string|Name of the guest configuration.|name_properties_guest_configuration_name|
-|**--guest-configuration-version**|string|Version of the guest configuration.|version|
-|**--guest-configuration-configuration-parameter**|array|The configuration parameters for the guest configuration.|configuration_parameter|
-|**--guest-configuration-configuration-setting**|object|The configuration setting for the guest configuration.|configuration_setting|
-### guestconfig guest-configuration-hcrp-assignment-report list
-
-list a guestconfig guest-configuration-hcrp-assignment-report.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|
-|**--guest-configuration-assignment-name**|string|The guest configuration assignment name.|guest_configuration_assignment_name|
-|**--machine-name**|string|The name of the ARC machine.|machine_name|
-### guestconfig guest-configuration-hcrp-assignment-report show
-
-show a guestconfig guest-configuration-hcrp-assignment-report.
-
-|Option|Type|Description|Path (SDK)|Path (swagger)|
-|------|----|-----------|----------|--------------|
-|**--resource-group-name**|string|The resource group name.|resource_group_name|
-|**--guest-configuration-assignment-name**|string|The guest configuration assignment name.|guest_configuration_assignment_name|
-|**--report-id**|string|The GUID for the guest configuration assignment report.|report_id|
-|**--machine-name**|string|The name of the ARC machine.|machine_name|
+##### <a name="ExamplesGuestConfigurationHCRPAssignmentReportsGet">Example</a>
+```
+az guestconfig guest-configuration-hcrp-assignment-report show --guest-configuration-assignment-name \
+"AuditSecureProtocol" --machine-name "myMachineName" --report-id "7367cbb8-ae99-47d0-a33b-a283564d2cb1" \
+--resource-group "myResourceGroupName"
+```
+##### <a name="ParametersGuestConfigurationHCRPAssignmentReportsGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
+|**--guest-configuration-assignment-name**|string|The guest configuration assignment name.|guest_configuration_assignment_name|guestConfigurationAssignmentName|
+|**--report-id**|string|The GUID for the guest configuration assignment report.|report_id|reportId|
+|**--machine-name**|string|The name of the ARC machine.|machine_name|machineName|
