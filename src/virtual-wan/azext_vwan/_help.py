@@ -507,7 +507,7 @@ helps['network p2s-vpn-gateway show'] = """
 helps['network p2s-vpn-gateway update'] = """
     type: command
     short-summary: Update settings of a point-to-site VPN gateway.
-    examples:    
+    examples:
       - name: Update settings of a point-to-site VPN gateway with routing configuration.
         text: |
             az network p2s-vpn-gateway create -g MyRG -n MyP2SVPNGateway --labels Newlabel1 Newlabel2 Newlabel3
