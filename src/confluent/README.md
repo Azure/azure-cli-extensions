@@ -8,19 +8,10 @@ az extension add --name confluent
 ```
 
 ### Included Features ###
-#### confluent marketplace-agreement ####
-##### Create #####
-```
-az confluent marketplace-agreement create --properties accepted=true
-```
+#### confluent terms ####
 ##### List #####
 ```
-az confluent marketplace-agreement list
-```
-#### confluent organization-operation ####
-##### List #####
-```
-az confluent organization-operation list
+az confluent terms list
 ```
 #### confluent organization ####
 ##### Create #####
