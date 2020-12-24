@@ -510,7 +510,7 @@ helps['network p2s-vpn-gateway update'] = """
     examples:
       - name: Update settings of a point-to-site VPN gateway with routing configuration.
         text: |
-            az network p2s-vpn-gateway create -g MyRG -n MyP2SVPNGateway --labels Newlabel1 Newlabel2 Newlabel3
+            az network p2s-vpn-gateway update -g MyRG -n MyP2SVPNGateway --labels Newlabel1 Newlabel2 Newlabel3
 """
 
 helps['network p2s-vpn-gateway delete'] = """
