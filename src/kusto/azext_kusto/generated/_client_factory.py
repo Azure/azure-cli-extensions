@@ -17,24 +17,24 @@ def cf_kusto_cl(cli_ctx, *_):
 
 
 def cf_cluster(cli_ctx, *_):
-    return cf_kusto_cl(cli_ctx).cluster
+    return cf_kusto_cl(cli_ctx).clusters
 
 
 def cf_cluster_principal_assignment(cli_ctx, *_):
-    return cf_kusto_cl(cli_ctx).cluster_principal_assignment
+    return cf_kusto_cl(cli_ctx).cluster_principal_assignments
 
 
 def cf_database(cli_ctx, *_):
-    return cf_kusto_cl(cli_ctx).database
+    return cf_kusto_cl(cli_ctx).databases
 
 
 def cf_database_principal_assignment(cli_ctx, *_):
-    return cf_kusto_cl(cli_ctx).database_principal_assignment
+    return cf_kusto_cl(cli_ctx).database_principal_assignments
 
 
 def cf_attached_database_configuration(cli_ctx, *_):
-    return cf_kusto_cl(cli_ctx).attached_database_configuration
+    return cf_kusto_cl(cli_ctx).attached_database_configurations
 
 
 def cf_data_connection(cli_ctx, *_):
-    return cf_kusto_cl(cli_ctx).data_connection
+    return cf_kusto_cl(cli_ctx).data_connections

@@ -20,17 +20,17 @@ def step_attached_database_configuration_create(test, rg, checks=None):
     test.cmd('az kusto attached-database-configuration create '
              '--name "{myAttachedDatabaseConfiguration2}" '
              '--cluster-name "{myCluster}" '
-             '--location "westus" '
+             '--location "southcentralus" '
              '--cluster-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Kusto/Clu'
              'sters/{myCluster3}" '
              '--database-name "kustodatabase" '
              '--default-principals-modification-kind "Union" '
              '--resource-group "{rg}"',
-             checks=checks)
+             checks=[])
     test.cmd('az kusto attached-database-configuration wait --created '
              '--name "{myAttachedDatabaseConfiguration2}" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=checks)
 
 
 # EXAMPLE: /AttachedDatabaseConfigurations/get/AttachedDatabaseConfigurationsGet
@@ -63,18 +63,18 @@ def step_cluster_create(test, rg, checks=None):
         checks = []
     test.cmd('az kusto cluster create '
              '--name "{myCluster}" '
-             '--identity-type "SystemAssigned" '
-             '--location "westus" '
+             '--type "SystemAssigned" '
+             '--location "southcentralus" '
              '--enable-double-encryption false '
              '--enable-purge true '
              '--enable-streaming-ingest true '
-             '--sku name="Standard_L8s" capacity=2 tier="Standard" '
+             '--sku name="Standard_D11_v2" capacity=2 tier="Standard" '
              '--resource-group "{rg}"',
-             checks=checks)
+             checks=[])
     test.cmd('az kusto cluster wait --created '
              '--name "{myCluster}" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=checks)
 
 
 # EXAMPLE: /Clusters/get/KustoClustersGet
@@ -136,8 +136,8 @@ def step_cluster_update(test, rg, checks=None):
         checks = []
     test.cmd('az kusto cluster update '
              '--name "{myCluster}" '
-             '--identity-type "SystemAssigned" '
-             '--location "westus" '
+             '--type "SystemAssigned" '
+             '--location "southcentralus" '
              '--enable-purge true '
              '--enable-streaming-ingest true '
              '--key-vault-properties key-name="keyName" key-vault-uri="https://dummy.keyvault.com" '
@@ -343,7 +343,7 @@ def step_database_create(test, rg, checks=None):
     test.cmd('az kusto database create '
              '--cluster-name "{myCluster}" '
              '--database-name "KustoDatabase8" '
-             '--read-write-database location="westus" soft-delete-period="P1D" '
+             '--read-write-database location="southcentralus" soft-delete-period="P1D" '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -447,7 +447,7 @@ def step_data_connection_event_hub_create(test, rg, checks=None):
              '--cluster-name "{myCluster}" '
              '--name "{myDataConnection}" '
              '--database-name "KustoDatabase8" '
-             '--location "westus" '
+             '--location "southcentralus" '
              '--consumer-group "testConsumerGroup1" '
              '--event-hub-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.EventHu'
              'b/namespaces/eventhubTestns1/eventhubs/eventhubTest1" '
@@ -489,7 +489,7 @@ def step_data_connection_event_hub_update(test, rg, checks=None):
              '--cluster-name "{myCluster}" '
              '--name "{myDataConnection}" '
              '--database-name "KustoDatabase8" '
-             '--location "westus" '
+             '--location "southcentralus" '
              '--consumer-group "testConsumerGroup1" '
              '--event-hub-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.EventHu'
              'b/namespaces/eventhubTestns1/eventhubs/eventhubTest1" '

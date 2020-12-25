@@ -16,33 +16,33 @@ if TYPE_CHECKING:
     from azure.core.credentials_async import AsyncTokenCredential
 
 from ._configuration import KustoManagementClientConfiguration
-from .operations import ClusterOperations
-from .operations import ClusterPrincipalAssignmentOperations
-from .operations import DatabaseOperations
-from .operations import DatabasePrincipalAssignmentOperations
-from .operations import AttachedDatabaseConfigurationOperations
-from .operations import DataConnectionOperations
-from .operations import OperationOperations
+from .operations import ClustersOperations
+from .operations import ClusterPrincipalAssignmentsOperations
+from .operations import DatabasesOperations
+from .operations import DatabasePrincipalAssignmentsOperations
+from .operations import AttachedDatabaseConfigurationsOperations
+from .operations import DataConnectionsOperations
+from .operations import Operations
 from .. import models
 
 
 class KustoManagementClient(object):
     """The Azure Kusto management API provides a RESTful set of web services that interact with Azure Kusto services to manage your clusters and databases. The API enables you to create, update, and delete clusters and databases.
 
-    :ivar cluster: ClusterOperations operations
-    :vartype cluster: kusto_management_client.aio.operations.ClusterOperations
-    :ivar cluster_principal_assignment: ClusterPrincipalAssignmentOperations operations
-    :vartype cluster_principal_assignment: kusto_management_client.aio.operations.ClusterPrincipalAssignmentOperations
-    :ivar database: DatabaseOperations operations
-    :vartype database: kusto_management_client.aio.operations.DatabaseOperations
-    :ivar database_principal_assignment: DatabasePrincipalAssignmentOperations operations
-    :vartype database_principal_assignment: kusto_management_client.aio.operations.DatabasePrincipalAssignmentOperations
-    :ivar attached_database_configuration: AttachedDatabaseConfigurationOperations operations
-    :vartype attached_database_configuration: kusto_management_client.aio.operations.AttachedDatabaseConfigurationOperations
-    :ivar data_connection: DataConnectionOperations operations
-    :vartype data_connection: kusto_management_client.aio.operations.DataConnectionOperations
-    :ivar operation: OperationOperations operations
-    :vartype operation: kusto_management_client.aio.operations.OperationOperations
+    :ivar clusters: ClustersOperations operations
+    :vartype clusters: kusto_management_client.aio.operations.ClustersOperations
+    :ivar cluster_principal_assignments: ClusterPrincipalAssignmentsOperations operations
+    :vartype cluster_principal_assignments: kusto_management_client.aio.operations.ClusterPrincipalAssignmentsOperations
+    :ivar databases: DatabasesOperations operations
+    :vartype databases: kusto_management_client.aio.operations.DatabasesOperations
+    :ivar database_principal_assignments: DatabasePrincipalAssignmentsOperations operations
+    :vartype database_principal_assignments: kusto_management_client.aio.operations.DatabasePrincipalAssignmentsOperations
+    :ivar attached_database_configurations: AttachedDatabaseConfigurationsOperations operations
+    :vartype attached_database_configurations: kusto_management_client.aio.operations.AttachedDatabaseConfigurationsOperations
+    :ivar data_connections: DataConnectionsOperations operations
+    :vartype data_connections: kusto_management_client.aio.operations.DataConnectionsOperations
+    :ivar operations: Operations operations
+    :vartype operations: kusto_management_client.aio.operations.Operations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: Gets subscription credentials which uniquely identify Microsoft Azure subscription. The subscription ID forms part of the URI for every service call.
@@ -67,19 +67,19 @@ class KustoManagementClient(object):
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
-        self.cluster = ClusterOperations(
+        self.clusters = ClustersOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.cluster_principal_assignment = ClusterPrincipalAssignmentOperations(
+        self.cluster_principal_assignments = ClusterPrincipalAssignmentsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.database = DatabaseOperations(
+        self.databases = DatabasesOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.database_principal_assignment = DatabasePrincipalAssignmentOperations(
+        self.database_principal_assignments = DatabasePrincipalAssignmentsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.attached_database_configuration = AttachedDatabaseConfigurationOperations(
+        self.attached_database_configurations = AttachedDatabaseConfigurationsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.data_connection = DataConnectionOperations(
+        self.data_connections = DataConnectionsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.operation = OperationOperations(
+        self.operations = Operations(
             self._client, self._config, self._serialize, self._deserialize)
 
     async def close(self) -> None:

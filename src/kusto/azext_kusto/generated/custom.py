@@ -8,6 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
+# pylint: disable=unused-argument
 
 from knack.util import CLIError
 from azure.cli.core.util import sdk_no_wait
@@ -42,8 +43,8 @@ def kusto_cluster_create(client,
                          key_vault_properties=None,
                          enable_purge=None,
                          enable_double_encryption=None,
-                         identity_type=None,
-                         identity_user_assigned_identities=None,
+                         type_=None,
+                         user_assigned_identities=None,
                          no_wait=False):
     if enable_streaming_ingest is None:
         enable_streaming_ingest = False
@@ -51,24 +52,27 @@ def kusto_cluster_create(client,
         enable_purge = False
     if enable_double_encryption is None:
         enable_double_encryption = False
+    parameters = {}
+    parameters['tags'] = tags
+    parameters['location'] = location
+    parameters['sku'] = sku
+    parameters['zones'] = zones
+    parameters['trusted_external_tenants'] = trusted_external_tenants
+    parameters['optimized_autoscale'] = optimized_autoscale
+    parameters['enable_disk_encryption'] = enable_disk_encryption
+    parameters['enable_streaming_ingest'] = False if enable_streaming_ingest is None else enable_streaming_ingest
+    parameters['virtual_network_configuration'] = virtual_network_configuration
+    parameters['key_vault_properties'] = key_vault_properties
+    parameters['enable_purge'] = False if enable_purge is None else enable_purge
+    parameters['enable_double_encryption'] = False if enable_double_encryption is None else enable_double_encryption
+    parameters['identity'] = {}
+    parameters['identity']['type'] = type_
+    parameters['identity']['user_assigned_identities'] = user_assigned_identities
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
                        cluster_name=cluster_name,
-                       tags=tags,
-                       location=location,
-                       sku=sku,
-                       zones=zones,
-                       trusted_external_tenants=trusted_external_tenants,
-                       optimized_autoscale=optimized_autoscale,
-                       enable_disk_encryption=enable_disk_encryption,
-                       enable_streaming_ingest=enable_streaming_ingest,
-                       virtual_network_configuration=virtual_network_configuration,
-                       key_vault_properties=key_vault_properties,
-                       enable_purge=enable_purge,
-                       enable_double_encryption=enable_double_encryption,
-                       type=identity_type,
-                       user_assigned_identities=identity_user_assigned_identities)
+                       parameters=parameters)
 
 
 def kusto_cluster_update(client,
@@ -85,8 +89,8 @@ def kusto_cluster_update(client,
                          key_vault_properties=None,
                          enable_purge=None,
                          enable_double_encryption=None,
-                         identity_type=None,
-                         identity_user_assigned_identities=None,
+                         type_=None,
+                         user_assigned_identities=None,
                          no_wait=False):
     if enable_streaming_ingest is None:
         enable_streaming_ingest = False
@@ -94,23 +98,26 @@ def kusto_cluster_update(client,
         enable_purge = False
     if enable_double_encryption is None:
         enable_double_encryption = False
+    parameters = {}
+    parameters['tags'] = tags
+    parameters['location'] = location
+    parameters['sku'] = sku
+    parameters['trusted_external_tenants'] = trusted_external_tenants
+    parameters['optimized_autoscale'] = optimized_autoscale
+    parameters['enable_disk_encryption'] = enable_disk_encryption
+    parameters['enable_streaming_ingest'] = False if enable_streaming_ingest is None else enable_streaming_ingest
+    parameters['virtual_network_configuration'] = virtual_network_configuration
+    parameters['key_vault_properties'] = key_vault_properties
+    parameters['enable_purge'] = False if enable_purge is None else enable_purge
+    parameters['enable_double_encryption'] = False if enable_double_encryption is None else enable_double_encryption
+    parameters['identity'] = {}
+    parameters['identity']['type'] = type_
+    parameters['identity']['user_assigned_identities'] = user_assigned_identities
     return sdk_no_wait(no_wait,
                        client.begin_update,
                        resource_group_name=resource_group_name,
                        cluster_name=cluster_name,
-                       tags=tags,
-                       location=location,
-                       sku=sku,
-                       trusted_external_tenants=trusted_external_tenants,
-                       optimized_autoscale=optimized_autoscale,
-                       enable_disk_encryption=enable_disk_encryption,
-                       enable_streaming_ingest=enable_streaming_ingest,
-                       virtual_network_configuration=virtual_network_configuration,
-                       key_vault_properties=key_vault_properties,
-                       enable_purge=enable_purge,
-                       enable_double_encryption=enable_double_encryption,
-                       type=identity_type,
-                       user_assigned_identities=identity_user_assigned_identities)
+                       parameters=parameters)
 
 
 def kusto_cluster_delete(client,
@@ -128,11 +135,13 @@ def kusto_cluster_add_language_extension(client,
                                          cluster_name,
                                          value=None,
                                          no_wait=False):
+    language_extensions_to_add = {}
+    language_extensions_to_add['value'] = value
     return sdk_no_wait(no_wait,
-                       client.begin_add_language_extension,
+                       client.begin_add_language_extensions,
                        resource_group_name=resource_group_name,
                        cluster_name=cluster_name,
-                       value=value)
+                       language_extensions_to_add=language_extensions_to_add)
 
 
 def kusto_cluster_detach_follower_database(client,
@@ -141,12 +150,14 @@ def kusto_cluster_detach_follower_database(client,
                                            cluster_resource_id,
                                            attached_database_configuration_name,
                                            no_wait=False):
+    follower_database_to_remove = {}
+    follower_database_to_remove['cluster_resource_id'] = cluster_resource_id
+    follower_database_to_remove['attached_database_configuration_name'] = attached_database_configuration_name
     return sdk_no_wait(no_wait,
-                       client.begin_detach_follower_database,
+                       client.begin_detach_follower_databases,
                        resource_group_name=resource_group_name,
                        cluster_name=cluster_name,
-                       cluster_resource_id=cluster_resource_id,
-                       attached_database_configuration_name=attached_database_configuration_name)
+                       follower_database_to_remove=follower_database_to_remove)
 
 
 def kusto_cluster_diagnose_virtual_network(client,
@@ -162,24 +173,24 @@ def kusto_cluster_diagnose_virtual_network(client,
 def kusto_cluster_list_follower_database(client,
                                          resource_group_name,
                                          cluster_name):
-    return client.list_follower_database(resource_group_name=resource_group_name,
-                                         cluster_name=cluster_name)
+    return client.list_follower_databases(resource_group_name=resource_group_name,
+                                          cluster_name=cluster_name)
 
 
 def kusto_cluster_list_language_extension(client,
                                           resource_group_name,
                                           cluster_name):
-    return client.list_language_extension(resource_group_name=resource_group_name,
-                                          cluster_name=cluster_name)
+    return client.list_language_extensions(resource_group_name=resource_group_name,
+                                           cluster_name=cluster_name)
 
 
 def kusto_cluster_list_sku(client,
                            resource_group_name=None,
                            cluster_name=None):
     if resource_group_name and cluster_name is not None:
-        return client.list_sku_by_resource(resource_group_name=resource_group_name,
-                                           cluster_name=cluster_name)
-    return client.list_sku()
+        return client.list_skus_by_resource(resource_group_name=resource_group_name,
+                                            cluster_name=cluster_name)
+    return client.list_skus()
 
 
 def kusto_cluster_remove_language_extension(client,
@@ -187,11 +198,13 @@ def kusto_cluster_remove_language_extension(client,
                                             cluster_name,
                                             value=None,
                                             no_wait=False):
+    language_extensions_to_remove = {}
+    language_extensions_to_remove['value'] = value
     return sdk_no_wait(no_wait,
-                       client.begin_remove_language_extension,
+                       client.begin_remove_language_extensions,
                        resource_group_name=resource_group_name,
                        cluster_name=cluster_name,
-                       value=value)
+                       language_extensions_to_remove=language_extensions_to_remove)
 
 
 def kusto_cluster_start(client,
@@ -239,18 +252,20 @@ def kusto_cluster_principal_assignment_create(client,
                                               tenant_id=None,
                                               principal_type=None,
                                               no_wait=False):
+    parameters = {}
+    parameters['principal_id'] = principal_id
+    parameters['role'] = role
+    parameters['tenant_id'] = tenant_id
+    parameters['principal_type'] = principal_type
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
                        cluster_name=cluster_name,
                        principal_assignment_name=principal_assignment_name,
-                       principal_id=principal_id,
-                       role=role,
-                       tenant_id=tenant_id,
-                       principal_type=principal_type)
+                       parameters=parameters)
 
 
-def kusto_cluster_principal_assignment_update(client,
+def kusto_cluster_principal_assignment_update(instance,
                                               resource_group_name,
                                               cluster_name,
                                               principal_assignment_name,
@@ -259,15 +274,15 @@ def kusto_cluster_principal_assignment_update(client,
                                               tenant_id=None,
                                               principal_type=None,
                                               no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       resource_group_name=resource_group_name,
-                       cluster_name=cluster_name,
-                       principal_assignment_name=principal_assignment_name,
-                       principal_id=principal_id,
-                       role=role,
-                       tenant_id=tenant_id,
-                       principal_type=principal_type)
+    if principal_id is not None:
+        instance.principal_id = principal_id
+    if role is not None:
+        instance.role = role
+    if tenant_id is not None:
+        instance.tenant_id = tenant_id
+    if principal_type is not None:
+        instance.principal_type = principal_type
+    return instance
 
 
 def kusto_cluster_principal_assignment_delete(client,
@@ -367,19 +382,21 @@ def kusto_database_add_principal(client,
                                  cluster_name,
                                  database_name,
                                  value=None):
-    return client.add_principal(resource_group_name=resource_group_name,
-                                cluster_name=cluster_name,
-                                database_name=database_name,
-                                value=value)
+    database_principals_to_add = {}
+    database_principals_to_add['value'] = value
+    return client.add_principals(resource_group_name=resource_group_name,
+                                 cluster_name=cluster_name,
+                                 database_name=database_name,
+                                 database_principals_to_add=database_principals_to_add)
 
 
 def kusto_database_list_principal(client,
                                   resource_group_name,
                                   cluster_name,
                                   database_name):
-    return client.list_principal(resource_group_name=resource_group_name,
-                                 cluster_name=cluster_name,
-                                 database_name=database_name)
+    return client.list_principals(resource_group_name=resource_group_name,
+                                  cluster_name=cluster_name,
+                                  database_name=database_name)
 
 
 def kusto_database_remove_principal(client,
@@ -387,10 +404,12 @@ def kusto_database_remove_principal(client,
                                     cluster_name,
                                     database_name,
                                     value=None):
-    return client.remove_principal(resource_group_name=resource_group_name,
-                                   cluster_name=cluster_name,
-                                   database_name=database_name,
-                                   value=value)
+    database_principals_to_remove = {}
+    database_principals_to_remove['value'] = value
+    return client.remove_principals(resource_group_name=resource_group_name,
+                                    cluster_name=cluster_name,
+                                    database_name=database_name,
+                                    database_principals_to_remove=database_principals_to_remove)
 
 
 def kusto_database_principal_assignment_list(client,
@@ -423,19 +442,21 @@ def kusto_database_principal_assignment_create(client,
                                                tenant_id=None,
                                                principal_type=None,
                                                no_wait=False):
+    parameters = {}
+    parameters['principal_id'] = principal_id
+    parameters['role'] = role
+    parameters['tenant_id'] = tenant_id
+    parameters['principal_type'] = principal_type
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
                        cluster_name=cluster_name,
                        database_name=database_name,
                        principal_assignment_name=principal_assignment_name,
-                       principal_id=principal_id,
-                       role=role,
-                       tenant_id=tenant_id,
-                       principal_type=principal_type)
+                       parameters=parameters)
 
 
-def kusto_database_principal_assignment_update(client,
+def kusto_database_principal_assignment_update(instance,
                                                resource_group_name,
                                                cluster_name,
                                                database_name,
@@ -445,16 +466,15 @@ def kusto_database_principal_assignment_update(client,
                                                tenant_id=None,
                                                principal_type=None,
                                                no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       resource_group_name=resource_group_name,
-                       cluster_name=cluster_name,
-                       database_name=database_name,
-                       principal_assignment_name=principal_assignment_name,
-                       principal_id=principal_id,
-                       role=role,
-                       tenant_id=tenant_id,
-                       principal_type=principal_type)
+    if principal_id is not None:
+        instance.principal_id = principal_id
+    if role is not None:
+        instance.role = role
+    if tenant_id is not None:
+        instance.tenant_id = tenant_id
+    if principal_type is not None:
+        instance.principal_type = principal_type
+    return instance
 
 
 def kusto_database_principal_assignment_delete(client,
@@ -496,18 +516,20 @@ def kusto_attached_database_configuration_create(client,
                                                  cluster_resource_id=None,
                                                  default_principals_modification_kind=None,
                                                  no_wait=False):
+    parameters = {}
+    parameters['location'] = location
+    parameters['database_name'] = database_name
+    parameters['cluster_resource_id'] = cluster_resource_id
+    parameters['default_principals_modification_kind'] = default_principals_modification_kind
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
                        cluster_name=cluster_name,
                        attached_database_configuration_name=attached_database_configuration_name,
-                       location=location,
-                       database_name=database_name,
-                       cluster_resource_id=cluster_resource_id,
-                       default_principals_modification_kind=default_principals_modification_kind)
+                       parameters=parameters)
 
 
-def kusto_attached_database_configuration_update(client,
+def kusto_attached_database_configuration_update(instance,
                                                  resource_group_name,
                                                  cluster_name,
                                                  attached_database_configuration_name,
@@ -516,15 +538,15 @@ def kusto_attached_database_configuration_update(client,
                                                  cluster_resource_id=None,
                                                  default_principals_modification_kind=None,
                                                  no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       resource_group_name=resource_group_name,
-                       cluster_name=cluster_name,
-                       attached_database_configuration_name=attached_database_configuration_name,
-                       location=location,
-                       database_name=database_name,
-                       cluster_resource_id=cluster_resource_id,
-                       default_principals_modification_kind=default_principals_modification_kind)
+    if location is not None:
+        instance.location = location
+    if database_name is not None:
+        instance.database_name = database_name
+    if cluster_resource_id is not None:
+        instance.cluster_resource_id = cluster_resource_id
+    if default_principals_modification_kind is not None:
+        instance.default_principals_modification_kind = default_principals_modification_kind
+    return instance
 
 
 def kusto_attached_database_configuration_delete(client,
@@ -790,24 +812,25 @@ def kusto_data_connection_event_grid_data_connection_validation(client,
                                                                 ignore_first_record=None,
                                                                 blob_storage_event_type=None,
                                                                 no_wait=False):
-    properties = {}
-    properties['location'] = location
-    properties['kind'] = 'EventGrid'
-    properties['storage_account_resource_id'] = storage_account_resource_id
-    properties['event_hub_resource_id'] = event_hub_resource_id
-    properties['consumer_group'] = consumer_group
-    properties['table_name'] = table_name
-    properties['mapping_rule_name'] = mapping_rule_name
-    properties['data_format'] = data_format
-    properties['ignore_first_record'] = ignore_first_record
-    properties['blob_storage_event_type'] = blob_storage_event_type
+    parameters = {}
+    parameters['data_connection_name'] = data_connection_name
+    parameters['properties'] = {}
+    parameters['properties']['location'] = location
+    parameters['properties']['kind'] = 'EventGrid'
+    parameters['properties']['storage_account_resource_id'] = storage_account_resource_id
+    parameters['properties']['event_hub_resource_id'] = event_hub_resource_id
+    parameters['properties']['consumer_group'] = consumer_group
+    parameters['properties']['table_name'] = table_name
+    parameters['properties']['mapping_rule_name'] = mapping_rule_name
+    parameters['properties']['data_format'] = data_format
+    parameters['properties']['ignore_first_record'] = ignore_first_record
+    parameters['properties']['blob_storage_event_type'] = blob_storage_event_type
     return sdk_no_wait(no_wait,
                        client.begin_data_connection_validation,
                        resource_group_name=resource_group_name,
                        cluster_name=cluster_name,
                        database_name=database_name,
-                       data_connection_name=data_connection_name,
-                       properties=properties)
+                       parameters=parameters)
 
 
 def kusto_data_connection_event_hub_data_connection_validation(client,
@@ -824,23 +847,24 @@ def kusto_data_connection_event_hub_data_connection_validation(client,
                                                                event_system_properties=None,
                                                                compression=None,
                                                                no_wait=False):
-    properties = {}
-    properties['location'] = location
-    properties['kind'] = 'EventHub'
-    properties['event_hub_resource_id'] = event_hub_resource_id
-    properties['consumer_group'] = consumer_group
-    properties['table_name'] = table_name
-    properties['mapping_rule_name'] = mapping_rule_name
-    properties['data_format'] = data_format
-    properties['event_system_properties'] = event_system_properties
-    properties['compression'] = compression
+    parameters = {}
+    parameters['data_connection_name'] = data_connection_name
+    parameters['properties'] = {}
+    parameters['properties']['location'] = location
+    parameters['properties']['kind'] = 'EventHub'
+    parameters['properties']['event_hub_resource_id'] = event_hub_resource_id
+    parameters['properties']['consumer_group'] = consumer_group
+    parameters['properties']['table_name'] = table_name
+    parameters['properties']['mapping_rule_name'] = mapping_rule_name
+    parameters['properties']['data_format'] = data_format
+    parameters['properties']['event_system_properties'] = event_system_properties
+    parameters['properties']['compression'] = compression
     return sdk_no_wait(no_wait,
                        client.begin_data_connection_validation,
                        resource_group_name=resource_group_name,
                        cluster_name=cluster_name,
                        database_name=database_name,
-                       data_connection_name=data_connection_name,
-                       properties=properties)
+                       parameters=parameters)
 
 
 def kusto_data_connection_iot_hub_data_connection_validation(client,
@@ -857,20 +881,21 @@ def kusto_data_connection_iot_hub_data_connection_validation(client,
                                                              event_system_properties=None,
                                                              shared_access_policy_name=None,
                                                              no_wait=False):
-    properties = {}
-    properties['location'] = location
-    properties['kind'] = 'IotHub'
-    properties['iot_hub_resource_id'] = iot_hub_resource_id
-    properties['consumer_group'] = consumer_group
-    properties['table_name'] = table_name
-    properties['mapping_rule_name'] = mapping_rule_name
-    properties['data_format'] = data_format
-    properties['event_system_properties'] = event_system_properties
-    properties['shared_access_policy_name'] = shared_access_policy_name
+    parameters = {}
+    parameters['data_connection_name'] = data_connection_name
+    parameters['properties'] = {}
+    parameters['properties']['location'] = location
+    parameters['properties']['kind'] = 'IotHub'
+    parameters['properties']['iot_hub_resource_id'] = iot_hub_resource_id
+    parameters['properties']['consumer_group'] = consumer_group
+    parameters['properties']['table_name'] = table_name
+    parameters['properties']['mapping_rule_name'] = mapping_rule_name
+    parameters['properties']['data_format'] = data_format
+    parameters['properties']['event_system_properties'] = event_system_properties
+    parameters['properties']['shared_access_policy_name'] = shared_access_policy_name
     return sdk_no_wait(no_wait,
                        client.begin_data_connection_validation,
                        resource_group_name=resource_group_name,
                        cluster_name=cluster_name,
                        database_name=database_name,
-                       data_connection_name=data_connection_name,
-                       properties=properties)
+                       parameters=parameters)

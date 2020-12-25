@@ -127,9 +127,9 @@ az kusto attached-database-configuration show --name "attachedDatabaseConfigurat
 ##### <a name="ExamplesAttachedDatabaseConfigurationsCreateOrUpdate#Create">Example</a>
 ```
 az kusto attached-database-configuration create --name "attachedDatabaseConfigurations1" --cluster-name \
-"kustoclusterrptest4" --location "westus" --cluster-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/re\
-sourceGroups/kustorptest/providers/Microsoft.Kusto/Clusters/KustoClusterLeader" --database-name "kustodatabase" \
---default-principals-modification-kind "Union" --resource-group "kustorptest"
+"kustoclusterrptest4" --location "southcentralus" --cluster-resource-id "/subscriptions/12345678-1234-1234-1234-1234567\
+89098/resourceGroups/kustorptest/providers/Microsoft.Kusto/Clusters/KustoClusterLeader" --database-name \
+"kustodatabase" --default-principals-modification-kind "Union" --resource-group "kustorptest"
 ```
 ##### <a name="ParametersAttachedDatabaseConfigurationsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -206,8 +206,8 @@ az kusto cluster show --name "kustoclusterrptest4" --resource-group "kustorptest
 
 ##### <a name="ExamplesClustersCreateOrUpdate#Create">Example</a>
 ```
-az kusto cluster create --name "kustoclusterrptest4" --identity-type "SystemAssigned" --location "westus" \
---enable-double-encryption false --enable-purge true --enable-streaming-ingest true --sku name="Standard_L8s" \
+az kusto cluster create --name "kustoclusterrptest4" --type "SystemAssigned" --location "southcentralus" \
+--enable-double-encryption false --enable-purge true --enable-streaming-ingest true --sku name="Standard_D11_v2" \
 capacity=2 tier="Standard" --resource-group "kustorptest"
 ```
 ##### <a name="ParametersClustersCreateOrUpdate#Create">Parameters</a> 
@@ -227,14 +227,14 @@ capacity=2 tier="Standard" --resource-group "kustorptest"
 |**--key-vault-properties**|object|KeyVault properties for the cluster encryption.|key_vault_properties|keyVaultProperties|
 |**--enable-purge**|boolean|A boolean value that indicates if the purge operations are enabled.|enable_purge|enablePurge|
 |**--enable-double-encryption**|boolean|A boolean value that indicates if double encryption is enabled.|enable_double_encryption|enableDoubleEncryption|
-|**--identity-type**|sealed-choice|The identity type.|type|type|
-|**--identity-user-assigned-identities**|dictionary|The list of user identities associated with the Kusto cluster. The user identity dictionary key references will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.|user_assigned_identities|userAssignedIdentities|
+|**--type**|sealed-choice|The identity type.|type|type|
+|**--user-assigned-identities**|dictionary|The list of user identities associated with the Kusto cluster. The user identity dictionary key references will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.|user_assigned_identities|userAssignedIdentities|
 
 #### <a name="ClustersUpdate">Command `az kusto cluster update`</a>
 
 ##### <a name="ExamplesClustersUpdate">Example</a>
 ```
-az kusto cluster update --name "kustoclusterrptest4" --identity-type "SystemAssigned" --location "westus" \
+az kusto cluster update --name "kustoclusterrptest4" --type "SystemAssigned" --location "southcentralus" \
 --enable-purge true --enable-streaming-ingest true --key-vault-properties key-name="keyName" \
 key-vault-uri="https://dummy.keyvault.com" key-version="keyVersion" --resource-group "kustorptest"
 ```
@@ -254,8 +254,8 @@ key-vault-uri="https://dummy.keyvault.com" key-version="keyVersion" --resource-g
 |**--key-vault-properties**|object|KeyVault properties for the cluster encryption.|key_vault_properties|keyVaultProperties|
 |**--enable-purge**|boolean|A boolean value that indicates if the purge operations are enabled.|enable_purge|enablePurge|
 |**--enable-double-encryption**|boolean|A boolean value that indicates if double encryption is enabled.|enable_double_encryption|enableDoubleEncryption|
-|**--identity-type**|sealed-choice|The identity type.|type|type|
-|**--identity-user-assigned-identities**|dictionary|The list of user identities associated with the Kusto cluster. The user identity dictionary key references will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.|user_assigned_identities|userAssignedIdentities|
+|**--type**|sealed-choice|The identity type.|type|type|
+|**--user-assigned-identities**|dictionary|The list of user identities associated with the Kusto cluster. The user identity dictionary key references will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.|user_assigned_identities|userAssignedIdentities|
 
 #### <a name="ClustersDelete">Command `az kusto cluster delete`</a>
 
@@ -521,9 +521,9 @@ az kusto data-connection show --cluster-name "kustoclusterrptest4" --name "DataC
 ##### <a name="ExamplesDataConnectionsCreateOrUpdate#Create#EventHub">Example</a>
 ```
 az kusto data-connection event-hub create --cluster-name "kustoclusterrptest4" --name "DataConnections8" \
---database-name "KustoDatabase8" --location "westus" --consumer-group "testConsumerGroup1" --event-hub-resource-id \
-"/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Microsoft.EventHub/namespaces\
-/eventhubTestns1/eventhubs/eventhubTest1" --resource-group "kustorptest"
+--database-name "KustoDatabase8" --location "southcentralus" --consumer-group "testConsumerGroup1" \
+--event-hub-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Micro\
+soft.EventHub/namespaces/eventhubTestns1/eventhubs/eventhubTest1" --resource-group "kustorptest"
 ```
 ##### <a name="ParametersDataConnectionsCreateOrUpdate#Create#EventHub">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -583,9 +583,9 @@ az kusto data-connection event-hub create --cluster-name "kustoclusterrptest4" -
 ##### <a name="ExamplesDataConnectionsUpdate#EventHub">Example</a>
 ```
 az kusto data-connection event-hub update --cluster-name "kustoclusterrptest4" --name "DataConnections8" \
---database-name "KustoDatabase8" --location "westus" --consumer-group "testConsumerGroup1" --event-hub-resource-id \
-"/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Microsoft.EventHub/namespaces\
-/eventhubTestns1/eventhubs/eventhubTest1" --resource-group "kustorptest"
+--database-name "KustoDatabase8" --location "southcentralus" --consumer-group "testConsumerGroup1" \
+--event-hub-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Micro\
+soft.EventHub/namespaces/eventhubTestns1/eventhubs/eventhubTest1" --resource-group "kustorptest"
 ```
 ##### <a name="ParametersDataConnectionsUpdate#EventHub">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -730,7 +730,7 @@ az kusto database show --cluster-name "kustoclusterrptest4" --database-name "Kus
 ##### <a name="ExamplesDatabasesCreateOrUpdate#Create">Example</a>
 ```
 az kusto database create --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" --read-write-database \
-location="westus" soft-delete-period="P1D" --resource-group "kustorptest"
+location="southcentralus" soft-delete-period="P1D" --resource-group "kustorptest"
 ```
 ##### <a name="ParametersDatabasesCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|

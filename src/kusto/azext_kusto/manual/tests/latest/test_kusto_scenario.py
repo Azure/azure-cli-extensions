@@ -28,7 +28,13 @@ def setup_scenario(test, rg):
     test.cmd('az eventhubs namespace create --name {eventhub_namespace} -g {rg}')
     test.cmd('az eventhubs eventhub create --name {eventhub_name} --namespace-name {eventhub_namespace} -g {rg}')
     step_kustoclusterscreateorupdate2(test,rg)
-
+    try:
+        output = test.cmd('az ad app create --display-name {mySpName} ').get_output_in_json()
+        test.kwargs.update({'myPrincipalId': output.get('appId')})
+        # "odata.metadata": "https://graph.windows.net/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a/$metadata#directoryObjects/@Element",
+        test.kwargs.update({'myTenantId': output.get('odata.metadata').split('/')[3]})
+    except:
+        pass
 
 def cleanup_scenario(test, rg):
     try:
@@ -40,7 +46,7 @@ def cleanup_scenario(test, rg):
 def step_kustoclusterscreateorupdate2(test, rg):
     test.cmd('az kusto cluster create '
              '--cluster-name "{myCluster2}" '
-             '--identity-type "SystemAssigned" '
+             '--type "SystemAssigned" '
              '--location "southcentralus" '
              '--enable-purge true '
              '--enable-streaming-ingest true '
@@ -66,6 +72,9 @@ class KustoScenarioTest(ScenarioTest):
             'myAttachedDatabaseConfiguration2': 'attachedDatabaseConfigurations2',
             'myDataConnection': 'DataConnections8',
             'myDataConnection2': 'kustoeventhubconnection1',
+            'mySpName': 'clicodegenkustotest',
+            'myPrincipalId': '532997a9-e004-4b10-9d20-f5c5c5d42c43',
+            'myTenantId': '54826b22-38d6-4fb2-bad9-b7b93a3e9c5a'
         })
 
         from ....tests.latest import test_kusto_scenario as g

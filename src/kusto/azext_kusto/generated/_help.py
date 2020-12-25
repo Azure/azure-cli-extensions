@@ -14,14 +14,13 @@ from knack.help_files import helps
 
 helps['kusto cluster'] = """
     type: group
-    short-summary: Manage cluster with kusto. Command group swagger name=Clusters
+    short-summary: Manage cluster with kusto
 """
 
 helps['kusto cluster list'] = """
     type: command
-    short-summary: "Lists all Kusto clusters within a resource group. Command group swagger name=Clusters, Command \
-swagger name=ListByResourceGroup And Lists all Kusto clusters within a subscription. Command group swagger \
-name=Clusters, Command swagger name=List."
+    short-summary: "Lists all Kusto clusters within a resource group. And Lists all Kusto clusters within a \
+subscription."
     examples:
       - name: KustoClustersListByResourceGroup
         text: |-
@@ -33,7 +32,7 @@ name=Clusters, Command swagger name=List."
 
 helps['kusto cluster show'] = """
     type: command
-    short-summary: "Gets a Kusto cluster. Command group swagger name=Clusters, Command swagger name=Get."
+    short-summary: "Gets a Kusto cluster."
     examples:
       - name: KustoClustersGet
         text: |-
@@ -42,11 +41,10 @@ helps['kusto cluster show'] = """
 
 helps['kusto cluster create'] = """
     type: command
-    short-summary: "Create a Kusto cluster. Command group swagger name=Clusters, Command swagger \
-name=CreateOrUpdate#Create."
+    short-summary: "Create a Kusto cluster."
     parameters:
       - name: --sku
-        short-summary: "The SKU of the cluster. Swagger name=sku"
+        short-summary: "The SKU of the cluster."
         long-summary: |
             Usage: --sku name=XX capacity=XX tier=XX
 
@@ -54,7 +52,7 @@ name=CreateOrUpdate#Create."
             capacity: The number of instances of the cluster.
             tier: Required. SKU tier.
       - name: --trusted-external-tenants
-        short-summary: "The cluster's external tenants. Swagger name=trustedExternalTenants"
+        short-summary: "The cluster's external tenants."
         long-summary: |
             Usage: --trusted-external-tenants value=XX
 
@@ -62,7 +60,7 @@ name=CreateOrUpdate#Create."
 
             Multiple actions can be specified by using more than one --trusted-external-tenants argument.
       - name: --optimized-autoscale
-        short-summary: "Optimized auto scale definition. Swagger name=optimizedAutoscale"
+        short-summary: "Optimized auto scale definition."
         long-summary: |
             Usage: --optimized-autoscale version=XX is-enabled=XX minimum=XX maximum=XX
 
@@ -71,7 +69,7 @@ name=CreateOrUpdate#Create."
             minimum: Required. Minimum allowed instances count.
             maximum: Required. Maximum allowed instances count.
       - name: --virtual-network-configuration
-        short-summary: "Virtual network definition. Swagger name=virtualNetworkConfiguration"
+        short-summary: "Virtual network definition."
         long-summary: |
             Usage: --virtual-network-configuration subnet-id=XX engine-public-ip-id=XX data-management-public-ip-id=XX
 
@@ -79,7 +77,7 @@ name=CreateOrUpdate#Create."
             engine-public-ip-id: Required. Engine service's public IP address resource id.
             data-management-public-ip-id: Required. Data management's service public IP address resource id.
       - name: --key-vault-properties
-        short-summary: "KeyVault properties for the cluster encryption. Swagger name=keyVaultProperties"
+        short-summary: "KeyVault properties for the cluster encryption."
         long-summary: |
             Usage: --key-vault-properties key-name=XX key-version=XX key-vault-uri=XX
 
@@ -89,17 +87,17 @@ name=CreateOrUpdate#Create."
     examples:
       - name: KustoClustersCreateOrUpdate
         text: |-
-               az kusto cluster create --name "kustoclusterrptest4" --identity-type "SystemAssigned" --location \
-"westus" --enable-double-encryption false --enable-purge true --enable-streaming-ingest true --sku name="Standard_L8s" \
-capacity=2 tier="Standard" --resource-group "kustorptest"
+               az kusto cluster create --name "kustoclusterrptest4" --type "SystemAssigned" --location \
+"southcentralus" --enable-double-encryption false --enable-purge true --enable-streaming-ingest true --sku \
+name="Standard_D11_v2" capacity=2 tier="Standard" --resource-group "kustorptest"
 """
 
 helps['kusto cluster update'] = """
     type: command
-    short-summary: "Update a Kusto cluster. Command group swagger name=Clusters, Command swagger name=Update."
+    short-summary: "Update a Kusto cluster."
     parameters:
       - name: --sku
-        short-summary: "The SKU of the cluster. Swagger name=sku"
+        short-summary: "The SKU of the cluster."
         long-summary: |
             Usage: --sku name=XX capacity=XX tier=XX
 
@@ -107,7 +105,7 @@ helps['kusto cluster update'] = """
             capacity: The number of instances of the cluster.
             tier: Required. SKU tier.
       - name: --trusted-external-tenants
-        short-summary: "The cluster's external tenants. Swagger name=trustedExternalTenants"
+        short-summary: "The cluster's external tenants."
         long-summary: |
             Usage: --trusted-external-tenants value=XX
 
@@ -115,7 +113,7 @@ helps['kusto cluster update'] = """
 
             Multiple actions can be specified by using more than one --trusted-external-tenants argument.
       - name: --optimized-autoscale
-        short-summary: "Optimized auto scale definition. Swagger name=optimizedAutoscale"
+        short-summary: "Optimized auto scale definition."
         long-summary: |
             Usage: --optimized-autoscale version=XX is-enabled=XX minimum=XX maximum=XX
 
@@ -124,7 +122,7 @@ helps['kusto cluster update'] = """
             minimum: Required. Minimum allowed instances count.
             maximum: Required. Maximum allowed instances count.
       - name: --virtual-network-configuration
-        short-summary: "Virtual network definition. Swagger name=virtualNetworkConfiguration"
+        short-summary: "Virtual network definition."
         long-summary: |
             Usage: --virtual-network-configuration subnet-id=XX engine-public-ip-id=XX data-management-public-ip-id=XX
 
@@ -132,7 +130,7 @@ helps['kusto cluster update'] = """
             engine-public-ip-id: Required. Engine service's public IP address resource id.
             data-management-public-ip-id: Required. Data management's service public IP address resource id.
       - name: --key-vault-properties
-        short-summary: "KeyVault properties for the cluster encryption. Swagger name=keyVaultProperties"
+        short-summary: "KeyVault properties for the cluster encryption."
         long-summary: |
             Usage: --key-vault-properties key-name=XX key-version=XX key-vault-uri=XX
 
@@ -142,14 +140,14 @@ helps['kusto cluster update'] = """
     examples:
       - name: KustoClustersUpdate
         text: |-
-               az kusto cluster update --name "kustoclusterrptest4" --identity-type "SystemAssigned" --location \
-"westus" --enable-purge true --enable-streaming-ingest true --key-vault-properties key-name="keyName" \
+               az kusto cluster update --name "kustoclusterrptest4" --type "SystemAssigned" --location \
+"southcentralus" --enable-purge true --enable-streaming-ingest true --key-vault-properties key-name="keyName" \
 key-vault-uri="https://dummy.keyvault.com" key-version="keyVersion" --resource-group "kustorptest"
 """
 
 helps['kusto cluster delete'] = """
     type: command
-    short-summary: "Deletes a Kusto cluster. Command group swagger name=Clusters, Command swagger name=Delete."
+    short-summary: "Deletes a Kusto cluster."
     examples:
       - name: KustoClustersDelete
         text: |-
@@ -158,11 +156,10 @@ helps['kusto cluster delete'] = """
 
 helps['kusto cluster add-language-extension'] = """
     type: command
-    short-summary: "Add a list of language extensions that can run within KQL queries. Command group swagger \
-name=Clusters, Command swagger name=AddLanguageExtensions."
+    short-summary: "Add a list of language extensions that can run within KQL queries."
     parameters:
       - name: --value
-        short-summary: "The list of language extensions. Swagger name=value"
+        short-summary: "The list of language extensions."
         long-summary: |
             Usage: --value language-extension-name=XX
 
@@ -178,8 +175,7 @@ language-extension-name="PYTHON" --value language-extension-name="R" --resource-
 
 helps['kusto cluster detach-follower-database'] = """
     type: command
-    short-summary: "Detaches all followers of a database owned by this cluster. Command group swagger name=Clusters, \
-Command swagger name=DetachFollowerDatabases."
+    short-summary: "Detaches all followers of a database owned by this cluster."
     examples:
       - name: KustoClusterDetachFollowerDatabases
         text: |-
@@ -190,8 +186,8 @@ urceGroups/kustorptest/providers/Microsoft.Kusto/clusters/leader4" --resource-gr
 
 helps['kusto cluster diagnose-virtual-network'] = """
     type: command
-    short-summary: "Diagnoses network connectivity status for external resources on which the service is dependent on. \
-Command group swagger name=Clusters, Command swagger name=DiagnoseVirtualNetwork."
+    short-summary: "Diagnoses network connectivity status for external resources on which the service is dependent \
+on."
     examples:
       - name: KustoClusterDiagnoseVirtualNetwork
         text: |-
@@ -200,8 +196,7 @@ Command group swagger name=Clusters, Command swagger name=DiagnoseVirtualNetwork
 
 helps['kusto cluster list-follower-database'] = """
     type: command
-    short-summary: "Returns a list of databases that are owned by this cluster and were followed by another cluster. \
-Command group swagger name=Clusters, Command swagger name=ListFollowerDatabases."
+    short-summary: "Returns a list of databases that are owned by this cluster and were followed by another cluster."
     examples:
       - name: KustoClusterListFollowerDatabases
         text: |-
@@ -210,8 +205,7 @@ Command group swagger name=Clusters, Command swagger name=ListFollowerDatabases.
 
 helps['kusto cluster list-language-extension'] = """
     type: command
-    short-summary: "Returns a list of language extensions that can run within KQL queries. Command group swagger \
-name=Clusters, Command swagger name=ListLanguageExtensions."
+    short-summary: "Returns a list of language extensions that can run within KQL queries."
     examples:
       - name: KustoClusterListLanguageExtensions
         text: |-
@@ -220,9 +214,8 @@ name=Clusters, Command swagger name=ListLanguageExtensions."
 
 helps['kusto cluster list-sku'] = """
     type: command
-    short-summary: "Returns the SKUs available for the provided resource. Command group swagger name=Clusters, Command \
-swagger name=ListSkusByResource And Lists eligible SKUs for Kusto resource provider. Command group swagger \
-name=Clusters, Command swagger name=ListSkus."
+    short-summary: "Returns the SKUs available for the provided resource. And Lists eligible SKUs for Kusto resource \
+provider."
     examples:
       - name: KustoClustersListResourceSkus
         text: |-
@@ -234,11 +227,10 @@ name=Clusters, Command swagger name=ListSkus."
 
 helps['kusto cluster remove-language-extension'] = """
     type: command
-    short-summary: "Remove a list of language extensions that can run within KQL queries. Command group swagger \
-name=Clusters, Command swagger name=RemoveLanguageExtensions."
+    short-summary: "Remove a list of language extensions that can run within KQL queries."
     parameters:
       - name: --value
-        short-summary: "The list of language extensions. Swagger name=value"
+        short-summary: "The list of language extensions."
         long-summary: |
             Usage: --value language-extension-name=XX
 
@@ -254,7 +246,7 @@ language-extension-name="PYTHON" --value language-extension-name="R" --resource-
 
 helps['kusto cluster start'] = """
     type: command
-    short-summary: "Starts a Kusto cluster. Command group swagger name=Clusters, Command swagger name=Start."
+    short-summary: "Starts a Kusto cluster."
     examples:
       - name: KustoClustersStart
         text: |-
@@ -263,7 +255,7 @@ helps['kusto cluster start'] = """
 
 helps['kusto cluster stop'] = """
     type: command
-    short-summary: "Stops a Kusto cluster. Command group swagger name=Clusters, Command swagger name=Stop."
+    short-summary: "Stops a Kusto cluster."
     examples:
       - name: KustoClustersStop
         text: |-
@@ -287,14 +279,12 @@ helps['kusto cluster wait'] = """
 
 helps['kusto cluster-principal-assignment'] = """
     type: group
-    short-summary: Manage cluster principal assignment with kusto. Command group swagger \
-name=ClusterPrincipalAssignments
+    short-summary: Manage cluster principal assignment with kusto
 """
 
 helps['kusto cluster-principal-assignment list'] = """
     type: command
-    short-summary: "Lists all Kusto cluster principalAssignments. Command group swagger name=ClusterPrincipalAssignment\
-s, Command swagger name=List."
+    short-summary: "Lists all Kusto cluster principalAssignments."
     examples:
       - name: KustoPrincipalAssignmentsList
         text: |-
@@ -304,8 +294,7 @@ s, Command swagger name=List."
 
 helps['kusto cluster-principal-assignment show'] = """
     type: command
-    short-summary: "Gets a Kusto cluster principalAssignment. Command group swagger name=ClusterPrincipalAssignments, \
-Command swagger name=Get."
+    short-summary: "Gets a Kusto cluster principalAssignment."
     examples:
       - name: KustoClusterPrincipalAssignmentsGet
         text: |-
@@ -315,8 +304,7 @@ Command swagger name=Get."
 
 helps['kusto cluster-principal-assignment create'] = """
     type: command
-    short-summary: "Create a Kusto cluster principalAssignment. Command group swagger name=ClusterPrincipalAssignments,\
- Command swagger name=CreateOrUpdate#Create."
+    short-summary: "Create a Kusto cluster principalAssignment."
     examples:
       - name: KustoClusterPrincipalAssignmentsCreateOrUpdate
         text: |-
@@ -327,14 +315,12 @@ helps['kusto cluster-principal-assignment create'] = """
 
 helps['kusto cluster-principal-assignment update'] = """
     type: command
-    short-summary: "Update a Kusto cluster principalAssignment. Command group swagger name=ClusterPrincipalAssignments,\
- Command swagger name=CreateOrUpdate#Update."
+    short-summary: "Update a Kusto cluster principalAssignment."
 """
 
 helps['kusto cluster-principal-assignment delete'] = """
     type: command
-    short-summary: "Deletes a Kusto cluster principalAssignment. Command group swagger name=ClusterPrincipalAssignments\
-, Command swagger name=Delete."
+    short-summary: "Deletes a Kusto cluster principalAssignment."
     examples:
       - name: KustoClusterPrincipalAssignmentsDelete
         text: |-
@@ -366,13 +352,12 @@ deleted.
 
 helps['kusto database'] = """
     type: group
-    short-summary: Manage database with kusto. Command group swagger name=Databases
+    short-summary: Manage database with kusto
 """
 
 helps['kusto database list'] = """
     type: command
-    short-summary: "Returns the list of databases of the given Kusto cluster. Command group swagger name=Databases, \
-Command swagger name=ListByCluster."
+    short-summary: "Returns the list of databases of the given Kusto cluster."
     examples:
       - name: KustoDatabasesListByCluster
         text: |-
@@ -381,7 +366,7 @@ Command swagger name=ListByCluster."
 
 helps['kusto database show'] = """
     type: command
-    short-summary: "Returns a database. Command group swagger name=Databases, Command swagger name=Get."
+    short-summary: "Returns a database."
     examples:
       - name: KustoDatabasesGet
         text: |-
@@ -391,11 +376,10 @@ helps['kusto database show'] = """
 
 helps['kusto database create'] = """
     type: command
-    short-summary: "Create a database. Command group swagger name=Databases, Command swagger \
-name=CreateOrUpdate#Create."
+    short-summary: "Create a database."
     parameters:
       - name: --read-write-database
-        short-summary: "Class representing a read write database. Swagger name=ReadWriteDatabase"
+        short-summary: "Class representing a read write database."
         long-summary: |
             Usage: --read-write-database soft-delete-period=XX hot-cache-period=XX location=XX kind=XX
 
@@ -405,7 +389,7 @@ TimeSpan.
             location: Resource location.
             kind: Required. Kind of the database
       - name: --read-only-following-database
-        short-summary: "Class representing a read only following database. Swagger name=ReadOnlyFollowingDatabase"
+        short-summary: "Class representing a read only following database."
         long-summary: |
             Usage: --read-only-following-database hot-cache-period=XX location=XX kind=XX
 
@@ -416,15 +400,15 @@ TimeSpan.
       - name: KustoDatabasesCreateOrUpdate
         text: |-
                az kusto database create --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" \
---read-write-database location="westus" soft-delete-period="P1D" --resource-group "kustorptest"
+--read-write-database location="southcentralus" soft-delete-period="P1D" --resource-group "kustorptest"
 """
 
 helps['kusto database update'] = """
     type: command
-    short-summary: "Updates a database. Command group swagger name=Databases, Command swagger name=Update."
+    short-summary: "Updates a database."
     parameters:
       - name: --read-write-database
-        short-summary: "Class representing a read write database. Swagger name=ReadWriteDatabase"
+        short-summary: "Class representing a read write database."
         long-summary: |
             Usage: --read-write-database soft-delete-period=XX hot-cache-period=XX location=XX kind=XX
 
@@ -434,7 +418,7 @@ TimeSpan.
             location: Resource location.
             kind: Required. Kind of the database
       - name: --read-only-following-database
-        short-summary: "Class representing a read only following database. Swagger name=ReadOnlyFollowingDatabase"
+        short-summary: "Class representing a read only following database."
         long-summary: |
             Usage: --read-only-following-database hot-cache-period=XX location=XX kind=XX
 
@@ -450,8 +434,7 @@ TimeSpan.
 
 helps['kusto database delete'] = """
     type: command
-    short-summary: "Deletes the database with the given name. Command group swagger name=Databases, Command swagger \
-name=Delete."
+    short-summary: "Deletes the database with the given name."
     examples:
       - name: KustoDatabasesDelete
         text: |-
@@ -461,11 +444,10 @@ name=Delete."
 
 helps['kusto database add-principal'] = """
     type: command
-    short-summary: "Add Database principals permissions. Command group swagger name=Databases, Command swagger \
-name=AddPrincipals."
+    short-summary: "Add Database principals permissions."
     parameters:
       - name: --value
-        short-summary: "The list of Kusto database principals. Swagger name=value"
+        short-summary: "The list of Kusto database principals."
         long-summary: |
             Usage: --value role=XX name=XX type=XX fqn=XX email=XX app-id=XX
 
@@ -489,8 +471,7 @@ name="SomeApp" type="App" app-id="some_guid_app_id" email="" fqn="aadapp=some_gu
 
 helps['kusto database list-principal'] = """
     type: command
-    short-summary: "Returns a list of database principals of the given Kusto cluster and database. Command group \
-swagger name=Databases, Command swagger name=ListPrincipals."
+    short-summary: "Returns a list of database principals of the given Kusto cluster and database."
     examples:
       - name: KustoDatabaseListPrincipals
         text: |-
@@ -500,11 +481,10 @@ swagger name=Databases, Command swagger name=ListPrincipals."
 
 helps['kusto database remove-principal'] = """
     type: command
-    short-summary: "Remove Database principals permissions. Command group swagger name=Databases, Command swagger \
-name=RemovePrincipals."
+    short-summary: "Remove Database principals permissions."
     parameters:
       - name: --value
-        short-summary: "The list of Kusto database principals. Swagger name=value"
+        short-summary: "The list of Kusto database principals."
         long-summary: |
             Usage: --value role=XX name=XX type=XX fqn=XX email=XX app-id=XX
 
@@ -546,14 +526,12 @@ helps['kusto database wait'] = """
 
 helps['kusto database-principal-assignment'] = """
     type: group
-    short-summary: Manage database principal assignment with kusto. Command group swagger \
-name=DatabasePrincipalAssignments
+    short-summary: Manage database principal assignment with kusto
 """
 
 helps['kusto database-principal-assignment list'] = """
     type: command
-    short-summary: "Lists all Kusto cluster database principalAssignments. Command group swagger \
-name=DatabasePrincipalAssignments, Command swagger name=List."
+    short-summary: "Lists all Kusto cluster database principalAssignments."
     examples:
       - name: KustoPrincipalAssignmentsList
         text: |-
@@ -563,8 +541,7 @@ name=DatabasePrincipalAssignments, Command swagger name=List."
 
 helps['kusto database-principal-assignment show'] = """
     type: command
-    short-summary: "Gets a Kusto cluster database principalAssignment. Command group swagger \
-name=DatabasePrincipalAssignments, Command swagger name=Get."
+    short-summary: "Gets a Kusto cluster database principalAssignment."
     examples:
       - name: KustoDatabasePrincipalAssignmentsGet
         text: |-
@@ -574,8 +551,7 @@ name=DatabasePrincipalAssignments, Command swagger name=Get."
 
 helps['kusto database-principal-assignment create'] = """
     type: command
-    short-summary: "Creates a Kusto cluster database principalAssignment. Command group swagger \
-name=DatabasePrincipalAssignments, Command swagger name=CreateOrUpdate#Create."
+    short-summary: "Creates a Kusto cluster database principalAssignment."
     examples:
       - name: KustoDatabasePrincipalAssignmentsCreateOrUpdate
         text: |-
@@ -587,14 +563,12 @@ name=DatabasePrincipalAssignments, Command swagger name=CreateOrUpdate#Create."
 
 helps['kusto database-principal-assignment update'] = """
     type: command
-    short-summary: "Update a Kusto cluster database principalAssignment. Command group swagger \
-name=DatabasePrincipalAssignments, Command swagger name=CreateOrUpdate#Update."
+    short-summary: "Update a Kusto cluster database principalAssignment."
 """
 
 helps['kusto database-principal-assignment delete'] = """
     type: command
-    short-summary: "Deletes a Kusto principalAssignment. Command group swagger name=DatabasePrincipalAssignments, \
-Command swagger name=Delete."
+    short-summary: "Deletes a Kusto principalAssignment."
     examples:
       - name: KustoDatabasePrincipalAssignmentsDelete
         text: |-
@@ -626,14 +600,12 @@ deleted.
 
 helps['kusto attached-database-configuration'] = """
     type: group
-    short-summary: Manage attached database configuration with kusto. Command group swagger \
-name=AttachedDatabaseConfigurations
+    short-summary: Manage attached database configuration with kusto
 """
 
 helps['kusto attached-database-configuration list'] = """
     type: command
-    short-summary: "Returns the list of attached database configurations of the given Kusto cluster. Command group \
-swagger name=AttachedDatabaseConfigurations, Command swagger name=ListByCluster."
+    short-summary: "Returns the list of attached database configurations of the given Kusto cluster."
     examples:
       - name: KustoAttachedDatabaseConfigurationsListByCluster
         text: |-
@@ -643,8 +615,7 @@ swagger name=AttachedDatabaseConfigurations, Command swagger name=ListByCluster.
 
 helps['kusto attached-database-configuration show'] = """
     type: command
-    short-summary: "Returns an attached database configuration. Command group swagger name=AttachedDatabaseConfiguratio\
-ns, Command swagger name=Get."
+    short-summary: "Returns an attached database configuration."
     examples:
       - name: AttachedDatabaseConfigurationsGet
         text: |-
@@ -654,27 +625,24 @@ ns, Command swagger name=Get."
 
 helps['kusto attached-database-configuration create'] = """
     type: command
-    short-summary: "Create an attached database configuration. Command group swagger name=AttachedDatabaseConfiguration\
-s, Command swagger name=CreateOrUpdate#Create."
+    short-summary: "Create an attached database configuration."
     examples:
       - name: AttachedDatabaseConfigurationsCreateOrUpdate
         text: |-
                az kusto attached-database-configuration create --name "attachedDatabaseConfigurations1" --cluster-name \
-"kustoclusterrptest4" --location "westus" --cluster-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/re\
-sourceGroups/kustorptest/providers/Microsoft.Kusto/Clusters/KustoClusterLeader" --database-name "kustodatabase" \
---default-principals-modification-kind "Union" --resource-group "kustorptest"
+"kustoclusterrptest4" --location "southcentralus" --cluster-resource-id "/subscriptions/12345678-1234-1234-1234-1234567\
+89098/resourceGroups/kustorptest/providers/Microsoft.Kusto/Clusters/KustoClusterLeader" --database-name \
+"kustodatabase" --default-principals-modification-kind "Union" --resource-group "kustorptest"
 """
 
 helps['kusto attached-database-configuration update'] = """
     type: command
-    short-summary: "Update an attached database configuration. Command group swagger name=AttachedDatabaseConfiguration\
-s, Command swagger name=CreateOrUpdate#Update."
+    short-summary: "Update an attached database configuration."
 """
 
 helps['kusto attached-database-configuration delete'] = """
     type: command
-    short-summary: "Deletes the attached database configuration with the given name. Command group swagger \
-name=AttachedDatabaseConfigurations, Command swagger name=Delete."
+    short-summary: "Deletes the attached database configuration with the given name."
     examples:
       - name: AttachedDatabaseConfigurationsDelete
         text: |-
@@ -706,13 +674,12 @@ deleted.
 
 helps['kusto data-connection'] = """
     type: group
-    short-summary: Manage data connection with kusto. Command group swagger name=DataConnections
+    short-summary: Manage data connection with kusto
 """
 
 helps['kusto data-connection list'] = """
     type: command
-    short-summary: "Returns the list of data connections of the given Kusto database. Command group swagger \
-name=DataConnections, Command swagger name=ListByDatabase."
+    short-summary: "Returns the list of data connections of the given Kusto database."
     examples:
       - name: KustoDatabasesListByCluster
         text: |-
@@ -722,7 +689,7 @@ name=DataConnections, Command swagger name=ListByDatabase."
 
 helps['kusto data-connection show'] = """
     type: command
-    short-summary: "Returns a data connection. Command group swagger name=DataConnections, Command swagger name=Get."
+    short-summary: "Returns a data connection."
     examples:
       - name: KustoDataConnectionsGet
         text: |-
@@ -732,73 +699,66 @@ helps['kusto data-connection show'] = """
 
 helps['kusto data-connection event-grid'] = """
     type: group
-    short-summary: Manage data connection with kusto sub group event-grid. Command group swagger name=DataConnections
+    short-summary: Manage data connection with kusto sub group event-grid
 """
 
 helps['kusto data-connection event-grid create'] = """
     type: command
-    short-summary: "Create a data connection. Command group swagger name=DataConnections, Command swagger \
-name=CreateOrUpdate#Create#EventGrid."
+    short-summary: "Create a data connection."
 """
 
 helps['kusto data-connection event-hub'] = """
     type: group
-    short-summary: Manage data connection with kusto sub group event-hub. Command group swagger name=DataConnections
+    short-summary: Manage data connection with kusto sub group event-hub
 """
 
 helps['kusto data-connection event-hub create'] = """
     type: command
-    short-summary: "Create a data connection. Command group swagger name=DataConnections, Command swagger \
-name=CreateOrUpdate#Create#EventHub."
+    short-summary: "Create a data connection."
     examples:
       - name: KustoDataConnectionsCreateOrUpdate
         text: |-
                az kusto data-connection event-hub create --cluster-name "kustoclusterrptest4" --name \
-"DataConnections8" --database-name "KustoDatabase8" --location "westus" --consumer-group "testConsumerGroup1" \
+"DataConnections8" --database-name "KustoDatabase8" --location "southcentralus" --consumer-group "testConsumerGroup1" \
 --event-hub-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Micro\
 soft.EventHub/namespaces/eventhubTestns1/eventhubs/eventhubTest1" --resource-group "kustorptest"
 """
 
 helps['kusto data-connection iot-hub'] = """
     type: group
-    short-summary: Manage data connection with kusto sub group iot-hub. Command group swagger name=DataConnections
+    short-summary: Manage data connection with kusto sub group iot-hub
 """
 
 helps['kusto data-connection iot-hub create'] = """
     type: command
-    short-summary: "Create a data connection. Command group swagger name=DataConnections, Command swagger \
-name=CreateOrUpdate#Create#IotHub."
+    short-summary: "Create a data connection."
 """
 
 helps['kusto data-connection event-grid update'] = """
     type: command
-    short-summary: "Updates a data connection. Command group swagger name=DataConnections, Command swagger \
-name=Update#EventGrid."
+    short-summary: "Updates a data connection."
 """
 
 helps['kusto data-connection event-hub update'] = """
     type: command
-    short-summary: "Updates a data connection. Command group swagger name=DataConnections, Command swagger \
-name=Update#EventHub."
+    short-summary: "Updates a data connection."
     examples:
       - name: KustoDataConnectionsUpdate
         text: |-
                az kusto data-connection event-hub update --cluster-name "kustoclusterrptest4" --name \
-"DataConnections8" --database-name "KustoDatabase8" --location "westus" --consumer-group "testConsumerGroup1" \
+"DataConnections8" --database-name "KustoDatabase8" --location "southcentralus" --consumer-group "testConsumerGroup1" \
 --event-hub-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/resourceGroups/kustorptest/providers/Micro\
 soft.EventHub/namespaces/eventhubTestns1/eventhubs/eventhubTest1" --resource-group "kustorptest"
 """
 
 helps['kusto data-connection iot-hub update'] = """
     type: command
-    short-summary: "Updates a data connection. Command group swagger name=DataConnections, Command swagger \
-name=Update#IotHub."
+    short-summary: "Updates a data connection."
 """
 
 helps['kusto data-connection delete'] = """
     type: command
-    short-summary: "Deletes the data connection with the given name. Command group swagger name=DataConnections, \
-Command swagger name=Delete."
+    short-summary: "Deletes the data connection with the given name."
     examples:
       - name: KustoDataConnectionsDelete
         text: |-
@@ -808,14 +768,12 @@ Command swagger name=Delete."
 
 helps['kusto data-connection event-grid data-connection-validation'] = """
     type: command
-    short-summary: "Checks that the data connection parameters are valid. Command group swagger name=DataConnections, \
-Command swagger name=dataConnectionValidation#EventGrid."
+    short-summary: "Checks that the data connection parameters are valid."
 """
 
 helps['kusto data-connection event-hub data-connection-validation'] = """
     type: command
-    short-summary: "Checks that the data connection parameters are valid. Command group swagger name=DataConnections, \
-Command swagger name=dataConnectionValidation#EventHub."
+    short-summary: "Checks that the data connection parameters are valid."
     examples:
       - name: KustoDataConnectionValidation
         text: |-
@@ -827,8 +785,7 @@ soft.EventHub/namespaces/eventhubTestns1/eventhubs/eventhubTest1" --resource-gro
 
 helps['kusto data-connection iot-hub data-connection-validation'] = """
     type: command
-    short-summary: "Checks that the data connection parameters are valid. Command group swagger name=DataConnections, \
-Command swagger name=dataConnectionValidation#IotHub."
+    short-summary: "Checks that the data connection parameters are valid."
 """
 
 helps['kusto data-connection wait'] = """
