@@ -308,5 +308,3 @@ def update_file_service_properties(cmd, instance, enable_delete_retention=None,
         params['protocol_settings'] = instance.protocol_settings
 
     return params
-
-

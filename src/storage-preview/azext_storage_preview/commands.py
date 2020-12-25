@@ -36,7 +36,6 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         resource_type=CUSTOM_MGMT_PREVIEW_STORAGE
     )
 
-
     blob_inventory_sdk = CliCommandType(
         operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_preview_storage.operations#'
                         'BlobInventoryPoliciesOperations.{}',

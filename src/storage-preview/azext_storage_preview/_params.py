@@ -11,7 +11,7 @@ from ._validators import (get_datetime_type, validate_metadata,
                           validate_azcopy_target_url, validate_included_datasets,
                           validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url,
                           validate_storage_data_plane_list, validate_delete_retention_days, process_resource_group)
-from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_MGMT_PREVIEW_STORAGE
+from .profiles import CUSTOM_MGMT_PREVIEW_STORAGE
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements
