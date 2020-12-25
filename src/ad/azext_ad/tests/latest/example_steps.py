@@ -65,7 +65,6 @@ def step_ds_update(test, rg_2, rg, checks=None):
     test.cmd('az ad ds update '
              '--tls-v1 "Disabled" '
              '--filtered-sync "Disabled" '
-             '--additional-recipients "jicha@microsoft.com" "caalmont@microsoft.com" '
              '--replica-sets location="West US" subnet-id="/subscriptions/{subscription_id}/resourceGroups/{rg_2}/provi'
              'ders/Microsoft.Network/virtualNetworks/{vn}/subnets/default" '
              '--replica-sets location="East US" subnet-id="/subscriptions/{subscription_id}/resourceGroups/{rg_2}/provi'

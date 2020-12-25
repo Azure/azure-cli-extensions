@@ -72,13 +72,13 @@ trust-password=XX
     examples:
       - name: Create Domain Service
         text: |-
-               az ad ds create --domain "TestDomainService.com" --ntlm-v1 "Enabled" --sync-ntlm-passwords "Enabled" \
---tls-v1 "Disabled" --filtered-sync "Enabled" --external-access "Enabled" --ldaps "Enabled" --pfx-certificate \
-"MIIDPDCCAiSgAwIBAgIQQUI9P6tq2p9OFIJa7DLNvTANBgkqhkiG9w0BAQsFADAgMR4w..." --pfx-certificate-password \
-"<pfxCertificatePassword>" --additional-recipients "jicha@microsoft.com" "caalmont@microsoft.com" --notify-dc-admins \
-"Enabled" --notify-global-admins "Enabled" --replica-sets location="West US" subnet-id="/subscriptions/1639790a-76a2-4a\
-c4-98d9-8562f5dfcb4d/resourceGroups/TestNetworkResourceGroup/providers/Microsoft.Network/virtualNetworks/TestVnetWUS/su\
-bnets/TestSubnetWUS" --name "TestDomainService.com" --resource-group "TestResourceGroup"
+               az ad ds create --domain "TestDomainService.com" --ntlm-v1 "Enabled" --sync-ntlm-pwd "Enabled" --tls-v1 \
+"Disabled" --filtered-sync "Enabled" --external-access "Enabled" --ldaps "Enabled" --pfx-cert \
+"MIIDPDCCAiSgAwIBAgIQQUI9P6tq2p9OFIJa7DLNvTANBgkqhkiG9w0BAQsFADAgMR4w..." --pfx-cert-pwd "<pfxCertificatePassword>" \
+--notify-others "jicha@microsoft.com" "caalmont@microsoft.com" --notify-dc-admins "Enabled" --notify-global-admins \
+"Enabled" --replica-sets location="West US" subnet-id="/subscriptions/1639790a-76a2-4ac4-98d9-8562f5dfcb4d/resourceGrou\
+ps/TestNetworkResourceGroup/providers/Microsoft.Network/virtualNetworks/TestVnetWUS/subnets/TestSubnetWUS" --name \
+"TestDomainService.com" --resource-group "TestResourceGroup"
 """
 
 helps['ad ds update'] = """
@@ -112,15 +112,15 @@ trust-password=XX
     examples:
       - name: Update Domain Service
         text: |-
-               az ad ds update --ntlm-v1 "Enabled" --sync-ntlm-passwords "Enabled" --tls-v1 "Disabled" --filtered-sync \
-"Enabled" --external-access "Enabled" --ldaps "Enabled" --pfx-certificate "MIIDPDCCAiSgAwIBAgIQQUI9P6tq2p9OFIJa7DLNvTAN\
-BgkqhkiG9w0BAQsFADAgMR4w..." --pfx-certificate-password "<pfxCertificatePassword>" --additional-recipients \
-"jicha@microsoft.com" "caalmont@microsoft.com" --notify-dc-admins "Enabled" --notify-global-admins "Enabled" \
---replica-sets location="West US" subnet-id="/subscriptions/1639790a-76a2-4ac4-98d9-8562f5dfcb4d/resourceGroups/TestNet\
-workResourceGroup/providers/Microsoft.Network/virtualNetworks/TestVnetWUS/subnets/TestSubnetWUS" --replica-sets \
-location="East US" subnet-id="/subscriptions/1639790a-76a2-4ac4-98d9-8562f5dfcb4d/resourceGroups/TestNetworkResourceGro\
-up/providers/Microsoft.Network/virtualNetworks/TestVnetEUS/subnets/TestSubnetEUS" --name "TestDomainService.com" \
---resource-group "TestResourceGroup"
+               az ad ds update --ntlm-v1 "Enabled" --sync-ntlm-pwd "Enabled" --tls-v1 "Disabled" --filtered-sync \
+"Enabled" --external-access "Enabled" --ldaps "Enabled" --pfx-cert "MIIDPDCCAiSgAwIBAgIQQUI9P6tq2p9OFIJa7DLNvTANBgkqhki\
+G9w0BAQsFADAgMR4w..." --pfx-cert-pwd "<pfxCertificatePassword>" --notify-others "jicha@microsoft.com" \
+"caalmont@microsoft.com" --notify-dc-admins "Enabled" --notify-global-admins "Enabled" --replica-sets location="West \
+US" subnet-id="/subscriptions/1639790a-76a2-4ac4-98d9-8562f5dfcb4d/resourceGroups/TestNetworkResourceGroup/providers/Mi\
+crosoft.Network/virtualNetworks/TestVnetWUS/subnets/TestSubnetWUS" --replica-sets location="East US" \
+subnet-id="/subscriptions/1639790a-76a2-4ac4-98d9-8562f5dfcb4d/resourceGroups/TestNetworkResourceGroup/providers/Micros\
+oft.Network/virtualNetworks/TestVnetEUS/subnets/TestSubnetEUS" --name "TestDomainService.com" --resource-group \
+"TestResourceGroup"
 """
 
 helps['ad ds delete'] = """

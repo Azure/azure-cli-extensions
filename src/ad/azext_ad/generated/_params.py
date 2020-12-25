@@ -7,6 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+# pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
@@ -39,7 +40,10 @@ def load_arguments(self, _):
         c.argument('domain_name', options_list=['--domain'], type=str, help='The name of the Azure domain that the '
                    'user would like to deploy Domain Services to.')
         c.argument('replica_sets', action=AddReplicaSets, nargs='+', help='List of ReplicaSets')
-        c.argument('domain_configuration_type', arg_type=get_enum_type(['FullySynced', 'ResourceTrusting']),
+        c.argument('domain_configuration_type', options_list=['--domain-config-type'], arg_type=get_enum_type([
+                                                                                                               'FullySynced',
+                                                                                                               'ResourceTrusting'
+                                                                                                               ]),
                    help='Domain Configuration Type')
         c.argument('sku', arg_type=get_enum_type(['Standard', 'Enterprise', 'Premium']), help='Sku Type')
         c.argument('filtered_sync', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Enabled or Disabled flag to '
@@ -48,31 +52,36 @@ def load_arguments(self, _):
                    'be notified', arg_group='Notification Settings')
         c.argument('notify_dc_admins', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Should domain controller '
                    'admins be notified', arg_group='Notification Settings')
-        c.argument('additional_recipients', nargs='+', help='The list of additional recipients',
-                   arg_group='Notification Settings')
+        c.argument('additional_recipients', options_list=['--notify-others'], nargs='+', help='The list of additional '
+                   'recipients', arg_group='Notification Settings')
         c.argument('ntlm_v1', arg_type=get_enum_type(['Enabled', 'Disabled']), help='A flag to determine whether or '
                    'not NtlmV1 is enabled or disabled.', arg_group='Domain Security Settings')
         c.argument('tls_v1', arg_type=get_enum_type(['Enabled', 'Disabled']), help='A flag to determine whether or not '
                    'TlsV1 is enabled or disabled.', arg_group='Domain Security Settings')
-        c.argument('sync_ntlm_passwords', arg_type=get_enum_type(['Enabled', 'Disabled']), help='A flag to determine '
-                   'whether or not SyncNtlmPasswords is enabled or disabled.', arg_group='Domain Security Settings')
-        c.argument('sync_kerberos_passwords', arg_type=get_enum_type(['Enabled', 'Disabled']), help='A flag to '
-                   'determine whether or not SyncKerberosPasswords is enabled or disabled.', arg_group='Domain '
+        c.argument('sync_ntlm_passwords', options_list=['--sync-ntlm-pwd'], arg_type=get_enum_type(['Enabled',
+                                                                                                    'Disabled']),
+                   help='A flag to determine whether or not SyncNtlmPasswords is enabled or disabled.',
+                   arg_group='Domain Security Settings')
+        c.argument('sync_kerberos_passwords', options_list=['--sync-kerberos-pwd'], arg_type=get_enum_type(['Enabled',
+                                                                                                            'Disabled']
+                                                                                                            ), help='A '
+                   'flag to determine whether or not SyncKerberosPasswords is enabled or disabled.', arg_group='Domain '
                    'Security Settings')
-        c.argument('sync_on_prem_passwords', arg_type=get_enum_type(['Enabled', 'Disabled']), help='A flag to '
-                   'determine whether or not SyncOnPremPasswords is enabled or disabled.', arg_group='Domain Security '
-                   'Settings')
+        c.argument('sync_on_prem_passwords', options_list=['--sync-on-prem-pwd'], arg_type=get_enum_type(['Enabled',
+                                                                                                          'Disabled']),
+                   help='A flag to determine whether or not SyncOnPremPasswords is enabled or disabled.',
+                   arg_group='Domain Security Settings')
         c.argument('settings', action=AddSettings, nargs='+', help='List of settings for Resource Forest',
                    arg_group='Resource Forest Settings')
         c.argument('resource_forest', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Resource Forest',
                    arg_group='Resource Forest Settings')
         c.argument('ldaps', arg_type=get_enum_type(['Enabled', 'Disabled']), help='A flag to determine whether or not '
                    'Secure LDAP is enabled or disabled.', arg_group='Ldaps Settings')
-        c.argument('pfx_certificate', type=str, help='The certificate required to configure Secure LDAP. The parameter '
-                   'passed here should be a base64encoded representation of the certificate pfx file.',
-                   arg_group='Ldaps Settings')
-        c.argument('pfx_certificate_password', type=str, help='The password to decrypt the provided Secure LDAP '
+        c.argument('pfx_certificate', options_list=['--pfx-cert'], type=str, help='The certificate required to '
+                   'configure Secure LDAP. The parameter passed here should be a base64encoded representation of the '
                    'certificate pfx file.', arg_group='Ldaps Settings')
+        c.argument('pfx_certificate_password', options_list=['--pfx-cert-pwd'], type=str, help='The password to '
+                   'decrypt the provided Secure LDAP certificate pfx file.', arg_group='Ldaps Settings')
         c.argument('external_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='A flag to determine '
                    'whether or not Secure LDAP access over the internet is enabled or disabled.', arg_group='Ldaps '
                    'Settings')
@@ -83,7 +92,10 @@ def load_arguments(self, _):
                    'service.', id_part='name')
         c.argument('tags', tags_type)
         c.argument('replica_sets', action=AddReplicaSets, nargs='+', help='List of ReplicaSets')
-        c.argument('domain_configuration_type', arg_type=get_enum_type(['FullySynced', 'ResourceTrusting']),
+        c.argument('domain_configuration_type', options_list=['--domain-config-type'], arg_type=get_enum_type([
+                                                                                                               'FullySynced',
+                                                                                                               'ResourceTrusting'
+                                                                                                               ]),
                    help='Domain Configuration Type')
         c.argument('sku', arg_type=get_enum_type(['Standard', 'Enterprise', 'Premium']), help='Sku Type')
         c.argument('filtered_sync', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Enabled or Disabled flag to '
@@ -92,31 +104,36 @@ def load_arguments(self, _):
                    'be notified', arg_group='Notification Settings')
         c.argument('notify_dc_admins', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Should domain controller '
                    'admins be notified', arg_group='Notification Settings')
-        c.argument('additional_recipients', nargs='+', help='The list of additional recipients',
-                   arg_group='Notification Settings')
+        c.argument('additional_recipients', options_list=['--notify-others'], nargs='+', help='The list of additional '
+                   'recipients', arg_group='Notification Settings')
         c.argument('ntlm_v1', arg_type=get_enum_type(['Enabled', 'Disabled']), help='A flag to determine whether or '
                    'not NtlmV1 is enabled or disabled.', arg_group='Domain Security Settings')
         c.argument('tls_v1', arg_type=get_enum_type(['Enabled', 'Disabled']), help='A flag to determine whether or not '
                    'TlsV1 is enabled or disabled.', arg_group='Domain Security Settings')
-        c.argument('sync_ntlm_passwords', arg_type=get_enum_type(['Enabled', 'Disabled']), help='A flag to determine '
-                   'whether or not SyncNtlmPasswords is enabled or disabled.', arg_group='Domain Security Settings')
-        c.argument('sync_kerberos_passwords', arg_type=get_enum_type(['Enabled', 'Disabled']), help='A flag to '
-                   'determine whether or not SyncKerberosPasswords is enabled or disabled.', arg_group='Domain '
+        c.argument('sync_ntlm_passwords', options_list=['--sync-ntlm-pwd'], arg_type=get_enum_type(['Enabled',
+                                                                                                    'Disabled']),
+                   help='A flag to determine whether or not SyncNtlmPasswords is enabled or disabled.',
+                   arg_group='Domain Security Settings')
+        c.argument('sync_kerberos_passwords', options_list=['--sync-kerberos-pwd'], arg_type=get_enum_type(['Enabled',
+                                                                                                            'Disabled']
+                                                                                                            ), help='A '
+                   'flag to determine whether or not SyncKerberosPasswords is enabled or disabled.', arg_group='Domain '
                    'Security Settings')
-        c.argument('sync_on_prem_passwords', arg_type=get_enum_type(['Enabled', 'Disabled']), help='A flag to '
-                   'determine whether or not SyncOnPremPasswords is enabled or disabled.', arg_group='Domain Security '
-                   'Settings')
+        c.argument('sync_on_prem_passwords', options_list=['--sync-on-prem-pwd'], arg_type=get_enum_type(['Enabled',
+                                                                                                          'Disabled']),
+                   help='A flag to determine whether or not SyncOnPremPasswords is enabled or disabled.',
+                   arg_group='Domain Security Settings')
         c.argument('settings', action=AddSettings, nargs='+', help='List of settings for Resource Forest',
                    arg_group='Resource Forest Settings')
         c.argument('resource_forest', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Resource Forest',
                    arg_group='Resource Forest Settings')
         c.argument('ldaps', arg_type=get_enum_type(['Enabled', 'Disabled']), help='A flag to determine whether or not '
                    'Secure LDAP is enabled or disabled.', arg_group='Ldaps Settings')
-        c.argument('pfx_certificate', type=str, help='The certificate required to configure Secure LDAP. The parameter '
-                   'passed here should be a base64encoded representation of the certificate pfx file.',
-                   arg_group='Ldaps Settings')
-        c.argument('pfx_certificate_password', type=str, help='The password to decrypt the provided Secure LDAP '
+        c.argument('pfx_certificate', options_list=['--pfx-cert'], type=str, help='The certificate required to '
+                   'configure Secure LDAP. The parameter passed here should be a base64encoded representation of the '
                    'certificate pfx file.', arg_group='Ldaps Settings')
+        c.argument('pfx_certificate_password', options_list=['--pfx-cert-pwd'], type=str, help='The password to '
+                   'decrypt the provided Secure LDAP certificate pfx file.', arg_group='Ldaps Settings')
         c.argument('external_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='A flag to determine '
                    'whether or not Secure LDAP access over the internet is enabled or disabled.', arg_group='Ldaps '
                    'Settings')

@@ -14,7 +14,7 @@ def load_arguments(self, _):
     from argcomplete.completers import FilesCompleter
     for item in ['create', 'update']:
         with self.argument_context('ad ds {}'.format(item)) as c:
-            c.argument('pfx_certificate', type=file_type, completer=FilesCompleter(),
+            c.argument('pfx_certificate', options_list=['--pfx-cert'], type=file_type, completer=FilesCompleter(),
                        help='The certificate required to configure Secure LDAP. The parameter '
                             'passed here should be the file path to the certificate pfx file '
                             'or a base64encoded representation of the certificate pfx file.',
