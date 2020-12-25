@@ -63,12 +63,32 @@ def step_ds_update(test, rg_2, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az ad ds update '
-             '--tls-v1 "Disabled" '
-             '--filtered-sync "Disabled" '
              '--replica-sets location="West US" subnet-id="/subscriptions/{subscription_id}/resourceGroups/{rg_2}/provi'
              'ders/Microsoft.Network/virtualNetworks/{vn}/subnets/default" '
-             '--replica-sets location="East US" subnet-id="/subscriptions/{subscription_id}/resourceGroups/{rg_2}/provi'
+             '--replica-sets location="West US" subnet-id="/subscriptions/{subscription_id}/resourceGroups/{rg_2}/provi'
              'ders/Microsoft.Network/virtualNetworks/{vn_2}/subnets/default" '
+             '--name "{myDomainService}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+@try_manual
+def step_ds_update_security_settings(test, rg_2, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az ad ds update '
+             '--ntlm-v1 Disabled '
+             '--name "{myDomainService}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+@try_manual
+def step_ds_update_notification_settings(test, rg_2, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az ad ds update '
+             '--notify-others "jicha@microsoft.com" "caalmont@microsoft.com" '
              '--name "{myDomainService}" '
              '--resource-group "{rg}"',
              checks=checks)
