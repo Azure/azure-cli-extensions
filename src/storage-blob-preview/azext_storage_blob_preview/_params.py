@@ -416,8 +416,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.register_precondition_options()
         c.register_content_settings_argument(t_blob_content_settings, update=False)
 
-        c.arugment('file_path', options_list=('--file', '-f'), type=file_type, completer=FilesCompleter(),
-                    help='Path of the file to upload as the blob content.', validator=validate_upload_blob)
+        c.argument('file_path', options_list=('--file', '-f'), type=file_type, completer=FilesCompleter(),
+                   help='Path of the file to upload as the blob content.', validator=validate_upload_blob)
         c.argument('data', help='The blob data to upload.', required=False, is_preview=True, min_api='2019-02-02')
         c.argument('length', type=int, help='Number of bytes to read from the stream. This is optional, but should be '
                    'supplied for optimal performance. Cooperate with --data.', is_preview=True, min_api='2019-02-02')
