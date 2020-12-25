@@ -288,10 +288,3 @@ class FileServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
         self.cmd(
             '{cmd} update --enable-smb-multichannel true -n {sa} -g {rg}').assert_with_checks(
             JMESPathCheck('protocolSettings.smb.multichannel.enabled', True))
-
-        self.cmd(
-            '{cmd} update --set protocolSettings.smb.multichannel.enabled=false -n {sa} -g {rg}').assert_with_checks(
-            JMESPathCheck('protocolSettings.smb.multichannel.enabled', False))
-
-        self.cmd('{cmd} show --account-name {sa} -g {rg}').assert_with_checks(
-            JMESPathCheck('protocolSettings.smb.multichannel.enabled', False))
