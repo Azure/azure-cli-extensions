@@ -110,7 +110,8 @@ def load_arguments(self, _):
                    'property. It contains the format of local timestamp that needs to be used and the corresponding '
                    'timezone offset information. If a value isn\'t specified for localTimestamp, or if null, then the '
                    'local timestamp will not be ingressed with the events. Expected value: json-string/@json-file.')
-        c.argument('timestamp_property_name', type=str, help='The event property that will be used as the event '
+        c.argument('timestamp_property_name', options_list=['--ts-property-name', '--timestamp-property-name'],
+                   type=str, help='The event property that will be used as the event '
                    'source\'s timestamp. If a value isn\'t specified for timestampPropertyName, or if null or '
                    'empty-string is specified, the event creation time will be used.')
         c.argument('event_source_resource_id', options_list=['--resource-id', '--event-source-resource-id'], type=str,
@@ -139,10 +140,12 @@ def load_arguments(self, _):
                    'property. It contains the format of local timestamp that needs to be used and the corresponding '
                    'timezone offset information. If a value isn\'t specified for localTimestamp, or if null, then the '
                    'local timestamp will not be ingressed with the events. Expected value: json-string/@json-file.')
-        c.argument('timestamp_property_name', type=str, help='The event property that will be used as the event '
+        c.argument('timestamp_property_name', options_list=['--ts-property-name', '--timestamp-property-name'],
+                   type=str, help='The event property that will be used as the event '
                    'source\'s timestamp. If a value isn\'t specified for timestampPropertyName, or if null or '
                    'empty-string is specified, the event creation time will be used.')
-        c.argument('event_source_resource_id', type=str, help='The resource id of the event source in Azure Resource '
+        c.argument('event_source_resource_id', options_list=['--resource-id', '--event-source-resource-id'],
+                   type=str, help='The resource id of the event source in Azure Resource '
                    'Manager.')
         c.argument('iot_hub_name', type=str, help='The name of the iot hub.')
         c.argument('consumer_group_name', type=str, help='The name of the iot hub\'s consumer group that holds the '
