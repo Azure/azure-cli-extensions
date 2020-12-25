@@ -25,8 +25,8 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class TriggerOperations(object):
-    """TriggerOperations operations.
+class TriggersOperations(object):
+    """TriggersOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -126,8 +126,7 @@ class TriggerOperations(object):
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
-        continuation_token_parameter=None,  # type: Optional[str]
-        parent_trigger_name=None,  # type: Optional[str]
+        filter_parameters,  # type: "models.TriggerFilterParameters"
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.TriggerQueryResponse"
@@ -137,12 +136,8 @@ class TriggerOperations(object):
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
-        :param continuation_token_parameter: The continuation token for getting the next page of
-         results. Null for first page.
-        :type continuation_token_parameter: str
-        :param parent_trigger_name: The name of the parent TumblingWindowTrigger to get the child rerun
-         triggers.
-        :type parent_trigger_name: str
+        :param filter_parameters: Parameters to filter the triggers.
+        :type filter_parameters: ~data_factory_management_client.models.TriggerFilterParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: TriggerQueryResponse, or the result of cls(response)
         :rtype: ~data_factory_management_client.models.TriggerQueryResponse
@@ -153,8 +148,6 @@ class TriggerOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        filter_parameters = models.TriggerFilterParameters(continuation_token=continuation_token_parameter, parent_trigger_name=parent_trigger_name)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
@@ -201,7 +194,7 @@ class TriggerOperations(object):
         resource_group_name,  # type: str
         factory_name,  # type: str
         trigger_name,  # type: str
-        properties,  # type: "models.Trigger"
+        trigger,  # type: "models.TriggerResource"
         if_match=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
@@ -214,8 +207,8 @@ class TriggerOperations(object):
         :type factory_name: str
         :param trigger_name: The trigger name.
         :type trigger_name: str
-        :param properties: Properties of the trigger.
-        :type properties: ~data_factory_management_client.models.Trigger
+        :param trigger: Trigger resource definition.
+        :type trigger: ~data_factory_management_client.models.TriggerResource
         :param if_match: ETag of the trigger entity.  Should only be specified for update, for which it
          should match existing entity or can be * for unconditional update.
         :type if_match: str
@@ -229,8 +222,6 @@ class TriggerOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        trigger = models.TriggerResource(properties=properties)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
@@ -406,7 +397,7 @@ class TriggerOperations(object):
 
     delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}'}  # type: ignore
 
-    def _subscribe_to_event_initial(
+    def _subscribe_to_events_initial(
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
@@ -423,7 +414,7 @@ class TriggerOperations(object):
         accept = "application/json"
 
         # Construct URL
-        url = self._subscribe_to_event_initial.metadata['url']  # type: ignore
+        url = self._subscribe_to_events_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
@@ -456,9 +447,9 @@ class TriggerOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _subscribe_to_event_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/subscribeToEvents'}  # type: ignore
+    _subscribe_to_events_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/subscribeToEvents'}  # type: ignore
 
-    def begin_subscribe_to_event(
+    def begin_subscribe_to_events(
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
@@ -492,7 +483,7 @@ class TriggerOperations(object):
         )
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
-            raw_result = self._subscribe_to_event_initial(
+            raw_result = self._subscribe_to_events_initial(
                 resource_group_name=resource_group_name,
                 factory_name=factory_name,
                 trigger_name=trigger_name,
@@ -529,7 +520,7 @@ class TriggerOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_subscribe_to_event.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/subscribeToEvents'}  # type: ignore
+    begin_subscribe_to_events.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/subscribeToEvents'}  # type: ignore
 
     def get_event_subscription_status(
         self,
@@ -594,7 +585,7 @@ class TriggerOperations(object):
         return deserialized
     get_event_subscription_status.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/getEventSubscriptionStatus'}  # type: ignore
 
-    def _unsubscribe_from_event_initial(
+    def _unsubscribe_from_events_initial(
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
@@ -611,7 +602,7 @@ class TriggerOperations(object):
         accept = "application/json"
 
         # Construct URL
-        url = self._unsubscribe_from_event_initial.metadata['url']  # type: ignore
+        url = self._unsubscribe_from_events_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
@@ -644,9 +635,9 @@ class TriggerOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _unsubscribe_from_event_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/unsubscribeFromEvents'}  # type: ignore
+    _unsubscribe_from_events_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/unsubscribeFromEvents'}  # type: ignore
 
-    def begin_unsubscribe_from_event(
+    def begin_unsubscribe_from_events(
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
@@ -680,7 +671,7 @@ class TriggerOperations(object):
         )
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
-            raw_result = self._unsubscribe_from_event_initial(
+            raw_result = self._unsubscribe_from_events_initial(
                 resource_group_name=resource_group_name,
                 factory_name=factory_name,
                 trigger_name=trigger_name,
@@ -717,7 +708,7 @@ class TriggerOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_unsubscribe_from_event.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/unsubscribeFromEvents'}  # type: ignore
+    begin_unsubscribe_from_events.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/unsubscribeFromEvents'}  # type: ignore
 
     def _start_initial(
         self,

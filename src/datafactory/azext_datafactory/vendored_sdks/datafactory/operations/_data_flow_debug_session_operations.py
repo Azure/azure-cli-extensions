@@ -20,7 +20,7 @@ from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Iterable, List, Optional, TypeVar, Union
+    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar, Union
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
@@ -51,11 +51,7 @@ class DataFlowDebugSessionOperations(object):
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
-        compute_type=None,  # type: Optional[str]
-        core_count=None,  # type: Optional[int]
-        time_to_live=None,  # type: Optional[int]
-        name=None,  # type: Optional[str]
-        properties=None,  # type: Optional["models.IntegrationRuntime"]
+        request,  # type: "models.CreateDataFlowDebugSessionRequest"
         **kwargs  # type: Any
     ):
         # type: (...) -> Optional["models.CreateDataFlowDebugSessionResponse"]
@@ -64,8 +60,6 @@ class DataFlowDebugSessionOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        request = models.CreateDataFlowDebugSessionRequest(compute_type=compute_type, core_count=core_count, time_to_live=time_to_live, name=name, properties=properties)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
@@ -117,11 +111,7 @@ class DataFlowDebugSessionOperations(object):
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
-        compute_type=None,  # type: Optional[str]
-        core_count=None,  # type: Optional[int]
-        time_to_live=None,  # type: Optional[int]
-        name=None,  # type: Optional[str]
-        properties=None,  # type: Optional["models.IntegrationRuntime"]
+        request,  # type: "models.CreateDataFlowDebugSessionRequest"
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["models.CreateDataFlowDebugSessionResponse"]
@@ -131,18 +121,8 @@ class DataFlowDebugSessionOperations(object):
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
-        :param compute_type: Compute type of the cluster. The value will be overwritten by the same
-         setting in integration runtime if provided.
-        :type compute_type: str
-        :param core_count: Core count of the cluster. The value will be overwritten by the same setting
-         in integration runtime if provided.
-        :type core_count: int
-        :param time_to_live: Time to live setting of the cluster in minutes.
-        :type time_to_live: int
-        :param name: The resource name.
-        :type name: str
-        :param properties: Integration runtime properties.
-        :type properties: ~data_factory_management_client.models.IntegrationRuntime
+        :param request: Data flow debug session definition.
+        :type request: ~data_factory_management_client.models.CreateDataFlowDebugSessionRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -164,11 +144,7 @@ class DataFlowDebugSessionOperations(object):
             raw_result = self._create_initial(
                 resource_group_name=resource_group_name,
                 factory_name=factory_name,
-                compute_type=compute_type,
-                core_count=core_count,
-                time_to_live=time_to_live,
-                name=name,
-                properties=properties,
+                request=request,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -282,17 +258,7 @@ class DataFlowDebugSessionOperations(object):
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
-        session_id=None,  # type: Optional[str]
-        datasets=None,  # type: Optional[List["models.DatasetDebugResource"]]
-        linked_services=None,  # type: Optional[List["models.LinkedServiceDebugResource"]]
-        source_settings=None,  # type: Optional[List["models.DataFlowSourceSetting"]]
-        parameters=None,  # type: Optional[Dict[str, object]]
-        dataset_parameters=None,  # type: Optional[object]
-        folder_path=None,  # type: Optional[object]
-        reference_name=None,  # type: Optional[str]
-        parameter_value_specification_parameters=None,  # type: Optional[Dict[str, object]]
-        name=None,  # type: Optional[str]
-        properties=None,  # type: Optional["models.DataFlow"]
+        request,  # type: "models.DataFlowDebugPackage"
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.AddDataFlowToDebugSessionResponse"
@@ -302,29 +268,8 @@ class DataFlowDebugSessionOperations(object):
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
-        :param session_id: The ID of data flow debug session.
-        :type session_id: str
-        :param datasets: List of datasets.
-        :type datasets: list[~data_factory_management_client.models.DatasetDebugResource]
-        :param linked_services: List of linked services.
-        :type linked_services: list[~data_factory_management_client.models.LinkedServiceDebugResource]
-        :param source_settings: Source setting for data flow debug.
-        :type source_settings: list[~data_factory_management_client.models.DataFlowSourceSetting]
-        :param parameters: Data flow parameters.
-        :type parameters: dict[str, object]
-        :param dataset_parameters: Parameters for dataset.
-        :type dataset_parameters: object
-        :param folder_path: Folder path for staging blob. Type: string (or Expression with resultType
-         string).
-        :type folder_path: object
-        :param reference_name: Reference LinkedService name.
-        :type reference_name: str
-        :param parameter_value_specification_parameters: Arguments for LinkedService.
-        :type parameter_value_specification_parameters: dict[str, object]
-        :param name: The resource name.
-        :type name: str
-        :param properties: Data flow properties.
-        :type properties: ~data_factory_management_client.models.DataFlow
+        :param request: Data flow debug session definition with debug content.
+        :type request: ~data_factory_management_client.models.DataFlowDebugPackage
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: AddDataFlowToDebugSessionResponse, or the result of cls(response)
         :rtype: ~data_factory_management_client.models.AddDataFlowToDebugSessionResponse
@@ -335,8 +280,6 @@ class DataFlowDebugSessionOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        request = models.DataFlowDebugPackage(session_id=session_id, datasets=datasets, linked_services=linked_services, source_settings=source_settings, parameters_debug_settings_parameters=parameters, dataset_parameters=dataset_parameters, folder_path=folder_path, reference_name=reference_name, parameters_staging_linked_service_parameters=parameter_value_specification_parameters, name=name, properties=properties)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
@@ -382,7 +325,7 @@ class DataFlowDebugSessionOperations(object):
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
-        session_id=None,  # type: Optional[str]
+        request,  # type: "models.DeleteDataFlowDebugSessionRequest"
         **kwargs  # type: Any
     ):
         # type: (...) -> None
@@ -392,8 +335,8 @@ class DataFlowDebugSessionOperations(object):
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
-        :param session_id: The ID of data flow debug session.
-        :type session_id: str
+        :param request: Data flow debug session definition for deletion.
+        :type request: ~data_factory_management_client.models.DeleteDataFlowDebugSessionRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
         :rtype: None
@@ -404,8 +347,6 @@ class DataFlowDebugSessionOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        request = models.DeleteDataFlowDebugSessionRequest(session_id=session_id)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
@@ -448,9 +389,7 @@ class DataFlowDebugSessionOperations(object):
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
-        session_id=None,  # type: Optional[str]
-        command=None,  # type: Optional[Union[str, "models.DataFlowDebugCommandType"]]
-        command_payload=None,  # type: Optional["models.DataFlowDebugCommandPayload"]
+        request,  # type: "models.DataFlowDebugCommandRequest"
         **kwargs  # type: Any
     ):
         # type: (...) -> Optional["models.DataFlowDebugCommandResponse"]
@@ -459,8 +398,6 @@ class DataFlowDebugSessionOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        request = models.DataFlowDebugCommandRequest(session_id=session_id, command=command, command_payload=command_payload)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
@@ -512,9 +449,7 @@ class DataFlowDebugSessionOperations(object):
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
-        session_id=None,  # type: Optional[str]
-        command=None,  # type: Optional[Union[str, "models.DataFlowDebugCommandType"]]
-        command_payload=None,  # type: Optional["models.DataFlowDebugCommandPayload"]
+        request,  # type: "models.DataFlowDebugCommandRequest"
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["models.DataFlowDebugCommandResponse"]
@@ -524,12 +459,8 @@ class DataFlowDebugSessionOperations(object):
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
-        :param session_id: The ID of data flow debug session.
-        :type session_id: str
-        :param command: The command type.
-        :type command: str or ~data_factory_management_client.models.DataFlowDebugCommandType
-        :param command_payload: The command payload object.
-        :type command_payload: ~data_factory_management_client.models.DataFlowDebugCommandPayload
+        :param request: Data flow debug command definition.
+        :type request: ~data_factory_management_client.models.DataFlowDebugCommandRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -551,9 +482,7 @@ class DataFlowDebugSessionOperations(object):
             raw_result = self._execute_command_initial(
                 resource_group_name=resource_group_name,
                 factory_name=factory_name,
-                session_id=session_id,
-                command=command,
-                command_payload=command_payload,
+                request=request,
                 cls=lambda x,y,z: x,
                 **kwargs
             )

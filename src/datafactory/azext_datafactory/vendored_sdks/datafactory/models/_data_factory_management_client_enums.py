@@ -406,7 +406,7 @@ class ManagedIntegrationRuntimeNodeStatus(with_metaclass(_CaseInsensitiveEnumMet
     RECYCLING = "Recycling"
     UNAVAILABLE = "Unavailable"
 
-class MongoDBAuthenticationType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class MongoDbAuthenticationType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The authentication type to be used to connect to the MongoDB database.
     """
 
@@ -421,7 +421,7 @@ class NetezzaPartitionOption(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)
     DATA_SLICE = "DataSlice"
     DYNAMIC_RANGE = "DynamicRange"
 
-class ODataAADServicePrincipalCredentialType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class ODataAadServicePrincipalCredentialType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Specify the credential type (key or cert) is used for service principal.
     """
 
@@ -658,7 +658,7 @@ class SparkThriftTransportProtocol(with_metaclass(_CaseInsensitiveEnumMeta, str,
     SASL = "SASL"
     HTTP = "HTTP "
 
-class SQLPartitionOption(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class SqlPartitionOption(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The partition mechanism that will be used for Sql read in parallel.
     """
 

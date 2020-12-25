@@ -18,8 +18,8 @@ from ... import models
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class IntegrationRuntimeNodeOperations:
-    """IntegrationRuntimeNodeOperations async operations.
+class IntegrationRuntimeNodesOperations:
+    """IntegrationRuntimeNodesOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -175,7 +175,7 @@ class IntegrationRuntimeNodeOperations:
         factory_name: str,
         integration_runtime_name: str,
         node_name: str,
-        concurrent_jobs_limit: Optional[int] = None,
+        update_integration_runtime_node_request: "models.UpdateIntegrationRuntimeNodeRequest",
         **kwargs
     ) -> "models.SelfHostedIntegrationRuntimeNode":
         """Updates a self-hosted integration runtime node.
@@ -188,9 +188,9 @@ class IntegrationRuntimeNodeOperations:
         :type integration_runtime_name: str
         :param node_name: The integration runtime node name.
         :type node_name: str
-        :param concurrent_jobs_limit: The number of concurrent jobs permitted to run on the integration
-         runtime node. Values between 1 and maxConcurrentJobs(inclusive) are allowed.
-        :type concurrent_jobs_limit: int
+        :param update_integration_runtime_node_request: The parameters for updating an integration
+         runtime node.
+        :type update_integration_runtime_node_request: ~data_factory_management_client.models.UpdateIntegrationRuntimeNodeRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SelfHostedIntegrationRuntimeNode, or the result of cls(response)
         :rtype: ~data_factory_management_client.models.SelfHostedIntegrationRuntimeNode
@@ -201,8 +201,6 @@ class IntegrationRuntimeNodeOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        update_integration_runtime_node_request = models.UpdateIntegrationRuntimeNodeRequest(concurrent_jobs_limit=concurrent_jobs_limit)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"

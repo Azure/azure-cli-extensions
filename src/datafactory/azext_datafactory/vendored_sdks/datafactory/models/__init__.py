@@ -67,35 +67,35 @@ try:
     from ._models_py3 import AzureFunctionLinkedService
     from ._models_py3 import AzureKeyVaultLinkedService
     from ._models_py3 import AzureKeyVaultSecretReference
-    from ._models_py3 import AzureMariaDBLinkedService
-    from ._models_py3 import AzureMariaDBSource
-    from ._models_py3 import AzureMariaDBTableDataset
+    from ._models_py3 import AzureMariaDbLinkedService
+    from ._models_py3 import AzureMariaDbSource
+    from ._models_py3 import AzureMariaDbTableDataset
     from ._models_py3 import AzureMlBatchExecutionActivity
     from ._models_py3 import AzureMlExecutePipelineActivity
     from ._models_py3 import AzureMlLinkedService
     from ._models_py3 import AzureMlServiceLinkedService
     from ._models_py3 import AzureMlUpdateResourceActivity
     from ._models_py3 import AzureMlWebServiceFile
-    from ._models_py3 import AzureMySQLLinkedService
-    from ._models_py3 import AzureMySQLSink
-    from ._models_py3 import AzureMySQLSource
-    from ._models_py3 import AzureMySQLTableDataset
-    from ._models_py3 import AzurePostgreSQLLinkedService
-    from ._models_py3 import AzurePostgreSQLSink
-    from ._models_py3 import AzurePostgreSQLSource
-    from ._models_py3 import AzurePostgreSQLTableDataset
+    from ._models_py3 import AzureMySqlLinkedService
+    from ._models_py3 import AzureMySqlSink
+    from ._models_py3 import AzureMySqlSource
+    from ._models_py3 import AzureMySqlTableDataset
+    from ._models_py3 import AzurePostgreSqlLinkedService
+    from ._models_py3 import AzurePostgreSqlSink
+    from ._models_py3 import AzurePostgreSqlSource
+    from ._models_py3 import AzurePostgreSqlTableDataset
     from ._models_py3 import AzureQueueSink
-    from ._models_py3 import AzureSQLDWLinkedService
-    from ._models_py3 import AzureSQLDWTableDataset
-    from ._models_py3 import AzureSQLDatabaseLinkedService
-    from ._models_py3 import AzureSQLMiLinkedService
-    from ._models_py3 import AzureSQLMiTableDataset
-    from ._models_py3 import AzureSQLSink
-    from ._models_py3 import AzureSQLSource
-    from ._models_py3 import AzureSQLTableDataset
     from ._models_py3 import AzureSearchIndexDataset
     from ._models_py3 import AzureSearchIndexSink
     from ._models_py3 import AzureSearchLinkedService
+    from ._models_py3 import AzureSqlDatabaseLinkedService
+    from ._models_py3 import AzureSqlDwLinkedService
+    from ._models_py3 import AzureSqlDwTableDataset
+    from ._models_py3 import AzureSqlMiLinkedService
+    from ._models_py3 import AzureSqlMiTableDataset
+    from ._models_py3 import AzureSqlSink
+    from ._models_py3 import AzureSqlSource
+    from ._models_py3 import AzureSqlTableDataset
     from ._models_py3 import AzureStorageLinkedService
     from ._models_py3 import AzureTableDataset
     from ._models_py3 import AzureTableSink
@@ -130,14 +130,14 @@ try:
     from ._models_py3 import CopySink
     from ._models_py3 import CopySource
     from ._models_py3 import CopyTranslator
-    from ._models_py3 import CosmosDBLinkedService
-    from ._models_py3 import CosmosDBMongoDBApiCollectionDataset
-    from ._models_py3 import CosmosDBMongoDBApiLinkedService
-    from ._models_py3 import CosmosDBMongoDBApiSink
-    from ._models_py3 import CosmosDBMongoDBApiSource
-    from ._models_py3 import CosmosDBSQLApiCollectionDataset
-    from ._models_py3 import CosmosDBSQLApiSink
-    from ._models_py3 import CosmosDBSQLApiSource
+    from ._models_py3 import CosmosDbLinkedService
+    from ._models_py3 import CosmosDbMongoDbApiCollectionDataset
+    from ._models_py3 import CosmosDbMongoDbApiLinkedService
+    from ._models_py3 import CosmosDbMongoDbApiSink
+    from ._models_py3 import CosmosDbMongoDbApiSource
+    from ._models_py3 import CosmosDbSqlApiCollectionDataset
+    from ._models_py3 import CosmosDbSqlApiSink
+    from ._models_py3 import CosmosDbSqlApiSource
     from ._models_py3 import CouchbaseLinkedService
     from ._models_py3 import CouchbaseSource
     from ._models_py3 import CouchbaseTableDataset
@@ -150,13 +150,12 @@ try:
     from ._models_py3 import CustomDataSourceLinkedService
     from ._models_py3 import CustomDataset
     from ._models_py3 import CustomSetupBase
-    from ._models_py3 import DWCopyCommandDefaultValue
-    from ._models_py3 import DWCopyCommandSettings
     from ._models_py3 import DataFlow
     from ._models_py3 import DataFlowDebugCommandPayload
     from ._models_py3 import DataFlowDebugCommandRequest
     from ._models_py3 import DataFlowDebugCommandResponse
     from ._models_py3 import DataFlowDebugPackage
+    from ._models_py3 import DataFlowDebugPackageDebugSettings
     from ._models_py3 import DataFlowDebugResource
     from ._models_py3 import DataFlowDebugSessionInfo
     from ._models_py3 import DataFlowFolder
@@ -198,12 +197,14 @@ try:
     from ._models_py3 import DelimitedTextWriteSettings
     from ._models_py3 import DependencyReference
     from ._models_py3 import DistcpSettings
-    from ._models_py3 import DocumentDBCollectionDataset
-    from ._models_py3 import DocumentDBCollectionSink
-    from ._models_py3 import DocumentDBCollectionSource
+    from ._models_py3 import DocumentDbCollectionDataset
+    from ._models_py3 import DocumentDbCollectionSink
+    from ._models_py3 import DocumentDbCollectionSource
     from ._models_py3 import DrillLinkedService
     from ._models_py3 import DrillSource
     from ._models_py3 import DrillTableDataset
+    from ._models_py3 import DwCopyCommandDefaultValue
+    from ._models_py3 import DwCopyCommandSettings
     from ._models_py3 import DynamicsAxLinkedService
     from ._models_py3 import DynamicsAxResourceDataset
     from ._models_py3 import DynamicsAxSource
@@ -364,9 +365,9 @@ try:
     from ._models_py3 import ManagedVirtualNetworkListResponse
     from ._models_py3 import ManagedVirtualNetworkResource
     from ._models_py3 import MappingDataFlow
-    from ._models_py3 import MariaDBLinkedService
-    from ._models_py3 import MariaDBSource
-    from ._models_py3 import MariaDBTableDataset
+    from ._models_py3 import MariaDbLinkedService
+    from ._models_py3 import MariaDbSource
+    from ._models_py3 import MariaDbTableDataset
     from ._models_py3 import MarketoLinkedService
     from ._models_py3 import MarketoObjectDataset
     from ._models_py3 import MarketoSource
@@ -374,17 +375,17 @@ try:
     from ._models_py3 import MicrosoftAccessSink
     from ._models_py3 import MicrosoftAccessSource
     from ._models_py3 import MicrosoftAccessTableDataset
-    from ._models_py3 import MongoDBCollectionDataset
-    from ._models_py3 import MongoDBCursorMethodsProperties
-    from ._models_py3 import MongoDBLinkedService
-    from ._models_py3 import MongoDBSource
-    from ._models_py3 import MongoDBV2CollectionDataset
-    from ._models_py3 import MongoDBV2LinkedService
-    from ._models_py3 import MongoDBV2Source
+    from ._models_py3 import MongoDbCollectionDataset
+    from ._models_py3 import MongoDbCursorMethodsProperties
+    from ._models_py3 import MongoDbLinkedService
+    from ._models_py3 import MongoDbSource
+    from ._models_py3 import MongoDbV2CollectionDataset
+    from ._models_py3 import MongoDbV2LinkedService
+    from ._models_py3 import MongoDbV2Source
     from ._models_py3 import MultiplePipelineTrigger
-    from ._models_py3 import MySQLLinkedService
-    from ._models_py3 import MySQLSource
-    from ._models_py3 import MySQLTableDataset
+    from ._models_py3 import MySqlLinkedService
+    from ._models_py3 import MySqlSource
+    from ._models_py3 import MySqlTableDataset
     from ._models_py3 import NetezzaLinkedService
     from ._models_py3 import NetezzaPartitionSettings
     from ._models_py3 import NetezzaSource
@@ -431,6 +432,7 @@ try:
     from ._models_py3 import PhoenixLinkedService
     from ._models_py3 import PhoenixObjectDataset
     from ._models_py3 import PhoenixSource
+    from ._models_py3 import PipelineFolder
     from ._models_py3 import PipelineListResponse
     from ._models_py3 import PipelineReference
     from ._models_py3 import PipelineResource
@@ -438,9 +440,9 @@ try:
     from ._models_py3 import PipelineRunInvokedBy
     from ._models_py3 import PipelineRunsQueryResponse
     from ._models_py3 import PolybaseSettings
-    from ._models_py3 import PostgreSQLLinkedService
-    from ._models_py3 import PostgreSQLSource
-    from ._models_py3 import PostgreSQLTableDataset
+    from ._models_py3 import PostgreSqlLinkedService
+    from ._models_py3 import PostgreSqlSource
+    from ._models_py3 import PostgreSqlTableDataset
     from ._models_py3 import PrestoLinkedService
     from ._models_py3 import PrestoObjectDataset
     from ._models_py3 import PrestoSource
@@ -467,18 +469,6 @@ try:
     from ._models_py3 import RunFilterParameters
     from ._models_py3 import RunQueryFilter
     from ._models_py3 import RunQueryOrderBy
-    from ._models_py3 import SQLDWSink
-    from ._models_py3 import SQLDWSource
-    from ._models_py3 import SQLMiSink
-    from ._models_py3 import SQLMiSource
-    from ._models_py3 import SQLPartitionSettings
-    from ._models_py3 import SQLServerLinkedService
-    from ._models_py3 import SQLServerSink
-    from ._models_py3 import SQLServerSource
-    from ._models_py3 import SQLServerStoredProcedureActivity
-    from ._models_py3 import SQLServerTableDataset
-    from ._models_py3 import SQLSink
-    from ._models_py3 import SQLSource
     from ._models_py3 import SalesforceLinkedService
     from ._models_py3 import SalesforceMarketingCloudLinkedService
     from ._models_py3 import SalesforceMarketingCloudObjectDataset
@@ -544,6 +534,18 @@ try:
     from ._models_py3 import SparkLinkedService
     from ._models_py3 import SparkObjectDataset
     from ._models_py3 import SparkSource
+    from ._models_py3 import SqlDwSink
+    from ._models_py3 import SqlDwSource
+    from ._models_py3 import SqlMiSink
+    from ._models_py3 import SqlMiSource
+    from ._models_py3 import SqlPartitionSettings
+    from ._models_py3 import SqlServerLinkedService
+    from ._models_py3 import SqlServerSink
+    from ._models_py3 import SqlServerSource
+    from ._models_py3 import SqlServerStoredProcedureActivity
+    from ._models_py3 import SqlServerTableDataset
+    from ._models_py3 import SqlSink
+    from ._models_py3 import SqlSource
     from ._models_py3 import SquareLinkedService
     from ._models_py3 import SquareObjectDataset
     from ._models_py3 import SquareSource
@@ -689,35 +691,35 @@ except (SyntaxError, ImportError):
     from ._models import AzureFunctionLinkedService  # type: ignore
     from ._models import AzureKeyVaultLinkedService  # type: ignore
     from ._models import AzureKeyVaultSecretReference  # type: ignore
-    from ._models import AzureMariaDBLinkedService  # type: ignore
-    from ._models import AzureMariaDBSource  # type: ignore
-    from ._models import AzureMariaDBTableDataset  # type: ignore
+    from ._models import AzureMariaDbLinkedService  # type: ignore
+    from ._models import AzureMariaDbSource  # type: ignore
+    from ._models import AzureMariaDbTableDataset  # type: ignore
     from ._models import AzureMlBatchExecutionActivity  # type: ignore
     from ._models import AzureMlExecutePipelineActivity  # type: ignore
     from ._models import AzureMlLinkedService  # type: ignore
     from ._models import AzureMlServiceLinkedService  # type: ignore
     from ._models import AzureMlUpdateResourceActivity  # type: ignore
     from ._models import AzureMlWebServiceFile  # type: ignore
-    from ._models import AzureMySQLLinkedService  # type: ignore
-    from ._models import AzureMySQLSink  # type: ignore
-    from ._models import AzureMySQLSource  # type: ignore
-    from ._models import AzureMySQLTableDataset  # type: ignore
-    from ._models import AzurePostgreSQLLinkedService  # type: ignore
-    from ._models import AzurePostgreSQLSink  # type: ignore
-    from ._models import AzurePostgreSQLSource  # type: ignore
-    from ._models import AzurePostgreSQLTableDataset  # type: ignore
+    from ._models import AzureMySqlLinkedService  # type: ignore
+    from ._models import AzureMySqlSink  # type: ignore
+    from ._models import AzureMySqlSource  # type: ignore
+    from ._models import AzureMySqlTableDataset  # type: ignore
+    from ._models import AzurePostgreSqlLinkedService  # type: ignore
+    from ._models import AzurePostgreSqlSink  # type: ignore
+    from ._models import AzurePostgreSqlSource  # type: ignore
+    from ._models import AzurePostgreSqlTableDataset  # type: ignore
     from ._models import AzureQueueSink  # type: ignore
-    from ._models import AzureSQLDWLinkedService  # type: ignore
-    from ._models import AzureSQLDWTableDataset  # type: ignore
-    from ._models import AzureSQLDatabaseLinkedService  # type: ignore
-    from ._models import AzureSQLMiLinkedService  # type: ignore
-    from ._models import AzureSQLMiTableDataset  # type: ignore
-    from ._models import AzureSQLSink  # type: ignore
-    from ._models import AzureSQLSource  # type: ignore
-    from ._models import AzureSQLTableDataset  # type: ignore
     from ._models import AzureSearchIndexDataset  # type: ignore
     from ._models import AzureSearchIndexSink  # type: ignore
     from ._models import AzureSearchLinkedService  # type: ignore
+    from ._models import AzureSqlDatabaseLinkedService  # type: ignore
+    from ._models import AzureSqlDwLinkedService  # type: ignore
+    from ._models import AzureSqlDwTableDataset  # type: ignore
+    from ._models import AzureSqlMiLinkedService  # type: ignore
+    from ._models import AzureSqlMiTableDataset  # type: ignore
+    from ._models import AzureSqlSink  # type: ignore
+    from ._models import AzureSqlSource  # type: ignore
+    from ._models import AzureSqlTableDataset  # type: ignore
     from ._models import AzureStorageLinkedService  # type: ignore
     from ._models import AzureTableDataset  # type: ignore
     from ._models import AzureTableSink  # type: ignore
@@ -752,14 +754,14 @@ except (SyntaxError, ImportError):
     from ._models import CopySink  # type: ignore
     from ._models import CopySource  # type: ignore
     from ._models import CopyTranslator  # type: ignore
-    from ._models import CosmosDBLinkedService  # type: ignore
-    from ._models import CosmosDBMongoDBApiCollectionDataset  # type: ignore
-    from ._models import CosmosDBMongoDBApiLinkedService  # type: ignore
-    from ._models import CosmosDBMongoDBApiSink  # type: ignore
-    from ._models import CosmosDBMongoDBApiSource  # type: ignore
-    from ._models import CosmosDBSQLApiCollectionDataset  # type: ignore
-    from ._models import CosmosDBSQLApiSink  # type: ignore
-    from ._models import CosmosDBSQLApiSource  # type: ignore
+    from ._models import CosmosDbLinkedService  # type: ignore
+    from ._models import CosmosDbMongoDbApiCollectionDataset  # type: ignore
+    from ._models import CosmosDbMongoDbApiLinkedService  # type: ignore
+    from ._models import CosmosDbMongoDbApiSink  # type: ignore
+    from ._models import CosmosDbMongoDbApiSource  # type: ignore
+    from ._models import CosmosDbSqlApiCollectionDataset  # type: ignore
+    from ._models import CosmosDbSqlApiSink  # type: ignore
+    from ._models import CosmosDbSqlApiSource  # type: ignore
     from ._models import CouchbaseLinkedService  # type: ignore
     from ._models import CouchbaseSource  # type: ignore
     from ._models import CouchbaseTableDataset  # type: ignore
@@ -772,13 +774,12 @@ except (SyntaxError, ImportError):
     from ._models import CustomDataSourceLinkedService  # type: ignore
     from ._models import CustomDataset  # type: ignore
     from ._models import CustomSetupBase  # type: ignore
-    from ._models import DWCopyCommandDefaultValue  # type: ignore
-    from ._models import DWCopyCommandSettings  # type: ignore
     from ._models import DataFlow  # type: ignore
     from ._models import DataFlowDebugCommandPayload  # type: ignore
     from ._models import DataFlowDebugCommandRequest  # type: ignore
     from ._models import DataFlowDebugCommandResponse  # type: ignore
     from ._models import DataFlowDebugPackage  # type: ignore
+    from ._models import DataFlowDebugPackageDebugSettings  # type: ignore
     from ._models import DataFlowDebugResource  # type: ignore
     from ._models import DataFlowDebugSessionInfo  # type: ignore
     from ._models import DataFlowFolder  # type: ignore
@@ -820,12 +821,14 @@ except (SyntaxError, ImportError):
     from ._models import DelimitedTextWriteSettings  # type: ignore
     from ._models import DependencyReference  # type: ignore
     from ._models import DistcpSettings  # type: ignore
-    from ._models import DocumentDBCollectionDataset  # type: ignore
-    from ._models import DocumentDBCollectionSink  # type: ignore
-    from ._models import DocumentDBCollectionSource  # type: ignore
+    from ._models import DocumentDbCollectionDataset  # type: ignore
+    from ._models import DocumentDbCollectionSink  # type: ignore
+    from ._models import DocumentDbCollectionSource  # type: ignore
     from ._models import DrillLinkedService  # type: ignore
     from ._models import DrillSource  # type: ignore
     from ._models import DrillTableDataset  # type: ignore
+    from ._models import DwCopyCommandDefaultValue  # type: ignore
+    from ._models import DwCopyCommandSettings  # type: ignore
     from ._models import DynamicsAxLinkedService  # type: ignore
     from ._models import DynamicsAxResourceDataset  # type: ignore
     from ._models import DynamicsAxSource  # type: ignore
@@ -986,9 +989,9 @@ except (SyntaxError, ImportError):
     from ._models import ManagedVirtualNetworkListResponse  # type: ignore
     from ._models import ManagedVirtualNetworkResource  # type: ignore
     from ._models import MappingDataFlow  # type: ignore
-    from ._models import MariaDBLinkedService  # type: ignore
-    from ._models import MariaDBSource  # type: ignore
-    from ._models import MariaDBTableDataset  # type: ignore
+    from ._models import MariaDbLinkedService  # type: ignore
+    from ._models import MariaDbSource  # type: ignore
+    from ._models import MariaDbTableDataset  # type: ignore
     from ._models import MarketoLinkedService  # type: ignore
     from ._models import MarketoObjectDataset  # type: ignore
     from ._models import MarketoSource  # type: ignore
@@ -996,17 +999,17 @@ except (SyntaxError, ImportError):
     from ._models import MicrosoftAccessSink  # type: ignore
     from ._models import MicrosoftAccessSource  # type: ignore
     from ._models import MicrosoftAccessTableDataset  # type: ignore
-    from ._models import MongoDBCollectionDataset  # type: ignore
-    from ._models import MongoDBCursorMethodsProperties  # type: ignore
-    from ._models import MongoDBLinkedService  # type: ignore
-    from ._models import MongoDBSource  # type: ignore
-    from ._models import MongoDBV2CollectionDataset  # type: ignore
-    from ._models import MongoDBV2LinkedService  # type: ignore
-    from ._models import MongoDBV2Source  # type: ignore
+    from ._models import MongoDbCollectionDataset  # type: ignore
+    from ._models import MongoDbCursorMethodsProperties  # type: ignore
+    from ._models import MongoDbLinkedService  # type: ignore
+    from ._models import MongoDbSource  # type: ignore
+    from ._models import MongoDbV2CollectionDataset  # type: ignore
+    from ._models import MongoDbV2LinkedService  # type: ignore
+    from ._models import MongoDbV2Source  # type: ignore
     from ._models import MultiplePipelineTrigger  # type: ignore
-    from ._models import MySQLLinkedService  # type: ignore
-    from ._models import MySQLSource  # type: ignore
-    from ._models import MySQLTableDataset  # type: ignore
+    from ._models import MySqlLinkedService  # type: ignore
+    from ._models import MySqlSource  # type: ignore
+    from ._models import MySqlTableDataset  # type: ignore
     from ._models import NetezzaLinkedService  # type: ignore
     from ._models import NetezzaPartitionSettings  # type: ignore
     from ._models import NetezzaSource  # type: ignore
@@ -1053,6 +1056,7 @@ except (SyntaxError, ImportError):
     from ._models import PhoenixLinkedService  # type: ignore
     from ._models import PhoenixObjectDataset  # type: ignore
     from ._models import PhoenixSource  # type: ignore
+    from ._models import PipelineFolder  # type: ignore
     from ._models import PipelineListResponse  # type: ignore
     from ._models import PipelineReference  # type: ignore
     from ._models import PipelineResource  # type: ignore
@@ -1060,9 +1064,9 @@ except (SyntaxError, ImportError):
     from ._models import PipelineRunInvokedBy  # type: ignore
     from ._models import PipelineRunsQueryResponse  # type: ignore
     from ._models import PolybaseSettings  # type: ignore
-    from ._models import PostgreSQLLinkedService  # type: ignore
-    from ._models import PostgreSQLSource  # type: ignore
-    from ._models import PostgreSQLTableDataset  # type: ignore
+    from ._models import PostgreSqlLinkedService  # type: ignore
+    from ._models import PostgreSqlSource  # type: ignore
+    from ._models import PostgreSqlTableDataset  # type: ignore
     from ._models import PrestoLinkedService  # type: ignore
     from ._models import PrestoObjectDataset  # type: ignore
     from ._models import PrestoSource  # type: ignore
@@ -1089,18 +1093,6 @@ except (SyntaxError, ImportError):
     from ._models import RunFilterParameters  # type: ignore
     from ._models import RunQueryFilter  # type: ignore
     from ._models import RunQueryOrderBy  # type: ignore
-    from ._models import SQLDWSink  # type: ignore
-    from ._models import SQLDWSource  # type: ignore
-    from ._models import SQLMiSink  # type: ignore
-    from ._models import SQLMiSource  # type: ignore
-    from ._models import SQLPartitionSettings  # type: ignore
-    from ._models import SQLServerLinkedService  # type: ignore
-    from ._models import SQLServerSink  # type: ignore
-    from ._models import SQLServerSource  # type: ignore
-    from ._models import SQLServerStoredProcedureActivity  # type: ignore
-    from ._models import SQLServerTableDataset  # type: ignore
-    from ._models import SQLSink  # type: ignore
-    from ._models import SQLSource  # type: ignore
     from ._models import SalesforceLinkedService  # type: ignore
     from ._models import SalesforceMarketingCloudLinkedService  # type: ignore
     from ._models import SalesforceMarketingCloudObjectDataset  # type: ignore
@@ -1166,6 +1158,18 @@ except (SyntaxError, ImportError):
     from ._models import SparkLinkedService  # type: ignore
     from ._models import SparkObjectDataset  # type: ignore
     from ._models import SparkSource  # type: ignore
+    from ._models import SqlDwSink  # type: ignore
+    from ._models import SqlDwSource  # type: ignore
+    from ._models import SqlMiSink  # type: ignore
+    from ._models import SqlMiSource  # type: ignore
+    from ._models import SqlPartitionSettings  # type: ignore
+    from ._models import SqlServerLinkedService  # type: ignore
+    from ._models import SqlServerSink  # type: ignore
+    from ._models import SqlServerSource  # type: ignore
+    from ._models import SqlServerStoredProcedureActivity  # type: ignore
+    from ._models import SqlServerTableDataset  # type: ignore
+    from ._models import SqlSink  # type: ignore
+    from ._models import SqlSource  # type: ignore
     from ._models import SquareLinkedService  # type: ignore
     from ._models import SquareObjectDataset  # type: ignore
     from ._models import SquareSource  # type: ignore
@@ -1296,9 +1300,9 @@ from ._data_factory_management_client_enums import (
     JsonFormatFilePattern,
     JsonWriteFilePattern,
     ManagedIntegrationRuntimeNodeStatus,
-    MongoDBAuthenticationType,
+    MongoDbAuthenticationType,
     NetezzaPartitionOption,
-    ODataAADServicePrincipalCredentialType,
+    ODataAadServicePrincipalCredentialType,
     ODataAuthenticationType,
     OraclePartitionOption,
     OrcCompressionCodec,
@@ -1312,7 +1316,6 @@ from ._data_factory_management_client_enums import (
     RunQueryFilterOperator,
     RunQueryOrder,
     RunQueryOrderByField,
-    SQLPartitionOption,
     SalesforceSinkWriteBehavior,
     SalesforceSourceReadBehavior,
     SapCloudForCustomerSinkWriteBehavior,
@@ -1325,6 +1328,7 @@ from ._data_factory_management_client_enums import (
     SparkAuthenticationType,
     SparkServerType,
     SparkThriftTransportProtocol,
+    SqlPartitionOption,
     SsisLogLocationType,
     SsisObjectMetadataType,
     SsisPackageLocationType,
@@ -1402,35 +1406,35 @@ __all__ = [
     'AzureFunctionLinkedService',
     'AzureKeyVaultLinkedService',
     'AzureKeyVaultSecretReference',
-    'AzureMariaDBLinkedService',
-    'AzureMariaDBSource',
-    'AzureMariaDBTableDataset',
+    'AzureMariaDbLinkedService',
+    'AzureMariaDbSource',
+    'AzureMariaDbTableDataset',
     'AzureMlBatchExecutionActivity',
     'AzureMlExecutePipelineActivity',
     'AzureMlLinkedService',
     'AzureMlServiceLinkedService',
     'AzureMlUpdateResourceActivity',
     'AzureMlWebServiceFile',
-    'AzureMySQLLinkedService',
-    'AzureMySQLSink',
-    'AzureMySQLSource',
-    'AzureMySQLTableDataset',
-    'AzurePostgreSQLLinkedService',
-    'AzurePostgreSQLSink',
-    'AzurePostgreSQLSource',
-    'AzurePostgreSQLTableDataset',
+    'AzureMySqlLinkedService',
+    'AzureMySqlSink',
+    'AzureMySqlSource',
+    'AzureMySqlTableDataset',
+    'AzurePostgreSqlLinkedService',
+    'AzurePostgreSqlSink',
+    'AzurePostgreSqlSource',
+    'AzurePostgreSqlTableDataset',
     'AzureQueueSink',
-    'AzureSQLDWLinkedService',
-    'AzureSQLDWTableDataset',
-    'AzureSQLDatabaseLinkedService',
-    'AzureSQLMiLinkedService',
-    'AzureSQLMiTableDataset',
-    'AzureSQLSink',
-    'AzureSQLSource',
-    'AzureSQLTableDataset',
     'AzureSearchIndexDataset',
     'AzureSearchIndexSink',
     'AzureSearchLinkedService',
+    'AzureSqlDatabaseLinkedService',
+    'AzureSqlDwLinkedService',
+    'AzureSqlDwTableDataset',
+    'AzureSqlMiLinkedService',
+    'AzureSqlMiTableDataset',
+    'AzureSqlSink',
+    'AzureSqlSource',
+    'AzureSqlTableDataset',
     'AzureStorageLinkedService',
     'AzureTableDataset',
     'AzureTableSink',
@@ -1465,14 +1469,14 @@ __all__ = [
     'CopySink',
     'CopySource',
     'CopyTranslator',
-    'CosmosDBLinkedService',
-    'CosmosDBMongoDBApiCollectionDataset',
-    'CosmosDBMongoDBApiLinkedService',
-    'CosmosDBMongoDBApiSink',
-    'CosmosDBMongoDBApiSource',
-    'CosmosDBSQLApiCollectionDataset',
-    'CosmosDBSQLApiSink',
-    'CosmosDBSQLApiSource',
+    'CosmosDbLinkedService',
+    'CosmosDbMongoDbApiCollectionDataset',
+    'CosmosDbMongoDbApiLinkedService',
+    'CosmosDbMongoDbApiSink',
+    'CosmosDbMongoDbApiSource',
+    'CosmosDbSqlApiCollectionDataset',
+    'CosmosDbSqlApiSink',
+    'CosmosDbSqlApiSource',
     'CouchbaseLinkedService',
     'CouchbaseSource',
     'CouchbaseTableDataset',
@@ -1485,13 +1489,12 @@ __all__ = [
     'CustomDataSourceLinkedService',
     'CustomDataset',
     'CustomSetupBase',
-    'DWCopyCommandDefaultValue',
-    'DWCopyCommandSettings',
     'DataFlow',
     'DataFlowDebugCommandPayload',
     'DataFlowDebugCommandRequest',
     'DataFlowDebugCommandResponse',
     'DataFlowDebugPackage',
+    'DataFlowDebugPackageDebugSettings',
     'DataFlowDebugResource',
     'DataFlowDebugSessionInfo',
     'DataFlowFolder',
@@ -1533,12 +1536,14 @@ __all__ = [
     'DelimitedTextWriteSettings',
     'DependencyReference',
     'DistcpSettings',
-    'DocumentDBCollectionDataset',
-    'DocumentDBCollectionSink',
-    'DocumentDBCollectionSource',
+    'DocumentDbCollectionDataset',
+    'DocumentDbCollectionSink',
+    'DocumentDbCollectionSource',
     'DrillLinkedService',
     'DrillSource',
     'DrillTableDataset',
+    'DwCopyCommandDefaultValue',
+    'DwCopyCommandSettings',
     'DynamicsAxLinkedService',
     'DynamicsAxResourceDataset',
     'DynamicsAxSource',
@@ -1699,9 +1704,9 @@ __all__ = [
     'ManagedVirtualNetworkListResponse',
     'ManagedVirtualNetworkResource',
     'MappingDataFlow',
-    'MariaDBLinkedService',
-    'MariaDBSource',
-    'MariaDBTableDataset',
+    'MariaDbLinkedService',
+    'MariaDbSource',
+    'MariaDbTableDataset',
     'MarketoLinkedService',
     'MarketoObjectDataset',
     'MarketoSource',
@@ -1709,17 +1714,17 @@ __all__ = [
     'MicrosoftAccessSink',
     'MicrosoftAccessSource',
     'MicrosoftAccessTableDataset',
-    'MongoDBCollectionDataset',
-    'MongoDBCursorMethodsProperties',
-    'MongoDBLinkedService',
-    'MongoDBSource',
-    'MongoDBV2CollectionDataset',
-    'MongoDBV2LinkedService',
-    'MongoDBV2Source',
+    'MongoDbCollectionDataset',
+    'MongoDbCursorMethodsProperties',
+    'MongoDbLinkedService',
+    'MongoDbSource',
+    'MongoDbV2CollectionDataset',
+    'MongoDbV2LinkedService',
+    'MongoDbV2Source',
     'MultiplePipelineTrigger',
-    'MySQLLinkedService',
-    'MySQLSource',
-    'MySQLTableDataset',
+    'MySqlLinkedService',
+    'MySqlSource',
+    'MySqlTableDataset',
     'NetezzaLinkedService',
     'NetezzaPartitionSettings',
     'NetezzaSource',
@@ -1766,6 +1771,7 @@ __all__ = [
     'PhoenixLinkedService',
     'PhoenixObjectDataset',
     'PhoenixSource',
+    'PipelineFolder',
     'PipelineListResponse',
     'PipelineReference',
     'PipelineResource',
@@ -1773,9 +1779,9 @@ __all__ = [
     'PipelineRunInvokedBy',
     'PipelineRunsQueryResponse',
     'PolybaseSettings',
-    'PostgreSQLLinkedService',
-    'PostgreSQLSource',
-    'PostgreSQLTableDataset',
+    'PostgreSqlLinkedService',
+    'PostgreSqlSource',
+    'PostgreSqlTableDataset',
     'PrestoLinkedService',
     'PrestoObjectDataset',
     'PrestoSource',
@@ -1802,18 +1808,6 @@ __all__ = [
     'RunFilterParameters',
     'RunQueryFilter',
     'RunQueryOrderBy',
-    'SQLDWSink',
-    'SQLDWSource',
-    'SQLMiSink',
-    'SQLMiSource',
-    'SQLPartitionSettings',
-    'SQLServerLinkedService',
-    'SQLServerSink',
-    'SQLServerSource',
-    'SQLServerStoredProcedureActivity',
-    'SQLServerTableDataset',
-    'SQLSink',
-    'SQLSource',
     'SalesforceLinkedService',
     'SalesforceMarketingCloudLinkedService',
     'SalesforceMarketingCloudObjectDataset',
@@ -1879,6 +1873,18 @@ __all__ = [
     'SparkLinkedService',
     'SparkObjectDataset',
     'SparkSource',
+    'SqlDwSink',
+    'SqlDwSource',
+    'SqlMiSink',
+    'SqlMiSource',
+    'SqlPartitionSettings',
+    'SqlServerLinkedService',
+    'SqlServerSink',
+    'SqlServerSource',
+    'SqlServerStoredProcedureActivity',
+    'SqlServerTableDataset',
+    'SqlSink',
+    'SqlSource',
     'SquareLinkedService',
     'SquareObjectDataset',
     'SquareSource',
@@ -2007,9 +2013,9 @@ __all__ = [
     'JsonFormatFilePattern',
     'JsonWriteFilePattern',
     'ManagedIntegrationRuntimeNodeStatus',
-    'MongoDBAuthenticationType',
+    'MongoDbAuthenticationType',
     'NetezzaPartitionOption',
-    'ODataAADServicePrincipalCredentialType',
+    'ODataAadServicePrincipalCredentialType',
     'ODataAuthenticationType',
     'OraclePartitionOption',
     'OrcCompressionCodec',
@@ -2023,7 +2029,6 @@ __all__ = [
     'RunQueryFilterOperator',
     'RunQueryOrder',
     'RunQueryOrderByField',
-    'SQLPartitionOption',
     'SalesforceSinkWriteBehavior',
     'SalesforceSourceReadBehavior',
     'SapCloudForCustomerSinkWriteBehavior',
@@ -2036,6 +2041,7 @@ __all__ = [
     'SparkAuthenticationType',
     'SparkServerType',
     'SparkThriftTransportProtocol',
+    'SqlPartitionOption',
     'SsisLogLocationType',
     'SsisObjectMetadataType',
     'SsisPackageLocationType',

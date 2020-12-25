@@ -18,13 +18,13 @@ from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Iterable, List, Optional, TypeVar
+    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class ManagedPrivateEndpointOperations(object):
-    """ManagedPrivateEndpointOperations operations.
+class PipelinesOperations(object):
+    """PipelinesOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -49,24 +49,21 @@ class ManagedPrivateEndpointOperations(object):
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
-        managed_virtual_network_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["models.ManagedPrivateEndpointListResponse"]
-        """Lists managed private endpoints.
+        # type: (...) -> Iterable["models.PipelineListResponse"]
+        """Lists pipelines.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
-        :param managed_virtual_network_name: Managed virtual network name.
-        :type managed_virtual_network_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either ManagedPrivateEndpointListResponse or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~data_factory_management_client.models.ManagedPrivateEndpointListResponse]
+        :return: An iterator like instance of either PipelineListResponse or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~data_factory_management_client.models.PipelineListResponse]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ManagedPrivateEndpointListResponse"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.PipelineListResponse"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -86,7 +83,6 @@ class ManagedPrivateEndpointOperations(object):
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
                     'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-                    'managedVirtualNetworkName': self._serialize.url("managed_virtual_network_name", managed_virtual_network_name, 'str', max_length=127, min_length=1, pattern=r'^([_A-Za-z0-9]|([_A-Za-z0-9][-_A-Za-z0-9]{0,125}[_A-Za-z0-9]))$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -101,7 +97,7 @@ class ManagedPrivateEndpointOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('ManagedPrivateEndpointListResponse', pipeline_response)
+            deserialized = self._deserialize('PipelineListResponse', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -122,56 +118,41 @@ class ManagedPrivateEndpointOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_factory.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/managedVirtualNetworks/{managedVirtualNetworkName}/managedPrivateEndpoints'}  # type: ignore
+    list_by_factory.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/pipelines'}  # type: ignore
 
     def create_or_update(
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
-        managed_virtual_network_name,  # type: str
-        managed_private_endpoint_name,  # type: str
+        pipeline_name,  # type: str
+        pipeline,  # type: "models.PipelineResource"
         if_match=None,  # type: Optional[str]
-        connection_state=None,  # type: Optional["models.ConnectionStateProperties"]
-        fqdns=None,  # type: Optional[List[str]]
-        group_id=None,  # type: Optional[str]
-        private_link_resource_id=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.ManagedPrivateEndpointResource"
-        """Creates or updates a managed private endpoint.
+        # type: (...) -> "models.PipelineResource"
+        """Creates or updates a pipeline.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
-        :param managed_virtual_network_name: Managed virtual network name.
-        :type managed_virtual_network_name: str
-        :param managed_private_endpoint_name: Managed private endpoint name.
-        :type managed_private_endpoint_name: str
-        :param if_match: ETag of the managed private endpoint entity. Should only be specified for
-         update, for which it should match existing entity or can be * for unconditional update.
+        :param pipeline_name: The pipeline name.
+        :type pipeline_name: str
+        :param pipeline: Pipeline resource definition.
+        :type pipeline: ~data_factory_management_client.models.PipelineResource
+        :param if_match: ETag of the pipeline entity.  Should only be specified for update, for which
+         it should match existing entity or can be * for unconditional update.
         :type if_match: str
-        :param connection_state: The managed private endpoint connection state.
-        :type connection_state: ~data_factory_management_client.models.ConnectionStateProperties
-        :param fqdns: Fully qualified domain names.
-        :type fqdns: list[str]
-        :param group_id: The groupId to which the managed private endpoint is created.
-        :type group_id: str
-        :param private_link_resource_id: The ARM resource ID of the resource to which the managed
-         private endpoint is created.
-        :type private_link_resource_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ManagedPrivateEndpointResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.ManagedPrivateEndpointResource
+        :return: PipelineResource, or the result of cls(response)
+        :rtype: ~data_factory_management_client.models.PipelineResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ManagedPrivateEndpointResource"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.PipelineResource"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        managed_private_endpoint = models.ManagedPrivateEndpointResource(connection_state=connection_state, fqdns=fqdns, group_id=group_id, private_link_resource_id=private_link_resource_id)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
@@ -182,8 +163,7 @@ class ManagedPrivateEndpointOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'managedVirtualNetworkName': self._serialize.url("managed_virtual_network_name", managed_virtual_network_name, 'str', max_length=127, min_length=1, pattern=r'^([_A-Za-z0-9]|([_A-Za-z0-9][-_A-Za-z0-9]{0,125}[_A-Za-z0-9]))$'),
-            'managedPrivateEndpointName': self._serialize.url("managed_private_endpoint_name", managed_private_endpoint_name, 'str', max_length=127, min_length=1, pattern=r'^([_A-Za-z0-9]|([_A-Za-z0-9][-_A-Za-z0-9]{0,125}[_A-Za-z0-9]))$'),
+            'pipelineName': self._serialize.url("pipeline_name", pipeline_name, 'str', max_length=260, min_length=1, pattern=r'^[A-Za-z0-9_][^<>*#.%&:\\+?/]*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -199,7 +179,7 @@ class ManagedPrivateEndpointOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(managed_private_endpoint, 'ManagedPrivateEndpointResource')
+        body_content = self._serialize.body(pipeline, 'PipelineResource')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -209,44 +189,40 @@ class ManagedPrivateEndpointOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('ManagedPrivateEndpointResource', pipeline_response)
+        deserialized = self._deserialize('PipelineResource', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/managedVirtualNetworks/{managedVirtualNetworkName}/managedPrivateEndpoints/{managedPrivateEndpointName}'}  # type: ignore
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/pipelines/{pipelineName}'}  # type: ignore
 
     def get(
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
-        managed_virtual_network_name,  # type: str
-        managed_private_endpoint_name,  # type: str
+        pipeline_name,  # type: str
         if_none_match=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.ManagedPrivateEndpointResource"
-        """Gets a managed private endpoint.
+        # type: (...) -> Optional["models.PipelineResource"]
+        """Gets a pipeline.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
-        :param managed_virtual_network_name: Managed virtual network name.
-        :type managed_virtual_network_name: str
-        :param managed_private_endpoint_name: Managed private endpoint name.
-        :type managed_private_endpoint_name: str
-        :param if_none_match: ETag of the managed private endpoint entity. Should only be specified for
-         get. If the ETag matches the existing entity tag, or if * was provided, then no content will be
-         returned.
+        :param pipeline_name: The pipeline name.
+        :type pipeline_name: str
+        :param if_none_match: ETag of the pipeline entity. Should only be specified for get. If the
+         ETag matches the existing entity tag, or if * was provided, then no content will be returned.
         :type if_none_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ManagedPrivateEndpointResource, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.ManagedPrivateEndpointResource
+        :return: PipelineResource, or the result of cls(response)
+        :rtype: ~data_factory_management_client.models.PipelineResource or None
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ManagedPrivateEndpointResource"]
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.PipelineResource"]]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -260,8 +236,7 @@ class ManagedPrivateEndpointOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'managedVirtualNetworkName': self._serialize.url("managed_virtual_network_name", managed_virtual_network_name, 'str', max_length=127, min_length=1, pattern=r'^([_A-Za-z0-9]|([_A-Za-z0-9][-_A-Za-z0-9]{0,125}[_A-Za-z0-9]))$'),
-            'managedPrivateEndpointName': self._serialize.url("managed_private_endpoint_name", managed_private_endpoint_name, 'str', max_length=127, min_length=1, pattern=r'^([_A-Za-z0-9]|([_A-Za-z0-9][-_A-Za-z0-9]{0,125}[_A-Za-z0-9]))$'),
+            'pipelineName': self._serialize.url("pipeline_name", pipeline_name, 'str', max_length=260, min_length=1, pattern=r'^[A-Za-z0-9_][^<>*#.%&:\\+?/]*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -279,37 +254,36 @@ class ManagedPrivateEndpointOperations(object):
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [200, 304]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('ManagedPrivateEndpointResource', pipeline_response)
+        deserialized = None
+        if response.status_code == 200:
+            deserialized = self._deserialize('PipelineResource', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/managedVirtualNetworks/{managedVirtualNetworkName}/managedPrivateEndpoints/{managedPrivateEndpointName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/pipelines/{pipelineName}'}  # type: ignore
 
     def delete(
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
-        managed_virtual_network_name,  # type: str
-        managed_private_endpoint_name,  # type: str
+        pipeline_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> None
-        """Deletes a managed private endpoint.
+        """Deletes a pipeline.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
-        :param managed_virtual_network_name: Managed virtual network name.
-        :type managed_virtual_network_name: str
-        :param managed_private_endpoint_name: Managed private endpoint name.
-        :type managed_private_endpoint_name: str
+        :param pipeline_name: The pipeline name.
+        :type pipeline_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
         :rtype: None
@@ -329,8 +303,7 @@ class ManagedPrivateEndpointOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'managedVirtualNetworkName': self._serialize.url("managed_virtual_network_name", managed_virtual_network_name, 'str', max_length=127, min_length=1, pattern=r'^([_A-Za-z0-9]|([_A-Za-z0-9][-_A-Za-z0-9]{0,125}[_A-Za-z0-9]))$'),
-            'managedPrivateEndpointName': self._serialize.url("managed_private_endpoint_name", managed_private_endpoint_name, 'str', max_length=127, min_length=1, pattern=r'^([_A-Za-z0-9]|([_A-Za-z0-9][-_A-Za-z0-9]{0,125}[_A-Za-z0-9]))$'),
+            'pipelineName': self._serialize.url("pipeline_name", pipeline_name, 'str', max_length=260, min_length=1, pattern=r'^[A-Za-z0-9_][^<>*#.%&:\\+?/]*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -353,4 +326,103 @@ class ManagedPrivateEndpointOperations(object):
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/managedVirtualNetworks/{managedVirtualNetworkName}/managedPrivateEndpoints/{managedPrivateEndpointName}'}  # type: ignore
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/pipelines/{pipelineName}'}  # type: ignore
+
+    def create_run(
+        self,
+        resource_group_name,  # type: str
+        factory_name,  # type: str
+        pipeline_name,  # type: str
+        reference_pipeline_run_id=None,  # type: Optional[str]
+        is_recovery=None,  # type: Optional[bool]
+        start_activity_name=None,  # type: Optional[str]
+        start_from_failure=None,  # type: Optional[bool]
+        parameters=None,  # type: Optional[Dict[str, object]]
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> "models.CreateRunResponse"
+        """Creates a run of a pipeline.
+
+        :param resource_group_name: The resource group name.
+        :type resource_group_name: str
+        :param factory_name: The factory name.
+        :type factory_name: str
+        :param pipeline_name: The pipeline name.
+        :type pipeline_name: str
+        :param reference_pipeline_run_id: The pipeline run identifier. If run ID is specified the
+         parameters of the specified run will be used to create a new run.
+        :type reference_pipeline_run_id: str
+        :param is_recovery: Recovery mode flag. If recovery mode is set to true, the specified
+         referenced pipeline run and the new run will be grouped under the same groupId.
+        :type is_recovery: bool
+        :param start_activity_name: In recovery mode, the rerun will start from this activity. If not
+         specified, all activities will run.
+        :type start_activity_name: str
+        :param start_from_failure: In recovery mode, if set to true, the rerun will start from failed
+         activities. The property will be used only if startActivityName is not specified.
+        :type start_from_failure: bool
+        :param parameters: Parameters of the pipeline run. These parameters will be used only if the
+         runId is not specified.
+        :type parameters: dict[str, object]
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: CreateRunResponse, or the result of cls(response)
+        :rtype: ~data_factory_management_client.models.CreateRunResponse
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.CreateRunResponse"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2018-06-01"
+        content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
+
+        # Construct URL
+        url = self.create_run.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'pipelineName': self._serialize.url("pipeline_name", pipeline_name, 'str', max_length=260, min_length=1, pattern=r'^[A-Za-z0-9_][^<>*#.%&:\\+?/]*$'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        if reference_pipeline_run_id is not None:
+            query_parameters['referencePipelineRunId'] = self._serialize.query("reference_pipeline_run_id", reference_pipeline_run_id, 'str')
+        if is_recovery is not None:
+            query_parameters['isRecovery'] = self._serialize.query("is_recovery", is_recovery, 'bool')
+        if start_activity_name is not None:
+            query_parameters['startActivityName'] = self._serialize.query("start_activity_name", start_activity_name, 'str')
+        if start_from_failure is not None:
+            query_parameters['startFromFailure'] = self._serialize.query("start_from_failure", start_from_failure, 'bool')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        if parameters is not None:
+            body_content = self._serialize.body(parameters, '{object}')
+        else:
+            body_content = None
+        body_content_kwargs['content'] = body_content
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('CreateRunResponse', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    create_run.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/pipelines/{pipelineName}/createRun'}  # type: ignore

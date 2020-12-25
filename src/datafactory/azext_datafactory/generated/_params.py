@@ -302,7 +302,7 @@ def load_arguments(self, _):
                    'json-string/@json-file.')
         c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the '
                    'linked service. Expected value: json-string/@json-file.')
-        c.ignore('linked_service', 'properties')
+        c.ignore('linked_service')
 
     with self.argument_context('datafactory linked-service delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -354,7 +354,7 @@ def load_arguments(self, _):
                    'Dataset. Expected value: json-string/@json-file.')
         c.argument('folder', action=AddFolder, nargs='+', help='The folder that this Dataset is in. If not specified, '
                    'Dataset will appear at the root level.')
-        c.ignore('dataset', 'properties')
+        c.ignore('dataset')
 
     with self.argument_context('datafactory dataset delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -498,7 +498,7 @@ def load_arguments(self, _):
         c.argument('description', type=str, help='Trigger description.')
         c.argument('annotations', type=validate_file_or_dict, help='List of tags that can be used for describing the '
                    'trigger. Expected value: json-string/@json-file.')
-        c.ignore('trigger', 'properties')
+        c.ignore('trigger')
 
     with self.argument_context('datafactory trigger delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -604,6 +604,7 @@ def load_arguments(self, _):
                    type=str, help='Managed virtual network name', id_part='child_name_1')
         c.argument('if_match', type=str, help='ETag of the managed Virtual Network entity. Should only be specified '
                    'for update, for which it should match existing entity or can be * for unconditional update.')
+        c.ignore('managed_virtual_network')
 
     with self.argument_context('datafactory managed-private-endpoint list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -649,6 +650,7 @@ def load_arguments(self, _):
         c.argument('group_id', type=str, help='The groupId to which the managed private endpoint is created')
         c.argument('private_link_resource_id', options_list=['--plr-id'], type=str, help='The ARM resource ID of the '
                    'resource to which the managed private endpoint is created')
+        c.ignore('managed_private_endpoint')
 
     with self.argument_context('datafactory managed-private-endpoint delete') as c:
         c.argument('resource_group_name', resource_group_name_type)

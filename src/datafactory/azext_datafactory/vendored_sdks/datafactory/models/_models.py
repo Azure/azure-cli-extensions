@@ -342,7 +342,7 @@ class LinkedService(msrest.serialization.Model):
     """The Azure Data Factory nested object which contains the information and credential which can be used to connect with related store or compute resource.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AmazonMwsLinkedService, AmazonRedshiftLinkedService, AmazonS3LinkedService, AzureBatchLinkedService, AzureBlobFsLinkedService, AzureBlobStorageLinkedService, AzureDataExplorerLinkedService, AzureDataLakeAnalyticsLinkedService, AzureDataLakeStoreLinkedService, AzureDatabricksLinkedService, AzureFileStorageLinkedService, AzureFunctionLinkedService, AzureKeyVaultLinkedService, AzureMlLinkedService, AzureMlServiceLinkedService, AzureMariaDBLinkedService, AzureMySQLLinkedService, AzurePostgreSQLLinkedService, AzureSearchLinkedService, AzureSQLDWLinkedService, AzureSQLDatabaseLinkedService, AzureSQLMiLinkedService, AzureStorageLinkedService, AzureTableStorageLinkedService, CassandraLinkedService, CommonDataServiceForAppsLinkedService, ConcurLinkedService, CosmosDBLinkedService, CosmosDBMongoDBApiLinkedService, CouchbaseLinkedService, CustomDataSourceLinkedService, Db2LinkedService, DrillLinkedService, DynamicsLinkedService, DynamicsAxLinkedService, DynamicsCrmLinkedService, EloquaLinkedService, FileServerLinkedService, FtpServerLinkedService, GoogleAdWordsLinkedService, GoogleBigQueryLinkedService, GoogleCloudStorageLinkedService, GreenplumLinkedService, HBaseLinkedService, HdInsightLinkedService, HdInsightOnDemandLinkedService, HdfsLinkedService, HiveLinkedService, HttpLinkedService, HubspotLinkedService, ImpalaLinkedService, InformixLinkedService, JiraLinkedService, MagentoLinkedService, MariaDBLinkedService, MarketoLinkedService, MicrosoftAccessLinkedService, MongoDBLinkedService, MongoDBV2LinkedService, MySQLLinkedService, NetezzaLinkedService, ODataLinkedService, OdbcLinkedService, Office365LinkedService, OracleLinkedService, OracleServiceCloudLinkedService, PaypalLinkedService, PhoenixLinkedService, PostgreSQLLinkedService, PrestoLinkedService, QuickBooksLinkedService, ResponsysLinkedService, RestServiceLinkedService, SalesforceLinkedService, SalesforceMarketingCloudLinkedService, SalesforceServiceCloudLinkedService, SapBwLinkedService, SapCloudForCustomerLinkedService, SapEccLinkedService, SapHanaLinkedService, SapOpenHubLinkedService, SapTableLinkedService, ServiceNowLinkedService, SftpServerLinkedService, SharePointOnlineListLinkedService, ShopifyLinkedService, SnowflakeLinkedService, SparkLinkedService, SQLServerLinkedService, SquareLinkedService, SybaseLinkedService, TeradataLinkedService, VerticaLinkedService, WebLinkedService, XeroLinkedService, ZohoLinkedService.
+    sub-classes are: AmazonMwsLinkedService, AmazonRedshiftLinkedService, AmazonS3LinkedService, AzureBatchLinkedService, AzureBlobFsLinkedService, AzureBlobStorageLinkedService, AzureDataExplorerLinkedService, AzureDataLakeAnalyticsLinkedService, AzureDataLakeStoreLinkedService, AzureDatabricksLinkedService, AzureFileStorageLinkedService, AzureFunctionLinkedService, AzureKeyVaultLinkedService, AzureMlLinkedService, AzureMlServiceLinkedService, AzureMariaDbLinkedService, AzureMySqlLinkedService, AzurePostgreSqlLinkedService, AzureSearchLinkedService, AzureSqlDwLinkedService, AzureSqlDatabaseLinkedService, AzureSqlMiLinkedService, AzureStorageLinkedService, AzureTableStorageLinkedService, CassandraLinkedService, CommonDataServiceForAppsLinkedService, ConcurLinkedService, CosmosDbLinkedService, CosmosDbMongoDbApiLinkedService, CouchbaseLinkedService, CustomDataSourceLinkedService, Db2LinkedService, DrillLinkedService, DynamicsLinkedService, DynamicsAxLinkedService, DynamicsCrmLinkedService, EloquaLinkedService, FileServerLinkedService, FtpServerLinkedService, GoogleAdWordsLinkedService, GoogleBigQueryLinkedService, GoogleCloudStorageLinkedService, GreenplumLinkedService, HBaseLinkedService, HdInsightLinkedService, HdInsightOnDemandLinkedService, HdfsLinkedService, HiveLinkedService, HttpLinkedService, HubspotLinkedService, ImpalaLinkedService, InformixLinkedService, JiraLinkedService, MagentoLinkedService, MariaDbLinkedService, MarketoLinkedService, MicrosoftAccessLinkedService, MongoDbLinkedService, MongoDbV2LinkedService, MySqlLinkedService, NetezzaLinkedService, ODataLinkedService, OdbcLinkedService, Office365LinkedService, OracleLinkedService, OracleServiceCloudLinkedService, PaypalLinkedService, PhoenixLinkedService, PostgreSqlLinkedService, PrestoLinkedService, QuickBooksLinkedService, ResponsysLinkedService, RestServiceLinkedService, SalesforceLinkedService, SalesforceMarketingCloudLinkedService, SalesforceServiceCloudLinkedService, SapBwLinkedService, SapCloudForCustomerLinkedService, SapEccLinkedService, SapHanaLinkedService, SapOpenHubLinkedService, SapTableLinkedService, ServiceNowLinkedService, SftpServerLinkedService, SharePointOnlineListLinkedService, ShopifyLinkedService, SnowflakeLinkedService, SparkLinkedService, SqlServerLinkedService, SquareLinkedService, SybaseLinkedService, TeradataLinkedService, VerticaLinkedService, WebLinkedService, XeroLinkedService, ZohoLinkedService.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -375,7 +375,7 @@ class LinkedService(msrest.serialization.Model):
     }
 
     _subtype_map = {
-        'type': {'AmazonMWS': 'AmazonMwsLinkedService', 'AmazonRedshift': 'AmazonRedshiftLinkedService', 'AmazonS3': 'AmazonS3LinkedService', 'AzureBatch': 'AzureBatchLinkedService', 'AzureBlobFS': 'AzureBlobFsLinkedService', 'AzureBlobStorage': 'AzureBlobStorageLinkedService', 'AzureDataExplorer': 'AzureDataExplorerLinkedService', 'AzureDataLakeAnalytics': 'AzureDataLakeAnalyticsLinkedService', 'AzureDataLakeStore': 'AzureDataLakeStoreLinkedService', 'AzureDatabricks': 'AzureDatabricksLinkedService', 'AzureFileStorage': 'AzureFileStorageLinkedService', 'AzureFunction': 'AzureFunctionLinkedService', 'AzureKeyVault': 'AzureKeyVaultLinkedService', 'AzureML': 'AzureMlLinkedService', 'AzureMLService': 'AzureMlServiceLinkedService', 'AzureMariaDB': 'AzureMariaDBLinkedService', 'AzureMySql': 'AzureMySQLLinkedService', 'AzurePostgreSql': 'AzurePostgreSQLLinkedService', 'AzureSearch': 'AzureSearchLinkedService', 'AzureSqlDW': 'AzureSQLDWLinkedService', 'AzureSqlDatabase': 'AzureSQLDatabaseLinkedService', 'AzureSqlMI': 'AzureSQLMiLinkedService', 'AzureStorage': 'AzureStorageLinkedService', 'AzureTableStorage': 'AzureTableStorageLinkedService', 'Cassandra': 'CassandraLinkedService', 'CommonDataServiceForApps': 'CommonDataServiceForAppsLinkedService', 'Concur': 'ConcurLinkedService', 'CosmosDb': 'CosmosDBLinkedService', 'CosmosDbMongoDbApi': 'CosmosDBMongoDBApiLinkedService', 'Couchbase': 'CouchbaseLinkedService', 'CustomDataSource': 'CustomDataSourceLinkedService', 'Db2': 'Db2LinkedService', 'Drill': 'DrillLinkedService', 'Dynamics': 'DynamicsLinkedService', 'DynamicsAX': 'DynamicsAxLinkedService', 'DynamicsCrm': 'DynamicsCrmLinkedService', 'Eloqua': 'EloquaLinkedService', 'FileServer': 'FileServerLinkedService', 'FtpServer': 'FtpServerLinkedService', 'GoogleAdWords': 'GoogleAdWordsLinkedService', 'GoogleBigQuery': 'GoogleBigQueryLinkedService', 'GoogleCloudStorage': 'GoogleCloudStorageLinkedService', 'Greenplum': 'GreenplumLinkedService', 'HBase': 'HBaseLinkedService', 'HDInsight': 'HdInsightLinkedService', 'HDInsightOnDemand': 'HdInsightOnDemandLinkedService', 'Hdfs': 'HdfsLinkedService', 'Hive': 'HiveLinkedService', 'HttpServer': 'HttpLinkedService', 'Hubspot': 'HubspotLinkedService', 'Impala': 'ImpalaLinkedService', 'Informix': 'InformixLinkedService', 'Jira': 'JiraLinkedService', 'Magento': 'MagentoLinkedService', 'MariaDB': 'MariaDBLinkedService', 'Marketo': 'MarketoLinkedService', 'MicrosoftAccess': 'MicrosoftAccessLinkedService', 'MongoDb': 'MongoDBLinkedService', 'MongoDbV2': 'MongoDBV2LinkedService', 'MySql': 'MySQLLinkedService', 'Netezza': 'NetezzaLinkedService', 'OData': 'ODataLinkedService', 'Odbc': 'OdbcLinkedService', 'Office365': 'Office365LinkedService', 'Oracle': 'OracleLinkedService', 'OracleServiceCloud': 'OracleServiceCloudLinkedService', 'Paypal': 'PaypalLinkedService', 'Phoenix': 'PhoenixLinkedService', 'PostgreSql': 'PostgreSQLLinkedService', 'Presto': 'PrestoLinkedService', 'QuickBooks': 'QuickBooksLinkedService', 'Responsys': 'ResponsysLinkedService', 'RestService': 'RestServiceLinkedService', 'Salesforce': 'SalesforceLinkedService', 'SalesforceMarketingCloud': 'SalesforceMarketingCloudLinkedService', 'SalesforceServiceCloud': 'SalesforceServiceCloudLinkedService', 'SapBW': 'SapBwLinkedService', 'SapCloudForCustomer': 'SapCloudForCustomerLinkedService', 'SapEcc': 'SapEccLinkedService', 'SapHana': 'SapHanaLinkedService', 'SapOpenHub': 'SapOpenHubLinkedService', 'SapTable': 'SapTableLinkedService', 'ServiceNow': 'ServiceNowLinkedService', 'Sftp': 'SftpServerLinkedService', 'SharePointOnlineList': 'SharePointOnlineListLinkedService', 'Shopify': 'ShopifyLinkedService', 'Snowflake': 'SnowflakeLinkedService', 'Spark': 'SparkLinkedService', 'SqlServer': 'SQLServerLinkedService', 'Square': 'SquareLinkedService', 'Sybase': 'SybaseLinkedService', 'Teradata': 'TeradataLinkedService', 'Vertica': 'VerticaLinkedService', 'Web': 'WebLinkedService', 'Xero': 'XeroLinkedService', 'Zoho': 'ZohoLinkedService'}
+        'type': {'AmazonMWS': 'AmazonMwsLinkedService', 'AmazonRedshift': 'AmazonRedshiftLinkedService', 'AmazonS3': 'AmazonS3LinkedService', 'AzureBatch': 'AzureBatchLinkedService', 'AzureBlobFS': 'AzureBlobFsLinkedService', 'AzureBlobStorage': 'AzureBlobStorageLinkedService', 'AzureDataExplorer': 'AzureDataExplorerLinkedService', 'AzureDataLakeAnalytics': 'AzureDataLakeAnalyticsLinkedService', 'AzureDataLakeStore': 'AzureDataLakeStoreLinkedService', 'AzureDatabricks': 'AzureDatabricksLinkedService', 'AzureFileStorage': 'AzureFileStorageLinkedService', 'AzureFunction': 'AzureFunctionLinkedService', 'AzureKeyVault': 'AzureKeyVaultLinkedService', 'AzureML': 'AzureMlLinkedService', 'AzureMLService': 'AzureMlServiceLinkedService', 'AzureMariaDB': 'AzureMariaDbLinkedService', 'AzureMySql': 'AzureMySqlLinkedService', 'AzurePostgreSql': 'AzurePostgreSqlLinkedService', 'AzureSearch': 'AzureSearchLinkedService', 'AzureSqlDW': 'AzureSqlDwLinkedService', 'AzureSqlDatabase': 'AzureSqlDatabaseLinkedService', 'AzureSqlMI': 'AzureSqlMiLinkedService', 'AzureStorage': 'AzureStorageLinkedService', 'AzureTableStorage': 'AzureTableStorageLinkedService', 'Cassandra': 'CassandraLinkedService', 'CommonDataServiceForApps': 'CommonDataServiceForAppsLinkedService', 'Concur': 'ConcurLinkedService', 'CosmosDb': 'CosmosDbLinkedService', 'CosmosDbMongoDbApi': 'CosmosDbMongoDbApiLinkedService', 'Couchbase': 'CouchbaseLinkedService', 'CustomDataSource': 'CustomDataSourceLinkedService', 'Db2': 'Db2LinkedService', 'Drill': 'DrillLinkedService', 'Dynamics': 'DynamicsLinkedService', 'DynamicsAX': 'DynamicsAxLinkedService', 'DynamicsCrm': 'DynamicsCrmLinkedService', 'Eloqua': 'EloquaLinkedService', 'FileServer': 'FileServerLinkedService', 'FtpServer': 'FtpServerLinkedService', 'GoogleAdWords': 'GoogleAdWordsLinkedService', 'GoogleBigQuery': 'GoogleBigQueryLinkedService', 'GoogleCloudStorage': 'GoogleCloudStorageLinkedService', 'Greenplum': 'GreenplumLinkedService', 'HBase': 'HBaseLinkedService', 'HDInsight': 'HdInsightLinkedService', 'HDInsightOnDemand': 'HdInsightOnDemandLinkedService', 'Hdfs': 'HdfsLinkedService', 'Hive': 'HiveLinkedService', 'HttpServer': 'HttpLinkedService', 'Hubspot': 'HubspotLinkedService', 'Impala': 'ImpalaLinkedService', 'Informix': 'InformixLinkedService', 'Jira': 'JiraLinkedService', 'Magento': 'MagentoLinkedService', 'MariaDB': 'MariaDbLinkedService', 'Marketo': 'MarketoLinkedService', 'MicrosoftAccess': 'MicrosoftAccessLinkedService', 'MongoDb': 'MongoDbLinkedService', 'MongoDbV2': 'MongoDbV2LinkedService', 'MySql': 'MySqlLinkedService', 'Netezza': 'NetezzaLinkedService', 'OData': 'ODataLinkedService', 'Odbc': 'OdbcLinkedService', 'Office365': 'Office365LinkedService', 'Oracle': 'OracleLinkedService', 'OracleServiceCloud': 'OracleServiceCloudLinkedService', 'Paypal': 'PaypalLinkedService', 'Phoenix': 'PhoenixLinkedService', 'PostgreSql': 'PostgreSqlLinkedService', 'Presto': 'PrestoLinkedService', 'QuickBooks': 'QuickBooksLinkedService', 'Responsys': 'ResponsysLinkedService', 'RestService': 'RestServiceLinkedService', 'Salesforce': 'SalesforceLinkedService', 'SalesforceMarketingCloud': 'SalesforceMarketingCloudLinkedService', 'SalesforceServiceCloud': 'SalesforceServiceCloudLinkedService', 'SapBW': 'SapBwLinkedService', 'SapCloudForCustomer': 'SapCloudForCustomerLinkedService', 'SapEcc': 'SapEccLinkedService', 'SapHana': 'SapHanaLinkedService', 'SapOpenHub': 'SapOpenHubLinkedService', 'SapTable': 'SapTableLinkedService', 'ServiceNow': 'ServiceNowLinkedService', 'Sftp': 'SftpServerLinkedService', 'SharePointOnlineList': 'SharePointOnlineListLinkedService', 'Shopify': 'ShopifyLinkedService', 'Snowflake': 'SnowflakeLinkedService', 'Spark': 'SparkLinkedService', 'SqlServer': 'SqlServerLinkedService', 'Square': 'SquareLinkedService', 'Sybase': 'SybaseLinkedService', 'Teradata': 'TeradataLinkedService', 'Vertica': 'VerticaLinkedService', 'Web': 'WebLinkedService', 'Xero': 'XeroLinkedService', 'Zoho': 'ZohoLinkedService'}
     }
 
     def __init__(
@@ -489,7 +489,7 @@ class Dataset(msrest.serialization.Model):
     """The Azure Data Factory nested object which identifies data within different data stores, such as tables, files, folders, and documents.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AmazonMwsObjectDataset, AmazonRedshiftTableDataset, AmazonS3Dataset, AvroDataset, AzureBlobDataset, AzureBlobFsDataset, AzureDataExplorerTableDataset, AzureDataLakeStoreDataset, AzureMariaDBTableDataset, AzureMySQLTableDataset, AzurePostgreSQLTableDataset, AzureSearchIndexDataset, AzureSQLDWTableDataset, AzureSQLMiTableDataset, AzureSQLTableDataset, AzureTableDataset, BinaryDataset, CassandraTableDataset, CommonDataServiceForAppsEntityDataset, ConcurObjectDataset, CosmosDBMongoDBApiCollectionDataset, CosmosDBSQLApiCollectionDataset, CouchbaseTableDataset, CustomDataset, Db2TableDataset, DelimitedTextDataset, DocumentDBCollectionDataset, DrillTableDataset, DynamicsAxResourceDataset, DynamicsCrmEntityDataset, DynamicsEntityDataset, EloquaObjectDataset, ExcelDataset, FileShareDataset, GoogleAdWordsObjectDataset, GoogleBigQueryObjectDataset, GreenplumTableDataset, HBaseObjectDataset, HiveObjectDataset, HttpDataset, HubspotObjectDataset, ImpalaObjectDataset, InformixTableDataset, JiraObjectDataset, JsonDataset, MagentoObjectDataset, MariaDBTableDataset, MarketoObjectDataset, MicrosoftAccessTableDataset, MongoDBCollectionDataset, MongoDBV2CollectionDataset, MySQLTableDataset, NetezzaTableDataset, ODataResourceDataset, OdbcTableDataset, Office365Dataset, OracleServiceCloudObjectDataset, OracleTableDataset, OrcDataset, ParquetDataset, PaypalObjectDataset, PhoenixObjectDataset, PostgreSQLTableDataset, PrestoObjectDataset, QuickBooksObjectDataset, RelationalTableDataset, ResponsysObjectDataset, RestResourceDataset, SalesforceMarketingCloudObjectDataset, SalesforceObjectDataset, SalesforceServiceCloudObjectDataset, SapBwCubeDataset, SapCloudForCustomerResourceDataset, SapEccResourceDataset, SapHanaTableDataset, SapOpenHubTableDataset, SapTableResourceDataset, ServiceNowObjectDataset, SharePointOnlineListResourceDataset, ShopifyObjectDataset, SnowflakeDataset, SparkObjectDataset, SQLServerTableDataset, SquareObjectDataset, SybaseTableDataset, TeradataTableDataset, VerticaTableDataset, WebTableDataset, XeroObjectDataset, XmlDataset, ZohoObjectDataset.
+    sub-classes are: AmazonMwsObjectDataset, AmazonRedshiftTableDataset, AmazonS3Dataset, AvroDataset, AzureBlobDataset, AzureBlobFsDataset, AzureDataExplorerTableDataset, AzureDataLakeStoreDataset, AzureMariaDbTableDataset, AzureMySqlTableDataset, AzurePostgreSqlTableDataset, AzureSearchIndexDataset, AzureSqlDwTableDataset, AzureSqlMiTableDataset, AzureSqlTableDataset, AzureTableDataset, BinaryDataset, CassandraTableDataset, CommonDataServiceForAppsEntityDataset, ConcurObjectDataset, CosmosDbMongoDbApiCollectionDataset, CosmosDbSqlApiCollectionDataset, CouchbaseTableDataset, CustomDataset, Db2TableDataset, DelimitedTextDataset, DocumentDbCollectionDataset, DrillTableDataset, DynamicsAxResourceDataset, DynamicsCrmEntityDataset, DynamicsEntityDataset, EloquaObjectDataset, ExcelDataset, FileShareDataset, GoogleAdWordsObjectDataset, GoogleBigQueryObjectDataset, GreenplumTableDataset, HBaseObjectDataset, HiveObjectDataset, HttpDataset, HubspotObjectDataset, ImpalaObjectDataset, InformixTableDataset, JiraObjectDataset, JsonDataset, MagentoObjectDataset, MariaDbTableDataset, MarketoObjectDataset, MicrosoftAccessTableDataset, MongoDbCollectionDataset, MongoDbV2CollectionDataset, MySqlTableDataset, NetezzaTableDataset, ODataResourceDataset, OdbcTableDataset, Office365Dataset, OracleServiceCloudObjectDataset, OracleTableDataset, OrcDataset, ParquetDataset, PaypalObjectDataset, PhoenixObjectDataset, PostgreSqlTableDataset, PrestoObjectDataset, QuickBooksObjectDataset, RelationalTableDataset, ResponsysObjectDataset, RestResourceDataset, SalesforceMarketingCloudObjectDataset, SalesforceObjectDataset, SalesforceServiceCloudObjectDataset, SapBwCubeDataset, SapCloudForCustomerResourceDataset, SapEccResourceDataset, SapHanaTableDataset, SapOpenHubTableDataset, SapTableResourceDataset, ServiceNowObjectDataset, SharePointOnlineListResourceDataset, ShopifyObjectDataset, SnowflakeDataset, SparkObjectDataset, SqlServerTableDataset, SquareObjectDataset, SybaseTableDataset, TeradataTableDataset, VerticaTableDataset, WebTableDataset, XeroObjectDataset, XmlDataset, ZohoObjectDataset.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -535,7 +535,7 @@ class Dataset(msrest.serialization.Model):
     }
 
     _subtype_map = {
-        'type': {'AmazonMWSObject': 'AmazonMwsObjectDataset', 'AmazonRedshiftTable': 'AmazonRedshiftTableDataset', 'AmazonS3Object': 'AmazonS3Dataset', 'Avro': 'AvroDataset', 'AzureBlob': 'AzureBlobDataset', 'AzureBlobFSFile': 'AzureBlobFsDataset', 'AzureDataExplorerTable': 'AzureDataExplorerTableDataset', 'AzureDataLakeStoreFile': 'AzureDataLakeStoreDataset', 'AzureMariaDBTable': 'AzureMariaDBTableDataset', 'AzureMySqlTable': 'AzureMySQLTableDataset', 'AzurePostgreSqlTable': 'AzurePostgreSQLTableDataset', 'AzureSearchIndex': 'AzureSearchIndexDataset', 'AzureSqlDWTable': 'AzureSQLDWTableDataset', 'AzureSqlMITable': 'AzureSQLMiTableDataset', 'AzureSqlTable': 'AzureSQLTableDataset', 'AzureTable': 'AzureTableDataset', 'Binary': 'BinaryDataset', 'CassandraTable': 'CassandraTableDataset', 'CommonDataServiceForAppsEntity': 'CommonDataServiceForAppsEntityDataset', 'ConcurObject': 'ConcurObjectDataset', 'CosmosDbMongoDbApiCollection': 'CosmosDBMongoDBApiCollectionDataset', 'CosmosDbSqlApiCollection': 'CosmosDBSQLApiCollectionDataset', 'CouchbaseTable': 'CouchbaseTableDataset', 'CustomDataset': 'CustomDataset', 'Db2Table': 'Db2TableDataset', 'DelimitedText': 'DelimitedTextDataset', 'DocumentDbCollection': 'DocumentDBCollectionDataset', 'DrillTable': 'DrillTableDataset', 'DynamicsAXResource': 'DynamicsAxResourceDataset', 'DynamicsCrmEntity': 'DynamicsCrmEntityDataset', 'DynamicsEntity': 'DynamicsEntityDataset', 'EloquaObject': 'EloquaObjectDataset', 'Excel': 'ExcelDataset', 'FileShare': 'FileShareDataset', 'GoogleAdWordsObject': 'GoogleAdWordsObjectDataset', 'GoogleBigQueryObject': 'GoogleBigQueryObjectDataset', 'GreenplumTable': 'GreenplumTableDataset', 'HBaseObject': 'HBaseObjectDataset', 'HiveObject': 'HiveObjectDataset', 'HttpFile': 'HttpDataset', 'HubspotObject': 'HubspotObjectDataset', 'ImpalaObject': 'ImpalaObjectDataset', 'InformixTable': 'InformixTableDataset', 'JiraObject': 'JiraObjectDataset', 'Json': 'JsonDataset', 'MagentoObject': 'MagentoObjectDataset', 'MariaDBTable': 'MariaDBTableDataset', 'MarketoObject': 'MarketoObjectDataset', 'MicrosoftAccessTable': 'MicrosoftAccessTableDataset', 'MongoDbCollection': 'MongoDBCollectionDataset', 'MongoDbV2Collection': 'MongoDBV2CollectionDataset', 'MySqlTable': 'MySQLTableDataset', 'NetezzaTable': 'NetezzaTableDataset', 'ODataResource': 'ODataResourceDataset', 'OdbcTable': 'OdbcTableDataset', 'Office365Table': 'Office365Dataset', 'OracleServiceCloudObject': 'OracleServiceCloudObjectDataset', 'OracleTable': 'OracleTableDataset', 'Orc': 'OrcDataset', 'Parquet': 'ParquetDataset', 'PaypalObject': 'PaypalObjectDataset', 'PhoenixObject': 'PhoenixObjectDataset', 'PostgreSqlTable': 'PostgreSQLTableDataset', 'PrestoObject': 'PrestoObjectDataset', 'QuickBooksObject': 'QuickBooksObjectDataset', 'RelationalTable': 'RelationalTableDataset', 'ResponsysObject': 'ResponsysObjectDataset', 'RestResource': 'RestResourceDataset', 'SalesforceMarketingCloudObject': 'SalesforceMarketingCloudObjectDataset', 'SalesforceObject': 'SalesforceObjectDataset', 'SalesforceServiceCloudObject': 'SalesforceServiceCloudObjectDataset', 'SapBwCube': 'SapBwCubeDataset', 'SapCloudForCustomerResource': 'SapCloudForCustomerResourceDataset', 'SapEccResource': 'SapEccResourceDataset', 'SapHanaTable': 'SapHanaTableDataset', 'SapOpenHubTable': 'SapOpenHubTableDataset', 'SapTableResource': 'SapTableResourceDataset', 'ServiceNowObject': 'ServiceNowObjectDataset', 'SharePointOnlineListResource': 'SharePointOnlineListResourceDataset', 'ShopifyObject': 'ShopifyObjectDataset', 'SnowflakeTable': 'SnowflakeDataset', 'SparkObject': 'SparkObjectDataset', 'SqlServerTable': 'SQLServerTableDataset', 'SquareObject': 'SquareObjectDataset', 'SybaseTable': 'SybaseTableDataset', 'TeradataTable': 'TeradataTableDataset', 'VerticaTable': 'VerticaTableDataset', 'WebTable': 'WebTableDataset', 'XeroObject': 'XeroObjectDataset', 'Xml': 'XmlDataset', 'ZohoObject': 'ZohoObjectDataset'}
+        'type': {'AmazonMWSObject': 'AmazonMwsObjectDataset', 'AmazonRedshiftTable': 'AmazonRedshiftTableDataset', 'AmazonS3Object': 'AmazonS3Dataset', 'Avro': 'AvroDataset', 'AzureBlob': 'AzureBlobDataset', 'AzureBlobFSFile': 'AzureBlobFsDataset', 'AzureDataExplorerTable': 'AzureDataExplorerTableDataset', 'AzureDataLakeStoreFile': 'AzureDataLakeStoreDataset', 'AzureMariaDBTable': 'AzureMariaDbTableDataset', 'AzureMySqlTable': 'AzureMySqlTableDataset', 'AzurePostgreSqlTable': 'AzurePostgreSqlTableDataset', 'AzureSearchIndex': 'AzureSearchIndexDataset', 'AzureSqlDWTable': 'AzureSqlDwTableDataset', 'AzureSqlMITable': 'AzureSqlMiTableDataset', 'AzureSqlTable': 'AzureSqlTableDataset', 'AzureTable': 'AzureTableDataset', 'Binary': 'BinaryDataset', 'CassandraTable': 'CassandraTableDataset', 'CommonDataServiceForAppsEntity': 'CommonDataServiceForAppsEntityDataset', 'ConcurObject': 'ConcurObjectDataset', 'CosmosDbMongoDbApiCollection': 'CosmosDbMongoDbApiCollectionDataset', 'CosmosDbSqlApiCollection': 'CosmosDbSqlApiCollectionDataset', 'CouchbaseTable': 'CouchbaseTableDataset', 'CustomDataset': 'CustomDataset', 'Db2Table': 'Db2TableDataset', 'DelimitedText': 'DelimitedTextDataset', 'DocumentDbCollection': 'DocumentDbCollectionDataset', 'DrillTable': 'DrillTableDataset', 'DynamicsAXResource': 'DynamicsAxResourceDataset', 'DynamicsCrmEntity': 'DynamicsCrmEntityDataset', 'DynamicsEntity': 'DynamicsEntityDataset', 'EloquaObject': 'EloquaObjectDataset', 'Excel': 'ExcelDataset', 'FileShare': 'FileShareDataset', 'GoogleAdWordsObject': 'GoogleAdWordsObjectDataset', 'GoogleBigQueryObject': 'GoogleBigQueryObjectDataset', 'GreenplumTable': 'GreenplumTableDataset', 'HBaseObject': 'HBaseObjectDataset', 'HiveObject': 'HiveObjectDataset', 'HttpFile': 'HttpDataset', 'HubspotObject': 'HubspotObjectDataset', 'ImpalaObject': 'ImpalaObjectDataset', 'InformixTable': 'InformixTableDataset', 'JiraObject': 'JiraObjectDataset', 'Json': 'JsonDataset', 'MagentoObject': 'MagentoObjectDataset', 'MariaDBTable': 'MariaDbTableDataset', 'MarketoObject': 'MarketoObjectDataset', 'MicrosoftAccessTable': 'MicrosoftAccessTableDataset', 'MongoDbCollection': 'MongoDbCollectionDataset', 'MongoDbV2Collection': 'MongoDbV2CollectionDataset', 'MySqlTable': 'MySqlTableDataset', 'NetezzaTable': 'NetezzaTableDataset', 'ODataResource': 'ODataResourceDataset', 'OdbcTable': 'OdbcTableDataset', 'Office365Table': 'Office365Dataset', 'OracleServiceCloudObject': 'OracleServiceCloudObjectDataset', 'OracleTable': 'OracleTableDataset', 'Orc': 'OrcDataset', 'Parquet': 'ParquetDataset', 'PaypalObject': 'PaypalObjectDataset', 'PhoenixObject': 'PhoenixObjectDataset', 'PostgreSqlTable': 'PostgreSqlTableDataset', 'PrestoObject': 'PrestoObjectDataset', 'QuickBooksObject': 'QuickBooksObjectDataset', 'RelationalTable': 'RelationalTableDataset', 'ResponsysObject': 'ResponsysObjectDataset', 'RestResource': 'RestResourceDataset', 'SalesforceMarketingCloudObject': 'SalesforceMarketingCloudObjectDataset', 'SalesforceObject': 'SalesforceObjectDataset', 'SalesforceServiceCloudObject': 'SalesforceServiceCloudObjectDataset', 'SapBwCube': 'SapBwCubeDataset', 'SapCloudForCustomerResource': 'SapCloudForCustomerResourceDataset', 'SapEccResource': 'SapEccResourceDataset', 'SapHanaTable': 'SapHanaTableDataset', 'SapOpenHubTable': 'SapOpenHubTableDataset', 'SapTableResource': 'SapTableResourceDataset', 'ServiceNowObject': 'ServiceNowObjectDataset', 'SharePointOnlineListResource': 'SharePointOnlineListResourceDataset', 'ShopifyObject': 'ShopifyObjectDataset', 'SnowflakeTable': 'SnowflakeDataset', 'SparkObject': 'SparkObjectDataset', 'SqlServerTable': 'SqlServerTableDataset', 'SquareObject': 'SquareObjectDataset', 'SybaseTable': 'SybaseTableDataset', 'TeradataTable': 'TeradataTableDataset', 'VerticaTable': 'VerticaTableDataset', 'WebTable': 'WebTableDataset', 'XeroObject': 'XeroObjectDataset', 'Xml': 'XmlDataset', 'ZohoObject': 'ZohoObjectDataset'}
     }
 
     def __init__(
@@ -616,7 +616,7 @@ class CopySource(msrest.serialization.Model):
     """A copy activity source.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AvroSource, AzureBlobFsSource, AzureDataExplorerSource, AzureDataLakeStoreSource, BinarySource, BlobSource, CommonDataServiceForAppsSource, CosmosDBMongoDBApiSource, CosmosDBSQLApiSource, DelimitedTextSource, DocumentDBCollectionSource, DynamicsCrmSource, DynamicsSource, ExcelSource, FileSystemSource, HdfsSource, HttpSource, JsonSource, MicrosoftAccessSource, MongoDBSource, MongoDBV2Source, ODataSource, Office365Source, OracleSource, OrcSource, ParquetSource, RelationalSource, RestSource, SalesforceServiceCloudSource, SharePointOnlineListSource, SnowflakeSource, TabularSource, WebSource, XmlSource.
+    sub-classes are: AvroSource, AzureBlobFsSource, AzureDataExplorerSource, AzureDataLakeStoreSource, BinarySource, BlobSource, CommonDataServiceForAppsSource, CosmosDbMongoDbApiSource, CosmosDbSqlApiSource, DelimitedTextSource, DocumentDbCollectionSource, DynamicsCrmSource, DynamicsSource, ExcelSource, FileSystemSource, HdfsSource, HttpSource, JsonSource, MicrosoftAccessSource, MongoDbSource, MongoDbV2Source, ODataSource, Office365Source, OracleSource, OrcSource, ParquetSource, RelationalSource, RestSource, SalesforceServiceCloudSource, SharePointOnlineListSource, SnowflakeSource, TabularSource, WebSource, XmlSource.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -649,7 +649,7 @@ class CopySource(msrest.serialization.Model):
     }
 
     _subtype_map = {
-        'type': {'AvroSource': 'AvroSource', 'AzureBlobFSSource': 'AzureBlobFsSource', 'AzureDataExplorerSource': 'AzureDataExplorerSource', 'AzureDataLakeStoreSource': 'AzureDataLakeStoreSource', 'BinarySource': 'BinarySource', 'BlobSource': 'BlobSource', 'CommonDataServiceForAppsSource': 'CommonDataServiceForAppsSource', 'CosmosDbMongoDbApiSource': 'CosmosDBMongoDBApiSource', 'CosmosDbSqlApiSource': 'CosmosDBSQLApiSource', 'DelimitedTextSource': 'DelimitedTextSource', 'DocumentDbCollectionSource': 'DocumentDBCollectionSource', 'DynamicsCrmSource': 'DynamicsCrmSource', 'DynamicsSource': 'DynamicsSource', 'ExcelSource': 'ExcelSource', 'FileSystemSource': 'FileSystemSource', 'HdfsSource': 'HdfsSource', 'HttpSource': 'HttpSource', 'JsonSource': 'JsonSource', 'MicrosoftAccessSource': 'MicrosoftAccessSource', 'MongoDbSource': 'MongoDBSource', 'MongoDbV2Source': 'MongoDBV2Source', 'ODataSource': 'ODataSource', 'Office365Source': 'Office365Source', 'OracleSource': 'OracleSource', 'OrcSource': 'OrcSource', 'ParquetSource': 'ParquetSource', 'RelationalSource': 'RelationalSource', 'RestSource': 'RestSource', 'SalesforceServiceCloudSource': 'SalesforceServiceCloudSource', 'SharePointOnlineListSource': 'SharePointOnlineListSource', 'SnowflakeSource': 'SnowflakeSource', 'TabularSource': 'TabularSource', 'WebSource': 'WebSource', 'XmlSource': 'XmlSource'}
+        'type': {'AvroSource': 'AvroSource', 'AzureBlobFSSource': 'AzureBlobFsSource', 'AzureDataExplorerSource': 'AzureDataExplorerSource', 'AzureDataLakeStoreSource': 'AzureDataLakeStoreSource', 'BinarySource': 'BinarySource', 'BlobSource': 'BlobSource', 'CommonDataServiceForAppsSource': 'CommonDataServiceForAppsSource', 'CosmosDbMongoDbApiSource': 'CosmosDbMongoDbApiSource', 'CosmosDbSqlApiSource': 'CosmosDbSqlApiSource', 'DelimitedTextSource': 'DelimitedTextSource', 'DocumentDbCollectionSource': 'DocumentDbCollectionSource', 'DynamicsCrmSource': 'DynamicsCrmSource', 'DynamicsSource': 'DynamicsSource', 'ExcelSource': 'ExcelSource', 'FileSystemSource': 'FileSystemSource', 'HdfsSource': 'HdfsSource', 'HttpSource': 'HttpSource', 'JsonSource': 'JsonSource', 'MicrosoftAccessSource': 'MicrosoftAccessSource', 'MongoDbSource': 'MongoDbSource', 'MongoDbV2Source': 'MongoDbV2Source', 'ODataSource': 'ODataSource', 'Office365Source': 'Office365Source', 'OracleSource': 'OracleSource', 'OrcSource': 'OrcSource', 'ParquetSource': 'ParquetSource', 'RelationalSource': 'RelationalSource', 'RestSource': 'RestSource', 'SalesforceServiceCloudSource': 'SalesforceServiceCloudSource', 'SharePointOnlineListSource': 'SharePointOnlineListSource', 'SnowflakeSource': 'SnowflakeSource', 'TabularSource': 'TabularSource', 'WebSource': 'WebSource', 'XmlSource': 'XmlSource'}
     }
 
     def __init__(
@@ -668,7 +668,7 @@ class TabularSource(CopySource):
     """Copy activity sources of tabular type.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AmazonMwsSource, AmazonRedshiftSource, AzureMariaDBSource, AzureMySQLSource, AzurePostgreSQLSource, AzureSQLSource, AzureTableSource, CassandraSource, ConcurSource, CouchbaseSource, Db2Source, DrillSource, DynamicsAxSource, EloquaSource, GoogleAdWordsSource, GoogleBigQuerySource, GreenplumSource, HBaseSource, HiveSource, HubspotSource, ImpalaSource, InformixSource, JiraSource, MagentoSource, MariaDBSource, MarketoSource, MySQLSource, NetezzaSource, OdbcSource, OracleServiceCloudSource, PaypalSource, PhoenixSource, PostgreSQLSource, PrestoSource, QuickBooksSource, ResponsysSource, SalesforceMarketingCloudSource, SalesforceSource, SapBwSource, SapCloudForCustomerSource, SapEccSource, SapHanaSource, SapOpenHubSource, SapTableSource, ServiceNowSource, ShopifySource, SparkSource, SQLDWSource, SQLMiSource, SQLServerSource, SQLSource, SquareSource, SybaseSource, TeradataSource, VerticaSource, XeroSource, ZohoSource.
+    sub-classes are: AmazonMwsSource, AmazonRedshiftSource, AzureMariaDbSource, AzureMySqlSource, AzurePostgreSqlSource, AzureSqlSource, AzureTableSource, CassandraSource, ConcurSource, CouchbaseSource, Db2Source, DrillSource, DynamicsAxSource, EloquaSource, GoogleAdWordsSource, GoogleBigQuerySource, GreenplumSource, HBaseSource, HiveSource, HubspotSource, ImpalaSource, InformixSource, JiraSource, MagentoSource, MariaDbSource, MarketoSource, MySqlSource, NetezzaSource, OdbcSource, OracleServiceCloudSource, PaypalSource, PhoenixSource, PostgreSqlSource, PrestoSource, QuickBooksSource, ResponsysSource, SalesforceMarketingCloudSource, SalesforceSource, SapBwSource, SapCloudForCustomerSource, SapEccSource, SapHanaSource, SapOpenHubSource, SapTableSource, ServiceNowSource, ShopifySource, SparkSource, SqlDwSource, SqlMiSource, SqlServerSource, SqlSource, SquareSource, SybaseSource, TeradataSource, VerticaSource, XeroSource, ZohoSource.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -709,7 +709,7 @@ class TabularSource(CopySource):
     }
 
     _subtype_map = {
-        'type': {'AmazonMWSSource': 'AmazonMwsSource', 'AmazonRedshiftSource': 'AmazonRedshiftSource', 'AzureMariaDBSource': 'AzureMariaDBSource', 'AzureMySqlSource': 'AzureMySQLSource', 'AzurePostgreSqlSource': 'AzurePostgreSQLSource', 'AzureSqlSource': 'AzureSQLSource', 'AzureTableSource': 'AzureTableSource', 'CassandraSource': 'CassandraSource', 'ConcurSource': 'ConcurSource', 'CouchbaseSource': 'CouchbaseSource', 'Db2Source': 'Db2Source', 'DrillSource': 'DrillSource', 'DynamicsAXSource': 'DynamicsAxSource', 'EloquaSource': 'EloquaSource', 'GoogleAdWordsSource': 'GoogleAdWordsSource', 'GoogleBigQuerySource': 'GoogleBigQuerySource', 'GreenplumSource': 'GreenplumSource', 'HBaseSource': 'HBaseSource', 'HiveSource': 'HiveSource', 'HubspotSource': 'HubspotSource', 'ImpalaSource': 'ImpalaSource', 'InformixSource': 'InformixSource', 'JiraSource': 'JiraSource', 'MagentoSource': 'MagentoSource', 'MariaDBSource': 'MariaDBSource', 'MarketoSource': 'MarketoSource', 'MySqlSource': 'MySQLSource', 'NetezzaSource': 'NetezzaSource', 'OdbcSource': 'OdbcSource', 'OracleServiceCloudSource': 'OracleServiceCloudSource', 'PaypalSource': 'PaypalSource', 'PhoenixSource': 'PhoenixSource', 'PostgreSqlSource': 'PostgreSQLSource', 'PrestoSource': 'PrestoSource', 'QuickBooksSource': 'QuickBooksSource', 'ResponsysSource': 'ResponsysSource', 'SalesforceMarketingCloudSource': 'SalesforceMarketingCloudSource', 'SalesforceSource': 'SalesforceSource', 'SapBwSource': 'SapBwSource', 'SapCloudForCustomerSource': 'SapCloudForCustomerSource', 'SapEccSource': 'SapEccSource', 'SapHanaSource': 'SapHanaSource', 'SapOpenHubSource': 'SapOpenHubSource', 'SapTableSource': 'SapTableSource', 'ServiceNowSource': 'ServiceNowSource', 'ShopifySource': 'ShopifySource', 'SparkSource': 'SparkSource', 'SqlDWSource': 'SQLDWSource', 'SqlMISource': 'SQLMiSource', 'SqlServerSource': 'SQLServerSource', 'SqlSource': 'SQLSource', 'SquareSource': 'SquareSource', 'SybaseSource': 'SybaseSource', 'TeradataSource': 'TeradataSource', 'VerticaSource': 'VerticaSource', 'XeroSource': 'XeroSource', 'ZohoSource': 'ZohoSource'}
+        'type': {'AmazonMWSSource': 'AmazonMwsSource', 'AmazonRedshiftSource': 'AmazonRedshiftSource', 'AzureMariaDBSource': 'AzureMariaDbSource', 'AzureMySqlSource': 'AzureMySqlSource', 'AzurePostgreSqlSource': 'AzurePostgreSqlSource', 'AzureSqlSource': 'AzureSqlSource', 'AzureTableSource': 'AzureTableSource', 'CassandraSource': 'CassandraSource', 'ConcurSource': 'ConcurSource', 'CouchbaseSource': 'CouchbaseSource', 'Db2Source': 'Db2Source', 'DrillSource': 'DrillSource', 'DynamicsAXSource': 'DynamicsAxSource', 'EloquaSource': 'EloquaSource', 'GoogleAdWordsSource': 'GoogleAdWordsSource', 'GoogleBigQuerySource': 'GoogleBigQuerySource', 'GreenplumSource': 'GreenplumSource', 'HBaseSource': 'HBaseSource', 'HiveSource': 'HiveSource', 'HubspotSource': 'HubspotSource', 'ImpalaSource': 'ImpalaSource', 'InformixSource': 'InformixSource', 'JiraSource': 'JiraSource', 'MagentoSource': 'MagentoSource', 'MariaDBSource': 'MariaDbSource', 'MarketoSource': 'MarketoSource', 'MySqlSource': 'MySqlSource', 'NetezzaSource': 'NetezzaSource', 'OdbcSource': 'OdbcSource', 'OracleServiceCloudSource': 'OracleServiceCloudSource', 'PaypalSource': 'PaypalSource', 'PhoenixSource': 'PhoenixSource', 'PostgreSqlSource': 'PostgreSqlSource', 'PrestoSource': 'PrestoSource', 'QuickBooksSource': 'QuickBooksSource', 'ResponsysSource': 'ResponsysSource', 'SalesforceMarketingCloudSource': 'SalesforceMarketingCloudSource', 'SalesforceSource': 'SalesforceSource', 'SapBwSource': 'SapBwSource', 'SapCloudForCustomerSource': 'SapCloudForCustomerSource', 'SapEccSource': 'SapEccSource', 'SapHanaSource': 'SapHanaSource', 'SapOpenHubSource': 'SapOpenHubSource', 'SapTableSource': 'SapTableSource', 'ServiceNowSource': 'ServiceNowSource', 'ShopifySource': 'ShopifySource', 'SparkSource': 'SparkSource', 'SqlDWSource': 'SqlDwSource', 'SqlMISource': 'SqlMiSource', 'SqlServerSource': 'SqlServerSource', 'SqlSource': 'SqlSource', 'SquareSource': 'SquareSource', 'SybaseSource': 'SybaseSource', 'TeradataSource': 'TeradataSource', 'VerticaSource': 'VerticaSource', 'XeroSource': 'XeroSource', 'ZohoSource': 'ZohoSource'}
     }
 
     def __init__(
@@ -1555,7 +1555,7 @@ class CopySink(msrest.serialization.Model):
     """A copy activity sink.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AvroSink, AzureBlobFsSink, AzureDataExplorerSink, AzureDataLakeStoreSink, AzureMySQLSink, AzurePostgreSQLSink, AzureQueueSink, AzureSearchIndexSink, AzureSQLSink, AzureTableSink, BinarySink, BlobSink, CommonDataServiceForAppsSink, CosmosDBMongoDBApiSink, CosmosDBSQLApiSink, DelimitedTextSink, DocumentDBCollectionSink, DynamicsCrmSink, DynamicsSink, FileSystemSink, InformixSink, JsonSink, MicrosoftAccessSink, OdbcSink, OracleSink, OrcSink, ParquetSink, RestSink, SalesforceServiceCloudSink, SalesforceSink, SapCloudForCustomerSink, SnowflakeSink, SQLDWSink, SQLMiSink, SQLServerSink, SQLSink.
+    sub-classes are: AvroSink, AzureBlobFsSink, AzureDataExplorerSink, AzureDataLakeStoreSink, AzureMySqlSink, AzurePostgreSqlSink, AzureQueueSink, AzureSearchIndexSink, AzureSqlSink, AzureTableSink, BinarySink, BlobSink, CommonDataServiceForAppsSink, CosmosDbMongoDbApiSink, CosmosDbSqlApiSink, DelimitedTextSink, DocumentDbCollectionSink, DynamicsCrmSink, DynamicsSink, FileSystemSink, InformixSink, JsonSink, MicrosoftAccessSink, OdbcSink, OracleSink, OrcSink, ParquetSink, RestSink, SalesforceServiceCloudSink, SalesforceSink, SapCloudForCustomerSink, SnowflakeSink, SqlDwSink, SqlMiSink, SqlServerSink, SqlSink.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -1596,7 +1596,7 @@ class CopySink(msrest.serialization.Model):
     }
 
     _subtype_map = {
-        'type': {'AvroSink': 'AvroSink', 'AzureBlobFSSink': 'AzureBlobFsSink', 'AzureDataExplorerSink': 'AzureDataExplorerSink', 'AzureDataLakeStoreSink': 'AzureDataLakeStoreSink', 'AzureMySqlSink': 'AzureMySQLSink', 'AzurePostgreSqlSink': 'AzurePostgreSQLSink', 'AzureQueueSink': 'AzureQueueSink', 'AzureSearchIndexSink': 'AzureSearchIndexSink', 'AzureSqlSink': 'AzureSQLSink', 'AzureTableSink': 'AzureTableSink', 'BinarySink': 'BinarySink', 'BlobSink': 'BlobSink', 'CommonDataServiceForAppsSink': 'CommonDataServiceForAppsSink', 'CosmosDbMongoDbApiSink': 'CosmosDBMongoDBApiSink', 'CosmosDbSqlApiSink': 'CosmosDBSQLApiSink', 'DelimitedTextSink': 'DelimitedTextSink', 'DocumentDbCollectionSink': 'DocumentDBCollectionSink', 'DynamicsCrmSink': 'DynamicsCrmSink', 'DynamicsSink': 'DynamicsSink', 'FileSystemSink': 'FileSystemSink', 'InformixSink': 'InformixSink', 'JsonSink': 'JsonSink', 'MicrosoftAccessSink': 'MicrosoftAccessSink', 'OdbcSink': 'OdbcSink', 'OracleSink': 'OracleSink', 'OrcSink': 'OrcSink', 'ParquetSink': 'ParquetSink', 'RestSink': 'RestSink', 'SalesforceServiceCloudSink': 'SalesforceServiceCloudSink', 'SalesforceSink': 'SalesforceSink', 'SapCloudForCustomerSink': 'SapCloudForCustomerSink', 'SnowflakeSink': 'SnowflakeSink', 'SqlDWSink': 'SQLDWSink', 'SqlMISink': 'SQLMiSink', 'SqlServerSink': 'SQLServerSink', 'SqlSink': 'SQLSink'}
+        'type': {'AvroSink': 'AvroSink', 'AzureBlobFSSink': 'AzureBlobFsSink', 'AzureDataExplorerSink': 'AzureDataExplorerSink', 'AzureDataLakeStoreSink': 'AzureDataLakeStoreSink', 'AzureMySqlSink': 'AzureMySqlSink', 'AzurePostgreSqlSink': 'AzurePostgreSqlSink', 'AzureQueueSink': 'AzureQueueSink', 'AzureSearchIndexSink': 'AzureSearchIndexSink', 'AzureSqlSink': 'AzureSqlSink', 'AzureTableSink': 'AzureTableSink', 'BinarySink': 'BinarySink', 'BlobSink': 'BlobSink', 'CommonDataServiceForAppsSink': 'CommonDataServiceForAppsSink', 'CosmosDbMongoDbApiSink': 'CosmosDbMongoDbApiSink', 'CosmosDbSqlApiSink': 'CosmosDbSqlApiSink', 'DelimitedTextSink': 'DelimitedTextSink', 'DocumentDbCollectionSink': 'DocumentDbCollectionSink', 'DynamicsCrmSink': 'DynamicsCrmSink', 'DynamicsSink': 'DynamicsSink', 'FileSystemSink': 'FileSystemSink', 'InformixSink': 'InformixSink', 'JsonSink': 'JsonSink', 'MicrosoftAccessSink': 'MicrosoftAccessSink', 'OdbcSink': 'OdbcSink', 'OracleSink': 'OracleSink', 'OrcSink': 'OrcSink', 'ParquetSink': 'ParquetSink', 'RestSink': 'RestSink', 'SalesforceServiceCloudSink': 'SalesforceServiceCloudSink', 'SalesforceSink': 'SalesforceSink', 'SapCloudForCustomerSink': 'SapCloudForCustomerSink', 'SnowflakeSink': 'SnowflakeSink', 'SqlDWSink': 'SqlDwSink', 'SqlMISink': 'SqlMiSink', 'SqlServerSink': 'SqlServerSink', 'SqlSink': 'SqlSink'}
     }
 
     def __init__(
@@ -2875,7 +2875,7 @@ class ExecutionActivity(Activity):
     """Base class for all execution activities.
 
     You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: AzureDataExplorerCommandActivity, AzureFunctionActivity, AzureMlBatchExecutionActivity, AzureMlExecutePipelineActivity, AzureMlUpdateResourceActivity, CopyActivity, CustomActivity, DataLakeAnalyticsUsqlActivity, DatabricksNotebookActivity, DatabricksSparkJarActivity, DatabricksSparkPythonActivity, DeleteActivity, ExecuteDataFlowActivity, ExecuteSsisPackageActivity, GetMetadataActivity, HdInsightHiveActivity, HdInsightMapReduceActivity, HdInsightPigActivity, HdInsightSparkActivity, HdInsightStreamingActivity, LookupActivity, SQLServerStoredProcedureActivity, WebActivity.
+    sub-classes are: AzureDataExplorerCommandActivity, AzureFunctionActivity, AzureMlBatchExecutionActivity, AzureMlExecutePipelineActivity, AzureMlUpdateResourceActivity, CopyActivity, CustomActivity, DataLakeAnalyticsUsqlActivity, DatabricksNotebookActivity, DatabricksSparkJarActivity, DatabricksSparkPythonActivity, DeleteActivity, ExecuteDataFlowActivity, ExecuteSsisPackageActivity, GetMetadataActivity, HdInsightHiveActivity, HdInsightMapReduceActivity, HdInsightPigActivity, HdInsightSparkActivity, HdInsightStreamingActivity, LookupActivity, SqlServerStoredProcedureActivity, WebActivity.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -2915,7 +2915,7 @@ class ExecutionActivity(Activity):
     }
 
     _subtype_map = {
-        'type': {'AzureDataExplorerCommand': 'AzureDataExplorerCommandActivity', 'AzureFunctionActivity': 'AzureFunctionActivity', 'AzureMLBatchExecution': 'AzureMlBatchExecutionActivity', 'AzureMLExecutePipeline': 'AzureMlExecutePipelineActivity', 'AzureMLUpdateResource': 'AzureMlUpdateResourceActivity', 'Copy': 'CopyActivity', 'Custom': 'CustomActivity', 'DataLakeAnalyticsU-SQL': 'DataLakeAnalyticsUsqlActivity', 'DatabricksNotebook': 'DatabricksNotebookActivity', 'DatabricksSparkJar': 'DatabricksSparkJarActivity', 'DatabricksSparkPython': 'DatabricksSparkPythonActivity', 'Delete': 'DeleteActivity', 'ExecuteDataFlow': 'ExecuteDataFlowActivity', 'ExecuteSSISPackage': 'ExecuteSsisPackageActivity', 'GetMetadata': 'GetMetadataActivity', 'HDInsightHive': 'HdInsightHiveActivity', 'HDInsightMapReduce': 'HdInsightMapReduceActivity', 'HDInsightPig': 'HdInsightPigActivity', 'HDInsightSpark': 'HdInsightSparkActivity', 'HDInsightStreaming': 'HdInsightStreamingActivity', 'Lookup': 'LookupActivity', 'SqlServerStoredProcedure': 'SQLServerStoredProcedureActivity', 'WebActivity': 'WebActivity'}
+        'type': {'AzureDataExplorerCommand': 'AzureDataExplorerCommandActivity', 'AzureFunctionActivity': 'AzureFunctionActivity', 'AzureMLBatchExecution': 'AzureMlBatchExecutionActivity', 'AzureMLExecutePipeline': 'AzureMlExecutePipelineActivity', 'AzureMLUpdateResource': 'AzureMlUpdateResourceActivity', 'Copy': 'CopyActivity', 'Custom': 'CustomActivity', 'DataLakeAnalyticsU-SQL': 'DataLakeAnalyticsUsqlActivity', 'DatabricksNotebook': 'DatabricksNotebookActivity', 'DatabricksSparkJar': 'DatabricksSparkJarActivity', 'DatabricksSparkPython': 'DatabricksSparkPythonActivity', 'Delete': 'DeleteActivity', 'ExecuteDataFlow': 'ExecuteDataFlowActivity', 'ExecuteSSISPackage': 'ExecuteSsisPackageActivity', 'GetMetadata': 'GetMetadataActivity', 'HDInsightHive': 'HdInsightHiveActivity', 'HDInsightMapReduce': 'HdInsightMapReduceActivity', 'HDInsightPig': 'HdInsightPigActivity', 'HDInsightSpark': 'HdInsightSparkActivity', 'HDInsightStreaming': 'HdInsightStreamingActivity', 'Lookup': 'LookupActivity', 'SqlServerStoredProcedure': 'SqlServerStoredProcedureActivity', 'WebActivity': 'WebActivity'}
     }
 
     def __init__(
@@ -4254,7 +4254,7 @@ class AzureKeyVaultSecretReference(SecretBase):
         self.secret_version = kwargs.get('secret_version', None)
 
 
-class AzureMariaDBLinkedService(LinkedService):
+class AzureMariaDbLinkedService(LinkedService):
     """Azure Database for MariaDB linked service.
 
     All required parameters must be populated in order to send to Azure.
@@ -4303,14 +4303,14 @@ class AzureMariaDBLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(AzureMariaDBLinkedService, self).__init__(**kwargs)
+        super(AzureMariaDbLinkedService, self).__init__(**kwargs)
         self.type = 'AzureMariaDB'  # type: str
         self.connection_string = kwargs.get('connection_string', None)
         self.pwd = kwargs.get('pwd', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class AzureMariaDBSource(TabularSource):
+class AzureMariaDbSource(TabularSource):
     """A copy activity Azure MariaDB source.
 
     All required parameters must be populated in order to send to Azure.
@@ -4359,12 +4359,12 @@ class AzureMariaDBSource(TabularSource):
         self,
         **kwargs
     ):
-        super(AzureMariaDBSource, self).__init__(**kwargs)
+        super(AzureMariaDbSource, self).__init__(**kwargs)
         self.type = 'AzureMariaDBSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
-class AzureMariaDBTableDataset(Dataset):
+class AzureMariaDbTableDataset(Dataset):
     """Azure Database for MariaDB dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -4417,7 +4417,7 @@ class AzureMariaDBTableDataset(Dataset):
         self,
         **kwargs
     ):
-        super(AzureMariaDBTableDataset, self).__init__(**kwargs)
+        super(AzureMariaDbTableDataset, self).__init__(**kwargs)
         self.type = 'AzureMariaDBTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
@@ -4833,7 +4833,7 @@ class AzureMlWebServiceFile(msrest.serialization.Model):
         self.linked_service_name = kwargs['linked_service_name']
 
 
-class AzureMySQLLinkedService(LinkedService):
+class AzureMySqlLinkedService(LinkedService):
     """Azure MySQL database linked service.
 
     All required parameters must be populated in order to send to Azure.
@@ -4883,14 +4883,14 @@ class AzureMySQLLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(AzureMySQLLinkedService, self).__init__(**kwargs)
+        super(AzureMySqlLinkedService, self).__init__(**kwargs)
         self.type = 'AzureMySql'  # type: str
         self.connection_string = kwargs['connection_string']
         self.password = kwargs.get('password', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class AzureMySQLSink(CopySink):
+class AzureMySqlSink(CopySink):
     """A copy activity Azure MySql sink.
 
     All required parameters must be populated in order to send to Azure.
@@ -4939,12 +4939,12 @@ class AzureMySQLSink(CopySink):
         self,
         **kwargs
     ):
-        super(AzureMySQLSink, self).__init__(**kwargs)
+        super(AzureMySqlSink, self).__init__(**kwargs)
         self.type = 'AzureMySqlSink'  # type: str
         self.pre_copy_script = kwargs.get('pre_copy_script', None)
 
 
-class AzureMySQLSource(TabularSource):
+class AzureMySqlSource(TabularSource):
     """A copy activity Azure MySQL source.
 
     All required parameters must be populated in order to send to Azure.
@@ -4992,12 +4992,12 @@ class AzureMySQLSource(TabularSource):
         self,
         **kwargs
     ):
-        super(AzureMySQLSource, self).__init__(**kwargs)
+        super(AzureMySqlSource, self).__init__(**kwargs)
         self.type = 'AzureMySqlSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
-class AzureMySQLTableDataset(Dataset):
+class AzureMySqlTableDataset(Dataset):
     """The Azure MySQL database dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -5055,13 +5055,13 @@ class AzureMySQLTableDataset(Dataset):
         self,
         **kwargs
     ):
-        super(AzureMySQLTableDataset, self).__init__(**kwargs)
+        super(AzureMySqlTableDataset, self).__init__(**kwargs)
         self.type = 'AzureMySqlTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.table = kwargs.get('table', None)
 
 
-class AzurePostgreSQLLinkedService(LinkedService):
+class AzurePostgreSqlLinkedService(LinkedService):
     """Azure PostgreSQL linked service.
 
     All required parameters must be populated in order to send to Azure.
@@ -5110,14 +5110,14 @@ class AzurePostgreSQLLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(AzurePostgreSQLLinkedService, self).__init__(**kwargs)
+        super(AzurePostgreSqlLinkedService, self).__init__(**kwargs)
         self.type = 'AzurePostgreSql'  # type: str
         self.connection_string = kwargs.get('connection_string', None)
         self.password = kwargs.get('password', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class AzurePostgreSQLSink(CopySink):
+class AzurePostgreSqlSink(CopySink):
     """A copy activity Azure PostgreSQL sink.
 
     All required parameters must be populated in order to send to Azure.
@@ -5166,12 +5166,12 @@ class AzurePostgreSQLSink(CopySink):
         self,
         **kwargs
     ):
-        super(AzurePostgreSQLSink, self).__init__(**kwargs)
+        super(AzurePostgreSqlSink, self).__init__(**kwargs)
         self.type = 'AzurePostgreSqlSink'  # type: str
         self.pre_copy_script = kwargs.get('pre_copy_script', None)
 
 
-class AzurePostgreSQLSource(TabularSource):
+class AzurePostgreSqlSource(TabularSource):
     """A copy activity Azure PostgreSQL source.
 
     All required parameters must be populated in order to send to Azure.
@@ -5220,12 +5220,12 @@ class AzurePostgreSQLSource(TabularSource):
         self,
         **kwargs
     ):
-        super(AzurePostgreSQLSource, self).__init__(**kwargs)
+        super(AzurePostgreSqlSource, self).__init__(**kwargs)
         self.type = 'AzurePostgreSqlSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
-class AzurePostgreSQLTableDataset(Dataset):
+class AzurePostgreSqlTableDataset(Dataset):
     """Azure PostgreSQL dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -5287,7 +5287,7 @@ class AzurePostgreSQLTableDataset(Dataset):
         self,
         **kwargs
     ):
-        super(AzurePostgreSQLTableDataset, self).__init__(**kwargs)
+        super(AzurePostgreSqlTableDataset, self).__init__(**kwargs)
         self.type = 'AzurePostgreSqlTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.table = kwargs.get('table', None)
@@ -5515,7 +5515,7 @@ class AzureSearchLinkedService(LinkedService):
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class AzureSQLDatabaseLinkedService(LinkedService):
+class AzureSqlDatabaseLinkedService(LinkedService):
     """Microsoft Azure SQL Database linked service.
 
     All required parameters must be populated in order to send to Azure.
@@ -5582,7 +5582,7 @@ class AzureSQLDatabaseLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(AzureSQLDatabaseLinkedService, self).__init__(**kwargs)
+        super(AzureSqlDatabaseLinkedService, self).__init__(**kwargs)
         self.type = 'AzureSqlDatabase'  # type: str
         self.connection_string = kwargs['connection_string']
         self.password = kwargs.get('password', None)
@@ -5593,7 +5593,7 @@ class AzureSQLDatabaseLinkedService(LinkedService):
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class AzureSQLDWLinkedService(LinkedService):
+class AzureSqlDwLinkedService(LinkedService):
     """Azure SQL Data Warehouse linked service.
 
     All required parameters must be populated in order to send to Azure.
@@ -5660,7 +5660,7 @@ class AzureSQLDWLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(AzureSQLDWLinkedService, self).__init__(**kwargs)
+        super(AzureSqlDwLinkedService, self).__init__(**kwargs)
         self.type = 'AzureSqlDW'  # type: str
         self.connection_string = kwargs['connection_string']
         self.password = kwargs.get('password', None)
@@ -5671,7 +5671,7 @@ class AzureSQLDWLinkedService(LinkedService):
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class AzureSQLDWTableDataset(Dataset):
+class AzureSqlDwTableDataset(Dataset):
     """The Azure SQL Data Warehouse dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -5733,14 +5733,14 @@ class AzureSQLDWTableDataset(Dataset):
         self,
         **kwargs
     ):
-        super(AzureSQLDWTableDataset, self).__init__(**kwargs)
+        super(AzureSqlDwTableDataset, self).__init__(**kwargs)
         self.type = 'AzureSqlDWTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
         self.table = kwargs.get('table', None)
 
 
-class AzureSQLMiLinkedService(LinkedService):
+class AzureSqlMiLinkedService(LinkedService):
     """Azure SQL Managed Instance linked service.
 
     All required parameters must be populated in order to send to Azure.
@@ -5807,7 +5807,7 @@ class AzureSQLMiLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(AzureSQLMiLinkedService, self).__init__(**kwargs)
+        super(AzureSqlMiLinkedService, self).__init__(**kwargs)
         self.type = 'AzureSqlMI'  # type: str
         self.connection_string = kwargs['connection_string']
         self.password = kwargs.get('password', None)
@@ -5818,7 +5818,7 @@ class AzureSQLMiLinkedService(LinkedService):
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class AzureSQLMiTableDataset(Dataset):
+class AzureSqlMiTableDataset(Dataset):
     """The Azure SQL Managed Instance dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -5880,14 +5880,14 @@ class AzureSQLMiTableDataset(Dataset):
         self,
         **kwargs
     ):
-        super(AzureSQLMiTableDataset, self).__init__(**kwargs)
+        super(AzureSqlMiTableDataset, self).__init__(**kwargs)
         self.type = 'AzureSqlMITable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
         self.table = kwargs.get('table', None)
 
 
-class AzureSQLSink(CopySink):
+class AzureSqlSink(CopySink):
     """A copy activity Azure SQL sink.
 
     All required parameters must be populated in order to send to Azure.
@@ -5956,7 +5956,7 @@ class AzureSQLSink(CopySink):
         self,
         **kwargs
     ):
-        super(AzureSQLSink, self).__init__(**kwargs)
+        super(AzureSqlSink, self).__init__(**kwargs)
         self.type = 'AzureSqlSink'  # type: str
         self.sql_writer_stored_procedure_name = kwargs.get('sql_writer_stored_procedure_name', None)
         self.sql_writer_table_type = kwargs.get('sql_writer_table_type', None)
@@ -5966,7 +5966,7 @@ class AzureSQLSink(CopySink):
         self.table_option = kwargs.get('table_option', None)
 
 
-class AzureSQLSource(TabularSource):
+class AzureSqlSource(TabularSource):
     """A copy activity Azure SQL source.
 
     All required parameters must be populated in order to send to Azure.
@@ -6005,9 +6005,9 @@ class AzureSQLSource(TabularSource):
     :type produce_additional_types: object
     :param partition_option: The partition mechanism that will be used for Sql read in parallel.
      Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
-    :type partition_option: str or ~data_factory_management_client.models.SQLPartitionOption
+    :type partition_option: str or ~data_factory_management_client.models.SqlPartitionOption
     :param partition_settings: The settings that will be leveraged for Sql source partitioning.
-    :type partition_settings: ~data_factory_management_client.models.SQLPartitionSettings
+    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
     """
 
     _validation = {
@@ -6027,14 +6027,14 @@ class AzureSQLSource(TabularSource):
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
         'produce_additional_types': {'key': 'produceAdditionalTypes', 'type': 'object'},
         'partition_option': {'key': 'partitionOption', 'type': 'str'},
-        'partition_settings': {'key': 'partitionSettings', 'type': 'SQLPartitionSettings'},
+        'partition_settings': {'key': 'partitionSettings', 'type': 'SqlPartitionSettings'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(AzureSQLSource, self).__init__(**kwargs)
+        super(AzureSqlSource, self).__init__(**kwargs)
         self.type = 'AzureSqlSource'  # type: str
         self.sql_reader_query = kwargs.get('sql_reader_query', None)
         self.sql_reader_stored_procedure_name = kwargs.get('sql_reader_stored_procedure_name', None)
@@ -6044,7 +6044,7 @@ class AzureSQLSource(TabularSource):
         self.partition_settings = kwargs.get('partition_settings', None)
 
 
-class AzureSQLTableDataset(Dataset):
+class AzureSqlTableDataset(Dataset):
     """The Azure SQL Server database dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -6106,7 +6106,7 @@ class AzureSQLTableDataset(Dataset):
         self,
         **kwargs
     ):
-        super(AzureSQLTableDataset, self).__init__(**kwargs)
+        super(AzureSqlTableDataset, self).__init__(**kwargs)
         self.type = 'AzureSqlTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
@@ -8159,7 +8159,7 @@ class CopyTranslator(msrest.serialization.Model):
         self.type = 'CopyTranslator'  # type: str
 
 
-class CosmosDBLinkedService(LinkedService):
+class CosmosDbLinkedService(LinkedService):
     """Microsoft Azure Cosmos Database (CosmosDB) linked service.
 
     All required parameters must be populated in order to send to Azure.
@@ -8216,7 +8216,7 @@ class CosmosDBLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(CosmosDBLinkedService, self).__init__(**kwargs)
+        super(CosmosDbLinkedService, self).__init__(**kwargs)
         self.type = 'CosmosDb'  # type: str
         self.connection_string = kwargs.get('connection_string', None)
         self.account_endpoint = kwargs.get('account_endpoint', None)
@@ -8225,7 +8225,7 @@ class CosmosDBLinkedService(LinkedService):
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class CosmosDBMongoDBApiCollectionDataset(Dataset):
+class CosmosDbMongoDbApiCollectionDataset(Dataset):
     """The CosmosDB (MongoDB API) database dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -8280,12 +8280,12 @@ class CosmosDBMongoDBApiCollectionDataset(Dataset):
         self,
         **kwargs
     ):
-        super(CosmosDBMongoDBApiCollectionDataset, self).__init__(**kwargs)
+        super(CosmosDbMongoDbApiCollectionDataset, self).__init__(**kwargs)
         self.type = 'CosmosDbMongoDbApiCollection'  # type: str
         self.collection = kwargs['collection']
 
 
-class CosmosDBMongoDBApiLinkedService(LinkedService):
+class CosmosDbMongoDbApiLinkedService(LinkedService):
     """Linked service for CosmosDB (MongoDB API) data source.
 
     All required parameters must be populated in order to send to Azure.
@@ -8333,13 +8333,13 @@ class CosmosDBMongoDBApiLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(CosmosDBMongoDBApiLinkedService, self).__init__(**kwargs)
+        super(CosmosDbMongoDbApiLinkedService, self).__init__(**kwargs)
         self.type = 'CosmosDbMongoDbApi'  # type: str
         self.connection_string = kwargs['connection_string']
         self.database = kwargs['database']
 
 
-class CosmosDBMongoDBApiSink(CopySink):
+class CosmosDbMongoDbApiSink(CopySink):
     """A copy activity sink for a CosmosDB (MongoDB API) database.
 
     All required parameters must be populated in order to send to Azure.
@@ -8389,12 +8389,12 @@ class CosmosDBMongoDBApiSink(CopySink):
         self,
         **kwargs
     ):
-        super(CosmosDBMongoDBApiSink, self).__init__(**kwargs)
+        super(CosmosDbMongoDbApiSink, self).__init__(**kwargs)
         self.type = 'CosmosDbMongoDbApiSink'  # type: str
         self.write_behavior = kwargs.get('write_behavior', None)
 
 
-class CosmosDBMongoDBApiSource(CopySource):
+class CosmosDbMongoDbApiSource(CopySource):
     """A copy activity source for a CosmosDB (MongoDB API) database.
 
     All required parameters must be populated in order to send to Azure.
@@ -8418,7 +8418,7 @@ class CosmosDBMongoDBApiSource(CopySource):
      with resultType string).
     :type filter: object
     :param cursor_methods: Cursor methods for Mongodb query.
-    :type cursor_methods: ~data_factory_management_client.models.MongoDBCursorMethodsProperties
+    :type cursor_methods: ~data_factory_management_client.models.MongoDbCursorMethodsProperties
     :param batch_size: Specifies the number of documents to return in each batch of the response
      from MongoDB instance. In most cases, modifying the batch size will not affect the user or the
      application. This property's main purpose is to avoid hit the limitation of response size.
@@ -8443,7 +8443,7 @@ class CosmosDBMongoDBApiSource(CopySource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
         'filter': {'key': 'filter', 'type': 'object'},
-        'cursor_methods': {'key': 'cursorMethods', 'type': 'MongoDBCursorMethodsProperties'},
+        'cursor_methods': {'key': 'cursorMethods', 'type': 'MongoDbCursorMethodsProperties'},
         'batch_size': {'key': 'batchSize', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
@@ -8453,7 +8453,7 @@ class CosmosDBMongoDBApiSource(CopySource):
         self,
         **kwargs
     ):
-        super(CosmosDBMongoDBApiSource, self).__init__(**kwargs)
+        super(CosmosDbMongoDbApiSource, self).__init__(**kwargs)
         self.type = 'CosmosDbMongoDbApiSource'  # type: str
         self.filter = kwargs.get('filter', None)
         self.cursor_methods = kwargs.get('cursor_methods', None)
@@ -8462,7 +8462,7 @@ class CosmosDBMongoDBApiSource(CopySource):
         self.additional_columns = kwargs.get('additional_columns', None)
 
 
-class CosmosDBSQLApiCollectionDataset(Dataset):
+class CosmosDbSqlApiCollectionDataset(Dataset):
     """Microsoft Azure CosmosDB (SQL API) Collection dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -8517,12 +8517,12 @@ class CosmosDBSQLApiCollectionDataset(Dataset):
         self,
         **kwargs
     ):
-        super(CosmosDBSQLApiCollectionDataset, self).__init__(**kwargs)
+        super(CosmosDbSqlApiCollectionDataset, self).__init__(**kwargs)
         self.type = 'CosmosDbSqlApiCollection'  # type: str
         self.collection_name = kwargs['collection_name']
 
 
-class CosmosDBSQLApiSink(CopySink):
+class CosmosDbSqlApiSink(CopySink):
     """A copy activity Azure CosmosDB (SQL API) Collection sink.
 
     All required parameters must be populated in order to send to Azure.
@@ -8571,12 +8571,12 @@ class CosmosDBSQLApiSink(CopySink):
         self,
         **kwargs
     ):
-        super(CosmosDBSQLApiSink, self).__init__(**kwargs)
+        super(CosmosDbSqlApiSink, self).__init__(**kwargs)
         self.type = 'CosmosDbSqlApiSink'  # type: str
         self.write_behavior = kwargs.get('write_behavior', None)
 
 
-class CosmosDBSQLApiSource(CopySource):
+class CosmosDbSqlApiSource(CopySource):
     """A copy activity Azure CosmosDB (SQL API) Collection source.
 
     All required parameters must be populated in order to send to Azure.
@@ -8632,7 +8632,7 @@ class CosmosDBSQLApiSource(CopySource):
         self,
         **kwargs
     ):
-        super(CosmosDBSQLApiSource, self).__init__(**kwargs)
+        super(CosmosDbSqlApiSource, self).__init__(**kwargs)
         self.type = 'CosmosDbSqlApiSource'  # type: str
         self.query = kwargs.get('query', None)
         self.page_size = kwargs.get('page_size', None)
@@ -8820,18 +8820,16 @@ class CreateDataFlowDebugSessionRequest(msrest.serialization.Model):
     :type core_count: int
     :param time_to_live: Time to live setting of the cluster in minutes.
     :type time_to_live: int
-    :param name: The resource name.
-    :type name: str
-    :param properties: Integration runtime properties.
-    :type properties: ~data_factory_management_client.models.IntegrationRuntime
+    :param integration_runtime: Set to use integration runtime setting for data flow debug session.
+    :type integration_runtime:
+     ~data_factory_management_client.models.IntegrationRuntimeDebugResource
     """
 
     _attribute_map = {
         'compute_type': {'key': 'computeType', 'type': 'str'},
         'core_count': {'key': 'coreCount', 'type': 'int'},
         'time_to_live': {'key': 'timeToLive', 'type': 'int'},
-        'name': {'key': 'integrationRuntime.name', 'type': 'str'},
-        'properties': {'key': 'integrationRuntime.properties', 'type': 'IntegrationRuntime'},
+        'integration_runtime': {'key': 'integrationRuntime', 'type': 'IntegrationRuntimeDebugResource'},
     }
 
     def __init__(
@@ -8842,8 +8840,7 @@ class CreateDataFlowDebugSessionRequest(msrest.serialization.Model):
         self.compute_type = kwargs.get('compute_type', None)
         self.core_count = kwargs.get('core_count', None)
         self.time_to_live = kwargs.get('time_to_live', None)
-        self.name = kwargs.get('name', None)
-        self.properties = kwargs.get('properties', None)
+        self.integration_runtime = kwargs.get('integration_runtime', None)
 
 
 class CreateDataFlowDebugSessionResponse(msrest.serialization.Model):
@@ -9452,59 +9449,32 @@ class DataFlowDebugCommandResponse(msrest.serialization.Model):
 class DataFlowDebugPackage(msrest.serialization.Model):
     """Request body structure for starting data flow debug session.
 
-    Variables are only populated by the server, and will be ignored when sending a request.
-
     :param additional_properties: Unmatched properties from the message are deserialized to this
      collection.
     :type additional_properties: dict[str, object]
     :param session_id: The ID of data flow debug session.
     :type session_id: str
+    :param data_flow: Data flow instance.
+    :type data_flow: ~data_factory_management_client.models.DataFlowDebugResource
     :param datasets: List of datasets.
     :type datasets: list[~data_factory_management_client.models.DatasetDebugResource]
     :param linked_services: List of linked services.
     :type linked_services: list[~data_factory_management_client.models.LinkedServiceDebugResource]
-    :param source_settings: Source setting for data flow debug.
-    :type source_settings: list[~data_factory_management_client.models.DataFlowSourceSetting]
-    :param parameters_debug_settings_parameters: Data flow parameters.
-    :type parameters_debug_settings_parameters: dict[str, object]
-    :param dataset_parameters: Parameters for dataset.
-    :type dataset_parameters: object
-    :param folder_path: Folder path for staging blob. Type: string (or Expression with resultType
-     string).
-    :type folder_path: object
-    :ivar type: Linked service reference type. Default value: "LinkedServiceReference".
-    :vartype type: str
-    :param reference_name: Reference LinkedService name.
-    :type reference_name: str
-    :param parameters_staging_linked_service_parameters: Arguments for LinkedService.
-    :type parameters_staging_linked_service_parameters: dict[str, object]
-    :param name: The resource name.
-    :type name: str
-    :param properties: Data flow properties.
-    :type properties: ~data_factory_management_client.models.DataFlow
+    :param staging: Staging info for debug session.
+    :type staging: ~data_factory_management_client.models.DataFlowStagingInfo
+    :param debug_settings: Data flow debug settings.
+    :type debug_settings: ~data_factory_management_client.models.DataFlowDebugPackageDebugSettings
     """
-
-    _validation = {
-        'type': {'constant': True},
-    }
 
     _attribute_map = {
         'additional_properties': {'key': '', 'type': '{object}'},
         'session_id': {'key': 'sessionId', 'type': 'str'},
+        'data_flow': {'key': 'dataFlow', 'type': 'DataFlowDebugResource'},
         'datasets': {'key': 'datasets', 'type': '[DatasetDebugResource]'},
         'linked_services': {'key': 'linkedServices', 'type': '[LinkedServiceDebugResource]'},
-        'source_settings': {'key': 'debugSettings.sourceSettings', 'type': '[DataFlowSourceSetting]'},
-        'parameters_debug_settings_parameters': {'key': 'debugSettings.parameters', 'type': '{object}'},
-        'dataset_parameters': {'key': 'debugSettings.datasetParameters', 'type': 'object'},
-        'folder_path': {'key': 'staging.folderPath', 'type': 'object'},
-        'type': {'key': 'staging.linkedService.type', 'type': 'str'},
-        'reference_name': {'key': 'staging.linkedService.referenceName', 'type': 'str'},
-        'parameters_staging_linked_service_parameters': {'key': 'staging.linkedService.parameters', 'type': '{object}'},
-        'name': {'key': 'dataFlow.name', 'type': 'str'},
-        'properties': {'key': 'dataFlow.properties', 'type': 'DataFlow'},
+        'staging': {'key': 'staging', 'type': 'DataFlowStagingInfo'},
+        'debug_settings': {'key': 'debugSettings', 'type': 'DataFlowDebugPackageDebugSettings'},
     }
-
-    type = "LinkedServiceReference"
 
     def __init__(
         self,
@@ -9513,16 +9483,38 @@ class DataFlowDebugPackage(msrest.serialization.Model):
         super(DataFlowDebugPackage, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
         self.session_id = kwargs.get('session_id', None)
+        self.data_flow = kwargs.get('data_flow', None)
         self.datasets = kwargs.get('datasets', None)
         self.linked_services = kwargs.get('linked_services', None)
+        self.staging = kwargs.get('staging', None)
+        self.debug_settings = kwargs.get('debug_settings', None)
+
+
+class DataFlowDebugPackageDebugSettings(msrest.serialization.Model):
+    """Data flow debug settings.
+
+    :param source_settings: Source setting for data flow debug.
+    :type source_settings: list[~data_factory_management_client.models.DataFlowSourceSetting]
+    :param parameters: Data flow parameters.
+    :type parameters: dict[str, object]
+    :param dataset_parameters: Parameters for dataset.
+    :type dataset_parameters: object
+    """
+
+    _attribute_map = {
+        'source_settings': {'key': 'sourceSettings', 'type': '[DataFlowSourceSetting]'},
+        'parameters': {'key': 'parameters', 'type': '{object}'},
+        'dataset_parameters': {'key': 'datasetParameters', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DataFlowDebugPackageDebugSettings, self).__init__(**kwargs)
         self.source_settings = kwargs.get('source_settings', None)
-        self.parameters_debug_settings_parameters = kwargs.get('parameters_debug_settings_parameters', None)
+        self.parameters = kwargs.get('parameters', None)
         self.dataset_parameters = kwargs.get('dataset_parameters', None)
-        self.folder_path = kwargs.get('folder_path', None)
-        self.reference_name = kwargs.get('reference_name', None)
-        self.parameters_staging_linked_service_parameters = kwargs.get('parameters_staging_linked_service_parameters', None)
-        self.name = kwargs.get('name', None)
-        self.properties = kwargs.get('properties', None)
 
 
 class SubResourceDebugResource(msrest.serialization.Model):
@@ -9939,40 +9931,25 @@ class DataFlowSourceSetting(msrest.serialization.Model):
 class DataFlowStagingInfo(msrest.serialization.Model):
     """Staging info for execute data flow activity.
 
-    Variables are only populated by the server, and will be ignored when sending a request.
-
+    :param linked_service: Staging linked service reference.
+    :type linked_service: ~data_factory_management_client.models.LinkedServiceReference
     :param folder_path: Folder path for staging blob. Type: string (or Expression with resultType
      string).
     :type folder_path: object
-    :ivar type: Linked service reference type. Default value: "LinkedServiceReference".
-    :vartype type: str
-    :param reference_name: Reference LinkedService name.
-    :type reference_name: str
-    :param parameters: Arguments for LinkedService.
-    :type parameters: dict[str, object]
     """
 
-    _validation = {
-        'type': {'constant': True},
-    }
-
     _attribute_map = {
+        'linked_service': {'key': 'linkedService', 'type': 'LinkedServiceReference'},
         'folder_path': {'key': 'folderPath', 'type': 'object'},
-        'type': {'key': 'linkedService.type', 'type': 'str'},
-        'reference_name': {'key': 'linkedService.referenceName', 'type': 'str'},
-        'parameters': {'key': 'linkedService.parameters', 'type': '{object}'},
     }
-
-    type = "LinkedServiceReference"
 
     def __init__(
         self,
         **kwargs
     ):
         super(DataFlowStagingInfo, self).__init__(**kwargs)
+        self.linked_service = kwargs.get('linked_service', None)
         self.folder_path = kwargs.get('folder_path', None)
-        self.reference_name = kwargs.get('reference_name', None)
-        self.parameters = kwargs.get('parameters', None)
 
 
 class DataLakeAnalyticsUsqlActivity(ExecutionActivity):
@@ -11099,7 +11076,7 @@ class DistcpSettings(msrest.serialization.Model):
         self.distcp_options = kwargs.get('distcp_options', None)
 
 
-class DocumentDBCollectionDataset(Dataset):
+class DocumentDbCollectionDataset(Dataset):
     """Microsoft Azure Document Database Collection dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -11154,12 +11131,12 @@ class DocumentDBCollectionDataset(Dataset):
         self,
         **kwargs
     ):
-        super(DocumentDBCollectionDataset, self).__init__(**kwargs)
+        super(DocumentDbCollectionDataset, self).__init__(**kwargs)
         self.type = 'DocumentDbCollection'  # type: str
         self.collection_name = kwargs['collection_name']
 
 
-class DocumentDBCollectionSink(CopySink):
+class DocumentDbCollectionSink(CopySink):
     """A copy activity Document Database Collection sink.
 
     All required parameters must be populated in order to send to Azure.
@@ -11212,13 +11189,13 @@ class DocumentDBCollectionSink(CopySink):
         self,
         **kwargs
     ):
-        super(DocumentDBCollectionSink, self).__init__(**kwargs)
+        super(DocumentDbCollectionSink, self).__init__(**kwargs)
         self.type = 'DocumentDbCollectionSink'  # type: str
         self.nesting_separator = kwargs.get('nesting_separator', None)
         self.write_behavior = kwargs.get('write_behavior', None)
 
 
-class DocumentDBCollectionSource(CopySource):
+class DocumentDbCollectionSource(CopySource):
     """A copy activity Document Database Collection source.
 
     All required parameters must be populated in order to send to Azure.
@@ -11270,7 +11247,7 @@ class DocumentDBCollectionSource(CopySource):
         self,
         **kwargs
     ):
-        super(DocumentDBCollectionSource, self).__init__(**kwargs)
+        super(DocumentDbCollectionSource, self).__init__(**kwargs)
         self.type = 'DocumentDbCollectionSource'  # type: str
         self.query = kwargs.get('query', None)
         self.nesting_separator = kwargs.get('nesting_separator', None)
@@ -11456,7 +11433,7 @@ class DrillTableDataset(Dataset):
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
 
 
-class DWCopyCommandDefaultValue(msrest.serialization.Model):
+class DwCopyCommandDefaultValue(msrest.serialization.Model):
     """Default value.
 
     :param column_name: Column name. Type: object (or Expression with resultType string).
@@ -11475,19 +11452,19 @@ class DWCopyCommandDefaultValue(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        super(DWCopyCommandDefaultValue, self).__init__(**kwargs)
+        super(DwCopyCommandDefaultValue, self).__init__(**kwargs)
         self.column_name = kwargs.get('column_name', None)
         self.default_value = kwargs.get('default_value', None)
 
 
-class DWCopyCommandSettings(msrest.serialization.Model):
+class DwCopyCommandSettings(msrest.serialization.Model):
     """DW Copy Command settings.
 
     :param default_values: Specifies the default values for each target column in SQL DW. The
      default values in the property overwrite the DEFAULT constraint set in the DB, and identity
      column cannot have a default value. Type: array of objects (or Expression with resultType array
      of objects).
-    :type default_values: list[~data_factory_management_client.models.DWCopyCommandDefaultValue]
+    :type default_values: list[~data_factory_management_client.models.DwCopyCommandDefaultValue]
     :param additional_options: Additional options directly passed to SQL DW in Copy Command. Type:
      key value pairs (value should be string type) (or Expression with resultType object). Example:
      "additionalOptions": { "MAXERRORS": "1000", "DATEFORMAT": "'ymd'" }.
@@ -11495,7 +11472,7 @@ class DWCopyCommandSettings(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'default_values': {'key': 'defaultValues', 'type': '[DWCopyCommandDefaultValue]'},
+        'default_values': {'key': 'defaultValues', 'type': '[DwCopyCommandDefaultValue]'},
         'additional_options': {'key': 'additionalOptions', 'type': '{str}'},
     }
 
@@ -11503,7 +11480,7 @@ class DWCopyCommandSettings(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        super(DWCopyCommandSettings, self).__init__(**kwargs)
+        super(DwCopyCommandSettings, self).__init__(**kwargs)
         self.default_values = kwargs.get('default_values', None)
         self.additional_options = kwargs.get('additional_options', None)
 
@@ -19942,6 +19919,8 @@ class ManagedPrivateEndpointResource(SubResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
+    All required parameters must be populated in order to send to Azure.
+
     :ivar id: The resource identifier.
     :vartype id: str
     :ivar name: The resource name.
@@ -19950,19 +19929,8 @@ class ManagedPrivateEndpointResource(SubResource):
     :vartype type: str
     :ivar etag: Etag identifies change in the resource.
     :vartype etag: str
-    :param connection_state: The managed private endpoint connection state.
-    :type connection_state: ~data_factory_management_client.models.ConnectionStateProperties
-    :param fqdns: Fully qualified domain names.
-    :type fqdns: list[str]
-    :param group_id: The groupId to which the managed private endpoint is created.
-    :type group_id: str
-    :ivar is_reserved: Denotes whether the managed private endpoint is reserved.
-    :vartype is_reserved: bool
-    :param private_link_resource_id: The ARM resource ID of the resource to which the managed
-     private endpoint is created.
-    :type private_link_resource_id: str
-    :ivar provisioning_state: The managed private endpoint provisioning state.
-    :vartype provisioning_state: str
+    :param properties: Required. Managed private endpoint properties.
+    :type properties: ~data_factory_management_client.models.ManagedPrivateEndpoint
     """
 
     _validation = {
@@ -19970,8 +19938,7 @@ class ManagedPrivateEndpointResource(SubResource):
         'name': {'readonly': True},
         'type': {'readonly': True},
         'etag': {'readonly': True},
-        'is_reserved': {'readonly': True},
-        'provisioning_state': {'readonly': True},
+        'properties': {'required': True},
     }
 
     _attribute_map = {
@@ -19979,12 +19946,7 @@ class ManagedPrivateEndpointResource(SubResource):
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'etag': {'key': 'etag', 'type': 'str'},
-        'connection_state': {'key': 'properties.connectionState', 'type': 'ConnectionStateProperties'},
-        'fqdns': {'key': 'properties.fqdns', 'type': '[str]'},
-        'group_id': {'key': 'properties.groupId', 'type': 'str'},
-        'is_reserved': {'key': 'properties.isReserved', 'type': 'bool'},
-        'private_link_resource_id': {'key': 'properties.privateLinkResourceId', 'type': 'str'},
-        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'properties': {'key': 'properties', 'type': 'ManagedPrivateEndpoint'},
     }
 
     def __init__(
@@ -19992,12 +19954,7 @@ class ManagedPrivateEndpointResource(SubResource):
         **kwargs
     ):
         super(ManagedPrivateEndpointResource, self).__init__(**kwargs)
-        self.connection_state = kwargs.get('connection_state', None)
-        self.fqdns = kwargs.get('fqdns', None)
-        self.group_id = kwargs.get('group_id', None)
-        self.is_reserved = None
-        self.private_link_resource_id = kwargs.get('private_link_resource_id', None)
-        self.provisioning_state = None
+        self.properties = kwargs['properties']
 
 
 class ManagedVirtualNetwork(msrest.serialization.Model):
@@ -20152,7 +20109,7 @@ class MappingDataFlow(DataFlow):
         self.script = kwargs.get('script', None)
 
 
-class MariaDBLinkedService(LinkedService):
+class MariaDbLinkedService(LinkedService):
     """MariaDB server linked service.
 
     All required parameters must be populated in order to send to Azure.
@@ -20201,14 +20158,14 @@ class MariaDBLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(MariaDBLinkedService, self).__init__(**kwargs)
+        super(MariaDbLinkedService, self).__init__(**kwargs)
         self.type = 'MariaDB'  # type: str
         self.connection_string = kwargs.get('connection_string', None)
         self.pwd = kwargs.get('pwd', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class MariaDBSource(TabularSource):
+class MariaDbSource(TabularSource):
     """A copy activity MariaDB server source.
 
     All required parameters must be populated in order to send to Azure.
@@ -20257,12 +20214,12 @@ class MariaDBSource(TabularSource):
         self,
         **kwargs
     ):
-        super(MariaDBSource, self).__init__(**kwargs)
+        super(MariaDbSource, self).__init__(**kwargs)
         self.type = 'MariaDBSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
-class MariaDBTableDataset(Dataset):
+class MariaDbTableDataset(Dataset):
     """MariaDB server dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -20315,7 +20272,7 @@ class MariaDBTableDataset(Dataset):
         self,
         **kwargs
     ):
-        super(MariaDBTableDataset, self).__init__(**kwargs)
+        super(MariaDbTableDataset, self).__init__(**kwargs)
         self.type = 'MariaDBTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
@@ -20746,7 +20703,7 @@ class MicrosoftAccessTableDataset(Dataset):
         self.table_name = kwargs.get('table_name', None)
 
 
-class MongoDBCollectionDataset(Dataset):
+class MongoDbCollectionDataset(Dataset):
     """The MongoDB database dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -20801,12 +20758,12 @@ class MongoDBCollectionDataset(Dataset):
         self,
         **kwargs
     ):
-        super(MongoDBCollectionDataset, self).__init__(**kwargs)
+        super(MongoDbCollectionDataset, self).__init__(**kwargs)
         self.type = 'MongoDbCollection'  # type: str
         self.collection_name = kwargs['collection_name']
 
 
-class MongoDBCursorMethodsProperties(msrest.serialization.Model):
+class MongoDbCursorMethodsProperties(msrest.serialization.Model):
     """Cursor methods for Mongodb query.
 
     :param additional_properties: Unmatched properties from the message are deserialized to this
@@ -20841,7 +20798,7 @@ class MongoDBCursorMethodsProperties(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        super(MongoDBCursorMethodsProperties, self).__init__(**kwargs)
+        super(MongoDbCursorMethodsProperties, self).__init__(**kwargs)
         self.additional_properties = kwargs.get('additional_properties', None)
         self.project = kwargs.get('project', None)
         self.sort = kwargs.get('sort', None)
@@ -20849,7 +20806,7 @@ class MongoDBCursorMethodsProperties(msrest.serialization.Model):
         self.limit = kwargs.get('limit', None)
 
 
-class MongoDBLinkedService(LinkedService):
+class MongoDbLinkedService(LinkedService):
     """Linked service for MongoDb data source.
 
     All required parameters must be populated in order to send to Azure.
@@ -20873,7 +20830,7 @@ class MongoDBLinkedService(LinkedService):
     :param authentication_type: The authentication type to be used to connect to the MongoDB
      database. Possible values include: "Basic", "Anonymous".
     :type authentication_type: str or
-     ~data_factory_management_client.models.MongoDBAuthenticationType
+     ~data_factory_management_client.models.MongoDbAuthenticationType
     :param database_name: Required. The name of the MongoDB database that you want to access. Type:
      string (or Expression with resultType string).
     :type database_name: object
@@ -20929,7 +20886,7 @@ class MongoDBLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(MongoDBLinkedService, self).__init__(**kwargs)
+        super(MongoDbLinkedService, self).__init__(**kwargs)
         self.type = 'MongoDb'  # type: str
         self.server = kwargs['server']
         self.authentication_type = kwargs.get('authentication_type', None)
@@ -20943,7 +20900,7 @@ class MongoDBLinkedService(LinkedService):
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class MongoDBSource(CopySource):
+class MongoDbSource(CopySource):
     """A copy activity source for a MongoDB database.
 
     All required parameters must be populated in order to send to Azure.
@@ -20988,13 +20945,13 @@ class MongoDBSource(CopySource):
         self,
         **kwargs
     ):
-        super(MongoDBSource, self).__init__(**kwargs)
+        super(MongoDbSource, self).__init__(**kwargs)
         self.type = 'MongoDbSource'  # type: str
         self.query = kwargs.get('query', None)
         self.additional_columns = kwargs.get('additional_columns', None)
 
 
-class MongoDBV2CollectionDataset(Dataset):
+class MongoDbV2CollectionDataset(Dataset):
     """The MongoDB database dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -21049,12 +21006,12 @@ class MongoDBV2CollectionDataset(Dataset):
         self,
         **kwargs
     ):
-        super(MongoDBV2CollectionDataset, self).__init__(**kwargs)
+        super(MongoDbV2CollectionDataset, self).__init__(**kwargs)
         self.type = 'MongoDbV2Collection'  # type: str
         self.collection = kwargs['collection']
 
 
-class MongoDBV2LinkedService(LinkedService):
+class MongoDbV2LinkedService(LinkedService):
     """Linked service for MongoDB data source.
 
     All required parameters must be populated in order to send to Azure.
@@ -21101,13 +21058,13 @@ class MongoDBV2LinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(MongoDBV2LinkedService, self).__init__(**kwargs)
+        super(MongoDbV2LinkedService, self).__init__(**kwargs)
         self.type = 'MongoDbV2'  # type: str
         self.connection_string = kwargs['connection_string']
         self.database = kwargs['database']
 
 
-class MongoDBV2Source(CopySource):
+class MongoDbV2Source(CopySource):
     """A copy activity source for a MongoDB database.
 
     All required parameters must be populated in order to send to Azure.
@@ -21131,7 +21088,7 @@ class MongoDBV2Source(CopySource):
      with resultType string).
     :type filter: object
     :param cursor_methods: Cursor methods for Mongodb query.
-    :type cursor_methods: ~data_factory_management_client.models.MongoDBCursorMethodsProperties
+    :type cursor_methods: ~data_factory_management_client.models.MongoDbCursorMethodsProperties
     :param batch_size: Specifies the number of documents to return in each batch of the response
      from MongoDB instance. In most cases, modifying the batch size will not affect the user or the
      application. This property's main purpose is to avoid hit the limitation of response size.
@@ -21156,7 +21113,7 @@ class MongoDBV2Source(CopySource):
         'source_retry_wait': {'key': 'sourceRetryWait', 'type': 'object'},
         'max_concurrent_connections': {'key': 'maxConcurrentConnections', 'type': 'object'},
         'filter': {'key': 'filter', 'type': 'object'},
-        'cursor_methods': {'key': 'cursorMethods', 'type': 'MongoDBCursorMethodsProperties'},
+        'cursor_methods': {'key': 'cursorMethods', 'type': 'MongoDbCursorMethodsProperties'},
         'batch_size': {'key': 'batchSize', 'type': 'object'},
         'query_timeout': {'key': 'queryTimeout', 'type': 'object'},
         'additional_columns': {'key': 'additionalColumns', 'type': '[AdditionalColumns]'},
@@ -21166,7 +21123,7 @@ class MongoDBV2Source(CopySource):
         self,
         **kwargs
     ):
-        super(MongoDBV2Source, self).__init__(**kwargs)
+        super(MongoDbV2Source, self).__init__(**kwargs)
         self.type = 'MongoDbV2Source'  # type: str
         self.filter = kwargs.get('filter', None)
         self.cursor_methods = kwargs.get('cursor_methods', None)
@@ -21175,7 +21132,7 @@ class MongoDBV2Source(CopySource):
         self.additional_columns = kwargs.get('additional_columns', None)
 
 
-class MySQLLinkedService(LinkedService):
+class MySqlLinkedService(LinkedService):
     """Linked service for MySQL data source.
 
     All required parameters must be populated in order to send to Azure.
@@ -21224,14 +21181,14 @@ class MySQLLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(MySQLLinkedService, self).__init__(**kwargs)
+        super(MySqlLinkedService, self).__init__(**kwargs)
         self.type = 'MySql'  # type: str
         self.connection_string = kwargs['connection_string']
         self.password = kwargs.get('password', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class MySQLSource(TabularSource):
+class MySqlSource(TabularSource):
     """A copy activity source for MySQL databases.
 
     All required parameters must be populated in order to send to Azure.
@@ -21279,12 +21236,12 @@ class MySQLSource(TabularSource):
         self,
         **kwargs
     ):
-        super(MySQLSource, self).__init__(**kwargs)
+        super(MySqlSource, self).__init__(**kwargs)
         self.type = 'MySqlSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
-class MySQLTableDataset(Dataset):
+class MySqlTableDataset(Dataset):
     """The MySQL table dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -21337,7 +21294,7 @@ class MySQLTableDataset(Dataset):
         self,
         **kwargs
     ):
-        super(MySQLTableDataset, self).__init__(**kwargs)
+        super(MySqlTableDataset, self).__init__(**kwargs)
         self.type = 'MySqlTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
 
@@ -21609,7 +21566,7 @@ class ODataLinkedService(LinkedService):
     :param aad_service_principal_credential_type: Specify the credential type (key or cert) is used
      for service principal. Possible values include: "ServicePrincipalKey", "ServicePrincipalCert".
     :type aad_service_principal_credential_type: str or
-     ~data_factory_management_client.models.ODataAADServicePrincipalCredentialType
+     ~data_factory_management_client.models.ODataAadServicePrincipalCredentialType
     :param service_principal_key: Specify the secret of your application registered in Azure Active
      Directory. Type: string (or Expression with resultType string).
     :type service_principal_key: ~data_factory_management_client.models.SecretBase
@@ -23832,6 +23789,25 @@ class PhoenixSource(TabularSource):
         self.query = kwargs.get('query', None)
 
 
+class PipelineFolder(msrest.serialization.Model):
+    """The folder that this Pipeline is in. If not specified, Pipeline will appear at the root level.
+
+    :param name: The name of the folder that this Pipeline is in.
+    :type name: str
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(PipelineFolder, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
+
+
 class PipelineListResponse(msrest.serialization.Model):
     """A list of pipeline resources.
 
@@ -23928,8 +23904,9 @@ class PipelineResource(SubResource):
     :type annotations: list[object]
     :param run_dimensions: Dimensions emitted by Pipeline.
     :type run_dimensions: dict[str, object]
-    :param name_properties_folder_name: The name of the folder that this Pipeline is in.
-    :type name_properties_folder_name: str
+    :param folder: The folder that this Pipeline is in. If not specified, Pipeline will appear at
+     the root level.
+    :type folder: ~data_factory_management_client.models.PipelineFolder
     """
 
     _validation = {
@@ -23953,7 +23930,7 @@ class PipelineResource(SubResource):
         'concurrency': {'key': 'properties.concurrency', 'type': 'int'},
         'annotations': {'key': 'properties.annotations', 'type': '[object]'},
         'run_dimensions': {'key': 'properties.runDimensions', 'type': '{object}'},
-        'name_properties_folder_name': {'key': 'properties.folder.name', 'type': 'str'},
+        'folder': {'key': 'properties.folder', 'type': 'PipelineFolder'},
     }
 
     def __init__(
@@ -23969,7 +23946,7 @@ class PipelineResource(SubResource):
         self.concurrency = kwargs.get('concurrency', None)
         self.annotations = kwargs.get('annotations', None)
         self.run_dimensions = kwargs.get('run_dimensions', None)
-        self.name_properties_folder_name = kwargs.get('name_properties_folder_name', None)
+        self.folder = kwargs.get('folder', None)
 
 
 class PipelineRun(msrest.serialization.Model):
@@ -24169,7 +24146,7 @@ class PolybaseSettings(msrest.serialization.Model):
         self.use_type_default = kwargs.get('use_type_default', None)
 
 
-class PostgreSQLLinkedService(LinkedService):
+class PostgreSqlLinkedService(LinkedService):
     """Linked service for PostgreSQL data source.
 
     All required parameters must be populated in order to send to Azure.
@@ -24218,14 +24195,14 @@ class PostgreSQLLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(PostgreSQLLinkedService, self).__init__(**kwargs)
+        super(PostgreSqlLinkedService, self).__init__(**kwargs)
         self.type = 'PostgreSql'  # type: str
         self.connection_string = kwargs['connection_string']
         self.password = kwargs.get('password', None)
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class PostgreSQLSource(TabularSource):
+class PostgreSqlSource(TabularSource):
     """A copy activity source for PostgreSQL databases.
 
     All required parameters must be populated in order to send to Azure.
@@ -24273,12 +24250,12 @@ class PostgreSQLSource(TabularSource):
         self,
         **kwargs
     ):
-        super(PostgreSQLSource, self).__init__(**kwargs)
+        super(PostgreSqlSource, self).__init__(**kwargs)
         self.type = 'PostgreSqlSource'  # type: str
         self.query = kwargs.get('query', None)
 
 
-class PostgreSQLTableDataset(Dataset):
+class PostgreSqlTableDataset(Dataset):
     """The PostgreSQL table dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -24339,7 +24316,7 @@ class PostgreSQLTableDataset(Dataset):
         self,
         **kwargs
     ):
-        super(PostgreSQLTableDataset, self).__init__(**kwargs)
+        super(PostgreSqlTableDataset, self).__init__(**kwargs)
         self.type = 'PostgreSqlTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.table = kwargs.get('table', None)
@@ -29846,7 +29823,7 @@ class SparkSource(TabularSource):
         self.query = kwargs.get('query', None)
 
 
-class SQLDWSink(CopySink):
+class SqlDwSink(CopySink):
     """A copy activity SQL Data Warehouse sink.
 
     All required parameters must be populated in order to send to Azure.
@@ -29884,7 +29861,7 @@ class SQLDWSink(CopySink):
     :type allow_copy_command: object
     :param copy_command_settings: Specifies Copy Command related settings when allowCopyCommand is
      true.
-    :type copy_command_settings: ~data_factory_management_client.models.DWCopyCommandSettings
+    :type copy_command_settings: ~data_factory_management_client.models.DwCopyCommandSettings
     :param table_option: The option to handle sink table, such as autoCreate. For now only
      'autoCreate' value is supported. Type: string (or Expression with resultType string).
     :type table_option: object
@@ -29906,7 +29883,7 @@ class SQLDWSink(CopySink):
         'allow_poly_base': {'key': 'allowPolyBase', 'type': 'object'},
         'poly_base_settings': {'key': 'polyBaseSettings', 'type': 'PolybaseSettings'},
         'allow_copy_command': {'key': 'allowCopyCommand', 'type': 'object'},
-        'copy_command_settings': {'key': 'copyCommandSettings', 'type': 'DWCopyCommandSettings'},
+        'copy_command_settings': {'key': 'copyCommandSettings', 'type': 'DwCopyCommandSettings'},
         'table_option': {'key': 'tableOption', 'type': 'object'},
     }
 
@@ -29914,7 +29891,7 @@ class SQLDWSink(CopySink):
         self,
         **kwargs
     ):
-        super(SQLDWSink, self).__init__(**kwargs)
+        super(SqlDwSink, self).__init__(**kwargs)
         self.type = 'SqlDWSink'  # type: str
         self.pre_copy_script = kwargs.get('pre_copy_script', None)
         self.allow_poly_base = kwargs.get('allow_poly_base', None)
@@ -29924,7 +29901,7 @@ class SQLDWSink(CopySink):
         self.table_option = kwargs.get('table_option', None)
 
 
-class SQLDWSource(TabularSource):
+class SqlDwSource(TabularSource):
     """A copy activity SQL Data Warehouse source.
 
     All required parameters must be populated in order to send to Azure.
@@ -29962,9 +29939,9 @@ class SQLDWSource(TabularSource):
     :type stored_procedure_parameters: object
     :param partition_option: The partition mechanism that will be used for Sql read in parallel.
      Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
-    :type partition_option: str or ~data_factory_management_client.models.SQLPartitionOption
+    :type partition_option: str or ~data_factory_management_client.models.SqlPartitionOption
     :param partition_settings: The settings that will be leveraged for Sql source partitioning.
-    :type partition_settings: ~data_factory_management_client.models.SQLPartitionSettings
+    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
     """
 
     _validation = {
@@ -29983,14 +29960,14 @@ class SQLDWSource(TabularSource):
         'sql_reader_stored_procedure_name': {'key': 'sqlReaderStoredProcedureName', 'type': 'object'},
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': 'object'},
         'partition_option': {'key': 'partitionOption', 'type': 'str'},
-        'partition_settings': {'key': 'partitionSettings', 'type': 'SQLPartitionSettings'},
+        'partition_settings': {'key': 'partitionSettings', 'type': 'SqlPartitionSettings'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(SQLDWSource, self).__init__(**kwargs)
+        super(SqlDwSource, self).__init__(**kwargs)
         self.type = 'SqlDWSource'  # type: str
         self.sql_reader_query = kwargs.get('sql_reader_query', None)
         self.sql_reader_stored_procedure_name = kwargs.get('sql_reader_stored_procedure_name', None)
@@ -29999,7 +29976,7 @@ class SQLDWSource(TabularSource):
         self.partition_settings = kwargs.get('partition_settings', None)
 
 
-class SQLMiSink(CopySink):
+class SqlMiSink(CopySink):
     """A copy activity Azure SQL Managed Instance sink.
 
     All required parameters must be populated in order to send to Azure.
@@ -30068,7 +30045,7 @@ class SQLMiSink(CopySink):
         self,
         **kwargs
     ):
-        super(SQLMiSink, self).__init__(**kwargs)
+        super(SqlMiSink, self).__init__(**kwargs)
         self.type = 'SqlMISink'  # type: str
         self.sql_writer_stored_procedure_name = kwargs.get('sql_writer_stored_procedure_name', None)
         self.sql_writer_table_type = kwargs.get('sql_writer_table_type', None)
@@ -30078,7 +30055,7 @@ class SQLMiSink(CopySink):
         self.table_option = kwargs.get('table_option', None)
 
 
-class SQLMiSource(TabularSource):
+class SqlMiSource(TabularSource):
     """A copy activity Azure SQL Managed Instance source.
 
     All required parameters must be populated in order to send to Azure.
@@ -30117,9 +30094,9 @@ class SQLMiSource(TabularSource):
     :type produce_additional_types: object
     :param partition_option: The partition mechanism that will be used for Sql read in parallel.
      Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
-    :type partition_option: str or ~data_factory_management_client.models.SQLPartitionOption
+    :type partition_option: str or ~data_factory_management_client.models.SqlPartitionOption
     :param partition_settings: The settings that will be leveraged for Sql source partitioning.
-    :type partition_settings: ~data_factory_management_client.models.SQLPartitionSettings
+    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
     """
 
     _validation = {
@@ -30139,14 +30116,14 @@ class SQLMiSource(TabularSource):
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
         'produce_additional_types': {'key': 'produceAdditionalTypes', 'type': 'object'},
         'partition_option': {'key': 'partitionOption', 'type': 'str'},
-        'partition_settings': {'key': 'partitionSettings', 'type': 'SQLPartitionSettings'},
+        'partition_settings': {'key': 'partitionSettings', 'type': 'SqlPartitionSettings'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(SQLMiSource, self).__init__(**kwargs)
+        super(SqlMiSource, self).__init__(**kwargs)
         self.type = 'SqlMISource'  # type: str
         self.sql_reader_query = kwargs.get('sql_reader_query', None)
         self.sql_reader_stored_procedure_name = kwargs.get('sql_reader_stored_procedure_name', None)
@@ -30156,7 +30133,7 @@ class SQLMiSource(TabularSource):
         self.partition_settings = kwargs.get('partition_settings', None)
 
 
-class SQLPartitionSettings(msrest.serialization.Model):
+class SqlPartitionSettings(msrest.serialization.Model):
     """The settings that will be leveraged for Sql source partitioning.
 
     :param partition_column_name: The name of the column in integer or datetime type that will be
@@ -30185,13 +30162,13 @@ class SQLPartitionSettings(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        super(SQLPartitionSettings, self).__init__(**kwargs)
+        super(SqlPartitionSettings, self).__init__(**kwargs)
         self.partition_column_name = kwargs.get('partition_column_name', None)
         self.partition_upper_bound = kwargs.get('partition_upper_bound', None)
         self.partition_lower_bound = kwargs.get('partition_lower_bound', None)
 
 
-class SQLServerLinkedService(LinkedService):
+class SqlServerLinkedService(LinkedService):
     """SQL Server linked service.
 
     All required parameters must be populated in order to send to Azure.
@@ -30245,7 +30222,7 @@ class SQLServerLinkedService(LinkedService):
         self,
         **kwargs
     ):
-        super(SQLServerLinkedService, self).__init__(**kwargs)
+        super(SqlServerLinkedService, self).__init__(**kwargs)
         self.type = 'SqlServer'  # type: str
         self.connection_string = kwargs['connection_string']
         self.user_name = kwargs.get('user_name', None)
@@ -30253,7 +30230,7 @@ class SQLServerLinkedService(LinkedService):
         self.encrypted_credential = kwargs.get('encrypted_credential', None)
 
 
-class SQLServerSink(CopySink):
+class SqlServerSink(CopySink):
     """A copy activity SQL server sink.
 
     All required parameters must be populated in order to send to Azure.
@@ -30322,7 +30299,7 @@ class SQLServerSink(CopySink):
         self,
         **kwargs
     ):
-        super(SQLServerSink, self).__init__(**kwargs)
+        super(SqlServerSink, self).__init__(**kwargs)
         self.type = 'SqlServerSink'  # type: str
         self.sql_writer_stored_procedure_name = kwargs.get('sql_writer_stored_procedure_name', None)
         self.sql_writer_table_type = kwargs.get('sql_writer_table_type', None)
@@ -30332,7 +30309,7 @@ class SQLServerSink(CopySink):
         self.table_option = kwargs.get('table_option', None)
 
 
-class SQLServerSource(TabularSource):
+class SqlServerSource(TabularSource):
     """A copy activity SQL server source.
 
     All required parameters must be populated in order to send to Azure.
@@ -30371,9 +30348,9 @@ class SQLServerSource(TabularSource):
     :type produce_additional_types: object
     :param partition_option: The partition mechanism that will be used for Sql read in parallel.
      Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
-    :type partition_option: str or ~data_factory_management_client.models.SQLPartitionOption
+    :type partition_option: str or ~data_factory_management_client.models.SqlPartitionOption
     :param partition_settings: The settings that will be leveraged for Sql source partitioning.
-    :type partition_settings: ~data_factory_management_client.models.SQLPartitionSettings
+    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
     """
 
     _validation = {
@@ -30393,14 +30370,14 @@ class SQLServerSource(TabularSource):
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
         'produce_additional_types': {'key': 'produceAdditionalTypes', 'type': 'object'},
         'partition_option': {'key': 'partitionOption', 'type': 'str'},
-        'partition_settings': {'key': 'partitionSettings', 'type': 'SQLPartitionSettings'},
+        'partition_settings': {'key': 'partitionSettings', 'type': 'SqlPartitionSettings'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(SQLServerSource, self).__init__(**kwargs)
+        super(SqlServerSource, self).__init__(**kwargs)
         self.type = 'SqlServerSource'  # type: str
         self.sql_reader_query = kwargs.get('sql_reader_query', None)
         self.sql_reader_stored_procedure_name = kwargs.get('sql_reader_stored_procedure_name', None)
@@ -30410,7 +30387,7 @@ class SQLServerSource(TabularSource):
         self.partition_settings = kwargs.get('partition_settings', None)
 
 
-class SQLServerStoredProcedureActivity(ExecutionActivity):
+class SqlServerStoredProcedureActivity(ExecutionActivity):
     """SQL stored procedure activity type.
 
     All required parameters must be populated in order to send to Azure.
@@ -30464,13 +30441,13 @@ class SQLServerStoredProcedureActivity(ExecutionActivity):
         self,
         **kwargs
     ):
-        super(SQLServerStoredProcedureActivity, self).__init__(**kwargs)
+        super(SqlServerStoredProcedureActivity, self).__init__(**kwargs)
         self.type = 'SqlServerStoredProcedure'  # type: str
         self.stored_procedure_name = kwargs['stored_procedure_name']
         self.stored_procedure_parameters = kwargs.get('stored_procedure_parameters', None)
 
 
-class SQLServerTableDataset(Dataset):
+class SqlServerTableDataset(Dataset):
     """The on-premises SQL Server dataset.
 
     All required parameters must be populated in order to send to Azure.
@@ -30532,14 +30509,14 @@ class SQLServerTableDataset(Dataset):
         self,
         **kwargs
     ):
-        super(SQLServerTableDataset, self).__init__(**kwargs)
+        super(SqlServerTableDataset, self).__init__(**kwargs)
         self.type = 'SqlServerTable'  # type: str
         self.table_name = kwargs.get('table_name', None)
         self.schema_type_properties_schema = kwargs.get('schema_type_properties_schema', None)
         self.table = kwargs.get('table', None)
 
 
-class SQLSink(CopySink):
+class SqlSink(CopySink):
     """A copy activity SQL sink.
 
     All required parameters must be populated in order to send to Azure.
@@ -30608,7 +30585,7 @@ class SQLSink(CopySink):
         self,
         **kwargs
     ):
-        super(SQLSink, self).__init__(**kwargs)
+        super(SqlSink, self).__init__(**kwargs)
         self.type = 'SqlSink'  # type: str
         self.sql_writer_stored_procedure_name = kwargs.get('sql_writer_stored_procedure_name', None)
         self.sql_writer_table_type = kwargs.get('sql_writer_table_type', None)
@@ -30618,7 +30595,7 @@ class SQLSink(CopySink):
         self.table_option = kwargs.get('table_option', None)
 
 
-class SQLSource(TabularSource):
+class SqlSource(TabularSource):
     """A copy activity SQL source.
 
     All required parameters must be populated in order to send to Azure.
@@ -30659,9 +30636,9 @@ class SQLSource(TabularSource):
     :type isolation_level: object
     :param partition_option: The partition mechanism that will be used for Sql read in parallel.
      Possible values include: "None", "PhysicalPartitionsOfTable", "DynamicRange".
-    :type partition_option: str or ~data_factory_management_client.models.SQLPartitionOption
+    :type partition_option: str or ~data_factory_management_client.models.SqlPartitionOption
     :param partition_settings: The settings that will be leveraged for Sql source partitioning.
-    :type partition_settings: ~data_factory_management_client.models.SQLPartitionSettings
+    :type partition_settings: ~data_factory_management_client.models.SqlPartitionSettings
     """
 
     _validation = {
@@ -30681,14 +30658,14 @@ class SQLSource(TabularSource):
         'stored_procedure_parameters': {'key': 'storedProcedureParameters', 'type': '{StoredProcedureParameter}'},
         'isolation_level': {'key': 'isolationLevel', 'type': 'object'},
         'partition_option': {'key': 'partitionOption', 'type': 'str'},
-        'partition_settings': {'key': 'partitionSettings', 'type': 'SQLPartitionSettings'},
+        'partition_settings': {'key': 'partitionSettings', 'type': 'SqlPartitionSettings'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(SQLSource, self).__init__(**kwargs)
+        super(SqlSource, self).__init__(**kwargs)
         self.type = 'SqlSource'  # type: str
         self.sql_reader_query = kwargs.get('sql_reader_query', None)
         self.sql_reader_stored_procedure_name = kwargs.get('sql_reader_stored_procedure_name', None)

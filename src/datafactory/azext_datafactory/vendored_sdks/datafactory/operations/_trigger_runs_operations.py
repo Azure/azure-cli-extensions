@@ -11,21 +11,19 @@ import warnings
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
-from azure.core.polling import LROPoller, NoPolling, PollingMethod
 from azure.mgmt.core.exceptions import ARMErrorFormat
-from azure.mgmt.core.polling.arm_polling import ARMPolling
 
 from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
+    from typing import Any, Callable, Dict, Generic, Optional, TypeVar
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class IntegrationRuntimeObjectMetadataOperations(object):
-    """IntegrationRuntimeObjectMetadataOperations operations.
+class TriggerRunsOperations(object):
+    """TriggerRunsOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -46,15 +44,31 @@ class IntegrationRuntimeObjectMetadataOperations(object):
         self._deserialize = deserializer
         self._config = config
 
-    def _refresh_initial(
+    def rerun(
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
-        integration_runtime_name,  # type: str
+        trigger_name,  # type: str
+        run_id,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> Optional["models.SsisObjectMetadataStatusResponse"]
-        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.SsisObjectMetadataStatusResponse"]]
+        # type: (...) -> None
+        """Rerun single trigger instance by runId.
+
+        :param resource_group_name: The resource group name.
+        :type resource_group_name: str
+        :param factory_name: The factory name.
+        :type factory_name: str
+        :param trigger_name: The trigger name.
+        :type trigger_name: str
+        :param run_id: The pipeline run identifier.
+        :type run_id: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: None, or the result of cls(response)
+        :rtype: None
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -63,12 +77,13 @@ class IntegrationRuntimeObjectMetadataOperations(object):
         accept = "application/json"
 
         # Construct URL
-        url = self._refresh_initial.metadata['url']  # type: ignore
+        url = self.rerun.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'triggerName': self._serialize.url("trigger_name", trigger_name, 'str', max_length=260, min_length=1, pattern=r'^[A-Za-z0-9_][^<>*#.%&:\\+?/]*$'),
+            'runId': self._serialize.url("run_id", run_id, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -84,119 +99,101 @@ class IntegrationRuntimeObjectMetadataOperations(object):
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202]:
+        if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = None
-        if response.status_code == 200:
-            deserialized = self._deserialize('SsisObjectMetadataStatusResponse', pipeline_response)
-
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, None, {})
 
-        return deserialized
-    _refresh_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/refreshObjectMetadata'}  # type: ignore
+    rerun.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/triggerRuns/{runId}/rerun'}  # type: ignore
 
-    def begin_refresh(
+    def cancel(
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
-        integration_runtime_name,  # type: str
+        trigger_name,  # type: str
+        run_id,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller["models.SsisObjectMetadataStatusResponse"]
-        """Refresh a SSIS integration runtime object metadata.
+        # type: (...) -> None
+        """Cancel a single trigger instance by runId.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
-        :param integration_runtime_name: The integration runtime name.
-        :type integration_runtime_name: str
+        :param trigger_name: The trigger name.
+        :type trigger_name: str
+        :param run_id: The pipeline run identifier.
+        :type run_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: True for ARMPolling, False for no polling, or a
-         polling object for personal polling strategy
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of LROPoller that returns either SsisObjectMetadataStatusResponse or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~data_factory_management_client.models.SsisObjectMetadataStatusResponse]
-        :raises ~azure.core.exceptions.HttpResponseError:
+        :return: None, or the result of cls(response)
+        :rtype: None
+        :raises: ~azure.core.exceptions.HttpResponseError
         """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.SsisObjectMetadataStatusResponse"]
-        lro_delay = kwargs.pop(
-            'polling_interval',
-            self._config.polling_interval
-        )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
-        if cont_token is None:
-            raw_result = self._refresh_initial(
-                resource_group_name=resource_group_name,
-                factory_name=factory_name,
-                integration_runtime_name=integration_runtime_name,
-                cls=lambda x,y,z: x,
-                **kwargs
-            )
+        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2018-06-01"
+        accept = "application/json"
 
-        kwargs.pop('error_map', None)
-        kwargs.pop('content_type', None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('SsisObjectMetadataStatusResponse', pipeline_response)
-
-            if cls:
-                return cls(pipeline_response, deserialized, {})
-            return deserialized
-
+        # Construct URL
+        url = self.cancel.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'triggerName': self._serialize.url("trigger_name", trigger_name, 'str', max_length=260, min_length=1, pattern=r'^[A-Za-z0-9_][^<>*#.%&:\\+?/]*$'),
+            'runId': self._serialize.url("run_id", run_id, 'str'),
         }
+        url = self._client.format_url(url, **path_format_arguments)
 
-        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
-        if cont_token:
-            return LROPoller.from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output
-            )
-        else:
-            return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_refresh.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/refreshObjectMetadata'}  # type: ignore
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
-    def get(
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.post(url, query_parameters, header_parameters)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        if cls:
+            return cls(pipeline_response, None, {})
+
+    cancel.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/triggers/{triggerName}/triggerRuns/{runId}/cancel'}  # type: ignore
+
+    def query_by_factory(
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
-        integration_runtime_name,  # type: str
-        get_metadata_request=None,  # type: Optional["models.GetSsisObjectMetadataRequest"]
+        filter_parameters,  # type: "models.RunFilterParameters"
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.SsisObjectMetadataListResponse"
-        """Get a SSIS integration runtime object metadata by specified path. The return is pageable
-        metadata list.
+        # type: (...) -> "models.TriggerRunsQueryResponse"
+        """Query trigger runs.
 
         :param resource_group_name: The resource group name.
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
-        :param integration_runtime_name: The integration runtime name.
-        :type integration_runtime_name: str
-        :param get_metadata_request: The parameters for getting a SSIS object metadata.
-        :type get_metadata_request: ~data_factory_management_client.models.GetSsisObjectMetadataRequest
+        :param filter_parameters: Parameters to filter the pipeline run.
+        :type filter_parameters: ~data_factory_management_client.models.RunFilterParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: SsisObjectMetadataListResponse, or the result of cls(response)
-        :rtype: ~data_factory_management_client.models.SsisObjectMetadataListResponse
+        :return: TriggerRunsQueryResponse, or the result of cls(response)
+        :rtype: ~data_factory_management_client.models.TriggerRunsQueryResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.SsisObjectMetadataListResponse"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.TriggerRunsQueryResponse"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -206,12 +203,11 @@ class IntegrationRuntimeObjectMetadataOperations(object):
         accept = "application/json"
 
         # Construct URL
-        url = self.get.metadata['url']  # type: ignore
+        url = self.query_by_factory.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -225,10 +221,7 @@ class IntegrationRuntimeObjectMetadataOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        if get_metadata_request is not None:
-            body_content = self._serialize.body(get_metadata_request, 'GetSsisObjectMetadataRequest')
-        else:
-            body_content = None
+        body_content = self._serialize.body(filter_parameters, 'RunFilterParameters')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -238,10 +231,10 @@ class IntegrationRuntimeObjectMetadataOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('SsisObjectMetadataListResponse', pipeline_response)
+        deserialized = self._deserialize('TriggerRunsQueryResponse', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/integrationRuntimes/{integrationRuntimeName}/getObjectMetadata'}  # type: ignore
+    query_by_factory.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/queryTriggerRuns'}  # type: ignore

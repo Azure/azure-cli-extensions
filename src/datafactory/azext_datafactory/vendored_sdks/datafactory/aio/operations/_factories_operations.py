@@ -19,8 +19,8 @@ from ... import models
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class FactoryOperations:
-    """FactoryOperations async operations.
+class FactoriesOperations:
+    """FactoriesOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -110,18 +110,15 @@ class FactoryOperations:
     async def configure_factory_repo(
         self,
         location_id: str,
-        factory_resource_id: Optional[str] = None,
-        repo_configuration: Optional["models.FactoryRepoConfiguration"] = None,
+        factory_repo_update: "models.FactoryRepoUpdate",
         **kwargs
     ) -> "models.Factory":
         """Updates a factory's repo information.
 
         :param location_id: The location identifier.
         :type location_id: str
-        :param factory_resource_id: The factory resource id.
-        :type factory_resource_id: str
-        :param repo_configuration: Git repo information of the factory.
-        :type repo_configuration: ~data_factory_management_client.models.FactoryRepoConfiguration
+        :param factory_repo_update: Update factory repo request definition.
+        :type factory_repo_update: ~data_factory_management_client.models.FactoryRepoUpdate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Factory, or the result of cls(response)
         :rtype: ~data_factory_management_client.models.Factory
@@ -132,8 +129,6 @@ class FactoryOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        factory_repo_update = models.FactoryRepoUpdate(factory_resource_id=factory_resource_id, repo_configuration=repo_configuration)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
@@ -248,12 +243,8 @@ class FactoryOperations:
         self,
         resource_group_name: str,
         factory_name: str,
+        factory: "models.Factory",
         if_match: Optional[str] = None,
-        location: Optional[str] = None,
-        tags: Optional[Dict[str, str]] = None,
-        identity: Optional["models.FactoryIdentity"] = None,
-        repo_configuration: Optional["models.FactoryRepoConfiguration"] = None,
-        global_parameters: Optional[Dict[str, "models.GlobalParameterSpecification"]] = None,
         **kwargs
     ) -> "models.Factory":
         """Creates or updates a factory.
@@ -262,19 +253,11 @@ class FactoryOperations:
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
+        :param factory: Factory resource definition.
+        :type factory: ~data_factory_management_client.models.Factory
         :param if_match: ETag of the factory entity. Should only be specified for update, for which it
          should match existing entity or can be * for unconditional update.
         :type if_match: str
-        :param location: The resource location.
-        :type location: str
-        :param tags: The resource tags.
-        :type tags: dict[str, str]
-        :param identity: Managed service identity of the factory.
-        :type identity: ~data_factory_management_client.models.FactoryIdentity
-        :param repo_configuration: Git repo information of the factory.
-        :type repo_configuration: ~data_factory_management_client.models.FactoryRepoConfiguration
-        :param global_parameters: List of parameters for factory.
-        :type global_parameters: dict[str, ~data_factory_management_client.models.GlobalParameterSpecification]
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Factory, or the result of cls(response)
         :rtype: ~data_factory_management_client.models.Factory
@@ -285,8 +268,6 @@ class FactoryOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        factory = models.Factory(location=location, tags=tags, identity=identity, repo_configuration=repo_configuration, global_parameters=global_parameters)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
@@ -334,8 +315,7 @@ class FactoryOperations:
         self,
         resource_group_name: str,
         factory_name: str,
-        tags: Optional[Dict[str, str]] = None,
-        identity: Optional["models.FactoryIdentity"] = None,
+        factory_update_parameters: "models.FactoryUpdateParameters",
         **kwargs
     ) -> "models.Factory":
         """Updates a factory.
@@ -344,10 +324,8 @@ class FactoryOperations:
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
-        :param tags: The resource tags.
-        :type tags: dict[str, str]
-        :param identity: Managed service identity of the factory.
-        :type identity: ~data_factory_management_client.models.FactoryIdentity
+        :param factory_update_parameters: The parameters for updating a factory.
+        :type factory_update_parameters: ~data_factory_management_client.models.FactoryUpdateParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Factory, or the result of cls(response)
         :rtype: ~data_factory_management_client.models.Factory
@@ -358,8 +336,6 @@ class FactoryOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        factory_update_parameters = models.FactoryUpdateParameters(tags=tags, identity=identity)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
@@ -526,9 +502,7 @@ class FactoryOperations:
         self,
         resource_group_name: str,
         factory_name: str,
-        git_hub_access_code: str,
-        git_hub_access_token_base_url: str,
-        git_hub_client_id: Optional[str] = None,
+        git_hub_access_token_request: "models.GitHubAccessTokenRequest",
         **kwargs
     ) -> "models.GitHubAccessTokenResponse":
         """Get GitHub Access Token.
@@ -537,12 +511,8 @@ class FactoryOperations:
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
-        :param git_hub_access_code: GitHub access code.
-        :type git_hub_access_code: str
-        :param git_hub_access_token_base_url: GitHub access token base URL.
-        :type git_hub_access_token_base_url: str
-        :param git_hub_client_id: GitHub application client ID.
-        :type git_hub_client_id: str
+        :param git_hub_access_token_request: Get GitHub access token request definition.
+        :type git_hub_access_token_request: ~data_factory_management_client.models.GitHubAccessTokenRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: GitHubAccessTokenResponse, or the result of cls(response)
         :rtype: ~data_factory_management_client.models.GitHubAccessTokenResponse
@@ -553,8 +523,6 @@ class FactoryOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        git_hub_access_token_request = models.GitHubAccessTokenRequest(git_hub_access_code=git_hub_access_code, git_hub_client_id=git_hub_client_id, git_hub_access_token_base_url=git_hub_access_token_base_url)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
@@ -600,11 +568,7 @@ class FactoryOperations:
         self,
         resource_group_name: str,
         factory_name: str,
-        permissions: Optional[str] = None,
-        access_resource_path: Optional[str] = None,
-        profile_name: Optional[str] = None,
-        start_time: Optional[str] = None,
-        expire_time: Optional[str] = None,
+        policy: "models.UserAccessPolicy",
         **kwargs
     ) -> "models.AccessPolicyResponse":
         """Get Data Plane access.
@@ -613,20 +577,8 @@ class FactoryOperations:
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
-        :param permissions: The string with permissions for Data Plane access. Currently only 'r' is
-         supported which grants read only access.
-        :type permissions: str
-        :param access_resource_path: The resource path to get access relative to factory. Currently
-         only empty string is supported which corresponds to the factory resource.
-        :type access_resource_path: str
-        :param profile_name: The name of the profile. Currently only the default is supported. The
-         default value is DefaultProfile.
-        :type profile_name: str
-        :param start_time: Start time for the token. If not specified the current time will be used.
-        :type start_time: str
-        :param expire_time: Expiration time for the token. Maximum duration for the token is eight
-         hours and by default the token will expire in eight hours.
-        :type expire_time: str
+        :param policy: Data Plane user access policy definition.
+        :type policy: ~data_factory_management_client.models.UserAccessPolicy
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: AccessPolicyResponse, or the result of cls(response)
         :rtype: ~data_factory_management_client.models.AccessPolicyResponse
@@ -637,8 +589,6 @@ class FactoryOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        policy = models.UserAccessPolicy(permissions=permissions, access_resource_path=access_resource_path, profile_name=profile_name, start_time=start_time, expire_time=expire_time)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"

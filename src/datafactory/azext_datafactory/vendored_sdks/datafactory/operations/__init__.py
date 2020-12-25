@@ -6,40 +6,40 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._operation_operations import OperationOperations
-from ._factory_operations import FactoryOperations
+from ._operations import Operations
+from ._factories_operations import FactoriesOperations
 from ._exposure_control_operations import ExposureControlOperations
-from ._integration_runtime_operations import IntegrationRuntimeOperations
+from ._integration_runtimes_operations import IntegrationRuntimesOperations
 from ._integration_runtime_object_metadata_operations import IntegrationRuntimeObjectMetadataOperations
-from ._integration_runtime_node_operations import IntegrationRuntimeNodeOperations
-from ._linked_service_operations import LinkedServiceOperations
-from ._dataset_operations import DatasetOperations
-from ._pipeline_operations import PipelineOperations
-from ._pipeline_run_operations import PipelineRunOperations
-from ._activity_run_operations import ActivityRunOperations
-from ._trigger_operations import TriggerOperations
-from ._trigger_run_operations import TriggerRunOperations
-from ._data_flow_operations import DataFlowOperations
+from ._integration_runtime_nodes_operations import IntegrationRuntimeNodesOperations
+from ._linked_services_operations import LinkedServicesOperations
+from ._datasets_operations import DatasetsOperations
+from ._pipelines_operations import PipelinesOperations
+from ._pipeline_runs_operations import PipelineRunsOperations
+from ._activity_runs_operations import ActivityRunsOperations
+from ._triggers_operations import TriggersOperations
+from ._trigger_runs_operations import TriggerRunsOperations
+from ._data_flows_operations import DataFlowsOperations
 from ._data_flow_debug_session_operations import DataFlowDebugSessionOperations
-from ._managed_virtual_network_operations import ManagedVirtualNetworkOperations
-from ._managed_private_endpoint_operations import ManagedPrivateEndpointOperations
+from ._managed_virtual_networks_operations import ManagedVirtualNetworksOperations
+from ._managed_private_endpoints_operations import ManagedPrivateEndpointsOperations
 
 __all__ = [
-    'OperationOperations',
-    'FactoryOperations',
+    'Operations',
+    'FactoriesOperations',
     'ExposureControlOperations',
-    'IntegrationRuntimeOperations',
+    'IntegrationRuntimesOperations',
     'IntegrationRuntimeObjectMetadataOperations',
-    'IntegrationRuntimeNodeOperations',
-    'LinkedServiceOperations',
-    'DatasetOperations',
-    'PipelineOperations',
-    'PipelineRunOperations',
-    'ActivityRunOperations',
-    'TriggerOperations',
-    'TriggerRunOperations',
-    'DataFlowOperations',
+    'IntegrationRuntimeNodesOperations',
+    'LinkedServicesOperations',
+    'DatasetsOperations',
+    'PipelinesOperations',
+    'PipelineRunsOperations',
+    'ActivityRunsOperations',
+    'TriggersOperations',
+    'TriggerRunsOperations',
+    'DataFlowsOperations',
     'DataFlowDebugSessionOperations',
-    'ManagedVirtualNetworkOperations',
-    'ManagedPrivateEndpointOperations',
+    'ManagedVirtualNetworksOperations',
+    'ManagedPrivateEndpointsOperations',
 ]

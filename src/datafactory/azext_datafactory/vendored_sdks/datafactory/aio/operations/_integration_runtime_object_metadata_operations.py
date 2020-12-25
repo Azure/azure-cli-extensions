@@ -170,7 +170,7 @@ class IntegrationRuntimeObjectMetadataOperations:
         resource_group_name: str,
         factory_name: str,
         integration_runtime_name: str,
-        metadata_path: Optional[str] = None,
+        get_metadata_request: Optional["models.GetSsisObjectMetadataRequest"] = None,
         **kwargs
     ) -> "models.SsisObjectMetadataListResponse":
         """Get a SSIS integration runtime object metadata by specified path. The return is pageable
@@ -182,8 +182,8 @@ class IntegrationRuntimeObjectMetadataOperations:
         :type factory_name: str
         :param integration_runtime_name: The integration runtime name.
         :type integration_runtime_name: str
-        :param metadata_path: Metadata path.
-        :type metadata_path: str
+        :param get_metadata_request: The parameters for getting a SSIS object metadata.
+        :type get_metadata_request: ~data_factory_management_client.models.GetSsisObjectMetadataRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SsisObjectMetadataListResponse, or the result of cls(response)
         :rtype: ~data_factory_management_client.models.SsisObjectMetadataListResponse
@@ -194,8 +194,6 @@ class IntegrationRuntimeObjectMetadataOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        get_metadata_request = models.GetSsisObjectMetadataRequest(metadata_path=metadata_path)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
