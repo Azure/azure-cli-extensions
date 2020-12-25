@@ -20,7 +20,6 @@ from .example_steps import step_data_connection_show
 from .example_steps import step_database_list
 from .example_steps import step_attached_database_configuration_list
 from .example_steps import step_database_show
-from .example_steps import step_database_list
 from .example_steps import step_cluster_list_sku
 from .example_steps import step_cluster_show
 from .example_steps import step_cluster_list
@@ -29,19 +28,10 @@ from .example_steps import step_data_connection_event
 from .example_steps import step_database_update
 from .example_steps import step_cluster_detach_follower_database
 from .example_steps import step_cluster_list_follower_database
-from .example_steps import step_cluster_start
-from .example_steps import step_cluster_stop
-from .example_steps import step_cluster_update
 from .example_steps import step_attached_database_configuration_delete
 from .example_steps import step_data_connection_delete
 from .example_steps import step_database_delete
 from .example_steps import step_cluster_delete
-from .example_steps import step_database_principal_assignment_show
-from .example_steps import step_database_principal_assignment_create
-from .example_steps import step_database_principal_assignment_delete
-from .example_steps import step_cluster_principal_assignment_show
-from .example_steps import step_cluster_principal_assignment_create
-from .example_steps import step_cluster_principal_assignment_delete
 from .. import (
     try_manual,
     raise_if,
@@ -89,20 +79,11 @@ def call_scenario(test, rg):
     step_cluster_detach_follower_database(test, rg, checks=[])
     # STEP NOT FOUND: KustoDatabaseCheckNameAvailability
     step_cluster_list_follower_database(test, rg, checks=[])
-    step_cluster_start(test, rg, checks=[])
-    step_cluster_stop(test, rg, checks=[])
-    step_cluster_update(test, rg, checks=[])
     # STEP NOT FOUND: KustoClustersCheckNameAvailability
     step_attached_database_configuration_delete(test, rg, checks=[])
     step_data_connection_delete(test, rg, checks=[])
     step_database_delete(test, rg, checks=[])
     step_cluster_delete(test, rg, checks=[])
-    step_database_principal_assignment_show(test, rg, checks=[])
-    step_database_principal_assignment_create(test, rg, checks=[])
-    step_database_principal_assignment_delete(test, rg, checks=[])
-    step_cluster_principal_assignment_show(test, rg, checks=[])
-    step_cluster_principal_assignment_create(test, rg, checks=[])
-    step_cluster_principal_assignment_delete(test, rg, checks=[])
     cleanup_scenario(test, rg)
 
 
@@ -110,9 +91,8 @@ def call_scenario(test, rg):
 @try_manual
 class KustoScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='clitestkusto_kustorptest'[:7], key='rg', parameter_name='rg')
-    def test_kusto_Scenario(self, rg):
-
+    def __init__(self, *args, **kwargs):
+        super(KustoScenarioTest, self).__init__(*args, **kwargs)
         self.kwargs.update({
             'subscription_id': self.get_subscription_id()
         })
@@ -122,13 +102,17 @@ class KustoScenarioTest(ScenarioTest):
             'myAttachedDatabaseConfiguration3': 'default',
             'myCluster2': 'leader4',
             'myCluster3': 'KustoClusterLeader',
-            'myCluster': 'kustoclusterrptest4',
+            'myCluster': self.create_random_name(prefix='kustoclusterrptest4'[:9], length=19),
             'myAttachedDatabaseConfiguration': 'myAttachedDatabaseConfiguration',
-            'myAttachedDatabaseConfiguration2': 'attachedDatabaseConfigurations1',
-            'myDataConnection': 'DataConnections8',
+            'myAttachedDatabaseConfiguration2': self.create_random_name(prefix='attachedDatabaseConfigurations1'[:15],
+                                                                        length=31),
+            'myDataConnection': self.create_random_name(prefix='DataConnections8'[:8], length=16),
             'myDataConnection2': 'kustoeventhubconnection1',
         })
 
+
+    @ResourceGroupPreparer(name_prefix='clitestkusto_kustorptest'[:7], key='rg', parameter_name='rg')
+    def test_kusto_Scenario(self, rg):
         call_scenario(self, rg)
         calc_coverage(__file__)
         raise_if()

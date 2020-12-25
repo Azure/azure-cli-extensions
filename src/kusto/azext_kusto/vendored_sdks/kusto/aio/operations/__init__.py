@@ -6,20 +6,20 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._cluster_operations import ClusterOperations
-from ._cluster_principal_assignment_operations import ClusterPrincipalAssignmentOperations
-from ._database_operations import DatabaseOperations
-from ._database_principal_assignment_operations import DatabasePrincipalAssignmentOperations
-from ._attached_database_configuration_operations import AttachedDatabaseConfigurationOperations
-from ._data_connection_operations import DataConnectionOperations
-from ._operation_operations import OperationOperations
+from ._clusters_operations import ClustersOperations
+from ._cluster_principal_assignments_operations import ClusterPrincipalAssignmentsOperations
+from ._databases_operations import DatabasesOperations
+from ._database_principal_assignments_operations import DatabasePrincipalAssignmentsOperations
+from ._attached_database_configurations_operations import AttachedDatabaseConfigurationsOperations
+from ._data_connections_operations import DataConnectionsOperations
+from ._operations import Operations
 
 __all__ = [
-    'ClusterOperations',
-    'ClusterPrincipalAssignmentOperations',
-    'DatabaseOperations',
-    'DatabasePrincipalAssignmentOperations',
-    'AttachedDatabaseConfigurationOperations',
-    'DataConnectionOperations',
-    'OperationOperations',
+    'ClustersOperations',
+    'ClusterPrincipalAssignmentsOperations',
+    'DatabasesOperations',
+    'DatabasePrincipalAssignmentsOperations',
+    'AttachedDatabaseConfigurationsOperations',
+    'DataConnectionsOperations',
+    'Operations',
 ]

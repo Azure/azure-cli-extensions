@@ -43,6 +43,7 @@ try:
     from ._models_py3 import EventHubDataConnection
     from ._models_py3 import FollowerDatabaseDefinition
     from ._models_py3 import FollowerDatabaseListResult
+    from ._models_py3 import Identity
     from ._models_py3 import IotHubDataConnection
     from ._models_py3 import KeyVaultProperties
     from ._models_py3 import LanguageExtension
@@ -99,6 +100,7 @@ except (SyntaxError, ImportError):
     from ._models import EventHubDataConnection  # type: ignore
     from ._models import FollowerDatabaseDefinition  # type: ignore
     from ._models import FollowerDatabaseListResult  # type: ignore
+    from ._models import Identity  # type: ignore
     from ._models import IotHubDataConnection  # type: ignore
     from ._models import KeyVaultProperties  # type: ignore
     from ._models import LanguageExtension  # type: ignore
@@ -180,6 +182,7 @@ __all__ = [
     'EventHubDataConnection',
     'FollowerDatabaseDefinition',
     'FollowerDatabaseListResult',
+    'Identity',
     'IotHubDataConnection',
     'KeyVaultProperties',
     'LanguageExtension',

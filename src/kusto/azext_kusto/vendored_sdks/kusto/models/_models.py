@@ -409,6 +409,8 @@ class Cluster(TrackedResource):
     :type sku: ~kusto_management_client.models.AzureSku
     :param zones: The availability zones of the cluster.
     :type zones: list[str]
+    :param identity: The identity of the cluster, if configured.
+    :type identity: ~kusto_management_client.models.Identity
     :ivar state: The state of the resource. Possible values include: "Creating", "Unavailable",
      "Running", "Deleting", "Deleted", "Stopping", "Stopped", "Starting", "Updating".
     :vartype state: str or ~kusto_management_client.models.State
@@ -443,18 +445,6 @@ class Cluster(TrackedResource):
     :param enable_double_encryption: A boolean value that indicates if double encryption is
      enabled.
     :type enable_double_encryption: bool
-    :ivar principal_id: The principal ID of resource identity.
-    :vartype principal_id: str
-    :ivar tenant_id: The tenant ID of resource.
-    :vartype tenant_id: str
-    :param type_identity_type: The identity type. Possible values include: "None",
-     "SystemAssigned".
-    :type type_identity_type: str or ~kusto_management_client.models.IdentityType
-    :param user_assigned_identities: The list of user identities associated with the Kusto cluster.
-     The user identity dictionary key references will be ARM resource ids in the form:
-     '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
-    :type user_assigned_identities: dict[str,
-     ~kusto_management_client.models.ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties]
     """
 
     _validation = {
@@ -469,8 +459,6 @@ class Cluster(TrackedResource):
         'data_ingestion_uri': {'readonly': True},
         'state_reason': {'readonly': True},
         'language_extensions': {'readonly': True},
-        'principal_id': {'readonly': True},
-        'tenant_id': {'readonly': True},
     }
 
     _attribute_map = {
@@ -481,6 +469,7 @@ class Cluster(TrackedResource):
         'location': {'key': 'location', 'type': 'str'},
         'sku': {'key': 'sku', 'type': 'AzureSku'},
         'zones': {'key': 'zones', 'type': '[str]'},
+        'identity': {'key': 'identity', 'type': 'Identity'},
         'state': {'key': 'properties.state', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'uri': {'key': 'properties.uri', 'type': 'str'},
@@ -495,10 +484,6 @@ class Cluster(TrackedResource):
         'enable_purge': {'key': 'properties.enablePurge', 'type': 'bool'},
         'language_extensions': {'key': 'properties.languageExtensions', 'type': 'LanguageExtensionsList'},
         'enable_double_encryption': {'key': 'properties.enableDoubleEncryption', 'type': 'bool'},
-        'principal_id': {'key': 'identity.principalId', 'type': 'str'},
-        'tenant_id': {'key': 'identity.tenantId', 'type': 'str'},
-        'type_identity_type': {'key': 'identity.type', 'type': 'str'},
-        'user_assigned_identities': {'key': 'identity.userAssignedIdentities', 'type': '{ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties}'},
     }
 
     def __init__(
@@ -508,6 +493,7 @@ class Cluster(TrackedResource):
         super(Cluster, self).__init__(**kwargs)
         self.sku = kwargs['sku']
         self.zones = kwargs.get('zones', None)
+        self.identity = kwargs.get('identity', None)
         self.state = None
         self.provisioning_state = None
         self.uri = None
@@ -522,10 +508,6 @@ class Cluster(TrackedResource):
         self.enable_purge = kwargs.get('enable_purge', False)
         self.language_extensions = None
         self.enable_double_encryption = kwargs.get('enable_double_encryption', False)
-        self.principal_id = None
-        self.tenant_id = None
-        self.type_identity_type = kwargs.get('type_identity_type', None)
-        self.user_assigned_identities = kwargs.get('user_assigned_identities', None)
 
 
 class ClusterCheckNameRequest(msrest.serialization.Model):
@@ -723,6 +705,8 @@ class ClusterUpdate(Resource):
     :type location: str
     :param sku: The SKU of the cluster.
     :type sku: ~kusto_management_client.models.AzureSku
+    :param identity: The identity of the cluster, if configured.
+    :type identity: ~kusto_management_client.models.Identity
     :ivar state: The state of the resource. Possible values include: "Creating", "Unavailable",
      "Running", "Deleting", "Deleted", "Stopping", "Stopped", "Starting", "Updating".
     :vartype state: str or ~kusto_management_client.models.State
@@ -757,18 +741,6 @@ class ClusterUpdate(Resource):
     :param enable_double_encryption: A boolean value that indicates if double encryption is
      enabled.
     :type enable_double_encryption: bool
-    :ivar principal_id: The principal ID of resource identity.
-    :vartype principal_id: str
-    :ivar tenant_id: The tenant ID of resource.
-    :vartype tenant_id: str
-    :param type_identity_type: The identity type. Possible values include: "None",
-     "SystemAssigned".
-    :type type_identity_type: str or ~kusto_management_client.models.IdentityType
-    :param user_assigned_identities: The list of user identities associated with the Kusto cluster.
-     The user identity dictionary key references will be ARM resource ids in the form:
-     '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
-    :type user_assigned_identities: dict[str,
-     ~kusto_management_client.models.ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties]
     """
 
     _validation = {
@@ -781,8 +753,6 @@ class ClusterUpdate(Resource):
         'data_ingestion_uri': {'readonly': True},
         'state_reason': {'readonly': True},
         'language_extensions': {'readonly': True},
-        'principal_id': {'readonly': True},
-        'tenant_id': {'readonly': True},
     }
 
     _attribute_map = {
@@ -792,6 +762,7 @@ class ClusterUpdate(Resource):
         'tags': {'key': 'tags', 'type': '{str}'},
         'location': {'key': 'location', 'type': 'str'},
         'sku': {'key': 'sku', 'type': 'AzureSku'},
+        'identity': {'key': 'identity', 'type': 'Identity'},
         'state': {'key': 'properties.state', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'uri': {'key': 'properties.uri', 'type': 'str'},
@@ -806,10 +777,6 @@ class ClusterUpdate(Resource):
         'enable_purge': {'key': 'properties.enablePurge', 'type': 'bool'},
         'language_extensions': {'key': 'properties.languageExtensions', 'type': 'LanguageExtensionsList'},
         'enable_double_encryption': {'key': 'properties.enableDoubleEncryption', 'type': 'bool'},
-        'principal_id': {'key': 'identity.principalId', 'type': 'str'},
-        'tenant_id': {'key': 'identity.tenantId', 'type': 'str'},
-        'type_identity_type': {'key': 'identity.type', 'type': 'str'},
-        'user_assigned_identities': {'key': 'identity.userAssignedIdentities', 'type': '{ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties}'},
     }
 
     def __init__(
@@ -820,6 +787,7 @@ class ClusterUpdate(Resource):
         self.tags = kwargs.get('tags', None)
         self.location = kwargs.get('location', None)
         self.sku = kwargs.get('sku', None)
+        self.identity = kwargs.get('identity', None)
         self.state = None
         self.provisioning_state = None
         self.uri = None
@@ -834,10 +802,6 @@ class ClusterUpdate(Resource):
         self.enable_purge = kwargs.get('enable_purge', False)
         self.language_extensions = None
         self.enable_double_encryption = kwargs.get('enable_double_encryption', False)
-        self.principal_id = None
-        self.tenant_id = None
-        self.type_identity_type = kwargs.get('type_identity_type', None)
-        self.user_assigned_identities = kwargs.get('user_assigned_identities', None)
 
 
 class ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties(msrest.serialization.Model):
@@ -1589,6 +1553,50 @@ class FollowerDatabaseListResult(msrest.serialization.Model):
     ):
         super(FollowerDatabaseListResult, self).__init__(**kwargs)
         self.value = kwargs.get('value', None)
+
+
+class Identity(msrest.serialization.Model):
+    """Identity for the resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar principal_id: The principal ID of resource identity.
+    :vartype principal_id: str
+    :ivar tenant_id: The tenant ID of resource.
+    :vartype tenant_id: str
+    :param type: Required. The identity type. Possible values include: "None", "SystemAssigned".
+    :type type: str or ~kusto_management_client.models.IdentityType
+    :param user_assigned_identities: The list of user identities associated with the Kusto cluster.
+     The user identity dictionary key references will be ARM resource ids in the form:
+     '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
+    :type user_assigned_identities: dict[str,
+     ~kusto_management_client.models.ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties]
+    """
+
+    _validation = {
+        'principal_id': {'readonly': True},
+        'tenant_id': {'readonly': True},
+        'type': {'required': True},
+    }
+
+    _attribute_map = {
+        'principal_id': {'key': 'principalId', 'type': 'str'},
+        'tenant_id': {'key': 'tenantId', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'user_assigned_identities': {'key': 'userAssignedIdentities', 'type': '{ComponentsSgqdofSchemasIdentityPropertiesUserassignedidentitiesAdditionalproperties}'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(Identity, self).__init__(**kwargs)
+        self.principal_id = None
+        self.tenant_id = None
+        self.type = kwargs['type']
+        self.user_assigned_identities = kwargs.get('user_assigned_identities', None)
 
 
 class IotHubDataConnection(DataConnection):

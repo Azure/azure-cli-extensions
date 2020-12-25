@@ -26,7 +26,7 @@ def step_cluster_create(test, rg, checks=None):
         checks = []
     test.cmd('az kusto cluster create '
              '--cluster-name "{myCluster}" '
-             '--identity-type "SystemAssigned" '
+             '--type "SystemAssigned" '
              '--location "southcentralus" '
              '--enable-purge true '
              '--enable-streaming-ingest true '
@@ -45,7 +45,7 @@ def step_cluster_create(test, rg, checks=None):
 def step_cluster_create2(test, rg, checks=None):
     test.cmd('az kusto cluster create '
              '--cluster-name "{myCluster}" '
-             '--identity-type "SystemAssigned" '
+             '--type "SystemAssigned" '
              '--location "southcentralus" '
              '--enable-purge true '
              '--enable-streaming-ingest true '
@@ -354,6 +354,19 @@ def step_data_connection_event_hub_create(test, rg, checks=None):
              '--resource-group "{rg}"',
              checks=[])
 
+# EXAMPLE: /DataConnections/post/KustoDataConnectionValidation
+@try_manual
+def step_data_connection_event(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az kusto data-connection event-hub data-connection-validation '
+             '--cluster-name "{myCluster}" '
+             '--database-name "KustoDatabase8" '
+             '--name "{myDataConnection}" '
+             '--consumer-group "$Default" '
+             '--event-hub-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.EventHub/namespaces/{eventhub_namespace}/eventhubs/{eventhub_name}"  '
+             '--resource-group "{rg}"',
+             checks=checks)
 
 # EXAMPLE: KustoDataConnectionsGet
 @try_manual
@@ -378,3 +391,36 @@ def step_data_connection_event_hub_update(test, rg, checks=None):
              '--event-hub-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.EventHub/namespaces/{eventhub_namespace}/eventhubs/{eventhub_name}" '
              '--resource-group "{rg}"',
              checks=[])
+
+
+# EXAMPLE: /DatabasePrincipalAssignments/put/KustoDatabasePrincipalAssignmentsCreateOrUpdate
+@try_manual
+def step_database_principal_assignment_create(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az kusto database-principal-assignment create '
+             '--cluster-name "{myCluster}" '
+             '--database-name "Kustodatabase8" '
+             '--principal-id "{myPrincipalId}" '
+             '--principal-type "App" '
+             '--role "Admin" '
+             '--tenant-id "{myTenantId}" '
+             '--principal-assignment-name "kustoprincipal1" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /ClusterPrincipalAssignments/put/KustoClusterPrincipalAssignmentsCreateOrUpdate
+@try_manual
+def step_cluster_principal_assignment_create(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az kusto cluster-principal-assignment create '
+             '--cluster-name "{myCluster}" '
+             '--principal-id "{myPrincipalId}" '
+             '--principal-type "App" '
+             '--role "AllDatabasesAdmin" '
+             '--tenant-id "{myTenantId}" '
+             '--principal-assignment-name "kustoprincipal1" '
+             '--resource-group "{rg}"',
+             checks=checks)
