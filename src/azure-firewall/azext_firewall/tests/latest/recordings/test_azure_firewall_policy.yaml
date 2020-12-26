@@ -1,7 +1,8 @@
 interactions:
 - request:
     body: '{"location": "centralus", "properties": {"threatIntelWhitelist": {"ipAddresses":
-      ["101.0.0.0", "101.0.0.1"], "fqdns": ["*.microsoft.com"]}, "sku": {"tier": "Premium"}}}'
+      ["101.0.0.0", "101.0.0.1"], "fqdns": ["*.microsoft.com"]}, "intrusionDetection":
+      {"mode": "Deny", "configuration": {}}, "sku": {"tier": "Premium"}}}'
     headers:
       Accept:
       - application/json
@@ -12,13 +13,13 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '168'
+      - '229'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
-      - -g -n -l --ip-addresses --fqdns --sku
+      - -g -n -l --ip-addresses --fqdns --sku --detect-mode
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -31,22 +32,24 @@ interactions:
         : {\r\n      \"fqdns\": [\r\n        \"*.microsoft.com\"\r\n      ],\r\n \
         \     \"ipAddresses\": [\r\n        \"101.0.0.0\",\r\n        \"101.0.0.1\"\
         \r\n      ]\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\"\
-        : [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Updating\"\
-        \r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        : [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\": {\r\n     \
+        \ \"mode\": \"Deny\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\"\
+        : [],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n  \
+        \  \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
         ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"e0b83e69-f25a-40ce-9f70-075209a65bdf\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"94b652db-6f41-4863-ba0c-6d58269a4b92\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/4cefa9ff-9028-41ae-a692-431c350b3d73?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/b5996f8b-26b0-431f-b7cf-61c4d9294ae7?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
-      - '762'
+      - '929'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:23:14 GMT
+      - Wed, 23 Dec 2020 11:10:35 GMT
       expires:
       - '-1'
       pragma:
@@ -58,7 +61,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -74,12 +77,12 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n -l --ip-addresses --fqdns --sku
+      - -g -n -l --ip-addresses --fqdns --sku --detect-mode
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/4cefa9ff-9028-41ae-a692-431c350b3d73?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/b5996f8b-26b0-431f-b7cf-61c4d9294ae7?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -91,7 +94,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:23:34 GMT
+      - Wed, 23 Dec 2020 11:10:45 GMT
       expires:
       - '-1'
       pragma:
@@ -121,9 +124,9 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n -l --ip-addresses --fqdns --sku
+      - -g -n -l --ip-addresses --fqdns --sku --detect-mode
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-07-01
@@ -134,20 +137,22 @@ interactions:
         : {\r\n      \"fqdns\": [\r\n        \"*.microsoft.com\"\r\n      ],\r\n \
         \     \"ipAddresses\": [\r\n        \"101.0.0.0\",\r\n        \"101.0.0.1\"\
         \r\n      ]\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\"\
-        : [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\
-        \r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        : [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\": {\r\n     \
+        \ \"mode\": \"Deny\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\"\
+        : [],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n  \
+        \  \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
         ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"e0b83e69-f25a-40ce-9f70-075209a65bdf\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"94b652db-6f41-4863-ba0c-6d58269a4b92\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '763'
+      - '930'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:23:34 GMT
+      - Wed, 23 Dec 2020 11:10:46 GMT
       expires:
       - '-1'
       pragma:
@@ -179,7 +184,7 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -192,20 +197,22 @@ interactions:
         : {\r\n      \"fqdns\": [\r\n        \"*.microsoft.com\"\r\n      ],\r\n \
         \     \"ipAddresses\": [\r\n        \"101.0.0.0\",\r\n        \"101.0.0.1\"\
         \r\n      ]\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\"\
-        : [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\
-        \r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        : [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\": {\r\n     \
+        \ \"mode\": \"Deny\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\"\
+        : [],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n  \
+        \  \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
         ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"e0b83e69-f25a-40ce-9f70-075209a65bdf\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"94b652db-6f41-4863-ba0c-6d58269a4b92\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '763'
+      - '930'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:23:45 GMT
+      - Wed, 23 Dec 2020 11:10:47 GMT
       expires:
       - '-1'
       pragma:
@@ -237,7 +244,7 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -252,20 +259,23 @@ interactions:
         \n          \"ipAddresses\": [\r\n            \"101.0.0.0\",\r\n         \
         \   \"101.0.0.1\"\r\n          ]\r\n        },\r\n        \"childPolicies\"\
         : [],\r\n        \"ruleCollectionGroups\": [],\r\n        \"firewalls\": [],\r\
+        \n        \"intrusionDetection\": {\r\n          \"mode\": \"Deny\",\r\n \
+        \         \"configuration\": {\r\n            \"signatureOverrides\": [],\r\
+        \n            \"bypassTrafficSettings\": []\r\n          }\r\n        },\r\
         \n        \"provisioningState\": \"Succeeded\"\r\n      },\r\n      \"id\"\
         : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
         ,\r\n      \"name\": \"myclipolicy\",\r\n      \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n      \"etag\": \"e0b83e69-f25a-40ce-9f70-075209a65bdf\",\r\n      \"\
+        ,\r\n      \"etag\": \"94b652db-6f41-4863-ba0c-6d58269a4b92\",\r\n      \"\
         location\": \"centralus\"\r\n    }\r\n  ]\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '892'
+      - '1087'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:23:55 GMT
+      - Wed, 23 Dec 2020 11:10:48 GMT
       expires:
       - '-1'
       pragma:
@@ -295,7 +305,7 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -303,41 +313,29 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/firewallPolicies?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"value\": [\r\n    {\r\n      \"properties\": {\r\n       \
-        \ \"sku\": {\r\n          \"tier\": \"Premium\"\r\n        },\r\n        \"\
-        threatIntelMode\": \"Alert\",\r\n        \"threatIntelWhitelist\": {\r\n \
-        \         \"fqdns\": [\r\n            \"*.microsoft.com\"\r\n          ],\r\
-        \n          \"ipAddresses\": [\r\n            \"101.0.0.0\",\r\n         \
-        \   \"101.0.0.1\"\r\n          ]\r\n        },\r\n        \"childPolicies\"\
-        : [],\r\n        \"ruleCollectionGroups\": [],\r\n        \"firewalls\": [],\r\
-        \n        \"provisioningState\": \"Succeeded\"\r\n      },\r\n      \"id\"\
-        : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
-        ,\r\n      \"name\": \"myclipolicy\",\r\n      \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n      \"etag\": \"e0b83e69-f25a-40ce-9f70-075209a65bdf\",\r\n      \"\
-        location\": \"centralus\"\r\n    }\r\n  ]\r\n}"
+      string: '{"value":[{"properties":{"sku":{"tier":"Premium"},"threatIntelMode":"Alert","childPolicies":[],"ruleCollectionGroups":[],"firewalls":[],"intrusionDetection":{"mode":"Off","configuration":{"signatureOverrides":[{"id":"12325","mode":"Deny"}],"bypassTrafficSettings":[{"name":"bypass-3","protocol":"TCP","sourceAddresses":["10.0.0.1"],"destinationAddresses":["10.0.0.2"],"destinationPorts":["80","90"]}]}},"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/harold/providers/Microsoft.Network/firewallPolicies/fwp-1","name":"fwp-1","type":"Microsoft.Network/FirewallPolicies","etag":"f1875d48-be56-49b6-bdfa-75ae634c1bb8","location":"eastus"},{"properties":{"sku":{"tier":"Premium"},"threatIntelMode":"Alert","threatIntelWhitelist":{"fqdns":["*.microsoft.com"],"ipAddresses":["101.0.0.0","101.0.0.1"]},"childPolicies":[],"ruleCollectionGroups":[],"firewalls":[],"intrusionDetection":{"mode":"Deny","configuration":{"signatureOverrides":[],"bypassTrafficSettings":[]}},"provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy","name":"myclipolicy","type":"Microsoft.Network/FirewallPolicies","etag":"94b652db-6f41-4863-ba0c-6d58269a4b92","location":"centralus"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '892'
+      - '1395'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:24:05 GMT
+      - Wed, 23 Dec 2020 11:10:50 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-original-request-ids:
+      - ''
+      - ''
     status:
       code: 200
       message: OK
@@ -353,9 +351,9 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --threat-intel-mode --ip-addresses --fqdns
+      - -g -n --threat-intel-mode --ip-addresses --fqdns --detect-mode
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -368,20 +366,22 @@ interactions:
         : {\r\n      \"fqdns\": [\r\n        \"*.microsoft.com\"\r\n      ],\r\n \
         \     \"ipAddresses\": [\r\n        \"101.0.0.0\",\r\n        \"101.0.0.1\"\
         \r\n      ]\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\"\
-        : [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\
-        \r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        : [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\": {\r\n     \
+        \ \"mode\": \"Deny\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\"\
+        : [],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n  \
+        \  \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
         ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"e0b83e69-f25a-40ce-9f70-075209a65bdf\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"94b652db-6f41-4863-ba0c-6d58269a4b92\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '763'
+      - '930'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:24:15 GMT
+      - Wed, 23 Dec 2020 11:10:50 GMT
       expires:
       - '-1'
       pragma:
@@ -402,8 +402,9 @@ interactions:
 - request:
     body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy",
       "location": "centralus", "properties": {"threatIntelMode": "Deny", "threatIntelWhitelist":
-      {"ipAddresses": ["102.0.0.0", "102.0.0.1"], "fqdns": ["*.google.com"]}, "sku":
-      {"tier": "Premium"}}}'
+      {"ipAddresses": ["102.0.0.0", "102.0.0.1"], "fqdns": ["*.google.com"]}, "intrusionDetection":
+      {"mode": "Off", "configuration": {"signatureOverrides": [], "bypassTrafficSettings":
+      []}}, "sku": {"tier": "Premium"}}}'
     headers:
       Accept:
       - application/json
@@ -414,13 +415,13 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '401'
+      - '514'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
-      - -g -n --threat-intel-mode --ip-addresses --fqdns
+      - -g -n --threat-intel-mode --ip-addresses --fqdns --detect-mode
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -433,22 +434,24 @@ interactions:
         : {\r\n      \"fqdns\": [\r\n        \"*.google.com\"\r\n      ],\r\n    \
         \  \"ipAddresses\": [\r\n        \"102.0.0.0\",\r\n        \"102.0.0.1\"\r\
         \n      ]\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\"\
-        : [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Updating\"\
-        \r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        : [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\": {\r\n     \
+        \ \"mode\": \"Off\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\"\
+        : [],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n  \
+        \  \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
         ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"b0e472a5-8c08-4a42-b1d2-efec2208a0f5\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"4dcde45f-9f0f-41a8-9bbc-7bd4e69abbcd\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/0d8daf77-c6ec-4ba5-915f-d2506024f83f?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/46d5225c-7efd-4033-8cb3-a74014c5e7ed?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
-      - '758'
+      - '924'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:24:25 GMT
+      - Wed, 23 Dec 2020 11:10:52 GMT
       expires:
       - '-1'
       pragma:
@@ -480,12 +483,12 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --threat-intel-mode --ip-addresses --fqdns
+      - -g -n --threat-intel-mode --ip-addresses --fqdns --detect-mode
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/0d8daf77-c6ec-4ba5-915f-d2506024f83f?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/46d5225c-7efd-4033-8cb3-a74014c5e7ed?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -497,7 +500,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:24:44 GMT
+      - Wed, 23 Dec 2020 11:11:04 GMT
       expires:
       - '-1'
       pragma:
@@ -527,9 +530,9 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --threat-intel-mode --ip-addresses --fqdns
+      - -g -n --threat-intel-mode --ip-addresses --fqdns --detect-mode
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy?api-version=2020-07-01
@@ -540,20 +543,22 @@ interactions:
         : {\r\n      \"fqdns\": [\r\n        \"*.google.com\"\r\n      ],\r\n    \
         \  \"ipAddresses\": [\r\n        \"102.0.0.0\",\r\n        \"102.0.0.1\"\r\
         \n      ]\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\"\
-        : [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\
-        \r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
+        : [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\": {\r\n     \
+        \ \"mode\": \"Off\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\"\
+        : [],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n  \
+        \  \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy\"\
         ,\r\n  \"name\": \"myclipolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"b0e472a5-8c08-4a42-b1d2-efec2208a0f5\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"4dcde45f-9f0f-41a8-9bbc-7bd4e69abbcd\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '759'
+      - '925'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:24:45 GMT
+      - Wed, 23 Dec 2020 11:11:05 GMT
       expires:
       - '-1'
       pragma:
@@ -589,7 +594,7 @@ interactions:
       ParameterSetName:
       - -g --priority --policy-name -n
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -600,11 +605,11 @@ interactions:
       string: "{\r\n  \"properties\": {\r\n    \"priority\": 10000,\r\n    \"ruleCollections\"\
         : [],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"3e93154a-041d-47b0-9847-f6e2e6f51b55\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"e88af5b4-d872-4688-8af6-f62e8f4db0b4\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/ed434c42-79ba-4123-97c7-f0ef333c4924?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/91ad0ad1-6d59-4cf5-8fae-b31851fa959b?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -612,7 +617,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:24:56 GMT
+      - Wed, 23 Dec 2020 11:11:08 GMT
       expires:
       - '-1'
       pragma:
@@ -642,10 +647,10 @@ interactions:
       ParameterSetName:
       - -g --priority --policy-name -n
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/ed434c42-79ba-4123-97c7-f0ef333c4924?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/91ad0ad1-6d59-4cf5-8fae-b31851fa959b?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -657,7 +662,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:25:15 GMT
+      - Wed, 23 Dec 2020 11:11:18 GMT
       expires:
       - '-1'
       pragma:
@@ -689,7 +694,7 @@ interactions:
       ParameterSetName:
       - -g --priority --policy-name -n
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
@@ -699,7 +704,7 @@ interactions:
         : [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"\
         /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"3e93154a-041d-47b0-9847-f6e2e6f51b55\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"e88af5b4-d872-4688-8af6-f62e8f4db0b4\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
@@ -709,7 +714,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:25:16 GMT
+      - Wed, 23 Dec 2020 11:11:19 GMT
       expires:
       - '-1'
       pragma:
@@ -741,7 +746,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -753,7 +758,7 @@ interactions:
         : [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"\
         /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"3e93154a-041d-47b0-9847-f6e2e6f51b55\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"e88af5b4-d872-4688-8af6-f62e8f4db0b4\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
@@ -763,7 +768,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:25:27 GMT
+      - Wed, 23 Dec 2020 11:11:21 GMT
       expires:
       - '-1'
       pragma:
@@ -795,7 +800,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -807,7 +812,7 @@ interactions:
         \ \"priority\": 10000,\r\n        \"ruleCollections\": [],\r\n        \"provisioningState\"\
         : \"Succeeded\"\r\n      },\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n      \"name\": \"myclirulecollectiongroup\",\r\n      \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n      \"etag\": \"3e93154a-041d-47b0-9847-f6e2e6f51b55\",\r\n      \"\
+        ,\r\n      \"etag\": \"e88af5b4-d872-4688-8af6-f62e8f4db0b4\",\r\n      \"\
         location\": \"centralus\"\r\n    }\r\n  ]\r\n}"
     headers:
       cache-control:
@@ -817,7 +822,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:25:36 GMT
+      - Wed, 23 Dec 2020 11:11:21 GMT
       expires:
       - '-1'
       pragma:
@@ -849,7 +854,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n --priority
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -861,7 +866,7 @@ interactions:
         : [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"\
         /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"3e93154a-041d-47b0-9847-f6e2e6f51b55\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"e88af5b4-d872-4688-8af6-f62e8f4db0b4\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
@@ -871,7 +876,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:25:46 GMT
+      - Wed, 23 Dec 2020 11:11:23 GMT
       expires:
       - '-1'
       pragma:
@@ -908,7 +913,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n --priority
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -919,11 +924,11 @@ interactions:
       string: "{\r\n  \"properties\": {\r\n    \"priority\": 12000,\r\n    \"ruleCollections\"\
         : [],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"312be4e4-73e3-4576-a2ba-97d9994ad308\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"eef9b94e-7368-410a-9677-6b35ed45e0b5\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/43b5dbbf-0542-4343-ac82-c7f9e5eca81e?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/8b32fe27-9117-474e-85b1-af75b4b11353?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -931,7 +936,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:25:57 GMT
+      - Wed, 23 Dec 2020 11:11:25 GMT
       expires:
       - '-1'
       pragma:
@@ -965,10 +970,10 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n --priority
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/43b5dbbf-0542-4343-ac82-c7f9e5eca81e?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/8b32fe27-9117-474e-85b1-af75b4b11353?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -980,7 +985,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:26:17 GMT
+      - Wed, 23 Dec 2020 11:11:36 GMT
       expires:
       - '-1'
       pragma:
@@ -1012,7 +1017,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n --priority
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
@@ -1022,7 +1027,7 @@ interactions:
         : [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"\
         /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"312be4e4-73e3-4576-a2ba-97d9994ad308\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"eef9b94e-7368-410a-9677-6b35ed45e0b5\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
@@ -1032,7 +1037,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:26:17 GMT
+      - Wed, 23 Dec 2020 11:11:37 GMT
       expires:
       - '-1'
       pragma:
@@ -1066,7 +1071,7 @@ interactions:
         --rule-name --description --destination-addresses --source-addresses --translated-address
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -1078,7 +1083,7 @@ interactions:
         : [],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"\
         /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"312be4e4-73e3-4576-a2ba-97d9994ad308\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"eef9b94e-7368-410a-9677-6b35ed45e0b5\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
@@ -1088,7 +1093,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:26:27 GMT
+      - Wed, 23 Dec 2020 11:11:39 GMT
       expires:
       - '-1'
       pragma:
@@ -1133,7 +1138,7 @@ interactions:
         --rule-name --description --destination-addresses --source-addresses --translated-address
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -1157,11 +1162,11 @@ interactions:
         ,\r\n        \"priority\": 10005\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"38c018a4-a68f-4e42-ba6f-2927d2ea1e09\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"304ef455-35eb-43cd-bc35-5d183dff16ee\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/bd4e1f9b-7d6c-459f-93e7-362ce7deed97?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/0e6e1335-1a73-4f40-9521-ba4a90c50fcf?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -1169,7 +1174,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:26:29 GMT
+      - Wed, 23 Dec 2020 11:11:40 GMT
       expires:
       - '-1'
       pragma:
@@ -1185,7 +1190,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1197'
     status:
       code: 200
       message: OK
@@ -1205,10 +1210,10 @@ interactions:
         --rule-name --description --destination-addresses --source-addresses --translated-address
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/bd4e1f9b-7d6c-459f-93e7-362ce7deed97?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/0e6e1335-1a73-4f40-9521-ba4a90c50fcf?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1220,7 +1225,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:26:48 GMT
+      - Wed, 23 Dec 2020 11:11:51 GMT
       expires:
       - '-1'
       pragma:
@@ -1254,7 +1259,7 @@ interactions:
         --rule-name --description --destination-addresses --source-addresses --translated-address
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
@@ -1276,7 +1281,7 @@ interactions:
         ,\r\n        \"priority\": 10005\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"38c018a4-a68f-4e42-ba6f-2927d2ea1e09\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"304ef455-35eb-43cd-bc35-5d183dff16ee\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
@@ -1286,7 +1291,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:26:48 GMT
+      - Wed, 23 Dec 2020 11:11:51 GMT
       expires:
       - '-1'
       pragma:
@@ -1320,7 +1325,7 @@ interactions:
         --rule-name --rule-type --description --destination-addresses --source-addresses
         --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -1344,7 +1349,7 @@ interactions:
         ,\r\n        \"priority\": 10005\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"38c018a4-a68f-4e42-ba6f-2927d2ea1e09\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"304ef455-35eb-43cd-bc35-5d183dff16ee\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
@@ -1354,7 +1359,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:26:58 GMT
+      - Wed, 23 Dec 2020 11:11:52 GMT
       expires:
       - '-1'
       pragma:
@@ -1404,7 +1409,7 @@ interactions:
         --rule-name --rule-type --description --destination-addresses --source-addresses
         --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -1441,11 +1446,11 @@ interactions:
         \n      }\r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n\
         \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"158835d8-7cf4-436b-970d-84114c3e8f8a\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"2b393f4b-1bad-4346-8a6f-9599fd667d8a\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/a65a7498-06ec-40e0-a2a2-75a1c0b9265c?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/f75edab3-9eaa-4865-9634-0c94df19d52b?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -1453,7 +1458,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:27:00 GMT
+      - Wed, 23 Dec 2020 11:11:53 GMT
       expires:
       - '-1'
       pragma:
@@ -1489,10 +1494,10 @@ interactions:
         --rule-name --rule-type --description --destination-addresses --source-addresses
         --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/a65a7498-06ec-40e0-a2a2-75a1c0b9265c?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/f75edab3-9eaa-4865-9634-0c94df19d52b?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1504,7 +1509,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:27:20 GMT
+      - Wed, 23 Dec 2020 11:12:05 GMT
       expires:
       - '-1'
       pragma:
@@ -1538,7 +1543,7 @@ interactions:
         --rule-name --rule-type --description --destination-addresses --source-addresses
         --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
@@ -1573,7 +1578,7 @@ interactions:
         \n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n\
         \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"158835d8-7cf4-436b-970d-84114c3e8f8a\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"2b393f4b-1bad-4346-8a6f-9599fd667d8a\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
@@ -1583,7 +1588,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:27:20 GMT
+      - Wed, 23 Dec 2020 11:12:05 GMT
       expires:
       - '-1'
       pragma:
@@ -1615,9 +1620,9 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name -n --collection-priority --action
         --rule-name --rule-type --description --destination-addresses --source-addresses
-        --protocols --fqdn-tags
+        --protocols --fqdn-tags --target-urls --enable-terminate-tls
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -1654,7 +1659,7 @@ interactions:
         \n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n\
         \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"158835d8-7cf4-436b-970d-84114c3e8f8a\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"2b393f4b-1bad-4346-8a6f-9599fd667d8a\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
@@ -1664,7 +1669,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:27:31 GMT
+      - Wed, 23 Dec 2020 11:12:06 GMT
       expires:
       - '-1'
       pragma:
@@ -1701,7 +1706,8 @@ interactions:
       "test", "ruleType": "ApplicationRule", "sourceAddresses": ["202.120.36.13",
       "202.120.36.14"], "destinationAddresses": ["202.120.36.15", "202.120.36.16"],
       "protocols": [{"protocolType": "Http", "port": 12800}, {"protocolType": "Https",
-      "port": 12801}], "fqdnTags": ["AzureBackup", "HDInsight"]}]}]}, "name": "myclirulecollectiongroup"}'
+      "port": 12801}], "targetUrls": ["www.google.com", "www.bing.com"], "fqdnTags":
+      ["AzureBackup", "HDInsight"], "terminateTLS": true}]}]}, "name": "myclirulecollectiongroup"}'
     headers:
       Accept:
       - application/json
@@ -1712,15 +1718,15 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1729'
+      - '1801'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name -n --collection-priority --action
         --rule-name --rule-type --description --destination-addresses --source-addresses
-        --protocols --fqdn-tags
+        --protocols --fqdn-tags --target-urls --enable-terminate-tls
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -1764,8 +1770,9 @@ interactions:
         : 12801\r\n              }\r\n            ],\r\n            \"fqdnTags\":\
         \ [\r\n              \"AzureBackup\",\r\n              \"HDInsight\"\r\n \
         \           ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
-        : [],\r\n            \"targetUrls\": [],\r\n            \"terminateTLS\":\
-        \ false,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
         ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
         : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
         \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n\
@@ -1773,19 +1780,19 @@ interactions:
         : 14000\r\n      }\r\n    ],\r\n    \"provisioningState\": \"Updating\"\r\n\
         \  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"c081d3c7-af63-454d-829e-493fe85334a6\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"3d4c986c-9e1d-431f-b15e-4c4baf2bd33b\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/78e4fc52-2161-411a-a6fd-a896371b7e60?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/3ff2b8d9-3045-4763-af44-62572b1b4843?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
-      - '3373'
+      - '3449'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:27:33 GMT
+      - Wed, 23 Dec 2020 11:12:08 GMT
       expires:
       - '-1'
       pragma:
@@ -1801,7 +1808,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -1819,12 +1826,12 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name -n --collection-priority --action
         --rule-name --rule-type --description --destination-addresses --source-addresses
-        --protocols --fqdn-tags
+        --protocols --fqdn-tags --target-urls --enable-terminate-tls
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/78e4fc52-2161-411a-a6fd-a896371b7e60?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/3ff2b8d9-3045-4763-af44-62572b1b4843?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1836,7 +1843,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:27:52 GMT
+      - Wed, 23 Dec 2020 11:12:19 GMT
       expires:
       - '-1'
       pragma:
@@ -1868,9 +1875,9 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name -n --collection-priority --action
         --rule-name --rule-type --description --destination-addresses --source-addresses
-        --protocols --fqdn-tags
+        --protocols --fqdn-tags --target-urls --enable-terminate-tls
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
@@ -1912,8 +1919,9 @@ interactions:
         : 12801\r\n              }\r\n            ],\r\n            \"fqdnTags\":\
         \ [\r\n              \"AzureBackup\",\r\n              \"HDInsight\"\r\n \
         \           ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
-        : [],\r\n            \"targetUrls\": [],\r\n            \"terminateTLS\":\
-        \ false,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
         ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
         : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
         \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n\
@@ -1921,17 +1929,17 @@ interactions:
         : 14000\r\n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\
         \n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"c081d3c7-af63-454d-829e-493fe85334a6\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"3d4c986c-9e1d-431f-b15e-4c4baf2bd33b\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '3374'
+      - '3450'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:27:53 GMT
+      - Wed, 23 Dec 2020 11:12:20 GMT
       expires:
       - '-1'
       pragma:
@@ -1965,7 +1973,7 @@ interactions:
         --rule-name --description --destination-addresses --source-addresses --translated-fqdn
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -2009,8 +2017,9 @@ interactions:
         : 12801\r\n              }\r\n            ],\r\n            \"fqdnTags\":\
         \ [\r\n              \"AzureBackup\",\r\n              \"HDInsight\"\r\n \
         \           ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
-        : [],\r\n            \"targetUrls\": [],\r\n            \"terminateTLS\":\
-        \ false,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
         ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
         : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
         \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n\
@@ -2018,17 +2027,17 @@ interactions:
         : 14000\r\n      }\r\n    ],\r\n    \"provisioningState\": \"Succeeded\"\r\
         \n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"c081d3c7-af63-454d-829e-493fe85334a6\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"3d4c986c-9e1d-431f-b15e-4c4baf2bd33b\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '3374'
+      - '3450'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:28:03 GMT
+      - Wed, 23 Dec 2020 11:12:21 GMT
       expires:
       - '-1'
       pragma:
@@ -2065,14 +2074,14 @@ interactions:
       "ApplicationRule", "sourceAddresses": ["202.120.36.13", "202.120.36.14"], "destinationAddresses":
       ["202.120.36.15", "202.120.36.16"], "protocols": [{"protocolType": "Http", "port":
       12800}, {"protocolType": "Https", "port": 12801}], "targetFqdns": [], "targetUrls":
-      [], "fqdnTags": ["AzureBackup", "HDInsight"], "sourceIpGroups": [], "terminateTLS":
-      false, "webCategories": []}]}, {"name": "nat-collection-2", "priority": 1000,
-      "ruleCollectionType": "FirewallPolicyNatRuleCollection", "action": {"type":
-      "DNAT"}, "rules": [{"name": "network-rule", "description": "test", "ruleType":
-      "NatRule", "ipProtocols": ["TCP", "UDP"], "sourceAddresses": ["202.120.36.13",
-      "202.120.36.14"], "destinationAddresses": ["202.120.36.15"], "destinationPorts":
-      ["12000", "12001"], "translatedPort": "1234", "translatedFqdn": "www.google.com"}]}]},
-      "name": "myclirulecollectiongroup"}'
+      ["www.google.com", "www.bing.com"], "fqdnTags": ["AzureBackup", "HDInsight"],
+      "sourceIpGroups": [], "terminateTLS": true, "webCategories": []}]}, {"name":
+      "nat-collection-2", "priority": 1000, "ruleCollectionType": "FirewallPolicyNatRuleCollection",
+      "action": {"type": "DNAT"}, "rules": [{"name": "network-rule", "description":
+      "test", "ruleType": "NatRule", "ipProtocols": ["TCP", "UDP"], "sourceAddresses":
+      ["202.120.36.13", "202.120.36.14"], "destinationAddresses": ["202.120.36.15"],
+      "destinationPorts": ["12000", "12001"], "translatedPort": "1234", "translatedFqdn":
+      "www.google.com"}]}]}, "name": "myclirulecollectiongroup"}'
     headers:
       Accept:
       - application/json
@@ -2083,7 +2092,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2256'
+      - '2287'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
@@ -2091,7 +2100,7 @@ interactions:
         --rule-name --description --destination-addresses --source-addresses --translated-fqdn
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -2135,8 +2144,9 @@ interactions:
         : 12801\r\n              }\r\n            ],\r\n            \"fqdnTags\":\
         \ [\r\n              \"AzureBackup\",\r\n              \"HDInsight\"\r\n \
         \           ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
-        : [],\r\n            \"targetUrls\": [],\r\n            \"terminateTLS\":\
-        \ false,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
         ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
         : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
         \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n\
@@ -2156,19 +2166,19 @@ interactions:
         ,\r\n        \"priority\": 1000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"f72468dd-d8e9-4cfa-8d48-6c26587a604c\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"61866023-cbb8-4889-a1e1-0aec78924c4e\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/d66ec1e1-fcc5-409e-aaab-2f6eae0c4c7c?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/cd08e891-a8c2-4cd6-89d4-301572b42105?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
-      - '4219'
+      - '4295'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:28:05 GMT
+      - Wed, 23 Dec 2020 11:12:22 GMT
       expires:
       - '-1'
       pragma:
@@ -2184,7 +2194,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -2204,10 +2214,10 @@ interactions:
         --rule-name --description --destination-addresses --source-addresses --translated-fqdn
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/d66ec1e1-fcc5-409e-aaab-2f6eae0c4c7c?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/cd08e891-a8c2-4cd6-89d4-301572b42105?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -2219,7 +2229,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:28:24 GMT
+      - Wed, 23 Dec 2020 11:12:34 GMT
       expires:
       - '-1'
       pragma:
@@ -2253,7 +2263,7 @@ interactions:
         --rule-name --description --destination-addresses --source-addresses --translated-fqdn
         --translated-port --destination-ports --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
@@ -2295,8 +2305,9 @@ interactions:
         : 12801\r\n              }\r\n            ],\r\n            \"fqdnTags\":\
         \ [\r\n              \"AzureBackup\",\r\n              \"HDInsight\"\r\n \
         \           ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
-        : [],\r\n            \"targetUrls\": [],\r\n            \"terminateTLS\":\
-        \ false,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
         ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
         : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
         \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n\
@@ -2316,17 +2327,17 @@ interactions:
         ,\r\n        \"priority\": 1000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"f72468dd-d8e9-4cfa-8d48-6c26587a604c\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"61866023-cbb8-4889-a1e1-0aec78924c4e\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4220'
+      - '4296'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:28:25 GMT
+      - Wed, 23 Dec 2020 11:12:35 GMT
       expires:
       - '-1'
       pragma:
@@ -2358,7 +2369,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -2402,8 +2413,9 @@ interactions:
         : 12801\r\n              }\r\n            ],\r\n            \"fqdnTags\":\
         \ [\r\n              \"AzureBackup\",\r\n              \"HDInsight\"\r\n \
         \           ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
-        : [],\r\n            \"targetUrls\": [],\r\n            \"terminateTLS\":\
-        \ false,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
         ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
         : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
         \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n\
@@ -2423,17 +2435,17 @@ interactions:
         ,\r\n        \"priority\": 1000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"f72468dd-d8e9-4cfa-8d48-6c26587a604c\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"61866023-cbb8-4889-a1e1-0aec78924c4e\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4220'
+      - '4296'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:28:36 GMT
+      - Wed, 23 Dec 2020 11:12:35 GMT
       expires:
       - '-1'
       pragma:
@@ -2466,7 +2478,7 @@ interactions:
       - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
         --description --source-addresses --destination-addresses --protocols --target-fqdns
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -2510,8 +2522,9 @@ interactions:
         : 12801\r\n              }\r\n            ],\r\n            \"fqdnTags\":\
         \ [\r\n              \"AzureBackup\",\r\n              \"HDInsight\"\r\n \
         \           ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
-        : [],\r\n            \"targetUrls\": [],\r\n            \"terminateTLS\":\
-        \ false,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
         ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
         : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
         \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n\
@@ -2531,17 +2544,17 @@ interactions:
         ,\r\n        \"priority\": 1000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"f72468dd-d8e9-4cfa-8d48-6c26587a604c\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"61866023-cbb8-4889-a1e1-0aec78924c4e\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4220'
+      - '4296'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:28:46 GMT
+      - Wed, 23 Dec 2020 11:12:37 GMT
       expires:
       - '-1'
       pragma:
@@ -2578,17 +2591,18 @@ interactions:
       "ApplicationRule", "sourceAddresses": ["202.120.36.13", "202.120.36.14"], "destinationAddresses":
       ["202.120.36.15", "202.120.36.16"], "protocols": [{"protocolType": "Http", "port":
       12800}, {"protocolType": "Https", "port": 12801}], "targetFqdns": [], "targetUrls":
-      [], "fqdnTags": ["AzureBackup", "HDInsight"], "sourceIpGroups": [], "terminateTLS":
-      false, "webCategories": []}, {"name": "application-rule-2", "description": "test",
-      "ruleType": "ApplicationRule", "sourceAddresses": ["202.120.36.13", "202.120.36.14"],
-      "destinationAddresses": ["202.120.36.15", "202.120.36.16"], "protocols": [{"protocolType":
-      "Http", "port": 12800}, {"protocolType": "Https", "port": 12801}], "targetFqdns":
-      ["www.bing.com"]}]}, {"name": "nat-collection-2", "priority": 1000, "ruleCollectionType":
-      "FirewallPolicyNatRuleCollection", "action": {"type": "Dnat"}, "rules": [{"name":
-      "network-rule", "ruleType": "NatRule", "ipProtocols": ["TCP", "UDP"], "sourceAddresses":
-      ["202.120.36.13", "202.120.36.14"], "destinationAddresses": ["202.120.36.15"],
-      "destinationPorts": ["12000", "12001"], "translatedPort": "1234", "sourceIpGroups":
-      [], "translatedFqdn": "www.google.com"}]}]}, "name": "myclirulecollectiongroup"}'
+      ["www.google.com", "www.bing.com"], "fqdnTags": ["AzureBackup", "HDInsight"],
+      "sourceIpGroups": [], "terminateTLS": true, "webCategories": []}, {"name": "application-rule-2",
+      "description": "test", "ruleType": "ApplicationRule", "sourceAddresses": ["202.120.36.13",
+      "202.120.36.14"], "destinationAddresses": ["202.120.36.15", "202.120.36.16"],
+      "protocols": [{"protocolType": "Http", "port": 12800}, {"protocolType": "Https",
+      "port": 12801}], "targetFqdns": ["www.bing.com"], "terminateTLS": false}]},
+      {"name": "nat-collection-2", "priority": 1000, "ruleCollectionType": "FirewallPolicyNatRuleCollection",
+      "action": {"type": "Dnat"}, "rules": [{"name": "network-rule", "ruleType": "NatRule",
+      "ipProtocols": ["TCP", "UDP"], "sourceAddresses": ["202.120.36.13", "202.120.36.14"],
+      "destinationAddresses": ["202.120.36.15"], "destinationPorts": ["12000", "12001"],
+      "translatedPort": "1234", "sourceIpGroups": [], "translatedFqdn": "www.google.com"}]}]},
+      "name": "myclirulecollectiongroup"}'
     headers:
       Accept:
       - application/json
@@ -2599,14 +2613,14 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2587'
+      - '2641'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
         --description --source-addresses --destination-addresses --protocols --target-fqdns
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -2650,8 +2664,9 @@ interactions:
         : 12801\r\n              }\r\n            ],\r\n            \"fqdnTags\":\
         \ [\r\n              \"AzureBackup\",\r\n              \"HDInsight\"\r\n \
         \           ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
-        : [],\r\n            \"targetUrls\": [],\r\n            \"terminateTLS\":\
-        \ false,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
         ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
         : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
         \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          },\r\
@@ -2684,19 +2699,481 @@ interactions:
         ,\r\n        \"priority\": 1000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"c94a5e50-eb6a-48f6-992e-0a0377e8bbb4\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"a0205738-18cf-4bce-9772-25cd90d867e6\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/c90c2d40-1294-4d80-bfb2-b3c90e3a9014?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/8d4acfa8-3a4c-435d-aa93-5442a07e0750?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
-      - '5062'
+      - '5138'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:28:48 GMT
+      - Wed, 23 Dec 2020 11:12:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection rule add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
+        --description --source-addresses --destination-addresses --protocols --target-fqdns
+      User-Agent:
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
+        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/8d4acfa8-3a4c-435d-aa93-5442a07e0750?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Dec 2020 11:12:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection rule add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
+        --description --source-addresses --destination-addresses --protocols --target-fqdns
+      User-Agent:
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
+        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 12000,\r\n    \"ruleCollections\"\
+        : [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NatRule\"\
+        ,\r\n            \"name\": \"network-rule\",\r\n            \"translatedAddress\"\
+        : \"128.1.1.1\",\r\n            \"translatedPort\": \"1234\",\r\n        \
+        \    \"ipProtocols\": [\r\n              \"TCP\",\r\n              \"UDP\"\
+        \r\n            ],\r\n            \"sourceAddresses\": [\r\n             \
+        \ \"202.120.36.13\",\r\n              \"202.120.36.14\"\r\n            ],\r\
+        \n            \"sourceIpGroups\": [],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"202.120.36.15\"\r\n            ],\r\n            \"\
+        destinationPorts\": [\r\n              \"12000\",\r\n              \"12001\"\
+        \r\n            ]\r\n          }\r\n        ],\r\n        \"name\": \"nat-collection\"\
+        ,\r\n        \"priority\": 10005\r\n      },\r\n      {\r\n        \"ruleCollectionType\"\
+        : \"FirewallPolicyFilterRuleCollection\",\r\n        \"action\": {\r\n   \
+        \       \"type\": \"Allow\"\r\n        },\r\n        \"rules\": [\r\n    \
+        \      {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"name\"\
+        : \"network-rule\",\r\n            \"ipProtocols\": [\r\n              \"\
+        Any\",\r\n              \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\"\
+        : [\r\n              \"202.120.36.13\",\r\n              \"202.120.36.14\"\
+        \r\n            ],\r\n            \"sourceIpGroups\": [],\r\n            \"\
+        destinationAddresses\": [\r\n              \"202.120.36.15\"\r\n         \
+        \   ],\r\n            \"destinationIpGroups\": [],\r\n            \"destinationFqdns\"\
+        : [],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\
+        \n              \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n\
+        \        \"name\": \"filter-collection-1\",\r\n        \"priority\": 13000\r\
+        \n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"ApplicationRule\"\
+        ,\r\n            \"name\": \"application-rule\",\r\n            \"protocols\"\
+        : [\r\n              {\r\n                \"protocolType\": \"Http\",\r\n\
+        \                \"port\": 12800\r\n              },\r\n              {\r\n\
+        \                \"protocolType\": \"Https\",\r\n                \"port\"\
+        : 12801\r\n              }\r\n            ],\r\n            \"fqdnTags\":\
+        \ [\r\n              \"AzureBackup\",\r\n              \"HDInsight\"\r\n \
+        \           ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
+        \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          },\r\
+        \n          {\r\n            \"ruleType\": \"ApplicationRule\",\r\n      \
+        \      \"name\": \"application-rule-2\",\r\n            \"protocols\": [\r\
+        \n              {\r\n                \"protocolType\": \"Http\",\r\n     \
+        \           \"port\": 12800\r\n              },\r\n              {\r\n   \
+        \             \"protocolType\": \"Https\",\r\n                \"port\": 12801\r\
+        \n              }\r\n            ],\r\n            \"fqdnTags\": [],\r\n \
+        \           \"webCategories\": [],\r\n            \"targetFqdns\": [\r\n \
+        \             \"www.bing.com\"\r\n            ],\r\n            \"targetUrls\"\
+        : [],\r\n            \"terminateTLS\": false,\r\n            \"sourceAddresses\"\
+        : [\r\n              \"202.120.36.13\",\r\n              \"202.120.36.14\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
+        \      \"202.120.36.15\",\r\n              \"202.120.36.16\"\r\n         \
+        \   ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n        ],\r\
+        \n        \"name\": \"filter-collection-2\",\r\n        \"priority\": 14000\r\
+        \n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NatRule\"\
+        ,\r\n            \"name\": \"network-rule\",\r\n            \"translatedFqdn\"\
+        : \"www.google.com\",\r\n            \"translatedPort\": \"1234\",\r\n   \
+        \         \"ipProtocols\": [\r\n              \"TCP\",\r\n              \"\
+        UDP\"\r\n            ],\r\n            \"sourceAddresses\": [\r\n        \
+        \      \"202.120.36.13\",\r\n              \"202.120.36.14\"\r\n         \
+        \   ],\r\n            \"sourceIpGroups\": [],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"202.120.36.15\"\r\n            ],\r\n            \"\
+        destinationPorts\": [\r\n              \"12000\",\r\n              \"12001\"\
+        \r\n            ]\r\n          }\r\n        ],\r\n        \"name\": \"nat-collection-2\"\
+        ,\r\n        \"priority\": 1000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
+        : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
+        ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
+        ,\r\n  \"etag\": \"a0205738-18cf-4bce-9772-25cd90d867e6\",\r\n  \"location\"\
+        : \"centralus\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5139'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Dec 2020 11:12:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection rule add
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
+        --description --source-addresses --destination-addresses --target-urls
+      User-Agent:
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
+        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 12000,\r\n    \"ruleCollections\"\
+        : [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NatRule\"\
+        ,\r\n            \"name\": \"network-rule\",\r\n            \"translatedAddress\"\
+        : \"128.1.1.1\",\r\n            \"translatedPort\": \"1234\",\r\n        \
+        \    \"ipProtocols\": [\r\n              \"TCP\",\r\n              \"UDP\"\
+        \r\n            ],\r\n            \"sourceAddresses\": [\r\n             \
+        \ \"202.120.36.13\",\r\n              \"202.120.36.14\"\r\n            ],\r\
+        \n            \"sourceIpGroups\": [],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"202.120.36.15\"\r\n            ],\r\n            \"\
+        destinationPorts\": [\r\n              \"12000\",\r\n              \"12001\"\
+        \r\n            ]\r\n          }\r\n        ],\r\n        \"name\": \"nat-collection\"\
+        ,\r\n        \"priority\": 10005\r\n      },\r\n      {\r\n        \"ruleCollectionType\"\
+        : \"FirewallPolicyFilterRuleCollection\",\r\n        \"action\": {\r\n   \
+        \       \"type\": \"Allow\"\r\n        },\r\n        \"rules\": [\r\n    \
+        \      {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"name\"\
+        : \"network-rule\",\r\n            \"ipProtocols\": [\r\n              \"\
+        Any\",\r\n              \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\"\
+        : [\r\n              \"202.120.36.13\",\r\n              \"202.120.36.14\"\
+        \r\n            ],\r\n            \"sourceIpGroups\": [],\r\n            \"\
+        destinationAddresses\": [\r\n              \"202.120.36.15\"\r\n         \
+        \   ],\r\n            \"destinationIpGroups\": [],\r\n            \"destinationFqdns\"\
+        : [],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\
+        \n              \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n\
+        \        \"name\": \"filter-collection-1\",\r\n        \"priority\": 13000\r\
+        \n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"ApplicationRule\"\
+        ,\r\n            \"name\": \"application-rule\",\r\n            \"protocols\"\
+        : [\r\n              {\r\n                \"protocolType\": \"Http\",\r\n\
+        \                \"port\": 12800\r\n              },\r\n              {\r\n\
+        \                \"protocolType\": \"Https\",\r\n                \"port\"\
+        : 12801\r\n              }\r\n            ],\r\n            \"fqdnTags\":\
+        \ [\r\n              \"AzureBackup\",\r\n              \"HDInsight\"\r\n \
+        \           ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
+        \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          },\r\
+        \n          {\r\n            \"ruleType\": \"ApplicationRule\",\r\n      \
+        \      \"name\": \"application-rule-2\",\r\n            \"protocols\": [\r\
+        \n              {\r\n                \"protocolType\": \"Http\",\r\n     \
+        \           \"port\": 12800\r\n              },\r\n              {\r\n   \
+        \             \"protocolType\": \"Https\",\r\n                \"port\": 12801\r\
+        \n              }\r\n            ],\r\n            \"fqdnTags\": [],\r\n \
+        \           \"webCategories\": [],\r\n            \"targetFqdns\": [\r\n \
+        \             \"www.bing.com\"\r\n            ],\r\n            \"targetUrls\"\
+        : [],\r\n            \"terminateTLS\": false,\r\n            \"sourceAddresses\"\
+        : [\r\n              \"202.120.36.13\",\r\n              \"202.120.36.14\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
+        \      \"202.120.36.15\",\r\n              \"202.120.36.16\"\r\n         \
+        \   ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n        ],\r\
+        \n        \"name\": \"filter-collection-2\",\r\n        \"priority\": 14000\r\
+        \n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NatRule\"\
+        ,\r\n            \"name\": \"network-rule\",\r\n            \"translatedFqdn\"\
+        : \"www.google.com\",\r\n            \"translatedPort\": \"1234\",\r\n   \
+        \         \"ipProtocols\": [\r\n              \"TCP\",\r\n              \"\
+        UDP\"\r\n            ],\r\n            \"sourceAddresses\": [\r\n        \
+        \      \"202.120.36.13\",\r\n              \"202.120.36.14\"\r\n         \
+        \   ],\r\n            \"sourceIpGroups\": [],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"202.120.36.15\"\r\n            ],\r\n            \"\
+        destinationPorts\": [\r\n              \"12000\",\r\n              \"12001\"\
+        \r\n            ]\r\n          }\r\n        ],\r\n        \"name\": \"nat-collection-2\"\
+        ,\r\n        \"priority\": 1000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
+        : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
+        ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
+        ,\r\n  \"etag\": \"a0205738-18cf-4bce-9772-25cd90d867e6\",\r\n  \"location\"\
+        : \"centralus\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5139'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Dec 2020 11:12:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup",
+      "properties": {"priority": 12000, "ruleCollections": [{"name": "nat-collection",
+      "priority": 10005, "ruleCollectionType": "FirewallPolicyNatRuleCollection",
+      "action": {"type": "Dnat"}, "rules": [{"name": "network-rule", "ruleType": "NatRule",
+      "ipProtocols": ["TCP", "UDP"], "sourceAddresses": ["202.120.36.13", "202.120.36.14"],
+      "destinationAddresses": ["202.120.36.15"], "destinationPorts": ["12000", "12001"],
+      "translatedAddress": "128.1.1.1", "translatedPort": "1234", "sourceIpGroups":
+      []}]}, {"name": "filter-collection-1", "priority": 13000, "ruleCollectionType":
+      "FirewallPolicyFilterRuleCollection", "action": {"type": "Allow"}, "rules":
+      [{"name": "network-rule", "ruleType": "NetworkRule", "ipProtocols": ["Any",
+      "ICMP"], "sourceAddresses": ["202.120.36.13", "202.120.36.14"], "destinationAddresses":
+      ["202.120.36.15"], "destinationPorts": ["12003", "12004"], "sourceIpGroups":
+      [], "destinationIpGroups": [], "destinationFqdns": []}]}, {"name": "filter-collection-2",
+      "priority": 14000, "ruleCollectionType": "FirewallPolicyFilterRuleCollection",
+      "action": {"type": "Allow"}, "rules": [{"name": "application-rule", "ruleType":
+      "ApplicationRule", "sourceAddresses": ["202.120.36.13", "202.120.36.14"], "destinationAddresses":
+      ["202.120.36.15", "202.120.36.16"], "protocols": [{"protocolType": "Http", "port":
+      12800}, {"protocolType": "Https", "port": 12801}], "targetFqdns": [], "targetUrls":
+      ["www.google.com", "www.bing.com"], "fqdnTags": ["AzureBackup", "HDInsight"],
+      "sourceIpGroups": [], "terminateTLS": true, "webCategories": []}, {"name": "application-rule-2",
+      "ruleType": "ApplicationRule", "sourceAddresses": ["202.120.36.13", "202.120.36.14"],
+      "destinationAddresses": ["202.120.36.15", "202.120.36.16"], "protocols": [{"protocolType":
+      "Http", "port": 12800}, {"protocolType": "Https", "port": 12801}], "targetFqdns":
+      ["www.bing.com"], "targetUrls": [], "fqdnTags": [], "sourceIpGroups": [], "terminateTLS":
+      false, "webCategories": []}, {"name": "application-rule-3", "description": "test",
+      "ruleType": "ApplicationRule", "sourceAddresses": ["202.120.36.13", "202.120.36.14"],
+      "destinationAddresses": ["10.120.36.15", "10.120.36.16"], "protocols": [], "targetUrls":
+      ["microsoft.com"], "terminateTLS": false}]}, {"name": "nat-collection-2", "priority":
+      1000, "ruleCollectionType": "FirewallPolicyNatRuleCollection", "action": {"type":
+      "Dnat"}, "rules": [{"name": "network-rule", "ruleType": "NatRule", "ipProtocols":
+      ["TCP", "UDP"], "sourceAddresses": ["202.120.36.13", "202.120.36.14"], "destinationAddresses":
+      ["202.120.36.15"], "destinationPorts": ["12000", "12001"], "translatedPort":
+      "1234", "sourceIpGroups": [], "translatedFqdn": "www.google.com"}]}]}, "name":
+      "myclirulecollectiongroup"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy rule-collection-group collection rule add
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2967'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
+        --description --source-addresses --destination-addresses --target-urls
+      User-Agent:
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
+        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"priority\": 12000,\r\n    \"ruleCollections\"\
+        : [\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NatRule\"\
+        ,\r\n            \"name\": \"network-rule\",\r\n            \"translatedAddress\"\
+        : \"128.1.1.1\",\r\n            \"translatedPort\": \"1234\",\r\n        \
+        \    \"ipProtocols\": [\r\n              \"TCP\",\r\n              \"UDP\"\
+        \r\n            ],\r\n            \"sourceAddresses\": [\r\n             \
+        \ \"202.120.36.13\",\r\n              \"202.120.36.14\"\r\n            ],\r\
+        \n            \"sourceIpGroups\": [],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"202.120.36.15\"\r\n            ],\r\n            \"\
+        destinationPorts\": [\r\n              \"12000\",\r\n              \"12001\"\
+        \r\n            ]\r\n          }\r\n        ],\r\n        \"name\": \"nat-collection\"\
+        ,\r\n        \"priority\": 10005\r\n      },\r\n      {\r\n        \"ruleCollectionType\"\
+        : \"FirewallPolicyFilterRuleCollection\",\r\n        \"action\": {\r\n   \
+        \       \"type\": \"Allow\"\r\n        },\r\n        \"rules\": [\r\n    \
+        \      {\r\n            \"ruleType\": \"NetworkRule\",\r\n            \"name\"\
+        : \"network-rule\",\r\n            \"ipProtocols\": [\r\n              \"\
+        Any\",\r\n              \"ICMP\"\r\n            ],\r\n            \"sourceAddresses\"\
+        : [\r\n              \"202.120.36.13\",\r\n              \"202.120.36.14\"\
+        \r\n            ],\r\n            \"sourceIpGroups\": [],\r\n            \"\
+        destinationAddresses\": [\r\n              \"202.120.36.15\"\r\n         \
+        \   ],\r\n            \"destinationIpGroups\": [],\r\n            \"destinationFqdns\"\
+        : [],\r\n            \"destinationPorts\": [\r\n              \"12003\",\r\
+        \n              \"12004\"\r\n            ]\r\n          }\r\n        ],\r\n\
+        \        \"name\": \"filter-collection-1\",\r\n        \"priority\": 13000\r\
+        \n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyFilterRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Allow\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"ApplicationRule\"\
+        ,\r\n            \"name\": \"application-rule\",\r\n            \"protocols\"\
+        : [\r\n              {\r\n                \"protocolType\": \"Http\",\r\n\
+        \                \"port\": 12800\r\n              },\r\n              {\r\n\
+        \                \"protocolType\": \"Https\",\r\n                \"port\"\
+        : 12801\r\n              }\r\n            ],\r\n            \"fqdnTags\":\
+        \ [\r\n              \"AzureBackup\",\r\n              \"HDInsight\"\r\n \
+        \           ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
+        \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          },\r\
+        \n          {\r\n            \"ruleType\": \"ApplicationRule\",\r\n      \
+        \      \"name\": \"application-rule-2\",\r\n            \"protocols\": [\r\
+        \n              {\r\n                \"protocolType\": \"Http\",\r\n     \
+        \           \"port\": 12800\r\n              },\r\n              {\r\n   \
+        \             \"protocolType\": \"Https\",\r\n                \"port\": 12801\r\
+        \n              }\r\n            ],\r\n            \"fqdnTags\": [],\r\n \
+        \           \"webCategories\": [],\r\n            \"targetFqdns\": [\r\n \
+        \             \"www.bing.com\"\r\n            ],\r\n            \"targetUrls\"\
+        : [],\r\n            \"terminateTLS\": false,\r\n            \"sourceAddresses\"\
+        : [\r\n              \"202.120.36.13\",\r\n              \"202.120.36.14\"\
+        \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
+        \      \"202.120.36.15\",\r\n              \"202.120.36.16\"\r\n         \
+        \   ],\r\n            \"sourceIpGroups\": []\r\n          },\r\n         \
+        \ {\r\n            \"ruleType\": \"ApplicationRule\",\r\n            \"name\"\
+        : \"application-rule-3\",\r\n            \"protocols\": [],\r\n          \
+        \  \"fqdnTags\": [],\r\n            \"webCategories\": [],\r\n           \
+        \ \"targetFqdns\": [],\r\n            \"targetUrls\": [\r\n              \"\
+        microsoft.com\"\r\n            ],\r\n            \"terminateTLS\": false,\r\
+        \n            \"sourceAddresses\": [\r\n              \"202.120.36.13\",\r\
+        \n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"10.120.36.15\",\r\n              \"10.120.36.16\"\r\
+        \n            ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n\
+        \        ],\r\n        \"name\": \"filter-collection-2\",\r\n        \"priority\"\
+        : 14000\r\n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
+        ,\r\n        \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\
+        \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NatRule\"\
+        ,\r\n            \"name\": \"network-rule\",\r\n            \"translatedFqdn\"\
+        : \"www.google.com\",\r\n            \"translatedPort\": \"1234\",\r\n   \
+        \         \"ipProtocols\": [\r\n              \"TCP\",\r\n              \"\
+        UDP\"\r\n            ],\r\n            \"sourceAddresses\": [\r\n        \
+        \      \"202.120.36.13\",\r\n              \"202.120.36.14\"\r\n         \
+        \   ],\r\n            \"sourceIpGroups\": [],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"202.120.36.15\"\r\n            ],\r\n            \"\
+        destinationPorts\": [\r\n              \"12000\",\r\n              \"12001\"\
+        \r\n            ]\r\n          }\r\n        ],\r\n        \"name\": \"nat-collection-2\"\
+        ,\r\n        \"priority\": 1000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
+        : \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
+        ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
+        ,\r\n  \"etag\": \"2354baba-1e53-4681-b26b-55ed3e063b19\",\r\n  \"location\"\
+        : \"centralus\"\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/e4812aac-7b30-4342-ae2f-f78ee78ac8c5?api-version=2020-07-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '5752'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Dec 2020 11:12:54 GMT
       expires:
       - '-1'
       pragma:
@@ -2729,12 +3206,12 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
-        --description --source-addresses --destination-addresses --protocols --target-fqdns
+        --description --source-addresses --destination-addresses --target-urls
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/c90c2d40-1294-4d80-bfb2-b3c90e3a9014?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/e4812aac-7b30-4342-ae2f-f78ee78ac8c5?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -2746,7 +3223,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:29:07 GMT
+      - Wed, 23 Dec 2020 11:13:05 GMT
       expires:
       - '-1'
       pragma:
@@ -2777,9 +3254,9 @@ interactions:
       - keep-alive
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name --collection-name --name --rule-type
-        --description --source-addresses --destination-addresses --protocols --target-fqdns
+        --description --source-addresses --destination-addresses --target-urls
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
@@ -2821,8 +3298,9 @@ interactions:
         : 12801\r\n              }\r\n            ],\r\n            \"fqdnTags\":\
         \ [\r\n              \"AzureBackup\",\r\n              \"HDInsight\"\r\n \
         \           ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
-        : [],\r\n            \"targetUrls\": [],\r\n            \"terminateTLS\":\
-        \ false,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
         ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
         : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
         \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          },\r\
@@ -2838,9 +3316,18 @@ interactions:
         : [\r\n              \"202.120.36.13\",\r\n              \"202.120.36.14\"\
         \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
         \      \"202.120.36.15\",\r\n              \"202.120.36.16\"\r\n         \
-        \   ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n        ],\r\
-        \n        \"name\": \"filter-collection-2\",\r\n        \"priority\": 14000\r\
-        \n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
+        \   ],\r\n            \"sourceIpGroups\": []\r\n          },\r\n         \
+        \ {\r\n            \"ruleType\": \"ApplicationRule\",\r\n            \"name\"\
+        : \"application-rule-3\",\r\n            \"protocols\": [],\r\n          \
+        \  \"fqdnTags\": [],\r\n            \"webCategories\": [],\r\n           \
+        \ \"targetFqdns\": [],\r\n            \"targetUrls\": [\r\n              \"\
+        microsoft.com\"\r\n            ],\r\n            \"terminateTLS\": false,\r\
+        \n            \"sourceAddresses\": [\r\n              \"202.120.36.13\",\r\
+        \n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"10.120.36.15\",\r\n              \"10.120.36.16\"\r\
+        \n            ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n\
+        \        ],\r\n        \"name\": \"filter-collection-2\",\r\n        \"priority\"\
+        : 14000\r\n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
         ,\r\n        \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\
         \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NatRule\"\
         ,\r\n            \"name\": \"network-rule\",\r\n            \"translatedFqdn\"\
@@ -2855,17 +3342,17 @@ interactions:
         ,\r\n        \"priority\": 1000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"c94a5e50-eb6a-48f6-992e-0a0377e8bbb4\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"2354baba-1e53-4681-b26b-55ed3e063b19\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5063'
+      - '5753'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:29:07 GMT
+      - Wed, 23 Dec 2020 11:13:05 GMT
       expires:
       - '-1'
       pragma:
@@ -2899,7 +3386,7 @@ interactions:
         --description --destination-addresses --source-addresses --destination-ports
         --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -2943,8 +3430,9 @@ interactions:
         : 12801\r\n              }\r\n            ],\r\n            \"fqdnTags\":\
         \ [\r\n              \"AzureBackup\",\r\n              \"HDInsight\"\r\n \
         \           ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
-        : [],\r\n            \"targetUrls\": [],\r\n            \"terminateTLS\":\
-        \ false,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
         ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
         : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
         \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          },\r\
@@ -2960,9 +3448,18 @@ interactions:
         : [\r\n              \"202.120.36.13\",\r\n              \"202.120.36.14\"\
         \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
         \      \"202.120.36.15\",\r\n              \"202.120.36.16\"\r\n         \
-        \   ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n        ],\r\
-        \n        \"name\": \"filter-collection-2\",\r\n        \"priority\": 14000\r\
-        \n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
+        \   ],\r\n            \"sourceIpGroups\": []\r\n          },\r\n         \
+        \ {\r\n            \"ruleType\": \"ApplicationRule\",\r\n            \"name\"\
+        : \"application-rule-3\",\r\n            \"protocols\": [],\r\n          \
+        \  \"fqdnTags\": [],\r\n            \"webCategories\": [],\r\n           \
+        \ \"targetFqdns\": [],\r\n            \"targetUrls\": [\r\n              \"\
+        microsoft.com\"\r\n            ],\r\n            \"terminateTLS\": false,\r\
+        \n            \"sourceAddresses\": [\r\n              \"202.120.36.13\",\r\
+        \n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"10.120.36.15\",\r\n              \"10.120.36.16\"\r\
+        \n            ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n\
+        \        ],\r\n        \"name\": \"filter-collection-2\",\r\n        \"priority\"\
+        : 14000\r\n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
         ,\r\n        \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\
         \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NatRule\"\
         ,\r\n            \"name\": \"network-rule\",\r\n            \"translatedFqdn\"\
@@ -2977,17 +3474,17 @@ interactions:
         ,\r\n        \"priority\": 1000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"c94a5e50-eb6a-48f6-992e-0a0377e8bbb4\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"2354baba-1e53-4681-b26b-55ed3e063b19\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5063'
+      - '5753'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:29:18 GMT
+      - Wed, 23 Dec 2020 11:13:06 GMT
       expires:
       - '-1'
       pragma:
@@ -3027,12 +3524,16 @@ interactions:
       "ApplicationRule", "sourceAddresses": ["202.120.36.13", "202.120.36.14"], "destinationAddresses":
       ["202.120.36.15", "202.120.36.16"], "protocols": [{"protocolType": "Http", "port":
       12800}, {"protocolType": "Https", "port": 12801}], "targetFqdns": [], "targetUrls":
-      [], "fqdnTags": ["AzureBackup", "HDInsight"], "sourceIpGroups": [], "terminateTLS":
-      false, "webCategories": []}, {"name": "application-rule-2", "ruleType": "ApplicationRule",
+      ["www.google.com", "www.bing.com"], "fqdnTags": ["AzureBackup", "HDInsight"],
+      "sourceIpGroups": [], "terminateTLS": true, "webCategories": []}, {"name": "application-rule-2",
+      "ruleType": "ApplicationRule", "sourceAddresses": ["202.120.36.13", "202.120.36.14"],
+      "destinationAddresses": ["202.120.36.15", "202.120.36.16"], "protocols": [{"protocolType":
+      "Http", "port": 12800}, {"protocolType": "Https", "port": 12801}], "targetFqdns":
+      ["www.bing.com"], "targetUrls": [], "fqdnTags": [], "sourceIpGroups": [], "terminateTLS":
+      false, "webCategories": []}, {"name": "application-rule-3", "ruleType": "ApplicationRule",
       "sourceAddresses": ["202.120.36.13", "202.120.36.14"], "destinationAddresses":
-      ["202.120.36.15", "202.120.36.16"], "protocols": [{"protocolType": "Http", "port":
-      12800}, {"protocolType": "Https", "port": 12801}], "targetFqdns": ["www.bing.com"],
-      "targetUrls": [], "fqdnTags": [], "sourceIpGroups": [], "terminateTLS": false,
+      ["10.120.36.15", "10.120.36.16"], "protocols": [], "targetFqdns": [], "targetUrls":
+      ["microsoft.com"], "fqdnTags": [], "sourceIpGroups": [], "terminateTLS": false,
       "webCategories": []}]}, {"name": "nat-collection-2", "priority": 1000, "ruleCollectionType":
       "FirewallPolicyNatRuleCollection", "action": {"type": "Dnat"}, "rules": [{"name":
       "network-rule", "ruleType": "NatRule", "ipProtocols": ["TCP", "UDP"], "sourceAddresses":
@@ -3049,7 +3550,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2912'
+      - '3270'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
@@ -3057,7 +3558,7 @@ interactions:
         --description --destination-addresses --source-addresses --destination-ports
         --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -3110,8 +3611,9 @@ interactions:
         : 12801\r\n              }\r\n            ],\r\n            \"fqdnTags\":\
         \ [\r\n              \"AzureBackup\",\r\n              \"HDInsight\"\r\n \
         \           ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
-        : [],\r\n            \"targetUrls\": [],\r\n            \"terminateTLS\":\
-        \ false,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
         ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
         : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
         \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          },\r\
@@ -3127,9 +3629,18 @@ interactions:
         : [\r\n              \"202.120.36.13\",\r\n              \"202.120.36.14\"\
         \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
         \      \"202.120.36.15\",\r\n              \"202.120.36.16\"\r\n         \
-        \   ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n        ],\r\
-        \n        \"name\": \"filter-collection-2\",\r\n        \"priority\": 14000\r\
-        \n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
+        \   ],\r\n            \"sourceIpGroups\": []\r\n          },\r\n         \
+        \ {\r\n            \"ruleType\": \"ApplicationRule\",\r\n            \"name\"\
+        : \"application-rule-3\",\r\n            \"protocols\": [],\r\n          \
+        \  \"fqdnTags\": [],\r\n            \"webCategories\": [],\r\n           \
+        \ \"targetFqdns\": [],\r\n            \"targetUrls\": [\r\n              \"\
+        microsoft.com\"\r\n            ],\r\n            \"terminateTLS\": false,\r\
+        \n            \"sourceAddresses\": [\r\n              \"202.120.36.13\",\r\
+        \n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"10.120.36.15\",\r\n              \"10.120.36.16\"\r\
+        \n            ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n\
+        \        ],\r\n        \"name\": \"filter-collection-2\",\r\n        \"priority\"\
+        : 14000\r\n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
         ,\r\n        \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\
         \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NatRule\"\
         ,\r\n            \"name\": \"network-rule\",\r\n            \"translatedFqdn\"\
@@ -3144,19 +3655,19 @@ interactions:
         ,\r\n        \"priority\": 1000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"b4b4c43d-9523-4858-becf-744df3ed62e5\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"49a3e2a5-ada8-40df-a5d9-63a4ed938a5e\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/1376b890-998d-4718-b5c0-1e0491d13f78?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/ae1d4651-f480-40bc-a24c-7fc1fbc5ac2c?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
-      - '5666'
+      - '6356'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:29:20 GMT
+      - Wed, 23 Dec 2020 11:13:08 GMT
       expires:
       - '-1'
       pragma:
@@ -3172,7 +3683,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -3192,10 +3703,10 @@ interactions:
         --description --destination-addresses --source-addresses --destination-ports
         --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/1376b890-998d-4718-b5c0-1e0491d13f78?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/ae1d4651-f480-40bc-a24c-7fc1fbc5ac2c?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -3207,7 +3718,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:29:40 GMT
+      - Wed, 23 Dec 2020 11:13:18 GMT
       expires:
       - '-1'
       pragma:
@@ -3241,7 +3752,7 @@ interactions:
         --description --destination-addresses --source-addresses --destination-ports
         --ip-protocols
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
@@ -3292,8 +3803,9 @@ interactions:
         : 12801\r\n              }\r\n            ],\r\n            \"fqdnTags\":\
         \ [\r\n              \"AzureBackup\",\r\n              \"HDInsight\"\r\n \
         \           ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
-        : [],\r\n            \"targetUrls\": [],\r\n            \"terminateTLS\":\
-        \ false,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
         ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
         : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
         \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          },\r\
@@ -3309,9 +3821,18 @@ interactions:
         : [\r\n              \"202.120.36.13\",\r\n              \"202.120.36.14\"\
         \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
         \      \"202.120.36.15\",\r\n              \"202.120.36.16\"\r\n         \
-        \   ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n        ],\r\
-        \n        \"name\": \"filter-collection-2\",\r\n        \"priority\": 14000\r\
-        \n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
+        \   ],\r\n            \"sourceIpGroups\": []\r\n          },\r\n         \
+        \ {\r\n            \"ruleType\": \"ApplicationRule\",\r\n            \"name\"\
+        : \"application-rule-3\",\r\n            \"protocols\": [],\r\n          \
+        \  \"fqdnTags\": [],\r\n            \"webCategories\": [],\r\n           \
+        \ \"targetFqdns\": [],\r\n            \"targetUrls\": [\r\n              \"\
+        microsoft.com\"\r\n            ],\r\n            \"terminateTLS\": false,\r\
+        \n            \"sourceAddresses\": [\r\n              \"202.120.36.13\",\r\
+        \n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"10.120.36.15\",\r\n              \"10.120.36.16\"\r\
+        \n            ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n\
+        \        ],\r\n        \"name\": \"filter-collection-2\",\r\n        \"priority\"\
+        : 14000\r\n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
         ,\r\n        \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\
         \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NatRule\"\
         ,\r\n            \"name\": \"network-rule\",\r\n            \"translatedFqdn\"\
@@ -3326,17 +3847,17 @@ interactions:
         ,\r\n        \"priority\": 1000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"b4b4c43d-9523-4858-becf-744df3ed62e5\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"49a3e2a5-ada8-40df-a5d9-63a4ed938a5e\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5667'
+      - '6357'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:29:40 GMT
+      - Wed, 23 Dec 2020 11:13:19 GMT
       expires:
       - '-1'
       pragma:
@@ -3368,7 +3889,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name --collection-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -3421,8 +3942,9 @@ interactions:
         : 12801\r\n              }\r\n            ],\r\n            \"fqdnTags\":\
         \ [\r\n              \"AzureBackup\",\r\n              \"HDInsight\"\r\n \
         \           ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
-        : [],\r\n            \"targetUrls\": [],\r\n            \"terminateTLS\":\
-        \ false,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
         ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
         : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
         \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          },\r\
@@ -3438,9 +3960,18 @@ interactions:
         : [\r\n              \"202.120.36.13\",\r\n              \"202.120.36.14\"\
         \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
         \      \"202.120.36.15\",\r\n              \"202.120.36.16\"\r\n         \
-        \   ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n        ],\r\
-        \n        \"name\": \"filter-collection-2\",\r\n        \"priority\": 14000\r\
-        \n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
+        \   ],\r\n            \"sourceIpGroups\": []\r\n          },\r\n         \
+        \ {\r\n            \"ruleType\": \"ApplicationRule\",\r\n            \"name\"\
+        : \"application-rule-3\",\r\n            \"protocols\": [],\r\n          \
+        \  \"fqdnTags\": [],\r\n            \"webCategories\": [],\r\n           \
+        \ \"targetFqdns\": [],\r\n            \"targetUrls\": [\r\n              \"\
+        microsoft.com\"\r\n            ],\r\n            \"terminateTLS\": false,\r\
+        \n            \"sourceAddresses\": [\r\n              \"202.120.36.13\",\r\
+        \n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"10.120.36.15\",\r\n              \"10.120.36.16\"\r\
+        \n            ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n\
+        \        ],\r\n        \"name\": \"filter-collection-2\",\r\n        \"priority\"\
+        : 14000\r\n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
         ,\r\n        \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\
         \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NatRule\"\
         ,\r\n            \"name\": \"network-rule\",\r\n            \"translatedFqdn\"\
@@ -3455,17 +3986,17 @@ interactions:
         ,\r\n        \"priority\": 1000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"b4b4c43d-9523-4858-becf-744df3ed62e5\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"49a3e2a5-ada8-40df-a5d9-63a4ed938a5e\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5667'
+      - '6357'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:29:51 GMT
+      - Wed, 23 Dec 2020 11:13:20 GMT
       expires:
       - '-1'
       pragma:
@@ -3502,12 +4033,16 @@ interactions:
       "ApplicationRule", "sourceAddresses": ["202.120.36.13", "202.120.36.14"], "destinationAddresses":
       ["202.120.36.15", "202.120.36.16"], "protocols": [{"protocolType": "Http", "port":
       12800}, {"protocolType": "Https", "port": 12801}], "targetFqdns": [], "targetUrls":
-      [], "fqdnTags": ["AzureBackup", "HDInsight"], "sourceIpGroups": [], "terminateTLS":
-      false, "webCategories": []}, {"name": "application-rule-2", "ruleType": "ApplicationRule",
+      ["www.google.com", "www.bing.com"], "fqdnTags": ["AzureBackup", "HDInsight"],
+      "sourceIpGroups": [], "terminateTLS": true, "webCategories": []}, {"name": "application-rule-2",
+      "ruleType": "ApplicationRule", "sourceAddresses": ["202.120.36.13", "202.120.36.14"],
+      "destinationAddresses": ["202.120.36.15", "202.120.36.16"], "protocols": [{"protocolType":
+      "Http", "port": 12800}, {"protocolType": "Https", "port": 12801}], "targetFqdns":
+      ["www.bing.com"], "targetUrls": [], "fqdnTags": [], "sourceIpGroups": [], "terminateTLS":
+      false, "webCategories": []}, {"name": "application-rule-3", "ruleType": "ApplicationRule",
       "sourceAddresses": ["202.120.36.13", "202.120.36.14"], "destinationAddresses":
-      ["202.120.36.15", "202.120.36.16"], "protocols": [{"protocolType": "Http", "port":
-      12800}, {"protocolType": "Https", "port": 12801}], "targetFqdns": ["www.bing.com"],
-      "targetUrls": [], "fqdnTags": [], "sourceIpGroups": [], "terminateTLS": false,
+      ["10.120.36.15", "10.120.36.16"], "protocols": [], "targetFqdns": [], "targetUrls":
+      ["microsoft.com"], "fqdnTags": [], "sourceIpGroups": [], "terminateTLS": false,
       "webCategories": []}]}, {"name": "nat-collection-2", "priority": 1000, "ruleCollectionType":
       "FirewallPolicyNatRuleCollection", "action": {"type": "Dnat"}, "rules": [{"name":
       "network-rule", "ruleType": "NatRule", "ipProtocols": ["TCP", "UDP"], "sourceAddresses":
@@ -3524,13 +4059,13 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2664'
+      - '3022'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name --collection-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -3574,8 +4109,9 @@ interactions:
         : 12801\r\n              }\r\n            ],\r\n            \"fqdnTags\":\
         \ [\r\n              \"AzureBackup\",\r\n              \"HDInsight\"\r\n \
         \           ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
-        : [],\r\n            \"targetUrls\": [],\r\n            \"terminateTLS\":\
-        \ false,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
         ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
         : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
         \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          },\r\
@@ -3591,9 +4127,18 @@ interactions:
         : [\r\n              \"202.120.36.13\",\r\n              \"202.120.36.14\"\
         \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
         \      \"202.120.36.15\",\r\n              \"202.120.36.16\"\r\n         \
-        \   ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n        ],\r\
-        \n        \"name\": \"filter-collection-2\",\r\n        \"priority\": 14000\r\
-        \n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
+        \   ],\r\n            \"sourceIpGroups\": []\r\n          },\r\n         \
+        \ {\r\n            \"ruleType\": \"ApplicationRule\",\r\n            \"name\"\
+        : \"application-rule-3\",\r\n            \"protocols\": [],\r\n          \
+        \  \"fqdnTags\": [],\r\n            \"webCategories\": [],\r\n           \
+        \ \"targetFqdns\": [],\r\n            \"targetUrls\": [\r\n              \"\
+        microsoft.com\"\r\n            ],\r\n            \"terminateTLS\": false,\r\
+        \n            \"sourceAddresses\": [\r\n              \"202.120.36.13\",\r\
+        \n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"10.120.36.15\",\r\n              \"10.120.36.16\"\r\
+        \n            ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n\
+        \        ],\r\n        \"name\": \"filter-collection-2\",\r\n        \"priority\"\
+        : 14000\r\n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
         ,\r\n        \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\
         \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NatRule\"\
         ,\r\n            \"name\": \"network-rule\",\r\n            \"translatedFqdn\"\
@@ -3608,19 +4153,19 @@ interactions:
         ,\r\n        \"priority\": 1000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"40b30e5b-4c78-4eb0-865c-bb61e2ec914a\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"a4593a37-5427-4130-a522-7222d44821cb\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/ec59d736-77ab-4061-9d18-693a151393d9?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/e4ce9b14-1a36-4ac7-b9f4-045370b0c4b8?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
-      - '5062'
+      - '5752'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:29:53 GMT
+      - Wed, 23 Dec 2020 11:13:22 GMT
       expires:
       - '-1'
       pragma:
@@ -3636,7 +4181,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1197'
     status:
       code: 200
       message: OK
@@ -3654,10 +4199,10 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name --collection-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/ec59d736-77ab-4061-9d18-693a151393d9?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/e4ce9b14-1a36-4ac7-b9f4-045370b0c4b8?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -3669,7 +4214,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:30:13 GMT
+      - Wed, 23 Dec 2020 11:13:33 GMT
       expires:
       - '-1'
       pragma:
@@ -3701,7 +4246,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name --collection-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
@@ -3743,8 +4288,9 @@ interactions:
         : 12801\r\n              }\r\n            ],\r\n            \"fqdnTags\":\
         \ [\r\n              \"AzureBackup\",\r\n              \"HDInsight\"\r\n \
         \           ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
-        : [],\r\n            \"targetUrls\": [],\r\n            \"terminateTLS\":\
-        \ false,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
         ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
         : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
         \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          },\r\
@@ -3760,9 +4306,18 @@ interactions:
         : [\r\n              \"202.120.36.13\",\r\n              \"202.120.36.14\"\
         \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
         \      \"202.120.36.15\",\r\n              \"202.120.36.16\"\r\n         \
-        \   ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n        ],\r\
-        \n        \"name\": \"filter-collection-2\",\r\n        \"priority\": 14000\r\
-        \n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
+        \   ],\r\n            \"sourceIpGroups\": []\r\n          },\r\n         \
+        \ {\r\n            \"ruleType\": \"ApplicationRule\",\r\n            \"name\"\
+        : \"application-rule-3\",\r\n            \"protocols\": [],\r\n          \
+        \  \"fqdnTags\": [],\r\n            \"webCategories\": [],\r\n           \
+        \ \"targetFqdns\": [],\r\n            \"targetUrls\": [\r\n              \"\
+        microsoft.com\"\r\n            ],\r\n            \"terminateTLS\": false,\r\
+        \n            \"sourceAddresses\": [\r\n              \"202.120.36.13\",\r\
+        \n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"10.120.36.15\",\r\n              \"10.120.36.16\"\r\
+        \n            ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n\
+        \        ],\r\n        \"name\": \"filter-collection-2\",\r\n        \"priority\"\
+        : 14000\r\n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
         ,\r\n        \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\
         \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NatRule\"\
         ,\r\n            \"name\": \"network-rule\",\r\n            \"translatedFqdn\"\
@@ -3777,17 +4332,17 @@ interactions:
         ,\r\n        \"priority\": 1000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"40b30e5b-4c78-4eb0-865c-bb61e2ec914a\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"a4593a37-5427-4130-a522-7222d44821cb\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5063'
+      - '5753'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:30:13 GMT
+      - Wed, 23 Dec 2020 11:13:33 GMT
       expires:
       - '-1'
       pragma:
@@ -3819,7 +4374,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -3863,8 +4418,9 @@ interactions:
         : 12801\r\n              }\r\n            ],\r\n            \"fqdnTags\":\
         \ [\r\n              \"AzureBackup\",\r\n              \"HDInsight\"\r\n \
         \           ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
-        : [],\r\n            \"targetUrls\": [],\r\n            \"terminateTLS\":\
-        \ false,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
         ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
         : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
         \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          },\r\
@@ -3880,9 +4436,18 @@ interactions:
         : [\r\n              \"202.120.36.13\",\r\n              \"202.120.36.14\"\
         \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
         \      \"202.120.36.15\",\r\n              \"202.120.36.16\"\r\n         \
-        \   ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n        ],\r\
-        \n        \"name\": \"filter-collection-2\",\r\n        \"priority\": 14000\r\
-        \n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
+        \   ],\r\n            \"sourceIpGroups\": []\r\n          },\r\n         \
+        \ {\r\n            \"ruleType\": \"ApplicationRule\",\r\n            \"name\"\
+        : \"application-rule-3\",\r\n            \"protocols\": [],\r\n          \
+        \  \"fqdnTags\": [],\r\n            \"webCategories\": [],\r\n           \
+        \ \"targetFqdns\": [],\r\n            \"targetUrls\": [\r\n              \"\
+        microsoft.com\"\r\n            ],\r\n            \"terminateTLS\": false,\r\
+        \n            \"sourceAddresses\": [\r\n              \"202.120.36.13\",\r\
+        \n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"10.120.36.15\",\r\n              \"10.120.36.16\"\r\
+        \n            ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n\
+        \        ],\r\n        \"name\": \"filter-collection-2\",\r\n        \"priority\"\
+        : 14000\r\n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
         ,\r\n        \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\
         \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NatRule\"\
         ,\r\n            \"name\": \"network-rule\",\r\n            \"translatedFqdn\"\
@@ -3897,17 +4462,17 @@ interactions:
         ,\r\n        \"priority\": 1000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"40b30e5b-4c78-4eb0-865c-bb61e2ec914a\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"a4593a37-5427-4130-a522-7222d44821cb\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '5063'
+      - '5753'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:30:24 GMT
+      - Wed, 23 Dec 2020 11:13:35 GMT
       expires:
       - '-1'
       pragma:
@@ -3938,14 +4503,18 @@ interactions:
       [{"name": "application-rule", "ruleType": "ApplicationRule", "sourceAddresses":
       ["202.120.36.13", "202.120.36.14"], "destinationAddresses": ["202.120.36.15",
       "202.120.36.16"], "protocols": [{"protocolType": "Http", "port": 12800}, {"protocolType":
-      "Https", "port": 12801}], "targetFqdns": [], "targetUrls": [], "fqdnTags": ["AzureBackup",
-      "HDInsight"], "sourceIpGroups": [], "terminateTLS": false, "webCategories":
-      []}, {"name": "application-rule-2", "ruleType": "ApplicationRule", "sourceAddresses":
-      ["202.120.36.13", "202.120.36.14"], "destinationAddresses": ["202.120.36.15",
-      "202.120.36.16"], "protocols": [{"protocolType": "Http", "port": 12800}, {"protocolType":
-      "Https", "port": 12801}], "targetFqdns": ["www.bing.com"], "targetUrls": [],
-      "fqdnTags": [], "sourceIpGroups": [], "terminateTLS": false, "webCategories":
-      []}]}, {"name": "nat-collection-2", "priority": 1000, "ruleCollectionType":
+      "Https", "port": 12801}], "targetFqdns": [], "targetUrls": ["www.google.com",
+      "www.bing.com"], "fqdnTags": ["AzureBackup", "HDInsight"], "sourceIpGroups":
+      [], "terminateTLS": true, "webCategories": []}, {"name": "application-rule-2",
+      "ruleType": "ApplicationRule", "sourceAddresses": ["202.120.36.13", "202.120.36.14"],
+      "destinationAddresses": ["202.120.36.15", "202.120.36.16"], "protocols": [{"protocolType":
+      "Http", "port": 12800}, {"protocolType": "Https", "port": 12801}], "targetFqdns":
+      ["www.bing.com"], "targetUrls": [], "fqdnTags": [], "sourceIpGroups": [], "terminateTLS":
+      false, "webCategories": []}, {"name": "application-rule-3", "ruleType": "ApplicationRule",
+      "sourceAddresses": ["202.120.36.13", "202.120.36.14"], "destinationAddresses":
+      ["10.120.36.15", "10.120.36.16"], "protocols": [], "targetFqdns": [], "targetUrls":
+      ["microsoft.com"], "fqdnTags": [], "sourceIpGroups": [], "terminateTLS": false,
+      "webCategories": []}]}, {"name": "nat-collection-2", "priority": 1000, "ruleCollectionType":
       "FirewallPolicyNatRuleCollection", "action": {"type": "Dnat"}, "rules": [{"name":
       "network-rule", "ruleType": "NatRule", "ipProtocols": ["TCP", "UDP"], "sourceAddresses":
       ["202.120.36.13", "202.120.36.14"], "destinationAddresses": ["202.120.36.15"],
@@ -3961,13 +4530,13 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2216'
+      - '2574'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -3999,8 +4568,9 @@ interactions:
         \n              }\r\n            ],\r\n            \"fqdnTags\": [\r\n   \
         \           \"AzureBackup\",\r\n              \"HDInsight\"\r\n          \
         \  ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
-        : [],\r\n            \"targetUrls\": [],\r\n            \"terminateTLS\":\
-        \ false,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
         ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
         : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
         \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          },\r\
@@ -4016,9 +4586,18 @@ interactions:
         : [\r\n              \"202.120.36.13\",\r\n              \"202.120.36.14\"\
         \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
         \      \"202.120.36.15\",\r\n              \"202.120.36.16\"\r\n         \
-        \   ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n        ],\r\
-        \n        \"name\": \"filter-collection-2\",\r\n        \"priority\": 14000\r\
-        \n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
+        \   ],\r\n            \"sourceIpGroups\": []\r\n          },\r\n         \
+        \ {\r\n            \"ruleType\": \"ApplicationRule\",\r\n            \"name\"\
+        : \"application-rule-3\",\r\n            \"protocols\": [],\r\n          \
+        \  \"fqdnTags\": [],\r\n            \"webCategories\": [],\r\n           \
+        \ \"targetFqdns\": [],\r\n            \"targetUrls\": [\r\n              \"\
+        microsoft.com\"\r\n            ],\r\n            \"terminateTLS\": false,\r\
+        \n            \"sourceAddresses\": [\r\n              \"202.120.36.13\",\r\
+        \n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"10.120.36.15\",\r\n              \"10.120.36.16\"\r\
+        \n            ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n\
+        \        ],\r\n        \"name\": \"filter-collection-2\",\r\n        \"priority\"\
+        : 14000\r\n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
         ,\r\n        \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\
         \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NatRule\"\
         ,\r\n            \"name\": \"network-rule\",\r\n            \"translatedFqdn\"\
@@ -4033,19 +4612,19 @@ interactions:
         ,\r\n        \"priority\": 1000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"1dcfa3b2-4e45-49ef-8196-55c0180ada2d\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"76b5e8b0-9e31-42ca-88d5-ee80912b969b\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/ace90264-7f59-486e-afeb-3b340a1daf1c?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/001c8e78-9e93-4ea4-951d-d929f28515ce?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
-      - '4214'
+      - '4904'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:30:26 GMT
+      - Wed, 23 Dec 2020 11:13:36 GMT
       expires:
       - '-1'
       pragma:
@@ -4079,10 +4658,10 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/ace90264-7f59-486e-afeb-3b340a1daf1c?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/001c8e78-9e93-4ea4-951d-d929f28515ce?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -4094,7 +4673,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:30:45 GMT
+      - Wed, 23 Dec 2020 11:13:48 GMT
       expires:
       - '-1'
       pragma:
@@ -4126,7 +4705,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-collection-group-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup?api-version=2020-07-01
@@ -4156,8 +4735,9 @@ interactions:
         \n              }\r\n            ],\r\n            \"fqdnTags\": [\r\n   \
         \           \"AzureBackup\",\r\n              \"HDInsight\"\r\n          \
         \  ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
-        : [],\r\n            \"targetUrls\": [],\r\n            \"terminateTLS\":\
-        \ false,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
         ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
         : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
         \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          },\r\
@@ -4173,9 +4753,18 @@ interactions:
         : [\r\n              \"202.120.36.13\",\r\n              \"202.120.36.14\"\
         \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
         \      \"202.120.36.15\",\r\n              \"202.120.36.16\"\r\n         \
-        \   ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n        ],\r\
-        \n        \"name\": \"filter-collection-2\",\r\n        \"priority\": 14000\r\
-        \n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
+        \   ],\r\n            \"sourceIpGroups\": []\r\n          },\r\n         \
+        \ {\r\n            \"ruleType\": \"ApplicationRule\",\r\n            \"name\"\
+        : \"application-rule-3\",\r\n            \"protocols\": [],\r\n          \
+        \  \"fqdnTags\": [],\r\n            \"webCategories\": [],\r\n           \
+        \ \"targetFqdns\": [],\r\n            \"targetUrls\": [\r\n              \"\
+        microsoft.com\"\r\n            ],\r\n            \"terminateTLS\": false,\r\
+        \n            \"sourceAddresses\": [\r\n              \"202.120.36.13\",\r\
+        \n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"10.120.36.15\",\r\n              \"10.120.36.16\"\r\
+        \n            ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n\
+        \        ],\r\n        \"name\": \"filter-collection-2\",\r\n        \"priority\"\
+        : 14000\r\n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
         ,\r\n        \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\
         \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NatRule\"\
         ,\r\n            \"name\": \"network-rule\",\r\n            \"translatedFqdn\"\
@@ -4190,17 +4779,17 @@ interactions:
         ,\r\n        \"priority\": 1000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"1dcfa3b2-4e45-49ef-8196-55c0180ada2d\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"76b5e8b0-9e31-42ca-88d5-ee80912b969b\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4215'
+      - '4905'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:30:47 GMT
+      - Wed, 23 Dec 2020 11:13:48 GMT
       expires:
       - '-1'
       pragma:
@@ -4234,7 +4823,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -4266,8 +4855,9 @@ interactions:
         \n              }\r\n            ],\r\n            \"fqdnTags\": [\r\n   \
         \           \"AzureBackup\",\r\n              \"HDInsight\"\r\n          \
         \  ],\r\n            \"webCategories\": [],\r\n            \"targetFqdns\"\
-        : [],\r\n            \"targetUrls\": [],\r\n            \"terminateTLS\":\
-        \ false,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
+        : [],\r\n            \"targetUrls\": [\r\n              \"www.google.com\"\
+        ,\r\n              \"www.bing.com\"\r\n            ],\r\n            \"terminateTLS\"\
+        : true,\r\n            \"sourceAddresses\": [\r\n              \"202.120.36.13\"\
         ,\r\n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
         : [\r\n              \"202.120.36.15\",\r\n              \"202.120.36.16\"\
         \r\n            ],\r\n            \"sourceIpGroups\": []\r\n          },\r\
@@ -4283,9 +4873,18 @@ interactions:
         : [\r\n              \"202.120.36.13\",\r\n              \"202.120.36.14\"\
         \r\n            ],\r\n            \"destinationAddresses\": [\r\n        \
         \      \"202.120.36.15\",\r\n              \"202.120.36.16\"\r\n         \
-        \   ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n        ],\r\
-        \n        \"name\": \"filter-collection-2\",\r\n        \"priority\": 14000\r\
-        \n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
+        \   ],\r\n            \"sourceIpGroups\": []\r\n          },\r\n         \
+        \ {\r\n            \"ruleType\": \"ApplicationRule\",\r\n            \"name\"\
+        : \"application-rule-3\",\r\n            \"protocols\": [],\r\n          \
+        \  \"fqdnTags\": [],\r\n            \"webCategories\": [],\r\n           \
+        \ \"targetFqdns\": [],\r\n            \"targetUrls\": [\r\n              \"\
+        microsoft.com\"\r\n            ],\r\n            \"terminateTLS\": false,\r\
+        \n            \"sourceAddresses\": [\r\n              \"202.120.36.13\",\r\
+        \n              \"202.120.36.14\"\r\n            ],\r\n            \"destinationAddresses\"\
+        : [\r\n              \"10.120.36.15\",\r\n              \"10.120.36.16\"\r\
+        \n            ],\r\n            \"sourceIpGroups\": []\r\n          }\r\n\
+        \        ],\r\n        \"name\": \"filter-collection-2\",\r\n        \"priority\"\
+        : 14000\r\n      },\r\n      {\r\n        \"ruleCollectionType\": \"FirewallPolicyNatRuleCollection\"\
         ,\r\n        \"action\": {\r\n          \"type\": \"Dnat\"\r\n        },\r\
         \n        \"rules\": [\r\n          {\r\n            \"ruleType\": \"NatRule\"\
         ,\r\n            \"name\": \"network-rule\",\r\n            \"translatedFqdn\"\
@@ -4300,23 +4899,23 @@ interactions:
         ,\r\n        \"priority\": 1000\r\n      }\r\n    ],\r\n    \"provisioningState\"\
         : \"Deleting\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_policy000001/providers/Microsoft.Network/firewallPolicies/myclipolicy/ruleCollectionGroups/myclirulecollectiongroup\"\
         ,\r\n  \"name\": \"myclirulecollectiongroup\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies/RuleCollectionGroups\"\
-        ,\r\n  \"etag\": \"8138bd38-6b89-4c90-b0ae-a83ab60a63a0\",\r\n  \"location\"\
+        ,\r\n  \"etag\": \"cc0c06b7-2215-4ece-a0b8-fdeb0cd26de8\",\r\n  \"location\"\
         : \"centralus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/61628a73-6b43-42f8-9dcb-c46778ea0eee?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/3a8e1b4e-2a1a-4c10-8ffc-b05bc4caa4ef?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
-      - '4214'
+      - '4904'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:30:57 GMT
+      - Wed, 23 Dec 2020 11:13:50 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperationResults/61628a73-6b43-42f8-9dcb-c46778ea0eee?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperationResults/3a8e1b4e-2a1a-4c10-8ffc-b05bc4caa4ef?api-version=2020-07-01
       pragma:
       - no-cache
       server:
@@ -4344,10 +4943,10 @@ interactions:
       ParameterSetName:
       - -g --policy-name --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/61628a73-6b43-42f8-9dcb-c46778ea0eee?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/centralus/nfvOperations/3a8e1b4e-2a1a-4c10-8ffc-b05bc4caa4ef?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -4359,7 +4958,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:31:18 GMT
+      - Wed, 23 Dec 2020 11:14:00 GMT
       expires:
       - '-1'
       pragma:
@@ -4391,7 +4990,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -4408,7 +5007,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 15 Dec 2020 08:31:28 GMT
+      - Wed, 23 Dec 2020 11:14:02 GMT
       expires:
       - '-1'
       pragma:
@@ -4442,7 +5041,7 @@ interactions:
       ParameterSetName:
       - -g --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-99-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
+      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
         msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
       accept-language:
       - en-US
@@ -4457,7 +5056,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 15 Dec 2020 08:31:43 GMT
+      - Wed, 23 Dec 2020 11:14:08 GMT
       expires:
       - '-1'
       pragma:

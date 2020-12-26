@@ -37,16 +37,20 @@ def cf_sa(cli_ctx, _):
     return storage_client_factory(cli_ctx).storage_accounts
 
 
-def cf_mgmt_policy(cli_ctx, _):
-    return storage_client_factory(cli_ctx).management_policies
-
-
 def get_account_url(cli_ctx, account_name, service):
     from knack.util import CLIError
     if account_name is None:
         raise CLIError("Please provide storage account name or connection string.")
     storage_endpoint = cli_ctx.cloud.suffixes.storage_endpoint
     return "https://{}.{}.{}".format(account_name, service, storage_endpoint)
+
+
+def get_credential(kwargs):
+    account_key = kwargs.pop('account_key', None)
+    token_credential = kwargs.pop('token_credential', None)
+    sas_token = kwargs.pop('sas_token', None)
+    credential = account_key or sas_token or token_credential
+    return credential
 
 
 def cf_blob_service(cli_ctx, kwargs):
@@ -56,9 +60,7 @@ def cf_blob_service(cli_ctx, kwargs):
                              '_blob_service_client#BlobServiceClient')
     connection_string = kwargs.pop('connection_string', None)
     account_name = kwargs.pop('account_name', None)
-    account_key = kwargs.pop('account_key', None)
-    token_credential = kwargs.pop('token_credential', None)
-    sas_token = kwargs.pop('sas_token', None)
+
     location_mode = kwargs.pop('location_mode', None)
     if location_mode:
         client_args['_location_mode'] = location_mode
@@ -67,7 +69,7 @@ def cf_blob_service(cli_ctx, kwargs):
         return t_blob_service.from_connection_string(conn_str=connection_string)
 
     account_url = get_account_url(cli_ctx, account_name=account_name, service='blob')
-    credential = account_key or sas_token or token_credential
+    credential = get_credential(kwargs)
 
     if account_url and credential:
         return t_blob_service(account_url=account_url, credential=credential, **client_args)
@@ -76,6 +78,18 @@ def cf_blob_service(cli_ctx, kwargs):
 
 
 def cf_blob_client(cli_ctx, kwargs):
+    if kwargs.get('blob_url'):
+        t_blob_client = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE_BLOB, '_blob_client#BlobClient')
+        credential = get_credential(kwargs)
+        # del unused kwargs
+        kwargs.pop('connection_string')
+        kwargs.pop('account_name')
+        kwargs.pop('container_name')
+        kwargs.pop('blob_name')
+        return t_blob_client.from_blob_url(blob_url=kwargs.pop('blob_url'),
+                                           credential=credential,
+                                           snapshot=kwargs.pop('snapshot', None))
+    kwargs.pop('blob_url')
     return cf_blob_service(cli_ctx, kwargs).get_blob_client(container=kwargs.pop('container_name'),
                                                             blob=kwargs.pop('blob_name'),
                                                             snapshot=kwargs.pop('snapshot', None))

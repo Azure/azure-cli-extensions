@@ -25,10 +25,12 @@ from ._validators import (
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
 def load_arguments(self, _):
 
-    AzureFirewallNetworkRuleProtocol, AzureFirewallRCActionType, \
-        AzureFirewallNatRCActionType, FirewallPolicySkuTier = \
+    (AzureFirewallNetworkRuleProtocol, AzureFirewallRCActionType,
+     AzureFirewallNatRCActionType, FirewallPolicySkuTier, FirewallPolicyIntrusionDetectionStateType,
+     FirewallPolicyIntrusionDetectionProtocol) = \
         self.get_models('AzureFirewallNetworkRuleProtocol', 'AzureFirewallRCActionType',
-                        'AzureFirewallNatRCActionType', 'FirewallPolicySkuTier')
+                        'AzureFirewallNatRCActionType', 'FirewallPolicySkuTier', 'FirewallPolicyIntrusionDetectionStateType',
+                        'FirewallPolicyIntrusionDetectionProtocol')
 
     firewall_name_type = CLIArgumentType(options_list=['--firewall-name', '-f'], metavar='NAME', help='Azure Firewall name.', id_part='name', completer=get_resource_name_completion_list('Microsoft.Network/azureFirewalls'))
     collection_name_type = CLIArgumentType(options_list=['--collection-name', '-c'], help='Name of the rule collection.', id_part='child_name_1')
@@ -165,6 +167,36 @@ def load_arguments(self, _):
         c.argument('ip_addresses', nargs='+', help='Space-separated list of IPv4 addresses.')
         c.argument('fqdns', nargs='+', help='Space-separated list of FQDNs.')
 
+    with self.argument_context('network firewall policy', arg_group='Intrustion Detection') as c:
+        c.argument('intrusion_detection_mode',
+                   is_preview=True,
+                   min_api='2020-07-01',
+                   options_list=['--detect-mode'],
+                   arg_type=get_enum_type(FirewallPolicyIntrusionDetectionStateType),
+                   help='Intrusion detection general state')
+
+    with self.argument_context('network firewall policy', arg_group='Transport Security', min_api='2020-07-01', is_preview=True) as c:
+        c.argument('key_vault_secret_id',
+                   help="Secret Id of (base-64 encoded unencrypted pfx) Secret or Certificate object stored in KeyVault")
+        c.argument('certificate_name', options_list=['--cert-name'], help='Name of the CA certificate')
+
+    with self.argument_context('network firewall policy intrusion-detection', min_api='2020-07-01') as c:
+        c.argument('firewall_policy_name', options_list=['--policy-name'], help='The name of the Firewall Policy.')
+
+    with self.argument_context('network firewall policy intrusion-detection', min_api='2020-07-01', arg_group='Intrusion Signature Override') as c:
+        c.argument('signature_mode', options_list=['--mode'], help='The signature state', arg_type=get_enum_type(FirewallPolicyIntrusionDetectionStateType))
+        c.argument('signature_id', help='Signature id')
+
+    with self.argument_context('network firewall policy intrusion-detection', min_api='2020-07-01', arg_group='Traffic Bypass Rule') as c:
+        c.argument('bypass_rule_name', options_list=['--rule-name'], help='Name of the bypass traffic rule')
+        c.argument('bypass_rule_description', options_list=['--rule-description'], help='Description of the bypass traffic rule')
+        c.argument('bypass_rule_protocol', options_list=['--rule-protocol'], arg_type=get_enum_type(FirewallPolicyIntrusionDetectionProtocol), help='The rule bypass protocol')
+        c.argument('bypass_rule_source_addresses', options_list=['--rule-src-addresses'], nargs='+', help='Space-separated list of source IP addresses or ranges for this rule')
+        c.argument('bypass_rule_destination_addresses', options_list=['--rule-dest-addresses'], nargs='+', help='Space-separated list of destination IP addresses or ranges for this rule')
+        c.argument('bypass_rule_destination_ports', options_list=['--rule-dest-ports'], nargs='+', help='Space-separated list of destination ports or ranges')
+        c.argument('bypass_rule_source_ip_groups', options_list=['--rule-src-ip-groups'], nargs='+', help='Space-separated list of source IpGroups for this rule')
+        c.argument('bypass_rule_destination_ip_groups', options_list=['--rule-dest-ip-groups'], nargs='+', help='Space-separated list of destination IpGroups for this rule')
+
     with self.argument_context('network firewall policy rule-collection-group') as c:
         c.argument('firewall_policy_name', options_list=['--policy-name'], help='The name of the Firewall Policy.')
         c.argument('rule_collection_group_name', options_list=['--name', '-n'], help='The name of the Firewall Policy Rule Collection Group.')
@@ -194,6 +226,8 @@ def load_arguments(self, _):
 
     with self.argument_context('network firewall policy rule-collection-group collection', arg_group='Application Rule') as c:
         c.argument('target_fqdns', nargs='+', help='Space-separated list of FQDNs for this rule.', validator=validate_rule_group_collection)
+        c.argument('target_urls', nargs='+', help='Space-separated list of target urls for this rule', is_preview=True, min_api='2020-07-01')
+        c.argument('enable_terminate_tls', arg_type=get_three_state_flag(), help='Enable flag to terminate TLS connection for this rule', is_preview=True, min_api='2020-07-01')
         c.argument('fqdn_tags', nargs='+', help='Space-separated list of FQDN tags for this rule.', validator=validate_rule_group_collection)
         c.argument('protocols', nargs='+', validator=validate_application_rule_protocols, help='Space-separated list of protocols and port numbers to use, in PROTOCOL=PORT format. Valid protocols are Http, Https.')
 

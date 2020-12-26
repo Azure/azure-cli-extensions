@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from ._client_factory import (cf_app_services, cf_spring_cloud, cf_bindings, cf_config_servers)
+from ._client_factory import (cf_app_services, cf_spring_cloud, cf_spring_cloud_20201101preview, cf_bindings, cf_config_servers)
 from ._transformers import (transform_spring_cloud_table_output,
                             transform_app_table_output,
                             transform_spring_cloud_deployment_output,
@@ -98,6 +98,10 @@ def load_command_table(self, _):
         g.custom_command('list', 'domain_list', table_transformer=transform_spring_cloud_custom_domain_output)
         g.custom_command('update', 'domain_update')
         g.custom_command('unbind', 'domain_unbind')
+
+    with self.command_group('spring-cloud app-insights', is_preview=True, client_factory=cf_spring_cloud_20201101preview) as g:
+        g.custom_command('update', 'app_insights_update')
+        g.custom_show_command('show', 'app_insights_show')
 
     with self.command_group('spring-cloud'):
         pass

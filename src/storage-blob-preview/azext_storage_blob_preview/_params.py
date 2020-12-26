@@ -213,12 +213,17 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.extra('tags', tags_type)
 
     with self.argument_context('storage blob delete') as c:
+        t_delete_snapshots = self.get_sdk('_generated.models#DeleteSnapshotsOptionType',
+                                          resource_type=CUSTOM_DATA_STORAGE_BLOB)
         c.register_blob_arguments()
         c.register_precondition_options()
 
         c.extra('lease', lease_type)
         c.extra('snapshot', snapshot_type)
         c.extra('version_id', version_id_type)
+        c.argument('delete_snapshots', arg_type=get_enum_type(t_delete_snapshots),
+                   help='Required if the blob has associated snapshots. "only": Deletes only the blobs snapshots. '
+                        '"include": Deletes the blob along with all snapshots.')
 
     with self.argument_context('storage blob download') as c:
         from ._validators import add_progress_callback_v2
@@ -299,7 +304,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage blob lease acquire') as c:
         c.register_precondition_options()
-        c.register_blob_arguments()
+        c.register_lease_blob_arguments()
         c.extra('lease_id', options_list='--proposed-lease-id', help='Proposed lease ID, in a GUID string format. '
                 'The Blob service returns 400 (Invalid request) if the proposed lease ID is not in the correct format.')
         c.argument('lease_duration', help='Specify the duration of the lease, in seconds, or negative one (-1) for '
@@ -309,7 +314,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage blob lease break') as c:
         c.register_precondition_options()
-        c.register_blob_arguments()
+        c.register_lease_blob_arguments()
         c.argument('lease_break_period', type=int,
                    help="This is the proposed duration of seconds that the lease should continue before it is broken, "
                    "between 0 and 60 seconds. This break period is only used if it is shorter than the time remaining "
@@ -321,7 +326,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage blob lease change') as c:
         c.register_precondition_options()
-        c.register_blob_arguments()
+        c.register_lease_blob_arguments()
         c.extra('proposed_lease_id', help='Proposed lease ID, in a GUID string format. The Blob service returns 400 '
                 '(Invalid request) if the proposed lease ID is not in the correct format.', required=True)
         c.extra('lease_id', help='Required if the blob has an active lease.', required=True)
@@ -330,7 +335,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     for item in ['release', 'renew']:
         with self.argument_context('storage blob lease {}'.format(item)) as c:
             c.register_precondition_options()
-            c.register_blob_arguments()
+            c.register_lease_blob_arguments()
             c.extra('lease_id', help='Required if the blob has an active lease.', required=True)
             c.extra('if_tags_match_condition', tags_condition_type)
 
