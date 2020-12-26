@@ -2144,8 +2144,8 @@ interactions:
       x-powered-by:
       - ASP.NET
     status:
-      code: 201
-      message: Created
+      code: 400
+      message: Bad Request
 - request:
     body: null
     headers:
@@ -2167,26 +2167,26 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/64cb1b79-f6b8-41b8-a0d5-f6ff379d5748?api-version=2016-03-30
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Network/virtualNetworks/cliakstest000003/subnets/aks-subnet/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Network%20Contributor%27&api-version=2018-01-01-preview
   response:
     body:
-      string: "{\n  \"name\": \"791bcb64-b8f6-b841-a0d5-f6ff379d5748\",\n  \"status\"\
-        : \"InProgress\",\n  \"startTime\": \"2020-12-17T19:52:12.50369Z\"\n }"
+      string: '{"value":[{"properties":{"roleName":"Network Contributor","type":"BuiltInRole","description":"Lets
+        you manage networks, but not access to them.","assignableScopes":["/"],"permissions":[{"actions":["Microsoft.Authorization/*/read","Microsoft.Insights/alertRules/*","Microsoft.Network/*","Microsoft.ResourceHealth/availabilityStatuses/read","Microsoft.Resources/deployments/*","Microsoft.Resources/subscriptions/resourceGroups/read","Microsoft.Support/*"],"notActions":[],"dataActions":[],"notDataActions":[]}],"createdOn":"2015-06-02T00:18:27.3542698Z","updatedOn":"2016-05-31T23:14:00.3326359Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","type":"Microsoft.Authorization/roleDefinitions","name":"4d97b98b-1d4f-4787-a291-c67834d212e7"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '124'
+      - '873'
       content-type:
-      - application/json
+      - application/json; charset=utf-8
       date:
       - Thu, 17 Dec 2020 07:33:00 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - nginx
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -2224,12 +2224,16 @@ interactions:
     body:
       string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[]}'
     headers:
+      access-control-allow-origin:
+      - '*'
       cache-control:
       - no-cache
       content-length:
       - '121'
       content-type:
-      - application/json
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
       date:
       - Thu, 17 Dec 2020 07:33:01 GMT
       duration:
@@ -2246,12 +2250,14 @@ interactions:
       - a081b1a1-7efd-44d7-9814-83c2a9ce2aad
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '1'
+      x-powered-by:
+      - ASP.NET
     status:
       code: 200
       message: OK
@@ -3270,15 +3276,15 @@ interactions:
       content-length:
       - '873'
       content-type:
-      - application/json
+      - application/json; charset=utf-8
       date:
       - Thu, 17 Dec 2020 07:34:23 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - nginx
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -3515,17 +3521,13 @@ interactions:
       - nginx
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
     status:
-      code: 200
-      message: OK
+      code: 201
+      message: Created
 - request:
     body: null
     headers:
@@ -3554,7 +3556,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '124'
+      - '126'
       content-type:
       - application/json
       date:
@@ -3604,7 +3606,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '124'
+      - '126'
       content-type:
       - application/json
       date:
@@ -3654,7 +3656,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '124'
+      - '126'
       content-type:
       - application/json
       date:
@@ -3704,7 +3706,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '124'
+      - '126'
       content-type:
       - application/json
       date:
@@ -3754,7 +3756,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '124'
+      - '126'
       content-type:
       - application/json
       date:
@@ -3804,7 +3806,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '124'
+      - '126'
       content-type:
       - application/json
       date:
@@ -3855,7 +3857,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '168'
+      - '170'
       content-type:
       - application/json
       date:
