@@ -36,7 +36,7 @@ def show(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
 
 def build(cmd, target_id=None, project=None):
     """
-    Compile a Q# program for execution to Azure Quantum.
+    Compile a Q# program to run on Azure Quantum.
     """
     target = TargetInfo(cmd, target_id)
 
@@ -119,7 +119,7 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
 def submit(cmd, program_args, resource_group_name=None, workspace_name=None, location=None,
            target_id=None, project=None, job_name=None, shots=None, storage=None, no_build=False):
     """
-    Submit a Q# project for execution to Azure Quantum.
+    Submit a Q# project to run on Azure Quantum.
     """
 
     # We first build and then call run.
@@ -165,7 +165,7 @@ def _parse_blob_url(url):
 
 def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
     """
-    Get the results of a Q# execution.
+    Get the results of running a Q# job.
     """
     import tempfile
     import json
@@ -197,7 +197,7 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
 
 def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=None, max_poll_wait_secs=5):
     """
-    Place the CLI in a waiting state until the job finishes execution.
+    Place the CLI in a waiting state until the job finishes running.
     """
     import time
 
@@ -225,10 +225,10 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
     return job
 
 
-def execute(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
+def run(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
             project=None, job_name=None, shots=None, storage=None, no_build=False):
     """
-    Submit a job for quantum execution on Azure Quantum, and waits for the result.
+    Submit a job to run on Azure Quantum, and waits for the result.
     """
     job = submit(cmd, program_args, resource_group_name, workspace_name, target_id, project, job_name, shots, storage, no_build)
     logger.warning("Job id: %s", job.id)

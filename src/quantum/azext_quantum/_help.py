@@ -34,7 +34,7 @@ helps['quantum job'] = """
 
 helps['quantum target'] = """
     type: group
-    short-summary: Manage execution targets for Azure Quantum workspaces.
+    short-summary: Manage targets for Azure Quantum workspaces.
     examples:
       - name: Get the list of targets available in a Azure Quantum workspaces
         text: |-

@@ -13,8 +13,8 @@ def load_arguments(self, _):
     program_args_type = CLIArgumentType(nargs='*', help='List of arguments expected by the Q# operation specified as --name=value after `--`.')
     target_id_type = CLIArgumentType(options_list=['--target-id', '-t'], help='Target id.')
     project_type = CLIArgumentType(help='The location of the Q# project to submit. Defaults to current folder.')
-    job_name_type = CLIArgumentType(help='A friendly name to give to this execution of the program.')
-    shots_type = CLIArgumentType(help='The number of times to execute the Q# program on the given target.')
+    job_name_type = CLIArgumentType(help='A friendly name to give to this run of the program.')
+    shots_type = CLIArgumentType(help='The number of times to run the Q# program on the given target.')
     no_build_type = CLIArgumentType(help='If specified, the Q# program is not built before submitting.')
     storage_type = CLIArgumentType(help='If specified, the ConnectionString of an Azure Storage to use to store job data and results.')
 
@@ -40,6 +40,16 @@ def load_arguments(self, _):
         c.positional('program_args', program_args_type)
 
     with self.argument_context('quantum execute') as c:
+        c.argument('workspace_name', workspace_name_type)
+        c.argument('target_id', target_id_type)
+        c.argument('project', project_type)
+        c.argument('job_name', job_name_type)
+        c.argument('shots', shots_type)
+        c.argument('storage', storage_type)
+        c.argument('no_build', no_build_type)
+        c.positional('program_args', program_args_type)
+
+    with self.argument_context('quantum run') as c:
         c.argument('workspace_name', workspace_name_type)
         c.argument('target_id', target_id_type)
         c.argument('project', project_type)
