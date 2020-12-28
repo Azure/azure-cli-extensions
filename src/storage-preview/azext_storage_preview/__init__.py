@@ -8,7 +8,8 @@ from azure.cli.core.profiles import register_resource_type
 from azure.cli.core.commands import AzCommandGroup, AzArgumentContext
 
 import azext_storage_preview._help  # pylint: disable=unused-import
-from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_ADLS
+from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_ADLS,
+                       CUSTOM_DATA_STORAGE_FILESHARE)
 
 
 class StorageCommandsLoader(AzCommandsLoader):
@@ -18,6 +19,7 @@ class StorageCommandsLoader(AzCommandsLoader):
         register_resource_type('latest', CUSTOM_DATA_STORAGE, '2018-03-28')
         register_resource_type('latest', CUSTOM_DATA_STORAGE_ADLS, '2019-02-02-preview')
         register_resource_type('latest', CUSTOM_MGMT_PREVIEW_STORAGE, '2020-08-01-preview')
+        register_resource_type('latest', CUSTOM_DATA_STORAGE_FILESHARE, '2020-02-10')
         storage_custom = CliCommandType(operations_tmpl='azext_storage_preview.custom#{}')
 
         super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,
@@ -55,12 +57,14 @@ class StorageArgumentContext(AzArgumentContext):
                       help='Only permit requests made with the HTTPS protocol. If omitted, requests from both the HTTP '
                            'and HTTPS protocol are permitted.')
 
-    def register_content_settings_argument(self, settings_class, update, arg_group=None, guess_from_file=None):
+    def register_content_settings_argument(self, settings_class, update, arg_group=None, guess_from_file=None,
+                                           process_md5=False):
         from ._validators import get_content_setting_validator
 
         self.ignore('content_settings')
         self.extra('content_type', default=None, help='The content MIME type.', arg_group=arg_group,
-                   validator=get_content_setting_validator(settings_class, update, guess_from_file=guess_from_file))
+                   validator=get_content_setting_validator(settings_class, update, guess_from_file=guess_from_file,
+                                                           process_md5=process_md5))
         self.extra('content_encoding', default=None, help='The content encoding type.', arg_group=arg_group)
         self.extra('content_language', default=None, help='The content language.', arg_group=arg_group)
         self.extra('content_disposition', default=None, arg_group=arg_group,
@@ -80,8 +84,6 @@ class StorageArgumentContext(AzArgumentContext):
                    required=default_file_param is None, help=path_help,
                    validator=get_file_path_validator(default_file_param=default_file_param),
                    completer=file_path_completer)
-        self.ignore('file_name')
-        self.ignore('directory_name')
 
     def register_source_uri_arguments(self, validator, blob_only=False):
         self.argument('source_uri', options_list=('--source-uri', '-u'), validator=validator, required=False,

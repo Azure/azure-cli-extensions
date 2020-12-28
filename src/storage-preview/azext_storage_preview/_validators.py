@@ -222,7 +222,7 @@ def validate_azcopy_target_url(cmd, namespace):
     del namespace.target_path
 
 
-def get_content_setting_validator(settings_class, update, guess_from_file=None):
+def get_content_setting_validator(settings_class, update, guess_from_file=None, process_md5=False):
     def _class_name(class_type):
         return class_type.__module__ + "." + class_type.__class__.__name__
 
@@ -286,6 +286,10 @@ def get_content_setting_validator(settings_class, update, guess_from_file=None):
             if guess_from_file:
                 new_props = guess_content_type(ns[guess_from_file], new_props, settings_class)
 
+        if process_md5:
+            from .track2_util import string_to_bytes
+            new_props.content_md5 = string_to_bytes(new_props.content_md5)
+
         ns['content_settings'] = new_props
 
     return validator
@@ -333,22 +337,26 @@ def validate_encryption_source(cmd, namespace):
 
 
 def get_file_path_validator(default_file_param=None):
-    """ Creates a namespace validator that splits out 'path' into 'directory_name' and 'file_name'.
-    Allows another path-type parameter to be named which can supply a default filename. """
+    """ Allows another path-type parameter to be named which can supply a default filename. """
 
     def validator(namespace):
         if not hasattr(namespace, 'path'):
             return
 
         path = namespace.path
+        del namespace.path
+
+        if not path:
+            namespace.file_path = os.path.split(getattr(namespace, default_file_param))[1]
+            return
+
         dir_name, file_name = os.path.split(path) if path else (None, '')
 
         if default_file_param and '.' not in file_name:
             dir_name = path
             file_name = os.path.split(getattr(namespace, default_file_param))[1]
-        namespace.directory_name = dir_name
-        namespace.file_name = file_name
-        del namespace.path
+
+        namespace.file_path = dir_name + '/' + file_name if dir_name else file_name
 
     return validator
 
@@ -550,3 +558,51 @@ def validate_delete_retention_days(namespace):
     if namespace.enable_delete_retention is False and namespace.delete_retention_days is not None:
         raise ValueError(
             "incorrect usage: '--delete-retention-days' is invalid when '--enable-delete-retention' is set to false")
+
+
+def add_upload_progress_callback(cmd, namespace):
+    def _update_progress(response):
+        if response.http_response.status_code not in [200, 201]:
+            return
+
+        message = getattr(_update_progress, 'message', 'Alive')
+        reuse = getattr(_update_progress, 'reuse', False)
+        current = response.context['upload_stream_current']
+        total = response.context['data_stream_total']
+
+        if total:
+            hook.add(message=message, value=current, total_val=total)
+            if total == current and not reuse:
+                hook.end()
+
+    hook = cmd.cli_ctx.get_progress_controller(det=True)
+    _update_progress.hook = hook
+
+    if not namespace.no_progress:
+        namespace.progress_callback = _update_progress
+    del namespace.no_progress
+
+
+def process_file_upload_batch_parameters(cmd, namespace):
+    """Process the parameters of storage file batch upload command"""
+    # 1. quick check
+    if not os.path.exists(namespace.source):
+        raise ValueError('incorrect usage: source {} does not exist'.format(namespace.source))
+
+    if not os.path.isdir(namespace.source):
+        raise ValueError('incorrect usage: source must be a directory')
+
+    # 2. try to extract account name and container name from destination string
+    from .storage_url_helpers import StorageResourceIdentifier
+    identifier = StorageResourceIdentifier(cmd.cli_ctx.cloud, namespace.destination)
+    if identifier.is_url():
+        if identifier.filename or identifier.directory:
+            raise ValueError('incorrect usage: destination must be a file share url')
+
+        namespace.destination = identifier.share
+
+        if not namespace.account_name:
+            namespace.account_name = identifier.account_name
+
+    namespace.source = os.path.realpath(namespace.source)
+    namespace.share_name = namespace.destination
