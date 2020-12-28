@@ -28,7 +28,7 @@ from .acr_util import (queue_acr_build, generate_img_name)
 logger = get_logger(__name__)
 
 
-# pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-many-branches,line-too-long
+# pylint:disable=no-member,too-many-lines,too-many-locals,too-many-statements,too-many-branches,line-too-long,import-outside-toplevel
 def create_deploy_container_app(cmd, name, source_location=None, docker_custom_image_name=None, dryrun=False, registry_rg=None, registry_name=None):  # pylint: disable=too-many-statements
     import os
     import json
@@ -318,9 +318,9 @@ def perform_onedeploy(cmd,
                       name,
                       src_path=None,
                       src_url=None,
-                      type=None,
-                      async=None,
                       target_path=None,
+                      artifact_type=None,
+                      is_async=None,
                       restart=None,
                       clean=None,
                       ignore_stack=None,
@@ -333,9 +333,9 @@ def perform_onedeploy(cmd,
     params.webapp_name = name
     params.src_path = src_path
     params.src_url = src_url
-    params.artifact_type = type
-    params.is_async_deployment = async
     params.target_path = target_path
+    params.artifact_type = artifact_type
+    params.is_async_deployment = is_async
     params.should_restart = restart
     params.is_clean_deployment = clean
     params.should_ignore_stack = ignore_stack
@@ -346,8 +346,23 @@ def perform_onedeploy(cmd,
 
 
 # Class for OneDeploy parameters
+# pylint: disable=too-many-instance-attributes,too-few-public-methods
 class OneDeployParams(object):
-    pass
+    def __init__(self):
+        self.cmd = None
+        self.resource_group_name = None
+        self.webapp_name = None
+        self.src_path = None
+        self.src_url = None
+        self.artifact_type = None
+        self.is_async_deployment = None
+        self.target_path = None
+        self.should_restart = None
+        self.is_clean_deployment = None
+        self.should_ignore_stack = None
+        self.timeout = None
+        self.slot = None
+# pylint: enable=too-many-instance-attributes,too-few-public-methods
 
 
 def _validate_onedeploy_params(params):
@@ -391,8 +406,7 @@ def _get_onedeploy_status_url(params):
 def _get_basic_headers(params):
     import urllib3
     from azure.cli.core.util import (
-        should_disable_connection_verify,
-        get_az_user_agent
+        get_az_user_agent,
     )
 
     user_name, password = _get_site_credential(params.cmd.cli_ctx, params.resource_group_name, params.webapp_name, params.slot)
@@ -417,14 +431,14 @@ def _get_onedeploy_request_body(params):
     import json
 
     if params.src_path:
-        logger.info('Deploying from local path: ' + params.src_path)
+        logger.info('Deploying from local path: %s', params.src_path)
         try:
             with open(os.path.realpath(os.path.expanduser(params.src_path)), 'rb') as fs:
                 body = fs.read()
         except Exception as e:
             raise CLIError("Either '{}' is not a valid local file path or you do not have permissions to access it".format(params.src_path)) from e
     elif params.src_url:
-        logger.info('Deploying from URL: ' + params.src_url)
+        logger.info('Deploying from URL: %s', params.src_url)
         body = json.dumps({
             "packageUri": params.src_url
         })
@@ -449,7 +463,7 @@ def _update_artifact_type(params):
         params.artifact_type = 'startup'
     else:
         params.artifact_type = 'static'
-    logger.warning("Deployment type: %s. To override deloyment type, please specify the --type parameter. " +
+    logger.warning("Deployment type: %s. To override deloyment type, please specify the --type parameter. "
                    "Possible values: war, jar, ear, zip, startup, script, static", params.artifact_type)
 
 
@@ -466,14 +480,19 @@ def _make_onedeploy_request(params):
     deploy_url = _build_onedeploy_url(params)
     deployment_status_url = _get_onedeploy_status_url(params)
 
-    logger.info("Deployment API: " + deploy_url)
+    logger.info("Deployment API: %s", deploy_url)
     response = requests.post(deploy_url, data=body, headers=headers, verify=not should_disable_connection_verify())
+
+    # For debugging purposes only, you can change the async deployment into a sync deployment by polling the API status
+    # For that, set poll_async_deployment_for_debugging=True
+    poll_async_deployment_for_debugging = False
 
     # check the status of async deployment
     if response.status_code == 202:
-        logger.info("Asynchronous deployment request completed")
-        response_body = _check_zip_deployment_status(params.cmd, params.resource_group_name, params.webapp_name, deployment_status_url, headers, params.timeout)
-        logger.info(response_body)
+        if poll_async_deployment_for_debugging:
+            logger.info('Polloing the status of async deployment')
+            response_body = _check_zip_deployment_status(params.cmd, params.resource_group_name, params.webapp_name, deployment_status_url, headers, params.timeout)
+            logger.info('Async deployment complete. Server response: %s', response_body)
         return
 
     if response.status_code == 200:
@@ -485,9 +504,7 @@ def _make_onedeploy_request(params):
 
     # check if there's an ongoing process
     if response.status_code == 409:
-        raise CLIError("There may be an ongoing deployment or your app setting has WEBSITE_RUN_FROM_PACKAGE. "
-                       "Please track your deployment in {} and ensure the WEBSITE_RUN_FROM_PACKAGE app setting "
-                       "is removed.".format(deployment_status_url))
+        raise CLIError("Another deployment is in progress. You can track the ongoing deployment at {}".format(deployment_status_url))
 
     # check if an error occured during deployment
     if response.status_code:
