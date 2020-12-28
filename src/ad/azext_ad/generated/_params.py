@@ -40,10 +40,8 @@ def load_arguments(self, _):
         c.argument('domain_name', options_list=['--domain'], type=str, help='The name of the Azure domain that the '
                    'user would like to deploy Domain Services to.')
         c.argument('replica_sets', action=AddReplicaSets, nargs='+', help='List of ReplicaSets')
-        c.argument('domain_configuration_type', options_list=['--domain-config-type'], arg_type=get_enum_type([
-                                                                                                               'FullySynced',
-                                                                                                               'ResourceTrusting'
-                                                                                                               ]),
+        c.argument('domain_configuration_type', options_list=['--domain-config-type'],
+                   arg_type=get_enum_type(['FullySynced', 'ResourceTrusting']),
                    help='Domain Configuration Type')
         c.argument('sku', arg_type=get_enum_type(['Standard', 'Enterprise', 'Premium']), help='Sku Type')
         c.argument('filtered_sync', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Enabled or Disabled flag to '
@@ -62,9 +60,8 @@ def load_arguments(self, _):
                                                                                                     'Disabled']),
                    help='A flag to determine whether or not SyncNtlmPasswords is enabled or disabled.',
                    arg_group='Domain Security Settings')
-        c.argument('sync_kerberos_passwords', options_list=['--sync-kerberos-pwd'], arg_type=get_enum_type(['Enabled',
-                                                                                                            'Disabled']
-                                                                                                            ), help='A '
+        c.argument('sync_kerberos_passwords', options_list=['--sync-kerberos-pwd'],
+                   arg_type=get_enum_type(['Enabled', 'Disabled']), help='A '
                    'flag to determine whether or not SyncKerberosPasswords is enabled or disabled.', arg_group='Domain '
                    'Security Settings')
         c.argument('sync_on_prem_passwords', options_list=['--sync-on-prem-pwd'], arg_type=get_enum_type(['Enabled',
@@ -92,10 +89,8 @@ def load_arguments(self, _):
                    'service.', id_part='name')
         c.argument('tags', tags_type)
         c.argument('replica_sets', action=AddReplicaSets, nargs='+', help='List of ReplicaSets')
-        c.argument('domain_configuration_type', options_list=['--domain-config-type'], arg_type=get_enum_type([
-                                                                                                               'FullySynced',
-                                                                                                               'ResourceTrusting'
-                                                                                                               ]),
+        c.argument('domain_configuration_type', options_list=['--domain-config-type'],
+                   arg_type=get_enum_type(['FullySynced', 'ResourceTrusting']),
                    help='Domain Configuration Type')
         c.argument('sku', arg_type=get_enum_type(['Standard', 'Enterprise', 'Premium']), help='Sku Type')
         c.argument('filtered_sync', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Enabled or Disabled flag to '
@@ -114,9 +109,8 @@ def load_arguments(self, _):
                                                                                                     'Disabled']),
                    help='A flag to determine whether or not SyncNtlmPasswords is enabled or disabled.',
                    arg_group='Domain Security Settings')
-        c.argument('sync_kerberos_passwords', options_list=['--sync-kerberos-pwd'], arg_type=get_enum_type(['Enabled',
-                                                                                                            'Disabled']
-                                                                                                            ), help='A '
+        c.argument('sync_kerberos_passwords', options_list=['--sync-kerberos-pwd'],
+                   arg_type=get_enum_type(['Enabled', 'Disabled']), help='A '
                    'flag to determine whether or not SyncKerberosPasswords is enabled or disabled.', arg_group='Domain '
                    'Security Settings')
         c.argument('sync_on_prem_passwords', options_list=['--sync-on-prem-pwd'], arg_type=get_enum_type(['Enabled',

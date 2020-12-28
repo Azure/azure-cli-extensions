@@ -19,7 +19,7 @@ def step_ds_create(test, rg_2, rg, checks=None):
         checks = []
     test.cmd('az ad ds create '
              '--domain "{myDomainService}" '
-             '--replica-sets location="West US" subnet-id="/subscriptions/{subscription_id}/resourceGroups/{rg_2}/provi'
+             '--replica-sets location="West US" subnet-id="/subscriptions/{subscription_id}/resourceGroups/{rg}/provi'
              'ders/Microsoft.Network/virtualNetworks/{vn}/subnets/default" '
              '--name "{myDomainService}" '
              '--resource-group "{rg}"',
@@ -63,9 +63,9 @@ def step_ds_update(test, rg_2, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az ad ds update '
-             '--replica-sets location="West US" subnet-id="/subscriptions/{subscription_id}/resourceGroups/{rg_2}/provi'
+             '--replica-sets location="West US" subnet-id="/subscriptions/{subscription_id}/resourceGroups/{rg}/provi'
              'ders/Microsoft.Network/virtualNetworks/{vn}/subnets/default" '
-             '--replica-sets location="West US" subnet-id="/subscriptions/{subscription_id}/resourceGroups/{rg_2}/provi'
+             '--replica-sets location="West US" subnet-id="/subscriptions/{subscription_id}/resourceGroups/{rg}/provi'
              'ders/Microsoft.Network/virtualNetworks/{vn_2}/subnets/default" '
              '--name "{myDomainService}" '
              '--resource-group "{rg}"',

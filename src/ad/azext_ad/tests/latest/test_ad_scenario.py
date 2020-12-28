@@ -39,21 +39,24 @@ def setup_scenario(test, rg_2, rg):
         'vn': 'vnet1',
         'vn_2': 'vnet2'
     })
-    test.cmd('az network nsg create --name {nsg} --resource-group {rg_2}')
-    test.cmd('az network nsg rule create -n AllowPSRemoting -g {rg_2} --nsg-name {nsg} --priority 301 '
+    test.cmd('az network nsg create --name {nsg} --resource-group {rg}')
+    test.cmd('az network nsg rule create -n AllowPSRemoting -g {rg} --nsg-name {nsg} --priority 301 '
              '--access Allow --protocol Tcp --direction Inbound --destination-port-ranges 5986 '
              '--source-address-prefixes AzureActiveDirectoryDomainServices')
-    test.cmd('az network vnet create -g {rg_2} -n {vn} --nsg {nsg} --subnet-name default '
+    test.cmd('az network nsg rule create -n AllowRD -g {rg} --nsg-name {nsg} --priority 201 '
+             '--access Allow --protocol Tcp --direction Inbound --destination-port-ranges 3389 '
+             '--source-address-prefixes CorpNetSaw')
+    test.cmd('az network vnet create -g {rg} -n {vn} --nsg {nsg} --subnet-name default '
              '--address-prefixes 10.0.0.0/16')
-    test.cmd('az network vnet create -g {rg_2} -n {vn_2} --nsg {nsg} --subnet-name default '
+    test.cmd('az network vnet create -g {rg} -n {vn_2} --nsg {nsg} --subnet-name default '
              '--address-prefixes 10.1.0.0/16')
 
 
 # Env cleanup_scenario
 @try_manual
 def cleanup_scenario(test, rg_2, rg):
-    test.cmd('az network vnet delete -g {rg_2} -n {vn}')
-    test.cmd('az network vnet delete -g {rg_2} -n {vn_2}')
+    test.cmd('az network vnet delete -g {rg} -n {vn}')
+    test.cmd('az network vnet delete -g {rg} -n {vn_2}')
 
 
 # Testcase: Scenario
@@ -73,43 +76,48 @@ def call_scenario(test, rg_2, rg):
         test.check("name", "{myDomainService}", case_sensitive=False),
     ])
     step_ds_list(test, rg_2, rg, checks=[
-        # test.check('[?name==`{myDomainService} | length(@)`]', 1),
+        test.check('[?name==`{myDomainService}`] | length(@)', 1),
     ])
     step_ds_list2(test, rg_2, rg, checks=[
-        # test.check('[?name==`{myDomainService} | length(@)`]', 1),
+        test.check('[?name==`{myDomainService}`] | length(@)', 1),
     ])
-    time.sleep(100)
-    step_ds_update(test, rg_2, rg, checks=[
-        # test.check("domainName", "{myDomainService}", case_sensitive=False),
-        # test.check("replicaSets | length(@)", 2),
-        # test.check("domainSecuritySettings.ntlmV1", "Disabled", case_sensitive=False),
-        # test.check("domainSecuritySettings.syncNtlmPasswords", "Enabled", case_sensitive=False),
-        # test.check("domainSecuritySettings.tlsV1", "Enabled", case_sensitive=False),
-        # test.check("notificationSettings.notifyDcAdmins", "Enabled", case_sensitive=False),
-        # test.check("notificationSettings.notifyGlobalAdmins", "Enabled", case_sensitive=False),
-        # test.check("notificationSettings.additionalRecipients | length(@)", 2),
-        # test.check("name", "{myDomainService}", case_sensitive=False),
+    time.sleep(2400)
+    # step_ds_update(test, rg_2, rg, checks=[
+    #     test.check("domainName", "{myDomainService}", case_sensitive=False),
+    #     test.check("replicaSets | length(@)", 2),
+    #     test.check("domainSecuritySettings.ntlmV1", "Disabled", case_sensitive=False),
+    #     test.check("domainSecuritySettings.syncNtlmPasswords", "Enabled", case_sensitive=False),
+    #     test.check("domainSecuritySettings.tlsV1", "Enabled", case_sensitive=False),
+    #     test.check("notificationSettings.notifyDcAdmins", "Enabled", case_sensitive=False),
+    #     test.check("notificationSettings.notifyGlobalAdmins", "Enabled", case_sensitive=False),
+    #     test.check("notificationSettings.additionalRecipients | length(@)", 2),
+    #     test.check("name", "{myDomainService}", case_sensitive=False),
+    # ])
+    # time.sleep(600)
+    step_ds_update_security_settings(test, rg_2, rg, checks=[
+        test.check("domainSecuritySettings.ntlmV1", "Disabled", case_sensitive=False),
+        test.check("domainSecuritySettings.syncNtlmPasswords", "Enabled", case_sensitive=False),
+        test.check("name", "{myDomainService}", case_sensitive=False),
     ])
-    time.sleep(100)
-    step_ds_update_security_settings(test, rg_2, rg, checks=[])
-    time.sleep(100)
-    step_ds_update_notification_settings(test, rg_2, rg, checks=[])
+    time.sleep(600)
+    step_ds_update_notification_settings(test, rg_2, rg, checks=[
+        test.check("notificationSettings.additionalRecipients | length(@)", 2),
+        test.check("name", "{myDomainService}", case_sensitive=False),
+    ])
     step_ds_show(test, rg_2, rg, checks=[
-        # test.check("domainName", "{myDomainService}", case_sensitive=False),
-        # test.check("replicaSets | length(@)", 2),
-        # test.check("domainSecuritySettings.ntlmV1", "Enabled", case_sensitive=False),
-        # test.check("domainSecuritySettings.syncNtlmPasswords", "Enabled", case_sensitive=False),
-        # test.check("domainSecuritySettings.tlsV1", "Disabled", case_sensitive=False),
-        # test.check("filteredSync", "Disabled", case_sensitive=False),
-        # test.check("notificationSettings.notifyDcAdmins", "Enabled", case_sensitive=False),
-        # test.check("notificationSettings.notifyGlobalAdmins", "Enabled", case_sensitive=False),
-        # test.check("notificationSettings.additionalRecipients | length(@)", 2),
-        # test.check("name", "{myDomainService}", case_sensitive=False),
+        test.check("domainName", "{myDomainService}", case_sensitive=False),
+        test.check("replicaSets | length(@)", 1),
+        test.check("domainSecuritySettings.ntlmV1", "Disabled", case_sensitive=False),
+        test.check("domainSecuritySettings.syncNtlmPasswords", "Enabled", case_sensitive=False),
+        test.check("notificationSettings.notifyDcAdmins", "Enabled", case_sensitive=False),
+        test.check("notificationSettings.notifyGlobalAdmins", "Enabled", case_sensitive=False),
+        test.check("notificationSettings.additionalRecipients | length(@)", 2),
+        test.check("name", "{myDomainService}", case_sensitive=False),
     ])
     step_ds_delete(test, rg_2, rg, checks=[])
-    time.sleep(300)
+    time.sleep(600)
     step_ds_list(test, rg_2, rg, checks=[
-        # test.check("[?name==`{myDomainService} | length(@)`]", 0),
+        test.check("[?name==`{myDomainService}`] | length(@)", 0),
     ])
     cleanup_scenario(test, rg_2, rg)
 
