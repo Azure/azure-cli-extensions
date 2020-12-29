@@ -50,7 +50,7 @@ def show_k8sconfiguration(client, resource_group_name, cluster_name, name, clust
             else:
                 message = ex.message
                 recommendation = ''
-            raise ResourceNotFoundError(message, recommendation)
+            raise ResourceNotFoundError(message, recommendation) from ex
 
 
 # pylint: disable=too-many-locals
@@ -77,16 +77,16 @@ def create_k8sconfiguration(client, resource_group_name, cluster_name, name, rep
         helm_operator_properties.chart_version = helm_operator_version.strip()
         helm_operator_properties.chart_values = helm_operator_params.strip()
 
-    protected_settings = __get_protected_settings(ssh_private_key, ssh_private_key_file, https_user, https_key)
-    knownhost_data = __get_data_from_key_or_file(ssh_known_hosts, ssh_known_hosts_file)
+    protected_settings = get_protected_settings(ssh_private_key, ssh_private_key_file, https_user, https_key)
+    knownhost_data = get_data_from_key_or_file(ssh_known_hosts, ssh_known_hosts_file)
     if knownhost_data != '':
-        __validate_known_hosts(knownhost_data)
+        validate_known_hosts(knownhost_data)
 
     # Flag which parameters have been set and validate these settings against the set repository url
     ssh_private_key_set = ssh_private_key != '' or ssh_private_key_file != ''
     ssh_known_hosts_set = knownhost_data != ''
     https_auth_set = https_user != '' and https_key != ''
-    __validate_url_with_params(repository_url, ssh_private_key_set, ssh_known_hosts_set, https_auth_set)
+    validate_url_with_params(repository_url, ssh_private_key_set, ssh_known_hosts_set, https_auth_set)
 
     # Create sourceControlConfiguration object
     source_control_configuration = SourceControlConfiguration(repository_url=repository_url,
@@ -133,9 +133,9 @@ def update_k8sconfiguration(client, resource_group_name, cluster_name, name, clu
         config['operator_params'] = operator_params
         update_yes = True
 
-    knownhost_data = __get_data_from_key_or_file(ssh_known_hosts, ssh_known_hosts_file)
+    knownhost_data = get_data_from_key_or_file(ssh_known_hosts, ssh_known_hosts_file)
     if knownhost_data != '':
-        __validate_known_hosts(knownhost_data)
+        validate_known_hosts(knownhost_data)
         config['ssh_known_hosts_contents'] = knownhost_data
         update_yes = True
 
@@ -153,12 +153,12 @@ def update_k8sconfiguration(client, resource_group_name, cluster_name, name, clu
 
     if update_yes is False:
         raise RequiredArgumentMissingError(
-            'Invalid update.  No values to update!',
+            'Invalid update. No values to update!',
             'Verify that at least one changed parameter is provided in the update command')
 
     # Flag which parameters have been set and validate these settings against the set repository url
     ssh_known_hosts_set = 'ssh_known_hosts_contents' in config
-    __validate_url_with_params(config['repository_url'], False, ssh_known_hosts_set, False)
+    validate_url_with_params(config['repository_url'], False, ssh_known_hosts_set, False)
 
     config = client.create_or_update(resource_group_name, cluster_rp, cluster_type, cluster_name,
                                      source_control_configuration_name, config)
@@ -183,42 +183,42 @@ def delete_k8sconfiguration(client, resource_group_name, cluster_name, name, clu
     return client.delete(resource_group_name, cluster_rp, cluster_type, cluster_name, source_control_configuration_name)
 
 
-def __get_protected_settings(ssh_private_key, ssh_private_key_file, https_user, https_key):
+def get_protected_settings(ssh_private_key, ssh_private_key_file, https_user, https_key):
     protected_settings = {}
-    ssh_private_key_data = __get_data_from_key_or_file(ssh_private_key, ssh_private_key_file)
+    ssh_private_key_data = get_data_from_key_or_file(ssh_private_key, ssh_private_key_file)
 
     # Add gitops private key data to protected settings if exists
     # Dry-run all key types to determine if the private key is in a valid format
     invalid_rsa_key, invalid_ecc_key, invalid_dsa_key, invalid_ed25519_key = (False, False, False, False)
     if ssh_private_key_data != '':
         try:
-            RSA.import_key(__from_base64(ssh_private_key_data))
+            RSA.import_key(from_base64(ssh_private_key_data))
         except ValueError:
             invalid_rsa_key = True
         try:
-            ECC.import_key(__from_base64(ssh_private_key_data))
+            ECC.import_key(from_base64(ssh_private_key_data))
         except ValueError:
             invalid_ecc_key = True
         try:
-            DSA.import_key(__from_base64(ssh_private_key_data))
+            DSA.import_key(from_base64(ssh_private_key_data))
         except ValueError:
             invalid_dsa_key = True
         try:
-            key_obj = io.StringIO(__from_base64(ssh_private_key_data).decode('utf-8'))
+            key_obj = io.StringIO(from_base64(ssh_private_key_data).decode('utf-8'))
             Ed25519Key(file_obj=key_obj)
         except SSHException:
             invalid_ed25519_key = True
 
         if invalid_rsa_key and invalid_ecc_key and invalid_dsa_key and invalid_ed25519_key:
             raise InvalidArgumentValueError(
-                'Error! ssh private key provided in wrong format',
+                'Error! ssh private key provided in invalid format',
                 'Verify the key provided is a valid PEM-formatted key of type RSA, ECC, DSA, or Ed25519')
         protected_settings["sshPrivateKey"] = ssh_private_key_data
 
     # Check if both httpsUser and httpsKey exist, then add to protected settings
     if https_user != '' and https_key != '':
-        protected_settings['httpsUser'] = __to_base64(https_user)
-        protected_settings['httpsKey'] = __to_base64(https_key)
+        protected_settings['httpsUser'] = to_base64(https_user)
+        protected_settings['httpsKey'] = to_base64(https_key)
     elif https_user != '':
         raise RequiredArgumentMissingError(
             'Error! --https-user used without --https-key',
@@ -248,7 +248,7 @@ def __fix_compliance_state(config):
     return config
 
 
-def __validate_url_with_params(repository_url, ssh_private_key_set, known_hosts_contents_set, https_auth_set):
+def validate_url_with_params(repository_url, ssh_private_key_set, known_hosts_contents_set, https_auth_set):
     scheme = urlparse(repository_url).scheme
 
     if scheme in ('http', 'https'):
@@ -270,9 +270,9 @@ def __validate_url_with_params(repository_url, ssh_private_key_set, known_hosts_
                 'Verify the url provided is a valid http(s) url and not an ssh url')
 
 
-def __validate_known_hosts(knownhost_data):
+def validate_known_hosts(knownhost_data):
     try:
-        knownhost_str = __from_base64(knownhost_data).decode('utf-8')
+        knownhost_str = from_base64(knownhost_data).decode('utf-8')
     except Exception as ex:
         raise InvalidArgumentValueError(
             'Error! ssh known_hosts is not a valid utf-8 base64 encoded string',
@@ -293,20 +293,20 @@ def __validate_known_hosts(knownhost_data):
                 'Verify that all lines in the known_hosts contents are provided in a valid sshd(8) format') from ex
 
 
-def __get_data_from_key_or_file(key, filepath):
+def get_data_from_key_or_file(key, filepath):
     if key != '' and filepath != '':
         raise MutuallyExclusiveArgumentError(
             'Error! Both textual key and key filepath cannot be provided',
             'Try providing the file parameter without providing the plaintext parameter')
     data = ''
     if filepath != '':
-        data = __read_key_file(filepath)
+        data = read_key_file(filepath)
     elif key != '':
         data = key
     return data
 
 
-def __read_key_file(path):
+def read_key_file(path):
     try:
         with open(path, "r") as myfile:  # user passed in filename
             data_list = myfile.readlines()  # keeps newline characters intact
@@ -314,17 +314,17 @@ def __read_key_file(path):
             if (data_list_len) <= 0:
                 raise Exception("File provided does not contain any data")
             raw_data = ''.join(data_list)
-        return __to_base64(raw_data)
+        return to_base64(raw_data)
     except Exception as ex:
         raise InvalidArgumentValueError(
             'Error! Unable to read key file specified with: {0}'.format(ex),
             'Verify that the filepath specified exists and contains valid utf-8 data') from ex
 
 
-def __from_base64(base64_str):
+def from_base64(base64_str):
     return base64.b64decode(base64_str)
 
 
-def __to_base64(raw_data):
+def to_base64(raw_data):
     bytes_data = raw_data.encode('utf-8')
     return base64.b64encode(bytes_data).decode('utf-8')

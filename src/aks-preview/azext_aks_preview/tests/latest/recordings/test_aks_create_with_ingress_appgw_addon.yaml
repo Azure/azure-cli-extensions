@@ -12,7 +12,7 @@ interactions:
       - keep-alive
       ParameterSetName:
       - --resource-group --name --enable-managed-identity --service-principal --client-secret
-        --generate-ssh-keys -a --appgw-subnet-prefix -o
+        --generate-ssh-keys -a --appgw-subnet-cidr -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0 (DOCKER)
@@ -53,7 +53,7 @@ interactions:
       "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
       "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEvZOAiQi79CLB3LPrw6shgUuJAsmvPckoiDewIwdaFEFImMCn8UOc87QtruXAHLx6XQz3r6SH3STEobWw7I1aPVD1KuQBqUQwzqfL223UyA3BOm/mdpc77apIT1Pw4hDHtMwDwO01HMir/sRIcoavXphbcUh+H1bZ5WQQJwgS0jVptOhUjeuE9uiOVA+FzauAb91/QdE6zMfvq03bynVJja4Y81n2PlqlzMmIUUVUYnSoeFIYkUToZ07d0m76VY1ci91WrUFXKCv2iM5IPvyE2RTSlm7GKrR9fUJCa4YTqPNRNwGov5GpbeZqHQzvLnjRq3hl06WX5fG8ZXaU/Xbr"}]}},
       "servicePrincipalProfile": {"clientId": "xxxx", "secret": "yyyy"}, "addonProfiles":
-      {"IngressApplicationGateway": {"enabled": true, "config": {"subnetPrefix": "10.2.0.0/16"}}},
+      {"IngressApplicationGateway": {"enabled": true, "config": {"subnetCIDR": "10.2.0.0/16"}}},
       "enableRBAC": true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
       "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
       "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
@@ -73,7 +73,7 @@ interactions:
       - application/json; charset=utf-8
       ParameterSetName:
       - --resource-group --name --enable-managed-identity --service-principal --client-secret
-        --generate-ssh-keys -a --appgw-subnet-prefix -o
+        --generate-ssh-keys -a --appgw-subnet-cidr -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.15.0 (DOCKER)
@@ -104,7 +104,7 @@ interactions:
         : {\n     \"enabled\": true,\n     \"config\": null\n    },\n    \"ingressApplicationGateway\"\
         : {\n     \"enabled\": true,\n     \"config\": {\n      \"effectiveApplicationGatewayId\"\
         : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.Network/applicationGateways/applicationgateway\"\
-        ,\n      \"subnetPrefix\": \"10.2.0.0/16\"\n     }\n    }\n   },\n   \"nodeResourceGroup\"\
+        ,\n      \"subnetCIDR\": \"10.2.0.0/16\"\n     }\n    }\n   },\n   \"nodeResourceGroup\"\
         : \"MC_clitest000001_cliakstest000002_westus2\",\n   \"enableRBAC\": true,\n\
         \   \"enablePodSecurityPolicy\": false,\n   \"networkProfile\": {\n    \"\
         networkPlugin\": \"kubenet\",\n    \"loadBalancerSku\": \"standard\",\n  \
@@ -155,7 +155,7 @@ interactions:
       - keep-alive
       ParameterSetName:
       - --resource-group --name --enable-managed-identity --service-principal --client-secret
-        --generate-ssh-keys -a --appgw-subnet-prefix -o
+        --generate-ssh-keys -a --appgw-subnet-cidr -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.15.0 (DOCKER)
@@ -204,7 +204,7 @@ interactions:
       - keep-alive
       ParameterSetName:
       - --resource-group --name --enable-managed-identity --service-principal --client-secret
-        --generate-ssh-keys -a --appgw-subnet-prefix -o
+        --generate-ssh-keys -a --appgw-subnet-cidr -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.15.0 (DOCKER)
@@ -253,7 +253,7 @@ interactions:
       - keep-alive
       ParameterSetName:
       - --resource-group --name --enable-managed-identity --service-principal --client-secret
-        --generate-ssh-keys -a --appgw-subnet-prefix -o
+        --generate-ssh-keys -a --appgw-subnet-cidr -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.15.0 (DOCKER)
@@ -302,7 +302,7 @@ interactions:
       - keep-alive
       ParameterSetName:
       - --resource-group --name --enable-managed-identity --service-principal --client-secret
-        --generate-ssh-keys -a --appgw-subnet-prefix -o
+        --generate-ssh-keys -a --appgw-subnet-cidr -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.15.0 (DOCKER)
@@ -351,7 +351,7 @@ interactions:
       - keep-alive
       ParameterSetName:
       - --resource-group --name --enable-managed-identity --service-principal --client-secret
-        --generate-ssh-keys -a --appgw-subnet-prefix -o
+        --generate-ssh-keys -a --appgw-subnet-cidr -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.15.0 (DOCKER)
@@ -400,7 +400,7 @@ interactions:
       - keep-alive
       ParameterSetName:
       - --resource-group --name --enable-managed-identity --service-principal --client-secret
-        --generate-ssh-keys -a --appgw-subnet-prefix -o
+        --generate-ssh-keys -a --appgw-subnet-cidr -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.15.0 (DOCKER)
@@ -449,7 +449,7 @@ interactions:
       - keep-alive
       ParameterSetName:
       - --resource-group --name --enable-managed-identity --service-principal --client-secret
-        --generate-ssh-keys -a --appgw-subnet-prefix -o
+        --generate-ssh-keys -a --appgw-subnet-cidr -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.15.0 (DOCKER)
@@ -499,7 +499,7 @@ interactions:
       - keep-alive
       ParameterSetName:
       - --resource-group --name --enable-managed-identity --service-principal --client-secret
-        --generate-ssh-keys -a --appgw-subnet-prefix -o
+        --generate-ssh-keys -a --appgw-subnet-cidr -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.15.0 (DOCKER)
@@ -531,7 +531,7 @@ interactions:
         objectId\": \"fd593886-a8f5-4118-ab48-a52b33fa0868\"\n     }\n    },\n   \
         \ \"ingressApplicationGateway\": {\n     \"enabled\": true,\n     \"config\"\
         : {\n      \"effectiveApplicationGatewayId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.Network/applicationGateways/applicationgateway\"\
-        ,\n      \"subnetPrefix\": \"10.2.0.0/16\"\n     },\n     \"identity\": {\n\
+        ,\n      \"subnetCIDR\": \"10.2.0.0/16\"\n     },\n     \"identity\": {\n\
         \      \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ingressapplicationgateway-cliakstest000002\"\
         ,\n      \"clientId\": \"afb75efc-6446-4b03-a42b-4aeff546deea\",\n      \"\
         objectId\": \"274fda10-e9a6-4b77-b188-1724d783addc\"\n     }\n    }\n   },\n\

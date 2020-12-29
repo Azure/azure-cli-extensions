@@ -234,12 +234,19 @@ def validate_user(namespace):
 
 
 def validate_vnet_subnet_id(namespace):
-    if namespace.vnet_subnet_id is not None:
-        if namespace.vnet_subnet_id == '':
-            return
-        from msrestazure.tools import is_valid_resource_id
-        if not is_valid_resource_id(namespace.vnet_subnet_id):
-            raise CLIError("--vnet-subnet-id is not a valid Azure resource ID.")
+    _validate_subnet_id(namespace.vnet_subnet_id, "--vnet-subnet-id")
+
+
+def validate_pod_subnet_id(namespace):
+    _validate_subnet_id(namespace.pod_subnet_id, "--pod-subnet-id")
+
+
+def _validate_subnet_id(subnet_id, name):
+    if subnet_id is None or subnet_id == '':
+        return
+    from msrestazure.tools import is_valid_resource_id
+    if not is_valid_resource_id(subnet_id):
+        raise CLIError(name + " is not a valid Azure resource ID.")
 
 
 def validate_load_balancer_outbound_ports(namespace):
@@ -410,3 +417,54 @@ def validate_addons(namespace):
 
             raise CLIError(
                 f"The addon \"{addon_arg}\" is not a recognized addon option. Did you mean {matches}? Possible options: {all_addons}")  # pylint:disable=line-too-long
+
+
+def validate_pod_identity_pod_labels(namespace):
+    if not hasattr(namespace, 'pod_labels'):
+        return
+    labels = namespace.pod_labels
+
+    if labels is None:
+        # no specify any labels
+        namespace.pod_labels = {}
+        return
+
+    if isinstance(labels, list):
+        labels_dict = {}
+        for item in labels:
+            labels_dict.update(validate_label(item))
+        after_validation_labels = labels_dict
+    else:
+        after_validation_labels = validate_label(labels)
+
+    namespace.pod_labels = after_validation_labels
+
+
+def validate_pod_identity_resource_name(attr_name, required):
+    "Validate custom resource name for pod identity addon."
+
+    def validator(namespace):
+        if not hasattr(namespace, attr_name):
+            return
+
+        attr_value = getattr(namespace, attr_name)
+        if not attr_value:
+            if required:
+                raise CLIError('--name is required')
+            # set empty string for the resource name
+            attr_value = ''
+
+        setattr(namespace, attr_name, attr_value)
+
+    return validator
+
+
+def validate_pod_identity_resource_namespace(namespace):
+    "Validate custom resource name for pod identity addon."
+    if not hasattr(namespace, 'namespace'):
+        return
+
+    namespace_value = namespace.namespace
+    if not namespace_value:
+        # namespace cannot be empty
+        raise CLIError('--namespace is required')
