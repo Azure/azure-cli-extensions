@@ -7,8 +7,9 @@ from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
 from ._client_factory import (cf_sa, cf_blob_data_gen_update,
                               blob_data_service_factory, adls_blob_data_service_factory,
-                              cf_sa_blob_inventory, cf_mgmt_file_services)
-from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_MGMT_PREVIEW_STORAGE
+                              cf_sa_blob_inventory, cf_mgmt_file_services, cf_share_client, cf_share_file_client)
+from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_MGMT_PREVIEW_STORAGE,
+                       CUSTOM_DATA_STORAGE_FILESHARE)
 
 
 def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements
@@ -200,3 +201,19 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                             deprecate_info=self.deprecate(redirect="az storage fs directory", hide=True,
                                                           message_func=_adls_deprecate_message)) as g:
         pass
+
+    file_client_sdk = CliCommandType(
+        operations_tmpl='azure.multiapi.storagev2.fileshare._file_client#ShareFileClient.{}',
+        client_factory=cf_share_client,
+        resource_type=CUSTOM_DATA_STORAGE_FILESHARE
+    )
+
+    with self.command_group('storage file', file_client_sdk, resource_type=CUSTOM_DATA_STORAGE_FILESHARE,
+                            min_api='2019-02-02',
+                            custom_command_type=get_custom_sdk('file', client_factory=cf_share_file_client,
+                                                               resource_type=CUSTOM_DATA_STORAGE_FILESHARE)) as g:
+        from ._transformers import transform_file_upload
+
+        g.storage_custom_command('upload', 'storage_file_upload', transform=transform_file_upload)
+        g.storage_custom_command('upload-batch', 'storage_file_upload_batch',
+                                 custom_command_type=get_custom_sdk('file', client_factory=cf_share_client))

@@ -10,7 +10,9 @@ from ._validators import (get_datetime_type, validate_metadata,
                           validate_azcopy_upload_destination_url, validate_azcopy_download_source_url,
                           validate_azcopy_target_url, validate_included_datasets,
                           validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url,
-                          validate_storage_data_plane_list, validate_delete_retention_days, process_resource_group)
+                          validate_storage_data_plane_list, validate_delete_retention_days, process_resource_group,
+                          process_resource_group, add_upload_progress_callback)
+
 from .profiles import CUSTOM_MGMT_PREVIEW_STORAGE
 
 
@@ -50,6 +52,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                     '"[default:]user|group|other|mask:[entity id or UPN]:r|-w|-x|-,'
                                     '[default:]user|group|other|mask:[entity id or UPN]:r|-w|-x|-,...". '
                                     'e.g."user::rwx,user:john.doe@contoso:rwx,group::r--,other::---,mask::rwx".')
+    progress_type = CLIArgumentType(help='Include this flag to disable progress reporting for the command.',
+                                    action='store_true', validator=add_upload_progress_callback)
 
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
@@ -328,3 +332,30 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help='Recursively upload blobs. If enabled, all the blobs including the blobs in subdirectories will'
                         ' be uploaded.')
         c.ignore('destination')
+
+    with self.argument_context('storage file upload') as c:
+        t_file_content_settings = self.get_sdk('file.models#ContentSettings')
+
+        c.register_path_argument(default_file_param='local_file_path')
+        c.register_content_settings_argument(t_file_content_settings, update=False, guess_from_file='local_file_path',
+                                             process_md5=True)
+        c.argument('local_file_path', options_list='--source', type=file_type, completer=FilesCompleter(),
+                   help='Path of the local file to upload as the file content.')
+        c.extra('no_progress', progress_type)
+        c.argument('max_connections', type=int, help='Maximum number of parallel connections to use.')
+        c.extra('share_name', share_name_type, required=True)
+        c.argument('validate_content', action='store_true', min_api='2016-05-31',
+                   help='If true, calculates an MD5 hash for each range of the file. The storage service checks the '
+                        'hash of the content that has arrived with the hash that was sent. This is primarily valuable '
+                        'for detecting bitflips on the wire if using http instead of https as https (the default) will '
+                        'already validate. Note that this MD5 hash is not stored with the file.')
+
+    with self.argument_context('storage file upload-batch') as c:
+        from ._validators import process_file_upload_batch_parameters
+        c.argument('source', options_list=('--source', '-s'), validator=process_file_upload_batch_parameters)
+        c.argument('destination', options_list=('--destination', '-d'))
+        c.argument('max_connections', arg_group='Upload Control', type=int)
+        c.argument('validate_content', action='store_true', min_api='2016-05-31')
+        c.register_content_settings_argument(t_file_content_settings, update=False, arg_group='Content Settings',
+                                             process_md5=True)
+        c.extra('no_progress', progress_type)
