@@ -103,8 +103,8 @@ interactions:
       "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
       "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
       "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
-      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "d3b3c262-b23e-469c-8ee7-e4872d5ea78c",
-      "secret": "c554d85f07430ea4dd48$"}, "addonProfiles": {}, "podIdentityProfile":
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "00000000-0000-0000-0000-000000000001",
+      "secret": "fake-secret"}, "addonProfiles": {}, "podIdentityProfile":
       {"enabled": true}, "enableRBAC": true, "enablePodSecurityPolicy": false, "networkProfile":
       {"networkPlugin": "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16",
       "dnsServiceIP": "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType":
@@ -820,11 +820,11 @@ interactions:
       "System", "orchestratorVersion": "1.17.13", "enableNodePublicIP": false, "nodeLabels":
       {}, "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser", "ssh":
       {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
-      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "msi"}, "addonProfiles":
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "00000000-0000-0000-0000-000000000001":
       {"KubeDashboard": {"enabled": true}}, "podIdentityProfile": {"enabled": true,
       "userAssignedIdentities": [{"name": "test-name", "namespace": "test-namespace",
       "identity": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/id000003",
-      "clientId": "71932329-6a2c-49be-8f71-7195bde9fbf6", "objectId": "b2f98e3a-f62c-498b-b40c-18a02d8f4b41"}}],
+      "clientId": "00000000-0000-0000-0000-000000000001"}}],
       "userAssignedIdentityExceptions": []}, "nodeResourceGroup": "MC_clitest000001_cliakstest000002_westus2",
       "enableRBAC": true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
       "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
@@ -832,7 +832,7 @@ interactions:
       "loadBalancerSku": "Standard", "loadBalancerProfile": {"managedOutboundIPs":
       {"count": 1}, "effectiveOutboundIPs": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.Network/publicIPAddresses/64b3b6b9-4ca9-478b-8c3f-986646fb6e0f"}]}},
       "identityProfile": {"kubeletidentity": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliakstest000002-agentpool",
-      "clientId": "cb3220f4-ab71-46a2-9647-7a012b52b1f7", "objectId": "4ca7c64d-479d-49d4-8a2e-77c124af0b67"}}},
+      "clientId": "00000000-0000-0000-0000-000000000001"}}},
       "identity": {"type": "SystemAssigned"}, "sku": {"name": "Basic", "tier": "Free"}}'
     headers:
       Accept:
@@ -1264,7 +1264,7 @@ interactions:
       "System", "orchestratorVersion": "1.17.13", "enableNodePublicIP": false, "nodeLabels":
       {}, "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser", "ssh":
       {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ
-      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "msi"}, "addonProfiles":
+      hbc@gondor\n"}]}}, "servicePrincipalProfile": {"clientId": "00000000-0000-0000-0000-000000000001":
       {"KubeDashboard": {"enabled": true}}, "podIdentityProfile": {"enabled": true,
       "userAssignedIdentities": [], "userAssignedIdentityExceptions": []}, "nodeResourceGroup":
       "MC_clitest000001_cliakstest000002_westus2", "enableRBAC": true, "enablePodSecurityPolicy":
@@ -1274,7 +1274,7 @@ interactions:
       "loadBalancerProfile": {"managedOutboundIPs": {"count": 1}, "effectiveOutboundIPs":
       [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.Network/publicIPAddresses/64b3b6b9-4ca9-478b-8c3f-986646fb6e0f"}]}},
       "identityProfile": {"kubeletidentity": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliakstest000002-agentpool",
-      "clientId": "cb3220f4-ab71-46a2-9647-7a012b52b1f7", "objectId": "4ca7c64d-479d-49d4-8a2e-77c124af0b67"}}},
+      "clientId": "00000000-0000-0000-0000-000000000001"}}},
       "identity": {"type": "SystemAssigned"}, "sku": {"name": "Basic", "tier": "Free"}}'
     headers:
       Accept:

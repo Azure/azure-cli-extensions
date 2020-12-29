@@ -78,21 +78,21 @@ class DirectoryOperations:
         :type request_id: str
         :param directory_http_headers: Additional parameters for the operation
         :type directory_http_headers:
-         ~azure.storage.blob.models.DirectoryHttpHeaders
+         ~.models.DirectoryHttpHeaders
         :param lease_access_conditions: Additional parameters for the
          operation
         :type lease_access_conditions:
-         ~azure.storage.blob.models.LeaseAccessConditions
+         ~.models.LeaseAccessConditions
         :param modified_access_conditions: Additional parameters for the
          operation
         :type modified_access_conditions:
-         ~azure.storage.blob.models.ModifiedAccessConditions
+         ~.models.ModifiedAccessConditions
         :param callable cls: A custom type or function that will be passed the
          direct response
         :return: None or the result of cls(response)
         :rtype: None
         :raises:
-         :class:`DataLakeStorageErrorException<azure.storage.blob.models.DataLakeStorageErrorException>`
+         :class:`DataLakeStorageErrorException<.models.DataLakeStorageErrorException>`
         """
         error_map = kwargs.pop('error_map', None)
         cache_control = None
@@ -223,7 +223,7 @@ class DirectoryOperations:
         :param path_rename_mode: Determines the behavior of the rename
          operation. Possible values include: 'legacy', 'posix'
         :type path_rename_mode: str or
-         ~azure.storage.blob.models.PathRenameMode
+         ~.models.PathRenameMode
         :param directory_properties: Optional.  User-defined properties to be
          stored with the file or directory, in the format of a comma-separated
          list of name and value pairs "n1=v1, n2=v2, ...", where each value is
@@ -254,25 +254,25 @@ class DirectoryOperations:
         :type request_id: str
         :param directory_http_headers: Additional parameters for the operation
         :type directory_http_headers:
-         ~azure.storage.blob.models.DirectoryHttpHeaders
+         ~.models.DirectoryHttpHeaders
         :param lease_access_conditions: Additional parameters for the
          operation
         :type lease_access_conditions:
-         ~azure.storage.blob.models.LeaseAccessConditions
+         ~.models.LeaseAccessConditions
         :param modified_access_conditions: Additional parameters for the
          operation
         :type modified_access_conditions:
-         ~azure.storage.blob.models.ModifiedAccessConditions
+         ~.models.ModifiedAccessConditions
         :param source_modified_access_conditions: Additional parameters for
          the operation
         :type source_modified_access_conditions:
-         ~azure.storage.blob.models.SourceModifiedAccessConditions
+         ~.models.SourceModifiedAccessConditions
         :param callable cls: A custom type or function that will be passed the
          direct response
         :return: None or the result of cls(response)
         :rtype: None
         :raises:
-         :class:`DataLakeStorageErrorException<azure.storage.blob.models.DataLakeStorageErrorException>`
+         :class:`DataLakeStorageErrorException<.models.DataLakeStorageErrorException>`
         """
         error_map = kwargs.pop('error_map', None)
         cache_control = None
@@ -426,17 +426,17 @@ class DirectoryOperations:
         :param lease_access_conditions: Additional parameters for the
          operation
         :type lease_access_conditions:
-         ~azure.storage.blob.models.LeaseAccessConditions
+         ~.models.LeaseAccessConditions
         :param modified_access_conditions: Additional parameters for the
          operation
         :type modified_access_conditions:
-         ~azure.storage.blob.models.ModifiedAccessConditions
+         ~.models.ModifiedAccessConditions
         :param callable cls: A custom type or function that will be passed the
          direct response
         :return: None or the result of cls(response)
         :rtype: None
         :raises:
-         :class:`DataLakeStorageErrorException<azure.storage.blob.models.DataLakeStorageErrorException>`
+         :class:`DataLakeStorageErrorException<.models.DataLakeStorageErrorException>`
         """
         error_map = kwargs.pop('error_map', None)
         lease_id = None
@@ -539,17 +539,17 @@ class DirectoryOperations:
         :param lease_access_conditions: Additional parameters for the
          operation
         :type lease_access_conditions:
-         ~azure.storage.blob.models.LeaseAccessConditions
+         ~.models.LeaseAccessConditions
         :param modified_access_conditions: Additional parameters for the
          operation
         :type modified_access_conditions:
-         ~azure.storage.blob.models.ModifiedAccessConditions
+         ~.models.ModifiedAccessConditions
         :param callable cls: A custom type or function that will be passed the
          direct response
         :return: None or the result of cls(response)
         :rtype: None
         :raises:
-         :class:`DataLakeStorageErrorException<azure.storage.blob.models.DataLakeStorageErrorException>`
+         :class:`DataLakeStorageErrorException<.models.DataLakeStorageErrorException>`
         """
         error_map = kwargs.pop('error_map', None)
         lease_id = None
@@ -651,17 +651,17 @@ class DirectoryOperations:
         :param lease_access_conditions: Additional parameters for the
          operation
         :type lease_access_conditions:
-         ~azure.storage.blob.models.LeaseAccessConditions
+         ~.models.LeaseAccessConditions
         :param modified_access_conditions: Additional parameters for the
          operation
         :type modified_access_conditions:
-         ~azure.storage.blob.models.ModifiedAccessConditions
+         ~.models.ModifiedAccessConditions
         :param callable cls: A custom type or function that will be passed the
          direct response
         :return: None or the result of cls(response)
         :rtype: None
         :raises:
-         :class:`DataLakeStorageErrorException<azure.storage.blob.models.DataLakeStorageErrorException>`
+         :class:`DataLakeStorageErrorException<.models.DataLakeStorageErrorException>`
         """
         error_map = kwargs.pop('error_map', None)
         lease_id = None

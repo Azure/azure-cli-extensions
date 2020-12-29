@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.71
+++++++
+* Add support using custom private dns zone resource id for parameter '--private-dns-zone'
+
 0.4.70
 ++++++
 * Revert to use CLIError to be compatible with azure cli versions < 2.15.0

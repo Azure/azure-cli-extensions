@@ -2,6 +2,13 @@
 
 Release History
 ===============
+0.8.0
+++++++
+* `az network firewall policy create`: support `--sku` to create premium tier firewall policy
+* `az network firewall policy create`: support `--key-vault-secret-id` to configure transport security
+* `az network firewall policy rule-collection-group collection`: support `--target-urls` to configure target URLs and `--enable-terminate-tls` to enable TLS terminate for rules for premium tier firewall policy
+* `az network firewall policy intrusion-detection`: new commad group to support to configure intrusion detection policy for premium tier firewall policy
+
 0.6.2
 ++++++
 * `az network firewall create`: improve documentation of application and network rules options
