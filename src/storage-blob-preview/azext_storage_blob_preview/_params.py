@@ -414,7 +414,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
         c.register_blob_arguments()
         c.register_precondition_options()
-        c.register_content_settings_argument(t_blob_content_settings, update=False)
+        c.register_content_settings_argument(t_blob_content_settings, update=False, arg_group="Content Setting")
 
         c.argument('file_path', options_list=('--file', '-f'), type=file_type, completer=FilesCompleter(),
                    help='Path of the file to upload as the blob content.')
