@@ -35,6 +35,7 @@ def load_command_table(self, _):
         g.custom_command('add', 'healthcareapis_acr_add', supports_no_wait=True)
         g.custom_command('reset', 'healthcareapis_acr_reset', supports_no_wait=True)
         g.custom_command('remove', 'healthcareapis_acr_remove', supports_no_wait=True)
+        g.custom_wait_command('wait', 'healthcareapis_acr_list')
 
     from azext_healthcareapis.generated._client_factory import cf_operation_result
     healthcareapis_operation_result = CliCommandType(
