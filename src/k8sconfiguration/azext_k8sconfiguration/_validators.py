@@ -6,16 +6,13 @@
 import re
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
+### Parameter-Level Validation
 
 def validate_configuration_type(configuration_type):
     if configuration_type.lower() != 'sourcecontrolconfiguration':
         raise InvalidArgumentValueError(
             'Invalid configuration-type',
             'Try specifying the valid value "sourceControlConfiguration"')
-
-def validate_configuration_name(namespace):
-    if namespace.name:
-        __validate_k8s_name(namespace.name, "configuration name", 63)
 
 def validate_operator_namespace(namespace):
     if namespace.operator_namespace:
@@ -24,6 +21,14 @@ def validate_operator_namespace(namespace):
 def validate_operator_instance_name(namespace):
     if namespace.operator_instance_name:
         __validate_k8s_name(namespace.operator_instance_name, "operator instance name", 23)
+
+
+### Create Parameter Validation
+
+def validate_configuration_name(configuration_name):
+    __validate_k8s_name(configuration_name, "configuration name", 63)
+
+### Helper
 
 def __validate_k8s_name(param_value, param_name, max_len):
     if len(param_value) > max_len:

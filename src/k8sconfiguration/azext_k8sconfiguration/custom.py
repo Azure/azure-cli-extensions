@@ -6,6 +6,7 @@
 import base64
 import io
 from urllib.parse import urlparse
+from ._validators import validate_configuration_name
 from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError, \
     RequiredArgumentMissingError, MutuallyExclusiveArgumentError
 from knack.log import get_logger
@@ -62,6 +63,9 @@ def create_k8sconfiguration(client, resource_group_name, cluster_name, name, rep
     """Create a new Kubernetes Source Control Configuration.
 
     """
+    # Validate configuration name
+    validate_configuration_name(name)
+
     # Determine ClusterRP
     cluster_rp = __get_cluster_type(cluster_type)
 
