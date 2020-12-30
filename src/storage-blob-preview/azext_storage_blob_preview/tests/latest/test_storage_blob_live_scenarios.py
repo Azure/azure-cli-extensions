@@ -108,9 +108,6 @@ class StorageBlobUploadLiveTests(LiveScenarioTest):
 
         self.cmd('storage blob exists -n {} -c {}'.format(blob_name, container), checks=JMESPathCheck('exists', True))
 
-        self.cmd('storage blob upload -c {} -f "{}" -n {}'.format(container, local_file, blob_name),
-                 checks=JMESPathCheck('exists', False))
-
         self.cmd('storage blob show -n {} -c {}'.format(blob_name, container), checks=[
             JMESPathCheck('properties.contentLength', file_size_kb * 1024),
             JMESPathCheck('name', blob_name)])
