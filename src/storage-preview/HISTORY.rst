@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+0.7.0 (2020-12-28)
+++++++++++++++++
+* Add support for `az storage file upload`, `az storage file upload-batch` (Track 2)
+
 0.6.1 (2020-12-15)
 ++++++++++++++++++
 * `az storage account file-service-properties`: Support SMB multichannel in file service properties
