@@ -13,21 +13,6 @@ from knack.util import CLIError
 from azure.cli.core.profiles import ResourceType
 
 from ..storage_test_util import StorageScenarioMixin
-import hashlib, base64
-
-
-def content_encoding(path: str):
-    """
-         File to bytes encryption and base64 encoding
-         :param path: file path
-         :return: return the encrypted encoded string
-    """
-    with open(path, 'rb') as f:
-        content = f.read()
-    content_md5 = hashlib.md5()
-    content_md5.update(content)
-    content_base64 = base64.b64encode(content_md5.digest())
-    return content_base64.decode("utf-8")
 
 
 @api_version_constraint(ResourceType.MGMT_STORAGE, min_api='2016-12-01')
