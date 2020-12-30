@@ -44,7 +44,7 @@ class TestValidateK8sNaming(unittest.TestCase):
     def test_long_operator_namespace(self):
         operator_namespace = "thisisaverylongnamethatistoolongtobeused"
         namespace = OperatorNamespace(operator_namespace)
-        err = 'Invalid operator namespace parameter. Valid operator namespaces can be a maximum of 23 characters'
+        err = 'Invalid operator namespace'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_operator_namespace(namespace)
         self.assertEqual(str(cm.exception), err)
@@ -52,7 +52,7 @@ class TestValidateK8sNaming(unittest.TestCase):
     def test_long_operator_instance_name(self):
         operator_instance_name = "thisisaverylongnamethatistoolongtobeused"
         namespace = OperatorInstanceName(operator_instance_name)
-        err = 'Invalid operator instance name parameter. Valid operator instance names can be a maximum of 23 characters'
+        err = 'Invalid operator instance name'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_operator_instance_name(namespace)
         self.assertEqual(str(cm.exception), err)
@@ -60,7 +60,7 @@ class TestValidateK8sNaming(unittest.TestCase):
     def test_caps_operator_namespace(self):
         operator_namespace = 'Myoperatornamespace'
         namespace = OperatorNamespace(operator_namespace)
-        err = 'Invalid operator namespace parameter. Valid operator namespaces can only contain lowercase alphanumeric characters and hyphens'
+        err = 'Invalid operator namespace'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_operator_namespace(namespace)
         self.assertEqual(str(cm.exception), err)
@@ -68,7 +68,7 @@ class TestValidateK8sNaming(unittest.TestCase):
     def test_caps_operator_instance_name(self):
         operator_instance_name = 'Myoperatorname'
         namespace = OperatorInstanceName(operator_instance_name)
-        err = 'Invalid operator instance name parameter. Valid operator instance names can only contain lowercase alphanumeric characters and hyphens'
+        err = 'Invalid operator instance name'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_operator_instance_name(namespace)
         self.assertEqual(str(cm.exception), err)
@@ -76,7 +76,7 @@ class TestValidateK8sNaming(unittest.TestCase):
     def test_long_config_name(self):
         config_name = "thisisaverylongnamethatistoolongtobeusedthisisaverylongnamethatistoolongtobeused"
         namespace = Name(config_name)
-        err = 'Invalid configuration name parameter. Valid configuration names can be a maximum of 63 characters'
+        err = 'Invalid configuration name'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_configuration_name(namespace)
         self.assertEqual(str(cm.exception), err)
@@ -89,7 +89,7 @@ class TestValidateK8sNaming(unittest.TestCase):
     def test_caps_config_name(self):
         config_name = "ThisIsaCapsConfigName"
         namespace = Name(config_name)
-        err = 'Invalid configuration name parameter. Valid configuration names can only contain lowercase alphanumeric characters and hyphens'
+        err = 'Invalid configuration name'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_configuration_name(namespace)
         self.assertEqual(str(cm.exception), err)
@@ -97,7 +97,7 @@ class TestValidateK8sNaming(unittest.TestCase):
     def test_dot_config_name(self):
         config_name = "ThisIsaCapsConfigName"
         namespace = Name(config_name)
-        err = 'Invalid configuration name parameter. Valid configuration names can only contain lowercase alphanumeric characters and hyphens'
+        err = 'Invalid configuration name'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_configuration_name(namespace)
         self.assertEqual(str(cm.exception), err)
