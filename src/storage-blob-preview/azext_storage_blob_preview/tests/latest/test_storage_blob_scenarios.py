@@ -90,10 +90,11 @@ class StorageBlobUploadTests(StorageScenarioMixin, ScenarioTest):
         show_result = self.storage_cmd('storage blob show -n {} -c {}', account_info, blob_name,
                                        container).get_output_in_json()
         self.assertEqual(show_result.get('name'), blob_name)
-        self.assertIsNotNone(show_result['properties']['contentSettings']['contentMd5'])
-        md5 = show_result['properties']['contentSettings']['contentMd5']
-        self.storage_cmd('storage blob upload -c {} -f "{}" -n {} --type {} --content-md5 {} --overwrite', account_info,
-                         container, local_file, blob_name, blob_type, md5)
+        if blob_type == 'block':
+            self.assertIsNotNone(show_result['properties']['contentSettings']['contentMd5'])
+            md5 = show_result['properties']['contentSettings']['contentMd5']
+            self.storage_cmd('storage blob upload -c {} -f "{}" -n {} --type {} --content-md5 {} --overwrite', account_info,
+                             container, local_file, blob_name, blob_type, md5)
         if blob_type == 'page':
             self.assertEqual(type(show_result.get('properties').get('pageRanges')), list)
         else:

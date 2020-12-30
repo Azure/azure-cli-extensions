@@ -45,9 +45,10 @@ def _encode_bytes(b):
     return b
 
 
-def _str_to_bytes(data, encoding="utf-8"):
-    if isinstance(data, str):
-        return data.encode(encoding)
+def _str_to_bytearray(data):
+    if data is not None:
+        import base64
+        return bytearray(base64.b64decode(data))
     return data
 
 

@@ -448,9 +448,9 @@ def get_content_setting_validator(settings_class, update, guess_from_file=None, 
         # So we pass in the content_md5 of the bytearray type as a workaround.
         # There is an issue of Python SDK to follow up this problem, and if the SDK is fixed, the logic can be removed
         # Issue link: https://github.com/Azure/azure-sdk-for-python/issues/15919
-        if process_md5:
-            from .track2_util import _str_to_bytes
-            new_props.content_md5 = _str_to_bytes(new_props.content_md5)
+        if process_md5 and new_props.content_md5:
+            from .track2_util import _str_to_bytearray
+            new_props.content_md5 = _str_to_bytearray(new_props.content_md5)
 
         ns['content_settings'] = new_props
 

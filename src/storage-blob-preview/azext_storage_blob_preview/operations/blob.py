@@ -640,8 +640,8 @@ def upload_blob(cmd, client, file_path=None, container_name=None, blob_name=None
                                           **upload_args, **kwargs)
     except ResourceExistsError as ex:
         from azure.cli.core.azclierror import AzureResponseError
-        raise AzureResponseError("{}\nIf you want to overwrite the existing one, please add--overwrite in your command."
-                                 .format(ex.message))
+        raise AzureResponseError(
+            "{}\nIf you want to overwrite the existing one, please add --overwrite in your command.".format(ex.message))
 
     # PageBlobChunkUploader verifies the file when uploading the chunk data, If the contents of the file are
     # all null byte("\x00"), the file will not be uploaded, and the response will be none.
