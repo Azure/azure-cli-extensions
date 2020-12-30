@@ -384,6 +384,9 @@ helps['aks update'] = """
         - name: --uptime-sla
           type: bool
           short-summary: Enable a paid managed cluster service with a financially backed SLA.
+        - name: --no-uptime-sla
+          type: bool
+          short-summary: Change a paid managed cluster to a free one.
         - name: --cluster-autoscaler-profile
           type: list
           short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.
