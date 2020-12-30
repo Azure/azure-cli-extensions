@@ -248,7 +248,7 @@ helps['aks create'] = """
         - name: --private-dns-zone
           type: string
           short-summary: (PREVIEW) private dns zone mode for private cluster.
-          long-summary: Select between system and none. If not set, defaults to type system. Requires --enable-private-cluster to be used.
+          long-summary: Allowed values are "system", "none" or your custom private dns zone resource id. If not set, defaults to type system. Requires --enable-private-cluster to be used.
         - name: --enable-node-public-ip
           type: bool
           short-summary: Enable VMSS node public IP.
@@ -384,6 +384,9 @@ helps['aks update'] = """
         - name: --uptime-sla
           type: bool
           short-summary: Enable a paid managed cluster service with a financially backed SLA.
+        - name: --no-uptime-sla
+          type: bool
+          short-summary: Change a paid managed cluster to a free one.
         - name: --cluster-autoscaler-profile
           type: list
           short-summary: Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.

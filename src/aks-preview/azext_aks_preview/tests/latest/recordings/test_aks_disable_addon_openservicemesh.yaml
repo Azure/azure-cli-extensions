@@ -52,7 +52,7 @@ interactions:
       "System", "enableNodePublicIP": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
       "Delete", "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser",
       "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCkZhGe8/rHVaALAP1lorjGQm58qp4rqmLMINe35zrGbLnMN5KLz+GN4CgXcieoZ14zmshNjVaveJqstt6z/J29LbaW1CXcEZIRdyxFnDtktXFc9dm41LJi23WtNbxMkb+ewZBGA805IP+yqlHDewffq7FQp3J0yWwDxmb8UV5wch7Wq54cp3fZkXmtQBs9BN4I58wWTC5XaKk47ivM8+g0Ha8KCzVrz1gAZOAsUm63CB8afVsyOvJXiauj1643bUYzca1yzWH4v8LBSQLyL4pbb5kIsE5Y1SxarhTXAOyJJDJj7SjgD5ggqmWIR5hsJto/m1HdjVEy6bWxndfTdOIh"}]}},
-      "servicePrincipalProfile": {"clientId": "xxxx", "secret": "yyyy"}, "addonProfiles":
+      "servicePrincipalProfile": {"clientId": "00000000-0000-0000-0000-000000000001":
       {"openServiceMesh": {"enabled": true, "config": {}}}, "enableRBAC": true, "enablePodSecurityPolicy":
       false, "networkProfile": {"networkPlugin": "kubenet", "podCidr": "10.244.0.0/16",
       "serviceCidr": "10.0.0.0/16", "dnsServiceIP": "10.0.0.10", "dockerBridgeCidr":
@@ -679,7 +679,7 @@ interactions:
       "loadBalancerSku": "Standard", "loadBalancerProfile": {"managedOutboundIPs":
       {"count": 1}, "effectiveOutboundIPs": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.Network/publicIPAddresses/28cf8e40-db71-4cb8-9a8e-a69f49afaf82"}]}},
       "identityProfile": {"kubeletidentity": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliakstest000002-agentpool",
-      "clientId": "9acbf449-df36-4bf2-9ded-15516a480c91", "objectId": "3fa52230-ba24-4a0f-8a05-d924f8c84c08"}}},
+      "clientId": "00000000-0000-0000-0000-000000000001"}}},
       "identity": {"type": "SystemAssigned"}, "sku": {"name": "Basic", "tier": "Free"}}'
     headers:
       Accept:
