@@ -45,6 +45,12 @@ def _encode_bytes(b):
     return b
 
 
+def _str_to_bytes(data, encoding="utf-8"):
+    if isinstance(data, str):
+        return data.encode(encoding)
+    return data.encode(encoding)
+
+
 def transform_dict_keys_to_hump(data_dict):
     new_dict = {}
     if not data_dict:

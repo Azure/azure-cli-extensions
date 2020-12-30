@@ -385,7 +385,7 @@ def validate_storage_data_plane_list(namespace):
         namespace.num_results = int(namespace.num_results)
 
 
-def get_content_setting_validator(settings_class, update, guess_from_file=None):
+def get_content_setting_validator(settings_class, update, guess_from_file=None, process_md5=False):
     def _class_name(class_type):
         return class_type.__module__ + "." + class_type.__class__.__name__
 
@@ -442,6 +442,15 @@ def get_content_setting_validator(settings_class, update, guess_from_file=None):
         else:
             if guess_from_file:
                 new_props = guess_content_type(ns[guess_from_file], new_props, settings_class)
+
+        # In the model serialization of ContentSettings, the required type for content_md5 is str. But when uploading,
+        # content_md5 needs to be converted to bytearray and it would cause a bug when converting a string to bytearray.
+        # So we pass in the content_md5 of the bytearray type as a workaround.
+        # There is an issue of Python SDK to follow up this problem, and if the SDK is fixed, the logic can be removed
+        # Issue link: https://github.com/Azure/azure-sdk-for-python/issues/15919
+        if process_md5:
+            from .track2_util import _str_to_bytes
+            new_props.content_md5 = _str_to_bytes(new_props.content_md5)
 
         ns['content_settings'] = new_props
 
