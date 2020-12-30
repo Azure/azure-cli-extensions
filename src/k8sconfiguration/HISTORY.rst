@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.3
+++++++++++++++++++
+* Add parameter regex validation, improve table formatting
+
 0.2.2
 ++++++++++++++++++
 * Update min az CLI version
