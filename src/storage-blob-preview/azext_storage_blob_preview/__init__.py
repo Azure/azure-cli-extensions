@@ -56,7 +56,8 @@ class StorageArgumentContext(AzArgumentContext):
 
         self.ignore('content_settings')
         self.extra('content_type', default=None, help='The content MIME type.', arg_group=arg_group,
-                   validator=get_content_setting_validator(settings_class, update, guess_from_file=guess_from_file))
+                   validator=get_content_setting_validator(settings_class, update, guess_from_file=guess_from_file,
+                                                           process_md5=True))
         self.extra('content_encoding', default=None, help='The content encoding type.', arg_group=arg_group)
         self.extra('content_language', default=None, help='The content language.', arg_group=arg_group)
         self.extra('content_disposition', default=None, arg_group=arg_group,
