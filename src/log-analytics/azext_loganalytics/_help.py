@@ -21,6 +21,6 @@ helps['monitor log-analytics query'] = """
           az monitor log-analytics query -w workspace-customId --analytics-query "AzureActivity | summarize count() by bin(timestamp, 1h)" -t P3DT12H
       - name: Execute a saved query in workspace
         text: |
-          QUERY=$(az monitor log-analytics workspace saved-search show -g resource-group --workspace-name workspace-name -n query-name --query query)
-          az monitor log-analytics query -w workspace-customId --analytics-query $QUERY
+          QUERY=$(az monitor log-analytics workspace saved-search show -g resource-group --workspace-name workspace-name -n query-name --query query --output tsv)
+          az monitor log-analytics query -w workspace-customId --analytics-query "$QUERY"
 """
