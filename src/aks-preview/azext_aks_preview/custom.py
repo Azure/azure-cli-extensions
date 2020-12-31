@@ -1255,7 +1255,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                assign_identity=None,
                enable_pod_identity=False,
                disable_pod_identity=False,
-               yes=False):
+               yes=False,
+               tags=None):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1283,7 +1284,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not enable_managed_identity and \
        not assign_identity and \
        not enable_pod_identity and \
-       not disable_pod_identity:
+       not disable_pod_identity and \
+       not tags:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1306,7 +1308,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--enable-managed-identity" or '
                        '"--enable-pod-identity" or '
                        '"--disable-pod-identity" or '
-                       '"--auto-upgrade-channel"')
+                       '"--auto-upgrade-channel" or '
+                       '"--tags"')
 
     instance = client.get(resource_group_name, name)
 
@@ -1502,6 +1505,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     if disable_pod_identity:
         _update_addon_pod_identity(instance, enable=False)
+
+    if tags:
+        instance.tags = tags
 
     headers = get_aks_custom_headers(aks_custom_headers)
     monitoring_addon_enabled = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and \
