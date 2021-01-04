@@ -56,7 +56,8 @@ class StorageArgumentContext(AzArgumentContext):
 
         self.ignore('content_settings')
         self.extra('content_type', default=None, help='The content MIME type.', arg_group=arg_group,
-                   validator=get_content_setting_validator(settings_class, update, guess_from_file=guess_from_file))
+                   validator=get_content_setting_validator(settings_class, update, guess_from_file=guess_from_file,
+                                                           process_md5=True))
         self.extra('content_encoding', default=None, help='The content encoding type.', arg_group=arg_group)
         self.extra('content_language', default=None, help='The content language.', arg_group=arg_group)
         self.extra('content_disposition', default=None, arg_group=arg_group,
@@ -128,6 +129,15 @@ class StorageArgumentContext(AzArgumentContext):
                    help='Specify a SQL where clause on blob tags to operate only on blobs with a matching value.')
 
     def register_blob_arguments(self):
+        from ._validators import validate_blob_arguments
+        self.extra('blob_name')
+        self.extra('container_name')
+        self.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
+        self.extra('blob_url', help='The full endpoint URL to the Blob, including SAS token and snapshot if used. '
+                   'This could be either the primary endpoint, or the secondary endpoint depending on the current '
+                   '`location_mode`.', validator=validate_blob_arguments)
+
+    def register_lease_blob_arguments(self):
         self.extra('blob_name', required=True)
         self.extra('container_name', required=True)
         self.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)

@@ -1,5 +1,9 @@
 Release History
 ===============
+2.1.0
+-----
+* Support Java In-Process Agent.
+
 2.0.1
 -----
 * Fix 'az spring-cloud app list' command issues.

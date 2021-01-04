@@ -25,7 +25,7 @@ class ContainerPropertiesPaged(AsyncPageIterator):
     :ivar str location_mode: The location mode being used to list results. The available
         options include "primary" and "secondary".
     :ivar current_page: The current page of listed results.
-    :vartype current_page: list(~azure.storage.blob.models.ContainerProperties)
+    :vartype current_page: list(~.models.ContainerProperties)
 
     :param callable command: Function to retrieve the next page of items.
     :param str prefix: Filters the results to return only containers whose names
@@ -84,7 +84,7 @@ class FilteredBlobPaged(AsyncPageIterator):
     :ivar str location_mode: The location mode being used to list results. The available
         options include "primary" and "secondary".
     :ivar current_page: The current page of listed results.
-    :vartype current_page: list(~azure.storage.blob.BlobProperties)
+    :vartype current_page: list(~.BlobProperties)
     :ivar str container: The container that the blobs are listed from.
 
     :param callable command: Function to retrieve the next page of items.

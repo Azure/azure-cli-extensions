@@ -104,7 +104,6 @@ from ._consts import CONST_INGRESS_APPGW_WATCH_NAMESPACE
 from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, CONST_SPOT_EVICTION_POLICY_DELETE
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
-from ._consts import CONST_PRIVATE_DNS_ZONE_SYSTEM, CONST_PRIVATE_DNS_ZONE_NONE
 from ._consts import ADDONS
 logger = get_logger(__name__)
 
@@ -1186,9 +1185,6 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     if private_dns_zone:
         if not enable_private_cluster:
             raise CLIError("Invalid private dns zone for public cluster. It should always be empty for public cluster")
-        # remove following check once we support custom private dns zone
-        if private_dns_zone not in (CONST_PRIVATE_DNS_ZONE_SYSTEM, CONST_PRIVATE_DNS_ZONE_NONE):
-            raise CLIError("Invalid private dns zone for private cluster. Only 'system' or 'none' mode is supported")
         mc.api_server_access_profile.private_dns_zone = private_dns_zone
 
     if uptime_sla:
@@ -1247,6 +1243,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                attach_acr=None,
                detach_acr=None,
                uptime_sla=False,
+               no_uptime_sla=False,
                enable_aad=False,
                aad_tenant_id=None,
                aad_admin_group_object_ids=None,
@@ -1258,7 +1255,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                assign_identity=None,
                enable_pod_identity=False,
                disable_pod_identity=False,
-               yes=False):
+               yes=False,
+               tags=None):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1277,6 +1275,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not update_pod_security and \
        not update_lb_profile and \
        not uptime_sla and \
+       not no_uptime_sla and \
        not enable_aad and \
        not update_aad_profile and  \
        not enable_ahub and  \
@@ -1285,7 +1284,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not enable_managed_identity and \
        not assign_identity and \
        not enable_pod_identity and \
-       not disable_pod_identity:
+       not disable_pod_identity and \
+       not tags:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1296,6 +1296,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--attach-acr" or '
                        '"--detach-acr" or '
                        '"--uptime-sla" or '
+                       '"--no-uptime-sla" or '
                        '"--load-balancer-managed-outbound-ip-count" or '
                        '"--load-balancer-outbound-ips" or '
                        '"--load-balancer-outbound-ip-prefixes" or '
@@ -1307,7 +1308,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--enable-managed-identity" or '
                        '"--enable-pod-identity" or '
                        '"--disable-pod-identity" or '
-                       '"--auto-upgrade-channel"')
+                       '"--auto-upgrade-channel" or '
+                       '"--tags"')
 
     instance = client.get(resource_group_name, name)
 
@@ -1382,10 +1384,19 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     if attach_acr and detach_acr:
         raise CLIError('Cannot specify "--attach-acr" and "--detach-acr" at the same time.')
 
+    if uptime_sla and no_uptime_sla:
+        raise CLIError('Cannot specify "--uptime-sla" and "--no-uptime-sla" at the same time.')
+
     if uptime_sla:
         instance.sku = ManagedClusterSKU(
             name="Basic",
             tier="Paid"
+        )
+
+    if no_uptime_sla:
+        instance.sku = ManagedClusterSKU(
+            name="Basic",
+            tier="Free"
         )
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -1494,6 +1505,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     if disable_pod_identity:
         _update_addon_pod_identity(instance, enable=False)
+
+    if tags:
+        instance.tags = tags
 
     headers = get_aks_custom_headers(aks_custom_headers)
     monitoring_addon_enabled = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and \
