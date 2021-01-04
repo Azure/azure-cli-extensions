@@ -8,7 +8,7 @@ import argparse
 from knack.log import get_logger
 from knack.util import CLIError
 
-from azext_cosmosdb_pitr.vendored_sdks.azure_mgmt_cosmosdb.models import (
+from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     Location,
     DatabaseRestoreResource
 )

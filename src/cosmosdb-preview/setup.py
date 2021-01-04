@@ -41,9 +41,9 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='cosmosdb-continuous-backup',
+    name='cosmosdb-preview',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Cosmosdb-continuous-backup Extension',
+    description='Microsoft Azure Command-Line Tools Cosmosdb-preview Extension',
     author='Kalyan khandrika',
     author_email='kakhandr@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions',
@@ -52,5 +52,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_cosmosdb_pitr': ['azext_metadata.json']},
+    package_data={'azext_cosmosdb_preview': ['azext_metadata.json']},
 )

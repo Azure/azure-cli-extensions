@@ -1,6 +1,6 @@
-# Microsoft Azure CLI 'cosmosdb-continuous-backup' Extension #
+# Microsoft Azure CLI 'cosmosdb-preview' Extension #
 
-This package is for the 'cosmosdb-continuous-backup' extension.
+This package is for the 'cosmosdb-preview' extension.
 This package provides commands to
 
 - Create Azure CosmosDB continuous backup accounts
@@ -13,7 +13,7 @@ This package provides commands to
 Install this extension using the below CLI command
 
 ```sh
-az extension add --name cosmodb-continuous-backup
+az extension add --name cosmodb-preview
 ```
 
 ### Included Features ###

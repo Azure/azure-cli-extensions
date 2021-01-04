@@ -13,7 +13,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-class Cosmosdb_pitrScenarioTest(ScenarioTest):
+class Cosmosdb_previewScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_update_backup_policy_database_account')
     def test_update_backup_policy_database_account(self, resource_group):

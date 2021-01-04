@@ -6,7 +6,7 @@
 from knack.util import CLIError
 from knack.log import get_logger
 
-from azext_cosmosdb_pitr.vendored_sdks.azure_mgmt_cosmosdb.models import (
+from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ConsistencyPolicy,
     DatabaseAccountCreateUpdateParameters,
     DatabaseAccountUpdateParameters,
@@ -320,7 +320,7 @@ def cli_cosmosdb_restore(cmd,
                          restore_timestamp,
                          location,
                          databases_to_restore=None):
-    from azext_cosmosdb_pitr._client_factory import cf_restorable_database_accounts
+    from azext_cosmosdb_preview._client_factory import cf_restorable_database_accounts
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
     restorable_database_accounts_list = list(restorable_database_accounts)

@@ -6,7 +6,7 @@
 # pylint: disable=line-too-long
 # pylint: disable=too-many-statements
 from azure.cli.core.commands import CliCommandType
-from azext_cosmosdb_pitr._client_factory import (
+from azext_cosmosdb_preview._client_factory import (
     cf_db_accounts,
     cf_restorable_database_accounts,
     cf_restorable_sql_databases,
@@ -20,35 +20,35 @@ from azext_cosmosdb_pitr._client_factory import (
 
 def load_command_table(self, _):
     cosmosdb_sdk = CliCommandType(
-        operations_tmpl='azext_cosmosdb_pitr.vendored_sdks.azure_mgmt_cosmosdb.operations#DatabaseAccountsOperations.{}',
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#DatabaseAccountsOperations.{}',
         client_factory=cf_db_accounts)
 
     cosmosdb_restorable_database_accounts_sdk = CliCommandType(
-        operations_tmpl='azext_cosmosdb_pitr.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableDatabaseAccountsOperations.{}',
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableDatabaseAccountsOperations.{}',
         client_factory=cf_restorable_database_accounts)
 
     cosmosdb_restorable_sql_databases_sdk = CliCommandType(
-        operations_tmpl='azext_cosmosdb_pitr.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableSqlDatabasesOperations.{}',
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableSqlDatabasesOperations.{}',
         client_factory=cf_restorable_sql_databases)
 
     cosmosdb_restorable_sql_containers_sdk = CliCommandType(
-        operations_tmpl='azext_cosmosdb_pitr.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableSqlContainersOperations.{}',
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableSqlContainersOperations.{}',
         client_factory=cf_restorable_sql_containers)
 
     cosmosdb_restorable_sql_resources_sdk = CliCommandType(
-        operations_tmpl='azext_cosmosdb_pitr.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableSqlResourcesOperations.{}',
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableSqlResourcesOperations.{}',
         client_factory=cf_restorable_sql_resources)
 
     cosmosdb_restorable_mongodb_databases_sdk = CliCommandType(
-        operations_tmpl='azext_cosmosdb_pitr.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableMongodbDatabasesOperations.{}',
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableMongodbDatabasesOperations.{}',
         client_factory=cf_restorable_mongodb_databases)
 
     cosmosdb_restorable_mongodb_collections_sdk = CliCommandType(
-        operations_tmpl='azext_cosmosdb_pitr.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableMongodbCollectionsOperations.{}',
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableMongodbCollectionsOperations.{}',
         client_factory=cf_restorable_mongodb_collections)
 
     cosmosdb_restorable_mongodb_resources_sdk = CliCommandType(
-        operations_tmpl='azext_cosmosdb_pitr.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableMongodbResourcesOperations.{}',
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableMongodbResourcesOperations.{}',
         client_factory=cf_restorable_mongodb_resources)
 
     with self.command_group('cosmosdb restorable-database-account', cosmosdb_restorable_database_accounts_sdk, client_factory=cf_restorable_database_accounts, is_preview=True) as g:

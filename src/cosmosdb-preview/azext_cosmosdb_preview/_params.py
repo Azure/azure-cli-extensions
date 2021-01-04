@@ -9,13 +9,13 @@ from enum import Enum
 from azure.cli.core.commands.parameters import (
     get_resource_name_completion_list, name_type, get_enum_type, get_three_state_flag, get_datetime_type, get_location_type)
 
-from azext_cosmosdb_pitr._validators import (
+from azext_cosmosdb_preview._validators import (
     validate_capabilities, validate_virtual_network_rules, validate_ip_range_filter)
 
-from azext_cosmosdb_pitr.actions import (
+from azext_cosmosdb_preview.actions import (
     CreateLocation, CreateDatabaseRestoreResource)
 
-from azext_cosmosdb_pitr.vendored_sdks.azure_mgmt_cosmosdb.models import DefaultConsistencyLevel, DatabaseAccountKind, ServerVersion
+from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import DefaultConsistencyLevel, DatabaseAccountKind, ServerVersion
 
 
 class BackupPolicyTypes(str, Enum):
