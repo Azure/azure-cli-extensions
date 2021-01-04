@@ -18,7 +18,7 @@ from ...operations.job import _generate_submit_args, _parse_blob_url
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-class QuantumScenarioTest(ScenarioTest):
+class QuantumJobsScenarioTest(ScenarioTest):
 
     def test_jobs(self):
         # Since azure quantum is still in private preview, we require

@@ -12,6 +12,7 @@ from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
 from ..vendored_sdks.azure_mgmt_quantum.models import Provider
 
+DEFAULT_WORKSPACE_LOCATION = 'westus'
 
 class WorkspaceInfo(object):
     def __init__(self, cmd, resource_group_name=None, workspace_name=None, location=None):
@@ -34,6 +35,10 @@ class WorkspaceInfo(object):
         self.resource_group = select_value('group', resource_group_name)
         self.name = select_value('workspace', workspace_name)
         self.location = select_value('location', location)
+
+        # Finally, if a location is not specified, resort to the default.
+        if self.location is None or self.location == "":
+            self.location = DEFAULT_WORKSPACE_LOCATION
 
     def clear(self):
         self.subscription = ''

@@ -14,7 +14,7 @@ from .utils import is_private_preview_subscription, TEST_WORKSPACE, TEST_RG, TES
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-class QuantumScenarioTest(ScenarioTest):
+class QuantumTargetsScenarioTest(ScenarioTest):
 
     def test_targets(self):
         # Since azure quantum is still in private preview, we require
