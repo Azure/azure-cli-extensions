@@ -164,22 +164,24 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
         #invoke enable-NestedHyperV.ps1 again to attach Disk to Nested
         if enable_nested:
-            print("running hyperv")
+            logger.info("Running hyperv")
 
             stdout, stderr = _invoke_nested(repair_vm_name, repair_group_name)
             
             logger.debug("stderr: %s", stderr)
             if stderr:
+                logger.debug(stderr)
                 raise ScriptReturnsError('error when running script')
 
-            print(stdout)        
+            logger.debug("stdout: %s", stdout)        
             if str.find(stdout, "SuccessRestartRequired") > -1:
                 restart_cmd = 'az vm restart -g {rg} -n {vm}'.format(rg=repair_group_name, vm=repair_vm_name)
                 logger.info("restarting")
                 restart_ret = _call_az_command(restart_cmd)
                 logger.info(restart_ret)
 
-                #invoking hyperv script again        
+                #invoking hyperv script again   
+                logger.info("Running HyperV script again")     
                 stdout, stderr = _invoke_nested(repair_vm_name, repair_group_name)
                 if stderr:
                     raise ScriptReturnsError('Error when running script')
