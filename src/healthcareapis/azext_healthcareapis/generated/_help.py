@@ -294,3 +294,18 @@ helps['healthcareapis acr reset'] = """
                az healthcareapis acr reset --resource-group "rgname" \
 --resource-name "service1"
 """
+
+helps['healthcareapis acr wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the healthcareapis acr is met.
+    examples:
+      - name: Pause executing next line of CLI script until the healthcareapis service is successfully created.
+        text: |-
+               az healthcareapis acr wait --resource-group "rg1" --resource-name "service1" --created
+      - name: Pause executing next line of CLI script until the healthcareapis service is successfully updated.
+        text: |-
+               az healthcareapis acr wait --resource-group "rg1" --resource-name "service1" --updated
+      - name: Pause executing next line of CLI script until the healthcareapis service is successfully deleted.
+        text: |-
+               az healthcareapis acr wait --resource-group "rg1" --resource-name "service1" --deleted
+"""

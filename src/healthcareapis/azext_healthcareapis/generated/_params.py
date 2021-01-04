@@ -164,3 +164,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('resource_name', type=str, help='The name of the service instance.', id_part='name')
         c.argument('login_servers', type=str, help='The list of login servers to substitute for the existing one.')
+
+    with self.argument_context('healthcareapis acr wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('resource_name', type=str, help='The name of the service instance.')
