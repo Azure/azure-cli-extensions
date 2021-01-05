@@ -10,7 +10,7 @@ from azure.cli.core.commands.parameters import (
 def load_arguments(self, _):
 
     with self.argument_context('ssh vm') as c:
-        c.argument('vm_name', options_list=['--vm-name', '-n'], help='The name of the VM')
+        c.argument('vm_name', options_list=['--vm-name', '--name', '-n'], help='The name of the VM')
         c.argument('ssh_ip', options_list=['--ip'], help='The public IP address (or hostname) of the VM')
         c.argument('public_key_file', options_list=['--public-key-file', '-p'], help='The RSA public key file path')
         c.argument('private_key_file', options_list=['--private-key-file', '-i'], help='The RSA private key file path')
