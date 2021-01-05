@@ -16,7 +16,8 @@ from . import rsa_parser
 from . import ssh_utils
 
 
-def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None, private_key_file=None, use_private_ip=False):
+def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None,
+           private_key_file=None, use_private_ip=False):
     _do_ssh_op(cmd, resource_group_name, vm_name, ssh_ip,
                public_key_file, private_key_file, use_private_ip, ssh_utils.start_ssh_connection)
 
@@ -36,14 +37,13 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None):
 def _do_ssh_op(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_key_file, use_private_ip, op_call):
     _assert_args(resource_group, vm_name, ssh_ip)
     public_key_file, private_key_file = _check_or_create_public_private_files(public_key_file, private_key_file)
-    ssh_ip = ssh_ip or ip_utils.get_ssh_ip(cmd, resource_group, vm_name)
+    ssh_ip = ssh_ip or ip_utils.get_ssh_ip(cmd, resource_group, vm_name, use_private_ip)
 
     if not ssh_ip:
         if not use_private_ip:
             raise util.CLIError(f"VM '{vm_name}' does not have a public IP address to SSH to")
-        else:
-            raise util.CLIError(f"VM '{vm_name}' does not have a public or private IP address to SSH to")
 
+        raise util.CLIError(f"VM '{vm_name}' does not have a public or private IP address to SSH to")
 
     cert_file, username = _get_and_write_certificate(cmd, public_key_file, None)
     op_call(ssh_ip, username, cert_file, private_key_file)

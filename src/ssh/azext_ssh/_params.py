@@ -6,6 +6,7 @@ from azure.cli.core.commands.parameters import (
     get_three_state_flag
 )
 
+
 def load_arguments(self, _):
 
     with self.argument_context('ssh vm') as c:
@@ -24,7 +25,7 @@ def load_arguments(self, _):
         c.argument('private_key_file', options_list=['--private-key-file', '-i'], help='The RSA private key file path')
         c.argument('use_private_ip', options_list=['--prefer-private-ip'],
                    help='Will use a private IP if available. By default only public IPs are used.')
-        c.argument('overwrite', arg_type=get_three_state_flag(), options_list=['--overwrite', '-o'],
+        c.argument('overwrite', arg_type=get_three_state_flag(), options_list=['--overwrite'],
                    help='Overwrites the config file if this flag is set')
 
     with self.argument_context('ssh cert') as c:
