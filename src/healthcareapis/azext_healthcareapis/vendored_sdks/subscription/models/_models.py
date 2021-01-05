@@ -9,97 +9,18 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from msrest.serialization import Model
-from msrest.exceptions import HttpOperationError
+from azure.core.exceptions import HttpResponseError
+import msrest.serialization
 
 
-class Resource(Model):
-    """Resource.
-
-    Common fields that are returned in the response for all Azure Resource
-    Manager resources.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
-    :vartype id: str
-    :ivar name: The name of the resource
-    :vartype name: str
-    :ivar type: The type of the resource. E.g.
-     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
-    :vartype type: str
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-    }
-
-    def __init__(self, **kwargs):
-        super(Resource, self).__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
-
-
-class AzureEntityResource(Resource):
-    """Entity Resource.
-
-    The resource model definition for an Azure Resource Manager resource with
-    an etag.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
-    :vartype id: str
-    :ivar name: The name of the resource
-    :vartype name: str
-    :ivar type: The type of the resource. E.g.
-     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
-    :vartype type: str
-    :ivar etag: Resource Etag.
-    :vartype etag: str
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'etag': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'etag': {'key': 'etag', 'type': 'str'},
-    }
-
-    def __init__(self, **kwargs):
-        super(AzureEntityResource, self).__init__(**kwargs)
-        self.etag = None
-
-
-class CheckNameAvailabilityParameters(Model):
+class CheckNameAvailabilityParameters(msrest.serialization.Model):
     """Input values.
 
     All required parameters must be populated in order to send to Azure.
 
     :param name: Required. The name of the service instance to check.
     :type name: str
-    :param type: Required. The fully qualified resource type which includes
-     provider namespace.
+    :param type: Required. The fully qualified resource type which includes provider namespace.
     :type type: str
     """
 
@@ -113,25 +34,20 @@ class CheckNameAvailabilityParameters(Model):
         'type': {'key': 'type', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(
+        self,
+        **kwargs
+    ):
         super(CheckNameAvailabilityParameters, self).__init__(**kwargs)
-        self.name = kwargs.get('name', None)
-        self.type = kwargs.get('type', None)
+        self.name = kwargs['name']
+        self.type = kwargs['type']
 
 
-class CloudError(Model):
-    """CloudError.
-    """
-
-    _attribute_map = {
-    }
-
-
-class ErrorDetails(Model):
+class ErrorDetails(msrest.serialization.Model):
     """Error details.
 
     :param error: Object containing error details.
-    :type error: ~azure.mgmt.healthcareapis.models.ErrorDetailsInternal
+    :type error: ~healthcare_apis_management_client.models.ErrorDetailsInternal
     """
 
     _attribute_map = {
@@ -143,19 +59,7 @@ class ErrorDetails(Model):
         self.error = kwargs.get('error', None)
 
 
-class ErrorDetailsException(HttpOperationError):
-    """Server responsed with exception of type: 'ErrorDetails'.
-
-    :param deserialize: A deserializer
-    :param response: Server response to be deserialized.
-    """
-
-    def __init__(self, deserialize, response, *args):
-
-        super(ErrorDetailsException, self).__init__(deserialize, response, 'ErrorDetails', *args)
-
-
-class ErrorDetailsInternal(Model):
+class ErrorDetailsInternal(msrest.serialization.Model):
     """Error details.
 
     Variables are only populated by the server, and will be ignored when
@@ -188,7 +92,7 @@ class ErrorDetailsInternal(Model):
         self.target = None
 
 
-class Operation(Model):
+class Operation(msrest.serialization.Model):
     """Service REST API operation.
 
     Variables are only populated by the server, and will be ignored when
@@ -221,7 +125,7 @@ class Operation(Model):
         self.display = kwargs.get('display', None)
 
 
-class OperationDisplay(Model):
+class OperationDisplay(msrest.serialization.Model):
     """The object that represents the operation.
 
     Variables are only populated by the server, and will be ignored when
@@ -259,7 +163,37 @@ class OperationDisplay(Model):
         self.description = None
 
 
-class OperationResultsDescription(Model):
+class OperationListResult(msrest.serialization.Model):
+    """A list of service operations. It contains a list of operations and a URL link to get the next set of results.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :param next_link: The link used to get the next page of service description objects.
+    :type next_link: str
+    :ivar value: A list of service operations supported by the Microsoft.HealthcareApis resource
+     provider.
+    :vartype value: list[~healthcare_apis_management_client.models.Operation]
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'value': {'key': 'value', 'type': '[Operation]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(OperationListResult, self).__init__(**kwargs)
+        self.next_link = kwargs.get('next_link', None)
+        self.value = None
+
+
+class OperationResultsDescription(msrest.serialization.Model):
     """The properties indicating the operation result of an operation on a
     service.
 
@@ -272,8 +206,7 @@ class OperationResultsDescription(Model):
     :vartype name: str
     :ivar status: The status of the operation being performed. Possible values
      include: 'Canceled', 'Succeeded', 'Failed', 'Requested', 'Running'
-    :vartype status: str or
-     ~azure.mgmt.healthcareapis.models.OperationResultStatus
+    :vartype status: str or ~healthcare_apis_management_client.models.OperationResultStatus
     :ivar start_time: The time that the operation was started.
     :vartype start_time: str
     :param properties: Additional properties of the operation result.
@@ -304,27 +237,41 @@ class OperationResultsDescription(Model):
         self.properties = kwargs.get('properties', None)
 
 
-class PrivateEndpoint(Model):
-    """The Private Endpoint resource.
+class Resource(msrest.serialization.Model):
+    """Common fields that are returned in the response for all Azure Resource Manager resources.
 
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
+    Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: The ARM identifier for Private Endpoint
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
     """
 
     _validation = {
         'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
     }
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(PrivateEndpoint, self).__init__(**kwargs)
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(Resource, self).__init__(**kwargs)
         self.id = None
+        self.name = None
+        self.type = None
 
 
 class PrivateEndpointConnection(Resource):
@@ -343,41 +290,71 @@ class PrivateEndpointConnection(Resource):
     :ivar type: The type of the resource. E.g.
      "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
     :vartype type: str
-    :param private_endpoint: The resource of private end point.
-    :type private_endpoint: ~azure.mgmt.healthcareapis.models.PrivateEndpoint
-    :param private_link_service_connection_state: Required. A collection of
-     information about the state of the connection between service consumer and
-     provider.
-    :type private_link_service_connection_state:
-     ~azure.mgmt.healthcareapis.models.PrivateLinkServiceConnectionState
-    :param provisioning_state: The provisioning state of the private endpoint
-     connection resource. Possible values include: 'Succeeded', 'Creating',
-     'Deleting', 'Failed'
-    :type provisioning_state: str or
-     ~azure.mgmt.healthcareapis.models.PrivateEndpointConnectionProvisioningState
+    :ivar provisioning_state: The provisioning state of the private endpoint connection resource.
+     Possible values include: "Succeeded", "Creating", "Deleting", "Failed".
+    :vartype provisioning_state: str or
+     ~healthcare_apis_management_client.models.PrivateEndpointConnectionProvisioningState
+    :param status: Indicates whether the connection has been Approved/Rejected/Removed by the owner
+     of the service. Possible values include: "Pending", "Approved", "Rejected".
+    :type status: str or
+     ~healthcare_apis_management_client.models.PrivateEndpointServiceConnectionStatus
+    :param description: The reason for approval/rejection of the connection.
+    :type description: str
+    :param actions_required: A message indicating if changes on the service provider require any
+     updates on the consumer.
+    :type actions_required: str
+    :ivar id_private_endpoint_id: The ARM identifier for Private Endpoint.
+    :vartype id_private_endpoint_id: str
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
-        'private_link_service_connection_state': {'required': True},
+        'provisioning_state': {'readonly': True},
+        'id_private_endpoint_id': {'readonly': True},
     }
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'private_endpoint': {'key': 'properties.privateEndpoint', 'type': 'PrivateEndpoint'},
-        'private_link_service_connection_state': {'key': 'properties.privateLinkServiceConnectionState', 'type': 'PrivateLinkServiceConnectionState'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'status': {'key': 'privateLinkServiceConnectionState.status', 'type': 'str'},
+        'description': {'key': 'privateLinkServiceConnectionState.description', 'type': 'str'},
+        'actions_required': {'key': 'privateLinkServiceConnectionState.actionsRequired', 'type': 'str'},
+        'id_private_endpoint_id': {'key': 'privateEndpoint.id', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(
+        self,
+        **kwargs
+    ):
         super(PrivateEndpointConnection, self).__init__(**kwargs)
-        self.private_endpoint = kwargs.get('private_endpoint', None)
-        self.private_link_service_connection_state = kwargs.get('private_link_service_connection_state', None)
-        self.provisioning_state = kwargs.get('provisioning_state', None)
+        self.provisioning_state = None
+        self.status = kwargs.get('status', None)
+        self.description = kwargs.get('description', None)
+        self.actions_required = kwargs.get('actions_required', None)
+        self.id_private_endpoint_id = None
+
+
+class PrivateEndpointConnectionListResult(msrest.serialization.Model):
+    """List of private endpoint connection associated with the specified storage account.
+
+    :param value: Array of private endpoint connections.
+    :type value: list[~healthcare_apis_management_client.models.PrivateEndpointConnection]
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[PrivateEndpointConnection]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(PrivateEndpointConnectionListResult, self).__init__(**kwargs)
+        self.value = kwargs.get('value', None)
 
 
 class PrivateLinkResource(Resource):
@@ -427,7 +404,7 @@ class PrivateLinkResource(Resource):
         self.required_zone_names = kwargs.get('required_zone_names', None)
 
 
-class PrivateLinkResourceListResult(Model):
+class PrivateLinkResourceListResult(msrest.serialization.Model):
     """A list of private link resources.
 
     :param value: Array of private link resources
@@ -443,78 +420,7 @@ class PrivateLinkResourceListResult(Model):
         self.value = kwargs.get('value', None)
 
 
-class PrivateLinkServiceConnectionState(Model):
-    """A collection of information about the state of the connection between
-    service consumer and provider.
-
-    :param status: Indicates whether the connection has been
-     Approved/Rejected/Removed by the owner of the service. Possible values
-     include: 'Pending', 'Approved', 'Rejected'
-    :type status: str or
-     ~azure.mgmt.healthcareapis.models.PrivateEndpointServiceConnectionStatus
-    :param description: The reason for approval/rejection of the connection.
-    :type description: str
-    :param actions_required: A message indicating if changes on the service
-     provider require any updates on the consumer.
-    :type actions_required: str
-    """
-
-    _attribute_map = {
-        'status': {'key': 'status', 'type': 'str'},
-        'description': {'key': 'description', 'type': 'str'},
-        'actions_required': {'key': 'actionsRequired', 'type': 'str'},
-    }
-
-    def __init__(self, **kwargs):
-        super(PrivateLinkServiceConnectionState, self).__init__(**kwargs)
-        self.status = kwargs.get('status', None)
-        self.description = kwargs.get('description', None)
-        self.actions_required = kwargs.get('actions_required', None)
-
-
-class ProxyResource(Resource):
-    """Proxy Resource.
-
-    The resource model definition for a Azure Resource Manager proxy resource.
-    It will not have tags and a location.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
-    :vartype id: str
-    :ivar name: The name of the resource
-    :vartype name: str
-    :ivar type: The type of the resource. E.g.
-     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
-    :vartype type: str
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-    }
-
-    def __init__(self, **kwargs):
-        super(ProxyResource, self).__init__(**kwargs)
-
-    _attribute_map = {
-        'value': {'key': 'value', 'type': '[PrivateLinkResource]'},
-    }
-
-    def __init__(self, **kwargs):
-        super(PrivateLinkResourceListResult, self).__init__(**kwargs)
-        self.value = kwargs.get('value', None)
-
-class ServiceAccessPolicyEntry(Model):
+class ServiceAccessPolicyEntry(msrest.serialization.Model):
     """An access policy entry.
 
     All required parameters must be populated in order to send to Azure.
@@ -534,10 +440,10 @@ class ServiceAccessPolicyEntry(Model):
 
     def __init__(self, **kwargs):
         super(ServiceAccessPolicyEntry, self).__init__(**kwargs)
-        self.object_id = kwargs.get('object_id', None)
+        self.object_id = kwargs['object_id']
 
 
-class ServiceAuthenticationConfigurationInfo(Model):
+class ServiceAuthenticationConfigurationInfo(msrest.serialization.Model):
     """Authentication configuration information.
 
     :param authority: The authority url for the service
@@ -561,7 +467,7 @@ class ServiceAuthenticationConfigurationInfo(Model):
         self.smart_proxy_enabled = kwargs.get('smart_proxy_enabled', None)
 
 
-class ServiceCorsConfigurationInfo(Model):
+class ServiceCorsConfigurationInfo(msrest.serialization.Model):
     """The settings for the CORS configuration of the service instance.
 
     :param origins: The origins to be allowed via CORS.
@@ -597,7 +503,7 @@ class ServiceCorsConfigurationInfo(Model):
         self.allow_credentials = kwargs.get('allow_credentials', None)
 
 
-class ServiceCosmosDbConfigurationInfo(Model):
+class ServiceCosmosDbConfigurationInfo(msrest.serialization.Model):
     """The settings for the Cosmos DB database backing the service.
 
     :param offer_throughput: The provisioned throughput for the backing
@@ -623,7 +529,7 @@ class ServiceCosmosDbConfigurationInfo(Model):
         self.key_vault_key_uri = kwargs.get('key_vault_key_uri', None)
 
 
-class ServiceExportConfigurationInfo(Model):
+class ServiceExportConfigurationInfo(msrest.serialization.Model):
     """Export operation configuration information.
 
     :param storage_account_name: The name of the default export storage
@@ -640,26 +546,7 @@ class ServiceExportConfigurationInfo(Model):
         self.storage_account_name = kwargs.get('storage_account_name', None)
 
 
-class ServiceAcrConfigurationInfo(Model):
-    """Acr operation configuration information.
-
-    :param login_servers: The list of the login servers.
-    :type login_servers: list[str]
-    """
-
-    _attribute_map = {
-        'login_servers': {'key': 'loginServers', 'type': '[str]'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(ServiceAcrConfigurationInfo, self).__init__(**kwargs)
-        self.login_servers = kwargs.get('login_servers', None)
-
-
-class ServicesResource(Model):
+class ServicesResource(msrest.serialization.Model):
     """The common properties of a service.
 
     Variables are only populated by the server, and will be ignored when
@@ -683,9 +570,14 @@ class ServicesResource(Model):
     :param etag: An etag associated with the resource, used for optimistic
      concurrency when editing it.
     :type etag: str
-    :param identity: Setting indicating whether the service has a managed
-     identity associated with it.
-    :type identity: ~azure.mgmt.healthcareapis.models.ServicesResourceIdentity
+    :ivar principal_id: The principal ID of the resource identity.
+    :vartype principal_id: str
+    :ivar tenant_id: The tenant ID of the resource.
+    :vartype tenant_id: str
+    :param type_identity_type: Type of identity being specified, currently SystemAssigned and None
+     are allowed. Possible values include: "SystemAssigned", "None".
+    :type type_identity_type: str or
+     ~healthcare_apis_management_client.models.ManagedServiceIdentityType
     """
 
     _validation = {
@@ -694,29 +586,38 @@ class ServicesResource(Model):
         'type': {'readonly': True},
         'kind': {'required': True},
         'location': {'required': True},
+        'principal_id': {'readonly': True},
+        'tenant_id': {'readonly': True},
     }
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'kind': {'key': 'kind', 'type': 'Kind'},
+        'kind': {'key': 'kind', 'type': 'str'},
         'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
         'etag': {'key': 'etag', 'type': 'str'},
-        'identity': {'key': 'identity', 'type': 'ServicesResourceIdentity'},
+        'principal_id': {'key': 'identity.principalId', 'type': 'str'},
+        'tenant_id': {'key': 'identity.tenantId', 'type': 'str'},
+        'type_identity_type': {'key': 'identity.type', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(
+        self,
+        **kwargs
+    ):
         super(ServicesResource, self).__init__(**kwargs)
         self.id = None
         self.name = None
         self.type = None
-        self.kind = kwargs.get('kind', None)
-        self.location = kwargs.get('location', None)
+        self.kind = kwargs['kind']
+        self.location = kwargs['location']
         self.tags = kwargs.get('tags', None)
         self.etag = kwargs.get('etag', None)
-        self.identity = kwargs.get('identity', None)
+        self.principal_id = None
+        self.tenant_id = None
+        self.type_identity_type = kwargs.get('type_identity_type', None)
 
 
 class ServicesDescription(ServicesResource):
@@ -740,14 +641,42 @@ class ServicesDescription(ServicesResource):
     :type location: str
     :param tags: The resource tags.
     :type tags: dict[str, str]
-    :param etag: An etag associated with the resource, used for optimistic
-     concurrency when editing it.
+    :param etag: An etag associated with the resource, used for optimistic concurrency when editing
+     it.
     :type etag: str
-    :param identity: Setting indicating whether the service has a managed
-     identity associated with it.
-    :type identity: ~azure.mgmt.healthcareapis.models.ServicesResourceIdentity
-    :param properties: The common properties of a service.
-    :type properties: ~azure.mgmt.healthcareapis.models.ServicesProperties
+    :ivar principal_id: The principal ID of the resource identity.
+    :vartype principal_id: str
+    :ivar tenant_id: The tenant ID of the resource.
+    :vartype tenant_id: str
+    :param type_identity_type: Type of identity being specified, currently SystemAssigned and None
+     are allowed. Possible values include: "SystemAssigned", "None".
+    :type type_identity_type: str or
+     ~healthcare_apis_management_client.models.ManagedServiceIdentityType
+    :ivar provisioning_state: The provisioning state. Possible values include: "Deleting",
+     "Succeeded", "Creating", "Accepted", "Verifying", "Updating", "Failed", "Canceled",
+     "Deprovisioned".
+    :vartype provisioning_state: str or ~healthcare_apis_management_client.models.ProvisioningState
+    :param access_policies: The access policies of the service instance.
+    :type access_policies: list[~healthcare_apis_management_client.models.ServiceAccessPolicyEntry]
+    :param cosmos_db_configuration: The settings for the Cosmos DB database backing the service.
+    :type cosmos_db_configuration:
+     ~healthcare_apis_management_client.models.ServiceCosmosDBConfigurationInfo
+    :param authentication_configuration: The authentication configuration for the service instance.
+    :type authentication_configuration:
+     ~healthcare_apis_management_client.models.ServiceAuthenticationConfigurationInfo
+    :param cors_configuration: The settings for the CORS configuration of the service instance.
+    :type cors_configuration:
+     ~healthcare_apis_management_client.models.ServiceCorsConfigurationInfo
+    :param private_endpoint_connections: The list of private endpoint connections that are set up
+     for this resource.
+    :type private_endpoint_connections:
+     list[~healthcare_apis_management_client.models.PrivateEndpointConnection]
+    :param public_network_access: Control permission for data plane traffic coming from public
+     networks while private endpoint is enabled. Possible values include: "Enabled", "Disabled".
+    :type public_network_access: str or
+     ~healthcare_apis_management_client.models.PublicNetworkAccess
+    :param storage_account_name: The name of the default export storage account.
+    :type storage_account_name: str
     """
 
     _validation = {
@@ -756,38 +685,81 @@ class ServicesDescription(ServicesResource):
         'type': {'readonly': True},
         'kind': {'required': True},
         'location': {'required': True},
+        'principal_id': {'readonly': True},
+        'tenant_id': {'readonly': True},
+        'provisioning_state': {'readonly': True},
     }
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'kind': {'key': 'kind', 'type': 'Kind'},
+        'kind': {'key': 'kind', 'type': 'str'},
         'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
         'etag': {'key': 'etag', 'type': 'str'},
-        'identity': {'key': 'identity', 'type': 'ServicesResourceIdentity'},
-        'properties': {'key': 'properties', 'type': 'ServicesProperties'},
+        'principal_id': {'key': 'identity.principalId', 'type': 'str'},
+        'tenant_id': {'key': 'identity.tenantId', 'type': 'str'},
+        'type_identity_type': {'key': 'identity.type', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'access_policies': {'key': 'properties.accessPolicies', 'type': '[ServiceAccessPolicyEntry]'},
+        'cosmos_db_configuration': {'key': 'properties.cosmosDbConfiguration', 'type': 'ServiceCosmosDBConfigurationInfo'},
+        'authentication_configuration': {'key': 'properties.authenticationConfiguration', 'type': 'ServiceAuthenticationConfigurationInfo'},
+        'cors_configuration': {'key': 'properties.corsConfiguration', 'type': 'ServiceCorsConfigurationInfo'},
+        'export_configuration': {'key': 'properties.exportConfiguration', 'type': 'ServiceExportConfigurationInfo'},
+        'private_endpoint_connections': {'key': 'properties.privateEndpointConnections', 'type': '[PrivateEndpointConnection]'},
+        'public_network_access': {'key': 'properties.publicNetworkAccess', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(
+        self,
+        **kwargs
+    ):
         super(ServicesDescription, self).__init__(**kwargs)
-        self.properties = kwargs.get('properties', None)
+        self.provisioning_state = None
+        self.access_policies = kwargs.get('access_policies', None)
+        self.cosmos_db_configuration = kwargs.get('cosmos_db_configuration', None)
+        self.authentication_configuration = kwargs.get('authentication_configuration', None)
+        self.cors_configuration = kwargs.get('cors_configuration', None)
+        self.export_configuration = kwargs.get('export_configuration', None)
+        self.private_endpoint_connections = kwargs.get('private_endpoint_connections', None)
+        self.public_network_access = kwargs.get('public_network_access', None)
 
 
-class ServicesNameAvailabilityInfo(Model):
+class ServicesDescriptionListResult(msrest.serialization.Model):
+    """A list of service description objects with a next link.
+
+    :param next_link: The link used to get the next page of service description objects.
+    :type next_link: str
+    :param value: A list of service description objects.
+    :type value: list[~healthcare_apis_management_client.models.ServicesDescription]
+    """
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'value': {'key': 'value', 'type': '[ServicesDescription]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ServicesDescriptionListResult, self).__init__(**kwargs)
+        self.next_link = kwargs.get('next_link', None)
+        self.value = kwargs.get('value', None)
+
+
+class ServicesNameAvailabilityInfo(msrest.serialization.Model):
     """The properties indicating whether a given service name is available.
 
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
+    Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar name_available: The value which indicates whether the provided name
-     is available.
+    :ivar name_available: The value which indicates whether the provided name is available.
     :vartype name_available: bool
-    :ivar reason: The reason for unavailability. Possible values include:
-     'Invalid', 'AlreadyExists'
+    :ivar reason: The reason for unavailability. Possible values include: "Invalid",
+     "AlreadyExists".
     :vartype reason: str or
-     ~azure.mgmt.healthcareapis.models.ServiceNameUnavailabilityReason
+     ~healthcare_apis_management_client.models.ServiceNameUnavailabilityReason
     :param message: The detailed reason message.
     :type message: str
     """
@@ -799,27 +771,29 @@ class ServicesNameAvailabilityInfo(Model):
 
     _attribute_map = {
         'name_available': {'key': 'nameAvailable', 'type': 'bool'},
-        'reason': {'key': 'reason', 'type': 'ServiceNameUnavailabilityReason'},
+        'reason': {'key': 'reason', 'type': 'str'},
         'message': {'key': 'message', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(
+        self,
+        **kwargs
+    ):
         super(ServicesNameAvailabilityInfo, self).__init__(**kwargs)
         self.name_available = None
         self.reason = None
         self.message = kwargs.get('message', None)
 
 
-class ServicesPatchDescription(Model):
+class ServicesPatchDescription(msrest.serialization.Model):
     """The description of the service.
 
-    :param tags: Instance tags
+    :param tags: A set of tags. Instance tags.
     :type tags: dict[str, str]
-    :param public_network_access: Control permission for data plane traffic
-     coming from public networks while private endpoint is enabled. Possible
-     values include: 'Enabled', 'Disabled'
+    :param public_network_access: Control permission for data plane traffic coming from public
+     networks while private endpoint is enabled. Possible values include: "Enabled", "Disabled".
     :type public_network_access: str or
-     ~azure.mgmt.healthcareapis.models.PublicNetworkAccess
+     ~healthcare_apis_management_client.models.PublicNetworkAccess
     """
 
     _attribute_map = {
@@ -827,162 +801,10 @@ class ServicesPatchDescription(Model):
         'public_network_access': {'key': 'properties.publicNetworkAccess', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
+    def __init__(
+        self,
+        **kwargs
+    ):
         super(ServicesPatchDescription, self).__init__(**kwargs)
         self.tags = kwargs.get('tags', None)
         self.public_network_access = kwargs.get('public_network_access', None)
-
-
-class ServicesProperties(Model):
-    """The properties of a service instance.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    :ivar provisioning_state: The provisioning state. Possible values include:
-     'Deleting', 'Succeeded', 'Creating', 'Accepted', 'Verifying', 'Updating',
-     'Failed', 'Canceled', 'Deprovisioned'
-    :vartype provisioning_state: str or
-     ~azure.mgmt.healthcareapis.models.ProvisioningState
-    :param access_policies: The access policies of the service instance.
-    :type access_policies:
-     list[~azure.mgmt.healthcareapis.models.ServiceAccessPolicyEntry]
-    :param cosmos_db_configuration: The settings for the Cosmos DB database
-     backing the service.
-    :type cosmos_db_configuration:
-     ~azure.mgmt.healthcareapis.models.ServiceCosmosDbConfigurationInfo
-    :param authentication_configuration: The authentication configuration for
-     the service instance.
-    :type authentication_configuration:
-     ~azure.mgmt.healthcareapis.models.ServiceAuthenticationConfigurationInfo
-    :param cors_configuration: The settings for the CORS configuration of the
-     service instance.
-    :type cors_configuration:
-     ~azure.mgmt.healthcareapis.models.ServiceCorsConfigurationInfo
-    :param export_configuration: The settings for the export operation of the
-     service instance.
-    :type export_configuration:
-     ~azure.mgmt.healthcareapis.models.ServiceExportConfigurationInfo
-    :param acr_configuration: The azure container registry settings used for
-     convert data operation of the service instance.
-    :type acr_configuration:
-     ~azure.mgmt.healthcareapis.models.ServiceAcrConfigurationInfo
-    :param private_endpoint_connections: The list of private endpoint
-     connections that are set up for this resource.
-    :type private_endpoint_connections:
-     list[~azure.mgmt.healthcareapis.models.PrivateEndpointConnection]
-    :param public_network_access: Control permission for data plane traffic
-     coming from public networks while private endpoint is enabled. Possible
-     values include: 'Enabled', 'Disabled'
-    :type public_network_access: str or
-     ~azure.mgmt.healthcareapis.models.PublicNetworkAccess
-    """
-
-    _validation = {
-        'provisioning_state': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'access_policies': {'key': 'accessPolicies', 'type': '[ServiceAccessPolicyEntry]'},
-        'cosmos_db_configuration': {'key': 'cosmosDbConfiguration', 'type': 'ServiceCosmosDbConfigurationInfo'},
-        'authentication_configuration': {'key': 'authenticationConfiguration', 'type': 'ServiceAuthenticationConfigurationInfo'},
-        'cors_configuration': {'key': 'corsConfiguration', 'type': 'ServiceCorsConfigurationInfo'},
-        'export_configuration': {'key': 'exportConfiguration', 'type': 'ServiceExportConfigurationInfo'},
-        'acr_configuration': {'key': 'acrConfiguration', 'type': 'ServiceAcrConfigurationInfo'},
-        'private_endpoint_connections': {'key': 'privateEndpointConnections', 'type': '[PrivateEndpointConnection]'},
-        'public_network_access': {'key': 'publicNetworkAccess', 'type': 'str'},
-    }
-
-    def __init__(self, **kwargs):
-        super(ServicesProperties, self).__init__(**kwargs)
-        self.provisioning_state = None
-        self.access_policies = kwargs.get('access_policies', None)
-        self.cosmos_db_configuration = kwargs.get('cosmos_db_configuration', None)
-        self.authentication_configuration = kwargs.get('authentication_configuration', None)
-        self.cors_configuration = kwargs.get('cors_configuration', None)
-        self.export_configuration = kwargs.get('export_configuration', None)
-        self.acr_configuration = kwargs.get('acr_configuration', None)
-        self.private_endpoint_connections = kwargs.get('private_endpoint_connections', None)
-        self.public_network_access = kwargs.get('public_network_access', None)
-
-
-class ServicesResourceIdentity(Model):
-    """Setting indicating whether the service has a managed identity associated
-    with it.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    :ivar principal_id: The principal ID of the resource identity.
-    :vartype principal_id: str
-    :ivar tenant_id: The tenant ID of the resource.
-    :vartype tenant_id: str
-    :param type: Type of identity being specified, currently SystemAssigned
-     and None are allowed. Possible values include: 'SystemAssigned', 'None'
-    :type type: str or
-     ~azure.mgmt.healthcareapis.models.ManagedServiceIdentityType
-    """
-
-    _validation = {
-        'principal_id': {'readonly': True},
-        'tenant_id': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'principal_id': {'key': 'principalId', 'type': 'str'},
-        'tenant_id': {'key': 'tenantId', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-    }
-
-    def __init__(self, **kwargs):
-        super(ServicesResourceIdentity, self).__init__(**kwargs)
-        self.principal_id = None
-        self.tenant_id = None
-        self.type = kwargs.get('type', None)
-
-
-class TrackedResource(Resource):
-    """Tracked Resource.
-
-    The resource model definition for an Azure Resource Manager tracked top
-    level resource which has 'tags' and a 'location'.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
-    :vartype id: str
-    :ivar name: The name of the resource
-    :vartype name: str
-    :ivar type: The type of the resource. E.g.
-     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
-    :vartype type: str
-    :param tags: Resource tags.
-    :type tags: dict[str, str]
-    :param location: Required. The geo-location where the resource lives
-    :type location: str
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'location': {'required': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'location': {'key': 'location', 'type': 'str'},
-    }
-
-    def __init__(self, **kwargs):
-        super(TrackedResource, self).__init__(**kwargs)
-        self.tags = kwargs.get('tags', None)
-        self.location = kwargs.get('location', None)

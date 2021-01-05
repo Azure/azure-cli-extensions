@@ -6,5 +6,5 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._healthcare_apis_management_client_async import HealthcareApisManagementClient
+from ._healthcare_apis_management_client import HealthcareApisManagementClient
 __all__ = ['HealthcareApisManagementClient']

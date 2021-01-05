@@ -42,22 +42,32 @@ def healthcareapis_service_create(client,
                                   public_network_access=None,
                                   export_configuration_storage_account_name=None,
                                   no_wait=False):
+
+    properties = {
+        'access_policies': access_policies,
+        'cosmos_db_configuration': cosmos_db_configuration,
+        'authentication_configuration': authentication_configuration,
+        'cors_configuration': cors_configuration,
+        'private_endpoint_connections': private_endpoint_connections,
+        'public_network_access': public_network_access,
+        'export_configuration_storage_account_name': export_configuration_storage_account_name
+    }
+
+    service_description = {
+        'name': resource_name,
+        'kind': kind,
+        'location': location,
+        'tags': tags,
+        'etag': etag,
+        'identity_type': identity_type,
+        'properties': properties
+    }
+
     return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
+                       client.create_or_update,
                        resource_group_name=resource_group_name,
                        resource_name=resource_name,
-                       kind=kind,
-                       location=location,
-                       tags=tags,
-                       etag=etag,
-                       type=identity_type,
-                       access_policies=access_policies,
-                       cosmos_db_configuration=cosmos_db_configuration,
-                       authentication_configuration=authentication_configuration,
-                       cors_configuration=cors_configuration,
-                       private_endpoint_connections=private_endpoint_connections,
-                       public_network_access=public_network_access,
-                       storage_account_name=export_configuration_storage_account_name)
+                       service_description=service_description)
 
 
 def healthcareapis_service_update(client,
@@ -66,8 +76,9 @@ def healthcareapis_service_update(client,
                                   tags=None,
                                   public_network_access=None,
                                   no_wait=False):
+
     return sdk_no_wait(no_wait,
-                       client.begin_update,
+                       client.update,
                        resource_group_name=resource_group_name,
                        resource_name=resource_name,
                        tags=tags,
@@ -79,7 +90,7 @@ def healthcareapis_service_delete(client,
                                   resource_name,
                                   no_wait=False):
     return sdk_no_wait(no_wait,
-                       client.begin_delete,
+                       client.delete,
                        resource_group_name=resource_group_name,
                        resource_name=resource_name)
 
@@ -169,3 +180,71 @@ def healthcareapis_private_link_resource_show(client,
     return client.get(resource_group_name=resource_group_name,
                       resource_name=resource_name,
                       group_name=group_name)
+
+
+def healthcareapis_acr_list(client,
+                            resource_group_name,
+                            resource_name):
+    return client.get(resource_group_name=resource_group_name,
+                      resource_name=resource_name).properties.acr_configuration
+
+
+def healthcareapis_acr_add(client,
+                           resource_group_name,
+                           resource_name,
+                           login_servers=None,
+                           no_wait=False):
+    service_description = client.get(resource_group_name=resource_group_name,
+                                     resource_name=resource_name)
+    if not login_servers:
+        return service_description
+
+    new_login_servers = service_description.properties.acr_configuration.login_servers
+    for login_server in login_servers.split():
+        if login_server not in new_login_servers:
+            new_login_servers.append(login_server)
+
+    return sdk_no_wait(no_wait,
+                       client.create_or_update,
+                       resource_group_name=resource_group_name,
+                       resource_name=resource_name,
+                       service_description=service_description)
+
+
+def healthcareapis_acr_remove(client,
+                              resource_group_name,
+                              resource_name,
+                              login_servers=None,
+                              no_wait=False):
+    service_description = client.get(resource_group_name=resource_group_name,
+                                     resource_name=resource_name)
+    if not login_servers:
+        return service_description
+
+    new_login_servers = service_description.properties.acr_configuration.login_servers
+    for login_server in login_servers.split():
+        if login_server in new_login_servers:
+            new_login_servers.remove(login_server)
+
+    return sdk_no_wait(no_wait,
+                       client.create_or_update,
+                       resource_group_name=resource_group_name,
+                       resource_name=resource_name,
+                       service_description=service_description)
+
+
+def healthcareapis_acr_reset(client,
+                             resource_group_name,
+                             resource_name,
+                             login_servers=None,
+                             no_wait=False):
+    service_description = client.get(resource_group_name=resource_group_name,
+                                     resource_name=resource_name)
+    login_servers = login_servers.split() if login_servers else []
+    service_description.properties.acr_configuration.login_servers = login_servers
+
+    return sdk_no_wait(no_wait,
+                       client.create_or_update,
+                       resource_group_name=resource_group_name,
+                       resource_name=resource_name,
+                       service_description=service_description)

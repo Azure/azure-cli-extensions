@@ -246,3 +246,66 @@ helps['healthcareapis private-link-resource show'] = """
                az healthcareapis private-link-resource show --group-name "fhir" --resource-group "rgname" \
 --resource-name "service1"
 """
+
+helps['healthcareapis acr'] = """
+    type: group
+    short-summary: healthcareapis acr
+"""
+
+helps['healthcareapis acr list'] = """
+    type: command
+    short-summary: "Lists all container registries associated with the service."
+    examples:
+      - name: Acr_List
+        text: |-
+               az healthcareapis acr list --resource-group "rgname" --resource-name "service1"
+"""
+
+helps['healthcareapis acr add'] = """
+    type: command
+    short-summary: "Add a list of registries to the service, repeated ones will be ignored."
+    examples:
+      - name: Acr_Add
+        text: |-
+               az healthcareapis acr add --login-servers "test1.azurecr.io test2.azurecr.io test3.azurecr.io" --resource-group "rgname" \
+--resource-name "service1"
+"""
+
+helps['healthcareapis acr remove'] = """
+    type: command
+    short-summary: "Remove a list of registries from the service, non-existing ones will be ignored."
+    examples:
+      - name: Acr_Remove
+        text: |-
+               az healthcareapis acr remove --login-servers "test1.azurecr.io test2.azurecr.io"  --resource-group "rgname" \
+--resource-name "service1"
+"""
+
+helps['healthcareapis acr reset'] = """
+    type: command
+    short-summary: "Reset the container registries associated with the service to a new list."
+    examples:
+      - name: Acr_Reset
+        text: |-
+               az healthcareapis acr reset --login-servers "test1.azurecr.io" --resource-group "rgname" \
+--resource-name "service1"
+      - name: Acr_Reset_To_Empty
+        text: |-
+               az healthcareapis acr reset --resource-group "rgname" \
+--resource-name "service1"
+"""
+
+helps['healthcareapis acr wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the healthcareapis acr is met.
+    examples:
+      - name: Pause executing next line of CLI script until the healthcareapis service is successfully created.
+        text: |-
+               az healthcareapis acr wait --resource-group "rg1" --resource-name "service1" --created
+      - name: Pause executing next line of CLI script until the healthcareapis service is successfully updated.
+        text: |-
+               az healthcareapis acr wait --resource-group "rg1" --resource-name "service1" --updated
+      - name: Pause executing next line of CLI script until the healthcareapis service is successfully deleted.
+        text: |-
+               az healthcareapis acr wait --resource-group "rg1" --resource-name "service1" --deleted
+"""
