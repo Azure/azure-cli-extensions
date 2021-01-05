@@ -14,7 +14,7 @@ from .. import try_manual
 
 # EXAMPLE: /CustomRollouts/put/CustomRollouts_CreateOrUpdate
 @try_manual
-def step_custom_rollout_create(test, rg, checks=None):
+def step_custom_rollout_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub custom-rollout create '
@@ -27,7 +27,7 @@ def step_custom_rollout_create(test, rg, checks=None):
 
 # EXAMPLE: /CustomRollouts/get/CustomRollouts_Get
 @try_manual
-def step_custom_rollout_show(test, rg, checks=None):
+def step_custom_rollout_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub custom-rollout show '
@@ -38,7 +38,7 @@ def step_custom_rollout_show(test, rg, checks=None):
 
 # EXAMPLE: /CustomRollouts/get/CustomRollouts_ListByProviderRegistration
 @try_manual
-def step_custom_rollout_list(test, rg, checks=None):
+def step_custom_rollout_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub custom-rollout list '
@@ -48,7 +48,7 @@ def step_custom_rollout_list(test, rg, checks=None):
 
 # EXAMPLE: /DefaultRollouts/put/DefaultRollouts_CreateOrUpdate
 @try_manual
-def step_default_rollout_create(test, rg, checks=None):
+def step_default_rollout_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub default-rollout create '
@@ -61,7 +61,7 @@ def step_default_rollout_create(test, rg, checks=None):
 
 # EXAMPLE: /DefaultRollouts/get/DefaultRollouts_Get
 @try_manual
-def step_default_rollout_show(test, rg, checks=None):
+def step_default_rollout_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub default-rollout show '
@@ -72,7 +72,7 @@ def step_default_rollout_show(test, rg, checks=None):
 
 # EXAMPLE: /DefaultRollouts/get/DefaultRollouts_ListByProviderRegistration
 @try_manual
-def step_default_rollout_list(test, rg, checks=None):
+def step_default_rollout_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub default-rollout list '
@@ -82,7 +82,7 @@ def step_default_rollout_list(test, rg, checks=None):
 
 # EXAMPLE: /DefaultRollouts/post/DefaultRollouts_Stop
 @try_manual
-def step_default_rollout_stop(test, rg, checks=None):
+def step_default_rollout_stop(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub default-rollout stop '
@@ -93,7 +93,7 @@ def step_default_rollout_stop(test, rg, checks=None):
 
 # EXAMPLE: /DefaultRollouts/delete/DefaultRollouts_Delete
 @try_manual
-def step_default_rollout_delete(test, rg, checks=None):
+def step_default_rollout_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub default-rollout delete -y '
@@ -104,7 +104,7 @@ def step_default_rollout_delete(test, rg, checks=None):
 
 # EXAMPLE: /Operations/get/Operations_ListByProviderRegistration
 @try_manual
-def step_operation_list(test, rg, checks=None):
+def step_operation_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub operation list '
@@ -114,7 +114,7 @@ def step_operation_list(test, rg, checks=None):
 
 # EXAMPLE: /Operations/delete/Operations_Delete
 @try_manual
-def step_operation_delete(test, rg, checks=None):
+def step_operation_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub operation delete -y '
@@ -124,7 +124,7 @@ def step_operation_delete(test, rg, checks=None):
 
 # EXAMPLE: /providerhub/post/CheckinManifest
 @try_manual
-def step_checkin_manifest(test, rg, checks=None):
+def step_checkin_manifest(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub checkin-manifest '
@@ -136,7 +136,7 @@ def step_checkin_manifest(test, rg, checks=None):
 
 # EXAMPLE: /providerhub/post/GenerateManifest
 @try_manual
-def step_generate_manifest(test, rg, checks=None):
+def step_generate_manifest(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub generate-manifest '
@@ -146,13 +146,16 @@ def step_generate_manifest(test, rg, checks=None):
 
 # EXAMPLE: /ProviderRegistrations/put/ProviderRegistrations_CreateOrUpdate
 @try_manual
-def step_provider_registration_create(test, rg, checks=None):
+def step_provider_registration_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub provider-registration create '
-             '--provider-authorizations application-id="3d834152-5efa-46f7-85a4-a18c2b5d46f9" role-definition-id="760505bf-dcfa-4311-b890-18da392a00b2" '
+             '--provider-authorizations '
+             'application-id="3d834152-5efa-46f7-85a4-a18c2b5d46f9" '
+             'role-definition-id="760505bf-dcfa-4311-b890-18da392a00b2" '
              '--namespace "{providerNamespace}" '
-             '--service-tree-infos service-id="6f53185c-ea09-4fc3-9075-318dec805303" component-id="6f53185c-ea09-4fc3-9075-318dec805303" '
+             '--service-tree-infos service-id="6f53185c-ea09-4fc3-9075-318dec805303" '
+             'component-id="6f53185c-ea09-4fc3-9075-318dec805303" '
              '--capabilities effect="Allow" quota-id="CSP_2015-05-01" '
              '--capabilities effect="Allow" quota-id="CSP_MG_2017-12-01" '
              '--incident-contact-email "helpme@contoso.com" '
@@ -166,7 +169,7 @@ def step_provider_registration_create(test, rg, checks=None):
 
 # EXAMPLE: /ProviderRegistrations/get/ProviderRegistrations_Get
 @try_manual
-def step_provider_registration_show(test, rg, checks=None):
+def step_provider_registration_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub provider-registration show '
@@ -176,7 +179,7 @@ def step_provider_registration_show(test, rg, checks=None):
 
 # EXAMPLE: /ProviderRegistrations/get/ProviderRegistrations_List
 @try_manual
-def step_provider_registration_list(test, rg, checks=None):
+def step_provider_registration_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub provider-registration list '
@@ -186,7 +189,7 @@ def step_provider_registration_list(test, rg, checks=None):
 
 # EXAMPLE: /ProviderRegistrations/post/ProviderRegistrations_GenerateOperations
 @try_manual
-def step_provider_registration_generate_operation(test, rg, checks=None):
+def step_provider_registration_generate_operation(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub provider-registration generate-operation '
@@ -196,7 +199,7 @@ def step_provider_registration_generate_operation(test, rg, checks=None):
 
 # EXAMPLE: /ProviderRegistrations/delete/ProviderRegistrations_Delete
 @try_manual
-def step_provider_registration_delete(test, rg, checks=None):
+def step_provider_registration_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub provider-registration delete -y '
@@ -206,26 +209,31 @@ def step_provider_registration_delete(test, rg, checks=None):
 
 # EXAMPLE: /ResourceTypeRegistration/put/ResourceTypeRegistration_CreateOrUpdate
 @try_manual
-def step_resource_type_registration_create(test, rg, checks=None):
+def step_resource_type_registration_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub resource-type-registration create '
              '--endpoints api-versions="2018-11-01-preview,2020-01-01-preview,2019-01-01" '
-             'locations="West US, West Central US,West Europe,Southeast Asia, West US 2,East US 2 EUAP,North Europe" '
+             'locations="West US, West Central US,West Europe,Southeast Asia, West US 2,'
+             'East US 2 EUAP,North Europe" '
              'required-features="Microsoft.Contoso/RPaaSSampleApp" '
              '--regionality "Regional" '
              '--routing-type "Default" '
-             '--swagger-specifications api-versions="2018-11-01-preview,2020-01-01-preview,2019-01-01" swagger-spec-folder-uri="https://github.com/Azure/azure-rest-api-specs-pr/blob/RPSaaSMaster/specification/rpsaas/resource-manager/Microsoft.Contoso/" '
+             '--swagger-specifications api-versions="2018-11-01-preview,'
+             '2020-01-01-preview,2019-01-01" swagger-spec-folder-uri="https://github.com/'
+             'Azure/azure-rest-api-specs-pr/blob/RPSaaSMaster/specification/rpsaas/'
+             'resource-manager/Microsoft.Contoso/" '
              '--provider-namespace "{providerNamespace}" '
              '--enable-async-operation true '
-             '--resource-move-policy validation-required=false cross-resource-group-move-enabled=true cross-subscription-move-enabled=true '
+             '--resource-move-policy validation-required=false '
+             'cross-resource-group-move-enabled=true cross-subscription-move-enabled=true '
              '--resource-type "{resourceType}"',
              checks=checks)
 
 
 # EXAMPLE: /ResourceTypeRegistration/delete/ResourceTypeRegistration_Delete
 @try_manual
-def step_resource_type_registration_delete(test, rg, checks=None):
+def step_resource_type_registration_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub resource-type-registration delete -y '
@@ -236,7 +244,7 @@ def step_resource_type_registration_delete(test, rg, checks=None):
 
 # EXAMPLE: /ResourceTypeRegistrations/get/ResourceTypeRegistrations_Get
 @try_manual
-def step_resource_type_registration_show(test, rg, checks=None):
+def step_resource_type_registration_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub resource-type-registration show '
@@ -247,7 +255,7 @@ def step_resource_type_registration_show(test, rg, checks=None):
 
 # EXAMPLE: /ResourceTypeRegistrations/get/ResourceTypeRegistrations_ListByProviderRegistration
 @try_manual
-def step_resource_type_registration_list(test, rg, checks=None):
+def step_resource_type_registration_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub resource-type-registration list '

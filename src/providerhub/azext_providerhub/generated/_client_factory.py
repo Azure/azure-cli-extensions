@@ -8,10 +8,11 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azext_providerhub.vendored_sdks.providerhub import Providerhub
+
 
 def cf_providerhub_cl(cli_ctx, *_):
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azext_providerhub.vendored_sdks.providerhub import Providerhub
     return get_mgmt_service_client(cli_ctx,
                                    Providerhub)
 

@@ -13,10 +13,6 @@
 
 from azure.cli.core.util import sdk_no_wait
 
-"""
-[_object_id_args_helper(cmd.cli_ctx, spn=x) for x in owner_spn.split(',') if owner_spn]
-"""
-
 
 def providerhub_custom_rollout_list(client, provider_namespace):
     return client.list_by_provider_registration(provider_namespace=provider_namespace)
@@ -274,7 +270,7 @@ def providerhub_resource_type_registration_show(
     )
 
 
-def providerhub_resource_type_registration_create(
+def providerhub_resource_type_registration_create(  # pylint: disable=too-many-locals
     client,
     provider_namespace,
     resource_type,
@@ -345,7 +341,7 @@ def providerhub_resource_type_registration_create(
     )
 
 
-def providerhub_resource_type_registration_update(
+def providerhub_resource_type_registration_update(  # pylint: disable=too-many-locals
     client,
     provider_namespace,
     resource_type,

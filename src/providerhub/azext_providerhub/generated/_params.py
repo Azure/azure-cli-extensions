@@ -28,7 +28,6 @@ from azext_providerhub.action import (
     AddSubscriptionStateOverrideActions,
     AddProviderHubMetadataProviderAuthorizations,
     AddAuthorizations,
-    AddDisplay,
     AddSwaggerSpecifications,
     AddAuthorizationActionMappings,
     AddLinkedAccessChecks,
@@ -79,14 +78,16 @@ def load_arguments(self, _):
         c.argument('provider_namespace', type=str,
                    help='The name of the resource provider hosted within ProviderHub.')
         c.argument('rollout_name', type=str, help='The rollout name.')
-        c.argument('row_two_wait_duration', type=str, help='The wait duration before the rollout begins in rest of the world two.')
+        c.argument('row_two_wait_duration', type=str, help='The wait duration before the rollout '
+                   'begins in rest of the world two.')
         c.argument('skip_regions', action=AddSkipRegions, nargs='+', help='The canary regions to skip.')
 
     with self.argument_context('providerhub default-rollout update') as c:
         c.argument('provider_namespace', type=str,
                    help='The name of the resource provider hosted within ProviderHub.')
         c.argument('rollout_name', type=str, help='The rollout name.')
-        c.argument('row_two_wait_duration', type=str, help='The wait duration before the rollout begins in rest of the world two.')
+        c.argument('row_two_wait_duration', type=str, help='The wait duration before the rollout begins '
+                   'in rest of the world two.')
         c.argument('skip_regions', action=AddSkipRegions, nargs='+', help='The canary regions to skip.')
 
     with self.argument_context('providerhub default-rollout delete') as c:
@@ -247,11 +248,12 @@ def load_arguments(self, _):
         c.argument('provider_namespace', type=str,
                    help='The name of the resource provider hosted within ProviderHub.')
         c.argument('resource_type', type=str, help='The resource type.')
-        c.argument('routing_type', arg_type=get_enum_type(['Default', 'ProxyOnly', 'HostBased', 'Extension', 'Tenant',
-                                                           'Fanout', 'LocationBased', 'Failover', 'CascadeExtension']),
-                   help='')
+        c.argument('routing_type', arg_type=get_enum_type(['Default', 'ProxyOnly', 'HostBased', 'Extension',
+                                                           'Tenant', 'Fanout', 'LocationBased', 'Failover',
+                                                           'CascadeExtension']), help='')
         c.argument('regionality', arg_type=get_enum_type(['NotSpecified', 'Global', 'Regional']), help='')
-        c.argument('endpoints', action=AddResourceTypeEndpointProperties, nargs='+', help='The resource type endpoint properties.')
+        c.argument('endpoints', action=AddResourceTypeEndpointProperties, nargs='+', help='The resource '
+                   'type endpoint properties.')
         c.argument('marketplace_type', arg_type=get_enum_type(['NotSpecified', 'AddOn', 'Bypass', 'Store']), help='')
         c.argument('swagger_specifications', action=AddSwaggerSpecifications, nargs='+', help='')
         c.argument('allowed_unauthorized_actions', nargs='+', help='')

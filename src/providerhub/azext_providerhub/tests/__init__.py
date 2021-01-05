@@ -14,6 +14,7 @@ import os
 import sys
 import traceback
 import datetime as dt
+from importlib import import_module
 
 from azure.core.exceptions import AzureError
 from azure.cli.testsdk.exceptions import CliTestError, CliExecutionError, JMESPathCheckAssertionError
@@ -30,7 +31,6 @@ FAILED = "failed"
 
 def try_manual(func):
     def import_manual_function(origin_func):
-        from importlib import import_module
         decorated_path = inspect.getfile(origin_func).lower()
         module_path = __path__[0].lower()
         if not decorated_path.startswith(module_path):
@@ -70,7 +70,8 @@ def try_manual(func):
                 raise
             test_map[func.__name__]["end_dt"] = dt.datetime.utcnow()
             test_map[func.__name__]["result"] = FAILED
-            test_map[func.__name__]["error_message"] = str(e).replace("\r\n", " ").replace("\n", " ")[:500]
+            test_map[func.__name__]["error_message"] = str(
+                e).replace("\r\n", " ").replace("\n", " ")[:500]
             test_map[func.__name__]["error_stack"] = traceback.format_exc().replace(
                 "\r\n", " ").replace("\n", " ")[:500]
             logger.info("--------------------------------------")
@@ -92,7 +93,8 @@ def calc_coverage(filename):
     filename = filename.split(".")[0]
     coverage_name = filename + "_coverage.md"
     with open(coverage_name, "w") as f:
-        f.write("|Scenario|Result|ErrorMessage|ErrorStack|ErrorNormalized|StartDt|EndDt|\n")
+        f.write(
+            "|Scenario|Result|ErrorMessage|ErrorStack|ErrorNormalized|StartDt|EndDt|\n")
         total = len(test_map)
         covered = 0
         for k, v in test_map.items():
@@ -111,6 +113,8 @@ def raise_if():
     if exceptions:
         if len(exceptions) <= 1:
             raise exceptions[0][1][1]
-        message = "{}\nFollowed with exceptions in other steps:\n".format(str(exceptions[0][1][1]))
-        message += "\n".join(["{}: {}".format(h[0], h[1][1]) for h in exceptions[1:]])
+        message = "{}\nFollowed with exceptions in other steps:\n".format(
+            str(exceptions[0][1][1]))
+        message += "\n".join(["{}: {}".format(h[0], h[1][1])
+                              for h in exceptions[1:]])
         raise exceptions[0][1][0](message).with_traceback(exceptions[0][1][2])

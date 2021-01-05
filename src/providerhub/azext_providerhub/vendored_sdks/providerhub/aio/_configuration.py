@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 
 VERSION = "unknown"
 
+
 class ProviderhubConfiguration(Configuration):
     """Configuration for Providerhub.
 

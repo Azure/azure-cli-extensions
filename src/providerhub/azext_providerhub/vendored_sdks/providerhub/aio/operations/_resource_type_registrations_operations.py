@@ -7,17 +7,17 @@
 # --------------------------------------------------------------------------
 from typing import Any, AsyncIterable, Callable, Dict, Generic, Optional, TypeVar
 import warnings
-
 from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core.exceptions import ARMErrorFormat
-
 from ... import models
 
 T = TypeVar('T')
-ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
+ClsType = Optional[Callable[[PipelineResponse[HttpRequest,
+                                              AsyncHttpResponse], T, Dict[str, Any]], Any]]
+
 
 class ResourceTypeRegistrationsOperations:
     """ResourceTypeRegistrationsOperations async operations.
@@ -58,7 +58,8 @@ class ResourceTypeRegistrationsOperations:
         :rtype: ~providerhub.models.ResourceTypeRegistration
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceTypeRegistration"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["models.ResourceTypeRegistration"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -77,22 +78,27 @@ class ResourceTypeRegistrationsOperations:
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header(
+            "accept", accept, 'str')
 
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(
+                response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('ResourceTypeRegistration', pipeline_response)
+        deserialized = self._deserialize(
+            'ResourceTypeRegistration', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -114,7 +120,8 @@ class ResourceTypeRegistrationsOperations:
         :rtype: ~azure.core.async_paging.AsyncItemPaged[~providerhub.models.ResourceTypeRegistrationArrayResponseWithContinuation]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceTypeRegistrationArrayResponseWithContinuation"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["models.ResourceTypeRegistrationArrayResponseWithContinuation"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -125,11 +132,13 @@ class ResourceTypeRegistrationsOperations:
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+            header_parameters['Accept'] = self._serialize.header(
+                "accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
-                url = self.list_by_provider_registration.metadata['url']  # type: ignore
+                # type: ignore
+                url = self.list_by_provider_registration.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
@@ -137,17 +146,21 @@ class ResourceTypeRegistrationsOperations:
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query(
+                    "api_version", api_version, 'str')
 
-                request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(
+                    url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(
+                    url, query_parameters, header_parameters)
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize('ResourceTypeRegistrationArrayResponseWithContinuation', pipeline_response)
+            deserialized = self._deserialize(
+                'ResourceTypeRegistrationArrayResponseWithContinuation', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -161,12 +174,15 @@ class ResourceTypeRegistrationsOperations:
 
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+                map_error(status_code=response.status_code,
+                          response=response, error_map=error_map)
+                raise HttpResponseError(
+                    response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list_by_provider_registration.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations'}  # type: ignore
+    list_by_provider_registration.metadata = {
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations'}  # type: ignore

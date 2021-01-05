@@ -6,6 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from typing import TYPE_CHECKING
+import datetime
 import warnings
 
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
@@ -15,15 +16,17 @@ from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.core.polling import LROPoller, NoPolling, PollingMethod
 from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.arm_polling import ARMPolling
-
+from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar, Union
 from .. import models
+
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Iterable, Optional, TypeVar
 
     T = TypeVar('T')
-    ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+    ClsType = Optional[Callable[[
+        PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+
 
 class ResourceTypeRegistrationsOperations(object):
     """ResourceTypeRegistrationsOperations operations.
@@ -65,7 +68,8 @@ class ResourceTypeRegistrationsOperations(object):
         :rtype: ~providerhub.models.ResourceTypeRegistration
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceTypeRegistration"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["models.ResourceTypeRegistration"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -84,22 +88,28 @@ class ResourceTypeRegistrationsOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header(
+            "accept", accept, 'str')
 
         request = self._client.get(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(
+                response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('ResourceTypeRegistration', pipeline_response)
+        deserialized = self._deserialize(
+            'ResourceTypeRegistration', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -111,40 +121,44 @@ class ResourceTypeRegistrationsOperations(object):
         self,
         provider_namespace,  # type: str
         resource_type,  # type: str
-        routing_type, # type:
-        regionality, # type:
-        endpoints, # type:
-        marketplace_type, # type:
-        swagger_specifications, # type:
-        allowed_unauthorized_actions, # type:
-        authorization_action_mappings, # type:
-        linked_access_checks, # type:
-        default_api_version, # type:
-        logging_rules, # type:
-        throttling_rules, # type:
-        required_features, # type:
-        enable_async_operation, # type:
-        provisioning_state, # type:
-        enable_third_party_s2_s, # type:
-        is_pure_proxy, # type:
-        identity_management, # type:
-        check_name_availability_specifications, # type:
-        disallowed_action_verbs, # type:
-        service_tree_infos, # type:
-        subscription_state_rules, # type:
-        template_deployment_options, # type:
-        extended_locations, # type:
-        resource_move_policy, # type:
-        resource_deletion_policy, # type:
-        opt_in_headers, # type:
-        subscription_state_override_actions, # type:
-        soft_delete_ttl, # type:
-        required_features_policy, # type:
-        resource_creation_begin, # type:
+        routing_type,  # type: "models.RoutingType"
+        regionality,  # type: "models.Regionality"
+        endpoints,  # type: list["models.ResourceTypeEndpoint"]
+        marketplace_type,  # type: "models.ResourceTypeRegistrationPropertiesMarketplaceType"
+        swagger_specifications,  # type: list["models.SwaggerSpecification"]
+        allowed_unauthorized_actions,  # type: list[str]
+        # type: list["models.AuthorizationActionMapping"]
+        authorization_action_mappings,
+        linked_access_checks,  # type: list["models.LinkedAccessCheck"]
+        default_api_version,  # type: str
+        logging_rules,  # type: list["models.LoggingRule"]
+        throttling_rules,  # type: list["models.ThrottlingRule"]
+        required_features,  # type: list[str]
+        enable_async_operation,  # type: bool
+        provisioning_state,  # type: "models.ProvisioningState"
+        enable_third_party_s2_s,  # type: bool
+        is_pure_proxy,  # type: bool
+        identity_management,  # type: "models.IdentityManagementProperties"
+        # type: "models.CheckNameAvailabilitySpecifications"
+        check_name_availability_specifications,
+        disallowed_action_verbs,  # type: list[str]
+        service_tree_infos,  # type: list["models.ServiceTreeInfo"]
+        subscription_state_rules,  # type: list["models.SubscriptionStateRule"]
+        template_deployment_options,  # type: "models.TemplateDeploymentOptions"
+        extended_locations,  # type: list["models.ExtendedLocationOptions"]
+        resource_move_policy,  # type: "models.ResourceMovePolicy"
+        resource_deletion_policy,  # type: "models.ResourceDeletionPolicy"
+        opt_in_headers,  # type: "models.OptInHeaderType"
+        # type: list["models.SubscriptionStateOverrideAction"]
+        subscription_state_override_actions,
+        soft_delete_ttl,  # type: ~datetime.timedelta
+        required_features_policy,  # type: "models.FeaturesPolicy"
+        resource_creation_begin,  # type: "models.ExtensionOptions"
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.ResourceTypeRegistration"
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceTypeRegistration"]
+        # type: ClsType["models.ResourceTypeRegistration"]
+        cls = kwargs.pop('cls', None)
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -164,79 +178,96 @@ class ResourceTypeRegistrationsOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+        header_parameters['Content-Type'] = self._serialize.header(
+            "content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header(
+            "accept", accept, 'str')
 
         extension_options = None
-        subscription_lifecycle_notification_specifications = models.ResourceTypeRegistrationPropertiesSubscriptionLifecycleNotificationSpecifications(subscription_state_override_actions=subscription_state_override_actions, soft_delete_ttl=soft_delete_ttl) if subscription_state_override_actions or soft_delete_ttl else None
-        request_header_options = models.RequestHeaderOptions(opt_in_headers=opt_in_headers) if opt_in_headers else None
-        features_rule = models.FeaturesRule(required_features_policy=required_features_policy) if required_features_policy else None
-        properties = models.ResourceTypeRegistrationProperties(routing_type=routing_type, regionality=regionality, endpoints=endpoints, extension_options=extension_options, marketplace_type=marketplace_type, swagger_specifications=swagger_specifications, allowed_unauthorized_actions=allowed_unauthorized_actions, authorization_action_mappings=authorization_action_mappings, linked_access_checks=linked_access_checks, default_api_version=default_api_version, logging_rules=logging_rules, throttling_rules=throttling_rules, required_features=required_features, features_rule=features_rule, enable_async_operation=enable_async_operation, provisioning_state=provisioning_state, enable_third_party_s2_s=enable_third_party_s2_s, subscription_lifecycle_notification_specifications=subscription_lifecycle_notification_specifications, is_pure_proxy=is_pure_proxy, identity_management=identity_management, check_name_availability_specifications=check_name_availability_specifications, disallowed_action_verbs=disallowed_action_verbs, service_tree_infos=service_tree_infos, request_header_options=request_header_options, subscription_state_rules=subscription_state_rules, template_deployment_options=template_deployment_options, extended_locations=extended_locations, resource_move_policy=resource_move_policy, resource_deletion_policy=resource_deletion_policy)
+        subscription_lifecycle_notification_specifications = models.ResourceTypeRegistrationPropertiesSubscriptionLifecycleNotificationSpecifications(
+            subscription_state_override_actions=subscription_state_override_actions, soft_delete_ttl=soft_delete_ttl) if subscription_state_override_actions or soft_delete_ttl else None
+        request_header_options = models.RequestHeaderOptions(
+            opt_in_headers=opt_in_headers) if opt_in_headers else None
+        features_rule = models.FeaturesRule(
+            required_features_policy=required_features_policy) if required_features_policy else None
+        properties = models.ResourceTypeRegistrationProperties(routing_type=routing_type, regionality=regionality, endpoints=endpoints, extension_options=extension_options, marketplace_type=marketplace_type, swagger_specifications=swagger_specifications, allowed_unauthorized_actions=allowed_unauthorized_actions, authorization_action_mappings=authorization_action_mappings, linked_access_checks=linked_access_checks, default_api_version=default_api_version, logging_rules=logging_rules, throttling_rules=throttling_rules, required_features=required_features, features_rule=features_rule, enable_async_operation=enable_async_operation, provisioning_state=provisioning_state,
+                                                               enable_third_party_s2_s=enable_third_party_s2_s, subscription_lifecycle_notification_specifications=subscription_lifecycle_notification_specifications, is_pure_proxy=is_pure_proxy, identity_management=identity_management, check_name_availability_specifications=check_name_availability_specifications, disallowed_action_verbs=disallowed_action_verbs, service_tree_infos=service_tree_infos, request_header_options=request_header_options, subscription_state_rules=subscription_state_rules, template_deployment_options=template_deployment_options, extended_locations=extended_locations, resource_move_policy=resource_move_policy, resource_deletion_policy=resource_deletion_policy)
         params = models.ResourceTypeRegistration(properties=properties)
 
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(params, 'ResourceTypeRegistration')
 
         body_content_kwargs['content'] = body_content
-        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        request = self._client.put(
+            url, query_parameters, header_parameters, **body_content_kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(
+                response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
-            deserialized = self._deserialize('ResourceTypeRegistration', pipeline_response)
+            deserialized = self._deserialize(
+                'ResourceTypeRegistration', pipeline_response)
 
         if response.status_code == 201:
-            deserialized = self._deserialize('ResourceTypeRegistration', pipeline_response)
+            deserialized = self._deserialize(
+                'ResourceTypeRegistration', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}'}  # type: ignore
+    _create_or_update_initial.metadata = {
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}'}  # type: ignore
 
     def begin_create_or_update(
         self,
         provider_namespace,  # type: str
         resource_type,  # type: str
-        routing_type, # type:
-        regionality, # type:
-        endpoints, # type:
-        marketplace_type, # type:
-        swagger_specifications, # type:
-        allowed_unauthorized_actions, # type:
-        authorization_action_mappings, # type:
-        linked_access_checks, # type:
-        default_api_version, # type:
-        logging_rules, # type:
-        throttling_rules, # type:
-        required_features, # type:
-        enable_async_operation, # type:
-        provisioning_state, # type:
-        enable_third_party_s2_s, # type:
-        is_pure_proxy, # type:
-        identity_management, # type:
-        check_name_availability_specifications, # type:
-        disallowed_action_verbs, # type:
-        service_tree_infos, # type:
-        subscription_state_rules, # type:
-        template_deployment_options, # type:
-        extended_locations, # type:
-        resource_move_policy, # type:
-        resource_deletion_policy, # type:
-        opt_in_headers, # type:
-        subscription_state_override_actions, # type:
-        soft_delete_ttl, # type:
-        required_features_policy, # type:
-        resource_creation_begin, # type:
+        routing_type,  # type: "models.RoutingType"
+        regionality,  # type: "models.Regionality"
+        endpoints,  # type: list["models.ResourceTypeEndpoint"]
+        marketplace_type,  # type: "models.ResourceTypeRegistrationPropertiesMarketplaceType"
+        swagger_specifications,  # type: list["models.SwaggerSpecification"]
+        allowed_unauthorized_actions,  # type: list[str]
+        # type: list["models.AuthorizationActionMapping"]
+        authorization_action_mappings,
+        linked_access_checks,  # type: list["models.LinkedAccessCheck"]
+        default_api_version,  # type: str
+        logging_rules,  # type: list["models.LoggingRule"]
+        throttling_rules,  # type: list["models.ThrottlingRule"]
+        required_features,  # type: list[str]
+        enable_async_operation,  # type: bool
+        provisioning_state,  # type: "models.ProvisioningState"
+        enable_third_party_s2_s,  # type: bool
+        is_pure_proxy,  # type: bool
+        identity_management,  # type: "models.IdentityManagementProperties"
+        # type: "models.CheckNameAvailabilitySpecifications"
+        check_name_availability_specifications,
+        disallowed_action_verbs,  # type: list[str]
+        service_tree_infos,  # type: list["models.ServiceTreeInfo"]
+        subscription_state_rules,  # type: list["models.SubscriptionStateRule"]
+        template_deployment_options,  # type: "models.TemplateDeploymentOptions"
+        extended_locations,  # type: list["models.ExtendedLocationOptions"]
+        resource_move_policy,  # type: "models.ResourceMovePolicy"
+        resource_deletion_policy,  # type: "models.ResourceDeletionPolicy"
+        opt_in_headers,  # type: "models.OptInHeaderType"
+        # type: list["models.SubscriptionStateOverrideAction"]
+        subscription_state_override_actions,
+        soft_delete_ttl,  # type: ~datetime.timedelta
+        required_features_policy,  # type: "models.FeaturesPolicy"
+        resource_creation_begin,  # type: "models.ExtensionOptions"
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["models.ResourceTypeRegistration"]
@@ -258,13 +289,16 @@ class ResourceTypeRegistrationsOperations(object):
         :rtype: ~azure.core.polling.LROPoller[~providerhub.models.ResourceTypeRegistration]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceTypeRegistration"]
+        polling = kwargs.pop(
+            'polling', True)  # type: Union[bool, PollingMethod]
+        # type: ClsType["models.ResourceTypeRegistration"]
+        cls = kwargs.pop('cls', None)
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
         )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        cont_token = kwargs.pop('continuation_token',
+                                None)  # type: Optional[str]
         if cont_token is None:
             raw_result = self._create_or_update_initial(
                 provider_namespace=provider_namespace,
@@ -299,7 +333,7 @@ class ResourceTypeRegistrationsOperations(object):
                 soft_delete_ttl=soft_delete_ttl,
                 required_features_policy=required_features_policy,
                 resource_creation_begin=resource_creation_begin,
-                cls=lambda x,y,z: x,
+                cls=lambda x, y, z: x,
                 **kwargs
             )
 
@@ -307,7 +341,8 @@ class ResourceTypeRegistrationsOperations(object):
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('ResourceTypeRegistration', pipeline_response)
+            deserialized = self._deserialize(
+                'ResourceTypeRegistration', pipeline_response)
 
             if cls:
                 return cls(pipeline_response, deserialized, {})
@@ -319,9 +354,13 @@ class ResourceTypeRegistrationsOperations(object):
             'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
         }
 
-        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments,  **kwargs)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
+        if polling is True:
+            polling_method = ARMPolling(lro_delay, lro_options={
+                                        'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments, **kwargs)
+        elif polling is False:
+            polling_method = NoPolling()
+        else:
+            polling_method = polling
         if cont_token:
             return LROPoller.from_continuation_token(
                 polling_method=polling_method,
@@ -331,7 +370,8 @@ class ResourceTypeRegistrationsOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}'}  # type: ignore
+    begin_create_or_update.metadata = {
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}'}  # type: ignore
 
     def delete(
         self,
@@ -370,24 +410,30 @@ class ResourceTypeRegistrationsOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header(
+            "accept", accept, 'str')
 
         request = self._client.delete(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 204]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(
+                response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}'}  # type: ignore
+    delete.metadata = {
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}'}  # type: ignore
 
     def list_by_provider_registration(
         self,
@@ -404,7 +450,8 @@ class ResourceTypeRegistrationsOperations(object):
         :rtype: ~azure.core.paging.ItemPaged[~providerhub.models.ResourceTypeRegistrationArrayResponseWithContinuation]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceTypeRegistrationArrayResponseWithContinuation"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["models.ResourceTypeRegistrationArrayResponseWithContinuation"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -415,11 +462,13 @@ class ResourceTypeRegistrationsOperations(object):
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+            header_parameters['Accept'] = self._serialize.header(
+                "accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
-                url = self.list_by_provider_registration.metadata['url']  # type: ignore
+                # type: ignore
+                url = self.list_by_provider_registration.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
@@ -427,17 +476,21 @@ class ResourceTypeRegistrationsOperations(object):
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query(
+                    "api_version", api_version, 'str')
 
-                request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(
+                    url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(
+                    url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('ResourceTypeRegistrationArrayResponseWithContinuation', pipeline_response)
+            deserialized = self._deserialize(
+                'ResourceTypeRegistrationArrayResponseWithContinuation', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -446,17 +499,21 @@ class ResourceTypeRegistrationsOperations(object):
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            pipeline_response = self._client._pipeline.run(
+                request, stream=False, **kwargs)
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+                map_error(status_code=response.status_code,
+                          response=response, error_map=error_map)
+                raise HttpResponseError(
+                    response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_provider_registration.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations'}  # type: ignore
+    list_by_provider_registration.metadata = {
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations'}  # type: ignore

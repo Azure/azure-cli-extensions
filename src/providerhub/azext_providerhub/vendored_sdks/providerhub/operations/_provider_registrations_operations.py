@@ -6,6 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from typing import TYPE_CHECKING
+import datetime
 import warnings
 
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
@@ -15,15 +16,17 @@ from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.core.polling import LROPoller, NoPolling, PollingMethod
 from azure.mgmt.core.exceptions import ARMErrorFormat
 from azure.mgmt.core.polling.arm_polling import ARMPolling
-
+from typing import Any, Callable, Dict, Generic, Iterable, List, Optional, TypeVar, Union
 from .. import models
+
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, Iterable, List, Optional, TypeVar, Union
 
     T = TypeVar('T')
-    ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+    ClsType = Optional[Callable[[
+        PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+
 
 class ProviderRegistrationsOperations(object):
     """ProviderRegistrationsOperations operations.
@@ -62,7 +65,8 @@ class ProviderRegistrationsOperations(object):
         :rtype: ~providerhub.models.ProviderRegistration
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ProviderRegistration"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["models.ProviderRegistration"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -80,58 +84,68 @@ class ProviderRegistrationsOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header(
+            "accept", accept, 'str')
 
         request = self._client.get(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(
+                response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('ProviderRegistration', pipeline_response)
+        deserialized = self._deserialize(
+            'ProviderRegistration', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}'}  # type: ignore
+    # type: ignore
+    get.metadata = {
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}'}
 
     def _create_or_update_initial(
         self,
         provider_namespace,  # type: str
-        provider_authentication, # type: "models.ResourceProviderAuthentication"
-        provider_authorizations, # type: "models.ThirdPartyProviderAuthorization"
-        namespace, # type: str
-        provider_version, # type: str
-        provider_type, # type: str
-        required_features, # type: list[str]
-        capabilities, # type: list["models.ResourceProviderCapabilities"]
-        metadata, # type: obj
-        template_deployment_options, # type: "models.TemplateDeploymentOptions"
-        schema_owners, # type: list[str]
-        manifest_owners, # type: list[str]
-        incident_routing_service, # type: str
-        incident_routing_team, # type: str
-        incident_contact_email, # type: str
-        service_tree_infos, # type: list["models.ServiceTreeInfo"]
-        resource_access_policy, # type: "models.ResourceProviderManagementResourceAccessPolicy"
-        resource_access_roles, # type: list[object]
-        required_features_policy, # type: "models.FeaturesPolicy"
-        opt_in_headers, # type: "models.OptInHeaderType"
-        subscription_state_override_actions, # type: list["models.SubscriptionStateOverrideAction"]
-        soft_delete_ttl, # type: datetime.timedelta
-        managed_by_tenant_id, # type: str
+        provider_authentication,  # type: "models.ResourceProviderAuthentication"
+        provider_authorizations,  # type: "models.ThirdPartyProviderAuthorization"
+        namespace,  # type: str
+        provider_version,  # type: str
+        provider_type,  # type: str
+        required_features,  # type: list[str]
+        capabilities,  # type: list["models.ResourceProviderCapabilities"]
+        metadata,  # type: object
+        template_deployment_options,  # type: "models.TemplateDeploymentOptions"
+        schema_owners,  # type: list[str]
+        manifest_owners,  # type: list[str]
+        incident_routing_service,  # type: str
+        incident_routing_team,  # type: str
+        incident_contact_email,  # type: str
+        service_tree_infos,  # type: list["models.ServiceTreeInfo"]
+        resource_access_policy,  # type: "models.ResourceProviderManagementResourceAccessPolicy"
+        resource_access_roles,  # type: list[object]
+        required_features_policy,  # type: "models.FeaturesPolicy"
+        opt_in_headers,  # type: "models.OptInHeaderType"
+        # type: list["models.SubscriptionStateOverrideAction"]
+        subscription_state_override_actions,
+        soft_delete_ttl,  # type: datetime.timedelta
+        managed_by_tenant_id,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> Optional["models.ProviderRegistration"]
-        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.ProviderRegistration"]]
+        # type: ClsType[Optional["models.ProviderRegistration"]]
+        cls = kwargs.pop('cls', None)
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -150,65 +164,78 @@ class ProviderRegistrationsOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+        header_parameters['Content-Type'] = self._serialize.header(
+            "content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header(
+            "accept", accept, 'str')
 
-        features_rule = models.FeaturesRule(required_features_policy=required_features_policy) if required_features_policy else None
-        management = models.ResourceProviderManagement(schema_owners=schema_owners, manifest_owners=manifest_owners, incident_routing_service=incident_routing_service, incident_routing_team=incident_routing_team, incident_contact_email=incident_contact_email, service_tree_infos=service_tree_infos, resource_access_policy=resource_access_policy, resource_access_roles=resource_access_roles)
-        properties = models.ProviderRegistrationProperties(provider_authentication=provider_authentication, provider_authorizations=provider_authorizations, namespace=namespace, provider_version=provider_version, provider_type=provider_type, required_features=required_features, features_rule=features_rule, management=management, capabilities=capabilities, metadata=metadata, template_deployment_options=template_deployment_options)
+        features_rule = models.FeaturesRule(
+            required_features_policy=required_features_policy) if required_features_policy else None
+        management = models.ResourceProviderManagement(schema_owners=schema_owners, manifest_owners=manifest_owners, incident_routing_service=incident_routing_service, incident_routing_team=incident_routing_team,
+                                                       incident_contact_email=incident_contact_email, service_tree_infos=service_tree_infos, resource_access_policy=resource_access_policy, resource_access_roles=resource_access_roles)
+        properties = models.ProviderRegistrationProperties(provider_authentication=provider_authentication, provider_authorizations=provider_authorizations, namespace=namespace, provider_version=provider_version, provider_type=provider_type,
+                                                           required_features=required_features, features_rule=features_rule, management=management, capabilities=capabilities, metadata=metadata, template_deployment_options=template_deployment_options)
         parameters = models.ProviderRegistration(properties=properties)
 
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(parameters, 'ProviderRegistration')
         body_content_kwargs['content'] = body_content
-        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        request = self._client.put(
+            url, query_parameters, header_parameters, **body_content_kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 201]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(
+                response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = None
         if response.status_code == 200:
-            deserialized = self._deserialize('ProviderRegistration', pipeline_response)
+            deserialized = self._deserialize(
+                'ProviderRegistration', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}'}  # type: ignore
+    _create_or_update_initial.metadata = {
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}'}  # type: ignore
 
     def begin_create_or_update(
         self,
         provider_namespace,  # type: str
-        provider_authentication, # type: "models.ResourceProviderAuthentication"
-        provider_authorizations, # type: "models.ThirdPartyProviderAuthorization"
-        namespace, # type: str
-        provider_version, # type: str
-        provider_type, # type: str
-        required_features, # type: list[str]
-        capabilities, # type: list["models.ResourceProviderCapabilities"]
-        metadata, # type: obj
-        template_deployment_options, # type: "models.TemplateDeploymentOptions"
-        schema_owners, # type: list[str]
-        manifest_owners, # type: list[str]
-        incident_routing_service, # type: str
-        incident_routing_team, # type: str
-        incident_contact_email, # type: str
-        service_tree_infos, # type: list["models.ServiceTreeInfo"]
-        resource_access_policy, # type: "models.ResourceProviderManagementResourceAccessPolicy"
-        resource_access_roles, # type: list[object]
-        required_features_policy, # type: "models.FeaturesPolicy"
-        opt_in_headers, # type: "models.OptInHeaderType"
-        subscription_state_override_actions, # type: list["models.SubscriptionStateOverrideAction"]
-        soft_delete_ttl, # type: datetime.timedelta
-        managed_by_tenant_id, # type: str
+        provider_authentication,  # type: "models.ResourceProviderAuthentication"
+        provider_authorizations,  # type: "models.ThirdPartyProviderAuthorization"
+        namespace,  # type: str
+        provider_version,  # type: str
+        provider_type,  # type: str
+        required_features,  # type: list[str]
+        capabilities,  # type: list["models.ResourceProviderCapabilities"]
+        metadata,  # type: object
+        template_deployment_options,  # type: "models.TemplateDeploymentOptions"
+        schema_owners,  # type: list[str]
+        manifest_owners,  # type: list[str]
+        incident_routing_service,  # type: str
+        incident_routing_team,  # type: str
+        incident_contact_email,  # type: str
+        service_tree_infos,  # type: list["models.ServiceTreeInfo"]
+        resource_access_policy,  # type: "models.ResourceProviderManagementResourceAccessPolicy"
+        resource_access_roles,  # type: list[object]
+        required_features_policy,  # type: "models.FeaturesPolicy"
+        opt_in_headers,  # type: "models.OptInHeaderType"
+        # type: list["models.SubscriptionStateOverrideAction"]
+        subscription_state_override_actions,
+        soft_delete_ttl,  # type: datetime.timedelta
+        managed_by_tenant_id,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["models.ProviderRegistration"]
@@ -229,13 +256,16 @@ class ProviderRegistrationsOperations(object):
         :rtype: ~azure.core.polling.LROPoller[~providerhub.models.ProviderRegistration]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ProviderRegistration"]
+        polling = kwargs.pop(
+            'polling', True)  # type: Union[bool, PollingMethod]
+        # type: ClsType["models.ProviderRegistration"]
+        cls = kwargs.pop('cls', None)
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
         )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        cont_token = kwargs.pop('continuation_token',
+                                None)  # type: Optional[str]
         if cont_token is None:
             raw_result = self._create_or_update_initial(
                 provider_namespace=provider_namespace,
@@ -261,7 +291,7 @@ class ProviderRegistrationsOperations(object):
                 subscription_state_override_actions=subscription_state_override_actions,
                 soft_delete_ttl=soft_delete_ttl,
                 managed_by_tenant_id=managed_by_tenant_id,
-                cls=lambda x,y,z: x,
+                cls=lambda x, y, z: x,
                 **kwargs
             )
 
@@ -269,7 +299,8 @@ class ProviderRegistrationsOperations(object):
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('ProviderRegistration', pipeline_response)
+            deserialized = self._deserialize(
+                'ProviderRegistration', pipeline_response)
 
             if cls:
                 return cls(pipeline_response, deserialized, {})
@@ -280,9 +311,13 @@ class ProviderRegistrationsOperations(object):
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
         }
 
-        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments,  **kwargs)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
+        if polling is True:
+            polling_method = ARMPolling(lro_delay, lro_options={
+                                        'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments, **kwargs)
+        elif polling is False:
+            polling_method = NoPolling()
+        else:
+            polling_method = polling
         if cont_token:
             return LROPoller.from_continuation_token(
                 polling_method=polling_method,
@@ -292,7 +327,8 @@ class ProviderRegistrationsOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}'}  # type: ignore
+    begin_create_or_update.metadata = {
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}'}  # type: ignore
 
     def delete(
         self,
@@ -327,25 +363,31 @@ class ProviderRegistrationsOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header(
+            "accept", accept, 'str')
 
         request = self._client.delete(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200, 204]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(
+                response=response, model=error, error_format=ARMErrorFormat)
 
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}'}  # type: ignore
+    delete.metadata = {
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}'}  # type: ignore
 
     def list(
         self,
@@ -359,7 +401,8 @@ class ProviderRegistrationsOperations(object):
         :rtype: ~azure.core.paging.ItemPaged[~providerhub.models.ProviderRegistrationArrayResponseWithContinuation]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ProviderRegistrationArrayResponseWithContinuation"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["models.ProviderRegistrationArrayResponseWithContinuation"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -370,7 +413,8 @@ class ProviderRegistrationsOperations(object):
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+            header_parameters['Accept'] = self._serialize.header(
+                "accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
@@ -381,17 +425,21 @@ class ProviderRegistrationsOperations(object):
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query(
+                    "api_version", api_version, 'str')
 
-                request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(
+                    url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(url, query_parameters, header_parameters)
+                request = self._client.get(
+                    url, query_parameters, header_parameters)
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('ProviderRegistrationArrayResponseWithContinuation', pipeline_response)
+            deserialized = self._deserialize(
+                'ProviderRegistrationArrayResponseWithContinuation', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -400,20 +448,24 @@ class ProviderRegistrationsOperations(object):
         def get_next(next_link=None):
             request = prepare_request(next_link)
 
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            pipeline_response = self._client._pipeline.run(
+                request, stream=False, **kwargs)
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
                 error = self._deserialize(models.ErrorResponse, response)
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+                map_error(status_code=response.status_code,
+                          response=response, error_map=error_map)
+                raise HttpResponseError(
+                    response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations'}  # type: ignore
+    list.metadata = {
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations'}  # type: ignore
 
     def list_by_resource_group(
         self,
@@ -430,7 +482,8 @@ class ProviderRegistrationsOperations(object):
         :rtype: ~providerhub.models.ProviderRegistrationArrayResponseWithContinuation
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.ProviderRegistrationArrayResponseWithContinuation"]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["models.ProviderRegistrationArrayResponseWithContinuation"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -448,28 +501,35 @@ class ProviderRegistrationsOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header(
+            "accept", accept, 'str')
 
         request = self._client.get(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(
+                response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('ProviderRegistrationArrayResponseWithContinuation', pipeline_response)
+        deserialized = self._deserialize(
+            'ProviderRegistrationArrayResponseWithContinuation', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ProviderHub/providerRegistrations'}  # type: ignore
+    list_by_resource_group.metadata = {
+        'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ProviderHub/providerRegistrations'}  # type: ignore
 
     def generate_operations(
         self,
@@ -486,7 +546,8 @@ class ProviderRegistrationsOperations(object):
         :rtype: list[~providerhub.models.OperationsDefinition]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType[List["models.OperationsDefinition"]]
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType[List["models.OperationsDefinition"]]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -504,25 +565,32 @@ class ProviderRegistrationsOperations(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header(
+            "accept", accept, 'str')
 
         request = self._client.post(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(
+                response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('[OperationsDefinition]', pipeline_response)
+        deserialized = self._deserialize(
+            '[OperationsDefinition]', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    generate_operations.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/generateOperations'}  # type: ignore
+    generate_operations.metadata = {
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/generateOperations'}  # type: ignore

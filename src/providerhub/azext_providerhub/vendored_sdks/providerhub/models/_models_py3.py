@@ -356,7 +356,8 @@ class CustomRolloutPropertiesSpecification(CustomRolloutSpecification):
         resource_type_registrations: Optional[List["ResourceTypeRegistration"]] = None,
         **kwargs
     ):
-        super(CustomRolloutPropertiesSpecification, self).__init__(canary=canary, provider_registration=provider_registration, resource_type_registrations=resource_type_registrations, **kwargs)
+        super(CustomRolloutPropertiesSpecification, self).__init__(canary=canary,
+                                                                   provider_registration=provider_registration, resource_type_registrations=resource_type_registrations, **kwargs)
 
 
 class CustomRolloutStatus(msrest.serialization.Model):
@@ -377,7 +378,8 @@ class CustomRolloutStatus(msrest.serialization.Model):
         self,
         *,
         completed_regions: Optional[List[str]] = None,
-        failed_or_skipped_regions: Optional[Dict[str, "ExtendedErrorInfo"]] = None,
+        failed_or_skipped_regions: Optional[Dict[str,
+                                                 "ExtendedErrorInfo"]] = None,
         **kwargs
     ):
         super(CustomRolloutStatus, self).__init__(**kwargs)
@@ -403,10 +405,12 @@ class CustomRolloutPropertiesStatus(CustomRolloutStatus):
         self,
         *,
         completed_regions: Optional[List[str]] = None,
-        failed_or_skipped_regions: Optional[Dict[str, "ExtendedErrorInfo"]] = None,
+        failed_or_skipped_regions: Optional[Dict[str,
+                                                 "ExtendedErrorInfo"]] = None,
         **kwargs
     ):
-        super(CustomRolloutPropertiesStatus, self).__init__(completed_regions=completed_regions, failed_or_skipped_regions=failed_or_skipped_regions, **kwargs)
+        super(CustomRolloutPropertiesStatus, self).__init__(
+            completed_regions=completed_regions, failed_or_skipped_regions=failed_or_skipped_regions, **kwargs)
 
 
 class TrafficRegions(msrest.serialization.Model):
@@ -447,7 +451,8 @@ class CustomRolloutSpecificationCanary(TrafficRegions):
         regions: Optional[List[str]] = None,
         **kwargs
     ):
-        super(CustomRolloutSpecificationCanary, self).__init__(regions=regions, **kwargs)
+        super(CustomRolloutSpecificationCanary, self).__init__(
+            regions=regions, **kwargs)
 
 
 class ProviderRegistration(Resource):
@@ -526,7 +531,8 @@ class CustomRolloutSpecificationProviderRegistration(ProviderRegistration):
         properties: Optional["ProviderRegistrationProperties"] = None,
         **kwargs
     ):
-        super(CustomRolloutSpecificationProviderRegistration, self).__init__(properties=properties, **kwargs)
+        super(CustomRolloutSpecificationProviderRegistration,
+              self).__init__(properties=properties, **kwargs)
 
 
 class DefaultRollout(Resource):
@@ -708,7 +714,8 @@ class DefaultRolloutPropertiesSpecification(DefaultRolloutSpecification):
         resource_type_registrations: Optional[List["ResourceTypeRegistration"]] = None,
         **kwargs
     ):
-        super(DefaultRolloutPropertiesSpecification, self).__init__(canary=canary, low_traffic=low_traffic, medium_traffic=medium_traffic, high_traffic=high_traffic, rest_of_the_world_group_one=rest_of_the_world_group_one, rest_of_the_world_group_two=rest_of_the_world_group_two, provider_registration=provider_registration, resource_type_registrations=resource_type_registrations, **kwargs)
+        super(DefaultRolloutPropertiesSpecification, self).__init__(canary=canary, low_traffic=low_traffic, medium_traffic=medium_traffic, high_traffic=high_traffic, rest_of_the_world_group_one=rest_of_the_world_group_one,
+                                                                    rest_of_the_world_group_two=rest_of_the_world_group_two, provider_registration=provider_registration, resource_type_registrations=resource_type_registrations, **kwargs)
 
 
 class RolloutStatusBase(msrest.serialization.Model):
@@ -729,7 +736,8 @@ class RolloutStatusBase(msrest.serialization.Model):
         self,
         *,
         completed_regions: Optional[List[str]] = None,
-        failed_or_skipped_regions: Optional[Dict[str, "ExtendedErrorInfo"]] = None,
+        failed_or_skipped_regions: Optional[Dict[str,
+                                                 "ExtendedErrorInfo"]] = None,
         **kwargs
     ):
         super(RolloutStatusBase, self).__init__(**kwargs)
@@ -767,13 +775,17 @@ class DefaultRolloutStatus(RolloutStatusBase):
         self,
         *,
         completed_regions: Optional[List[str]] = None,
-        failed_or_skipped_regions: Optional[Dict[str, "ExtendedErrorInfo"]] = None,
-        next_traffic_region: Optional[Union[str, "TrafficRegionCategory"]] = None,
+        failed_or_skipped_regions: Optional[Dict[str,
+                                                 "ExtendedErrorInfo"]] = None,
+        next_traffic_region: Optional[Union[str,
+                                            "TrafficRegionCategory"]] = None,
         next_traffic_region_scheduled_time: Optional[datetime.datetime] = None,
-        subscription_reregistration_result: Optional[Union[str, "SubscriptionReregistrationResult"]] = None,
+        subscription_reregistration_result: Optional[Union[str,
+                                                           "SubscriptionReregistrationResult"]] = None,
         **kwargs
     ):
-        super(DefaultRolloutStatus, self).__init__(completed_regions=completed_regions, failed_or_skipped_regions=failed_or_skipped_regions, **kwargs)
+        super(DefaultRolloutStatus, self).__init__(completed_regions=completed_regions,
+                                                   failed_or_skipped_regions=failed_or_skipped_regions, **kwargs)
         self.next_traffic_region = next_traffic_region
         self.next_traffic_region_scheduled_time = next_traffic_region_scheduled_time
         self.subscription_reregistration_result = subscription_reregistration_result
@@ -809,13 +821,17 @@ class DefaultRolloutPropertiesStatus(DefaultRolloutStatus):
         self,
         *,
         completed_regions: Optional[List[str]] = None,
-        failed_or_skipped_regions: Optional[Dict[str, "ExtendedErrorInfo"]] = None,
-        next_traffic_region: Optional[Union[str, "TrafficRegionCategory"]] = None,
+        failed_or_skipped_regions: Optional[Dict[str,
+                                                 "ExtendedErrorInfo"]] = None,
+        next_traffic_region: Optional[Union[str,
+                                            "TrafficRegionCategory"]] = None,
         next_traffic_region_scheduled_time: Optional[datetime.datetime] = None,
-        subscription_reregistration_result: Optional[Union[str, "SubscriptionReregistrationResult"]] = None,
+        subscription_reregistration_result: Optional[Union[str,
+                                                           "SubscriptionReregistrationResult"]] = None,
         **kwargs
     ):
-        super(DefaultRolloutPropertiesStatus, self).__init__(completed_regions=completed_regions, failed_or_skipped_regions=failed_or_skipped_regions, next_traffic_region=next_traffic_region, next_traffic_region_scheduled_time=next_traffic_region_scheduled_time, subscription_reregistration_result=subscription_reregistration_result, **kwargs)
+        super(DefaultRolloutPropertiesStatus, self).__init__(completed_regions=completed_regions, failed_or_skipped_regions=failed_or_skipped_regions, next_traffic_region=next_traffic_region,
+                                                             next_traffic_region_scheduled_time=next_traffic_region_scheduled_time, subscription_reregistration_result=subscription_reregistration_result, **kwargs)
 
 
 class DefaultRolloutSpecificationCanary(CanaryTrafficRegionRolloutConfiguration):
@@ -839,7 +855,8 @@ class DefaultRolloutSpecificationCanary(CanaryTrafficRegionRolloutConfiguration)
         regions: Optional[List[str]] = None,
         **kwargs
     ):
-        super(DefaultRolloutSpecificationCanary, self).__init__(skip_regions=skip_regions, regions=regions, **kwargs)
+        super(DefaultRolloutSpecificationCanary, self).__init__(
+            skip_regions=skip_regions, regions=regions, **kwargs)
 
 
 class TrafficRegionRolloutConfiguration(TrafficRegions):
@@ -863,7 +880,8 @@ class TrafficRegionRolloutConfiguration(TrafficRegions):
         wait_duration: Optional[datetime.timedelta] = None,
         **kwargs
     ):
-        super(TrafficRegionRolloutConfiguration, self).__init__(regions=regions, **kwargs)
+        super(TrafficRegionRolloutConfiguration, self).__init__(
+            regions=regions, **kwargs)
         self.wait_duration = wait_duration
 
 
@@ -888,7 +906,8 @@ class DefaultRolloutSpecificationHighTraffic(TrafficRegionRolloutConfiguration):
         wait_duration: Optional[datetime.timedelta] = None,
         **kwargs
     ):
-        super(DefaultRolloutSpecificationHighTraffic, self).__init__(regions=regions, wait_duration=wait_duration, **kwargs)
+        super(DefaultRolloutSpecificationHighTraffic, self).__init__(
+            regions=regions, wait_duration=wait_duration, **kwargs)
 
 
 class DefaultRolloutSpecificationLowTraffic(TrafficRegionRolloutConfiguration):
@@ -912,7 +931,8 @@ class DefaultRolloutSpecificationLowTraffic(TrafficRegionRolloutConfiguration):
         wait_duration: Optional[datetime.timedelta] = None,
         **kwargs
     ):
-        super(DefaultRolloutSpecificationLowTraffic, self).__init__(regions=regions, wait_duration=wait_duration, **kwargs)
+        super(DefaultRolloutSpecificationLowTraffic, self).__init__(
+            regions=regions, wait_duration=wait_duration, **kwargs)
 
 
 class DefaultRolloutSpecificationMediumTraffic(TrafficRegionRolloutConfiguration):
@@ -936,7 +956,8 @@ class DefaultRolloutSpecificationMediumTraffic(TrafficRegionRolloutConfiguration
         wait_duration: Optional[datetime.timedelta] = None,
         **kwargs
     ):
-        super(DefaultRolloutSpecificationMediumTraffic, self).__init__(regions=regions, wait_duration=wait_duration, **kwargs)
+        super(DefaultRolloutSpecificationMediumTraffic, self).__init__(
+            regions=regions, wait_duration=wait_duration, **kwargs)
 
 
 class DefaultRolloutSpecificationProviderRegistration(ProviderRegistration):
@@ -975,7 +996,8 @@ class DefaultRolloutSpecificationProviderRegistration(ProviderRegistration):
         properties: Optional["ProviderRegistrationProperties"] = None,
         **kwargs
     ):
-        super(DefaultRolloutSpecificationProviderRegistration, self).__init__(properties=properties, **kwargs)
+        super(DefaultRolloutSpecificationProviderRegistration,
+              self).__init__(properties=properties, **kwargs)
 
 
 class DefaultRolloutSpecificationRestOfTheWorldGroupOne(TrafficRegionRolloutConfiguration):
@@ -999,7 +1021,8 @@ class DefaultRolloutSpecificationRestOfTheWorldGroupOne(TrafficRegionRolloutConf
         wait_duration: Optional[datetime.timedelta] = None,
         **kwargs
     ):
-        super(DefaultRolloutSpecificationRestOfTheWorldGroupOne, self).__init__(regions=regions, wait_duration=wait_duration, **kwargs)
+        super(DefaultRolloutSpecificationRestOfTheWorldGroupOne, self).__init__(
+            regions=regions, wait_duration=wait_duration, **kwargs)
 
 
 class DefaultRolloutSpecificationRestOfTheWorldGroupTwo(TrafficRegionRolloutConfiguration):
@@ -1023,7 +1046,8 @@ class DefaultRolloutSpecificationRestOfTheWorldGroupTwo(TrafficRegionRolloutConf
         wait_duration: Optional[datetime.timedelta] = None,
         **kwargs
     ):
-        super(DefaultRolloutSpecificationRestOfTheWorldGroupTwo, self).__init__(regions=regions, wait_duration=wait_duration, **kwargs)
+        super(DefaultRolloutSpecificationRestOfTheWorldGroupTwo, self).__init__(
+            regions=regions, wait_duration=wait_duration, **kwargs)
 
 
 class Error(msrest.serialization.Model):
@@ -1142,7 +1166,8 @@ class ErrorInnerError(InnerError):
         additional_properties: Optional[Dict[str, object]] = None,
         **kwargs
     ):
-        super(ErrorInnerError, self).__init__(additional_properties=additional_properties, **kwargs)
+        super(ErrorInnerError, self).__init__(
+            additional_properties=additional_properties, **kwargs)
 
 
 class ErrorResponse(msrest.serialization.Model):
@@ -1408,7 +1433,8 @@ class InnerErrorautogenerated(InnerError):
         additional_properties: Optional[Dict[str, object]] = None,
         **kwargs
     ):
-        super(InnerErrorautogenerated, self).__init__(additional_properties=additional_properties, **kwargs)
+        super(InnerErrorautogenerated, self).__init__(
+            additional_properties=additional_properties, **kwargs)
 
 
 class LightHouseAuthorization(msrest.serialization.Model):
@@ -1611,7 +1637,8 @@ class LoggingRuleHiddenPropertyPaths(LoggingHiddenPropertyPath):
         hidden_paths_on_response: Optional[List[str]] = None,
         **kwargs
     ):
-        super(LoggingRuleHiddenPropertyPaths, self).__init__(hidden_paths_on_request=hidden_paths_on_request, hidden_paths_on_response=hidden_paths_on_response, **kwargs)
+        super(LoggingRuleHiddenPropertyPaths, self).__init__(
+            hidden_paths_on_request=hidden_paths_on_request, hidden_paths_on_response=hidden_paths_on_response, **kwargs)
 
 
 class NotificationEndpoint(msrest.serialization.Model):
@@ -1701,7 +1728,8 @@ class NotificationRegistrationArrayResponseWithContinuation(msrest.serialization
         next_link: Optional[str] = None,
         **kwargs
     ):
-        super(NotificationRegistrationArrayResponseWithContinuation, self).__init__(**kwargs)
+        super(NotificationRegistrationArrayResponseWithContinuation,
+              self).__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
@@ -1771,7 +1799,8 @@ class NotificationRegistrationPropertiesautogenerated(NotificationRegistrationPr
         notification_endpoints: Optional[List["NotificationEndpoint"]] = None,
         **kwargs
     ):
-        super(NotificationRegistrationPropertiesautogenerated, self).__init__(notification_mode=notification_mode, message_scope=message_scope, included_events=included_events, notification_endpoints=notification_endpoints, **kwargs)
+        super(NotificationRegistrationPropertiesautogenerated, self).__init__(notification_mode=notification_mode,
+                                                                              message_scope=message_scope, included_events=included_events, notification_endpoints=notification_endpoints, **kwargs)
 
 
 class OperationsContent(Resource):
@@ -1826,7 +1855,8 @@ class OperationsContent(Resource):
         is_data_action: Optional[bool] = None,
         origin: Optional[Union[str, "OperationsDefinitionOrigin"]] = None,
         display: Optional["OperationsDisplayDefinition"] = None,
-        action_type: Optional[Union[str, "OperationsDefinitionActionType"]] = None,
+        action_type: Optional[Union[str,
+                                    "OperationsDefinitionActionType"]] = None,
         properties: Optional[object] = None,
         **kwargs
     ):
@@ -1879,7 +1909,8 @@ class OperationsDefinition(msrest.serialization.Model):
         display: "OperationsDisplayDefinition",
         is_data_action: Optional[bool] = None,
         origin: Optional[Union[str, "OperationsDefinitionOrigin"]] = None,
-        action_type: Optional[Union[str, "OperationsDefinitionActionType"]] = None,
+        action_type: Optional[Union[str,
+                                    "OperationsDefinitionActionType"]] = None,
         properties: Optional[object] = None,
         **kwargs
     ):
@@ -1913,7 +1944,8 @@ class OperationsDefinitionArrayResponseWithContinuation(msrest.serialization.Mod
         next_link: Optional[str] = None,
         **kwargs
     ):
-        super(OperationsDefinitionArrayResponseWithContinuation, self).__init__(**kwargs)
+        super(OperationsDefinitionArrayResponseWithContinuation,
+              self).__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
@@ -2001,7 +2033,8 @@ class OperationsDefinitionDisplay(OperationsDisplayDefinition):
         description: str,
         **kwargs
     ):
-        super(OperationsDefinitionDisplay, self).__init__(provider=provider, resource=resource, operation=operation, description=description, **kwargs)
+        super(OperationsDefinitionDisplay, self).__init__(provider=provider,
+                                                          resource=resource, operation=operation, description=description, **kwargs)
 
 
 class ProviderHubMetadata(msrest.serialization.Model):
@@ -2085,7 +2118,8 @@ class ProviderHubMetadataProviderAuthentication(ResourceProviderAuthentication):
         allowed_audiences: List[str],
         **kwargs
     ):
-        super(ProviderHubMetadataProviderAuthentication, self).__init__(allowed_audiences=allowed_audiences, **kwargs)
+        super(ProviderHubMetadataProviderAuthentication, self).__init__(
+            allowed_audiences=allowed_audiences, **kwargs)
 
 
 class ThirdPartyProviderAuthorization(msrest.serialization.Model):
@@ -2135,7 +2169,8 @@ class ProviderHubMetadataThirdPartyProviderAuthorization(ThirdPartyProviderAutho
         managed_by_tenant_id: Optional[str] = None,
         **kwargs
     ):
-        super(ProviderHubMetadataThirdPartyProviderAuthorization, self).__init__(authorizations=authorizations, managed_by_tenant_id=managed_by_tenant_id, **kwargs)
+        super(ProviderHubMetadataThirdPartyProviderAuthorization, self).__init__(
+            authorizations=authorizations, managed_by_tenant_id=managed_by_tenant_id, **kwargs)
 
 
 class ProviderRegistrationArrayResponseWithContinuation(msrest.serialization.Model):
@@ -2159,7 +2194,8 @@ class ProviderRegistrationArrayResponseWithContinuation(msrest.serialization.Mod
         next_link: Optional[str] = None,
         **kwargs
     ):
-        super(ProviderRegistrationArrayResponseWithContinuation, self).__init__(**kwargs)
+        super(ProviderRegistrationArrayResponseWithContinuation,
+              self).__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
@@ -2315,10 +2351,12 @@ class ProviderRegistrationProperties(ResourceProviderManifestProperties):
         template_deployment_options: Optional["TemplateDeploymentOptions"] = None,
         provider_hub_metadata: Optional["ProviderHubMetadata"] = None,
         provisioning_state: Optional[Union[str, "ProvisioningState"]] = None,
-        subscription_lifecycle_notification_specifications: Optional["SubscriptionLifecycleNotificationSpecifications"] = None,
+        subscription_lifecycle_notification_specifications: Optional[
+            "SubscriptionLifecycleNotificationSpecifications"] = None,
         **kwargs
     ):
-        super(ProviderRegistrationProperties, self).__init__(provider_authentication=provider_authentication, provider_authorizations=provider_authorizations, namespace=namespace, provider_version=provider_version, provider_type=provider_type, required_features=required_features, features_rule=features_rule, request_header_options=request_header_options, management=management, capabilities=capabilities, metadata=metadata, template_deployment_options=template_deployment_options, **kwargs)
+        super(ProviderRegistrationProperties, self).__init__(provider_authentication=provider_authentication, provider_authorizations=provider_authorizations, namespace=namespace, provider_version=provider_version, provider_type=provider_type,
+                                                             required_features=required_features, features_rule=features_rule, request_header_options=request_header_options, management=management, capabilities=capabilities, metadata=metadata, template_deployment_options=template_deployment_options, **kwargs)
         self.provider_hub_metadata = provider_hub_metadata
         self.provisioning_state = provisioning_state
         self.subscription_lifecycle_notification_specifications = subscription_lifecycle_notification_specifications
@@ -2398,10 +2436,12 @@ class ProviderRegistrationPropertiesautogenerated(ProviderRegistrationProperties
         template_deployment_options: Optional["TemplateDeploymentOptions"] = None,
         provider_hub_metadata: Optional["ProviderHubMetadata"] = None,
         provisioning_state: Optional[Union[str, "ProvisioningState"]] = None,
-        subscription_lifecycle_notification_specifications: Optional["SubscriptionLifecycleNotificationSpecifications"] = None,
+        subscription_lifecycle_notification_specifications: Optional[
+            "SubscriptionLifecycleNotificationSpecifications"] = None,
         **kwargs
     ):
-        super(ProviderRegistrationPropertiesautogenerated, self).__init__(provider_authentication=provider_authentication, provider_authorizations=provider_authorizations, namespace=namespace, provider_version=provider_version, provider_type=provider_type, required_features=required_features, features_rule=features_rule, request_header_options=request_header_options, management=management, capabilities=capabilities, metadata=metadata, template_deployment_options=template_deployment_options, provider_hub_metadata=provider_hub_metadata, provisioning_state=provisioning_state, subscription_lifecycle_notification_specifications=subscription_lifecycle_notification_specifications, **kwargs)
+        super(ProviderRegistrationPropertiesautogenerated, self).__init__(provider_authentication=provider_authentication, provider_authorizations=provider_authorizations, namespace=namespace, provider_version=provider_version, provider_type=provider_type, required_features=required_features, features_rule=features_rule, request_header_options=request_header_options,
+                                                                          management=management, capabilities=capabilities, metadata=metadata, template_deployment_options=template_deployment_options, provider_hub_metadata=provider_hub_metadata, provisioning_state=provisioning_state, subscription_lifecycle_notification_specifications=subscription_lifecycle_notification_specifications, **kwargs)
 
 
 class ProviderRegistrationPropertiesProviderHubMetadata(ProviderHubMetadata):
@@ -2429,7 +2469,8 @@ class ProviderRegistrationPropertiesProviderHubMetadata(ProviderHubMetadata):
         third_party_provider_authorization: Optional["ThirdPartyProviderAuthorization"] = None,
         **kwargs
     ):
-        super(ProviderRegistrationPropertiesProviderHubMetadata, self).__init__(provider_authorizations=provider_authorizations, provider_authentication=provider_authentication, third_party_provider_authorization=third_party_provider_authorization, **kwargs)
+        super(ProviderRegistrationPropertiesProviderHubMetadata, self).__init__(provider_authorizations=provider_authorizations,
+                                                                                provider_authentication=provider_authentication, third_party_provider_authorization=third_party_provider_authorization, **kwargs)
 
 
 class SubscriptionLifecycleNotificationSpecifications(msrest.serialization.Model):
@@ -2454,7 +2495,8 @@ class SubscriptionLifecycleNotificationSpecifications(msrest.serialization.Model
         soft_delete_ttl: Optional[datetime.timedelta] = None,
         **kwargs
     ):
-        super(SubscriptionLifecycleNotificationSpecifications, self).__init__(**kwargs)
+        super(SubscriptionLifecycleNotificationSpecifications,
+              self).__init__(**kwargs)
         self.subscription_state_override_actions = subscription_state_override_actions
         self.soft_delete_ttl = soft_delete_ttl
 
@@ -2481,7 +2523,8 @@ class ProviderRegistrationPropertiesSubscriptionLifecycleNotificationSpecificati
         soft_delete_ttl: Optional[datetime.timedelta] = None,
         **kwargs
     ):
-        super(ProviderRegistrationPropertiesSubscriptionLifecycleNotificationSpecifications, self).__init__(subscription_state_override_actions=subscription_state_override_actions, soft_delete_ttl=soft_delete_ttl, **kwargs)
+        super(ProviderRegistrationPropertiesSubscriptionLifecycleNotificationSpecifications, self).__init__(
+            subscription_state_override_actions=subscription_state_override_actions, soft_delete_ttl=soft_delete_ttl, **kwargs)
 
 
 class ProxyResource(Resource):
@@ -2746,7 +2789,8 @@ class ResourceProviderEndpointFeaturesRule(FeaturesRule):
         required_features_policy: Union[str, "FeaturesPolicy"],
         **kwargs
     ):
-        super(ResourceProviderEndpointFeaturesRule, self).__init__(required_features_policy=required_features_policy, **kwargs)
+        super(ResourceProviderEndpointFeaturesRule, self).__init__(
+            required_features_policy=required_features_policy, **kwargs)
 
 
 class ResourceProviderManagement(msrest.serialization.Model):
@@ -2792,7 +2836,8 @@ class ResourceProviderManagement(msrest.serialization.Model):
         incident_routing_team: Optional[str] = None,
         incident_contact_email: Optional[str] = None,
         service_tree_infos: Optional[List["ServiceTreeInfo"]] = None,
-        resource_access_policy: Optional[Union[str, "ResourceProviderManagementResourceAccessPolicy"]] = None,
+        resource_access_policy: Optional[Union[str,
+                                               "ResourceProviderManagementResourceAccessPolicy"]] = None,
         resource_access_roles: Optional[List[object]] = None,
         **kwargs
     ):
@@ -2917,7 +2962,8 @@ class ResourceProviderManifestFeaturesRule(FeaturesRule):
         required_features_policy: Union[str, "FeaturesPolicy"],
         **kwargs
     ):
-        super(ResourceProviderManifestFeaturesRule, self).__init__(required_features_policy=required_features_policy, **kwargs)
+        super(ResourceProviderManifestFeaturesRule, self).__init__(
+            required_features_policy=required_features_policy, **kwargs)
 
 
 class ResourceProviderManifestManagement(ResourceProviderManagement):
@@ -2963,11 +3009,13 @@ class ResourceProviderManifestManagement(ResourceProviderManagement):
         incident_routing_team: Optional[str] = None,
         incident_contact_email: Optional[str] = None,
         service_tree_infos: Optional[List["ServiceTreeInfo"]] = None,
-        resource_access_policy: Optional[Union[str, "ResourceProviderManagementResourceAccessPolicy"]] = None,
+        resource_access_policy: Optional[Union[str,
+                                               "ResourceProviderManagementResourceAccessPolicy"]] = None,
         resource_access_roles: Optional[List[object]] = None,
         **kwargs
     ):
-        super(ResourceProviderManifestManagement, self).__init__(schema_owners=schema_owners, manifest_owners=manifest_owners, incident_routing_service=incident_routing_service, incident_routing_team=incident_routing_team, incident_contact_email=incident_contact_email, service_tree_infos=service_tree_infos, resource_access_policy=resource_access_policy, resource_access_roles=resource_access_roles, **kwargs)
+        super(ResourceProviderManifestManagement, self).__init__(schema_owners=schema_owners, manifest_owners=manifest_owners, incident_routing_service=incident_routing_service, incident_routing_team=incident_routing_team,
+                                                                 incident_contact_email=incident_contact_email, service_tree_infos=service_tree_infos, resource_access_policy=resource_access_policy, resource_access_roles=resource_access_roles, **kwargs)
 
 
 class ResourceProviderManifestPropertiesFeaturesRule(FeaturesRule):
@@ -2993,7 +3041,8 @@ class ResourceProviderManifestPropertiesFeaturesRule(FeaturesRule):
         required_features_policy: Union[str, "FeaturesPolicy"],
         **kwargs
     ):
-        super(ResourceProviderManifestPropertiesFeaturesRule, self).__init__(required_features_policy=required_features_policy, **kwargs)
+        super(ResourceProviderManifestPropertiesFeaturesRule, self).__init__(
+            required_features_policy=required_features_policy, **kwargs)
 
 
 class ResourceProviderManifestPropertiesManagement(ResourceProviderManagement):
@@ -3039,11 +3088,13 @@ class ResourceProviderManifestPropertiesManagement(ResourceProviderManagement):
         incident_routing_team: Optional[str] = None,
         incident_contact_email: Optional[str] = None,
         service_tree_infos: Optional[List["ServiceTreeInfo"]] = None,
-        resource_access_policy: Optional[Union[str, "ResourceProviderManagementResourceAccessPolicy"]] = None,
+        resource_access_policy: Optional[Union[str,
+                                               "ResourceProviderManagementResourceAccessPolicy"]] = None,
         resource_access_roles: Optional[List[object]] = None,
         **kwargs
     ):
-        super(ResourceProviderManifestPropertiesManagement, self).__init__(schema_owners=schema_owners, manifest_owners=manifest_owners, incident_routing_service=incident_routing_service, incident_routing_team=incident_routing_team, incident_contact_email=incident_contact_email, service_tree_infos=service_tree_infos, resource_access_policy=resource_access_policy, resource_access_roles=resource_access_roles, **kwargs)
+        super(ResourceProviderManifestPropertiesManagement, self).__init__(schema_owners=schema_owners, manifest_owners=manifest_owners, incident_routing_service=incident_routing_service, incident_routing_team=incident_routing_team,
+                                                                           incident_contact_email=incident_contact_email, service_tree_infos=service_tree_infos, resource_access_policy=resource_access_policy, resource_access_roles=resource_access_roles, **kwargs)
 
 
 class ResourceProviderManifestPropertiesProviderAuthentication(ResourceProviderAuthentication):
@@ -3069,7 +3120,8 @@ class ResourceProviderManifestPropertiesProviderAuthentication(ResourceProviderA
         allowed_audiences: List[str],
         **kwargs
     ):
-        super(ResourceProviderManifestPropertiesProviderAuthentication, self).__init__(allowed_audiences=allowed_audiences, **kwargs)
+        super(ResourceProviderManifestPropertiesProviderAuthentication,
+              self).__init__(allowed_audiences=allowed_audiences, **kwargs)
 
 
 class ResourceProviderManifestPropertiesRequestHeaderOptions(RequestHeaderOptions):
@@ -3090,7 +3142,8 @@ class ResourceProviderManifestPropertiesRequestHeaderOptions(RequestHeaderOption
         opt_in_headers: Optional[Union[str, "OptInHeaderType"]] = None,
         **kwargs
     ):
-        super(ResourceProviderManifestPropertiesRequestHeaderOptions, self).__init__(opt_in_headers=opt_in_headers, **kwargs)
+        super(ResourceProviderManifestPropertiesRequestHeaderOptions,
+              self).__init__(opt_in_headers=opt_in_headers, **kwargs)
 
 
 class TemplateDeploymentOptions(msrest.serialization.Model):
@@ -3111,7 +3164,8 @@ class TemplateDeploymentOptions(msrest.serialization.Model):
         self,
         *,
         preflight_supported: Optional[bool] = None,
-        preflight_options: Optional[List[Union[str, "PreflightOption"]]] = None,
+        preflight_options: Optional[List[Union[str,
+                                               "PreflightOption"]]] = None,
         **kwargs
     ):
         super(TemplateDeploymentOptions, self).__init__(**kwargs)
@@ -3137,10 +3191,12 @@ class ResourceProviderManifestPropertiesTemplateDeploymentOptions(TemplateDeploy
         self,
         *,
         preflight_supported: Optional[bool] = None,
-        preflight_options: Optional[List[Union[str, "PreflightOption"]]] = None,
+        preflight_options: Optional[List[Union[str,
+                                               "PreflightOption"]]] = None,
         **kwargs
     ):
-        super(ResourceProviderManifestPropertiesTemplateDeploymentOptions, self).__init__(preflight_supported=preflight_supported, preflight_options=preflight_options, **kwargs)
+        super(ResourceProviderManifestPropertiesTemplateDeploymentOptions, self).__init__(
+            preflight_supported=preflight_supported, preflight_options=preflight_options, **kwargs)
 
 
 class ResourceProviderManifestProviderAuthentication(ResourceProviderAuthentication):
@@ -3166,7 +3222,8 @@ class ResourceProviderManifestProviderAuthentication(ResourceProviderAuthenticat
         allowed_audiences: List[str],
         **kwargs
     ):
-        super(ResourceProviderManifestProviderAuthentication, self).__init__(allowed_audiences=allowed_audiences, **kwargs)
+        super(ResourceProviderManifestProviderAuthentication, self).__init__(
+            allowed_audiences=allowed_audiences, **kwargs)
 
 
 class ResourceProviderManifestRequestHeaderOptions(RequestHeaderOptions):
@@ -3187,7 +3244,8 @@ class ResourceProviderManifestRequestHeaderOptions(RequestHeaderOptions):
         opt_in_headers: Optional[Union[str, "OptInHeaderType"]] = None,
         **kwargs
     ):
-        super(ResourceProviderManifestRequestHeaderOptions, self).__init__(opt_in_headers=opt_in_headers, **kwargs)
+        super(ResourceProviderManifestRequestHeaderOptions, self).__init__(
+            opt_in_headers=opt_in_headers, **kwargs)
 
 
 class ResourceProviderManifestReRegisterSubscriptionMetadata(ReRegisterSubscriptionMetadata):
@@ -3217,7 +3275,8 @@ class ResourceProviderManifestReRegisterSubscriptionMetadata(ReRegisterSubscript
         concurrency_limit: Optional[int] = None,
         **kwargs
     ):
-        super(ResourceProviderManifestReRegisterSubscriptionMetadata, self).__init__(enabled=enabled, concurrency_limit=concurrency_limit, **kwargs)
+        super(ResourceProviderManifestReRegisterSubscriptionMetadata, self).__init__(
+            enabled=enabled, concurrency_limit=concurrency_limit, **kwargs)
 
 
 class ResourceType(msrest.serialization.Model):
@@ -3315,7 +3374,8 @@ class ResourceType(msrest.serialization.Model):
         logging_rules: Optional[List["LoggingRule"]] = None,
         throttling_rules: Optional[List["ThrottlingRule"]] = None,
         endpoints: Optional[List["ResourceProviderEndpoint"]] = None,
-        marketplace_type: Optional[Union[str, "ResourceTypeMarketplaceType"]] = None,
+        marketplace_type: Optional[Union[str,
+                                         "ResourceTypeMarketplaceType"]] = None,
         identity_management: Optional["IdentityManagement"] = None,
         metadata: Optional[object] = None,
         required_features: Optional[List[str]] = None,
@@ -3328,7 +3388,8 @@ class ResourceType(msrest.serialization.Model):
         template_deployment_policy: Optional["TemplateDeploymentPolicy"] = None,
         extended_locations: Optional[List["ExtendedLocationOptions"]] = None,
         linked_operation_rules: Optional[List["LinkedOperationRule"]] = None,
-        resource_deletion_policy: Optional[Union[str, "ManifestResourceDeletionPolicy"]] = None,
+        resource_deletion_policy: Optional[Union[str,
+                                                 "ManifestResourceDeletionPolicy"]] = None,
         **kwargs
     ):
         super(ResourceType, self).__init__(**kwargs)
@@ -3432,7 +3493,8 @@ class ResourceTypeEndpointFeaturesRule(FeaturesRule):
         required_features_policy: Union[str, "FeaturesPolicy"],
         **kwargs
     ):
-        super(ResourceTypeEndpointFeaturesRule, self).__init__(required_features_policy=required_features_policy, **kwargs)
+        super(ResourceTypeEndpointFeaturesRule, self).__init__(
+            required_features_policy=required_features_policy, **kwargs)
 
 
 class ResourceTypeExtension(msrest.serialization.Model):
@@ -3456,7 +3518,8 @@ class ResourceTypeExtension(msrest.serialization.Model):
         self,
         *,
         endpoint_uri: Optional[str] = None,
-        extension_categories: Optional[List[Union[str, "ExtensionCategory"]]] = None,
+        extension_categories: Optional[List[Union[str,
+                                                  "ExtensionCategory"]]] = None,
         timeout: Optional[datetime.timedelta] = None,
         **kwargs
     ):
@@ -3508,7 +3571,8 @@ class ResourceTypeExtensionOptionsResourceCreationBegin(ExtensionOptions):
         response: Optional[List[Union[str, "ExtensionOptionType"]]] = None,
         **kwargs
     ):
-        super(ResourceTypeExtensionOptionsResourceCreationBegin, self).__init__(request=request, response=response, **kwargs)
+        super(ResourceTypeExtensionOptionsResourceCreationBegin, self).__init__(
+            request=request, response=response, **kwargs)
 
 
 class ResourceTypeFeaturesRule(FeaturesRule):
@@ -3534,7 +3598,8 @@ class ResourceTypeFeaturesRule(FeaturesRule):
         required_features_policy: Union[str, "FeaturesPolicy"],
         **kwargs
     ):
-        super(ResourceTypeFeaturesRule, self).__init__(required_features_policy=required_features_policy, **kwargs)
+        super(ResourceTypeFeaturesRule, self).__init__(
+            required_features_policy=required_features_policy, **kwargs)
 
 
 class ResourceTypeIdentityManagement(IdentityManagement):
@@ -3555,7 +3620,8 @@ class ResourceTypeIdentityManagement(IdentityManagement):
         type: Optional[Union[str, "IdentityManagementTypes"]] = None,
         **kwargs
     ):
-        super(ResourceTypeIdentityManagement, self).__init__(type=type, **kwargs)
+        super(ResourceTypeIdentityManagement,
+              self).__init__(type=type, **kwargs)
 
 
 class ResourceTypeRegistration(Resource):
@@ -3619,7 +3685,8 @@ class ResourceTypeRegistrationArrayResponseWithContinuation(msrest.serialization
         next_link: Optional[str] = None,
         **kwargs
     ):
-        super(ResourceTypeRegistrationArrayResponseWithContinuation, self).__init__(**kwargs)
+        super(ResourceTypeRegistrationArrayResponseWithContinuation,
+              self).__init__(**kwargs)
         self.value = value
         self.next_link = next_link
 
@@ -3733,7 +3800,8 @@ class ResourceTypeRegistrationProperties(msrest.serialization.Model):
         regionality: Optional[Union[str, "Regionality"]] = None,
         endpoints: Optional[List["ResourceTypeEndpoint"]] = None,
         extension_options: Optional["ResourceTypeExtensionOptions"] = None,
-        marketplace_type: Optional[Union[str, "ResourceTypeRegistrationPropertiesMarketplaceType"]] = None,
+        marketplace_type: Optional[Union[str,
+                                         "ResourceTypeRegistrationPropertiesMarketplaceType"]] = None,
         swagger_specifications: Optional[List["SwaggerSpecification"]] = None,
         allowed_unauthorized_actions: Optional[List[str]] = None,
         authorization_action_mappings: Optional[List["AuthorizationActionMapping"]] = None,
@@ -3746,7 +3814,8 @@ class ResourceTypeRegistrationProperties(msrest.serialization.Model):
         enable_async_operation: Optional[bool] = None,
         provisioning_state: Optional[Union[str, "ProvisioningState"]] = None,
         enable_third_party_s2_s: Optional[bool] = None,
-        subscription_lifecycle_notification_specifications: Optional["SubscriptionLifecycleNotificationSpecifications"] = None,
+        subscription_lifecycle_notification_specifications: Optional[
+            "SubscriptionLifecycleNotificationSpecifications"] = None,
         is_pure_proxy: Optional[bool] = None,
         identity_management: Optional["IdentityManagementProperties"] = None,
         check_name_availability_specifications: Optional["CheckNameAvailabilitySpecifications"] = None,
@@ -3757,7 +3826,8 @@ class ResourceTypeRegistrationProperties(msrest.serialization.Model):
         template_deployment_options: Optional["TemplateDeploymentOptions"] = None,
         extended_locations: Optional[List["ExtendedLocationOptions"]] = None,
         resource_move_policy: Optional["ResourceMovePolicy"] = None,
-        resource_deletion_policy: Optional[Union[str, "ResourceDeletionPolicy"]] = None,
+        resource_deletion_policy: Optional[Union[str,
+                                                 "ResourceDeletionPolicy"]] = None,
         **kwargs
     ):
         super(ResourceTypeRegistrationProperties, self).__init__(**kwargs)
@@ -3901,7 +3971,8 @@ class ResourceTypeRegistrationPropertiesautogenerated(ResourceTypeRegistrationPr
         regionality: Optional[Union[str, "Regionality"]] = None,
         endpoints: Optional[List["ResourceTypeEndpoint"]] = None,
         extension_options: Optional["ResourceTypeExtensionOptions"] = None,
-        marketplace_type: Optional[Union[str, "ResourceTypeRegistrationPropertiesMarketplaceType"]] = None,
+        marketplace_type: Optional[Union[str,
+                                         "ResourceTypeRegistrationPropertiesMarketplaceType"]] = None,
         swagger_specifications: Optional[List["SwaggerSpecification"]] = None,
         allowed_unauthorized_actions: Optional[List[str]] = None,
         authorization_action_mappings: Optional[List["AuthorizationActionMapping"]] = None,
@@ -3914,7 +3985,8 @@ class ResourceTypeRegistrationPropertiesautogenerated(ResourceTypeRegistrationPr
         enable_async_operation: Optional[bool] = None,
         provisioning_state: Optional[Union[str, "ProvisioningState"]] = None,
         enable_third_party_s2_s: Optional[bool] = None,
-        subscription_lifecycle_notification_specifications: Optional["SubscriptionLifecycleNotificationSpecifications"] = None,
+        subscription_lifecycle_notification_specifications: Optional[
+            "SubscriptionLifecycleNotificationSpecifications"] = None,
         is_pure_proxy: Optional[bool] = None,
         identity_management: Optional["IdentityManagementProperties"] = None,
         check_name_availability_specifications: Optional["CheckNameAvailabilitySpecifications"] = None,
@@ -3925,10 +3997,12 @@ class ResourceTypeRegistrationPropertiesautogenerated(ResourceTypeRegistrationPr
         template_deployment_options: Optional["TemplateDeploymentOptions"] = None,
         extended_locations: Optional[List["ExtendedLocationOptions"]] = None,
         resource_move_policy: Optional["ResourceMovePolicy"] = None,
-        resource_deletion_policy: Optional[Union[str, "ResourceDeletionPolicy"]] = None,
+        resource_deletion_policy: Optional[Union[str,
+                                                 "ResourceDeletionPolicy"]] = None,
         **kwargs
     ):
-        super(ResourceTypeRegistrationPropertiesautogenerated, self).__init__(routing_type=routing_type, regionality=regionality, endpoints=endpoints, extension_options=extension_options, marketplace_type=marketplace_type, swagger_specifications=swagger_specifications, allowed_unauthorized_actions=allowed_unauthorized_actions, authorization_action_mappings=authorization_action_mappings, linked_access_checks=linked_access_checks, default_api_version=default_api_version, logging_rules=logging_rules, throttling_rules=throttling_rules, required_features=required_features, features_rule=features_rule, enable_async_operation=enable_async_operation, provisioning_state=provisioning_state, enable_third_party_s2_s=enable_third_party_s2_s, subscription_lifecycle_notification_specifications=subscription_lifecycle_notification_specifications, is_pure_proxy=is_pure_proxy, identity_management=identity_management, check_name_availability_specifications=check_name_availability_specifications, disallowed_action_verbs=disallowed_action_verbs, service_tree_infos=service_tree_infos, request_header_options=request_header_options, subscription_state_rules=subscription_state_rules, template_deployment_options=template_deployment_options, extended_locations=extended_locations, resource_move_policy=resource_move_policy, resource_deletion_policy=resource_deletion_policy, **kwargs)
+        super(ResourceTypeRegistrationPropertiesautogenerated, self).__init__(routing_type=routing_type, regionality=regionality, endpoints=endpoints, extension_options=extension_options, marketplace_type=marketplace_type, swagger_specifications=swagger_specifications, allowed_unauthorized_actions=allowed_unauthorized_actions, authorization_action_mappings=authorization_action_mappings, linked_access_checks=linked_access_checks, default_api_version=default_api_version, logging_rules=logging_rules, throttling_rules=throttling_rules, required_features=required_features, features_rule=features_rule, enable_async_operation=enable_async_operation, provisioning_state=provisioning_state,
+                                                                              enable_third_party_s2_s=enable_third_party_s2_s, subscription_lifecycle_notification_specifications=subscription_lifecycle_notification_specifications, is_pure_proxy=is_pure_proxy, identity_management=identity_management, check_name_availability_specifications=check_name_availability_specifications, disallowed_action_verbs=disallowed_action_verbs, service_tree_infos=service_tree_infos, request_header_options=request_header_options, subscription_state_rules=subscription_state_rules, template_deployment_options=template_deployment_options, extended_locations=extended_locations, resource_move_policy=resource_move_policy, resource_deletion_policy=resource_deletion_policy, **kwargs)
 
 
 class ResourceTypeRegistrationPropertiesCheckNameAvailabilitySpecifications(CheckNameAvailabilitySpecifications):
@@ -3952,7 +4026,8 @@ class ResourceTypeRegistrationPropertiesCheckNameAvailabilitySpecifications(Chec
         resource_types_with_custom_validation: Optional[List[str]] = None,
         **kwargs
     ):
-        super(ResourceTypeRegistrationPropertiesCheckNameAvailabilitySpecifications, self).__init__(enable_default_validation=enable_default_validation, resource_types_with_custom_validation=resource_types_with_custom_validation, **kwargs)
+        super(ResourceTypeRegistrationPropertiesCheckNameAvailabilitySpecifications, self).__init__(
+            enable_default_validation=enable_default_validation, resource_types_with_custom_validation=resource_types_with_custom_validation, **kwargs)
 
 
 class ResourceTypeRegistrationPropertiesExtensionOptions(ResourceTypeExtensionOptions):
@@ -3972,7 +4047,8 @@ class ResourceTypeRegistrationPropertiesExtensionOptions(ResourceTypeExtensionOp
         resource_creation_begin: Optional["ExtensionOptions"] = None,
         **kwargs
     ):
-        super(ResourceTypeRegistrationPropertiesExtensionOptions, self).__init__(resource_creation_begin=resource_creation_begin, **kwargs)
+        super(ResourceTypeRegistrationPropertiesExtensionOptions, self).__init__(
+            resource_creation_begin=resource_creation_begin, **kwargs)
 
 
 class ResourceTypeRegistrationPropertiesFeaturesRule(FeaturesRule):
@@ -3998,7 +4074,8 @@ class ResourceTypeRegistrationPropertiesFeaturesRule(FeaturesRule):
         required_features_policy: Union[str, "FeaturesPolicy"],
         **kwargs
     ):
-        super(ResourceTypeRegistrationPropertiesFeaturesRule, self).__init__(required_features_policy=required_features_policy, **kwargs)
+        super(ResourceTypeRegistrationPropertiesFeaturesRule, self).__init__(
+            required_features_policy=required_features_policy, **kwargs)
 
 
 class ResourceTypeRegistrationPropertiesIdentityManagement(IdentityManagementProperties):
@@ -4023,7 +4100,8 @@ class ResourceTypeRegistrationPropertiesIdentityManagement(IdentityManagementPro
         application_id: Optional[str] = None,
         **kwargs
     ):
-        super(ResourceTypeRegistrationPropertiesIdentityManagement, self).__init__(type=type, application_id=application_id, **kwargs)
+        super(ResourceTypeRegistrationPropertiesIdentityManagement, self).__init__(
+            type=type, application_id=application_id, **kwargs)
 
 
 class ResourceTypeRegistrationPropertiesRequestHeaderOptions(RequestHeaderOptions):
@@ -4044,7 +4122,8 @@ class ResourceTypeRegistrationPropertiesRequestHeaderOptions(RequestHeaderOption
         opt_in_headers: Optional[Union[str, "OptInHeaderType"]] = None,
         **kwargs
     ):
-        super(ResourceTypeRegistrationPropertiesRequestHeaderOptions, self).__init__(opt_in_headers=opt_in_headers, **kwargs)
+        super(ResourceTypeRegistrationPropertiesRequestHeaderOptions,
+              self).__init__(opt_in_headers=opt_in_headers, **kwargs)
 
 
 class ResourceTypeRegistrationPropertiesResourceMovePolicy(ResourceMovePolicy):
@@ -4072,7 +4151,8 @@ class ResourceTypeRegistrationPropertiesResourceMovePolicy(ResourceMovePolicy):
         cross_subscription_move_enabled: Optional[bool] = None,
         **kwargs
     ):
-        super(ResourceTypeRegistrationPropertiesResourceMovePolicy, self).__init__(validation_required=validation_required, cross_resource_group_move_enabled=cross_resource_group_move_enabled, cross_subscription_move_enabled=cross_subscription_move_enabled, **kwargs)
+        super(ResourceTypeRegistrationPropertiesResourceMovePolicy, self).__init__(validation_required=validation_required,
+                                                                                   cross_resource_group_move_enabled=cross_resource_group_move_enabled, cross_subscription_move_enabled=cross_subscription_move_enabled, **kwargs)
 
 
 class ResourceTypeRegistrationPropertiesSubscriptionLifecycleNotificationSpecifications(SubscriptionLifecycleNotificationSpecifications):
@@ -4097,7 +4177,8 @@ class ResourceTypeRegistrationPropertiesSubscriptionLifecycleNotificationSpecifi
         soft_delete_ttl: Optional[datetime.timedelta] = None,
         **kwargs
     ):
-        super(ResourceTypeRegistrationPropertiesSubscriptionLifecycleNotificationSpecifications, self).__init__(subscription_state_override_actions=subscription_state_override_actions, soft_delete_ttl=soft_delete_ttl, **kwargs)
+        super(ResourceTypeRegistrationPropertiesSubscriptionLifecycleNotificationSpecifications, self).__init__(
+            subscription_state_override_actions=subscription_state_override_actions, soft_delete_ttl=soft_delete_ttl, **kwargs)
 
 
 class ResourceTypeRegistrationPropertiesTemplateDeploymentOptions(TemplateDeploymentOptions):
@@ -4118,10 +4199,12 @@ class ResourceTypeRegistrationPropertiesTemplateDeploymentOptions(TemplateDeploy
         self,
         *,
         preflight_supported: Optional[bool] = None,
-        preflight_options: Optional[List[Union[str, "PreflightOption"]]] = None,
+        preflight_options: Optional[List[Union[str,
+                                               "PreflightOption"]]] = None,
         **kwargs
     ):
-        super(ResourceTypeRegistrationPropertiesTemplateDeploymentOptions, self).__init__(preflight_supported=preflight_supported, preflight_options=preflight_options, **kwargs)
+        super(ResourceTypeRegistrationPropertiesTemplateDeploymentOptions, self).__init__(
+            preflight_supported=preflight_supported, preflight_options=preflight_options, **kwargs)
 
 
 class ResourceTypeRequestHeaderOptions(RequestHeaderOptions):
@@ -4142,7 +4225,8 @@ class ResourceTypeRequestHeaderOptions(RequestHeaderOptions):
         opt_in_headers: Optional[Union[str, "OptInHeaderType"]] = None,
         **kwargs
     ):
-        super(ResourceTypeRequestHeaderOptions, self).__init__(opt_in_headers=opt_in_headers, **kwargs)
+        super(ResourceTypeRequestHeaderOptions, self).__init__(
+            opt_in_headers=opt_in_headers, **kwargs)
 
 
 class ResourceTypeSku(msrest.serialization.Model):
@@ -4235,7 +4319,8 @@ class ResourceTypeTemplateDeploymentPolicy(TemplateDeploymentPolicy):
         preflight_options: Union[str, "TemplateDeploymentPreflightOptions"],
         **kwargs
     ):
-        super(ResourceTypeTemplateDeploymentPolicy, self).__init__(capabilities=capabilities, preflight_options=preflight_options, **kwargs)
+        super(ResourceTypeTemplateDeploymentPolicy, self).__init__(
+            capabilities=capabilities, preflight_options=preflight_options, **kwargs)
 
 
 class ServiceTreeInfo(msrest.serialization.Model):
@@ -4512,7 +4597,8 @@ class SkuResourceProperties(ResourceTypeSku):
         sku_settings: List["SkuSetting"],
         **kwargs
     ):
-        super(SkuResourceProperties, self).__init__(sku_settings=sku_settings, **kwargs)
+        super(SkuResourceProperties, self).__init__(
+            sku_settings=sku_settings, **kwargs)
 
 
 class SkuSetting(msrest.serialization.Model):
@@ -4632,7 +4718,8 @@ class SkuSettingCapacity(SkuCapacity):
         scale_type: Optional[Union[str, "SkuScaleType"]] = None,
         **kwargs
     ):
-        super(SkuSettingCapacity, self).__init__(minimum=minimum, maximum=maximum, default=default, scale_type=scale_type, **kwargs)
+        super(SkuSettingCapacity, self).__init__(minimum=minimum,
+                                                 maximum=maximum, default=default, scale_type=scale_type, **kwargs)
 
 
 class SkuZoneDetail(msrest.serialization.Model):
