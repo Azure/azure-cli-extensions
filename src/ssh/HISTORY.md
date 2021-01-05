@@ -1,6 +1,13 @@
 Release History
 ===============
 
+0.1.3
+-----
+* Add support for using private IPs
+* Add support for --name instead of --vm-name
+* lowercase username by default
+* Fix various typos
+
 0.1.2
 -----
 * Add support for hardware tokens (don't require the private key be passed in)
