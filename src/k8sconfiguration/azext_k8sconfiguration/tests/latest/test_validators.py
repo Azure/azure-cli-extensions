@@ -75,31 +75,34 @@ class TestValidateK8sNaming(unittest.TestCase):
 
     def test_long_config_name(self):
         config_name = "thisisaverylongnamethatistoolongtobeusedthisisaverylongnamethatistoolongtobeused"
-        namespace = Name(config_name)
         err = 'Invalid configuration name'
         with self.assertRaises(InvalidArgumentValueError) as cm:
-            validators.validate_configuration_name(namespace)
+            validators.validate_configuration_name(config_name)
         self.assertEqual(str(cm.exception), err)
 
     def test_valid_config_name(self):
         config_name = "this-is-a-valid-config"
-        namespace = Name(config_name)
-        validators.validate_configuration_name(namespace)
+        validators.validate_configuration_name(config_name)
     
     def test_caps_config_name(self):
         config_name = "ThisIsaCapsConfigName"
-        namespace = Name(config_name)
         err = 'Invalid configuration name'
         with self.assertRaises(InvalidArgumentValueError) as cm:
-            validators.validate_configuration_name(namespace)
+            validators.validate_configuration_name(config_name)
         self.assertEqual(str(cm.exception), err)
 
     def test_dot_config_name(self):
-        config_name = "ThisIsaCapsConfigName"
-        namespace = Name(config_name)
+        config_name = "a234567890b234567890c234567890d234567890e234567890f234567890.23"
         err = 'Invalid configuration name'
         with self.assertRaises(InvalidArgumentValueError) as cm:
-            validators.validate_configuration_name(namespace)
+            validators.validate_configuration_name(config_name)
+        self.assertEqual(str(cm.exception), err)
+
+    def test_end_hyphen_config_name(self):
+        config_name = "a234567890b234567890c234567890d234567890e234567890f23456789023-"
+        err = 'Invalid configuration name'
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_configuration_name(config_name)
         self.assertEqual(str(cm.exception), err)
 
 
@@ -155,10 +158,6 @@ class TestValidateKnownHosts(unittest.TestCase):
             validate_known_hosts(known_hosts_encoded)
         self.assertEqual(str(cm.exception), err)
 
-
-class Name:
-    def __init__(self, name):
-        self.name = name
 
 class OperatorNamespace:
     def __init__(self, operator_namespace):
