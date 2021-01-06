@@ -5,6 +5,7 @@
 
 from collections import OrderedDict
 
+
 def k8sconfiguration_list_table_format(results):
     formatted_result = []
     for result in results:
@@ -19,6 +20,7 @@ def k8sconfiguration_list_table_format(results):
             ])
         )
     return formatted_result
+
 
 def k8sconfiguration_show_table_format(result):
     return OrderedDict([

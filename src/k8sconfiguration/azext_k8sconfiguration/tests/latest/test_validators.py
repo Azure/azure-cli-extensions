@@ -12,7 +12,7 @@ class TestValidateKeyTypes(unittest.TestCase):
         private_key_encoded = base64.b64encode("this is not a valid private key".encode('utf-8')).decode('utf-8')
         err = "Error! ssh private key provided in invalid format"
         with self.assertRaises(InvalidArgumentValueError) as cm:
-            protected_settings = get_protected_settings(private_key_encoded, '', '', '')
+            get_protected_settings(private_key_encoded, '', '', '')
         self.assertEqual(str(cm.exception), err)
 
     def test_rsa_private_key(self):
@@ -40,6 +40,7 @@ class TestValidateKeyTypes(unittest.TestCase):
         self.assertEqual('sshPrivateKey' in protected_settings, True)
         self.assertEqual(protected_settings.get('sshPrivateKey'), ed25519_key)
 
+
 class TestValidateK8sNaming(unittest.TestCase):
     def test_long_operator_namespace(self):
         operator_namespace = "thisisaverylongnamethatistoolongtobeused"
@@ -64,7 +65,7 @@ class TestValidateK8sNaming(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_operator_namespace(namespace)
         self.assertEqual(str(cm.exception), err)
-    
+
     def test_caps_operator_instance_name(self):
         operator_instance_name = 'Myoperatorname'
         namespace = OperatorInstanceName(operator_instance_name)
@@ -83,7 +84,7 @@ class TestValidateK8sNaming(unittest.TestCase):
     def test_valid_config_name(self):
         config_name = "this-is-a-valid-config"
         validators.validate_configuration_name(config_name)
-    
+
     def test_caps_config_name(self):
         config_name = "ThisIsaCapsConfigName"
         err = 'Invalid configuration name'
@@ -112,7 +113,7 @@ class TestValidateURLWithParams(unittest.TestCase):
 
     def test_ssh_known_hosts_with_ssh_url(self):
         validate_url_with_params('git@github.com:jonathan-innis/helm-operator-get-started-private.git', False, True, False)
-    
+
     def test_https_auth_with_https_url(self):
         validate_url_with_params('https://github.com/jonathan-innis/helm-operator-get-started-private.git', False, False, True)
 
@@ -127,29 +128,30 @@ class TestValidateURLWithParams(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             validate_url_with_params('https://github.com/jonathan-innis/helm-operator-get-started-private.git', False, True, False)
         self.assertEqual(str(cm.exception), err)
-    
+
     def test_https_auth_with_ssh_url(self):
         err = 'Error! https auth (--https-user and --https-key) cannot be used with a non-http(s) url'
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             validate_url_with_params('git@github.com:jonathan-innis/helm-operator-get-started-private.git', False, False, True)
         self.assertEqual(str(cm.exception), err)
 
+
 class TestValidateKnownHosts(unittest.TestCase):
     def test_valid_known_hosts(self):
         known_hosts_raw = "ssh.dev.azure.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Hr1oTWqNqOlzGJOfGJ4NakVyIzf1rXYd4d7wo6jBlkLvCA4odBlL0mDUyZ0/QUfTTqeu+tm22gOsv+VrVTMk6vwRU75gY/y9ut5Mb3bR5BV58dKXyq9A9UeB5Cakehn5Zgm6x1mKoVyf+FFn26iYqXJRgzIZZcZ5V6hrE0Qg39kZm4az48o0AUbf6Sp4SLdvnuMa2sVNwHBboS7EJkm57XQPVU3/QpyNLHbWDdzwtrlS+ez30S3AdYhLKEOxAG8weOnyrtLJAUen9mTkol8oII1edf7mWWbWVf0nBmly21+nZcmCTISQBtdcyPaEno7fFQMDD26/s0lfKob4Kw8H"
         known_hosts_encoded = base64.b64encode(known_hosts_raw.encode('utf-8')).decode('utf-8')
         validate_known_hosts(known_hosts_encoded)
-    
+
     def test_valid_known_hosts_with_comment(self):
         known_hosts_raw = "ssh.dev.azure.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Hr1oTWqNqOlzGJOfGJ4NakVyIzf1rXYd4d7wo6jBlkLvCA4odBlL0mDUyZ0/QUfTTqeu+tm22gOsv+VrVTMk6vwRU75gY/y9ut5Mb3bR5BV58dKXyq9A9UeB5Cakehn5Zgm6x1mKoVyf+FFn26iYqXJRgzIZZcZ5V6hrE0Qg39kZm4az48o0AUbf6Sp4SLdvnuMa2sVNwHBboS7EJkm57XQPVU3/QpyNLHbWDdzwtrlS+ez30S3AdYhLKEOxAG8weOnyrtLJAUen9mTkol8oII1edf7mWWbWVf0nBmly21+nZcmCTISQBtdcyPaEno7fFQMDD26/s0lfKob4Kw8H ThisIsAValidComment"
         known_hosts_encoded = base64.b64encode(known_hosts_raw.encode('utf-8')).decode('utf-8')
         validate_known_hosts(known_hosts_encoded)
-    
+
     def test_valid_known_hosts_with_comment_own_line(self):
         known_hosts_raw = "#this is a comment on its own line\nssh.dev.azure.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7Hr1oTWqNqOlzGJOfGJ4NakVyIzf1rXYd4d7wo6jBlkLvCA4odBlL0mDUyZ0/QUfTTqeu+tm22gOsv+VrVTMk6vwRU75gY/y9ut5Mb3bR5BV58dKXyq9A9UeB5Cakehn5Zgm6x1mKoVyf+FFn26iYqXJRgzIZZcZ5V6hrE0Qg39kZm4az48o0AUbf6Sp4SLdvnuMa2sVNwHBboS7EJkm57XQPVU3/QpyNLHbWDdzwtrlS+ez30S3AdYhLKEOxAG8weOnyrtLJAUen9mTkol8oII1edf7mWWbWVf0nBmly21+nZcmCTISQBtdcyPaEno7fFQMDD26/s0lfKob4Kw8H"
         known_hosts_encoded = base64.b64encode(known_hosts_raw.encode('utf-8')).decode('utf-8')
         validate_known_hosts(known_hosts_encoded)
-    
+
     def test_invalid_known_hosts(self):
         known_hosts_raw = "thisisabadknownhostsfilethatisaninvalidformat"
         known_hosts_encoded = base64.b64encode(known_hosts_raw.encode('utf-8')).decode('utf-8')
@@ -162,6 +164,7 @@ class TestValidateKnownHosts(unittest.TestCase):
 class OperatorNamespace:
     def __init__(self, operator_namespace):
         self.operator_namespace = operator_namespace
+
 
 class OperatorInstanceName:
     def __init__(self, operator_instance_name):

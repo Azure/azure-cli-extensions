@@ -66,7 +66,7 @@ def load_arguments(self, _):
                    help='Instance name of the Operator',
                    validator=validate_operator_instance_name)
         c.argument('operator_namespace',
-                   help='Namespace in which to install the Operator', 
+                   help='Namespace in which to install the Operator',
                    validator=validate_operator_namespace)
         c.argument('operator_type',
                    help='''Type of the operator. Valid value is 'flux' ''')
