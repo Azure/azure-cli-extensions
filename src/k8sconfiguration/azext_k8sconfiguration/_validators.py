@@ -17,27 +17,27 @@ def validate_configuration_type(configuration_type):
 
 def validate_operator_namespace(namespace):
     if namespace.operator_namespace:
-        __validate_k8s_name(namespace.operator_namespace, "operator namespace", 23)
+        __validate_k8s_name(namespace.operator_namespace, "--operator-namespace", 23)
 
 
 def validate_operator_instance_name(namespace):
     if namespace.operator_instance_name:
-        __validate_k8s_name(namespace.operator_instance_name, "operator instance name", 23)
+        __validate_k8s_name(namespace.operator_instance_name, "--operator-name", 23)
 
 
 # Create Parameter Validation
 def validate_configuration_name(configuration_name):
-    __validate_k8s_name(configuration_name, "configuration name", 63)
+    __validate_k8s_name(configuration_name, "--name", 63)
 
 
 # Helper
 def __validate_k8s_name(param_value, param_name, max_len):
     if len(param_value) > max_len:
         raise InvalidArgumentValueError(
-            'Invalid {0}'.format(param_name),
-            'Valid {0}s can be a maximum of {1} characters'.format(param_name, max_len))
+            'Error! Invalid {0}'.format(param_name),
+            'Valid {0} can be a maximum of {1} characters'.format(param_name, max_len))
     if not re.match(r'^[a-z0-9]([-a-z0-9]*[a-z0-9])?$', param_value):
         raise InvalidArgumentValueError(
-            'Invalid {0}'.format(param_name),
-            'Valid {0}s can only contain lowercase alphanumeric characters and hyphens \
-                and cannot end with a hyphen'.format(param_name))
+            'Error! Invalid {0}'.format(param_name),
+            'Valid {0} can only contain lowercase alphanumeric characters, hyphens, '
+            'and cannot begin or end with a hyphen'.format(param_name))

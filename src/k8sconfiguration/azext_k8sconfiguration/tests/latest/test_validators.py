@@ -45,7 +45,7 @@ class TestValidateK8sNaming(unittest.TestCase):
     def test_long_operator_namespace(self):
         operator_namespace = "thisisaverylongnamethatistoolongtobeused"
         namespace = OperatorNamespace(operator_namespace)
-        err = 'Invalid operator namespace'
+        err = 'Error! Invalid --operator-namespace'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_operator_namespace(namespace)
         self.assertEqual(str(cm.exception), err)
@@ -53,7 +53,7 @@ class TestValidateK8sNaming(unittest.TestCase):
     def test_long_operator_instance_name(self):
         operator_instance_name = "thisisaverylongnamethatistoolongtobeused"
         namespace = OperatorInstanceName(operator_instance_name)
-        err = 'Invalid operator instance name'
+        err = 'Error! Invalid --operator-name'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_operator_instance_name(namespace)
         self.assertEqual(str(cm.exception), err)
@@ -61,7 +61,7 @@ class TestValidateK8sNaming(unittest.TestCase):
     def test_caps_operator_namespace(self):
         operator_namespace = 'Myoperatornamespace'
         namespace = OperatorNamespace(operator_namespace)
-        err = 'Invalid operator namespace'
+        err = 'Error! Invalid --operator-namespace'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_operator_namespace(namespace)
         self.assertEqual(str(cm.exception), err)
@@ -69,14 +69,14 @@ class TestValidateK8sNaming(unittest.TestCase):
     def test_caps_operator_instance_name(self):
         operator_instance_name = 'Myoperatorname'
         namespace = OperatorInstanceName(operator_instance_name)
-        err = 'Invalid operator instance name'
+        err = 'Error! Invalid --operator-name'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_operator_instance_name(namespace)
         self.assertEqual(str(cm.exception), err)
 
     def test_long_config_name(self):
         config_name = "thisisaverylongnamethatistoolongtobeusedthisisaverylongnamethatistoolongtobeused"
-        err = 'Invalid configuration name'
+        err = 'Error! Invalid --name'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_configuration_name(config_name)
         self.assertEqual(str(cm.exception), err)
@@ -87,21 +87,21 @@ class TestValidateK8sNaming(unittest.TestCase):
 
     def test_caps_config_name(self):
         config_name = "ThisIsaCapsConfigName"
-        err = 'Invalid configuration name'
+        err = 'Error! Invalid --name'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_configuration_name(config_name)
         self.assertEqual(str(cm.exception), err)
 
     def test_dot_config_name(self):
         config_name = "a234567890b234567890c234567890d234567890e234567890f234567890.23"
-        err = 'Invalid configuration name'
+        err = 'Error! Invalid --name'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_configuration_name(config_name)
         self.assertEqual(str(cm.exception), err)
 
     def test_end_hyphen_config_name(self):
         config_name = "a234567890b234567890c234567890d234567890e234567890f23456789023-"
-        err = 'Invalid configuration name'
+        err = 'Error! Invalid --name'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_configuration_name(config_name)
         self.assertEqual(str(cm.exception), err)
