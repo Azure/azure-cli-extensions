@@ -6,12 +6,16 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._service_operations_async import ServiceOperations
-from ._operation_operations_async import OperationOperations
-from ._operation_result_operations_async import OperationResultOperations
+from ._service_operations import ServiceOperations
+from ._operation_operations import OperationOperations
+from ._operation_result_operations import OperationResultOperations
+from ._private_endpoint_connection_operations import PrivateEndpointConnectionOperations
+from ._private_link_resource_operations import PrivateLinkResourceOperations
 
 __all__ = [
     'ServiceOperations',
     'OperationOperations',
     'OperationResultOperations',
+    'PrivateEndpointConnectionOperations',
+    'PrivateLinkResourceOperations',
 ]
