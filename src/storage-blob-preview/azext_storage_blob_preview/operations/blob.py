@@ -586,6 +586,7 @@ def snapshot_blob(client, metadata=None, **kwargs):
     return client.get_blob_properties()
 
 
+# pylint: disable=protected-access
 def _adjust_block_blob_size(client, blob_type, length):
     if not blob_type or blob_type != 'block':
         return
