@@ -39,4 +39,5 @@ def __validate_k8s_name(param_value, param_name, max_len):
     if not re.match(r'^[a-z0-9]([-a-z0-9]*[a-z0-9])?$', param_value):
         raise InvalidArgumentValueError(
             'Invalid {0}'.format(param_name),
-            'Valid {0}s can only contain lowercase alphanumeric characters and hyphens and cannot end with a hyphen'.format(param_name))
+            'Valid {0}s can only contain lowercase alphanumeric characters and hyphens \
+                and cannot end with a hyphen'.format(param_name))

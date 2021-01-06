@@ -13,7 +13,7 @@ from azure.cli.core.commands.parameters import (
 )
 
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from ._validators import validate_configuration_type, validate_configuration_name, validate_operator_namespace, validate_operator_instance_name
+from ._validators import validate_configuration_type, validate_operator_namespace, validate_operator_instance_name
 
 
 def load_arguments(self, _):

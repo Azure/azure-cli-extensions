@@ -6,7 +6,6 @@
 import base64
 import io
 from urllib.parse import urlparse
-from ._validators import validate_configuration_name
 from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError, \
     RequiredArgumentMissingError, MutuallyExclusiveArgumentError
 from knack.log import get_logger
@@ -18,6 +17,7 @@ from Crypto.PublicKey import RSA, ECC, DSA
 from azext_k8sconfiguration.vendored_sdks.models import SourceControlConfiguration
 from azext_k8sconfiguration.vendored_sdks.models import HelmOperatorProperties
 from azext_k8sconfiguration.vendored_sdks.models import ErrorResponseException
+from ._validators import validate_configuration_name
 
 logger = get_logger(__name__)
 
