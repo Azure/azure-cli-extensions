@@ -53,7 +53,7 @@ class TestValidateK8sNaming(unittest.TestCase):
     def test_long_operator_instance_name(self):
         operator_instance_name = "thisisaverylongnamethatistoolongtobeused"
         namespace = OperatorInstanceName(operator_instance_name)
-        err = 'Error! Invalid --operator-name'
+        err = 'Error! Invalid --operator-instance-name'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_operator_instance_name(namespace)
         self.assertEqual(str(cm.exception), err)
@@ -69,7 +69,7 @@ class TestValidateK8sNaming(unittest.TestCase):
     def test_caps_operator_instance_name(self):
         operator_instance_name = 'Myoperatorname'
         namespace = OperatorInstanceName(operator_instance_name)
-        err = 'Error! Invalid --operator-name'
+        err = 'Error! Invalid --operator-instance-name'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_operator_instance_name(namespace)
         self.assertEqual(str(cm.exception), err)

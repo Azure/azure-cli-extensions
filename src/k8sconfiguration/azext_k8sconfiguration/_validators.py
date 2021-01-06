@@ -22,7 +22,7 @@ def validate_operator_namespace(namespace):
 
 def validate_operator_instance_name(namespace):
     if namespace.operator_instance_name:
-        __validate_k8s_name(namespace.operator_instance_name, "--operator-name", 23)
+        __validate_k8s_name(namespace.operator_instance_name, "--operator-instance-name", 23)
 
 
 # Create Parameter Validation
@@ -41,7 +41,6 @@ def __validate_k8s_name(param_value, param_name, max_len):
             raise InvalidArgumentValueError(
                 'Error! Invalid {0}'.format(param_name),
                 'Parameter {0} cannot begin or end with a hyphen'.format(param_name))
-        else:
-            raise InvalidArgumentValueError(
-                'Error! Invalid {0}'.format(param_name),
-                'Parameter {0} can only contain lowercase alphanumeric characters and hyphens'.format(param_name))
+        raise InvalidArgumentValueError(
+            'Error! Invalid {0}'.format(param_name),
+            'Parameter {0} can only contain lowercase alphanumeric characters and hyphens'.format(param_name))
