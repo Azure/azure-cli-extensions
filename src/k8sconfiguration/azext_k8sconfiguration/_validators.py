@@ -35,9 +35,13 @@ def __validate_k8s_name(param_value, param_name, max_len):
     if len(param_value) > max_len:
         raise InvalidArgumentValueError(
             'Error! Invalid {0}'.format(param_name),
-            'Valid {0} can be a maximum of {1} characters'.format(param_name, max_len))
+            'Parameter {0} can be a maximum of {1} characters'.format(param_name, max_len))
     if not re.match(r'^[a-z0-9]([-a-z0-9]*[a-z0-9])?$', param_value):
-        raise InvalidArgumentValueError(
-            'Error! Invalid {0}'.format(param_name),
-            'Valid {0} can only contain lowercase alphanumeric characters, hyphens, '
-            'and cannot begin or end with a hyphen'.format(param_name))
+        if param_value[0] == "-" or param_value[-1] == "-":
+            raise InvalidArgumentValueError(
+                'Error! Invalid {0}'.format(param_name),
+                'Parameter {0} cannot begin or end with a hyphen'.format(param_name))
+        else:
+            raise InvalidArgumentValueError(
+                'Error! Invalid {0}'.format(param_name),
+                'Parameter {0} can only contain lowercase alphanumeric characters and hyphens'.format(param_name))

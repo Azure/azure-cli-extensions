@@ -51,7 +51,7 @@ def load_arguments(self, _):
         c.argument('operator_params',
                    help='Parameters for the Operator')
         c.argument('ssh_private_key',
-                   help='Specify private ssh key for private repository sync (either base64 encoded or raw)')
+                   help='Specify base64-encoded private ssh key for private repository sync')
         c.argument('ssh_private_key_file',
                    help='Specify filepath to private ssh key for private repository sync')
         c.argument('https_user',
