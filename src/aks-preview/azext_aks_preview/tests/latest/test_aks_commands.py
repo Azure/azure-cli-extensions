@@ -152,7 +152,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
-                     '--vm-set-type VirtualMachineScaleSets  AvailabilitySet -c 1 ' \
+                     '--vm-set-type VirtualMachineScaleSets -c 1 ' \
                      '--enable-aad --enable-azure-rbac --aad-admin-group-object-ids 00000000-0000-0000-0000-000000000001 -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -198,6 +198,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 'addonProfiles.ingressApplicationGateway.config.subnetCIDR', "10.2.0.0/16")
         ])
 
+    @live_only()
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_byo_subnet_with_ingress_appgw_addon(self, resource_group, resource_group_location):
@@ -249,6 +250,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'addon_client_id': addon_client_id,
         })
 
+    @live_only()
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_byo_appgw_with_ingress_appgw_addon(self, resource_group, resource_group_location):

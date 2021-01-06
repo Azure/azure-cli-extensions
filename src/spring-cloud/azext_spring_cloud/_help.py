@@ -208,6 +208,13 @@ helps['spring-cloud app set-deployment'] = """
       text: az spring-cloud app set-deployment -d green-deployment -n MyApp -s MyCluster -g MyResourceGroup
 """
 
+helps['spring-cloud app unset-deployment'] = """
+    type: command
+    short-summary: Unset production deployment of an app.
+    examples:
+    - name: Swap the production deployment of an app to staging if the app has the production deployment.
+      text: az spring-cloud app unset-deployment -n MyApp -s MyCluster -g MyResourceGroup
+"""
 
 helps['spring-cloud app log'] = """
     type: group

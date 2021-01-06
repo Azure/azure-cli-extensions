@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.4.72
+++++++
+* Add --no-uptime-sla
+* Create MSI clusters by default.
+
 0.4.71
 ++++++
 * Add support using custom private dns zone resource id for parameter '--private-dns-zone'

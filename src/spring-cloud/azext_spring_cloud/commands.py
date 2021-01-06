@@ -48,6 +48,8 @@ def load_command_table(self, _):
         g.custom_command('show-deploy-log', 'app_get_build_log')
         g.custom_command('set-deployment', 'app_set_deployment',
                          supports_no_wait=True)
+        g.custom_command('unset-deployment', 'app_unset_deployment',
+                         supports_no_wait=True)
         g.custom_command('delete', 'app_delete')
         g.custom_command('list', 'app_list',
                          table_transformer=transform_app_table_output)
