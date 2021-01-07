@@ -203,7 +203,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         pass
 
     file_client_sdk = CliCommandType(
-        operations_tmpl='azure.multiapi.storagev2.fileshare._file_client#ShareFileClient.{}',
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storagev2.fileshare._file_client#ShareFileClient.{}',
         client_factory=cf_share_client,
         resource_type=CUSTOM_DATA_STORAGE_FILESHARE
     )

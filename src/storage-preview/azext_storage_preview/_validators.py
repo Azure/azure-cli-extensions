@@ -292,8 +292,11 @@ def get_content_setting_validator(settings_class, update, guess_from_file=None, 
         # There is an issue of Python SDK to follow up this problem, and if the SDK is fixed, the logic can be removed
         # Issue link: https://github.com/Azure/azure-sdk-for-python/issues/15919
         if process_md5:
-            from .track2_util import string_to_bytes
-            new_props.content_md5 = string_to_bytes(new_props.content_md5)
+            from .track2_util import string_to_bytearray
+            # In Track 2 the content_md5 is eventually serialized to a base-64 string and added to the header:
+            # self._serialize.header("file_content_md5", file_content_md5, 'bytearray') --> Serializer.serialize_bytearray
+            # so before the SDK fixes the problem, we need to deserialize content_md5 into a bytearray
+            new_props.content_md5 = string_to_bytearray(new_props.content_md5)
 
         ns['content_settings'] = new_props
 

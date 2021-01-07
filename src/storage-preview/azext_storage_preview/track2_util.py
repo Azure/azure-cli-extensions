@@ -4,9 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 
-def string_to_bytes(data, encoding="utf-8"):
+def string_to_bytearray(data):
+    from msrest.serialization import Deserializer
     if isinstance(data, str):
-        return data.encode(encoding)
+        return Deserializer.deserialize_bytearray(data)
+
     return data
 
 

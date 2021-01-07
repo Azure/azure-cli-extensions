@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.7.1 (2020-01-07)
+++++++++++++++++
+* Modify the processing logic of content-md5 and add related tests
+
 0.7.0 (2020-12-28)
 ++++++++++++++++
 * Add support for `az storage file upload`, `az storage file upload-batch` (Track 2)

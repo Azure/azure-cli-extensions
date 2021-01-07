@@ -22,13 +22,19 @@ class StorageFileShareScenarios(StorageScenarioMixin, ScenarioTest):
         local_file = os.path.join(curr_dir, 'upload_file').replace('\\', '\\\\')
         local_file_name = 'upload_file'
 
+        import hashlib
+        with open(local_file, 'rb') as fp:
+            data = fp.read()
+        md5 = hashlib.md5(data).hexdigest()
+
         self.storage_cmd('storage file upload -s {} --source "{}" '
                          '--content-cache-control no-cache '
                          '--content-disposition attachment '
                          '--content-encoding compress '
                          '--content-language en-US '
                          '--content-type "multipart/form-data;" '
-                         '--metadata key=val ', account_info, share_name, local_file)
+                         '--content-md5 {} '
+                         '--metadata key=val ', account_info, share_name, local_file, md5)
 
         self.storage_cmd('storage file show -s {} -p "{}"', account_info, share_name, local_file_name) \
             .assert_with_checks(JMESPathCheck('name', local_file_name),
@@ -37,6 +43,7 @@ class StorageFileShareScenarios(StorageScenarioMixin, ScenarioTest):
                                 JMESPathCheck('properties.contentSettings.contentEncoding', 'compress'),
                                 JMESPathCheck('properties.contentSettings.contentLanguage', 'en-US'),
                                 JMESPathCheck('properties.contentSettings.contentType', 'multipart/form-data;'),
+                                JMESPathCheck('properties.contentSettings.contentMd5', md5),
                                 JMESPathCheck('metadata', {'key': 'val'}))
 
         dest_dir = 'dest_dir'
