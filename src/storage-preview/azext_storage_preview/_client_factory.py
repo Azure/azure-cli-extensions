@@ -138,7 +138,6 @@ def cf_mgmt_file_services(cli_ctx, _):
 
 
 def get_account_url(cli_ctx, account_name, service):
-    from knack.util import CLIError
     if account_name is None:
         raise CLIError("Please provide storage account name or connection string.")
     storage_endpoint = cli_ctx.cloud.suffixes.storage_endpoint

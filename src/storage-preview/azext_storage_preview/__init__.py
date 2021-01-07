@@ -65,8 +65,9 @@ class StorageArgumentContext(AzArgumentContext):
 
         self.ignore('content_settings')
 
-        # The parameter process_md5 is used to determine whether it is compatible with the process_md5 parameter type of Python SDK
-        # When the Python SDK is fixed (Issue: https://github.com/Azure/azure-sdk-for-python/issues/15919),
+        # The parameter process_md5 is used to determine whether it is compatible with the process_md5 parameter
+        # type of Python SDK When the Python SDK is fixed
+        # (Issue: https://github.com/Azure/azure-sdk-for-python/issues/15919),
         # this parameter should not be passed in any more
         self.extra('content_type', default=None, help='The content MIME type.', arg_group=arg_group,
                    validator=get_content_setting_validator(settings_class, update, guess_from_file=guess_from_file,

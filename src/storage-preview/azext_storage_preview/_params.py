@@ -10,7 +10,7 @@ from ._validators import (get_datetime_type, validate_metadata,
                           validate_azcopy_upload_destination_url, validate_azcopy_download_source_url,
                           validate_azcopy_target_url, validate_included_datasets,
                           validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url,
-                          validate_storage_data_plane_list,
+                          validate_storage_data_plane_list, validate_delete_retention_days,
                           process_resource_group, add_upload_progress_callback)
 
 from .profiles import CUSTOM_MGMT_PREVIEW_STORAGE
