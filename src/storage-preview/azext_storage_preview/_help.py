@@ -394,3 +394,22 @@ helps['storage blob directory upload'] = """
         - name: Upload a set of files in a local directory to a storage blob directory.
           text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/file*" -d directory --recursive
 """
+
+helps['storage blob service-properties'] = """
+type: group
+short-summary: Manage storage blob service properties.
+"""
+
+helps['storage blob service-properties'] = """
+type: group
+short-summary: Manage storage datalake service properties.
+"""
+
+helps['storage fs service-properties show'] = """
+type: command
+short-summary: Show the properties of a storage account's datalake service, including Azure Storage Analytics.
+examples:
+  - name: Show the properties of a storage account's datalake service
+    text: |
+        az storage fs service-properties show --account-name mystorageccount --account-key 00000000
+"""
