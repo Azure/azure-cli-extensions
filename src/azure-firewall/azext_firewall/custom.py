@@ -492,7 +492,8 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
                                    threat_intel_mode=None, location=None, tags=None, ip_addresses=None,
                                    fqdns=None,
                                    dns_servers=None, enable_dns_proxy=None,
-                                   sku=None):
+                                   sku=None, intrusion_detection_mode=None,
+                                   key_vault_secret_id=None, certificate_name=None):
     client = network_client_factory(cmd.cli_ctx).firewall_policies
     (FirewallPolicy,
      SubResource,
@@ -521,15 +522,34 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
         if sku is not None:
             firewall_policy.sku = FirewallPolicySku(tier=sku)
 
+        if intrusion_detection_mode is not None:
+            (FirewallPolicyIntrusionDetection,
+             FirewallPolicyIntrusionDetectionConfiguration) = \
+                cmd.get_models('FirewallPolicyIntrusionDetection',
+                               'FirewallPolicyIntrusionDetectionConfiguration')
+            firewall_policy.intrusion_detection = FirewallPolicyIntrusionDetection(
+                mode=intrusion_detection_mode,
+                configuration=FirewallPolicyIntrusionDetectionConfiguration()
+            )
+
+        if certificate_name is not None and key_vault_secret_id is not None:
+            FirewallPolicyTransportSecurity, FirewallPolicyCertificateAuthority = \
+                cmd.get_models('FirewallPolicyTransportSecurity', 'FirewallPolicyCertificateAuthority')
+            certificate_auth = FirewallPolicyCertificateAuthority(key_vault_secret_id=key_vault_secret_id,
+                                                                  name=certificate_name)
+            firewall_policy.transport_security = FirewallPolicyTransportSecurity(certificate_authority=certificate_auth)
+
     return client.create_or_update(resource_group_name, firewall_policy_name, firewall_policy)
 
 
 def update_azure_firewall_policies(cmd,
                                    instance, tags=None, threat_intel_mode=None, ip_addresses=None,
                                    fqdns=None,
-                                   dns_servers=None, enable_dns_proxy=None):
+                                   dns_servers=None, enable_dns_proxy=None,
+                                   sku=None, intrusion_detection_mode=None,
+                                   key_vault_secret_id=None, certificate_name=None):
 
-    (FirewallPolicyThreatIntelWhitelist) = cmd.get_models('FirewallPolicyThreatIntelWhitelist')
+    (FirewallPolicyThreatIntelWhitelist, FirewallPolicySku) = cmd.get_models('FirewallPolicyThreatIntelWhitelist', 'FirewallPolicySku')
     if tags is not None:
         instance.tags = tags
     if threat_intel_mode is not None:
@@ -551,6 +571,27 @@ def update_azure_firewall_policies(cmd,
         instance.threat_intel_whitelist.ip_addresses = ip_addresses
     if fqdns is not None:
         instance.threat_intel_whitelist.fqdns = fqdns
+    if cmd.supported_api_version(min_api='2020-07-01'):
+        if sku is not None:
+            instance.sku = FirewallPolicySku(tier=sku)
+
+        if intrusion_detection_mode is not None:
+            if instance.intrusion_detection is not None:
+                instance.intrusion_detection.mode = intrusion_detection_mode
+            else:
+                (FirewallPolicyIntrusionDetection, FirewallPolicyIntrusionDetectionConfiguration) = \
+                    cmd.get_models('FirewallPolicyIntrusionDetection', 'FirewallPolicyIntrusionDetectionConfiguration')
+                instance.intrusion_detection = FirewallPolicyIntrusionDetection(
+                    mode=intrusion_detection_mode,
+                    configuration=FirewallPolicyIntrusionDetectionConfiguration()
+                )
+        if certificate_name is not None and key_vault_secret_id is not None:
+            FirewallPolicyTransportSecurity, FirewallPolicyCertificateAuthority = \
+                cmd.get_models('FirewallPolicyTransportSecurity', 'FirewallPolicyCertificateAuthority')
+            certificate_auth = FirewallPolicyCertificateAuthority(key_vault_secret_id=key_vault_secret_id,
+                                                                  name=certificate_name)
+            instance.transport_security = FirewallPolicyTransportSecurity(certificate_authority=certificate_auth)
+
     return instance
 
 
@@ -559,6 +600,110 @@ def list_azure_firewall_policies(cmd, resource_group_name=None):
     if resource_group_name is not None:
         return client.list(resource_group_name)
     return client.list_all()
+
+
+def add_firewall_policy_intrusion_detection_config(cmd,
+                                                   resource_group_name,
+                                                   firewall_policy_name,
+                                                   signature_id=None,
+                                                   signature_mode=None,
+                                                   bypass_rule_name=None,
+                                                   bypass_rule_description=None,
+                                                   bypass_rule_protocol=None,
+                                                   bypass_rule_source_addresses=None,
+                                                   bypass_rule_destination_addresses=None,
+                                                   bypass_rule_destination_ports=None,
+                                                   bypass_rule_source_ip_groups=None,
+                                                   bypass_rule_destination_ip_groups=None):
+
+    from azure.cli.core.azclierror import RequiredArgumentMissingError, InvalidArgumentValueError
+
+    client = network_client_factory(cmd.cli_ctx).firewall_policies
+    firewall_policy = client.get(resource_group_name, firewall_policy_name)
+
+    if firewall_policy.intrusion_detection is None:
+        raise RequiredArgumentMissingError('Intrusion detection mode is not set. Setting it by update command first')
+
+    if signature_id is not None and signature_mode is not None:
+        for overrided_signature in firewall_policy.intrusion_detection.configuration.signature_overrides:
+            if overrided_signature.id == signature_id:
+                raise InvalidArgumentValueError(
+                    'Signature ID {} exists. Delete it first or try update instead'.format(signature_id))
+
+        FirewallPolicyIntrusionDetectionSignatureSpecification = \
+            cmd.get_models('FirewallPolicyIntrusionDetectionSignatureSpecification')
+        signature_override = FirewallPolicyIntrusionDetectionSignatureSpecification(
+            id=signature_id,
+            mode=signature_mode
+        )
+        firewall_policy.intrusion_detection.configuration.signature_overrides.append(signature_override)
+
+    if bypass_rule_name is not None:
+        FirewallPolicyIntrusionDetectionBypassTrafficSpecifications = \
+            cmd.get_models('FirewallPolicyIntrusionDetectionBypassTrafficSpecifications')
+        bypass_traffic = FirewallPolicyIntrusionDetectionBypassTrafficSpecifications(
+            name=bypass_rule_name,
+            description=bypass_rule_description,
+            protocol=bypass_rule_protocol,
+            source_addresses=bypass_rule_source_addresses,
+            destination_addresses=bypass_rule_destination_addresses,
+            destination_ports=bypass_rule_destination_ports,
+            source_ip_groups=bypass_rule_source_ip_groups,
+            destination_ip_groups=bypass_rule_destination_ip_groups,
+        )
+        firewall_policy.intrusion_detection.configuration.bypass_traffic_settings.append(bypass_traffic)
+
+    result = sdk_no_wait(False,
+                         client.create_or_update,
+                         resource_group_name,
+                         firewall_policy_name,
+                         firewall_policy).result()
+    return result.intrusion_detection.configuration
+
+
+def list_firewall_policy_intrusion_detection_config(cmd, resource_group_name, firewall_policy_name):
+    client = network_client_factory(cmd.cli_ctx).firewall_policies
+    firewall_policy = client.get(resource_group_name, firewall_policy_name)
+
+    if firewall_policy.intrusion_detection is None:
+        return []
+
+    return firewall_policy.intrusion_detection.configuration
+
+
+def remove_firewall_policy_intrusion_detection_config(cmd,
+                                                      resource_group_name,
+                                                      firewall_policy_name,
+                                                      signature_id=None,
+                                                      bypass_rule_name=None):
+    from azure.cli.core.azclierror import RequiredArgumentMissingError, InvalidArgumentValueError
+
+    client = network_client_factory(cmd.cli_ctx).firewall_policies
+    firewall_policy = client.get(resource_group_name, firewall_policy_name)
+
+    if firewall_policy.intrusion_detection is None:
+        raise RequiredArgumentMissingError('Intrusion detection mode is not set. Setting it by update command first')
+
+    if signature_id is not None:
+        signatures = firewall_policy.intrusion_detection.configuration.signature_overrides
+        new_signatures = [s for s in signatures if s.id != signature_id]
+        if len(signatures) == len(new_signatures):
+            raise InvalidArgumentValueError("Signature ID {} doesn't exist".format(signature_id))
+        firewall_policy.intrusion_detection.configuration.signature_overrides = new_signatures
+
+    if bypass_rule_name is not None:
+        bypass_settings = firewall_policy.intrusion_detection.configuration.bypass_traffic_settings
+        new_bypass_settings = [s for s in bypass_settings if s.name != bypass_rule_name]
+        if len(bypass_settings) == len(new_bypass_settings):
+            raise InvalidArgumentValueError("Bypass rule with name {} doesn't exist".format(signature_id))
+        firewall_policy.intrusion_detection.configuration.bypass_traffic_settings = new_bypass_settings
+
+    result = sdk_no_wait(False,
+                         client.create_or_update,
+                         resource_group_name,
+                         firewall_policy_name,
+                         firewall_policy).result()
+    return result.intrusion_detection.configuration
 
 
 def create_azure_firewall_policy_rule_collection_group(cmd, resource_group_name, firewall_policy_name,
@@ -581,7 +726,7 @@ def update_azure_firewall_policy_rule_collection_group(instance, priority=None, 
 def add_azure_firewall_policy_nat_rule_collection(cmd, resource_group_name, firewall_policy_name,
                                                   rule_collection_group_name,
                                                   rule_collection_name, rule_priority, translated_address=None,
-                                                  translated_port=None, nat_action=None,
+                                                  translated_fqdn=None, translated_port=None, nat_action=None,
                                                   rule_name=None, description=None, ip_protocols=None,
                                                   source_addresses=None, destination_addresses=None,
                                                   destination_ports=None, source_ip_groups=None):
@@ -600,6 +745,7 @@ def add_azure_firewall_policy_nat_rule_collection(cmd, resource_group_name, fire
                        destination_addresses=destination_addresses,
                        destination_ports=destination_ports,
                        translated_address=translated_address,
+                       translated_fqdn=translated_fqdn,
                        translated_port=translated_port,
                        source_ip_groups=source_ip_groups)
     nat_rule_collection = FirewallPolicyNatRuleCollection(name=rule_collection_name,
@@ -622,7 +768,8 @@ def add_azure_firewall_policy_filter_rule_collection(cmd, resource_group_name, f
                                                      source_addresses=None, destination_addresses=None,
                                                      destination_ports=None,
                                                      protocols=None, fqdn_tags=None, target_fqdns=None,
-                                                     source_ip_groups=None, destination_ip_groups=None):
+                                                     source_ip_groups=None, destination_ip_groups=None,
+                                                     target_urls=None, enable_terminate_tls=False):
     NetworkRule, FirewallPolicyRuleApplicationProtocol,\
         ApplicationRule, FirewallPolicyFilterRuleCollectionAction, FirewallPolicyFilterRuleCollection =\
         cmd.get_models('NetworkRule', 'FirewallPolicyRuleApplicationProtocol',
@@ -654,7 +801,9 @@ def add_azure_firewall_policy_filter_rule_collection(cmd, resource_group_name, f
                                destination_addresses=destination_addresses,
                                fqdn_tags=fqdn_tags,
                                target_fqdns=target_fqdns,
-                               source_ip_groups=source_ip_groups)
+                               target_urls=target_urls,
+                               source_ip_groups=source_ip_groups,
+                               terminate_tls=enable_terminate_tls)
     filter_rule_collection = FirewallPolicyFilterRuleCollection(name=rule_collection_name,
                                                                 priority=rule_priority,
                                                                 rule_collection_type="FirewallPolicyFilterRule",
@@ -693,7 +842,8 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
                                           destination_addresses=None, destination_ports=None,
                                           protocols=None, fqdn_tags=None, target_fqdns=None,
                                           source_ip_groups=None, destination_ip_groups=None,
-                                          translated_address=None, translated_port=None):
+                                          translated_address=None, translated_port=None,
+                                          target_urls=None, enable_terminate_tls=False):
     (NetworkRule,
      FirewallPolicyRuleApplicationProtocol,
      ApplicationRule,
@@ -741,7 +891,9 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
                                destination_addresses=destination_addresses,
                                fqdn_tags=fqdn_tags,
                                target_fqdns=target_fqdns,
-                               source_ip_groups=source_ip_groups)
+                               target_urls=target_urls,
+                               source_ip_groups=source_ip_groups,
+                               terminate_tls=enable_terminate_tls)
     elif rule_type == 'NatRule':
         rule = NatRule(name=rule_name,
                        description=description,

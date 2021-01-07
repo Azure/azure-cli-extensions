@@ -143,6 +143,60 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
     return params
 
 
+def create_blob_inventory_policy(cmd, client, resource_group_name, account_name, policy):
+    # BlobInventoryPolicy = cmd.get_models('BlobInventoryPolicy')
+    # TODO: add again with rule management if bandwidth is allowed
+    # BlobInventoryPolicy, BlobInventoryPolicySchema, BlobInventoryPolicyRule, BlobInventoryPolicyDefinition, \
+    # BlobInventoryPolicyFilter = cmd.get_models('BlobInventoryPolicy', 'BlobInventoryPolicySchema',
+    #                                            'BlobInventoryPolicyRule', 'BlobInventoryPolicyDefinition',
+    #                                            'BlobInventoryPolicyFilter')
+    # filters = BlobInventoryPolicyFilter(prefix_match=prefix_match, blob_types=blob_types,
+    #                                     include_blob_versions=include_blob_versions,
+    #                                     include_snapshots=include_snapshots)
+    # rule = BlobInventoryPolicyRule(enabled=True, name=rule_name,
+    #                                definition=BlobInventoryPolicyDefinition(filters=filters))
+    # policy = BlobInventoryPolicySchema(enabled=enabled, destination=destination,
+    #                                    type=type, rules=[rule])
+    # blob_inventory_policy = BlobInventoryPolicy(policy=policy)
+    #
+    # return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
+    #                                blob_inventory_policy_name=blob_inventory_policy_name,
+    #                                properties=blob_inventory_policy,
+    #                                **kwargs)
+    if os.path.exists(policy):
+        policy = get_file_json(policy)
+    else:
+        policy = shell_safe_json_parse(policy)
+
+    BlobInventoryPolicy, InventoryRuleType, BlobInventoryPolicyName = \
+        cmd.get_models('BlobInventoryPolicy', 'InventoryRuleType', 'BlobInventoryPolicyName')
+    properties = BlobInventoryPolicy()
+    if 'type' not in policy:
+        policy['type'] = InventoryRuleType.INVENTORY
+    properties.policy = policy
+
+    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
+                                   blob_inventory_policy_name=BlobInventoryPolicyName.DEFAULT, properties=properties)
+
+
+def delete_blob_inventory_policy(cmd, client, resource_group_name, account_name):
+    BlobInventoryPolicyName = cmd.get_models('BlobInventoryPolicyName')
+    return client.delete(resource_group_name=resource_group_name, account_name=account_name,
+                         blob_inventory_policy_name=BlobInventoryPolicyName.DEFAULT)
+
+
+def get_blob_inventory_policy(cmd, client, resource_group_name, account_name):
+    BlobInventoryPolicyName = cmd.get_models('BlobInventoryPolicyName')
+    return client.get(resource_group_name=resource_group_name, account_name=account_name,
+                      blob_inventory_policy_name=BlobInventoryPolicyName.DEFAULT)
+
+
+def update_blob_inventory_policy(cmd, client, resource_group_name, account_name, parameters=None):
+    BlobInventoryPolicyName = cmd.get_models('BlobInventoryPolicyName')
+    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
+                                   blob_inventory_policy_name=BlobInventoryPolicyName.DEFAULT, properties=parameters)
+
+
 def list_network_rules(client, resource_group_name, account_name):
     sa = client.get_properties(resource_group_name, account_name)
     rules = sa.network_rule_set
@@ -216,3 +270,41 @@ def update_management_policies(client, resource_group_name, account_name, parame
     if parameters:
         parameters = parameters.policy
     return client.create_or_update_management_policies(resource_group_name, account_name, policy=parameters)
+
+
+def update_file_service_properties(cmd, instance, enable_delete_retention=None,
+                                   delete_retention_days=None, enable_smb_multichannel=None):
+    from azure.cli.core.azclierror import ValidationError
+    params = {}
+    # set delete retention policy according input
+    if enable_delete_retention is not None:
+        if enable_delete_retention is False:
+            delete_retention_days = None
+        instance.share_delete_retention_policy = cmd.get_models('DeleteRetentionPolicy')(
+            enabled=enable_delete_retention, days=delete_retention_days)
+
+    # If already enabled, only update days
+    if enable_delete_retention is None and delete_retention_days is not None:
+        if instance.share_delete_retention_policy is not None and instance.share_delete_retention_policy.enabled:
+            instance.share_delete_retention_policy.days = delete_retention_days
+        else:
+            raise ValidationError(
+                "Delete Retention Policy hasn't been enabled, and you cannot set delete retention days. "
+                "Please set --enable-delete-retention as true to enable Delete Retention Policy.")
+
+    # Fix the issue in server when delete_retention_policy.enabled=False, the returned days is 0
+    # TODO: remove it when server side return null not 0 for days
+    if instance.share_delete_retention_policy is not None and instance.share_delete_retention_policy.enabled is False:
+        instance.share_delete_retention_policy.days = None
+    if instance.share_delete_retention_policy:
+        params['share_delete_retention_policy'] = instance.share_delete_retention_policy
+
+    # set protocol settings
+    if enable_smb_multichannel is not None:
+        instance.protocol_settings = cmd.get_models('ProtocolSettings')()
+        instance.protocol_settings.smb = cmd.get_models('SmbSetting')(
+            multichannel=cmd.get_models('Multichannel')(enabled=enable_smb_multichannel))
+    if instance.protocol_settings.smb.multichannel:
+        params['protocol_settings'] = instance.protocol_settings
+
+    return params

@@ -20,27 +20,27 @@ logger = get_logger(__name__)
 
 _RUNTIME_SETTINGS = {
     'php': {
-        'name': 'php|7.3',
+        'name': 'PHP|7.4',
         'is_linux': True
     },
     'node': {
-        'name': 'node|LTS',
+        'name': 'NODE|14-LTS',
         'is_linux': True
     },
     'tomcat': {
-        'name': 'java|11|Tomcat|9.0',
+        'name': 'TOMCAT|9.0-java11',
         'is_linux': True
     },
-    'jetty': {
-        'name': 'java|11|Jetty|9.3',
+    'java': {
+        'name': 'JAVA|11-java11',
         'is_linux': True
     },
     'python': {
-        'name': 'python|3.6',
+        'name': 'PYTHON|3.8',
         'is_linux': True
     },
     'aspnet': {
-        'name': 'aspnet|4.7',
+        'name': 'aspnet|V4.8',
         'is_linux': False
     }
 }
