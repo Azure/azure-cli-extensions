@@ -413,3 +413,12 @@ examples:
     text: |
         az storage fs service-properties show --account-name mystorageccount --account-key 00000000
 """
+
+helps['storage fs service-properties update'] = """
+type: command
+short-summary: Update the properties of a storage account's datalake service, including Azure Storage Analytics.
+examples:
+  - name: Update the properties of a storage account's datalake service
+    text: |
+        az storage fs service-properties update --delete-retention --delete-retention-period 7 --account-name mystorageccount --account-key 00000000
+"""

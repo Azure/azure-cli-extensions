@@ -13,7 +13,7 @@ from ._validators import (get_datetime_type, validate_metadata,
                           validate_storage_data_plane_list, validate_delete_retention_days,
                           process_resource_group, add_upload_progress_callback)
 
-from .profiles import CUSTOM_MGMT_PREVIEW_STORAGE
+from .profiles import CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_FILEDATALAKE
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements
@@ -374,3 +374,17 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.register_content_settings_argument(t_file_content_settings, update=False, arg_group='Content Settings',
                                              process_md5=True)
         c.extra('no_progress', progress_type)
+
+    with self.argument_context('storage fs service-properties update', resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE,
+                               min_api='2020-06-12') as c:
+        c.argument('delete_retention', arg_type=get_three_state_flag(), arg_group='Soft Delete',
+                   help='Enable soft-delete.')
+        c.argument('delete_retention_period', type=int, arg_group='Soft Delete',
+                   help='Number of days that soft-deleted blob will be retained. Must be in range [1,365].')
+        c.argument('static_website', arg_group='Static Website', arg_type=get_three_state_flag(),
+                   help='Enable static-website.')
+        c.argument('index_document', help='Represent the name of the index document. This is commonly "index.html".',
+                   arg_group='Static Website')
+        c.argument('error_document_404_path', options_list=['--404-document'], arg_group='Static Website',
+                   help='Represent the path to the error document that should be shown when an error 404 is issued,'
+                        ' in other words, when a browser requests a page that does not exist.')

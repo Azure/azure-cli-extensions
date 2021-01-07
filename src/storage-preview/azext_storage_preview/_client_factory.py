@@ -176,6 +176,7 @@ def cf_share_file_client(cli_ctx, kwargs):
 
 
 def cf_adls_service(cli_ctx, kwargs):
+    client_kwargs = {}
     t_adls_service = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE_FILEDATALAKE,
                              '_data_lake_service_client#DataLakeServiceClient')
     connection_string = kwargs.pop('connection_string', None)
@@ -183,12 +184,14 @@ def cf_adls_service(cli_ctx, kwargs):
     account_key = kwargs.pop('account_key', None)
     token_credential = kwargs.pop('token_credential', None)
     sas_token = kwargs.pop('sas_token', None)
+    # Enable NetworkTraceLoggingPolicy which logs all headers (except Authorization) without being redacted
+    client_kwargs['logging_enable'] = True
     if connection_string:
-        return t_adls_service.from_connection_string(conn_str=connection_string)
+        return t_adls_service.from_connection_string(conn_str=connection_string, **client_kwargs)
 
     account_url = get_account_url(cli_ctx, account_name=account_name, service='dfs')
     credential = account_key or sas_token or token_credential
 
     if account_url and credential:
-        return t_adls_service(account_url=account_url, credential=credential)
+        return t_adls_service(account_url=account_url, credential=credential, **client_kwargs)
     return None
