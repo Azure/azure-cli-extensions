@@ -769,7 +769,7 @@ def add_azure_firewall_policy_filter_rule_collection(cmd, resource_group_name, f
                                                      destination_ports=None,
                                                      protocols=None, fqdn_tags=None, target_fqdns=None,
                                                      source_ip_groups=None, destination_ip_groups=None,
-                                                     target_urls=None, enable_terminate_tls=False):
+                                                     target_urls=None, enable_tls_inspection=False):
     NetworkRule, FirewallPolicyRuleApplicationProtocol,\
         ApplicationRule, FirewallPolicyFilterRuleCollectionAction, FirewallPolicyFilterRuleCollection =\
         cmd.get_models('NetworkRule', 'FirewallPolicyRuleApplicationProtocol',
@@ -803,7 +803,7 @@ def add_azure_firewall_policy_filter_rule_collection(cmd, resource_group_name, f
                                target_fqdns=target_fqdns,
                                target_urls=target_urls,
                                source_ip_groups=source_ip_groups,
-                               terminate_tls=enable_terminate_tls)
+                               terminate_tls=enable_tls_inspection)
     filter_rule_collection = FirewallPolicyFilterRuleCollection(name=rule_collection_name,
                                                                 priority=rule_priority,
                                                                 rule_collection_type="FirewallPolicyFilterRule",
@@ -843,7 +843,7 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
                                           protocols=None, fqdn_tags=None, target_fqdns=None,
                                           source_ip_groups=None, destination_ip_groups=None,
                                           translated_address=None, translated_port=None,
-                                          target_urls=None, enable_terminate_tls=False):
+                                          target_urls=None, enable_tls_inspection=False):
     (NetworkRule,
      FirewallPolicyRuleApplicationProtocol,
      ApplicationRule,
@@ -893,7 +893,7 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
                                target_fqdns=target_fqdns,
                                target_urls=target_urls,
                                source_ip_groups=source_ip_groups,
-                               terminate_tls=enable_terminate_tls)
+                               terminate_tls=enable_tls_inspection)
     elif rule_type == 'NatRule':
         rule = NatRule(name=rule_name,
                        description=description,

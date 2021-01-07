@@ -171,11 +171,11 @@ def load_arguments(self, _):
         c.argument('intrusion_detection_mode',
                    is_preview=True,
                    min_api='2020-07-01',
-                   options_list=['--detect-mode'],
+                   options_list=['--idps-mode'],
                    arg_type=get_enum_type(FirewallPolicyIntrusionDetectionStateType),
-                   help='Intrusion detection general state')
+                   help='IDPS mode')
 
-    with self.argument_context('network firewall policy', arg_group='Transport Security', min_api='2020-07-01', is_preview=True) as c:
+    with self.argument_context('network firewall policy', arg_group='TLS Inspection', min_api='2020-07-01', is_preview=True) as c:
         c.argument('key_vault_secret_id',
                    help="Secret Id of (base-64 encoded unencrypted pfx) Secret or Certificate object stored in KeyVault")
         c.argument('certificate_name', options_list=['--cert-name'], help='Name of the CA certificate')
@@ -183,11 +183,11 @@ def load_arguments(self, _):
     with self.argument_context('network firewall policy intrusion-detection', min_api='2020-07-01') as c:
         c.argument('firewall_policy_name', options_list=['--policy-name'], help='The name of the Firewall Policy.')
 
-    with self.argument_context('network firewall policy intrusion-detection', min_api='2020-07-01', arg_group='Intrusion Signature Override') as c:
+    with self.argument_context('network firewall policy intrusion-detection', min_api='2020-07-01', arg_group='IDPS Signature Override') as c:
         c.argument('signature_mode', options_list=['--mode'], help='The signature state', arg_type=get_enum_type(FirewallPolicyIntrusionDetectionStateType))
         c.argument('signature_id', help='Signature id')
 
-    with self.argument_context('network firewall policy intrusion-detection', min_api='2020-07-01', arg_group='Traffic Bypass Rule') as c:
+    with self.argument_context('network firewall policy intrusion-detection', min_api='2020-07-01', arg_group='IDPS Bypass Rule') as c:
         c.argument('bypass_rule_name', options_list=['--rule-name'], help='Name of the bypass traffic rule')
         c.argument('bypass_rule_description', options_list=['--rule-description'], help='Description of the bypass traffic rule')
         c.argument('bypass_rule_protocol', options_list=['--rule-protocol'], arg_type=get_enum_type(FirewallPolicyIntrusionDetectionProtocol), help='The rule bypass protocol')
@@ -227,7 +227,7 @@ def load_arguments(self, _):
     with self.argument_context('network firewall policy rule-collection-group collection', arg_group='Application Rule') as c:
         c.argument('target_fqdns', nargs='+', help='Space-separated list of FQDNs for this rule.', validator=validate_rule_group_collection)
         c.argument('target_urls', nargs='+', help='Space-separated list of target urls for this rule', is_preview=True, min_api='2020-07-01')
-        c.argument('enable_terminate_tls', arg_type=get_three_state_flag(), help='Enable flag to terminate TLS connection for this rule', is_preview=True, min_api='2020-07-01')
+        c.argument('enable_tls_inspection', arg_type=get_three_state_flag(), help='Enable flag to terminate TLS connection for this rule', is_preview=True, min_api='2020-07-01')
         c.argument('fqdn_tags', nargs='+', help='Space-separated list of FQDN tags for this rule.', validator=validate_rule_group_collection)
         c.argument('protocols', nargs='+', validator=validate_application_rule_protocols, help='Space-separated list of protocols and port numbers to use, in PROTOCOL=PORT format. Valid protocols are Http, Https.')
 
