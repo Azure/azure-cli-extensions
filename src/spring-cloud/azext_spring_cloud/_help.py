@@ -489,5 +489,5 @@ helps['spring-cloud service-runtime access-endpoint'] = """
         - name: Access service registry health.
           text: az spring-cloud service-runtime access-endpoint -n MyService -g MyResourceGroup --component registry --endpoint /actuator/health
         - name: Access config server health.
-          text: az spring-cloud servoce-runtime access-endpoint -n MyService -g MyResourceGroup --component config --endpoint /actuator/health
+          text: az spring-cloud service-runtime access-endpoint -n MyService -g MyResourceGroup --component config --endpoint /actuator/health
 """

@@ -558,7 +558,7 @@ def app_tail_log(cmd, client, resource_group, service, name, instance=None, foll
 
     # https://primary:xxxx[key]@servicename.test.azuremicrosoervice.io -> servicename.azuremicroservice.io
     test_url = test_keys.primary_test_endpoint
-    base_url = test_url.replace('.test.', '.') 
+    base_url = test_url.replace('.test.', '.')
     base_url = re.sub('https://.+?\@', '', base_url)
 
     streaming_url = "https://{0}/api/logstream/apps/{1}/instances/{2}".format(
@@ -1593,7 +1593,7 @@ def runtime_endpoint_access(cmd, client, resource_group, name, component, endpoi
     svc_runtime = _map_cloud_to_svc_runtime(cmd.cli_ctx.cloud.name)
     if svc_runtime == "Invalid":
         raise CLIError("Cloud {0} is not supported.".format(cmd.cli_ctx.cloud.name))
-    url = "https://{0}.{1}/{2}{3}".format(name, svc_runtime,  _map_component_url(component), endpoint)
+    url = "https://{0}.{1}/{2}{3}".format(name, svc_runtime, _map_component_url(component), endpoint)
     logger.warning('Call url %s', url)
     try:
         r = send_raw_request(cmd.cli_ctx, "get", url, resource=cmd.cli_ctx.cloud.endpoints.active_directory_resource_id)
@@ -1607,7 +1607,7 @@ def runtime_endpoint_access(cmd, client, resource_group, name, component, endpoi
         if "401 Authorization Required" in str(ex):
             raise CLIError(str(ex) + '\n' + UNAUTHORIZED_ACCESS_DATAPLANE)
         if "\"status\":404" in str(ex):
-            raise CLIError(str(ex)+ '\n' + "Endpoint \"{0}\" not found.".format(endpoint))
+            raise CLIError(str(ex) + '\n' + "Endpoint \"{0}\" not found.".format(endpoint))
         raise CLIError(str(ex) + '\n' + "Something went wrong. You may raise a support ticket.")
 
 
