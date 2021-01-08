@@ -45,7 +45,8 @@ class JobsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of JobDetails
-        :rtype: ~quantum.models.JobDetailsPaged[~quantum.models.JobDetails]
+        :rtype:
+         ~azure.quantum.models.JobDetailsPaged[~azure.quantum.models.JobDetails]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -111,10 +112,10 @@ class JobsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: JobDetails or ClientRawResponse if raw=true
-        :rtype: ~quantum.models.JobDetails or
+        :rtype: ~azure.quantum.models.JobDetails or
          ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`RestErrorException<quantum.models.RestErrorException>`
+         :class:`RestErrorException<azure.quantum.models.RestErrorException>`
         """
         # Construct URL
         url = self.get.metadata['url']
@@ -158,27 +159,27 @@ class JobsOperations(object):
         return deserialized
     get.metadata = {'url': '/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}'}
 
-    def put(
-            self, job_id, job_definition, custom_headers=None, raw=False, **operation_config):
+    def create(
+            self, job_id, job, custom_headers=None, raw=False, **operation_config):
         """Create a job.
 
         :param job_id: Id of the job.
         :type job_id: str
-        :param job_definition: The complete metadata of the job to submit.
-        :type job_definition: ~quantum.models.JobDetails
+        :param job: The complete metadata of the job to submit.
+        :type job: ~azure.quantum.models.JobDetails
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: JobDetails or ClientRawResponse if raw=true
-        :rtype: ~quantum.models.JobDetails or
+        :rtype: ~azure.quantum.models.JobDetails or
          ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`RestErrorException<quantum.models.RestErrorException>`
+         :class:`RestErrorException<azure.quantum.models.RestErrorException>`
         """
         # Construct URL
-        url = self.put.metadata['url']
+        url = self.create.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("self.config.resource_group_name", self.config.resource_group_name, 'str'),
@@ -202,7 +203,7 @@ class JobsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        body_content = self._serialize.body(job_definition, 'JobDetails')
+        body_content = self._serialize.body(job, 'JobDetails')
 
         # Construct and send request
         request = self._client.put(url, query_parameters, header_parameters, body_content)
@@ -223,9 +224,9 @@ class JobsOperations(object):
             return client_raw_response
 
         return deserialized
-    put.metadata = {'url': '/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}'}
+    create.metadata = {'url': '/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}'}
 
-    def delete(
+    def cancel(
             self, job_id, custom_headers=None, raw=False, **operation_config):
         """Cancel a job.
 
@@ -236,14 +237,13 @@ class JobsOperations(object):
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: JobDetails or ClientRawResponse if raw=true
-        :rtype: ~quantum.models.JobDetails or
-         ~msrest.pipeline.ClientRawResponse
+        :return: None or ClientRawResponse if raw=true
+        :rtype: None or ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`RestErrorException<quantum.models.RestErrorException>`
+         :class:`RestErrorException<azure.quantum.models.RestErrorException>`
         """
         # Construct URL
-        url = self.delete.metadata['url']
+        url = self.cancel.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("self.config.resource_group_name", self.config.resource_group_name, 'str'),
@@ -257,7 +257,6 @@ class JobsOperations(object):
 
         # Construct headers
         header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
         if custom_headers:
@@ -269,17 +268,10 @@ class JobsOperations(object):
         request = self._client.delete(url, query_parameters, header_parameters)
         response = self._client.send(request, stream=False, **operation_config)
 
-        if response.status_code not in [200, 204]:
+        if response.status_code not in [204]:
             raise models.RestErrorException(self._deserialize, response)
 
-        deserialized = None
-
-        if response.status_code == 200:
-            deserialized = self._deserialize('JobDetails', response)
-
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
+            client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
-
-        return deserialized
-    delete.metadata = {'url': '/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}'}
+    cancel.metadata = {'url': '/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/jobs/{jobId}'}

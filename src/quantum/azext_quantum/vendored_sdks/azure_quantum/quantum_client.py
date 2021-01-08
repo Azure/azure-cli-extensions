@@ -53,7 +53,7 @@ class QuantumClientConfiguration(AzureConfiguration):
 
         super(QuantumClientConfiguration, self).__init__(base_url)
 
-        self.add_user_agent('quantumclient/{}'.format(VERSION))
+        self.add_user_agent('azure-quantum/{}'.format(VERSION))
         self.add_user_agent('Azure-SDK-For-Python')
 
         self.credentials = credentials
@@ -69,11 +69,11 @@ class QuantumClient(SDKClient):
     :vartype config: QuantumClientConfiguration
 
     :ivar jobs: Jobs operations
-    :vartype jobs: quantum.operations.JobsOperations
+    :vartype jobs: azure.quantum.operations.JobsOperations
     :ivar providers: Providers operations
-    :vartype providers: quantum.operations.ProvidersOperations
+    :vartype providers: azure.quantum.operations.ProvidersOperations
     :ivar storage: Storage operations
-    :vartype storage: quantum.operations.StorageOperations
+    :vartype storage: azure.quantum.operations.StorageOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials

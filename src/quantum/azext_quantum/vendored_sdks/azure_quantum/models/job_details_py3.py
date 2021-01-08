@@ -52,18 +52,18 @@ class JobDetails(Model):
     :type output_data_format: str
     :ivar status: The job status. Possible values include: 'Waiting',
      'Executing', 'Succeeded', 'Failed', 'Cancelled'
-    :vartype status: str or ~quantum.models.JobStatus
+    :vartype status: str or ~azure.quantum.models.JobStatus
     :ivar creation_time: The creation time of the job.
-    :vartype creation_time: str
+    :vartype creation_time: datetime
     :ivar begin_execution_time: The time when the job began execution.
-    :vartype begin_execution_time: str
+    :vartype begin_execution_time: datetime
     :ivar end_execution_time: The time when the job finished execution.
-    :vartype end_execution_time: str
+    :vartype end_execution_time: datetime
     :ivar cancellation_time: The time when a job was successfully cancelled.
-    :vartype cancellation_time: str
+    :vartype cancellation_time: datetime
     :ivar error_data: The error data for the job. This is expected only when
      Status 'Failed'.
-    :vartype error_data: ~quantum.models.RestError
+    :vartype error_data: ~azure.quantum.models.ErrorData
     """
 
     _validation = {
@@ -92,11 +92,11 @@ class JobDetails(Model):
         'output_data_uri': {'key': 'outputDataUri', 'type': 'str'},
         'output_data_format': {'key': 'outputDataFormat', 'type': 'str'},
         'status': {'key': 'status', 'type': 'str'},
-        'creation_time': {'key': 'creationTime', 'type': 'str'},
-        'begin_execution_time': {'key': 'beginExecutionTime', 'type': 'str'},
-        'end_execution_time': {'key': 'endExecutionTime', 'type': 'str'},
-        'cancellation_time': {'key': 'cancellationTime', 'type': 'str'},
-        'error_data': {'key': 'errorData', 'type': 'RestError'},
+        'creation_time': {'key': 'creationTime', 'type': 'iso-8601'},
+        'begin_execution_time': {'key': 'beginExecutionTime', 'type': 'iso-8601'},
+        'end_execution_time': {'key': 'endExecutionTime', 'type': 'iso-8601'},
+        'cancellation_time': {'key': 'cancellationTime', 'type': 'iso-8601'},
+        'error_data': {'key': 'errorData', 'type': 'ErrorData'},
     }
 
     def __init__(self, *, container_uri: str, input_data_format: str, provider_id: str, target: str, id: str=None, name: str=None, input_data_uri: str=None, input_params=None, metadata=None, output_data_uri: str=None, output_data_format: str=None, **kwargs) -> None:

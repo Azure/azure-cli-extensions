@@ -14,7 +14,7 @@ from msrest.paging import Paged
 
 class JobDetailsPaged(Paged):
     """
-    A paging container for iterating over a list of :class:`JobDetails <quantum.models.JobDetails>` object
+    A paging container for iterating over a list of :class:`JobDetails <azure.quantum.models.JobDetails>` object
     """
 
     _attribute_map = {

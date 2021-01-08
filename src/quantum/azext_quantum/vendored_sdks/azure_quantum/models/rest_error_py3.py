@@ -14,25 +14,19 @@ from msrest.exceptions import HttpOperationError
 
 
 class RestError(Model):
-    """An error response from Azure.
+    """Error information returned by the API.
 
-    :param code: An identifier for the error. Codes are invariant and are
-     intended to be consumed programmatically.
-    :type code: str
-    :param message: A message describing the error, intended to be suitable
-     for displaying in a user interface.
-    :type message: str
+    :param error:
+    :type error: ~azure.quantum.models.ErrorData
     """
 
     _attribute_map = {
-        'code': {'key': 'code', 'type': 'str'},
-        'message': {'key': 'message', 'type': 'str'},
+        'error': {'key': 'error', 'type': 'ErrorData'},
     }
 
-    def __init__(self, *, code: str=None, message: str=None, **kwargs) -> None:
+    def __init__(self, *, error=None, **kwargs) -> None:
         super(RestError, self).__init__(**kwargs)
-        self.code = code
-        self.message = message
+        self.error = error
 
 
 class RestErrorException(HttpOperationError):
