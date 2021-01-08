@@ -109,6 +109,7 @@ def transform_spring_cloud_custom_domain_output(result):
 
     return result if is_list else result[0]
 
+
 def transform_spring_cloud_runtime_output(result):
     is_list = isinstance(result, list)
 

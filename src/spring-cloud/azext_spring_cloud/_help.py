@@ -467,6 +467,11 @@ helps['spring-cloud app-insights update'] = """
           text: az spring-cloud app-insights update -n MyService -g MyResourceGroup --disable
 """
 
+helps['spring-cloud service-runtime'] = """
+    type: group
+    short-summary: Commands to management Service Runtime in Azure Spring Cloud.
+"""
+
 helps['spring-cloud service-runtime show-info'] = """
     type: command
     short-summary: Show information of the service-runtime (e.g. config server, service registry) in the Azure Spring Cloud.
