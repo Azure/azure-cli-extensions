@@ -1,122 +1,74 @@
 Microsoft Azure CLI 'attestation' Extension
 ==========================================
 
-This package is for the 'attestation' extension, i.e. `az attestation`.
-More info on [Microsoft Azure cloud security attestation](https://azure.microsoft.com/en-us/blog/microsoft-azure-updates-cloud-security-attestation/).
-
-### How to use ###
+### Usage ###
+#### Install the extension ####
 Install this extension using the below CLI command
 ```
 az extension add --name attestation
 ```
-To see command arguments details, should run the command with `-h`.
-Example:
+#### Check the version ####
 ```
-az attestation create -h
+az extension show --name attestation --query version
 ```
+#### Connect to Azure subscription ####
 ```
-az attestation list -h
+az login
+az account set -s {subs_id}
 ```
+#### Create a resource group (or use an existing one) ####
 ```
-az attestation show -h
+az group create -n testrg -l westus
 ```
+#### Create provider in AAD mode ####
 ```
-az attestation delete -h
+az attestation create -n testatt1 -g testrg -l westus
 ```
+#### Get default policy ####
+```
+az attestation policy show -n testatt1 -g testrg --attestation-type SGX-IntelSDK
+```
+#### Configure policy in Text format using file path ###
+Download the policy file: https://github.com/Azure/azure-cli-extensions/blob/master/src/attestation/azext_attestation/tests/latest/policies/text_sgx_policy.txt
 
-### Included features ###
-#### Create an attestation ####
-The parameter `certs_input_path` is a path to your certificates pem file, it conforms to x5c in [RFC7517](https://tools.ietf.org/html/rfc7517#section-4.7).
+Content:
+```
+version= 1.0;
+authorizationrules {
+[ type=="$is-debuggable", value==false ]
+&& [ type=="$product-id", value==4639 ]
+&& [ type=="$min-svn", value>= 0 ]
+&& [ type=="$sgx-mrsigner", value=="E31C9E505F37A58DE09335075FC8591254313EB20BB1A27E5443CC450B6E33E5"]
+=> permit();
+};
+ issuancerules {
+c:[ type=="$sgx-mrsigner" ] => issue(type="sgx-mrsigner",
+value=c.value);
+ c1:[type=="maa-ehd"] => issue(type="aas-ehd", value=c1.value);
+ };
+```
+Run the command:
+```
+az attestation policy set -n testatt1 -g testrg --attestation-type SGX-IntelSDK -f "{local_path}\text_sgx_policy.txt"
+```
+#### Get policy ####
+```
+az attestation policy show -n testatt1 -g testrg --attestation-type SGX-IntelSDK
+```
+#### Configure policy in unsigned JWT format using file path ####
+Download the policy file: https://github.com/Azure/azure-cli-extensions/blob/master/src/attestation/azext_attestation/tests/latest/policies/unsigned_jwt_sgx_policy.txt
 
-Example:
+Content:
 ```
-az attestation create \
---location "eastus2" \
---provider-name "myattestationprovider" \
---resource-group "MyResourceGroup"
+eyJhbGciOiJub25lIn0.eyJBdHRlc3RhdGlvblBvbGljeSI6ICJkbVZ5YzJsdmJqMGdNUzR3TzJGMWRHaHZjbWw2WVhScGIyNXlkV3hsYzN0ak9sdDBlWEJsUFQwaUpHbHpMV1JsWW5WbloyRmliR1VpWFNBOVBpQndaWEp0YVhRb0tUdDlPMmx6YzNWaGJtTmxjblZzWlhON1l6cGJkSGx3WlQwOUlpUnBjeTFrWldKMVoyZGhZbXhsSWwwZ1BUNGdhWE56ZFdVb2RIbHdaVDBpYVhNdFpHVmlkV2RuWVdKc1pTSXNJSFpoYkhWbFBXTXVkbUZzZFdVcE8yTTZXM1I1Y0dVOVBTSWtjMmQ0TFcxeWMybG5ibVZ5SWwwZ1BUNGdhWE56ZFdVb2RIbHdaVDBpYzJkNExXMXljMmxuYm1WeUlpd2dkbUZzZFdVOVl5NTJZV3gxWlNrN1l6cGJkSGx3WlQwOUlpUnpaM2d0YlhKbGJtTnNZWFpsSWwwZ1BUNGdhWE56ZFdVb2RIbHdaVDBpYzJkNExXMXlaVzVqYkdGMlpTSXNJSFpoYkhWbFBXTXVkbUZzZFdVcE8yTTZXM1I1Y0dVOVBTSWtjSEp2WkhWamRDMXBaQ0pkSUQwLUlHbHpjM1ZsS0hSNWNHVTlJbkJ5YjJSMVkzUXRhV1FpTENCMllXeDFaVDFqTG5aaGJIVmxLVHRqT2x0MGVYQmxQVDBpSkhOMmJpSmRJRDAtSUdsemMzVmxLSFI1Y0dVOUluTjJiaUlzSUhaaGJIVmxQV011ZG1Gc2RXVXBPMk02VzNSNWNHVTlQU0lrZEdWbElsMGdQVDRnYVhOemRXVW9kSGx3WlQwaWRHVmxJaXdnZG1Gc2RXVTlZeTUyWVd4MVpTazdmVHMifQ.
 ```
-Notice:
-May not all the values from `az account list-locations` are supported to create an attetation right now, more regions will be added in the future.
-
-#### List all attestations ####
-Example:
-List all attestations in a subscription
+Run the command:
 ```
-az attestation list
+az attestation policy set -n testatt1 -g testrg --attestation-type SGX-IntelSDK --policy-format JWT -f "{local_path}\unsigned_jwt_sgx_policy.txt"
 ```
-List all attestations in a resource group
+#### Get policy ####
 ```
-az attestation list \
---resource-group "MyResourceGroup"
-```
-
-#### Show the status of one attestation ####
-Example:
-```
-az attestation show \
---provider-name "myattestationprovider" \
---resource-group "MyResourceGroup"
-```
-
-#### Delete an attestation ####
-Example:
-```
-az attestation delete \
---name "myattestationprovider" \
---resource-group "MyResourceGroup"
-```
-
-#### Add a new attestation policy certificate ####
-Example:
-```
-az attestation signer add \
--n "myattestationprovider" -g "MyResourceGroup" \
---signer "eyAiYWxnIjoiUlMyNTYiLCAie..."
-```
-
-#### Remove the specified policy management certificate ####
-Example:
-```
-az attestation signer remove \
--n "myattestationprovider" -g "MyResourceGroup" \
---signer "eyAiYWxnIjoiUlMyNTYiLCAie..."
-```
-
-#### Retrieve the set of certificates used to express policy ####
-Example:
-```
-az attestation signer list \
--n "myattestationprovider" -g "MyResourceGroup"
-```
-
-#### Set the policy for a given kind of TEE ####
-Note: You need to specify `-n` and `-g` (or use `-u`) even if they are not marked as `required` parameters.
-
-Example:
-```
-az attestation policy set \
--n "myattestationprovider" -g "MyResourceGroup" \
---tee SgxEnclave --new-attestation-policy "newAttestationPolicyname"
-
-az attestation policy set \
--u https://myattestationprovider.eastus2.attest.azure.net \
---tee SgxEnclave --new-attestation-policy "newAttestationPolicyname"
-```
-
-#### Reset the attestation policy ####
-Example:
-```
-az attestation policy reset \
--n "myattestationprovider" -g "MyResourceGroup" \
---tee SgxEnclave --policy-jws "eyJhbGciOiJub25lIn0.."
-```
-
-#### Retrieve the current policy for a given kind of TEE. ####
-Example:
-```
-az attestation policy show \
--n "myattestationprovider" -g "MyResourceGroup" \
---tee SgxEnclave
+az attestation policy show -n testatt1 -g testrg --attestation-type SGX-IntelSDK
 ```
 
 If you have issues, please give feedback by opening an issue at https://github.com/Azure/azure-cli-extensions/issues.

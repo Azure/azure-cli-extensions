@@ -104,7 +104,6 @@ from ._consts import CONST_INGRESS_APPGW_WATCH_NAMESPACE
 from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, CONST_SPOT_EVICTION_POLICY_DELETE
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
-from ._consts import CONST_PRIVATE_DNS_ZONE_SYSTEM, CONST_PRIVATE_DNS_ZONE_NONE
 from ._consts import ADDONS
 logger = get_logger(__name__)
 
@@ -882,7 +881,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                attach_acr=None,
                enable_private_cluster=False,
                private_dns_zone=None,
-               enable_managed_identity=False,
+               enable_managed_identity=True,
                api_server_authorized_ip_ranges=None,
                aks_custom_headers=None,
                appgw_name=None,
@@ -900,7 +899,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                assign_identity=None,
                auto_upgrade_channel=None,
                enable_pod_identity=False,
-               no_wait=False):
+               no_wait=False,
+               yes=False):
     if not no_ssh_key:
         try:
             if not ssh_key_value or not is_valid_ssh_rsa_public_key(ssh_key_value):
@@ -987,13 +987,19 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             admin_password=windows_admin_password,
             license_type=windows_license_type)
 
-    principal_obj = _ensure_aks_service_principal(cmd.cli_ctx,
-                                                  service_principal=service_principal, client_secret=client_secret,
-                                                  subscription_id=subscription_id, dns_name_prefix=dns_name_prefix,
-                                                  location=location, name=name)
-    service_principal_profile = ManagedClusterServicePrincipalProfile(
-        client_id=principal_obj.get("service_principal"),
-        secret=principal_obj.get("client_secret"))
+    service_principal_profile = None
+    principal_obj = None
+    # If customer explicitly provide a service principal, disable managed identity.
+    if service_principal and client_secret:
+        enable_managed_identity = False
+    if not enable_managed_identity:
+        principal_obj = _ensure_aks_service_principal(cmd.cli_ctx,
+                                                      service_principal=service_principal, client_secret=client_secret,
+                                                      subscription_id=subscription_id, dns_name_prefix=dns_name_prefix,
+                                                      location=location, name=name)
+        service_principal_profile = ManagedClusterServicePrincipalProfile(
+            client_id=principal_obj.get("service_principal"),
+            secret=principal_obj.get("client_secret"))
 
     if attach_acr:
         if enable_managed_identity:
@@ -1006,19 +1012,40 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                             acr_name_or_id=attach_acr,
                             subscription_id=subscription_id)
 
+    need_post_creation_vnet_permission_granting = False
     if (vnet_subnet_id and not skip_subnet_role_assignment and
             not subnet_role_assignment_exists(cmd.cli_ctx, vnet_subnet_id)):
-        scope = vnet_subnet_id
-        identity_client_id = service_principal_profile.client_id
-        if enable_managed_identity and assign_identity:
-            identity_client_id = _get_user_assigned_identity_client_id(cmd.cli_ctx, assign_identity)
-        if not _add_role_assignment(
-                cmd.cli_ctx,
-                'Network Contributor',
-                identity_client_id,
-                scope=scope):
-            logger.warning('Could not create a role assignment for subnet. '
-                           'Are you an Owner on this subscription?')
+        # if service_principal_profile is None, then this cluster is an MSI cluster,
+        # and the service principal does not exist. Two cases:
+        # 1. For system assigned identity, we just tell user to grant the
+        # permission after the cluster is created to keep consistent with portal experience.
+        # 2. For user assigned identity, we can grant needed permission to
+        # user provided user assigned identity before creating managed cluster.
+        if service_principal_profile is None and not assign_identity:
+            msg = ('It is highly recommended to use USER assigned identity '
+                   '(option --assign-identity) when you want to bring your own'
+                   'subnet, which will have no latency for the role assignment to '
+                   'take effect. When using SYSTEM assigned identity, '
+                   'azure-cli will grant Network Contributor role to the '
+                   'system assigned identity after the cluster is created, and '
+                   'the role assignment will take some time to take effect, see '
+                   'https://docs.microsoft.com/en-us/azure/aks/use-managed-identity, '
+                   'proceed to create cluster with system assigned identity?')
+            from knack.prompting import prompt_y_n
+            if not yes and not prompt_y_n(msg, default="n"):
+                return None
+            need_post_creation_vnet_permission_granting = True
+        else:
+            scope = vnet_subnet_id
+            identity_client_id = ""
+            if assign_identity:
+                identity_client_id = _get_user_assigned_identity_client_id(cmd.cli_ctx, assign_identity)
+            else:
+                identity_client_id = service_principal_profile.client_id
+            if not _add_role_assignment(cmd.cli_ctx, 'Network Contributor',
+                                        identity_client_id, scope=scope):
+                logger.warning('Could not create a role assignment for subnet. '
+                               'Are you an Owner on this subscription?')
 
     load_balancer_profile = create_load_balancer_profile(
         load_balancer_managed_outbound_ip_count,
@@ -1087,6 +1114,11 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     # addon is in the list and is enabled
     ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in addon_profiles and \
         addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].enabled
+
+    os_type = 'Linux'
+    enable_virtual_node = False
+    if CONST_VIRTUAL_NODE_ADDON_NAME + os_type in addon_profiles:
+        enable_virtual_node = True
 
     aad_profile = None
     if enable_aad:
@@ -1186,9 +1218,6 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     if private_dns_zone:
         if not enable_private_cluster:
             raise CLIError("Invalid private dns zone for public cluster. It should always be empty for public cluster")
-        # remove following check once we support custom private dns zone
-        if private_dns_zone not in (CONST_PRIVATE_DNS_ZONE_SYSTEM, CONST_PRIVATE_DNS_ZONE_NONE):
-            raise CLIError("Invalid private dns zone for private cluster. Only 'system' or 'none' mode is supported")
         mc.api_server_access_profile.private_dns_zone = private_dns_zone
 
     if uptime_sla:
@@ -1213,6 +1242,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                 mc,
                 monitoring,
                 ingress_appgw_addon_enabled,
+                enable_virtual_node,
+                need_post_creation_vnet_permission_granting,
+                vnet_subnet_id,
                 enable_managed_identity,
                 attach_acr,
                 headers,
@@ -1247,6 +1279,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                attach_acr=None,
                detach_acr=None,
                uptime_sla=False,
+               no_uptime_sla=False,
                enable_aad=False,
                aad_tenant_id=None,
                aad_admin_group_object_ids=None,
@@ -1258,7 +1291,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                assign_identity=None,
                enable_pod_identity=False,
                disable_pod_identity=False,
-               yes=False):
+               yes=False,
+               tags=None):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1277,6 +1311,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not update_pod_security and \
        not update_lb_profile and \
        not uptime_sla and \
+       not no_uptime_sla and \
        not enable_aad and \
        not update_aad_profile and  \
        not enable_ahub and  \
@@ -1285,7 +1320,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not enable_managed_identity and \
        not assign_identity and \
        not enable_pod_identity and \
-       not disable_pod_identity:
+       not disable_pod_identity and \
+       not tags:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1296,6 +1332,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--attach-acr" or '
                        '"--detach-acr" or '
                        '"--uptime-sla" or '
+                       '"--no-uptime-sla" or '
                        '"--load-balancer-managed-outbound-ip-count" or '
                        '"--load-balancer-outbound-ips" or '
                        '"--load-balancer-outbound-ip-prefixes" or '
@@ -1307,7 +1344,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--enable-managed-identity" or '
                        '"--enable-pod-identity" or '
                        '"--disable-pod-identity" or '
-                       '"--auto-upgrade-channel"')
+                       '"--auto-upgrade-channel" or '
+                       '"--tags"')
 
     instance = client.get(resource_group_name, name)
 
@@ -1382,10 +1420,19 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     if attach_acr and detach_acr:
         raise CLIError('Cannot specify "--attach-acr" and "--detach-acr" at the same time.')
 
+    if uptime_sla and no_uptime_sla:
+        raise CLIError('Cannot specify "--uptime-sla" and "--no-uptime-sla" at the same time.')
+
     if uptime_sla:
         instance.sku = ManagedClusterSKU(
             name="Basic",
             tier="Paid"
+        )
+
+    if no_uptime_sla:
+        instance.sku = ManagedClusterSKU(
+            name="Basic",
+            tier="Free"
         )
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -1495,12 +1542,16 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     if disable_pod_identity:
         _update_addon_pod_identity(instance, enable=False)
 
+    if tags:
+        instance.tags = tags
+
     headers = get_aks_custom_headers(aks_custom_headers)
     monitoring_addon_enabled = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and \
         instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
     ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles and \
         instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].enabled
-
+    virtual_node_addon_enabled = CONST_VIRTUAL_NODE_ADDON_NAME + 'Linux' in instance.addon_profiles and \
+        instance.addon_profiles[CONST_VIRTUAL_NODE_ADDON_NAME + 'Linux'].enabled
     return _put_managed_cluster_ensuring_permission(cmd,
                                                     client,
                                                     subscription_id,
@@ -1509,6 +1560,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                                                     instance,
                                                     monitoring_addon_enabled,
                                                     ingress_appgw_addon_enabled,
+                                                    virtual_node_addon_enabled,
+                                                    False,
+                                                    instance.agent_pool_profiles[0].vnet_subnet_id,
                                                     _is_msi_cluster(instance),
                                                     attach_acr,
                                                     headers,
@@ -2346,6 +2400,45 @@ def _ensure_aks_acr_role_assignment(cli_ctx,
     return
 
 
+def _add_virtual_node_role_assignment(cmd, result, vnet_subnet_id):
+    # Remove trailing "/subnets/<SUBNET_NAME>" to get the vnet id
+    vnet_id = vnet_subnet_id.rpartition('/')[0]
+    vnet_id = vnet_id.rpartition('/')[0]
+
+    service_principal_msi_id = None
+    is_service_principal = False
+    os_type = 'Linux'
+    addon_name = CONST_VIRTUAL_NODE_ADDON_NAME + os_type
+    # Check if service principal exists, if it does, assign permissions to service principal
+    # Else, provide permissions to MSI
+    if (
+            hasattr(result, 'service_principal_profile') and
+            hasattr(result.service_principal_profile, 'client_id') and
+            result.service_principal_profile.client_id.lower() != 'msi'
+    ):
+        logger.info('valid service principal exists, using it')
+        service_principal_msi_id = result.service_principal_profile.client_id
+        is_service_principal = True
+    elif (
+            (hasattr(result, 'addon_profiles')) and
+            (addon_name in result.addon_profiles) and
+            (hasattr(result.addon_profiles[addon_name], 'identity')) and
+            (hasattr(result.addon_profiles[addon_name].identity, 'object_id'))
+    ):
+        logger.info('virtual node MSI exists, using it')
+        service_principal_msi_id = result.addon_profiles[addon_name].identity.object_id
+        is_service_principal = False
+
+    if service_principal_msi_id is not None:
+        if not _add_role_assignment(cmd.cli_ctx, 'Contributor',
+                                    service_principal_msi_id, is_service_principal, scope=vnet_id):
+            logger.warning('Could not create a role assignment for virtual node addon. '
+                           'Are you an Owner on this subscription?')
+    else:
+        logger.warning('Could not find service principal or user assigned MSI for role'
+                       'assignment')
+
+
 def aks_agentpool_show(cmd,     # pylint: disable=unused-argument
                        client,
                        resource_group_name,
@@ -3084,13 +3177,20 @@ def _put_managed_cluster_ensuring_permission(
     managed_cluster,
     monitoring_addon_enabled,
     ingress_appgw_addon_enabled,
+    virtual_node_addon_enabled,
+    need_grant_vnet_permission_to_cluster_identity,
+    vnet_subnet_id,
     enable_managed_identity,
     attach_acr,
     headers,
     no_wait
 ):
     # some addons require post cluster creation role assigment
-    need_post_creation_role_assignment = monitoring_addon_enabled or ingress_appgw_addon_enabled or (enable_managed_identity and attach_acr)
+    need_post_creation_role_assignment = (monitoring_addon_enabled or
+                                          ingress_appgw_addon_enabled or
+                                          (enable_managed_identity and attach_acr) or
+                                          virtual_node_addon_enabled or
+                                          need_grant_vnet_permission_to_cluster_identity)
     if need_post_creation_role_assignment:
         # adding a wait here since we rely on the result for role assignment
         cluster = LongRunningOperation(cmd.cli_ctx)(client.create_or_update(
@@ -3112,6 +3212,15 @@ def _put_managed_cluster_ensuring_permission(
             _add_monitoring_role_assignment(cluster, cluster_resource_id, cmd)
         if ingress_appgw_addon_enabled:
             _add_ingress_appgw_addon_role_assignment(cluster, cmd)
+        if virtual_node_addon_enabled:
+            _add_virtual_node_role_assignment(cmd, cluster, vnet_subnet_id)
+        if need_grant_vnet_permission_to_cluster_identity:
+            if not _create_role_assignment(cmd.cli_ctx, 'Network Contributor',
+                                           cluster.identity.principal_id, scope=vnet_subnet_id,
+                                           resolve_assignee=False):
+                logger.warning('Could not create a role assignment for subnet. '
+                               'Are you an Owner on this subscription?')
+
         if enable_managed_identity and attach_acr:
             # Attach ACR to cluster enabled managed identity
             if cluster.identity_profile is None or \
