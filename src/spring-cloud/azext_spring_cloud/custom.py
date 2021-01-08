@@ -21,7 +21,7 @@ from .vendored_sdks.appplatform.v2020_11_01_preview import AppPlatformManagement
 from knack.log import get_logger
 from .azure_storage_file import FileService
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
-from azure.cli.core.util import sdk_no_wait
+from azure.cli.core.util import sdk_no_wait, send_raw_request
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from ast import literal_eval
@@ -43,6 +43,7 @@ NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployme
 NO_PRODUCTION_DEPLOYMENT_SET_ERROR = "This app has no production deployment, use \"az spring-cloud app deployment create\" to create a deployment and \"az spring-cloud app set-deployment\" to set production deployment."
 DELETE_PRODUCTION_DEPLOYMENT_WARNING = "You are going to delete production deployment, the app will be inaccessible after this operation."
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
+UNAUTHORIZED_ACCESS_DATAPLANE = "You are not authorized to access the endpoint due to either invalid AAD token or not assigned with Azure Spring Cloud Data Reader role by your administrator."
 
 
 def spring_cloud_create(cmd, client, resource_group, name, location=None, app_insights_key=None, app_insights=None,
@@ -557,7 +558,7 @@ def app_tail_log(cmd, client, resource_group, service, name, instance=None, foll
 
     # https://primary:xxxx[key]@servicename.test.azuremicrosoervice.io -> servicename.azuremicroservice.io
     test_url = test_keys.primary_test_endpoint
-    base_url = test_url.replace('.test.', '.')
+    base_url = test_url.replace('.test.', '.') 
     base_url = re.sub('https://.+?\@', '', base_url)
 
     streaming_url = "https://{0}/api/logstream/apps/{1}/instances/{2}".format(
@@ -1569,3 +1570,65 @@ def app_insights_show(cmd, client, resource_group, name, no_wait=False):
     if not trace_properties:
         raise CLIError("Application Insights not set.")
     return trace_properties
+
+
+def runtime_show(cmd, client, resource_group, name):
+    _exclude_service_version_v2(client, resource_group, name)
+    svc_runtime = _map_cloud_to_svc_runtime(cmd.cli_ctx.cloud.name)
+    runtime_info = [
+        {
+            "Service Name": "Config Server",
+            "Root Endpoint": '{0}.{1}/config'.format(name, svc_runtime)
+        },
+        {
+            "Service Name": "Service Registry",
+            "Root Endpoint": '{0}.{1}/eureka'.format(name, svc_runtime)
+        }
+    ]
+    return runtime_info
+
+
+def runtime_endpoint_access(cmd, client, resource_group, name, component, endpoint):
+    _exclude_service_version_v2(client, resource_group, name)
+    svc_runtime = _map_cloud_to_svc_runtime(cmd.cli_ctx.cloud.name)
+    if svc_runtime == "Invalid":
+        raise CLIError("Cloud {0} is not supported.".format(cmd.cli_ctx.cloud.name))
+    url = "https://{0}.{1}/{2}{3}".format(name, svc_runtime,  _map_component_url(component), endpoint)
+    logger.warning('Call url %s', url)
+    try:
+        r = send_raw_request(cmd.cli_ctx, "get", url, resource=cmd.cli_ctx.cloud.endpoints.active_directory_resource_id)
+        if r.content:
+            try:
+                return r.json()
+            except ValueError:
+                logger.warning('Not a json response, outputting to stdout.')
+        return None
+    except Exception as ex:
+        if "401 Authorization Required" in str(ex):
+            raise CLIError(str(ex) + '\n' + UNAUTHORIZED_ACCESS_DATAPLANE)
+        if "\"status\":404" in str(ex):
+            raise CLIError(str(ex)+ '\n' + "Endpoint \"{0}\" not found.".format(endpoint))
+        raise CLIError(str(ex) + '\n' + "Something went wrong. You may raise a support ticket.")
+
+
+def _exclude_service_version_v2(client, resource_group, service_name):
+    resource = client.services.get(resource_group, service_name)
+    if resource.properties.version == 2:
+        raise CLIError("Only instances of version 3 are supported.")
+
+
+def _map_cloud_to_svc_runtime(cloud_name):
+    cloudSwitcher = {
+        "dogfood": "svc.asc-test.net",
+        "AzureCloud": "svc.azuremicroservices.io",
+        "AzureChinaCloud": "svc.microservices.azure.cn"
+    }
+    return cloudSwitcher.get(cloud_name, "Invalid")
+
+
+def _map_component_url(component):
+    component_url_switcher = {
+        "config": "config",
+        "registry": "eureka"
+    }
+    return component_url_switcher.get(component.lower())

@@ -417,3 +417,8 @@ def _validate_resource_group_name(name, message_name):
     matchObj = match(r'^[-\w\._\(\)]+$', name)
     if matchObj is None:
         raise CLIError('--{0} must conform to the following pattern: \'^[-\\w\\._\\(\\)]+$\'.'.format(message_name))
+
+
+def validate_runtime_component_name(namespace):
+    if namespace.component.lower() != "config" and namespace.component.lower() != "registry":
+        raise CLIError('Only "config" and "registry" are supported for --component')

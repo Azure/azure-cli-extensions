@@ -108,3 +108,15 @@ def transform_spring_cloud_custom_domain_output(result):
         item['Thumbprint'] = item['properties']['thumbprint']
 
     return result if is_list else result[0]
+
+def transform_spring_cloud_runtime_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Service Name'] = item['Service Name']
+        item['Root Endpoint'] = item['Root Endpoint']
+
+    return result if is_list else result[0]

@@ -12,7 +12,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_log_limit, validate_log_since, validate_sku, validate_jvm_options,
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
                           validate_tracing_parameters, validate_app_insights_parameters,
-                          validate_instance_count)
+                          validate_instance_count, validate_runtime_component_name)
 from ._utils import ApiType
 
 from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
@@ -267,3 +267,7 @@ def load_arguments(self, _):
                    arg_type=get_three_state_flag(),
                    help="Disable Application Insights.",
                    validator=validate_app_insights_parameters)
+
+    with self.argument_context('spring-cloud service-runtime access-endpoint') as c:
+        c.argument('component', help='Component name. Supported values: config, registry', validator=validate_runtime_component_name)
+        c.argument('endpoint', help='Endpoint of Azure Spring Cloud runtime to access, you can get all accessible endpoints using az spring-cloud runtime access-endpoint --endpoint /actuator.')

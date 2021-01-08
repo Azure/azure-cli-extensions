@@ -466,3 +466,23 @@ helps['spring-cloud app-insights update'] = """
         - name: Disable Application Insights.
           text: az spring-cloud app-insights update -n MyService -g MyResourceGroup --disable
 """
+
+helps['spring-cloud service-runtime show-info'] = """
+    type: command
+    short-summary: Show information of the service-runtime (e.g. config server, service registry) in the Azure Spring Cloud.
+    examples:
+        - name: Show information of service runtime.
+          text: az spring-cloud service-runtime show-info -n MyService -g MyResourceGroup -o table
+"""
+
+helps['spring-cloud service-runtime access-endpoint'] = """
+    type: command
+    short-summary: Access endpoints of Azure Spring Cloud runtime like config server, service registry.
+    examples:
+        - name: Get all accessible endpoints of service registry.
+          text: az spring-cloud service-runtime access-endpoint -n MyService -g MyResourceGroup --component registry --endpoint /actuator
+        - name: Access service registry health.
+          text: az spring-cloud service-runtime access-endpoint -n MyService -g MyResourceGroup --component registry --endpoint /actuator/health
+        - name: Access config server health.
+          text: az spring-cloud servoce-runtime access-endpoint -n MyService -g MyResourceGroup --component config --endpoint /actuator/health
+"""

@@ -9,7 +9,8 @@ from ._transformers import (transform_spring_cloud_table_output,
                             transform_app_table_output,
                             transform_spring_cloud_deployment_output,
                             transform_spring_cloud_certificate_output,
-                            transform_spring_cloud_custom_domain_output)
+                            transform_spring_cloud_custom_domain_output,
+                            transform_spring_cloud_runtime_output)
 
 
 # pylint: disable=too-many-statements
@@ -104,6 +105,11 @@ def load_command_table(self, _):
     with self.command_group('spring-cloud app-insights', is_preview=True, client_factory=cf_spring_cloud_20201101preview) as g:
         g.custom_command('update', 'app_insights_update')
         g.custom_show_command('show', 'app_insights_show')
+
+    with self.command_group('spring-cloud service-runtime') as g:
+        g.custom_show_command('show-info', 'runtime_show',
+                              table_transformer=transform_spring_cloud_runtime_output)
+        g.custom_command('access-endpoint', 'runtime_endpoint_access')
 
     with self.command_group('spring-cloud'):
         pass
