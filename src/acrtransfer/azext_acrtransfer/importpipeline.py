@@ -5,7 +5,7 @@
 # pylint: disable=line-too-long
 
 from .vendored_sdks.containerregistry.v2019_12_01_preview.models._models_py3 import ImportPipeline, ImportPipelineSourceProperties, PipelineTriggerProperties, PipelineSourceTriggerProperties
-from .utility_functions import create_identity_properties, print_keyvault_policy_output
+from .utility_functions import create_identity_properties
 
 
 def create_importpipeline(client, resource_group_name, registry_name, import_pipeline_name, keyvault_secret_uri, storage_account_container_uri, options=None, user_assigned_identity_resource_id=None, source_trigger_enabled=True):
