@@ -39,9 +39,11 @@ logger = get_logger(__name__)
 
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
-                        kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto', auto_upgrade=True):
+                        kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto', disable_auto_upgrade=False):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
+
+    print(disable_auto_upgrade)
 
     # Setting subscription id
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -245,7 +247,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Install azure-arc agents
     helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
-                         kube_context, no_wait, values_file_provided, values_file, azure_cloud, auto_upgrade)
+                         kube_context, no_wait, values_file_provided, values_file, azure_cloud, disable_auto_upgrade)
 
     return put_cc_response
 
@@ -655,7 +657,7 @@ def get_release_namespace(kube_config, kube_context):
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
-                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, auto_upgrade):
+                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade):
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
@@ -671,7 +673,7 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
     # To set some other helm parameters through file
     if values_file_provided:
         cmd_helm_install.extend(["-f", values_file])
-    if not auto_upgrade:
+    if disable_auto_upgrade:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}".format("false")])
     if https_proxy:
         cmd_helm_install.extend(["--set", "global.httpsProxy={}".format(https_proxy)])
@@ -768,7 +770,7 @@ def update_connectedk8s(cmd, instance, tags=None):
 
 
 def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
-                  disable_proxy=False, kube_config=None, kube_context=None, no_wait=False, auto_upgrade=True):
+                  disable_proxy=False, kube_config=None, kube_context=None, no_wait=False, disable_auto_upgrade=False):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -907,7 +909,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
                         "--wait", "--output", "json"]
     if values_file_provided:
         cmd_helm_upgrade.extend(["-f", values_file])
-    if not auto_upgrade:
+    if disable_auto_upgrade:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}".format("false")])
     if https_proxy:
         cmd_helm_upgrade.extend(["--set", "global.httpsProxy={}".format(https_proxy)])
