@@ -604,10 +604,10 @@ class ContainerOperations:
          analytics logging is enabled.
         :type request_id: str
         :param deleted_container_name: Optional.  Version 2019-12-12 and
-         later.  Specifies the name of the deleted container to restore.
+         laster.  Specifies the name of the deleted container to restore.
         :type deleted_container_name: str
         :param deleted_container_version: Optional.  Version 2019-12-12 and
-         later.  Specifies the version of the deleted container to restore.
+         laster.  Specifies the version of the deleted container to restore.
         :type deleted_container_version: str
         :param callable cls: A custom type or function that will be passed the
          direct response
