@@ -17,8 +17,6 @@ from azext_providerhub.generated._params import load_arguments  # pylint: disabl
 
 try:
     from azext_providerhub.manual._help import helps  # pylint: disable=reimported
-    from azext_providerhub.manual.commands import load_command_table as load_command_table_manual
-    from azext_providerhub.manual._params import load_arguments as load_arguments_manual
 except ImportError:
     pass
 
@@ -36,6 +34,7 @@ class ProviderhubCommandsLoader(AzCommandsLoader):
     def load_command_table(self, args):
         load_command_table(self, args)
         try:
+            from azext_providerhub.manual.commands import load_command_table as load_command_table_manual
             load_command_table_manual(self, args)
         except ImportError:
             pass
@@ -44,6 +43,7 @@ class ProviderhubCommandsLoader(AzCommandsLoader):
     def load_arguments(self, command):
         load_arguments(self, command)
         try:
+            from azext_providerhub.manual._params import load_arguments as load_arguments_manual
             load_arguments_manual(self, command)
         except ImportError:
             pass
