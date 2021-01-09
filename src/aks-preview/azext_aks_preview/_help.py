@@ -254,7 +254,7 @@ helps['aks create'] = """
           short-summary: Enable VMSS node public IP.
         - name: --enable-managed-identity
           type: bool
-          short-summary: (PREVIEW) Using managed identity to manage cluster resource group.
+          short-summary: Using managed identity to manage cluster resource group. Default value is true, you can explicitly specify "--client-id" and "--secret" to disable managed identity.
         - name: --assign-identity
           type: string
           short-summary: (PREVIEW) Specify an existing user assigned identity to manage cluster resource group.
