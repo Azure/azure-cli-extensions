@@ -182,6 +182,39 @@ class StorageBlobUploadTests(StorageScenarioMixin, ScenarioTest):
         self.assertEqual(len(self.storage_cmd('storage blob list -c {}',
                                               account_info, container).get_output_in_json()), 1)
 
+    @ResourceGroupPreparer()
+    @StorageAccountPreparer(kind='StorageV2')
+    def test_storage_blob_update_service_properties(self, resource_group, storage_account):
+        account_info = self.get_account_info(resource_group, storage_account)
+
+        self.storage_cmd('storage blob service-properties show', account_info) \
+            .assert_with_checks(JMESPathCheck('staticWebsite.enabled', False),
+                                JMESPathCheck('hourMetrics.enabled', True),
+                                JMESPathCheck('minuteMetrics.enabled', False),
+                                JMESPathCheck('minuteMetrics.includeApis', None),
+                                JMESPathCheck('logging.delete', False))
+
+        self.storage_cmd('storage blob service-properties update --static-website --index-document index.html '
+                         '--404-document error.html', account_info) \
+            .assert_with_checks(JMESPathCheck('staticWebsite.enabled', True),
+                                JMESPathCheck('staticWebsite.errorDocument_404Path', 'error.html'),
+                                JMESPathCheck('staticWebsite.indexDocument', 'index.html'))
+
+        self.storage_cmd('storage blob service-properties update --delete-retention --delete-retention-period 1',
+                         account_info) \
+            .assert_with_checks(JMESPathCheck('staticWebsite.enabled', True),
+                                JMESPathCheck('staticWebsite.errorDocument_404Path', 'error.html'),
+                                JMESPathCheck('staticWebsite.indexDocument', 'index.html'),
+                                JMESPathCheck('deleteRetentionPolicy.enabled', True),
+                                JMESPathCheck('deleteRetentionPolicy.days', 1))
+
+        self.storage_cmd('storage blob service-properties show', account_info) \
+            .assert_with_checks(JMESPathCheck('staticWebsite.enabled', True),
+                                JMESPathCheck('staticWebsite.errorDocument_404Path', 'error.html'),
+                                JMESPathCheck('staticWebsite.indexDocument', 'index.html'),
+                                JMESPathCheck('deleteRetentionPolicy.enabled', True),
+                                JMESPathCheck('deleteRetentionPolicy.days', 1))
+
 
 if __name__ == '__main__':
     unittest.main()
