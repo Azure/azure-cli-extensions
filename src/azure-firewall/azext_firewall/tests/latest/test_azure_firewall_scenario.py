@@ -378,14 +378,14 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('intrusionDetection.configuration.signatureOverrides', []),
                  ])
 
-        self.cmd('network firewall policy intrusion-detection add -g {rg} --policy-name {policy} --mode Deny --signature-id 10001',
+        self.cmd('network firewall policy idps add -g {rg} --policy-name {policy} --mode Deny --signature-id 10001',
                  checks=[
                      self.check('bypassTrafficSettings', []),
                      self.check('length(signatureOverrides)', 1),
                      self.check('signatureOverrides[0]', {'id': '10001', 'mode': 'Deny'}),
                  ])
 
-        self.cmd('network firewall policy intrusion-detection add -g {rg} --policy-name {policy} --mode Alert --signature-id 20001',
+        self.cmd('network firewall policy idps add -g {rg} --policy-name {policy} --mode Alert --signature-id 20001',
                  checks=[
                      self.check('bypassTrafficSettings', []),
                      self.check('length(signatureOverrides)', 2),
@@ -393,7 +393,7 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('signatureOverrides[1]', {'id': '20001', 'mode': 'Alert'}),
                  ])
 
-        self.cmd('network firewall policy intrusion-detection add -g {rg} --policy-name {policy} '
+        self.cmd('network firewall policy idps add -g {rg} --policy-name {policy} '
                  '--rule-name bypass-rule-1 '
                  '--rule-protocol TCP '
                  '--rule-src-addresses 10.0.0.12 10.0.0.15 '
@@ -411,17 +411,17 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('signatureOverrides[1]', {'id': '20001', 'mode': 'Alert'}),
                  ])
 
-        self.cmd('network firewall policy intrusion-detection list -g {rg} --policy-name {policy}',
+        self.cmd('network firewall policy idps list -g {rg} --policy-name {policy}',
                  checks=[
                      self.check('length(bypassTrafficSettings)', 1),
                      self.check('length(signatureOverrides)', 2),
                  ])
 
-        self.cmd('network firewall policy intrusion-detection remove -g {rg} --policy-name {policy} '
+        self.cmd('network firewall policy idps remove -g {rg} --policy-name {policy} '
                  '--rule-name bypass-rule-1 '
                  '--signature-id 10001')
 
-        self.cmd('network firewall policy intrusion-detection list -g {rg} --policy-name {policy}',
+        self.cmd('network firewall policy idps list -g {rg} --policy-name {policy}',
                  checks=[
                      self.check('length(bypassTrafficSettings)', 0),
                      self.check('length(signatureOverrides)', 1),

@@ -122,7 +122,7 @@ def load_command_table(self, _):
         g.show_command('show')
         g.generic_update_command('update', custom_func_name='update_azure_firewall_policies', exception_handler=exception_handler)
 
-    with self.command_group('network firewall policy intrusion-detection', resource_type=CUSTOM_FIREWALL, min_api='2020-07-01', is_preview=True) as g:
+    with self.command_group('network firewall policy idps', resource_type=CUSTOM_FIREWALL, min_api='2020-07-01', is_preview=True) as g:
         g.custom_command('add', 'add_firewall_policy_intrusion_detection_config', exception_handler=exception_handler)
         g.custom_command('remove', 'remove_firewall_policy_intrusion_detection_config')
         g.custom_command('list', 'list_firewall_policy_intrusion_detection_config')

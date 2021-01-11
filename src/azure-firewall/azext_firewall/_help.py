@@ -339,22 +339,22 @@ helps['network firewall policy list'] = """
     short-summary: List all Azure firewall policies.
 """
 
-helps['network firewall policy intrusion-detection'] = """
+helps['network firewall policy idps'] = """
     type: group
     short-summary: Manage intrusion signature rules and bypass rules
 """
 
-helps['network firewall policy intrusion-detection add'] = """
+helps['network firewall policy idps add'] = """
     type: command
     short-summary: Add overrided intrusion signature or a bypass rule for intrusion detection
 """
 
-helps['network firewall policy intrusion-detection list'] = """
+helps['network firewall policy idps list'] = """
     type: command
     short-summary: List all intrusion detection configuration
 """
 
-helps['network firewall policy intrusion-detection remove'] = """
+helps['network firewall policy idps remove'] = """
     type: command
     short-summary: Remove overrided intrusion signature or a bypass rule
 """
