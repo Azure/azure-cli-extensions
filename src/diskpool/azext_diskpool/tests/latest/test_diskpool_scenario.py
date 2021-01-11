@@ -12,14 +12,15 @@ import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 from .preparers import VirtualNetworkPreparer
-from .example_steps import step_create
+from .example_steps import step_create, step_create_required
 from .example_steps import step_show
 from .example_steps import step_list
-from .example_steps import step_list
+from .example_steps import step_list2
 from .example_steps import step_update
 from .example_steps import step_iscsi_target_create
 from .example_steps import step_iscsi_target_show
 from .example_steps import step_iscsi_target_list
+from .example_steps import step_iscsi_target_update
 from .example_steps import step_iscsi_target_delete
 from .example_steps import step_delete
 from .. import (
@@ -48,37 +49,62 @@ def cleanup_scenario(test, rg):
 @try_manual
 def call_scenario(test, rg):
     setup_scenario(test, rg)
-    step_create(test, rg, checks=[
-        test.check("name", "{myDiskPool}", case_sensitive=False),
+    step_create_required(test, rg, checks=[
+        test.check("availabilityZones[0]", "{zone}", case_sensitive=False),
         test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtua"
                    "lNetworks/{vn}/subnets/default", case_sensitive=False),
+        test.check("name", "{myDiskPool}", case_sensitive=False),
+        test.check("disks", None)
+    ])
+    step_update(test, rg, checks=[
+        test.check("availabilityZones[0]", "{zone}", case_sensitive=False),
+        test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtua"
+                   "lNetworks/{vn}/subnets/default", case_sensitive=False),
+        test.check("name", "{myDiskPool}", case_sensitive=False),
+        test.check("tags.key", "value"),
+        test.check("disks[0].id", "{myDisk}")
+    ])
+    test.kwargs['myDiskPool'] = test.create_random_name(prefix='newpool', length=10),
+    step_create(test, rg, checks=[
+        test.check("availabilityZones[0]", "{zone}", case_sensitive=False),
+        test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtua"
+                   "lNetworks/{vn}/subnets/default", case_sensitive=False),
+        test.check("name", "{myDiskPool}", case_sensitive=False),
+        test.check("disks[0].id", "{myDisk1}"),
+        test.check("disks[1].id", "{myDisk2}")
     ])
     step_show(test, rg, checks=[
-        test.check("name", "{myDiskPool}", case_sensitive=False),
+        test.check("availabilityZones[0]", "{zone}", case_sensitive=False),
         test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtua"
                    "lNetworks/{vn}/subnets/default", case_sensitive=False),
+        test.check("name", "{myDiskPool}", case_sensitive=False),
     ])
     step_list(test, rg, checks=[
         test.check('length(@)', 1),
     ])
-    step_list(test, rg, checks=[
+    step_list2(test, rg, checks=[
         test.check('length(@)', 1),
     ])
     step_update(test, rg, checks=[
-        test.check("name", "{myDiskPool}", case_sensitive=False),
+        test.check("availabilityZones[0]", "{zone}", case_sensitive=False),
         test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtua"
                    "lNetworks/{vn}/subnets/default", case_sensitive=False),
+        test.check("name", "{myDiskPool}", case_sensitive=False),
     ])
     step_iscsi_target_create(test, rg, checks=[
-        test.check("name", "{myIscsiTarget}", case_sensitive=False),
         test.check("targetIqn", "iqn.2005-03.org.iscsi:server1", case_sensitive=False),
+        test.check("name", "{myIscsiTarget}", case_sensitive=False),
     ])
     step_iscsi_target_show(test, rg, checks=[
-        test.check("name", "{myIscsiTarget}", case_sensitive=False),
         test.check("targetIqn", "iqn.2005-03.org.iscsi:server1", case_sensitive=False),
+        test.check("name", "{myIscsiTarget}", case_sensitive=False),
     ])
     step_iscsi_target_list(test, rg, checks=[
         test.check('length(@)', 1),
+    ])
+    step_iscsi_target_update(test, rg, checks=[
+        test.check("targetIqn", "iqn.2005-03.org.iscsi:server1", case_sensitive=False),
+        test.check("name", "{myIscsiTarget}", case_sensitive=False),
     ])
     step_iscsi_target_delete(test, rg, checks=[])
     step_delete(test, rg, checks=[])
@@ -89,19 +115,22 @@ def call_scenario(test, rg):
 @try_manual
 class DiskpoolScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='clitestdiskpool_myResourceGroup'[:7], key='rg', parameter_name='rg')
-    @VirtualNetworkPreparer(name_prefix='clitestdiskpool_myvnet'[:7], key='vn', resource_group_key='rg')
-    def test_diskpool_Scenario(self, rg):
-
+    def __init__(self, *args, **kwargs):
+        super(DiskpoolScenarioTest, self).__init__(*args, **kwargs)
         self.kwargs.update({
             'subscription_id': self.get_subscription_id()
         })
 
         self.kwargs.update({
-            'myDiskPool': 'myDiskPool',
-            'myIscsiTarget': 'myIscsiTarget',
+            'myDiskPool': self.create_random_name(prefix='myDiskPool'[:5], length=10),
+            'myIscsiTarget': self.create_random_name(prefix='myIscsiTarget'[:6], length=13),
+            'myDisk': self.create_random_name(prefix='disk', length=10),
+            'zone': "3"
         })
 
+    @ResourceGroupPreparer(name_prefix='clitestdiskpool_myResourceGroup'[:7], key='rg', parameter_name='rg')
+    @VirtualNetworkPreparer(name_prefix='clitestdiskpool_myvnet'[:7], key='vn', resource_group_key='rg')
+    def test_diskpool_Scenario(self, rg):
         call_scenario(self, rg)
         calc_coverage(__file__)
         raise_if()

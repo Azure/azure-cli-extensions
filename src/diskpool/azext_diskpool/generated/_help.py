@@ -19,7 +19,7 @@ helps['disk-pool'] = """
 
 helps['disk-pool list'] = """
     type: command
-    short-summary: "Gets a list of DiskPools. And Gets a list of Disk Pools in a subscription."
+    short-summary: "Gets a list of DiskPools in a resource group. And Gets a list of Disk Pools in a subscription."
     examples:
       - name: List Disk Pools
         text: |-
@@ -33,90 +33,60 @@ helps['disk-pool show'] = """
     type: command
     short-summary: "Get a Disk Pool."
     examples:
-      - name: Get a diskPool
+      - name: Get Disk Pool
         text: |-
                az disk-pool show --name "myDiskPool" --resource-group "myResourceGroup"
 """
 
 helps['disk-pool create'] = """
     type: command
-    short-summary: "Create a new Disk Pool."
+    short-summary: "Create Disk Pool."
     parameters:
-      - name: --sku
-        short-summary: "Sku description."
-        long-summary: |
-            Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
-
-            name: Required. The name of the SKU. Ex - P3. It is typically a letter+number code
-            tier: This field is required to be implemented by the Resource Provider if the service has more than one \
-tier, but is not required on a PUT.
-            size: The SKU size. When the name field is the combination of tier and some other value, this would be the \
-standalone code.
-            family: If the service has different generations of hardware, for the same SKU, then that can be captured \
-here.
-            capacity: If the SKU supports scale out/in then the capacity integer should be included. If scale out/in \
-is not possible for the resource this may be omitted.
       - name: --disks
-        short-summary: "List of Azure managed disks to attach to a DiskPool"
+        short-summary: "List of Azure Managed Disks to attach to a Disk Pool."
         long-summary: |
             The order of this parameter is specific customized. Usage:  --disks id-value
 
-            id: Required. Unique Azure resource id of the managed disk. Required.
+            id: Required. Unique Azure Resource ID of the Managed Disk.
 
             Multiple actions can be specified by using more than one --disks argument.
     examples:
-      - name: Create or Update a Disk Pool
+      - name: Create or Update Disk Pool
         text: |-
-               az disk-pool create --name "myDiskPool" --location "westus" --availability-zones "1" --disks \
+               az disk-pool create --location "westus" --availability-zones "1" --disks "/subscriptions/11111111-1111-1\
+111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_0" --disks \
 "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/v\
-m-name_DataDisk_0" --disks "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/provider\
-s/Microsoft.Compute/disks/vm-name_DataDisk_1" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resource\
-Groups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myvnet/subnets/mysubnet" --sku name="Standard_ABC" \
---tags key="value" --resource-group "myResourceGroup"
+m-name_DataDisk_1" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/prov\
+iders/Microsoft.Network/virtualNetworks/myvnet/subnets/mysubnet" --tags key="value" --name "myDiskPool" \
+--resource-group "myResourceGroup"
 """
 
 helps['disk-pool update'] = """
     type: command
-    short-summary: "Update a Storage Pool."
+    short-summary: "Update a Disk Pool."
     parameters:
-      - name: --sku
-        short-summary: "Sku description."
-        long-summary: |
-            Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
-
-            name: Required. The name of the SKU. Ex - P3. It is typically a letter+number code
-            tier: This field is required to be implemented by the Resource Provider if the service has more than one \
-tier, but is not required on a PUT.
-            size: The SKU size. When the name field is the combination of tier and some other value, this would be the \
-standalone code.
-            family: If the service has different generations of hardware, for the same SKU, then that can be captured \
-here.
-            capacity: If the SKU supports scale out/in then the capacity integer should be included. If scale out/in \
-is not possible for the resource this may be omitted.
       - name: --disks
-        short-summary: "List of Azure managed disks to attach to a DiskPool"
+        short-summary: "List of Azure Managed Disks to attach to a Disk Pool."
         long-summary: |
             The order of this parameter is specific customized. Usage:  --disks id-value
 
-            id: Required. Unique Azure resource id of the managed disk. Required.
+            id: Required. Unique Azure Resource ID of the Managed Disk.
 
             Multiple actions can be specified by using more than one --disks argument.
     examples:
       - name: Update Disk Pool
         text: |-
-               az disk-pool update --name "myDiskPool" --location "westus" --availability-zones "1" --disks \
+               az disk-pool update --name "myDiskPool" --disks "/subscriptions/11111111-1111-1111-1111-111111111111/res\
+ourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_0" --disks \
 "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/v\
-m-name_DataDisk_0" --disks "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/provider\
-s/Microsoft.Compute/disks/vm-name_DataDisk_1" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resource\
-Groups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myvnet/subnets/mysubnet" --tags key="value" \
---resource-group "myResourceGroup"
+m-name_DataDisk_1" --tags key="value" --resource-group "myResourceGroup"
 """
 
 helps['disk-pool delete'] = """
     type: command
     short-summary: "Delete a Disk Pool."
     examples:
-      - name: Update Disk Pool
+      - name: Delete Disk Pool
         text: |-
                az disk-pool delete --name "myDiskPool" --resource-group "myResourceGroup"
 """
@@ -128,6 +98,9 @@ helps['disk-pool wait'] = """
       - name: Pause executing next line of CLI script until the disk-pool is successfully created.
         text: |-
                az disk-pool wait --name "myDiskPool" --resource-group "myResourceGroup" --created
+      - name: Pause executing next line of CLI script until the disk-pool is successfully updated.
+        text: |-
+               az disk-pool wait --name "myDiskPool" --resource-group "myResourceGroup" --updated
       - name: Pause executing next line of CLI script until the disk-pool is successfully deleted.
         text: |-
                az disk-pool wait --name "myDiskPool" --resource-group "myResourceGroup" --deleted
@@ -140,7 +113,7 @@ helps['disk-pool iscsi-target'] = """
 
 helps['disk-pool iscsi-target list'] = """
     type: command
-    short-summary: "Get iSCSI Targets within a Disk Pool."
+    short-summary: "Get iSCSI Targets in a Disk Pool."
     examples:
       - name: List Disk Pools by Resource Group
         text: |-
@@ -149,9 +122,9 @@ helps['disk-pool iscsi-target list'] = """
 
 helps['disk-pool iscsi-target show'] = """
     type: command
-    short-summary: "Gets an iSCSI Target."
+    short-summary: "Get an iSCSI Target."
     examples:
-      - name: Get an iscsiTarget
+      - name: Get iSCSI Target
         text: |-
                az disk-pool iscsi-target show --disk-pool-name "myDiskPool" --name "myIscsiTarget" --resource-group \
 "myResourceGroup"
@@ -159,28 +132,36 @@ helps['disk-pool iscsi-target show'] = """
 
 helps['disk-pool iscsi-target create'] = """
     type: command
-    short-summary: "Create an iSCSI target."
+    short-summary: "Create an iSCSI Target."
     examples:
-      - name: Create or Update an iSCSI Target
+      - name: Create or Update iSCSI Target
         text: |-
-               az disk-pool iscsi-target create --disk-pool-name "myDiskPool" --name "myIscsiTarget" --target-iqn \
-"iqn.2005-03.org.iscsi:server1" --tpgs "[{\\"acls\\":[{\\"credentials\\":{\\"password\\":\\"some_pa$$word\\",\\"usernam\
+               az disk-pool iscsi-target create --disk-pool-name "myDiskPool" --target-iqn \
+"iqn.2005-03.org.iscsi:server1" --tpgs "[{\\"acls\\":[{\\"credentials\\":{\\"password\\":\\"some_password\\",\\"usernam\
 e\\":\\"some_username\\"},\\"initiatorIqn\\":\\"iqn.2005-03.org.iscsi:client\\",\\"mappedLuns\\":[\\"lun0\\"]}],\\"attr\
 ibutes\\":{\\"authentication\\":true,\\"prodModeWriteProtect\\":false},\\"luns\\":[{\\"name\\":\\"lun0\\",\\"managedDis\
 kAzureResourceId\\":\\"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/Mic\
-rosoft.Compute/disks/vm-name_DataDisk_1\\"}]}]" --resource-group "myResourceGroup"
+rosoft.Compute/disks/vm-name_DataDisk_1\\"}]}]" --name "myIscsiTarget" --resource-group "myResourceGroup"
 """
 
 helps['disk-pool iscsi-target update'] = """
     type: command
     short-summary: "Update an iSCSI target."
+    examples:
+      - name: Update iSCSI Target
+        text: |-
+               az disk-pool iscsi-target update --disk-pool-name "myDiskPool" --name "myIscsiTarget" --tpgs \
+"[{\\"acls\\":[{\\"credentials\\":{\\"password\\":\\"some_password\\",\\"username\\":\\"some_username\\"},\\"initiatorI\
+qn\\":\\"iqn.2005-03.org.iscsi:client\\",\\"mappedLuns\\":[\\"lun0\\"]}],\\"luns\\":[{\\"name\\":\\"lun0\\",\\"managedD\
+iskAzureResourceId\\":\\"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/M\
+icrosoft.Compute/disks/vm-name_DataDisk_1\\"}]}]" --resource-group "myResourceGroup"
 """
 
 helps['disk-pool iscsi-target delete'] = """
     type: command
-    short-summary: "Deletes an iSCSI Target."
+    short-summary: "Delete an iSCSI Target."
     examples:
-      - name: Delete an iscsiTarget
+      - name: Delete iSCSI Target
         text: |-
                az disk-pool iscsi-target delete --disk-pool-name "myDiskPool" --name "myIscsiTarget" --resource-group \
 "myResourceGroup"

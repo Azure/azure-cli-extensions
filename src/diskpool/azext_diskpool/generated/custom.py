@@ -30,45 +30,40 @@ def disk_pool_create(client,
                      resource_group_name,
                      disk_pool_name,
                      location,
+                     availability_zones,
+                     subnet_id,
                      tags=None,
-                     sku=None,
-                     availability_zones=None,
                      disks=None,
-                     subnet_id=None,
+                     additional_capabilities=None,
                      no_wait=False):
-    disk_pool_payload = {}
-    disk_pool_payload['tags'] = tags
-    disk_pool_payload['location'] = location
-    disk_pool_payload['sku'] = sku
-    disk_pool_payload['availability_zones'] = availability_zones
-    disk_pool_payload['disks'] = disks
-    disk_pool_payload['subnet_id'] = subnet_id
+    disk_pool_create_payload = {}
+    disk_pool_create_payload['tags'] = tags
+    disk_pool_create_payload['location'] = location
+    disk_pool_create_payload['availability_zones'] = availability_zones
+    disk_pool_create_payload['disks'] = disks
+    disk_pool_create_payload['subnet_id'] = subnet_id
+    disk_pool_create_payload['additional_capabilities'] = additional_capabilities
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
                        disk_pool_name=disk_pool_name,
-                       disk_pool_payload=disk_pool_payload)
+                       disk_pool_create_payload=disk_pool_create_payload)
 
 
 def disk_pool_update(client,
                      resource_group_name,
                      disk_pool_name,
-                     location,
                      tags=None,
-                     sku=None,
-                     availability_zones=None,
                      disks=None,
-                     subnet_id=None):
-    disk_pool_payload = {}
-    disk_pool_payload['tags'] = tags
-    disk_pool_payload['location'] = location
-    disk_pool_payload['sku'] = sku
-    disk_pool_payload['availability_zones'] = availability_zones
-    disk_pool_payload['disks'] = disks
-    disk_pool_payload['subnet_id'] = subnet_id
-    return client.update(resource_group_name=resource_group_name,
-                         disk_pool_name=disk_pool_name,
-                         disk_pool_payload=disk_pool_payload)
+                     no_wait=False):
+    disk_pool_update_payload = {}
+    disk_pool_update_payload['tags'] = tags
+    disk_pool_update_payload['disks'] = disks
+    return sdk_no_wait(no_wait,
+                       client.begin_update,
+                       resource_group_name=resource_group_name,
+                       disk_pool_name=disk_pool_name,
+                       disk_pool_update_payload=disk_pool_update_payload)
 
 
 def disk_pool_delete(client,
@@ -101,36 +96,34 @@ def disk_pool_iscsi_target_create(client,
                                   resource_group_name,
                                   disk_pool_name,
                                   iscsi_target_name,
-                                  tpgs=None,
-                                  target_iqn=None,
+                                  tpgs,
+                                  target_iqn,
                                   no_wait=False):
-    iscsi_target_payload = {}
-    iscsi_target_payload['tpgs'] = tpgs
-    iscsi_target_payload['target_iqn'] = target_iqn
+    iscsi_target_create_payload = {}
+    iscsi_target_create_payload['tpgs'] = tpgs
+    iscsi_target_create_payload['target_iqn'] = target_iqn
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
                        disk_pool_name=disk_pool_name,
                        iscsi_target_name=iscsi_target_name,
-                       iscsi_target_payload=iscsi_target_payload)
+                       iscsi_target_create_payload=iscsi_target_create_payload)
 
 
 def disk_pool_iscsi_target_update(client,
                                   resource_group_name,
                                   disk_pool_name,
                                   iscsi_target_name,
-                                  tpgs=None,
-                                  target_iqn=None,
+                                  tpgs,
                                   no_wait=False):
-    iscsi_target_payload = {}
-    iscsi_target_payload['tpgs'] = tpgs
-    iscsi_target_payload['target_iqn'] = target_iqn
+    iscsi_target_update_payload = {}
+    iscsi_target_update_payload['tpgs'] = tpgs
     return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
+                       client.begin_update,
                        resource_group_name=resource_group_name,
                        disk_pool_name=disk_pool_name,
                        iscsi_target_name=iscsi_target_name,
-                       iscsi_target_payload=iscsi_target_payload)
+                       iscsi_target_update_payload=iscsi_target_update_payload)
 
 
 def disk_pool_iscsi_target_delete(client,

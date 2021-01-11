@@ -24,7 +24,7 @@ def load_command_table(self, _):
         g.custom_command('list', 'disk_pool_list')
         g.custom_show_command('show', 'disk_pool_show')
         g.custom_command('create', 'disk_pool_create', supports_no_wait=True)
-        g.custom_command('update', 'disk_pool_update')
+        g.custom_command('update', 'disk_pool_update', supports_no_wait=True)
         g.custom_command('delete', 'disk_pool_delete', supports_no_wait=True, confirmation=True)
         g.custom_wait_command('wait', 'disk_pool_show')
 

@@ -20,8 +20,8 @@ from azure.cli.core.commands.validators import (
     validate_file_or_dict
 )
 from azext_diskpool.action import (
-    AddSku,
-    AddDisks
+    AddDiskPoolCreateDisks,
+    AddDiskPoolUpdateDisks
 )
 
 
@@ -42,22 +42,19 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('sku', action=AddSku, nargs='+', help='Sku description.')
-        c.argument('availability_zones', nargs='+', help='Logical zone for DiskPool resource.')
-        c.argument('disks', action=AddDisks, nargs='+', help='List of Azure managed disks to attach to a DiskPool')
-        c.argument('subnet_id', type=str, help='Azure resource id of the subnet for the DiskPool')
+        c.argument('availability_zones', nargs='+', help='Logical zone for Disk Pool resource; example: ["1"].')
+        c.argument('disks', action=AddDiskPoolCreateDisks, nargs='+', help='List of Azure Managed Disks to attach to a '
+                   'Disk Pool.')
+        c.argument('subnet_id', type=str, help='Azure Resource ID of a Subnet for the Disk Pool.')
+        c.argument('additional_capabilities', nargs='+', help='List of additional capabilities for a Disk Pool.')
 
     with self.argument_context('disk-pool update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
                    'the Disk Pool.', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
-                   validator=get_default_location_from_resource_group)
-        c.argument('sku', action=AddSku, nargs='+', help='Sku description.')
-        c.argument('availability_zones', nargs='+', help='Logical zone for DiskPool resource.')
-        c.argument('disks', action=AddDisks, nargs='+', help='List of Azure managed disks to attach to a DiskPool')
-        c.argument('subnet_id', type=str, help='Azure resource id of the subnet for the DiskPool')
+        c.argument('disks', action=AddDiskPoolUpdateDisks, nargs='+', help='List of Azure Managed Disks to attach to a '
+                   'Disk Pool.')
 
     with self.argument_context('disk-pool delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -84,20 +81,18 @@ def load_arguments(self, _):
         c.argument('disk_pool_name', type=str, help='The name of the Disk Pool.')
         c.argument('iscsi_target_name', options_list=['--name', '-n', '--iscsi-target-name'], type=str, help='The name '
                    'of the iSCSI target.')
-        c.argument('tpgs', type=validate_file_or_dict, help='list of iSCSI target portal groups Expected value: '
+        c.argument('tpgs', type=validate_file_or_dict, help='List of iSCSI target portal groups. Expected value: '
                    'json-string/@json-file.')
-        c.argument('target_iqn', type=str, help='iSCSI target iqn (iSCSI Qualified Name); example: '
-                   'iqn.2005-03.org.iscsi:server')
+        c.argument('target_iqn', type=str, help='iSCSI target IQN (iSCSI Qualified Name); example: '
+                   '"iqn.2005-03.org.iscsi:server".')
 
     with self.argument_context('disk-pool iscsi-target update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('disk_pool_name', type=str, help='The name of the Disk Pool.', id_part='name')
         c.argument('iscsi_target_name', options_list=['--name', '-n', '--iscsi-target-name'], type=str, help='The name '
                    'of the iSCSI target.', id_part='child_name_1')
-        c.argument('tpgs', type=validate_file_or_dict, help='list of iSCSI target portal groups Expected value: '
+        c.argument('tpgs', type=validate_file_or_dict, help='List of iSCSI target portal groups. Expected value: '
                    'json-string/@json-file.')
-        c.argument('target_iqn', type=str, help='iSCSI target iqn (iSCSI Qualified Name); example: '
-                   'iqn.2005-03.org.iscsi:server')
 
     with self.argument_context('disk-pool iscsi-target delete') as c:
         c.argument('resource_group_name', resource_group_name_type)

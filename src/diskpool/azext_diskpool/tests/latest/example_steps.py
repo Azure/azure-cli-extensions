@@ -12,32 +12,45 @@
 from .. import try_manual
 
 
-# EXAMPLE: /DiskPools/put/Create or Update a Disk Pool
+# EXAMPLE: /DiskPools/put/Create or Update Disk Pool
+@try_manual
+def step_create_required(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az disk-pool create '
+             '--availability-zones "{zone}" '
+             '--subnet-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetw'
+             'orks/{vn}/subnets/default" '
+             '--name "{myDiskPool}" '
+             '--resource-group "{rg}"',
+             checks=[])
+    test.cmd('az disk-pool wait --created '
+             '--name "{myDiskPool}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
 @try_manual
 def step_create(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az disk-pool create '
-             '--name "{myDiskPool}" '
-             '--location "westus" '
-             '--availability-zones "1" '
-             '--disks "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Compute/disks/vm-name_D'
-             'ataDisk_0" '
-             '--disks "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Compute/disks/vm-name_D'
-             'ataDisk_1" '
-             '--subnet-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetw'
-             'orks/{vn}/subnets/default" '
-             '--sku name="Standard_ABC" '
-             '--tags key="value" '
-             '--resource-group "{rg}"',
-             checks=checks)
-    test.cmd('az disk-pool wait --created '
+             '--location "{location}" '
+             '--availability-zones "{zone}" '
+             '--disks "{myDisk1}" '
+             '--disks "{myDisk2}" '
+             '--subnet-id "{subnet}" '
+             '--tags "{tag}" '
              '--name "{myDiskPool}" '
              '--resource-group "{rg}"',
              checks=[])
+    test.cmd('az disk-pool wait --created '
+             '--name "{myDiskPool}" '
+             '--resource-group "{rg}"',
+             checks=checks)
 
 
-# EXAMPLE: /DiskPools/get/Get a diskPool
+# EXAMPLE: /DiskPools/get/Get Disk Pool
 @try_manual
 def step_show(test, rg, checks=None):
     if checks is None:
@@ -60,7 +73,7 @@ def step_list(test, rg, checks=None):
 
 # EXAMPLE: /DiskPools/get/List Disk Pools by subscription
 @try_manual
-def step_list(test, rg, checks=None):
+def step_list2(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az disk-pool list '
@@ -75,42 +88,35 @@ def step_update(test, rg, checks=None):
         checks = []
     test.cmd('az disk-pool update '
              '--name "{myDiskPool}" '
-             '--location "westus" '
-             '--availability-zones "1" '
-             '--disks "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Compute/disks/vm-name_D'
-             'ataDisk_0" '
-             '--disks "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Compute/disks/vm-name_D'
-             'ataDisk_1" '
-             '--subnet-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetw'
-             'orks/{vn}/subnets/default" '
+             '--disks "{myDisk}" '
              '--tags key="value" '
              '--resource-group "{rg}"',
              checks=checks)
 
 
-# EXAMPLE: /IscsiTargets/put/Create or Update an iSCSI Target
+# EXAMPLE: /IscsiTargets/put/Create or Update iSCSI Target
 @try_manual
 def step_iscsi_target_create(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az disk-pool iscsi-target create '
              '--disk-pool-name "{myDiskPool}" '
-             '--name "{myIscsiTarget}" '
              '--target-iqn "iqn.2005-03.org.iscsi:server1" '
-             '--tpgs "[{{\\"acls\\":[{{\\"credentials\\":{{\\"password\\":\\"some_pa$$word\\",\\"username\\":\\"some_us'
+             '--tpgs "[{{\\"acls\\":[{{\\"credentials\\":{{\\"password\\":\\"some_password\\",\\"username\\":\\"some_us'
              'ername\\"}},\\"initiatorIqn\\":\\"iqn.2005-03.org.iscsi:client\\",\\"mappedLuns\\":[\\"lun0\\"]}}],\\"att'
              'ributes\\":{{\\"authentication\\":true,\\"prodModeWriteProtect\\":false}},\\"luns\\":[{{\\"name\\":\\"lun'
              '0\\",\\"managedDiskAzureResourceId\\":\\"/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/M'
              'icrosoft.Compute/disks/vm-name_DataDisk_1\\"}}]}}]" '
-             '--resource-group "{rg}"',
-             checks=checks)
-    test.cmd('az disk-pool iscsi-target wait --created '
              '--name "{myIscsiTarget}" '
              '--resource-group "{rg}"',
              checks=[])
+    test.cmd('az disk-pool iscsi-target wait --created '
+             '--name "{myIscsiTarget}" '
+             '--resource-group "{rg}"',
+             checks=checks)
 
 
-# EXAMPLE: /IscsiTargets/get/Get an iscsiTarget
+# EXAMPLE: /IscsiTargets/get/Get iSCSI Target
 @try_manual
 def step_iscsi_target_show(test, rg, checks=None):
     if checks is None:
@@ -133,7 +139,23 @@ def step_iscsi_target_list(test, rg, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /IscsiTargets/delete/Delete an iscsiTarget
+# EXAMPLE: /IscsiTargets/patch/Update iSCSI Target
+@try_manual
+def step_iscsi_target_update(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az disk-pool iscsi-target update '
+             '--disk-pool-name "{myDiskPool}" '
+             '--name "{myIscsiTarget}" '
+             '--tpgs "[{{\\"acls\\":[{{\\"credentials\\":{{\\"password\\":\\"some_password\\",\\"username\\":\\"some_us'
+             'ername\\"}},\\"initiatorIqn\\":\\"iqn.2005-03.org.iscsi:client\\",\\"mappedLuns\\":[\\"lun0\\"]}}],\\"lun'
+             's\\":[{{\\"name\\":\\"lun0\\",\\"managedDiskAzureResourceId\\":\\"/subscriptions/{subscription_id}/resour'
+             'ceGroups/{rg}/providers/Microsoft.Compute/disks/vm-name_DataDisk_1\\"}}]}}]" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /IscsiTargets/delete/Delete iSCSI Target
 @try_manual
 def step_iscsi_target_delete(test, rg, checks=None):
     if checks is None:
@@ -145,7 +167,7 @@ def step_iscsi_target_delete(test, rg, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /DiskPools/delete/Update Disk Pool
+# EXAMPLE: /DiskPools/delete/Delete Disk Pool
 @try_manual
 def step_delete(test, rg, checks=None):
     if checks is None:
