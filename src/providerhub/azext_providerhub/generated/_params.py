@@ -156,10 +156,6 @@ def load_arguments(self, _):
                    arg_group='Request Header Options')
         c.argument('required_features_policy', arg_type=get_enum_type(['Any', 'All']), help='', arg_group='Features '
                    'Rule')
-        c.argument('provisioning_state', arg_type=get_enum_type(['NotSpecified', 'Accepted', 'Running', 'Creating',
-                                                                 'Created', 'Deleting', 'Deleted', 'Canceled',
-                                                                 'Failed', 'Succeeded', 'MovingResources',
-                                                                 'TransientFailure', 'RolloutInProgress']), help='')
         c.argument('subscription_state_override_actions', action=AddSubscriptionStateOverrideActions, nargs='+',
                    help='', arg_group='Subscription Lifecycle Notification Specifications')
         c.argument('soft_delete_ttl', help='', arg_group='Subscription Lifecycle Notification Specifications')
@@ -205,10 +201,6 @@ def load_arguments(self, _):
                    arg_group='Request Header Options')
         c.argument('required_features_policy', arg_type=get_enum_type(['Any', 'All']), help='', arg_group='Features '
                    'Rule')
-        c.argument('provisioning_state', arg_type=get_enum_type(['NotSpecified', 'Accepted', 'Running', 'Creating',
-                                                                 'Created', 'Deleting', 'Deleted', 'Canceled',
-                                                                 'Failed', 'Succeeded', 'MovingResources',
-                                                                 'TransientFailure', 'RolloutInProgress']), help='')
         c.argument('subscription_state_override_actions', action=AddSubscriptionStateOverrideActions, nargs='+',
                    help='', arg_group='Subscription Lifecycle Notification Specifications')
         c.argument('soft_delete_ttl', help='', arg_group='Subscription Lifecycle Notification Specifications')
@@ -264,10 +256,6 @@ def load_arguments(self, _):
         c.argument('throttling_rules', action=AddThrottlingRules, nargs='+', help='')
         c.argument('required_features', nargs='+', help='')
         c.argument('enable_async_operation', arg_type=get_three_state_flag(), help='')
-        c.argument('provisioning_state', arg_type=get_enum_type(['NotSpecified', 'Accepted', 'Running', 'Creating',
-                                                                 'Created', 'Deleting', 'Deleted', 'Canceled',
-                                                                 'Failed', 'Succeeded', 'MovingResources',
-                                                                 'TransientFailure', 'RolloutInProgress']), help='')
         c.argument('enable_third_party_s2_s', arg_type=get_three_state_flag(), help='')
         c.argument('is_pure_proxy', arg_type=get_three_state_flag(), help='')
         c.argument('identity_management', action=AddIdentityManagement, nargs='+', help='')
@@ -312,10 +300,6 @@ def load_arguments(self, _):
         c.argument('throttling_rules', action=AddThrottlingRules, nargs='+', help='')
         c.argument('required_features', nargs='+', help='')
         c.argument('enable_async_operation', arg_type=get_three_state_flag(), help='')
-        c.argument('provisioning_state', arg_type=get_enum_type(['NotSpecified', 'Accepted', 'Running', 'Creating',
-                                                                 'Created', 'Deleting', 'Deleted', 'Canceled',
-                                                                 'Failed', 'Succeeded', 'MovingResources',
-                                                                 'TransientFailure', 'RolloutInProgress']), help='')
         c.argument('enable_third_party_s2_s', arg_type=get_three_state_flag(), help='')
         c.argument('is_pure_proxy', arg_type=get_three_state_flag(), help='')
         c.argument('identity_management', action=AddIdentityManagement, nargs='+', help='')

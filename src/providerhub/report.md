@@ -265,7 +265,6 @@ effect="Allow" quota-id="CSP_MG_2017-12-01" --incident-contact-email "helpme@con
 |**--resource-access-roles**|array||resource_access_roles|resourceAccessRoles|
 |**--opt-in-headers**|choice||opt_in_headers|optInHeaders|
 |**--required-features-policy**|choice||required_features_policy|requiredFeaturesPolicy|
-|**--provisioning-state**|choice||provisioning_state|provisioningState|
 |**--subscription-state-override-actions**|array||subscription_state_override_actions|subscriptionStateOverrideActions|
 |**--soft-delete-ttl**|duration||soft_delete_ttl|softDeleteTTL|
 |**--provider-hub-metadata-provider-authorizations**|array||provider_hub_metadata_provider_authorizations|providerAuthorizations|
@@ -348,7 +347,6 @@ swagger-spec-folder-uri="https://github.com/Azure/azure-rest-api-specs/blob/feat
 |**--throttling-rules**|array||throttling_rules|throttlingRules|
 |**--required-features**|array||required_features|requiredFeatures|
 |**--enable-async-operation**|boolean||enable_async_operation|enableAsyncOperation|
-|**--provisioning-state**|choice||provisioning_state|provisioningState|
 |**--enable-third-party-s2-s**|boolean||enable_third_party_s2_s|enableThirdPartyS2S|
 |**--is-pure-proxy**|boolean||is_pure_proxy|isPureProxy|
 |**--identity-management**|object||identity_management|identityManagement|
