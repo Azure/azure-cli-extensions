@@ -1,35 +1,35 @@
-# Azure CLI diskpool Extension #
+# Azure CLI Extension #
 This is the extension for diskpool
 
 ### How to use ###
 Install this extension using the below CLI command
 ```
-az extension add --name diskpool
+az extension add -s https://zuhdefault.blob.core.windows.net/cliext/diskpool-0.2.0-py3-none-any.whl
 ```
 
 ### Included Features ###
-#### diskpool disk-pool ####
+#### disk-pool ####
 ##### Create #####
 ```
-az diskpool disk-pool create --name "myDiskPool" --location "westus" --availability-zones "1" \
+az disk-pool create --name "myDiskPool" --location "westus" --availability-zones "1" \
     --disks id="/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_0" \
     --disks id="/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_1" \
     --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myvnet/subnets/mysubnet" \
     --sku name="Standard_ABC" --tags key="value" --resource-group "myResourceGroup" 
 
-az diskpool disk-pool wait --created --name "{myDiskPool}" --resource-group "{rg}"
+az disk-pool wait --created --name "myDiskPool" --resource-group "myResourceGroup"
 ```
 ##### Show #####
 ```
-az diskpool disk-pool show --name "myDiskPool" --resource-group "myResourceGroup"
+az disk-pool show --name "myDiskPool" --resource-group "myResourceGroup"
 ```
 ##### List #####
 ```
-az diskpool disk-pool list --resource-group "myResourceGroup"
+az disk-pool list --resource-group "myResourceGroup"
 ```
 ##### Update #####
 ```
-az diskpool disk-pool update --name "myDiskPool" --location "westus" --availability-zones "1" \
+az disk-pool update --name "myDiskPool" --location "westus" --availability-zones "1" \
     --disks id="/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_0" \
     --disks id="/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_1" \
     --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myvnet/subnets/mysubnet" \
@@ -37,7 +37,7 @@ az diskpool disk-pool update --name "myDiskPool" --location "westus" --availabil
 ```
 ##### Delete #####
 ```
-az diskpool disk-pool delete --name "myDiskPool" --resource-group "myResourceGroup"
+az disk-pool delete --name "myDiskPool" --resource-group "myResourceGroup"
 ```
 #### disk-pool iscsi-target ####
 ##### Create #####
@@ -47,7 +47,7 @@ az disk-pool iscsi-target create --disk-pool-name "myDiskPool" --name "myIscsiTa
     --tpgs "[{\\"acls\\":[{\\"credentials\\":{\\"password\\":\\"some_pa$$word\\",\\"username\\":\\"some_username\\"},\\"initiatorIqn\\":\\"iqn.2005-03.org.iscsi:client\\",\\"mappedLuns\\":[\\"lun0\\"]}],\\"attributes\\":{\\"authentication\\":true,\\"prodModeWriteProtect\\":false},\\"luns\\":[{\\"name\\":\\"lun0\\",\\"managedDiskAzureResourceId\\":\\"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_1\\"}]}]" \
     --resource-group "myResourceGroup" 
 
-az disk-pool iscsi-target wait --created --name "{myIscsiTarget}" --resource-group "{rg}"
+az disk-pool iscsi-target wait --created --name "myIscsiTarget" --resource-group "myResourceGroup"
 ```
 ##### Show #####
 ```
