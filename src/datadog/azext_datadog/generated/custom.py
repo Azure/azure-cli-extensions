@@ -92,21 +92,22 @@ def datadog_monitor_create(client,
                            sku_name=None,
                            no_wait=False):
     poller = sdk_no_wait(no_wait,
-                       client.begin_create,
-                       resource_group_name=resource_group_name,
-                       monitor_name=monitor_name,
-                       tags=tags,
-                       location=location,
-                       type=identity_type,
-                       provisioning_state=provisioning_state,
-                       monitoring_status=monitoring_status,
-                       marketplace_subscription_status=marketplace_subscription_status,
-                       datadog_organization_properties=datadog_organization_properties,
-                       user_info=user_info,
-                       name=sku_name)
+                         client.begin_create,
+                         resource_group_name=resource_group_name,
+                         monitor_name=monitor_name,
+                         tags=tags,
+                         location=location,
+                         type=identity_type,
+                         provisioning_state=provisioning_state,
+                         monitoring_status=monitoring_status,
+                         marketplace_subscription_status=marketplace_subscription_status,
+                         datadog_organization_properties=datadog_organization_properties,
+                         user_info=user_info,
+                         name=sku_name)
     result = poller.result()
     if result and result.principal_id:
-        scrope = '/subscriptions/' + client._config.subscription_id
+        scrope = '/subscriptions/' + result.id.split('/')[2]
+        print(scrope)
         get_default_cli().invoke(['role', 'assignment', 'create', '-o', 'none',
                                   '--assignee-object-id', result.principal_id,
                                   '--assignee-principal-type', 'ServicePrincipal',
