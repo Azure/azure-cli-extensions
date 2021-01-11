@@ -27,7 +27,7 @@ def load_arguments(self, _):
         c.argument('proxy_cert', options_list=['--proxy-cert'], type=file_type, completer=FilesCompleter(), help='Path to the certificate file for proxy')
         c.argument('distribution', options_list=['--distribution'], help='The Kubernetes distribution which will be running on this connected cluster.', arg_type=get_enum_type(Distribution_Enum_Values))
         c.argument('infrastructure', options_list=['--infrastructure'], help='The infrastructure on which the Kubernetes cluster represented by this connected cluster will be running on.', arg_type=get_enum_type(Infrastructure_Enum_Values))
-        c.argument('disable_auto_upgrade', options_list=['--disable-auto-upgrade'], action='store_true', help='Flag to disable auto upgrade of arc agents.')
+        c.argument('auto_upgrade', options_list=['--auto-upgrade'], help='Flag to enable/disable auto upgrade of arc agents.', arg_type=get_enum_type(["true", "false"]))
 
     with self.argument_context('connectedk8s update') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
@@ -38,7 +38,8 @@ def load_arguments(self, _):
         c.argument('no_proxy', options_list=['--proxy-skip-range'], help='List of URLs/CIDRs for which proxy should not to be used.')
         c.argument('proxy_cert', options_list=['--proxy-cert'], type=file_type, completer=FilesCompleter(), help='Path to the certificate file for proxy')
         c.argument('disable_proxy', options_list=['--disable-proxy'], action='store_true', help='Disables proxy settings for agents')
-        c.argument('disable_auto_upgrade', options_list=['--disable-auto-upgrade'], action='store_true', help='Flag to disable auto upgrade of arc agents.')
+        c.argument('auto_upgrade', options_list=['--auto-upgrade'], help='Flag to enable/disable auto upgrade of arc agents.', arg_type=get_enum_type(["true", "false"]))
+        c.argument('arc_agent_version', options_list=['--agent-version', '-av'], help='Version of agent to update the helm charts to.')
 
     with self.argument_context('connectedk8s list') as c:
         pass
