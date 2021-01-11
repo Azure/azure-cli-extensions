@@ -450,18 +450,6 @@ def download_blob(client, file_path, open_mode='wb', progress_callback=None, soc
     return blob
 
 
-def exists(cmd, client, **kwargs):
-    from azure.core.exceptions import HttpResponseError
-    try:
-        client.get_blob_properties(**kwargs)
-        return True
-    except HttpResponseError as ex:
-        from azure.cli.command_modules.storage.track2_util import _dont_fail_on_exist
-        StorageErrorCode = cmd.get_models("_shared.models#StorageErrorCode",
-                                          resource_type=CUSTOM_DATA_STORAGE_BLOB)
-        return _dont_fail_on_exist(ex, StorageErrorCode.blob_not_found)
-
-
 def generate_sas_blob_uri(client, cmd, container_name, blob_name, permission=None,
                           expiry=None, start=None, id=None, ip=None,  # pylint: disable=redefined-builtin
                           protocol=None, cache_control=None, content_disposition=None,
@@ -598,12 +586,14 @@ def snapshot_blob(client, metadata=None, **kwargs):
     return client.get_blob_properties()
 
 
-def upload_blob(cmd, client, file_path, container_name=None, blob_name=None, blob_type=None,
+# pylint: disable=too-many-locals
+def upload_blob(cmd, client, file_path=None, container_name=None, blob_name=None, blob_type=None,
                 metadata=None, validate_content=False, maxsize_condition=None, max_connections=2, lease_id=None,
                 if_modified_since=None, if_unmodified_since=None, if_match=None, if_none_match=None,
-                timeout=None, progress_callback=None, encryption_scope=None, overwrite=None, **kwargs):
+                timeout=None, progress_callback=None, encryption_scope=None, overwrite=None, data=None,
+                length=None, **kwargs):
     """Upload a blob to a container."""
-
+    from azure.core.exceptions import ResourceExistsError
     upload_args = {
         'blob_type': transform_blob_type(cmd, blob_type),
         'lease': lease_id,
@@ -632,16 +622,26 @@ def upload_blob(cmd, client, file_path, container_name=None, blob_name=None, blo
 
     # used to check for the preconditions as upload_append_blob() cannot
     if blob_type == 'append':
-        from azure.core.exceptions import HttpResponseError
-        if exists(cmd, client, timeout=timeout):
+        if client.exists(timeout=timeout):
             client.get_blob_properties(**check_blob_args)
 
     # Because the contents of the uploaded file may be too large, it should be passed into the a stream object,
     # upload_blob() read file data in batches to avoid OOM problems
-    count = os.path.getsize(file_path)
-    with open(file_path, 'rb') as stream:
-        response = client.upload_blob(data=stream, length=count, metadata=metadata, encryption_scope=encryption_scope,
-                                      **upload_args, **kwargs)
+    try:
+        if file_path:
+            length = os.path.getsize(file_path)
+            with open(file_path, 'rb') as stream:
+                response = client.upload_blob(data=stream, length=length, metadata=metadata,
+                                              encryption_scope=encryption_scope,
+                                              **upload_args, **kwargs)
+        if data is not None:
+            response = client.upload_blob(data=data, length=length, metadata=metadata,
+                                          encryption_scope=encryption_scope,
+                                          **upload_args, **kwargs)
+    except ResourceExistsError as ex:
+        from azure.cli.core.azclierror import AzureResponseError
+        raise AzureResponseError(
+            "{}\nIf you want to overwrite the existing one, please add --overwrite in your command.".format(ex.message))
 
     # PageBlobChunkUploader verifies the file when uploading the chunk data, If the contents of the file are
     # all null byte("\x00"), the file will not be uploaded, and the response will be none.

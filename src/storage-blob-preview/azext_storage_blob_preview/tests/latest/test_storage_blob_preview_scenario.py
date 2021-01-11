@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import unittest
 
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (JMESPathCheck, JMESPathCheckExists,
@@ -282,6 +281,37 @@ class StorageBlobScenarioTest(StorageScenarioMixin, ScenarioTest):
                          blob_name1, container1, tag_condition)
         self.storage_cmd("storage blob list -c {} ", account_info, container1)\
             .assert_with_checks(JMESPathCheck('length(@)', 0))
+
+    @ResourceGroupPreparer(name_prefix='clitest')
+    @StorageAccountPreparer(name_prefix='storage', kind='StorageV2', location='eastus2', sku='Standard_RAGZRS')
+    def test_storage_blob_upload_scenarios(self, resource_group, storage_account):
+        account_info = self.get_account_info(resource_group, storage_account)
+        container = self.create_container(account_info, prefix="con")
+
+        local_file = self.create_temp_file(128)
+        blob_name = self.create_random_name(prefix='blob', length=24)
+
+        # test with file
+        self.storage_cmd('storage blob upload -c {} -f "{}" -n {} ', account_info,
+                         container, local_file, blob_name)
+        self.storage_cmd('storage blob show -c {} -n {} ', account_info, container, blob_name) \
+            .assert_with_checks(JMESPathCheck('name', blob_name),
+                                JMESPathCheck('properties.blobType', 'BlockBlob'),
+                                JMESPathCheck('properties.contentLength', 128 * 1024))
+        # test with data
+        test_string = "testupload"
+        length = len(test_string)
+        from azure.cli.core.azclierror import AzureResponseError
+        with self.assertRaises(AzureResponseError):
+            self.storage_cmd('storage blob upload -c {} --data "{}" --length {} -n {} ', account_info,
+                             container, test_string, length, blob_name)
+
+        self.storage_cmd('storage blob upload -c {} --data "{}" --length {} -n {} --overwrite', account_info,
+                         container, test_string, length, blob_name)
+        self.storage_cmd('storage blob show -c {} -n {} ', account_info, container, blob_name) \
+            .assert_with_checks(JMESPathCheck('name', blob_name),
+                                JMESPathCheck('properties.blobType', 'BlockBlob'),
+                                JMESPathCheck('properties.contentLength', length))
 
 
 class StorageContainerScenarioTest(StorageScenarioMixin, ScenarioTest):

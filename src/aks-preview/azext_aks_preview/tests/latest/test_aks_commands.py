@@ -5,6 +5,7 @@
 
 import unittest
 import os
+from .recording_processors import KeyReplacer
 
 from azure.cli.testsdk import (
     ResourceGroupPreparer, RoleBasedServicePrincipalPreparer, ScenarioTest, live_only)
@@ -17,6 +18,11 @@ def _get_test_data_file(filename):
 
 
 class AzureKubernetesServiceScenarioTest(ScenarioTest):
+    def __init__(self, method_name):
+        super(AzureKubernetesServiceScenarioTest, self).__init__(
+            method_name, recording_processors=[KeyReplacer()]
+        )
+
     @live_only()  # without live only fails with need az login
     @AllowLargeResponse()
     def test_get_version(self):
@@ -146,7 +152,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
-                     '--vm-set-type VirtualMachineScaleSets  AvailabilitySet -c 1 ' \
+                     '--vm-set-type VirtualMachineScaleSets -c 1 ' \
                      '--enable-aad --enable-azure-rbac --aad-admin-group-object-ids 00000000-0000-0000-0000-000000000001 -o json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -192,6 +198,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 'addonProfiles.ingressApplicationGateway.config.subnetCIDR', "10.2.0.0/16")
         ])
 
+    @live_only()
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_byo_subnet_with_ingress_appgw_addon(self, resource_group, resource_group_location):
@@ -225,7 +232,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         # create aks cluster
-        create_cmd = 'aks create --resource-group={resource_group} --name={aks_name} --enable-managed-identity --generate-ssh-keys ' \
+        create_cmd = 'aks create --resource-group={resource_group} --name={aks_name} --enable-managed-identity --service-principal xxxx --client-secret yyyy --generate-ssh-keys ' \
                      '--vnet-subnet-id {vnet_id}/subnets/aks-subnet ' \
                      '-a ingress-appgw --appgw-name gateway --appgw-subnet-id {vnet_id}/subnets/appgw-subnet  -o json'
         aks_cluster = self.cmd(create_cmd, checks=[
@@ -243,6 +250,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'addon_client_id': addon_client_id,
         })
 
+    @live_only()
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_byo_appgw_with_ingress_appgw_addon(self, resource_group, resource_group_location):
@@ -298,7 +306,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         # create aks cluster
-        create_cmd = 'aks create -n {aks_name} -g {resource_group} --enable-managed-identity --generate-ssh-keys ' \
+        create_cmd = 'aks create -n {aks_name} -g {resource_group} --enable-managed-identity --service-principal xxxx --client-secret yyyy --generate-ssh-keys ' \
                      '--vnet-subnet-id {vnet_id}/subnets/aks-subnet ' \
                      '-a ingress-appgw --appgw-id {appgw_id} -o json'
         aks_cluster = self.cmd(create_cmd, checks=[
@@ -457,6 +465,60 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             self.check('addonProfiles.ACCSGXDevicePlugin.enabled', False),
             self.check('addonProfiles.ACCSGXDevicePlugin.config', None)
+        ])
+
+    @live_only()
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_virtual_node_addon(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        vnet_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'aks_name': aks_name,
+            'vnet_name': vnet_name
+        })
+
+        # create virtual network
+        create_vnet = 'network vnet create --resource-group={resource_group} --name={vnet_name} ' \
+                      '--address-prefix 11.0.0.0/16 --subnet-name aks-subnet --subnet-prefix 11.0.0.0/24  -o json'
+        vnet = self.cmd(create_vnet, checks=[
+            self.check('newVNet.provisioningState', 'Succeeded')
+        ]).get_output_in_json()
+
+        create_subnet = 'network vnet subnet create -n aci-subnet --resource-group={resource_group} --vnet-name {vnet_name} ' \
+                        '--address-prefixes 11.0.1.0/24  -o json'
+        self.cmd(create_subnet, checks=[
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        vnet_id = vnet['newVNet']["id"]
+        assert vnet_id is not None
+        self.kwargs.update({
+            'vnet_id': vnet_id,
+        })
+
+        # create aks cluster
+        create_cmd = 'aks create --resource-group={resource_group} --name={aks_name} --enable-managed-identity --generate-ssh-keys ' \
+                     '--vnet-subnet-id {vnet_id}/subnets/aks-subnet --network-plugin azure ' \
+                     '-a virtual-node --aci-subnet-name aci-subnet -o json'
+        aks_cluster = self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('addonProfiles.aciConnectorLinux.enabled', True),
+            self.check(
+                'addonProfiles.aciConnectorLinux.config.SubnetName', "aci-subnet")
+        ]).get_output_in_json()
+
+        addon_client_id = aks_cluster["addonProfiles"]["aciConnectorLinux"]["identity"]["clientId"]
+
+        self.kwargs.update({
+            'addon_client_id': addon_client_id,
+        })
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
         ])
 
     @live_only()
