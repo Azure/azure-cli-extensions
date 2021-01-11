@@ -42,14 +42,14 @@ az providerhub default-rollout stop --provider-namespace "Microsoft.Contoso" --r
 ```
 az providerhub default-rollout delete --provider-namespace "Microsoft.Contoso" --rollout-name "2020week10"
 ```
-#### providerhub ####
-##### Checkin-manifest #####
+#### providerhub manifest ####
+##### Checkin #####
 ```
-az providerhub checkin-manifest --provider-namespace "Microsoft.Contoso"
+az providerhub manifest checkin --provider-namespace "Microsoft.Contoso"
 ```
-##### Generate-manifest #####
+##### Generate #####
 ```
-az providerhub generate-manifest --provider-namespace "Microsoft.Contoso"
+az providerhub manifest generate --provider-namespace "Microsoft.Contoso"
 ```
 #### providerhub provider-registration ####
 ##### Create #####

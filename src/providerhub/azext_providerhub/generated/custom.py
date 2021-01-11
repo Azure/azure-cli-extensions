@@ -94,7 +94,7 @@ def providerhub_default_rollout_stop(client, provider_namespace, rollout_name):
     return client.stop(provider_namespace=provider_namespace, rollout_name=rollout_name)
 
 
-def providerhub_checkin_manifest(
+def providerhub_manifest_checkin(
     client, provider_namespace, environment, baseline_arm_manifest_location
 ):
     checkin_manifest_params = {}
@@ -108,7 +108,7 @@ def providerhub_checkin_manifest(
     )
 
 
-def providerhub_generate_manifest(client, provider_namespace):
+def providerhub_manifest_generate(client, provider_namespace):
     return client.generate_manifest(provider_namespace=provider_namespace)
 
 

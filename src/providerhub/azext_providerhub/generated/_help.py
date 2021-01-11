@@ -239,22 +239,22 @@ helps['providerhub'] = """
     short-summary: Manage  with providerhub
 """
 
-helps['providerhub checkin-manifest'] = """
+helps['providerhub manifest checkin'] = """
     type: command
     short-summary: "Checkin the manifest."
     examples:
       - name: CheckinManifest
         text: |-
-               az providerhub checkin-manifest --provider-namespace "Microsoft.Contoso"
+               az providerhub manifest checkin --provider-namespace "Microsoft.Contoso"
 """
 
-helps['providerhub generate-manifest'] = """
+helps['providerhub manifest generate'] = """
     type: command
     short-summary: "Generates the manifest for the given provider."
     examples:
       - name: GenerateManifest
         text: |-
-               az providerhub generate-manifest --provider-namespace "Microsoft.Contoso"
+               az providerhub manifest generate --provider-namespace "Microsoft.Contoso"
 """
 
 helps['providerhub notification-registration'] = """

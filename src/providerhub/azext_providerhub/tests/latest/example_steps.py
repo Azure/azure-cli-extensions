@@ -124,10 +124,10 @@ def step_operation_delete(test, checks=None):
 
 # EXAMPLE: /providerhub/post/CheckinManifest
 @try_manual
-def step_checkin_manifest(test, checks=None):
+def step_manifest_checkin(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az providerhub checkin-manifest '
+    test.cmd('az providerhub manifest checkin '
              '--environment "Prod" '
              '--baseline-arm-manifest-location "EastUS2EUAP" '
              '--provider-namespace "{providerNamespace}"',
@@ -136,10 +136,10 @@ def step_checkin_manifest(test, checks=None):
 
 # EXAMPLE: /providerhub/post/GenerateManifest
 @try_manual
-def step_generate_manifest(test, checks=None):
+def step_manifest_generate(test, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az providerhub generate-manifest '
+    test.cmd('az providerhub manifest generate '
              '--provider-namespace "{providerNamespace}"',
              checks=checks)
 

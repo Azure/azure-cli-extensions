@@ -19,8 +19,8 @@ from .example_steps import step_default_rollout_show
 from .example_steps import step_default_rollout_list
 from .example_steps import step_default_rollout_stop
 from .example_steps import step_default_rollout_delete
-from .example_steps import step_checkin_manifest
-from .example_steps import step_generate_manifest
+from .example_steps import step_manifest_checkin
+from .example_steps import step_manifest_generate
 from .example_steps import step_provider_registration_create
 from .example_steps import step_provider_registration_show
 from .example_steps import step_provider_registration_list
@@ -67,8 +67,8 @@ def call_scenario(test, rg):
     step_resource_type_registration_list(test, checks=[])
     step_resource_type_registration_delete(test, checks=[])
     step_resource_type_registration_create(test, checks=[])
-    step_generate_manifest(test, checks=[])
-    step_checkin_manifest(test, checks=[])
+    step_manifest_generate(test, checks=[])
+    step_manifest_checkin(test, checks=[])
     step_custom_rollout_create(test, checks=[])
     step_custom_rollout_show(test, checks=[])
     step_custom_rollout_list(test, checks=[])

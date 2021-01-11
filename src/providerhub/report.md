@@ -11,17 +11,17 @@
 |---------|------------|--------|
 |az providerhub custom-rollout|CustomRollouts|[commands](#CommandsInCustomRollouts)|
 |az providerhub default-rollout|DefaultRollouts|[commands](#CommandsInDefaultRollouts)|
-|az providerhub||[commands](#CommandsIn)|
+|az providerhub manifest||[commands](#CommandsInManifest)|
 |az providerhub provider-registration|ProviderRegistrations|[commands](#CommandsInProviderRegistrations)|
 |az providerhub resource-type-registration|ResourceTypeRegistrations|[commands](#CommandsInResourceTypeRegistrations)|
 |az providerhub resource-type-registration|ResourceTypeRegistration|[commands](#CommandsInResourceTypeRegistration)|
 
 ## COMMANDS
-### <a name="CommandsIn">Commands in `az providerhub` group</a>
+### <a name="CommandsInManifest">Commands in `az providerhub manifest` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
-|[az providerhub checkin-manifest](#CheckinManifest)|CheckinManifest|[Parameters](#ParametersCheckinManifest)|[Example](#ExamplesCheckinManifest)|
-|[az providerhub generate-manifest](#GenerateManifest)|GenerateManifest|[Parameters](#ParametersGenerateManifest)|[Example](#ExamplesGenerateManifest)|
+|[az providerhub manifest checkin](#CheckinManifest)|CheckinManifest|[Parameters](#ParametersCheckinManifest)|[Example](#ExamplesCheckinManifest)|
+|[az providerhub manifest generate](#GenerateManifest)|GenerateManifest|[Parameters](#ParametersGenerateManifest)|[Example](#ExamplesGenerateManifest)|
 
 ### <a name="CommandsInCustomRollouts">Commands in `az providerhub custom-rollout` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
@@ -64,12 +64,12 @@
 
 ## COMMAND DETAILS
 
-### group `az providerhub`
-#### <a name="CheckinManifest">Command `az providerhub checkin-manifest`</a>
+### group `az providerhub manifest`
+#### <a name="CheckinManifest">Command `az providerhub manifest checkin`</a>
 
 ##### <a name="ExamplesCheckinManifest">Example</a>
 ```
-az providerhub checkin-manifest --provider-namespace "Microsoft.Contoso"
+az providerhub manifest checkin --provider-namespace "Microsoft.Contoso"
 ```
 ##### <a name="ParametersCheckinManifest">Parameters</a>
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -78,11 +78,11 @@ az providerhub checkin-manifest --provider-namespace "Microsoft.Contoso"
 |**--baseline-arm-manifest-location**|string|The baseline ARM manifest location supplied to the checkin manifest operation.|baseline_arm_manifest_location|baselineArmManifestLocation|
 |**--environment**|string|The environment supplied to the checkin manifest operation.|environment|environment|
 
-#### <a name="GenerateManifest">Command `az providerhub generate-manifest`</a>
+#### <a name="GenerateManifest">Command `az providerhub manifest generate`</a>
 
 ##### <a name="ExamplesGenerateManifest">Example</a>
 ```
-az providerhub generate-manifest --provider-namespace "Microsoft.Contoso"
+az providerhub manifest generate --provider-namespace "Microsoft.Contoso"
 ```
 ##### <a name="ParametersGenerateManifest">Parameters</a>
 |Option|Type|Description|Path (SDK)|Swagger name|

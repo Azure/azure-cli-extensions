@@ -80,7 +80,7 @@ def load_arguments(self, _):
         c.argument('rollout_name', type=str, help='The rollout name.')
         c.argument('row_two_wait_duration', type=str, help='The wait duration before the rollout '
                    'begins in rest of the world two.')
-        c.argument('skip_regions', action=AddSkipRegions, nargs='+', help='The canary regions to skip.')
+        c.argument('skip_regions', action=AddSkipRegions, nargs='*', help='The canary regions to skip.')
 
     with self.argument_context('providerhub default-rollout update') as c:
         c.argument('provider_namespace', type=str,
@@ -88,7 +88,7 @@ def load_arguments(self, _):
         c.argument('rollout_name', type=str, help='The rollout name.')
         c.argument('row_two_wait_duration', type=str, help='The wait duration before the rollout begins '
                    'in rest of the world two.')
-        c.argument('skip_regions', action=AddSkipRegions, nargs='+', help='The canary regions to skip.')
+        c.argument('skip_regions', action=AddSkipRegions, nargs='*', help='The canary regions to skip.')
 
     with self.argument_context('providerhub default-rollout delete') as c:
         c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
@@ -105,7 +105,7 @@ def load_arguments(self, _):
                    id_part='name')
         c.argument('rollout_name', type=str, help='The rollout name.', id_part='child_name_1')
 
-    with self.argument_context('providerhub checkin-manifest') as c:
+    with self.argument_context('providerhub manifest checkin') as c:
         c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
                    id_part='name')
         c.argument('environment', type=str, help='The environment supplied to the checkin manifest '
@@ -113,7 +113,7 @@ def load_arguments(self, _):
         c.argument('baseline_arm_manifest_location', type=str, help='The baseline ARM manifest location supplied to '
                    'the checkin manifest operation.')
 
-    with self.argument_context('providerhub generate-manifest') as c:
+    with self.argument_context('providerhub manifest generate') as c:
         c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
                    id_part='name')
 
