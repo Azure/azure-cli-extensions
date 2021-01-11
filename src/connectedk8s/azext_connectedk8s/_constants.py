@@ -56,3 +56,6 @@ Proxy_Cert_Path_Does_Not_Exist_Error = 'Proxy cert path {} does not exist. Pleas
 Get_Kubernetes_Infra_Fault_Type = 'kubernetes-get-infrastructure-error'
 No_Param_Error = 'No parmeters were specified with update command. Please run az connectedk8s update --help to check parameters available for update'
 EnableProxy_Conflict_Error = 'Conflict detected: --disable-proxy can not be set with --https-proxy, --http-proxy, --proxy-skip-range and --proxy-cert at the same time. Please run az connectedk8s update --help for more information about the parameters'
+Manual_Upgrade_Called_In_Auto_Update_Enabled = 'Manual Upgrade was called while in auto_Update enabled mode'
+Upgrade_Agent_Success = 'Agents for Connected Cluster {} have been upgraded successfully'
+Upgrade_Agent_Failure = 'Error while upgrading agents. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of timeout error. Error: {}'

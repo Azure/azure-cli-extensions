@@ -768,7 +768,7 @@ def update_connectedk8s(cmd, instance, tags=None):
 
 
 def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
-                  disable_proxy=False, kube_config=None, kube_context=None, no_wait=False, auto_upgrade=None, arc_agent_version=None):
+                  disable_proxy=False, kube_config=None, kube_context=None, no_wait=False, auto_upgrade=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -796,7 +796,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
-    if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy and not auto_upgrade and not arc_agent_version:
+    if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy and not auto_upgrade:
         raise CLIError(consts.No_Param_Error)
 
     if (https_proxy or http_proxy or no_proxy or proxy_cert) and disable_proxy:
@@ -893,12 +893,9 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     agent_version = reg_path_array[1]
 
     # Set agent version in registry path
-    if arc_agent_version is not None:
-        agent_version = arc_agent_version
-    elif connected_cluster.agent_version is not None:
+    if connected_cluster.agent_version is not None:
         agent_version = connected_cluster.agent_version
-
-    registry_path = reg_path_array[0] + ":" + agent_version
+        registry_path = reg_path_array[0] + ":" + agent_version
 
     telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': agent_version})
 
@@ -938,3 +935,153 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         raise CLIError(str.format(consts.Update_Agent_Failure, error_helm_upgrade.decode("ascii")))
 
     return str.format(consts.Update_Agent_Success, connected_cluster.name)
+
+
+def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None,
+                   no_wait=False, arc_agent_version=None):
+    logger.warning("Ensure that you have the latest helm version installed before proceeding.")
+    logger.warning("This operation might take a while...\n")
+
+    # Send cloud information to telemetry
+    send_cloud_telemetry(cmd)
+
+    # Setting kubeconfig
+    kube_config = set_kube_config(kube_config)
+
+    # Checking whether optional extra values file has been provided.
+    values_file_provided = False
+    values_file = os.getenv('HELMVALUESPATH')
+    if (values_file is not None) and (os.path.isfile(values_file)):
+        values_file_provided = True
+        logger.warning("Values files detected. Reading additional helm parameters from same.")
+        # trimming required for windows os
+        if (values_file.startswith("'") or values_file.startswith('"')):
+            values_file = values_file[1:]
+        if (values_file.endswith("'") or values_file.endswith('"')):
+            values_file = values_file[:-1]
+
+    # Validate the helm environment file for Dogfood.
+    dp_endpoint_dogfood = None
+    release_train_dogfood = None
+    if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
+        dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
+
+    # Loading the kubeconfig file in kubernetes client configuration
+    try:
+        config.load_kube_config(config_file=kube_config, context=kube_context)
+    except Exception as e:
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=e, fault_type=consts.Load_Kubeconfig_Fault_Type,
+                                summary='Problem loading the kubeconfig file')
+        raise CLIError("Problem loading the kubeconfig file." + str(e))
+    configuration = kube_client.Configuration()
+
+    # Checking the connection to kubernetes cluster.
+    # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
+    # if the user had not logged in.
+    check_kube_connection(configuration)
+
+    # Get kubernetes cluster info for telemetry
+    kubernetes_version = get_server_version(configuration)
+
+    # Checking helm installation
+    check_helm_install(kube_config, kube_context)
+
+    # Check helm version
+    helm_version = check_helm_version(kube_config, kube_context)
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.HelmVersion': helm_version})
+
+    # Check for faulty pre-release helm versions
+    if "3.3.0-rc" in helm_version:
+        telemetry.set_user_fault()
+        raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
+
+    # Check Release Existance
+    release_namespace = get_release_namespace(kube_config, kube_context)
+    if release_namespace:
+        # Loading config map
+        api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+        try:
+            configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
+        except Exception as e:  # pylint: disable=broad-except
+            utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
+                                               error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
+                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
+
+        auto_update_enabled = configmap.data["AZURE_ARC_AUTOUPDATE"]
+        if auto_update_enabled == "true":
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception='connectedk8s upgrade called when auto-update is set to true', fault_type=consts.Manual_Upgrade_Called_In_Auto_Update_Enabled,
+                                    summary='az connectedk8s upgrade to manually upgrade agents and extensions is only supported when auto-upgrade is set to false.')
+            raise CLIError("az connectedk8s upgrade to manually upgrade agents and extensions is only supported when auto-upgrade is set to false. Please run az connectedk8s update --auto-upgrade=false before performing manual upgrade")
+
+        # Check whether Connected Cluster is present
+    if not connected_cluster_exists(client, resource_group_name, cluster_name):
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception='The connected cluster resource does not exist', fault_type=consts.Resource_Does_Not_Exist_Fault_Type,
+                                summary='Connected cluster resource does not exist')
+        raise CLIError("The connected cluster resource {} does not exist ".format(cluster_name) +
+                       "in the resource group {} ".format(resource_group_name) +
+                       "Please onboard the connected cluster using: az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>")
+
+    # Fetch Connected Cluster for agent version
+    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
+
+    if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
+        kubernetes_distro = connected_cluster.distribution
+    else:
+        kubernetes_distro = get_kubernetes_distro(configuration)
+
+    if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
+        kubernetes_infra = connected_cluster.infrastructure
+    else:
+        kubernetes_infra = get_kubernetes_infra(configuration)
+
+    kubernetes_properties = {
+        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
+        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
+        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
+    }
+    telemetry.add_extension_event('connectedk8s', kubernetes_properties)
+
+    # Adding helm repo
+    if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
+        utils.add_helm_repo(kube_config, kube_context)
+
+    # Setting the config dataplane endpoint
+    config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
+
+    # Retrieving Helm chart OCI Artifact location
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+
+    reg_path_array = registry_path.split(':')
+    agent_version = reg_path_array[1]
+
+    if arc_agent_version is not None:
+        agent_version = arc_agent_version
+        registry_path = reg_path_array[0] + ":" + agent_version
+
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': agent_version})
+
+    # Get Helm chart path
+    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
+
+    cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path,
+                        "--reuse-values",
+                        "--wait", "--output", "json"]
+    if values_file_provided:
+        cmd_helm_upgrade.extend(["-f", values_file])
+    if kube_config:
+        cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
+    if kube_context:
+        cmd_helm_upgrade.extend(["--kube-context", kube_context])
+    response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
+    _, error_helm_upgrade = response_helm_upgrade.communicate()
+    if response_helm_upgrade.returncode != 0:
+        if ('forbidden' in error_helm_upgrade.decode("ascii") or 'timed out waiting for the condition' in error_helm_upgrade.decode("ascii")):
+            telemetry.set_user_fault()
+        telemetry.set_exception(exception=error_helm_upgrade.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
+                                summary='Unable to install helm release')
+        raise CLIError(str.format(consts.Upgrade_Agent_Failure, error_helm_upgrade.decode("ascii")))
+
+    return str.format(consts.Upgrade_Agent_Success, connected_cluster.name)

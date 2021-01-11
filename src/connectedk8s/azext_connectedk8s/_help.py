@@ -37,6 +37,16 @@ helps['connectedk8s update'] = """
       text: az connectedk8s update --disable-proxy
 """
 
+helps['connectedk8s upgrade'] = """
+    type: command
+    short-summary: Upgrade onboarded agents to the specific version or default to the latest version.
+    examples:
+    - name: Upgrade the agents to the latest version
+      text: az connectedk8s update -g resourceGroupName -n connectedClusterName
+    - name: Upgrade the agents to a specific version
+      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --agent-version 0.2.28
+"""
+
 helps['connectedk8s list'] = """
     type: command
     short-summary: List connected kubernetes clusters.
