@@ -10,6 +10,7 @@
 # pylint: disable=too-many-lines
 # pylint: disable=unused-argument
 
+from azure.cli.core import get_default_cli
 from azure.cli.core.util import sdk_no_wait
 
 
@@ -90,7 +91,7 @@ def datadog_monitor_create(client,
                            user_info=None,
                            sku_name=None,
                            no_wait=False):
-    return sdk_no_wait(no_wait,
+    poller = sdk_no_wait(no_wait,
                        client.begin_create,
                        resource_group_name=resource_group_name,
                        monitor_name=monitor_name,
@@ -103,6 +104,15 @@ def datadog_monitor_create(client,
                        datadog_organization_properties=datadog_organization_properties,
                        user_info=user_info,
                        name=sku_name)
+    result = poller.result()
+    if result and result.principal_id:
+        scrope = '/subscriptions/' + client._config.subscription_id
+        get_default_cli().invoke(['role', 'assignment', 'create', '-o', 'none',
+                                  '--assignee-object-id', result.principal_id,
+                                  '--assignee-principal-type', 'ServicePrincipal',
+                                  '--role', 'Monitoring Reader',
+                                  '--scope', scrope])
+    return poller
 
 
 def datadog_monitor_update(client,
