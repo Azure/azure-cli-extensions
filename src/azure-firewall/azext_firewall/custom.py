@@ -6,6 +6,7 @@
 from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
+import copy
 
 from ._client_factory import network_client_factory
 
@@ -929,4 +930,76 @@ def remove_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_
             target_rule_collection.rules.remove(rule)
     return client.create_or_update(resource_group_name, firewall_policy_name,
                                    rule_collection_group_name, rule_collection_group)
+
+# pylint: disable=too-many-locals
+def update_azure_firewall_policy_filter_rule(cmd, instance, rule_collection_name, rule_name,
+                                             description=None, ip_protocols=None, source_addresses=None,
+                                             destination_addresses=None, destination_ports=None,
+                                             protocols=None, fqdn_tags=None, target_fqdns=None,
+                                             source_ip_groups=None, destination_ip_groups=None,
+                                             translated_address=None, translated_port=None,
+                                             target_urls=None, enable_tls_inspection=None):
+    (NetworkRule,
+     FirewallPolicyRuleApplicationProtocol,
+     ApplicationRule,
+     NatRule) = cmd.get_models('NetworkRule', 'FirewallPolicyRuleApplicationProtocol',
+                               'ApplicationRule', 'NatRule')
+    target_rule_collection = None
+    for rule_collection in instance.rule_collections:
+        if rule_collection.name == rule_collection_name:
+            target_rule_collection = rule_collection
+
+    if target_rule_collection is None:
+        raise CLIError("Cannot find corresponding rule, please check parameters")
+
+    for i in range(0, len(target_rule_collection.rules)):
+        rule = target_rule_collection.rules[i]
+        if rule_name == rule.name:
+            new_rule = {}
+            judge = lambda x, y: x if x else y
+            if rule.rule_type == "NetworkRule":
+                new_rule = NetworkRule(name=rule_name,
+                                       description=judge(description, rule.description),
+                                       rule_type=rule.rule_type,
+                                       ip_protocols=judge(ip_protocols, rule.ip_protocols),
+                                       source_addresses=judge(source_addresses, rule.source_addresses),
+                                       destination_addresses=judge(destination_addresses, rule.destination_addresses),
+                                       destination_ports=judge(destination_ports, rule.destination_ports),
+                                       source_ip_groups=judge(source_ip_groups, rule.source_ip_groups),
+                                       destination_ip_groups=judge(destination_ip_groups, rule.destination_ip_groups))
+            elif rule.rule_type == 'ApplicationRule':
+                def map_application_rule_protocol(item):
+                    return FirewallPolicyRuleApplicationProtocol(protocol_type=item['protocol_type'],
+                                                                 port=int(item['port']))
+
+                protocols = list(map(map_application_rule_protocol, protocols))
+                new_rule = ApplicationRule(name=rule_name,
+                                           description=judge(description, rule.description),
+                                           rule_type=rule.rule_type,
+                                           source_addresses=judge(source_addresses, rule.source_addresses),
+                                           protocols=judge(protocols, rule.protocols),
+                                           destination_addresses=judge(destination_addresses, rule.destination_addresses),
+                                           fqdn_tags=judge(fqdn_tags, rule.fqdn_tags),
+                                           target_fqdns=judge(target_fqdns, rule.target_fqdns),
+                                           target_urls=judge(target_urls, rule.target_urls),
+                                           source_ip_groups=judge(source_ip_groups, rule.source_ip_groups),
+                                           terminate_tls=judge(enable_tls_inspection, rule.terminate_tls))
+            elif rule.rule_type == 'NatRule':
+                new_rule = NatRule(name=rule_name,
+                                   description=judge(description, rule.description),
+                                   rule_type=rule.rule_type,
+                                   ip_protocols=judge(ip_protocols, rule.ip_protocols),
+                                   source_addresses=judge(source_addresses, rule.source_addresses),
+                                   destination_addresses=judge(destination_addresses, rule.destination_addresses),
+                                   destination_ports=judge(destination_ports, rule.destination_ports),
+                                   translated_address=judge(translated_address, rule.translated_address),
+                                   translated_port=judge(translated_port, rule.translated_port),
+                                   source_ip_groups=judge(source_ip_groups, rule.source_ip_groups))
+            if new_rule:
+                target_rule_collection.rules[i] = copy.deepcopy(new_rule)
+                return instance
+            else:
+                raise CLIError(f'Undefined rule_type : {rule.rule_type}')
+
+    raise CLIError(f'{rule_name} does not exist!!!')
 # endregion

@@ -717,6 +717,14 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('length(ruleCollections[2].rules)', 2)
                  ])
 
+        self.cmd('network firewall policy rule-collection-group collection rule update -g {rg} --policy-name {policy} '
+                 '--rule-collection-group-name {collectiongroup} --collection-name filter-collection-2 --name application-rule-2 '
+                 '--target-fqdns www.google0.com www.google1.com www.google2.com',
+                 checks=[
+                     self.check('length(ruleCollections[2].rules)', 2),
+                     self.check('length(ruleCollections[2].rules[1].targetFqdns)', 3)
+                 ])
+
         self.cmd('network firewall policy rule-collection-group collection rule add -g {rg} --policy-name {policy} '
                  '--rule-collection-group-name {collectiongroup} --collection-name filter-collection-1 '
                  '--name network-rule-2 --rule-type NetworkRule '

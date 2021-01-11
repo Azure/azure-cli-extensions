@@ -19,6 +19,7 @@ from ._validators import validate_af_network_rule, validate_af_nat_rule, validat
 # pylint: disable=too-many-locals, too-many-statements
 def load_command_table(self, _):
 
+    from ._exception_handler import exception_handler
     network_util = CliCommandType(
         operations_tmpl='azext_firewall._util#{}',
         client_factory=None
@@ -42,7 +43,8 @@ def load_command_table(self, _):
         operations_tmpl='azext_firewall.vendored_sdks.v2020_07_01.operations#FirewallPoliciesOperations.{}',
         client_factory=cf_firewall_policies,
         resource_type=CUSTOM_FIREWALL,
-        min_api='2019-07-01'
+        min_api='2019-07-01',
+        exception_handler=exception_handler
     )
 
     network_firewall_policy_rule_groups = CliCommandType(
@@ -114,31 +116,32 @@ def load_command_table(self, _):
 
     # region AzureFirewallPolicies
     with self.command_group('network firewall policy', network_firewall_policies_sdk, resource_type=CUSTOM_FIREWALL, min_api='2019-07-01') as g:
-        g.custom_command('create', 'create_azure_firewall_policies')
+        g.custom_command('create', 'create_azure_firewall_policies', exception_handler=exception_handler)
         g.command('delete', 'delete')
         g.custom_command('list', 'list_azure_firewall_policies')
         g.show_command('show')
-        g.generic_update_command('update', custom_func_name='update_azure_firewall_policies')
+        g.generic_update_command('update', custom_func_name='update_azure_firewall_policies', exception_handler=exception_handler)
 
     with self.command_group('network firewall policy intrusion-detection', resource_type=CUSTOM_FIREWALL, min_api='2020-07-01', is_preview=True) as g:
-        g.custom_command('add', 'add_firewall_policy_intrusion_detection_config')
+        g.custom_command('add', 'add_firewall_policy_intrusion_detection_config', exception_handler=exception_handler)
         g.custom_command('remove', 'remove_firewall_policy_intrusion_detection_config')
         g.custom_command('list', 'list_firewall_policy_intrusion_detection_config')
 
     with self.command_group('network firewall policy rule-collection-group', network_firewall_policy_rule_groups, resource_type=CUSTOM_FIREWALL, is_preview=True) as g:
-        g.custom_command('create', 'create_azure_firewall_policy_rule_collection_group')
-        g.generic_update_command('update', custom_func_name='update_azure_firewall_policy_rule_collection_group')
+        g.custom_command('create', 'create_azure_firewall_policy_rule_collection_group', exception_handler=exception_handler)
+        g.generic_update_command('update', custom_func_name='update_azure_firewall_policy_rule_collection_group', exception_handler=exception_handler)
         g.command('delete', 'delete')
         g.show_command('show')
         g.command('list', 'list')
 
     with self.command_group('network firewall policy rule-collection-group collection', network_firewall_policy_rule_groups, resource_type=CUSTOM_FIREWALL, is_preview=True) as g:
-        g.custom_command('add-nat-collection', 'add_azure_firewall_policy_nat_rule_collection')
-        g.custom_command('add-filter-collection', 'add_azure_firewall_policy_filter_rule_collection')
+        g.custom_command('add-nat-collection', 'add_azure_firewall_policy_nat_rule_collection', exception_handler=exception_handler)
+        g.custom_command('add-filter-collection', 'add_azure_firewall_policy_filter_rule_collection', exception_handler=exception_handler)
         g.custom_command('remove', 'remove_azure_firewall_policy_rule_collection')
         g.custom_command('list', 'list_azure_firewall_policy_rule_collection')
 
     with self.command_group('network firewall policy rule-collection-group collection rule', network_firewall_policy_rule_groups, resource_type=CUSTOM_FIREWALL, is_preview=True) as g:
-        g.custom_command('add', 'add_azure_firewall_policy_filter_rule')
+        g.custom_command('add', 'add_azure_firewall_policy_filter_rule', exception_handler=exception_handler)
+        g.generic_update_command('update', custom_func_name='update_azure_firewall_policy_filter_rule', exception_handler=exception_handler)
         g.custom_command('remove', 'remove_azure_firewall_policy_filter_rule')
     # endregion

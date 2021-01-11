@@ -460,4 +460,16 @@ helps['network firewall policy rule-collection-group collection rule remove'] = 
         Filter collection supports having a list of network rules or application rules.
         NatRule collection supports including a list of nat rules.
 """
+
+helps['network firewall policy rule-collection-group collection rule update'] = """
+    type: command
+    short-summary: Update a rule of an Azure firewall policy rule collection.
+    long-summary: |
+        Filter collection supports having a list of network rules or application rules.
+        NatRule collection supports including a list of nat rules.
+    examples:
+        - name: Update a rule of an Azure firewall policy rule collection.
+          text: az network firewall policy rule-collection-group collection rule update -g {rg} --policy-name {policy} 
+                --rule-collection-group-name {rcg} --collection-name {cn} -n {rule_name} --target-fqdns XXX        
+"""
 # endregion
