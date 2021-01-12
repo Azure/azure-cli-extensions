@@ -1,5 +1,9 @@
 Release History
 ===============
+2.1.1
+-----
+* Remove preview parameter and fix warning message.
+
 2.1.0
 -----
 * Support Java In-Process Agent.
