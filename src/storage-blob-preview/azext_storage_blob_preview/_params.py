@@ -384,7 +384,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    arg_group='Static Website')
         c.argument('error_document_404_path', options_list=['--404-document'], arg_group='Static Website',
                    help='The absolute path of the custom 404 page.')
-        c.argument('default_index_document_path', is_preview=True,
+        c.argument('default_index_document_path', options_list='--default-index-path', is_preview=True,
                    help='Absolute path of the default index page.',
                    arg_group='Static Website')
 
