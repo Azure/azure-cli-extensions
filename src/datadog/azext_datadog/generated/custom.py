@@ -14,6 +14,10 @@ from azure.cli.core import get_default_cli
 from azure.cli.core.util import sdk_no_wait
 
 
+def datadog_terms_list(client):
+    return client.list()
+
+
 def datadog_api_key_list(client,
                          resource_group_name,
                          monitor_name):
