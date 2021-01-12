@@ -5,14 +5,55 @@
 
 import os
 import unittest
+import time
 from azure.cli.testsdk import (LiveScenarioTest, ResourceGroupPreparer, ScenarioTest,
-                               JMESPathCheck, api_version_constraint)
+                               JMESPathCheck, api_version_constraint, StorageAccountPreparer)
 
 from .storage_test_util import StorageScenarioMixin, StorageTestFilesPreparer
-from ...profiles import CUSTOM_MGMT_PREVIEW_STORAGE
+from ...profiles import CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_FILEDATALAKE
 
 
 class StorageADLSTests(StorageScenarioMixin, ScenarioTest):
+    @api_version_constraint(CUSTOM_DATA_STORAGE_FILEDATALAKE, min_api='2020-06-12')
+    @ResourceGroupPreparer()
+    @StorageAccountPreparer(kind="StorageV2", hns=True, location="eastus2euap")
+    def test_storage_fs_soft_delete(self, resource_group, storage_account):
+        account_info = self.get_account_info(storage_account, resource_group)
+        container = self.create_file_system(account_info)
+
+        # create a file
+        local_file = self.create_temp_file(1)
+        file_name = self.create_random_name(prefix='file', length=24)
+
+        self.storage_cmd('storage fs file upload -f {} -s "{}" -p {} ', account_info,
+                         container, local_file, file_name)
+        self.assertEqual(len(self.storage_cmd('storage fs file list -f {}',
+                                              account_info, container).get_output_in_json()), 1)
+
+        # set delete-policy to enable soft-delete
+        self.storage_cmd('storage fs service-properties delete-policy update --enable true --days-retained 2',
+                         account_info)
+        self.storage_cmd('storage fs service-properties delete-policy show',
+                         account_info).assert_with_checks(JMESPathCheck('enabled', True),
+                                                          JMESPathCheck('days', 2))
+        time.sleep(10)
+        # soft-delete and check
+        self.storage_cmd('storage fs file delete -f {} -p {}', account_info, container, file_name)
+        self.assertEqual(len(self.storage_cmd('storage fs file list -f {}',
+                                              account_info, container).get_output_in_json()), 0)
+
+        time.sleep(30)
+        result = self.storage_cmd('storage fs list-deleted-path -f {}', account_info, container)\
+            .get_output_in_json()
+        self.assertEqual(len(result), 1)
+        deleted_version = result["deleted_path_version"]
+
+        # undelete and check
+        self.storage_cmd('storage fs undelete-path -f {} -p {} --deleted-version {}',
+                         account_info, container, file_name, deleted_version)
+        self.assertEqual(len(self.storage_cmd('storage fs file list -f {}',
+                                              account_info, container).get_output_in_json()), 1)
+
     @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2018-02-01')
     @ResourceGroupPreparer()
     def test_storage_adls_blob(self, resource_group):

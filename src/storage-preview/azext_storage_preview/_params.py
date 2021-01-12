@@ -54,6 +54,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                     'e.g."user::rwx,user:john.doe@contoso:rwx,group::r--,other::---,mask::rwx".')
     progress_type = CLIArgumentType(help='Include this flag to disable progress reporting for the command.',
                                     action='store_true', validator=add_upload_progress_callback)
+    timeout_type = CLIArgumentType(
+        help='Request timeout in seconds. Applies to each call to the service.', type=int
+    )
 
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
@@ -388,3 +391,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('error_document_404_path', options_list=['--404-document'], arg_group='Static Website',
                    help='Represent the path to the error document that should be shown when an error 404 is issued,'
                         ' in other words, when a browser requests a page that does not exist.')
+
+    for item in ['list-deleted-path', 'undelete-path']:
+        with self.argument_context('storage fs {}'.format(item)) as c:
+            c.extra('file_system_name', options_list=['--file-system', '-f'],
+                    help="File system name.", required=True)
+            c.extra('timeout', timeout_type)

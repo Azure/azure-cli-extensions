@@ -8,7 +8,7 @@ from azure.cli.core.commands.arm import show_exception_handler
 from ._client_factory import (cf_sa, cf_blob_data_gen_update,
                               blob_data_service_factory, adls_blob_data_service_factory,
                               cf_sa_blob_inventory, cf_mgmt_file_services, cf_share_client, cf_share_file_client,
-                              cf_adls_service)
+                              cf_adls_service, cf_adls_file_system)
 from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_MGMT_PREVIEW_STORAGE,
                        CUSTOM_DATA_STORAGE_FILESHARE, CUSTOM_DATA_STORAGE_FILEDATALAKE)
 
@@ -218,3 +218,14 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                             resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE, min_api='2020-06-12') as g:
         g.storage_command_oauth('show', 'get_service_properties', exception_handler=show_exception_handler)
         g.storage_custom_command_oauth('update', 'set_service_properties')
+
+    adls_fs_sdk = CliCommandType(
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage_filedatalake._file_system_client#FileSystemClient.{}',
+        client_factory=cf_adls_file_system,
+        resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE
+    )
+    with self.command_group('storage fs', command_type=adls_fs_sdk,
+                            custom_command_type=get_custom_sdk('filesystem', cf_adls_file_system),
+                            resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE, min_api='2020-06-12', is_preview=True) as g:
+        g.storage_command_oauth('list-deleted-path', 'get_deleted_paths')
+        g.storage_command_oauth('undelete-path', 'undelete_path')

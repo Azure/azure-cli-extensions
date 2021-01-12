@@ -195,3 +195,7 @@ def cf_adls_service(cli_ctx, kwargs):
     if account_url and credential:
         return t_adls_service(account_url=account_url, credential=credential, **client_kwargs)
     return None
+
+
+def cf_adls_file_system(cli_ctx, kwargs):
+    return cf_adls_service(cli_ctx, kwargs).get_file_system_client(file_system=kwargs.pop('file_system_name'))
