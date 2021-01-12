@@ -265,8 +265,6 @@ effect="Allow" quota-id="CSP_MG_2017-12-01" --incident-contact-email "helpme@con
 |**--resource-access-roles**|array||resource_access_roles|resourceAccessRoles|
 |**--opt-in-headers**|choice||opt_in_headers|optInHeaders|
 |**--required-features-policy**|choice||required_features_policy|requiredFeaturesPolicy|
-|**--subscription-state-override-actions**|array||subscription_state_override_actions|subscriptionStateOverrideActions|
-|**--soft-delete-ttl**|duration||soft_delete_ttl|softDeleteTTL|
 |**--provider-hub-metadata-provider-authorizations**|array||provider_hub_metadata_provider_authorizations|providerAuthorizations|
 |**--resource-provider-authentication**|object||resource_provider_authentication|providerAuthentication|
 |**--authorizations**|array||authorizations|authorizations|
@@ -359,10 +357,7 @@ swagger-spec-folder-uri="https://github.com/Azure/azure-rest-api-specs/blob/feat
 |**--resource-move-policy**|object||resource_move_policy|resourceMovePolicy|
 |**--resource-deletion-policy**|choice||resource_deletion_policy|resourceDeletionPolicy|
 |**--opt-in-headers**|choice||opt_in_headers|optInHeaders|
-|**--subscription-state-override-actions**|array||subscription_state_override_actions|subscriptionStateOverrideActions|
-|**--soft-delete-ttl**|duration||soft_delete_ttl|softDeleteTTL|
 |**--required-features-policy**|choice||required_features_policy|requiredFeaturesPolicy|
-|**--resource-creation-begin**|object||resource_creation_begin|resourceCreationBegin|
 
 #### <a name="ResourceTypeRegistrationDelete">Command `az providerhub resource-type-registration delete`</a>
 

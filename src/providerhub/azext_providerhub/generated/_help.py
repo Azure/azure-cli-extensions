@@ -234,9 +234,9 @@ helps['providerhub default-rollout wait'] = """
 "2020week10" --updated
 """
 
-helps['providerhub'] = """
+helps['providerhub manifest'] = """
     type: group
-    short-summary: Manage  with providerhub
+    short-summary: Manage manifest with providerhub
 """
 
 helps['providerhub manifest checkin'] = """
@@ -257,55 +257,6 @@ helps['providerhub manifest generate'] = """
                az providerhub manifest generate --provider-namespace "Microsoft.Contoso"
 """
 
-helps['providerhub notification-registration'] = """
-    type: group
-    short-summary: Manage notification registration with providerhub
-"""
-
-helps['providerhub notification-registration list'] = """
-    type: command
-    short-summary: "Gets the list of the notification registrations for the given provider."
-    examples:
-      - name: NotificationRegistrations_ListByProviderRegistration
-        text: |-
-               az providerhub notification-registration list --provider-namespace "Microsoft.Contoso"
-"""
-
-helps['providerhub notification-registration show'] = """
-    type: command
-    short-summary: "Gets the notification registration details."
-    examples:
-      - name: NotificationRegistrations_Get
-        text: |-
-               az providerhub notification-registration show --name "fooNotificationRegistration" --provider-namespace \
-"Microsoft.Contoso"
-"""
-
-helps['providerhub notification-registration create'] = """
-    type: command
-    short-summary: "Create a notification registration."
-    examples:
-      - name: NotificationRegistrations_CreateOrUpdate
-        text: |-
-               az providerhub notification-registration create --name "fooNotificationRegistration" \
---provider-namespace "Microsoft.Contoso"
-"""
-
-helps['providerhub notification-registration update'] = """
-    type: command
-    short-summary: "Update a notification registration."
-"""
-
-helps['providerhub notification-registration delete'] = """
-    type: command
-    short-summary: "Deletes a notification registration."
-    examples:
-      - name: NotificationRegistrations_Delete
-        text: |-
-               az providerhub notification-registration delete --name "fooNotificationRegistration" \
---provider-namespace "Microsoft.Contoso"
-"""
-
 helps['providerhub operation'] = """
     type: group
     short-summary: Manage operation with providerhub
@@ -324,20 +275,6 @@ helps['providerhub operation list'] = """
       - name: Operations_ListByProviderRegistration
         text: |-
                az providerhub operation list --provider-namespace "Microsoft.Contoso"
-"""
-
-helps['providerhub operation create'] = """
-    type: command
-    short-summary: "Create the operation supported by the given provider."
-    examples:
-      - name: Operations_CreateOrUpdate
-        text: |-
-               az providerhub operation create --provider-namespace "Microsoft.Contoso"
-"""
-
-helps['providerhub operation update'] = """
-    type: command
-    short-summary: "Update the operation supported by the given provider."
 """
 
 helps['providerhub operation delete'] = """
@@ -726,132 +663,4 @@ helps['providerhub resource-type-registration delete'] = """
         text: |-
                az providerhub resource-type-registration delete --provider-namespace "Microsoft.Contoso" \
 --resource-type "testResourceType"
-"""
-
-helps['providerhub sku'] = """
-    type: group
-    short-summary: Manage sku with providerhub
-"""
-
-helps['providerhub sku list'] = """
-    type: command
-    short-summary: "Gets the list of skus for the given resource type. And Gets the list of skus for the given \
-resource type. And Gets the list of skus for the given resource type. And Gets the list of skus for the given resource \
-type."
-    examples:
-      - name: Skus_ListByResourceTypeRegistrationsNestedResourceTypeThird
-        text: |-
-               az providerhub sku list --nested-resource-type-first "nestedResourceTypeFirst" \
---nested-resource-type-second "nestedResourceTypeSecond" --nested-resource-type-third "nestedResourceTypeThird" \
---provider-namespace "Microsoft.Contoso" --resource-type "testResourceType"
-      - name: Skus_ListByResourceTypeRegistrationsNestedResourceTypeSecond
-        text: |-
-               az providerhub sku list --nested-resource-type-first "nestedResourceTypeFirst" \
---nested-resource-type-second "nestedResourceTypeSecond" --provider-namespace "Microsoft.Contoso" --resource-type \
-"testResourceType"
-      - name: Skus_ListByResourceTypeRegistrationsNestedResourceTypeFirst
-        text: |-
-               az providerhub sku list --nested-resource-type-first "nestedResourceTypeFirst" --provider-namespace \
-"Microsoft.Contoso" --resource-type "testResourceType"
-      - name: Skus_ListByResourceTypeRegistrations
-        text: |-
-               az providerhub sku list --provider-namespace "Microsoft.Contoso" --resource-type "testResourceType"
-"""
-
-helps['providerhub sku show'] = """
-    type: command
-    short-summary: "Gets the sku details for the given resource type and sku name."
-    examples:
-      - name: Skus_Get
-        text: |-
-               az providerhub sku show --provider-namespace "Microsoft.Contoso" --resource-type "testResourceType" \
---sku "testSku"
-"""
-
-helps['providerhub sku create'] = """
-    type: command
-    short-summary: "Creates or updates the resource type skus in the given resource type. And Creates or updates the \
-resource type skus in the given resource type. And Creates or updates the resource type skus in the given resource \
-type. And Create the resource type skus in the given resource type."
-    examples:
-      - name: Skus_CreateOrUpdateNestedResourceTypeThird
-        text: |-
-               az providerhub sku create --nested-resource-type-first "nestedResourceTypeFirst" \
---nested-resource-type-second "nestedResourceTypeSecond" --nested-resource-type-third "nestedResourceTypeThird" \
---provider-namespace "Microsoft.Contoso" --resource-type "testResourceType" --sku "testSku"
-      - name: Skus_CreateOrUpdateNestedResourceTypeSecond
-        text: |-
-               az providerhub sku create --nested-resource-type-first "nestedResourceTypeFirst" \
---nested-resource-type-second "nestedResourceTypeSecond" --provider-namespace "Microsoft.Contoso" --resource-type \
-"testResourceType" --sku "testSku"
-      - name: Skus_CreateOrUpdateNestedResourceTypeFirst
-        text: |-
-               az providerhub sku create --nested-resource-type-first "nestedResourceTypeFirst" --provider-namespace \
-"Microsoft.Contoso" --resource-type "testResourceType" --sku "testSku"
-      - name: Skus_CreateOrUpdate
-        text: |-
-               az providerhub sku create --provider-namespace "Microsoft.Contoso" --resource-type "testResourceType" \
---sku "testSku"
-"""
-
-helps['providerhub sku update'] = """
-    type: command
-    short-summary: "Update the resource type skus in the given resource type."
-"""
-
-helps['providerhub sku delete'] = """
-    type: command
-    short-summary: "Deletes a resource type sku. And Deletes a resource type sku. And Deletes a resource type sku. And \
-Deletes a resource type sku."
-    examples:
-      - name: Skus_DeleteNestedResourceTypeThird
-        text: |-
-               az providerhub sku delete --nested-resource-type-first "nestedResourceTypeFirst" \
---nested-resource-type-second "nestedResourceTypeSecond" --nested-resource-type-third "nestedResourceTypeThird" \
---provider-namespace "Microsoft.Contoso" --resource-type "testResourceType" --sku "testSku"
-      - name: Skus_DeleteNestedResourceTypeSecond
-        text: |-
-               az providerhub sku delete --nested-resource-type-first "nestedResourceTypeFirst" \
---nested-resource-type-second "nestedResourceTypeSecond" --provider-namespace "Microsoft.Contoso" --resource-type \
-"testResourceType" --sku "testSku"
-      - name: Skus_DeleteNestedResourceTypeFirst
-        text: |-
-               az providerhub sku delete --nested-resource-type-first "nestedResourceTypeFirst" --provider-namespace \
-"Microsoft.Contoso" --resource-type "testResourceType" --sku "testSku"
-      - name: Skus_Delete
-        text: |-
-               az providerhub sku delete --provider-namespace "Microsoft.Contoso" --resource-type "testResourceType" \
---sku "testSku"
-"""
-
-helps['providerhub sku show-nested-resource-type-first'] = """
-    type: command
-    short-summary: "Gets the sku details for the given resource type and sku name."
-    examples:
-      - name: Skus_GetNestedResourceTypeFirst
-        text: |-
-               az providerhub sku show-nested-resource-type-first --nested-resource-type-first \
-"nestedResourceTypeFirst" --provider-namespace "Microsoft.Contoso" --resource-type "testResourceType" --sku "testSku"
-"""
-
-helps['providerhub sku show-nested-resource-type-second'] = """
-    type: command
-    short-summary: "Gets the sku details for the given resource type and sku name."
-    examples:
-      - name: Skus_GetNestedResourceTypeSecond
-        text: |-
-               az providerhub sku show-nested-resource-type-second --nested-resource-type-first \
-"nestedResourceTypeFirst" --nested-resource-type-second "nestedResourceTypeSecond" --provider-namespace \
-"Microsoft.Contoso" --resource-type "testResourceType" --sku "testSku"
-"""
-
-helps['providerhub sku show-nested-resource-type-third'] = """
-    type: command
-    short-summary: "Gets the sku details for the given resource type and sku name."
-    examples:
-      - name: Skus_GetNestedResourceTypeThird
-        text: |-
-               az providerhub sku show-nested-resource-type-third --nested-resource-type-first \
-"nestedResourceTypeFirst" --nested-resource-type-second "nestedResourceTypeSecond" --nested-resource-type-third \
-"nestedResourceTypeThird" --provider-namespace "Microsoft.Contoso" --resource-type "testResourceType" --sku "testSku"
 """

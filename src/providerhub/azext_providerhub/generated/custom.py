@@ -160,8 +160,6 @@ def providerhub_provider_registration_create(
     resource_access_roles=None,
     opt_in_headers=None,
     required_features_policy=None,
-    subscription_state_override_actions=None,
-    soft_delete_ttl=None,
     managed_by_tenant_id=None,
     no_wait=False,
 ):
@@ -188,8 +186,6 @@ def providerhub_provider_registration_create(
         resource_access_roles=resource_access_roles,
         opt_in_headers=opt_in_headers,
         required_features_policy=required_features_policy,
-        subscription_state_override_actions=subscription_state_override_actions,
-        soft_delete_ttl=soft_delete_ttl,
         managed_by_tenant_id=managed_by_tenant_id,
     )
 
@@ -216,8 +212,6 @@ def providerhub_provider_registration_update(
     resource_access_roles=None,
     opt_in_headers=None,
     required_features_policy=None,
-    subscription_state_override_actions=None,
-    soft_delete_ttl=None,
     managed_by_tenant_id=None,
     no_wait=False,
 ):
@@ -244,8 +238,6 @@ def providerhub_provider_registration_update(
         resource_access_roles=resource_access_roles,
         opt_in_headers=opt_in_headers,
         required_features_policy=required_features_policy,
-        subscription_state_override_actions=subscription_state_override_actions,
-        soft_delete_ttl=soft_delete_ttl,
         managed_by_tenant_id=managed_by_tenant_id,
     )
 
@@ -299,10 +291,7 @@ def providerhub_resource_type_registration_create(  # pylint: disable=too-many-l
     resource_move_policy=None,
     resource_deletion_policy=None,
     opt_in_headers=None,
-    subscription_state_override_actions=None,
-    soft_delete_ttl=None,
     required_features_policy=None,
-    resource_creation_begin=None,
 ):
     return client.begin_create_or_update(
         provider_namespace=provider_namespace,
@@ -332,10 +321,7 @@ def providerhub_resource_type_registration_create(  # pylint: disable=too-many-l
         resource_move_policy=resource_move_policy,
         resource_deletion_policy=resource_deletion_policy,
         opt_in_headers=opt_in_headers,
-        subscription_state_override_actions=subscription_state_override_actions,
-        soft_delete_ttl=soft_delete_ttl,
         required_features_policy=required_features_policy,
-        resource_creation_begin=resource_creation_begin,
     )
 
 
@@ -368,10 +354,7 @@ def providerhub_resource_type_registration_update(  # pylint: disable=too-many-l
     resource_move_policy=None,
     resource_deletion_policy=None,
     opt_in_headers=None,
-    subscription_state_override_actions=None,
-    soft_delete_ttl=None,
     required_features_policy=None,
-    resource_creation_begin=None,
 ):
     return client.begin_create_or_update(
         provider_namespace=provider_namespace,
@@ -401,10 +384,7 @@ def providerhub_resource_type_registration_update(  # pylint: disable=too-many-l
         resource_move_policy=resource_move_policy,
         resource_deletion_policy=resource_deletion_policy,
         opt_in_headers=opt_in_headers,
-        subscription_state_override_actions=subscription_state_override_actions,
-        soft_delete_ttl=soft_delete_ttl,
         required_features_policy=required_features_policy,
-        resource_creation_begin=resource_creation_begin,
     )
 
 

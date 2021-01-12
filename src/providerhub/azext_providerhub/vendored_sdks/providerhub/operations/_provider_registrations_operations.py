@@ -138,8 +138,6 @@ class ProviderRegistrationsOperations(object):
         required_features_policy,  # type: "models.FeaturesPolicy"
         opt_in_headers,  # type: "models.OptInHeaderType"
         # type: list["models.SubscriptionStateOverrideAction"]
-        subscription_state_override_actions,
-        soft_delete_ttl,  # type: datetime.timedelta
         managed_by_tenant_id,  # type: str
         **kwargs  # type: Any
     ):
@@ -233,8 +231,6 @@ class ProviderRegistrationsOperations(object):
         required_features_policy,  # type: "models.FeaturesPolicy"
         opt_in_headers,  # type: "models.OptInHeaderType"
         # type: list["models.SubscriptionStateOverrideAction"]
-        subscription_state_override_actions,
-        soft_delete_ttl,  # type: datetime.timedelta
         managed_by_tenant_id,  # type: str
         **kwargs  # type: Any
     ):
@@ -288,8 +284,6 @@ class ProviderRegistrationsOperations(object):
                 resource_access_roles=resource_access_roles,
                 required_features_policy=required_features_policy,
                 opt_in_headers=opt_in_headers,
-                subscription_state_override_actions=subscription_state_override_actions,
-                soft_delete_ttl=soft_delete_ttl,
                 managed_by_tenant_id=managed_by_tenant_id,
                 cls=lambda x, y, z: x,
                 **kwargs

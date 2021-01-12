@@ -616,30 +616,3 @@ class AddResourceMovePolicy(argparse.Action):
                                'are: validation-required, cross-resource-group-move-enabled, '
                                'cross-subscription-move-enabled'.format(k))
         return d
-
-
-class AddResourceCreationBegin(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.resource_creation_begin = action
-
-    def get_action(self, values, option_string):  # pylint: disable=no-self-use
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split('=', 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError as value_error:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-            if kl == 'request':
-                d['request'] = v
-            elif kl == 'response':
-                d['response'] = v
-            else:
-                raise CLIError('Unsupported Key {} is provided for parameter resource_creation_begin. All possible '
-                               'keys are: request, response'.format(k))
-        return d
