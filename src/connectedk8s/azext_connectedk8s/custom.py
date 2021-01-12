@@ -1013,7 +1013,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
             telemetry.set_user_fault()
             telemetry.set_exception(exception='connectedk8s upgrade called when auto-update is set to true', fault_type=consts.Manual_Upgrade_Called_In_Auto_Update_Enabled,
                                     summary='az connectedk8s upgrade to manually upgrade agents and extensions is only supported when auto-upgrade is set to false.')
-            raise CLIError("az connectedk8s upgrade to manually upgrade agents and extensions is only supported when auto-upgrade is set to false. Please run az connectedk8s update --auto-upgrade=false before performing manual upgrade")
+            raise CLIError("az connectedk8s upgrade to manually upgrade agents and extensions is only supported when auto-upgrade is set to false. Please run az connectedk8s update -n <> -g <> --auto-upgrade 'false' before performing manual upgrade")
 
         # Check whether Connected Cluster is present
     if not connected_cluster_exists(client, resource_group_name, cluster_name):
