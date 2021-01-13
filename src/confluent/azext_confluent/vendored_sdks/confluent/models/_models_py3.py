@@ -84,7 +84,7 @@ class ConfluentAgreementResource(msrest.serialization.Model):
     :ivar type: The type of the agreement.
     :vartype type: str
     :param properties: Represents the properties of the resource.
-    :type properties: ~confluent_management_client.models.ConfluentAgreementProperties
+    :type properties: ~azure.mgmt.confluent.models.ConfluentAgreementProperties
     """
 
     _validation = {
@@ -117,7 +117,7 @@ class ConfluentAgreementResourceListResponse(msrest.serialization.Model):
     """Response of a agreements operation.
 
     :param value: Results of a list operation.
-    :type value: list[~confluent_management_client.models.ConfluentAgreementResource]
+    :type value: list[~azure.mgmt.confluent.models.ConfluentAgreementResource]
     :param next_link: Link to the next set of results, if any.
     :type next_link: str
     """
@@ -151,7 +151,7 @@ class ErrorResponseBody(msrest.serialization.Model):
     :ivar target: Error target.
     :vartype target: str
     :ivar details: Error detail.
-    :vartype details: list[~confluent_management_client.models.ErrorResponseBody]
+    :vartype details: list[~azure.mgmt.confluent.models.ErrorResponseBody]
     """
 
     _validation = {
@@ -195,7 +195,7 @@ class OfferDetail(msrest.serialization.Model):
     :param status: SaaS Offer Status. Possible values include: "Started",
      "PendingFulfillmentStart", "InProgress", "Subscribed", "Suspended", "Reinstated", "Succeeded",
      "Failed", "Unsubscribed", "Updating".
-    :type status: str or ~confluent_management_client.models.SaaSOfferStatus
+    :type status: str or ~azure.mgmt.confluent.models.SaaSOfferStatus
     """
 
     _validation = {
@@ -275,7 +275,7 @@ class OperationListResult(msrest.serialization.Model):
     """Result of GET request to list Confluent operations.
 
     :param value: List of Confluent operations supported by the Microsoft.Confluent provider.
-    :type value: list[~confluent_management_client.models.OperationResult]
+    :type value: list[~azure.mgmt.confluent.models.OperationResult]
     :param next_link: URL to get the next set of operation list results if there are any.
     :type next_link: str
     """
@@ -303,7 +303,7 @@ class OperationResult(msrest.serialization.Model):
     :param name: Operation name: {provider}/{resource}/{operation}.
     :type name: str
     :param display: The object that represents the operation.
-    :type display: ~confluent_management_client.models.OperationDisplay
+    :type display: ~azure.mgmt.confluent.models.OperationDisplay
     """
 
     _attribute_map = {
@@ -343,15 +343,15 @@ class OrganizationResource(msrest.serialization.Model):
     :param provisioning_state: Provision states for confluent RP. Possible values include:
      "Accepted", "Creating", "Updating", "Deleting", "Succeeded", "Failed", "Canceled", "Deleted",
      "NotSpecified".
-    :type provisioning_state: str or ~confluent_management_client.models.ProvisionState
+    :type provisioning_state: str or ~azure.mgmt.confluent.models.ProvisionState
     :ivar organization_id: Id of the Confluent organization.
     :vartype organization_id: str
     :ivar sso_url: SSO url for the Confluent organization.
     :vartype sso_url: str
     :param offer_detail: Confluent offer detail.
-    :type offer_detail: ~confluent_management_client.models.OfferDetail
+    :type offer_detail: ~azure.mgmt.confluent.models.OfferDetail
     :param user_detail: Subscriber detail.
-    :type user_detail: ~confluent_management_client.models.UserDetail
+    :type user_detail: ~azure.mgmt.confluent.models.UserDetail
     """
 
     _validation = {
@@ -405,7 +405,7 @@ class OrganizationResourceListResult(msrest.serialization.Model):
     """The response of a list operation.
 
     :param value: Result of a list operation.
-    :type value: list[~confluent_management_client.models.OrganizationResource]
+    :type value: list[~azure.mgmt.confluent.models.OrganizationResource]
     :param next_link: Link to the next set of results, if any.
     :type next_link: str
     """
@@ -437,15 +437,15 @@ class OrganizationResourceProperties(msrest.serialization.Model):
     :param provisioning_state: Provision states for confluent RP. Possible values include:
      "Accepted", "Creating", "Updating", "Deleting", "Succeeded", "Failed", "Canceled", "Deleted",
      "NotSpecified".
-    :type provisioning_state: str or ~confluent_management_client.models.ProvisionState
+    :type provisioning_state: str or ~azure.mgmt.confluent.models.ProvisionState
     :ivar organization_id: Id of the Confluent organization.
     :vartype organization_id: str
     :ivar sso_url: SSO url for the Confluent organization.
     :vartype sso_url: str
     :param offer_detail: Confluent offer detail.
-    :type offer_detail: ~confluent_management_client.models.OfferDetail
+    :type offer_detail: ~azure.mgmt.confluent.models.OfferDetail
     :param user_detail: Subscriber detail.
-    :type user_detail: ~confluent_management_client.models.UserDetail
+    :type user_detail: ~azure.mgmt.confluent.models.UserDetail
     """
 
     _validation = {
@@ -490,15 +490,15 @@ class OrganizationResourcePropertiesautogenerated(OrganizationResourceProperties
     :param provisioning_state: Provision states for confluent RP. Possible values include:
      "Accepted", "Creating", "Updating", "Deleting", "Succeeded", "Failed", "Canceled", "Deleted",
      "NotSpecified".
-    :type provisioning_state: str or ~confluent_management_client.models.ProvisionState
+    :type provisioning_state: str or ~azure.mgmt.confluent.models.ProvisionState
     :ivar organization_id: Id of the Confluent organization.
     :vartype organization_id: str
     :ivar sso_url: SSO url for the Confluent organization.
     :vartype sso_url: str
     :param offer_detail: Confluent offer detail.
-    :type offer_detail: ~confluent_management_client.models.OfferDetail
+    :type offer_detail: ~azure.mgmt.confluent.models.OfferDetail
     :param user_detail: Subscriber detail.
-    :type user_detail: ~confluent_management_client.models.UserDetail
+    :type user_detail: ~azure.mgmt.confluent.models.UserDetail
     """
 
     _validation = {
@@ -543,7 +543,7 @@ class OrganizationResourcePropertiesOfferDetail(OfferDetail):
     :param status: SaaS Offer Status. Possible values include: "Started",
      "PendingFulfillmentStart", "InProgress", "Subscribed", "Suspended", "Reinstated", "Succeeded",
      "Failed", "Unsubscribed", "Updating".
-    :type status: str or ~confluent_management_client.models.SaaSOfferStatus
+    :type status: str or ~azure.mgmt.confluent.models.SaaSOfferStatus
     """
 
     _validation = {
@@ -675,7 +675,7 @@ class ResourceProviderDefaultErrorResponse(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar error: Response body of Error.
-    :vartype error: ~confluent_management_client.models.ErrorResponseBody
+    :vartype error: ~azure.mgmt.confluent.models.ErrorResponseBody
     """
 
     _validation = {

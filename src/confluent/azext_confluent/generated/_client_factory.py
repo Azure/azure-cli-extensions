@@ -17,7 +17,7 @@ def cf_confluent_cl(cli_ctx, *_):
 
 
 def cf_marketplace_agreement(cli_ctx, *_):
-    return cf_confluent_cl(cli_ctx).marketplace_agreement
+    return cf_confluent_cl(cli_ctx).marketplace_agreements
 
 
 def cf_organization(cli_ctx, *_):

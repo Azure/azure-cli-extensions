@@ -41,6 +41,23 @@ def step_organization_create(test, rg, checks=None):  # pylint: disable=unused-a
              checks=[])
 
 
+def step_organization_create(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az confluent organization create '
+             '--location "West US" '
+             '--offer-detail id="string" plan-id="string" plan-name="string" publisher-id="string" term-unit="string" '
+             '--user-detail email-address="contoso@microsoft.com" first-name="string" last-name="string" '
+             '--tags Environment="Dev" '
+             '--name "{myOrganization}" '
+             '--resource-group "{rg}"',
+             checks=[])
+    test.cmd('az confluent organization wait --created '
+             '--name "{myOrganization}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
 # EXAMPLE: /Organization/get/Organization_Get
 @try_manual
 def step_organization_show(test, rg, checks=None):  # pylint: disable=unused-argument
@@ -59,6 +76,16 @@ def step_organization_list(test, rg, checks=None):  # pylint: disable=unused-arg
         checks = []
     test.cmd('az confluent organization list '
              '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /Organization/get/Organization_ListBySubscription
+@try_manual
+def step_organization_list2(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az confluent organization list '
+             '-g ""',
              checks=checks)
 
 

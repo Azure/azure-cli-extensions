@@ -15,7 +15,7 @@ from .example_steps import step_terms_list
 from .example_steps import step_organization_create
 from .example_steps import step_organization_show
 from .example_steps import step_organization_list
-from .example_steps import step_organization_list
+from .example_steps import step_organization_list2
 from .example_steps import step_organization_update
 from .example_steps import step_organization_delete
 from .. import (
@@ -69,6 +69,9 @@ def call_scenario(test, rg):
     step_organization_list(test, "", checks=[
         test.greater_than('length(@)', 0),
     ])
+    step_organization_list2(test, rg, checks=[
+        test.check('length(@)', 1),
+    ])
     step_organization_update(test, rg, checks=[
         test.check("location", "eastus2euap", case_sensitive=False),
         test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
@@ -85,13 +88,15 @@ def call_scenario(test, rg):
 @try_manual
 class ConfluentScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='clitestconfluent_myResourceGroup'[:7], key='rg', parameter_name='rg')
-    def test_confluent_Scenario(self, rg):
-
+    def __init__(self, *args, **kwargs):
+        super(ConfluentScenarioTest, self).__init__(*args, **kwargs)
         self.kwargs.update({
             'myOrganization': 'myOrganization',
         })
 
+
+    @ResourceGroupPreparer(name_prefix='clitestconfluent_myResourceGroup'[:7], key='rg', parameter_name='rg')
+    def test_confluent_Scenario(self, rg):
         call_scenario(self, rg)
         calc_coverage(__file__)
         raise_if()

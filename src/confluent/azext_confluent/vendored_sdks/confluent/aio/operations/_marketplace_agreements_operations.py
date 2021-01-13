@@ -19,14 +19,14 @@ from ... import models
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class MarketplaceAgreementOperations:
-    """MarketplaceAgreementOperations async operations.
+class MarketplaceAgreementsOperations:
+    """MarketplaceAgreementsOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~confluent_management_client.models
+    :type models: ~azure.mgmt.confluent.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -51,7 +51,7 @@ class MarketplaceAgreementOperations:
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either ConfluentAgreementResourceListResponse or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~confluent_management_client.models.ConfluentAgreementResourceListResponse]
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.confluent.models.ConfluentAgreementResourceListResponse]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ConfluentAgreementResourceListResponse"]
@@ -59,7 +59,6 @@ class MarketplaceAgreementOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-03-01-preview"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -76,7 +75,6 @@ class MarketplaceAgreementOperations:
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
                 request = self._client.get(url, query_parameters, header_parameters)
             else:
@@ -112,18 +110,18 @@ class MarketplaceAgreementOperations:
 
     async def create(
         self,
-        properties: Optional["models.ConfluentAgreementProperties"] = None,
+        body: Optional["models.ConfluentAgreementResource"] = None,
         **kwargs
     ) -> "models.ConfluentAgreementResource":
         """Create Confluent Marketplace agreement in the subscription.
 
         Create Confluent Marketplace agreement in the subscription.
 
-        :param properties: Represents the properties of the resource.
-        :type properties: ~confluent_management_client.models.ConfluentAgreementProperties
+        :param body:
+        :type body: ~azure.mgmt.confluent.models.ConfluentAgreementResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ConfluentAgreementResource, or the result of cls(response)
-        :rtype: ~confluent_management_client.models.ConfluentAgreementResource
+        :rtype: ~azure.mgmt.confluent.models.ConfluentAgreementResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ConfluentAgreementResource"]
@@ -131,9 +129,6 @@ class MarketplaceAgreementOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        body = models.ConfluentAgreementResource(properties=properties)
-        api_version = "2020-03-01-preview"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -146,7 +141,6 @@ class MarketplaceAgreementOperations:
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]

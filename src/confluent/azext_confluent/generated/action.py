@@ -43,6 +43,9 @@ class AddOfferDetail(argparse.Action):
                 d['term_unit'] = v[0]
             elif kl == 'status':
                 d['status'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter offer_detail. All possible keys are: '
+                               'publisher-id, id, plan-id, plan-name, term-unit, status'.format(k))
         return d
 
 
@@ -69,4 +72,7 @@ class AddUserDetail(argparse.Action):
                 d['last_name'] = v[0]
             elif kl == 'email-address':
                 d['email_address'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter user_detail. All possible keys are: '
+                               'first-name, last-name, email-address'.format(k))
         return d
