@@ -132,10 +132,10 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('versions', arg_group='SMB Setting', min_api='2020-08-01-preview',
                    help="SMB protocol versions supported by server. Valid values are SMB2.1, SMB3.0, "
                         "SMB3.1.1. Should be passed as a string with delimiter ';'.")
-        c.argument('authentication_methods', arg_group='SMB Setting', min_api='2020-08-01-preview',
+        c.argument('authentication_methods', options_list='--auth-methods', arg_group='SMB Setting', min_api='2020-08-01-preview',
                    help="SMB authentication methods supported by server. Valid values are NTLMv2, Kerberos. "
                         "Should be passed as a string with delimiter ';'.")
-        c.argument('kerberos_ticket_encryption', arg_group='SMB Setting', min_api='2020-08-01-preview',
+        c.argument('kerberos_ticket_encryption', options_list='--kerb-ticket-encryption', arg_group='SMB Setting', min_api='2020-08-01-preview',
                    help="Kerberos ticket encryption supported by server. Valid values are RC4-HMAC, AES-256. "
                         "Should be passed as a string with delimiter ';'.")
         c.argument('channel_encryption', arg_group='SMB Setting', min_api='2020-08-01-preview',

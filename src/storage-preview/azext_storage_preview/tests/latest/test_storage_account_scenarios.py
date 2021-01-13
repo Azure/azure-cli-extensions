@@ -308,8 +308,8 @@ class FileServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('protocolSettings.smb.versions', None))
 
         self.cmd(
-            '{cmd} update --versions "SMB2.1;SMB3.0;SMB3.1.1" --authentication-methods "NTLMv2;Kerberos" '
-            '--kerberos-ticket-encryption "RC4-HMAC;AES-256" --channel-encryption "AES-CCM-128;AES-GCM-128;AES-GCM-256"'
+            '{cmd} update --versions "SMB2.1;SMB3.0;SMB3.1.1" --auth-methods "NTLMv2;Kerberos" '
+            '--kerb-ticket-encryption "RC4-HMAC;AES-256" --channel-encryption "AES-CCM-128;AES-GCM-128;AES-GCM-256"'
             ' -n {sa} -g {rg}').assert_with_checks(
             JMESPathCheck('protocolSettings.smb.authenticationMethods', "NTLMv2;Kerberos"),
             JMESPathCheck('protocolSettings.smb.channelEncryption', "AES-CCM-128;AES-GCM-128;AES-GCM-256"),
