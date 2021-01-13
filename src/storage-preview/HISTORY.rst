@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.7.1(2021-01-13)
+++++++++++++++++
+* `az storage account file-service-properties`: Add support for secured SMB
+
 
 0.7.0 (2020-12-28)
 ++++++++++++++++
