@@ -56,6 +56,16 @@ def cleanup_scenario(test, rg):
 @try_manual
 def call_scenario(test, rg):
     setup_scenario(test, rg)
+    step_custom_rollout_create(test, checks=[])
+    step_custom_rollout_show(test, checks=[])
+    step_custom_rollout_list(test, checks=[])
+    step_default_rollout_create(test, checks=[])
+    step_default_rollout_list(test, checks=[])
+    step_default_rollout_show(test, checks=[])
+    step_default_rollout_stop(test, checks=[])
+    step_default_rollout_delete(test, checks=[])
+    step_manifest_generate(test, checks=[])
+    step_manifest_checkin(test, checks=[])
     step_provider_registration_create(test, checks=[])
     step_provider_registration_show(test, checks=[])
     step_provider_registration_list(test, checks=[])
@@ -67,16 +77,6 @@ def call_scenario(test, rg):
     step_resource_type_registration_list(test, checks=[])
     step_resource_type_registration_delete(test, checks=[])
     step_resource_type_registration_create(test, checks=[])
-    step_manifest_generate(test, checks=[])
-    step_manifest_checkin(test, checks=[])
-    step_custom_rollout_create(test, checks=[])
-    step_custom_rollout_show(test, checks=[])
-    step_custom_rollout_list(test, checks=[])
-    step_default_rollout_create(test, checks=[])
-    step_default_rollout_list(test, checks=[])
-    step_default_rollout_show(test, checks=[])
-    step_default_rollout_stop(test, checks=[])
-    step_default_rollout_delete(test, checks=[])
     cleanup_scenario(test, rg)
 
 
@@ -94,7 +94,7 @@ class ProviderhubScenarioTest(ScenarioTest):
             'providerNamespace': 'Microsoft.Contoso',
             'resourceType': 'employees',
             'customRolloutName': 'canaryTesting01',
-            'defaultRolloutName': '2020week10',
+            'defaultRolloutName': 'cliDefaultRollout',
             'region': 'eastus2euap'
         })
 

@@ -9,6 +9,7 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
+# pylint: disable=line-too-long
 
 from azure.cli.core.commands.parameters import (
     get_three_state_flag,
@@ -20,12 +21,12 @@ from azext_providerhub.action import (
     AddCanary,
     AddProviderAuthentication,
     AddProviderAuthorizations,
+    AddResourceProviderAuthentication,
     AddCapabilities,
     AddSkipRegions,
     AddTemplateDeploymentOptions,
     AddCustomrolloutsServiceTreeInfos,
     AddResourceTypeEndpointProperties,
-    AddSubscriptionStateOverrideActions,
     AddProviderHubMetadataProviderAuthorizations,
     AddAuthorizations,
     AddSwaggerSpecifications,
@@ -38,7 +39,6 @@ from azext_providerhub.action import (
     AddSubscriptionStateRules,
     AddExtendedLocations,
     AddResourceMovePolicy,
-    AddResourceCreationBegin
 )
 
 
@@ -54,8 +54,7 @@ def load_arguments(self, _):
         c.argument('rollout_name', type=str, help='The rollout name.', id_part='child_name_1')
 
     with self.argument_context('providerhub custom-rollout create') as c:
-        c.argument('provider_namespace', type=str,
-                   help='The name of the resource provider hosted within ProviderHub.')
+        c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.')
         c.argument('rollout_name', type=str, help='The rollout name.')
         c.argument('canary', action=AddCanary, nargs='+', help='The canary regions to apply the manifest.')
 
@@ -157,9 +156,8 @@ def load_arguments(self, _):
         c.argument('required_features_policy', arg_type=get_enum_type(['Any', 'All']), help='The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​', arg_group='Features '
                    'Rule')
         c.argument('provider_hub_metadata_provider_authorizations',
-                   action=AddProviderHubMetadataProviderAuthorizations, nargs='+', help='Available only for first party providers, this section can be used to bootstrap Service-to-Service authentication and authorization for the provider\'s application. When set, it would allow provider to access users\' subscription registered with them.', arg_group='Provider Hub '
-                   'Metadata')
-        c.argument('resource_provider_authentication', action=AddProviderAuthentication, nargs='+', help='Used to set alternative "audiences or resources" that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers.',
+                   action=AddProviderHubMetadataProviderAuthorizations, nargs='+', help='Available only for first party providers, this section can be used to bootstrap Service-to-Service authentication and authorization for the provider\'s application. When set, it would allow provider to access users\' subscription registered with them.', arg_group='Provider Hub Metadata')
+        c.argument('resource_provider_authentication', action=AddResourceProviderAuthentication, nargs='+', help='Used to set alternative "audiences or resources" that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers.',
                    arg_group='Provider Hub Metadata')
         c.argument('authorizations', action=AddAuthorizations, nargs='+', help='The lighthouse authorizations.', arg_group='Provider Hub Metadata '
                    'Third Party Provider Authorization')
@@ -201,7 +199,7 @@ def load_arguments(self, _):
         c.argument('provider_hub_metadata_provider_authorizations',
                    action=AddProviderHubMetadataProviderAuthorizations, nargs='+', help='Available only for first party providers, this section can be used to bootstrap Service-to-Service authentication and authorization for the provider\'s application. When set, it would allow provider to access users\' subscription registered with them.', arg_group='Provider Hub '
                    'Metadata')
-        c.argument('resource_provider_authentication', action=AddProviderAuthentication, nargs='+', help='Used to set alternative "audiences or resources" that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers.',
+        c.argument('resource_provider_authentication', action=AddResourceProviderAuthentication, nargs='+', help='Used to set alternative "audiences or resources" that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers.',
                    arg_group='Provider Hub Metadata')
         c.argument('authorizations', action=AddAuthorizations, nargs='+', help='The lighthouse authorizations.', arg_group='Provider Hub Metadata '
                    'Third Party Provider Authorization')

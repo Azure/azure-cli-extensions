@@ -11,6 +11,8 @@
 
 from .. import try_manual
 
+from azure.cli.testsdk import (live_only)
+from azure_devtools.scenario_tests import AllowLargeResponse
 
 # EXAMPLE: /CustomRollouts/put/CustomRollouts_CreateOrUpdate
 @try_manual
@@ -37,6 +39,7 @@ def step_custom_rollout_show(test, checks=None):
 
 
 # EXAMPLE: /CustomRollouts/get/CustomRollouts_ListByProviderRegistration
+@AllowLargeResponse()
 @try_manual
 def step_custom_rollout_list(test, checks=None):
     if checks is None:
@@ -47,7 +50,8 @@ def step_custom_rollout_list(test, checks=None):
 
 
 # EXAMPLE: /DefaultRollouts/put/DefaultRollouts_CreateOrUpdate
-@try_manual
+@AllowLargeResponse()
+@live_only()
 def step_default_rollout_create(test, checks=None):
     if checks is None:
         checks = []
@@ -60,6 +64,7 @@ def step_default_rollout_create(test, checks=None):
 
 
 # EXAMPLE: /DefaultRollouts/get/DefaultRollouts_Get
+@AllowLargeResponse()
 @try_manual
 def step_default_rollout_show(test, checks=None):
     if checks is None:
@@ -71,6 +76,7 @@ def step_default_rollout_show(test, checks=None):
 
 
 # EXAMPLE: /DefaultRollouts/get/DefaultRollouts_ListByProviderRegistration
+@AllowLargeResponse()
 @try_manual
 def step_default_rollout_list(test, checks=None):
     if checks is None:
@@ -103,6 +109,7 @@ def step_default_rollout_delete(test, checks=None):
 
 
 # EXAMPLE: /Operations/get/Operations_ListByProviderRegistration
+@AllowLargeResponse()
 @try_manual
 def step_operation_list(test, checks=None):
     if checks is None:
@@ -135,6 +142,7 @@ def step_manifest_checkin(test, checks=None):
 
 
 # EXAMPLE: /providerhub/post/GenerateManifest
+@AllowLargeResponse()
 @try_manual
 def step_manifest_generate(test, checks=None):
     if checks is None:
@@ -145,6 +153,7 @@ def step_manifest_generate(test, checks=None):
 
 
 # EXAMPLE: /ProviderRegistrations/put/ProviderRegistrations_CreateOrUpdate
+@AllowLargeResponse()
 @try_manual
 def step_provider_registration_create(test, checks=None):
     if checks is None:
@@ -154,11 +163,12 @@ def step_provider_registration_create(test, checks=None):
              'application-id="3d834152-5efa-46f7-85a4-a18c2b5d46f9" '
              'role-definition-id="760505bf-dcfa-4311-b890-18da392a00b2" '
              '--namespace "{providerNamespace}" '
-             '--provider-authentication allowed-audiences="https://management.core.windows.net/" '
+             '--resource-provider-authentication allowed-audiences="https://management.core.windows.net/" '
              '--service-tree-infos service-id="6f53185c-ea09-4fc3-9075-318dec805303" '
              'component-id="6f53185c-ea09-4fc3-9075-318dec805303" '
              '--capabilities effect="Allow" quota-id="CSP_2015-05-01" '
              '--capabilities effect="Allow" quota-id="CSP_MG_2017-12-01" '
+             '--manifest-owners "SPARTA-PlatformServiceAdministrator" '
              '--incident-contact-email "helpme@contoso.com" '
              '--incident-routing-service "Contoso Resource Provider" '
              '--incident-routing-team "Contoso Triage" '
@@ -169,6 +179,7 @@ def step_provider_registration_create(test, checks=None):
 
 
 # EXAMPLE: /ProviderRegistrations/get/ProviderRegistrations_Get
+@AllowLargeResponse()
 @try_manual
 def step_provider_registration_show(test, checks=None):
     if checks is None:
@@ -179,6 +190,7 @@ def step_provider_registration_show(test, checks=None):
 
 
 # EXAMPLE: /ProviderRegistrations/get/ProviderRegistrations_List
+@AllowLargeResponse()
 @try_manual
 def step_provider_registration_list(test, checks=None):
     if checks is None:
@@ -189,6 +201,7 @@ def step_provider_registration_list(test, checks=None):
 
 
 # EXAMPLE: /ProviderRegistrations/post/ProviderRegistrations_GenerateOperations
+@AllowLargeResponse()
 @try_manual
 def step_provider_registration_generate_operation(test, checks=None):
     if checks is None:
@@ -209,6 +222,7 @@ def step_provider_registration_delete(test, checks=None):
 
 
 # EXAMPLE: /ResourceTypeRegistration/put/ResourceTypeRegistration_CreateOrUpdate
+@AllowLargeResponse()
 @try_manual
 def step_resource_type_registration_create(test, checks=None):
     if checks is None:
@@ -216,7 +230,7 @@ def step_resource_type_registration_create(test, checks=None):
     test.cmd('az providerhub resource-type-registration create '
              '--endpoints api-versions="2018-11-01-preview,2020-01-01-preview,2019-01-01" '
              'locations="West US, West Central US,West Europe,Southeast Asia, West US 2,'
-             'East US 2 EUAP,North Europe" '
+             'East US 2 EUAP, North Europe, East US, East Asia" '
              'required-features="Microsoft.Contoso/RPaaSSampleApp" '
              '--regionality "Regional" '
              '--routing-type "Default" '
@@ -244,6 +258,7 @@ def step_resource_type_registration_delete(test, checks=None):
 
 
 # EXAMPLE: /ResourceTypeRegistrations/get/ResourceTypeRegistrations_Get
+@AllowLargeResponse()
 @try_manual
 def step_resource_type_registration_show(test, checks=None):
     if checks is None:
@@ -255,6 +270,7 @@ def step_resource_type_registration_show(test, checks=None):
 
 
 # EXAMPLE: /ResourceTypeRegistrations/get/ResourceTypeRegistrations_ListByProviderRegistration
+@AllowLargeResponse()
 @try_manual
 def step_resource_type_registration_list(test, checks=None):
     if checks is None:

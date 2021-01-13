@@ -118,7 +118,7 @@ class ProviderRegistrationsOperations(object):
     def _create_or_update_initial(
         self,
         provider_namespace,  # type: str
-        provider_authentication,  # type: "models.ResourceProviderAuthentication"
+        provider_authentication,  # type: "models.ResourceProviderAuthorization"
         provider_authorizations,  # type: "models.ThirdPartyProviderAuthorization"
         namespace,  # type: str
         provider_version,  # type: str
@@ -139,6 +139,11 @@ class ProviderRegistrationsOperations(object):
         opt_in_headers,  # type: "models.OptInHeaderType"
         # type: list["models.SubscriptionStateOverrideAction"]
         managed_by_tenant_id,  # type: str
+        # type: "models.ResourceProviderAuthorization"
+        providerhub_metadata_provider_authorizations,
+        resource_provider_authentication,  # type: "models.ResourceProviderAuthentication"
+        # type: "models.ThirdPartyProviderAuthorization"
+        third_party_provider_authorization,
         **kwargs  # type: Any
     ):
         # type: (...) -> Optional["models.ProviderRegistration"]
@@ -176,7 +181,11 @@ class ProviderRegistrationsOperations(object):
             required_features_policy=required_features_policy) if required_features_policy else None
         management = models.ResourceProviderManagement(schema_owners=schema_owners, manifest_owners=manifest_owners, incident_routing_service=incident_routing_service, incident_routing_team=incident_routing_team,
                                                        incident_contact_email=incident_contact_email, service_tree_infos=service_tree_infos, resource_access_policy=resource_access_policy, resource_access_roles=resource_access_roles)
-        properties = models.ProviderRegistrationProperties(provider_authentication=provider_authentication, provider_authorizations=provider_authorizations, namespace=namespace, provider_version=provider_version, provider_type=provider_type,
+        providerhub_metadata = models.ProviderHubMetadata(provider_authorizations=providerhub_metadata_provider_authorizations,
+                                                          provider_authentication=resource_provider_authentication,
+                                                          third_party_provider_authorization=third_party_provider_authorization)
+
+        properties = models.ProviderRegistrationProperties(provider_authentication=provider_authentication, provider_authorizations=provider_authorizations, namespace=namespace, provider_version=provider_version, provider_type=provider_type, provider_hub_metadata=providerhub_metadata,
                                                            required_features=required_features, features_rule=features_rule, management=management, capabilities=capabilities, metadata=metadata, template_deployment_options=template_deployment_options)
         parameters = models.ProviderRegistration(properties=properties)
 
@@ -211,7 +220,7 @@ class ProviderRegistrationsOperations(object):
     def begin_create_or_update(
         self,
         provider_namespace,  # type: str
-        provider_authentication,  # type: "models.ResourceProviderAuthentication"
+        provider_authentication,  # type: "models.ResourceProviderAuthorization"
         provider_authorizations,  # type: "models.ThirdPartyProviderAuthorization"
         namespace,  # type: str
         provider_version,  # type: str
@@ -232,6 +241,11 @@ class ProviderRegistrationsOperations(object):
         opt_in_headers,  # type: "models.OptInHeaderType"
         # type: list["models.SubscriptionStateOverrideAction"]
         managed_by_tenant_id,  # type: str
+        # type: "models.ResourceProviderAuthorization"
+        providerhub_metadata_provider_authorizations,
+        resource_provider_authentication,  # type: "models.ResourceProviderAuthentication"
+        # type: "models.ThirdPartyProviderAuthorization"
+        third_party_provider_authorization,
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["models.ProviderRegistration"]
@@ -252,6 +266,7 @@ class ProviderRegistrationsOperations(object):
         :rtype: ~azure.core.polling.LROPoller[~providerhub.models.ProviderRegistration]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
+        print(resource_provider_authentication)
         polling = kwargs.pop(
             'polling', True)  # type: Union[bool, PollingMethod]
         # type: ClsType["models.ProviderRegistration"]
@@ -285,6 +300,9 @@ class ProviderRegistrationsOperations(object):
                 required_features_policy=required_features_policy,
                 opt_in_headers=opt_in_headers,
                 managed_by_tenant_id=managed_by_tenant_id,
+                providerhub_metadata_provider_authorizations=providerhub_metadata_provider_authorizations,
+                resource_provider_authentication=resource_provider_authentication,
+                third_party_provider_authorization=third_party_provider_authorization,
                 cls=lambda x, y, z: x,
                 **kwargs
             )

@@ -7,16 +7,20 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+# pylint: disable=ungrouped-imports
+# pylint: disable=unused-import
+# pylint: disable=reimported
+# pylint: disable=import-outside-toplevel
 
 from azure.cli.core import AzCommandsLoader
-from azure.cli.core.commands import CliCommandType  # pylint: disable=ungrouped-imports
-from azext_providerhub.generated._help import helps  # pylint: disable=unused-import
-from azext_providerhub.generated._client_factory import cf_providerhub_cl  # pylint: disable=ungrouped-imports
-from azext_providerhub.generated.commands import load_command_table  # pylint: disable=ungrouped-imports
-from azext_providerhub.generated._params import load_arguments  # pylint: disable=ungrouped-imports
+from azure.cli.core.commands import CliCommandType
+from azext_providerhub.generated._help import helps
+from azext_providerhub.generated._client_factory import cf_providerhub_cl
+from azext_providerhub.generated.commands import load_command_table
+from azext_providerhub.generated._params import load_arguments
 
 try:
-    from azext_providerhub.manual._help import helps  # pylint: disable=reimported
+    from azext_providerhub.manual._help import helps
 except ImportError:
     pass
 

@@ -53,7 +53,8 @@ def load_command_table(self, _):
         operations_tmpl='azext_providerhub.vendored_sdks.providerhub.operations._model_operations#ProviderhubOperations'
         'Mixin.{}',
         client_factory=cf_providerhub)
-    with self.command_group('providerhub manifest', providerhub_, client_factory=cf_providerhub, is_experimental=True) as g:
+    with self.command_group(
+            'providerhub manifest', providerhub_, client_factory=cf_providerhub, is_experimental=True) as g:
         g.custom_command('checkin', 'providerhub_manifest_checkin')
         g.custom_command('generate', 'providerhub_manifest_generate')
 

@@ -267,7 +267,7 @@ effect="Allow" quota-id="CSP_MG_2017-12-01" --incident-contact-email "helpme@con
 |**--required-features-policy**|choice||required_features_policy|requiredFeaturesPolicy|
 |**--provider-hub-metadata-provider-authorizations**|array||provider_hub_metadata_provider_authorizations|providerAuthorizations|
 |**--resource-provider-authentication**|object||resource_provider_authentication|providerAuthentication|
-|**--authorizations**|array||authorizations|authorizations|
+|**--third-party-provider-authorization**|array||third_party_provider_authorization|thirdPartyAuthorization|
 |**--managed-by-tenant-id**|string||managed_by_tenant_id|managedByTenantId|
 
 #### <a name="ProviderRegistrationsDelete">Command `az providerhub provider-registration delete`</a>

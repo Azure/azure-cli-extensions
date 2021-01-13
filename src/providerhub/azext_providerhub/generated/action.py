@@ -70,6 +70,31 @@ class AddProviderAuthentication(argparse.Action):
         return d
 
 
+class AddResourceProviderAuthentication(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.resource_provider_authentication = action
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError as value_error:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'allowed-audiences':
+                d['allowed_audiences'] = v
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter resource_provider_authentication. '
+                               ' All possible keys are: allowed-audiences'.format(k))
+        return d
+
+
 class AddProviderAuthorizations(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)

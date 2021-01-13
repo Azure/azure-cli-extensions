@@ -10,6 +10,7 @@
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 # pylint: disable=unused-argument
+# pylint: disable=too-many-locals
 
 from azure.cli.core.util import sdk_no_wait
 
@@ -161,6 +162,9 @@ def providerhub_provider_registration_create(
     opt_in_headers=None,
     required_features_policy=None,
     managed_by_tenant_id=None,
+    providerhub_metadata_provider_authorizations=None,
+    resource_provider_authentication=None,
+    third_party_provider_authorization=None,
     no_wait=False,
 ):
     return sdk_no_wait(
@@ -187,6 +191,9 @@ def providerhub_provider_registration_create(
         opt_in_headers=opt_in_headers,
         required_features_policy=required_features_policy,
         managed_by_tenant_id=managed_by_tenant_id,
+        providerhub_metadata_provider_authorizations=providerhub_metadata_provider_authorizations,
+        resource_provider_authentication=resource_provider_authentication,
+        third_party_provider_authorization=third_party_provider_authorization
     )
 
 
@@ -213,6 +220,9 @@ def providerhub_provider_registration_update(
     opt_in_headers=None,
     required_features_policy=None,
     managed_by_tenant_id=None,
+    providerhub_metadata_provider_authorizations=None,
+    resource_provider_authentication=None,
+    third_party_provider_authorization=None,
     no_wait=False,
 ):
     return sdk_no_wait(
@@ -239,6 +249,9 @@ def providerhub_provider_registration_update(
         opt_in_headers=opt_in_headers,
         required_features_policy=required_features_policy,
         managed_by_tenant_id=managed_by_tenant_id,
+        providerhub_metadata_provider_authorizations=providerhub_metadata_provider_authorizations,
+        resource_provider_authentication=resource_provider_authentication,
+        third_party_provider_authorization=third_party_provider_authorization
     )
 
 
