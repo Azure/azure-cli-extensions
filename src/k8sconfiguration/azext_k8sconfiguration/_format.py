@@ -7,22 +7,14 @@ from collections import OrderedDict
 
 
 def k8sconfiguration_list_table_format(results):
-    formatted_result = []
-    for result in results:
-        formatted_result.append(
-            OrderedDict([
-                ('name', result['name']),
-                ('repositoryUrl', result['repositoryUrl']),
-                ('operatorName', result['operatorInstanceName']),
-                ('operatorNamespace', result['operatorNamespace']),
-                ('scope', result['operatorScope']),
-                ('provisioningState', result['provisioningState'])
-            ])
-        )
-    return formatted_result
+    return [__get_table_row(result) for result in results]
 
 
 def k8sconfiguration_show_table_format(result):
+    return __get_table_row(result)
+
+
+def __get_table_row(result):
     return OrderedDict([
         ('name', result['name']),
         ('repositoryUrl', result['repositoryUrl']),
