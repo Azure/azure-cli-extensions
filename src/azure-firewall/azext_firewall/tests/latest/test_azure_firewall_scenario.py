@@ -696,11 +696,12 @@ class AzureFirewallScenario(ScenarioTest):
                  '--action Allow --rule-name application-rule --rule-type ApplicationRule '
                  '--description "test" --destination-addresses "202.120.36.15" "202.120.36.16" '
                  '--source-ip-groups {source_ip_group} --protocols Http=12800 Https=12801 '
-                 '--fqdn-tags AzureBackup HDInsight',
+                 '--fqdn-tags AzureBackup HDInsight --web-categories Hacking',
                  checks=[
                      self.check('length(ruleCollections)', 3),
                      self.check('ruleCollections[2].ruleCollectionType', "FirewallPolicyFilterRuleCollection"),
-                     self.check('ruleCollections[2].name', "filter-collection-2")
+                     self.check('ruleCollections[2].name', "filter-collection-2"),
+                     self.check('length(ruleCollections[2].rules[0].webCategories)', 1)
                  ])
 
         self.cmd('network firewall policy rule-collection-group collection list -g {rg} --policy-name {policy} '
@@ -719,10 +720,11 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy rule-collection-group collection rule update -g {rg} --policy-name {policy} '
                  '--rule-collection-group-name {collectiongroup} --collection-name filter-collection-2 --name application-rule-2 '
-                 '--target-fqdns www.google0.com www.google1.com www.google2.com',
+                 '--target-fqdns www.google0.com www.google1.com www.google2.com --web-categories Hacking Hacking',
                  checks=[
                      self.check('length(ruleCollections[2].rules)', 2),
-                     self.check('length(ruleCollections[2].rules[1].targetFqdns)', 3)
+                     self.check('length(ruleCollections[2].rules[1].targetFqdns)', 3),
+                     self.check('length(ruleCollections[2].rules[1].webCategories)', 2),
                  ])
 
         self.cmd('network firewall policy rule-collection-group collection rule add -g {rg} --policy-name {policy} '

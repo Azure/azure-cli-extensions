@@ -494,17 +494,21 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
                                    fqdns=None,
                                    dns_servers=None, enable_dns_proxy=None,
                                    sku=None, intrusion_detection_mode=None,
-                                   key_vault_secret_id=None, certificate_name=None):
+                                   key_vault_secret_id=None, certificate_name=None, user_assigned_identity=None):
     client = network_client_factory(cmd.cli_ctx).firewall_policies
     (FirewallPolicy,
      SubResource,
      FirewallPolicyThreatIntelWhitelist,
      DnsSettings,
-     FirewallPolicySku) = cmd.get_models('FirewallPolicy',
-                                         'SubResource',
-                                         'FirewallPolicyThreatIntelWhitelist',
-                                         'DnsSettings',
-                                         'FirewallPolicySku')
+     FirewallPolicySku,
+     ManagedServiceIdentityUserAssignedIdentitiesValue,
+     ManagedServiceIdentity) = cmd.get_models('FirewallPolicy',
+                                              'SubResource',
+                                              'FirewallPolicyThreatIntelWhitelist',
+                                              'DnsSettings',
+                                              'FirewallPolicySku',
+                                              'ManagedServiceIdentityUserAssignedIdentitiesValue',
+                                              'ManagedServiceIdentity')
     firewall_policy = FirewallPolicy(base_policy=SubResource(id=base_policy) if base_policy is not None else None,
                                      threat_intel_mode=threat_intel_mode,
                                      location=location,
@@ -540,6 +544,17 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
                                                                   name=certificate_name)
             firewall_policy.transport_security = FirewallPolicyTransportSecurity(certificate_authority=certificate_auth)
 
+    # identity
+    if user_assigned_identity is not None:
+        user_assigned_indentity_instance = ManagedServiceIdentityUserAssignedIdentitiesValue()
+        user_assigned_identities_instance = dict()
+        user_assigned_identities_instance[user_assigned_identity] = user_assigned_indentity_instance
+        identity_instance = ManagedServiceIdentity(
+            type="UserAssigned",
+            user_assigned_identities=user_assigned_identities_instance
+        )
+        firewall_policy.identity = identity_instance
+
     return client.create_or_update(resource_group_name, firewall_policy_name, firewall_policy)
 
 
@@ -548,7 +563,7 @@ def update_azure_firewall_policies(cmd,
                                    fqdns=None,
                                    dns_servers=None, enable_dns_proxy=None,
                                    sku=None, intrusion_detection_mode=None,
-                                   key_vault_secret_id=None, certificate_name=None):
+                                   key_vault_secret_id=None, certificate_name=None, user_assigned_identity=None):
 
     (FirewallPolicyThreatIntelWhitelist, FirewallPolicySku) = cmd.get_models('FirewallPolicyThreatIntelWhitelist', 'FirewallPolicySku')
     if tags is not None:
@@ -592,6 +607,20 @@ def update_azure_firewall_policies(cmd,
             certificate_auth = FirewallPolicyCertificateAuthority(key_vault_secret_id=key_vault_secret_id,
                                                                   name=certificate_name)
             instance.transport_security = FirewallPolicyTransportSecurity(certificate_authority=certificate_auth)
+
+    # identity
+    (ManagedServiceIdentityUserAssignedIdentitiesValue,
+     ManagedServiceIdentity) = cmd.get_models('ManagedServiceIdentityUserAssignedIdentitiesValue',
+                                              'ManagedServiceIdentity')
+    if user_assigned_identity is not None:
+        user_assigned_indentity_instance = ManagedServiceIdentityUserAssignedIdentitiesValue()
+        user_assigned_identities_instance = dict()
+        user_assigned_identities_instance[user_assigned_identity] = user_assigned_indentity_instance
+        identity_instance = ManagedServiceIdentity(
+            type="UserAssigned",
+            user_assigned_identities=user_assigned_identities_instance
+        )
+        instance.identity = identity_instance
 
     return instance
 
@@ -770,7 +799,7 @@ def add_azure_firewall_policy_filter_rule_collection(cmd, resource_group_name, f
                                                      destination_ports=None,
                                                      protocols=None, fqdn_tags=None, target_fqdns=None,
                                                      source_ip_groups=None, destination_ip_groups=None,
-                                                     target_urls=None, enable_tls_inspection=False):
+                                                     target_urls=None, enable_tls_inspection=False, web_categories=None):
     NetworkRule, FirewallPolicyRuleApplicationProtocol,\
         ApplicationRule, FirewallPolicyFilterRuleCollectionAction, FirewallPolicyFilterRuleCollection =\
         cmd.get_models('NetworkRule', 'FirewallPolicyRuleApplicationProtocol',
@@ -804,7 +833,8 @@ def add_azure_firewall_policy_filter_rule_collection(cmd, resource_group_name, f
                                target_fqdns=target_fqdns,
                                target_urls=target_urls,
                                source_ip_groups=source_ip_groups,
-                               terminate_tls=enable_tls_inspection)
+                               terminate_tls=enable_tls_inspection,
+                               web_categories=web_categories)
     filter_rule_collection = FirewallPolicyFilterRuleCollection(name=rule_collection_name,
                                                                 priority=rule_priority,
                                                                 rule_collection_type="FirewallPolicyFilterRule",
@@ -844,7 +874,7 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
                                           protocols=None, fqdn_tags=None, target_fqdns=None,
                                           source_ip_groups=None, destination_ip_groups=None,
                                           translated_address=None, translated_port=None,
-                                          target_urls=None, enable_tls_inspection=False):
+                                          target_urls=None, enable_tls_inspection=False, web_categories=None):
     (NetworkRule,
      FirewallPolicyRuleApplicationProtocol,
      ApplicationRule,
@@ -894,7 +924,8 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
                                target_fqdns=target_fqdns,
                                target_urls=target_urls,
                                source_ip_groups=source_ip_groups,
-                               terminate_tls=enable_tls_inspection)
+                               terminate_tls=enable_tls_inspection,
+                               web_categories=web_categories)
     elif rule_type == 'NatRule':
         rule = NatRule(name=rule_name,
                        description=description,
@@ -938,7 +969,7 @@ def update_azure_firewall_policy_filter_rule(cmd, instance, rule_collection_name
                                              protocols=None, fqdn_tags=None, target_fqdns=None,
                                              source_ip_groups=None, destination_ip_groups=None,
                                              translated_address=None, translated_port=None,
-                                             target_urls=None, enable_tls_inspection=None):
+                                             target_urls=None, enable_tls_inspection=None, web_categories=None):
     (NetworkRule,
      FirewallPolicyRuleApplicationProtocol,
      ApplicationRule,
@@ -983,7 +1014,8 @@ def update_azure_firewall_policy_filter_rule(cmd, instance, rule_collection_name
                                            target_fqdns=judge(target_fqdns, rule.target_fqdns),
                                            target_urls=judge(target_urls, rule.target_urls),
                                            source_ip_groups=judge(source_ip_groups, rule.source_ip_groups),
-                                           terminate_tls=judge(enable_tls_inspection, rule.terminate_tls))
+                                           terminate_tls=judge(enable_tls_inspection, rule.terminate_tls),
+                                           web_categories=judge(web_categories, rule.web_categories))
             elif rule.rule_type == 'NatRule':
                 new_rule = NatRule(name=rule_name,
                                    description=judge(description, rule.description),

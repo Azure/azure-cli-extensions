@@ -162,6 +162,7 @@ def load_arguments(self, _):
         c.argument('base_policy', validator=validate_firewall_policy, help='The name or ID of parent firewall policy from which rules are inherited.')
         c.argument('threat_intel_mode', arg_type=get_enum_type(['Alert', 'Deny', 'Off']), help='The operation mode for Threat Intelligence.')
         c.argument('sku', arg_type=get_enum_type(FirewallPolicySkuTier), help='SKU of Firewall policy', is_preview=True)
+        c.argument('user_assigned_identity', options_list='--identity', help="Name or ID of the ManagedIdentity Resource")
 
     with self.argument_context('network firewall policy', arg_group='Threat Intel Allowlist') as c:
         c.argument('ip_addresses', nargs='+', help='Space-separated list of IPv4 addresses.')
@@ -230,6 +231,7 @@ def load_arguments(self, _):
         c.argument('enable_tls_inspection', arg_type=get_three_state_flag(), help='Enable flag to terminate TLS connection for this rule', is_preview=True, min_api='2020-07-01')
         c.argument('fqdn_tags', nargs='+', help='Space-separated list of FQDN tags for this rule.', validator=validate_rule_group_collection)
         c.argument('protocols', nargs='+', validator=validate_application_rule_protocols, help='Space-separated list of protocols and port numbers to use, in PROTOCOL=PORT format. Valid protocols are Http, Https.')
+        c.argument('web_categories', nargs='+', help='Space-separated list of web categories for this rule.')
 
     with self.argument_context('network firewall policy rule-collection-group collection', arg_group='Network Rule') as c:
         c.argument('destination_ip_groups', nargs='+', validator=validate_ip_groups,
