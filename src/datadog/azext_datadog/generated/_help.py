@@ -12,6 +12,20 @@
 from knack.help_files import helps
 
 
+helps['datadog terms'] = """
+    type: group
+    short-summary: Manage marketplace agreements with datadog
+"""
+
+helps['datadog terms list'] = """
+    type: command
+    short-summary: "List datadog marketplace agreements"
+    examples:
+      - name: List marketplace agreements
+        text: |-
+               az datadog terms list
+"""
+
 helps['datadog api-key'] = """
     type: group
     short-summary: datadog api-key

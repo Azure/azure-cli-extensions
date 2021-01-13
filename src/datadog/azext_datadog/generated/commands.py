@@ -15,6 +15,15 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
+    from azext_datadog.generated._client_factory import cf_marketplace_agreement
+    datadog_marketplace_agreement = CliCommandType(
+        operations_tmpl='azext_datadog.vendored_sdks.datadog.operations._marketplace_agreements_operations#MarketplaceA'
+        'greementsOperations.{}',
+        client_factory=cf_marketplace_agreement)
+    with self.command_group('datadog terms', datadog_marketplace_agreement,
+                            client_factory=cf_marketplace_agreement, is_experimental=True) as g:
+        g.custom_command('list', 'datadog_terms_list')
+
     from azext_datadog.generated._client_factory import cf_api_key
     datadog_api_key = CliCommandType(
         operations_tmpl='azext_datadog.vendored_sdks.datadog.operations._api_key_operations#ApiKeyOperations.{}',
