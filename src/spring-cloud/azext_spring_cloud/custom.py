@@ -93,7 +93,7 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
 
 
 def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
-                        disable_distributed_tracing=None, disable_app_insights=None, enable_java_agent=None,
+                        disable_distributed_tracing=None, disable_app_insights=None,
                         sku=None, tags=None, no_wait=False):
     updated_resource = models.ServiceResource()
     update_app_insights = False
