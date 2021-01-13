@@ -47,7 +47,7 @@ class AEMCommandsLoader(AzCommandsLoader):
                        help='Install the new VM Extension for SAP.')
             c.argument('set_access_to_individual_resources', action='store_true',
                        options_list=['--set-access-to-individual-resources', '-s'],
-                       help='Sets the access of the VM identity to the individual resources, e.g. data disks instead of the complete resource group.')
+                       help='Set the access of the VM identity to the individual resources, e.g. data disks instead of the complete resource group.')
             c.argument('wait_time_in_minutes', type=int,
                        help='Maximum minutes to wait for the storage metrics to be available')
 
