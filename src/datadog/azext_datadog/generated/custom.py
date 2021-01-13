@@ -10,7 +10,7 @@
 # pylint: disable=too-many-lines
 # pylint: disable=unused-argument
 
-from azure.cli.core import get_default_cli
+from azure.cli.command_modules.role.custom import create_role_assignment
 from azure.cli.core.util import sdk_no_wait
 
 
@@ -78,7 +78,8 @@ def datadog_monitor_show(client,
                       monitor_name=monitor_name)
 
 
-def datadog_monitor_create(client,
+def datadog_monitor_create(cmd,
+                           client,
                            resource_group_name,
                            monitor_name,
                            location,
@@ -107,12 +108,8 @@ def datadog_monitor_create(client,
     result = poller.result()
     if result and result.principal_id:
         scrope = '/subscriptions/' + result.id.split('/')[2]
-        print(scrope)
-        get_default_cli().invoke(['role', 'assignment', 'create', '-o', 'none',
-                                  '--assignee-object-id', result.principal_id,
-                                  '--assignee-principal-type', 'ServicePrincipal',
-                                  '--role', 'Monitoring Reader',
-                                  '--scope', scrope])
+        create_role_assignment(cmd, role='Monitoring Reader', assignee_object_id=result.principal_id,
+                               scope=scrope, assignee_principal_type='ServicePrincipal')
     return poller
 
 

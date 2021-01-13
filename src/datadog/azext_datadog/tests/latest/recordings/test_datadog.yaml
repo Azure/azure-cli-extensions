@@ -387,6 +387,112 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
+      - datadog monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --sku-name --location --identity-type --monitoring-status --user-info
+        --tags --resource-group
+      User-Agent:
+      - python/3.7.8 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions?$filter=roleName%20eq%20%27Monitoring%20Reader%27&api-version=2018-01-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"roleName":"Monitoring Reader","type":"BuiltInRole","description":"Can
+        read all monitoring data.","assignableScopes":["/"],"permissions":[{"actions":["*/read","Microsoft.OperationalInsights/workspaces/search/action","Microsoft.Support/*"],"notActions":[],"dataActions":[],"notDataActions":[]}],"createdOn":"2016-09-21T19:19:52.4939376Z","updatedOn":"2018-01-30T18:08:27.2626250Z","createdBy":null,"updatedBy":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/43d0d8ad-25c7-4714-9337-8ba259a9fe05","type":"Microsoft.Authorization/roleDefinitions","name":"43d0d8ad-25c7-4714-9337-8ba259a9fe05"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '683'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 04:08:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/43d0d8ad-25c7-4714-9337-8ba259a9fe05",
+      "principalId": "d75e5aca-8548-4e57-b550-24e11351300d", "principalType": "ServicePrincipal"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - datadog monitor create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '270'
+      Content-Type:
+      - application/json; charset=utf-8
+      Cookie:
+      - x-ms-gateway-slice=Production
+      ParameterSetName:
+      - --name --sku-name --location --identity-type --monitoring-status --user-info
+        --tags --resource-group
+      User-Agent:
+      - python/3.7.8 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.13.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000001?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/43d0d8ad-25c7-4714-9337-8ba259a9fe05","principalId":"d75e5aca-8548-4e57-b550-24e11351300d","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000","condition":null,"conditionVersion":null,"createdOn":"2021-01-13T04:08:37.5711851Z","updatedOn":"2021-01-13T04:08:37.7211888Z","createdBy":null,"updatedBy":"4290ae1b-4f92-4dc9-81fe-fab805a38536","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000001","type":"Microsoft.Authorization/roleAssignments","name":"88888888-0000-0000-0000-000000000001"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '823'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 04:08:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      set-cookie:
+      - x-ms-gateway-slice=Production; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
       - datadog monitor wait
       Connection:
       - keep-alive
