@@ -13,6 +13,7 @@ import mock
 from azure.cli.testsdk import ScenarioTest
 from .. import try_manual, raise_if, calc_coverage
 from azure.cli.testsdk import ResourceGroupPreparer
+from azure_devtools.scenario_tests import AllowLargeResponse
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -307,6 +308,7 @@ def call_scenario(test, rg):
 @try_manual
 class MicrosoftDatadogClientScenarioTest(ScenarioTest):
 
+    @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitestdatadog_myResourceGroup'[:7], key='rg', parameter_name='rg')
     def test_datadog(self, rg):
 

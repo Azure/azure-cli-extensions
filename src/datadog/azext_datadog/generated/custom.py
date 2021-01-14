@@ -10,7 +10,7 @@
 # pylint: disable=too-many-lines
 # pylint: disable=unused-argument
 
-from azure.cli.command_modules.role.custom import create_role_assignment
+from azure.cli.command_modules.role.custom import create_role_assignment, list_role_assignments, delete_role_assignments
 from azure.cli.core.util import sdk_no_wait
 
 
@@ -112,7 +112,7 @@ def datadog_monitor_create(cmd,
     result = poller.result()
     if result and result.principal_id:
         scrope = '/subscriptions/' + result.id.split('/')[2]
-        create_role_assignment(cmd, role='Monitoring Reader', assignee_object_id=result.principal_id,
+        create_role_assignment(cmd, role='43d0d8ad-25c7-4714-9337-8ba259a9fe05', assignee_object_id=result.principal_id,
                                scope=scrope, assignee_principal_type='ServicePrincipal')
     return poller
 
@@ -128,14 +128,26 @@ def datadog_monitor_update(client,
                          monitoring_status=monitoring_status)
 
 
-def datadog_monitor_delete(client,
+def datadog_monitor_delete(cmd,
+                           client,
                            resource_group_name,
                            monitor_name,
                            no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_delete,
-                       resource_group_name=resource_group_name,
-                       monitor_name=monitor_name)
+    monitor = client.get(resource_group_name=resource_group_name,
+                         monitor_name=monitor_name)
+    poller = sdk_no_wait(no_wait,
+                         client.begin_delete,
+                         resource_group_name=resource_group_name,
+                         monitor_name=monitor_name)
+    result = poller.result()
+    if not result:
+        scrope = '/subscriptions/' + monitor.id.split('/')[2]
+        role_assignments = list_role_assignments(cmd, role='43d0d8ad-25c7-4714-9337-8ba259a9fe05', scope=scrope)
+        for i in role_assignments:
+            if i.get('principalId') == monitor.principal_id:
+                delete_role_assignments(cmd, ids=[i.get('id')])
+                break
+    return poller
 
 
 def datadog_refresh_set_password_get(client,
