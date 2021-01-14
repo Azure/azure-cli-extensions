@@ -32,8 +32,8 @@ helps['providerhub custom-rollout show'] = """
     examples:
       - name: CustomRollouts_Get
         text: |-
-               az providerhub custom-rollout show --provider-namespace "Microsoft.Contoso" --rollout-name \
-"canaryTesting99"
+               az providerhub custom-rollout show --provider-namespace "Microsoft.Contoso" \
+--rollout-name "canaryTesting99"
 """
 
 helps['providerhub custom-rollout create'] = """
@@ -41,124 +41,14 @@ helps['providerhub custom-rollout create'] = """
     short-summary: "Create the rollout details."
     parameters:
       - name: --canary
+        short-summary: "The canary regions to apply the manifest."
         long-summary: |
             Usage: --canary regions=XX
-
-      - name: --provider-authentication
-        long-summary: |
-            Usage: --provider-authentication allowed-audiences=XX
-
-      - name: --provider-authorizations
-        long-summary: |
-            Usage: --provider-authorizations application-id=XX role-definition-id=XX managed-by-role-definition-id=XX
-
-
-            Multiple actions can be specified by using more than one --provider-authorizations argument.
-      - name: --capabilities
-        long-summary: |
-            Usage: --capabilities quota-id=XX effect=XX required-features=XX
-
-
-            Multiple actions can be specified by using more than one --capabilities argument.
-      - name: --template-deployment-options
-        long-summary: |
-            Usage: --template-deployment-options preflight-supported=XX preflight-options=XX
-
-      - name: --service-tree-infos
-        long-summary: |
-            Usage: --service-tree-infos service-id=XX component-id=XX
-
-
-            Multiple actions can be specified by using more than one --service-tree-infos argument.
-      - name: --subscription-state-override-actions
-        long-summary: |
-            Usage: --subscription-state-override-actions state=XX action=XX
-
-
-            Multiple actions can be specified by using more than one --subscription-state-override-actions argument.
-      - name: --provider-hub-metadata-provider-authorizations
-        long-summary: |
-            Usage: --provider-hub-metadata-provider-authorizations application-id=XX role-definition-id=XX \
-managed-by-role-definition-id=XX
-
-
-            Multiple actions can be specified by using more than one --provider-hub-metadata-provider-authorizations \
-argument.
-      - name: --resource-provider-authentication
-        long-summary: |
-            Usage: --resource-provider-authentication allowed-audiences=XX
-
-      - name: --authorizations
-        long-summary: |
-            Usage: --authorizations principal-id=XX role-definition-id=XX
-
-
-            Multiple actions can be specified by using more than one --authorizations argument.
     examples:
       - name: CustomRollouts_CreateOrUpdate
         text: |-
-               az providerhub custom-rollout create --provider-namespace "Microsoft.Contoso" --rollout-name \
-"brazilUsShoeBoxTesting"
-"""
-
-helps['providerhub custom-rollout update'] = """
-    type: command
-    short-summary: "Update the rollout details."
-    parameters:
-      - name: --canary
-        long-summary: |
-            Usage: --canary regions=XX
-
-      - name: --provider-authentication
-        long-summary: |
-            Usage: --provider-authentication allowed-audiences=XX
-
-      - name: --provider-authorizations
-        long-summary: |
-            Usage: --provider-authorizations application-id=XX role-definition-id=XX managed-by-role-definition-id=XX
-
-
-            Multiple actions can be specified by using more than one --provider-authorizations argument.
-      - name: --capabilities
-        long-summary: |
-            Usage: --capabilities quota-id=XX effect=XX required-features=XX
-
-
-            Multiple actions can be specified by using more than one --capabilities argument.
-      - name: --template-deployment-options
-        long-summary: |
-            Usage: --template-deployment-options preflight-supported=XX preflight-options=XX
-
-      - name: --service-tree-infos
-        long-summary: |
-            Usage: --service-tree-infos service-id=XX component-id=XX
-
-
-            Multiple actions can be specified by using more than one --service-tree-infos argument.
-      - name: --subscription-state-override-actions
-        long-summary: |
-            Usage: --subscription-state-override-actions state=XX action=XX
-
-
-            Multiple actions can be specified by using more than one --subscription-state-override-actions argument.
-      - name: --provider-hub-metadata-provider-authorizations
-        long-summary: |
-            Usage: --provider-hub-metadata-provider-authorizations application-id=XX role-definition-id=XX \
-managed-by-role-definition-id=XX
-
-
-            Multiple actions can be specified by using more than one --provider-hub-metadata-provider-authorizations \
-argument.
-      - name: --resource-provider-authentication
-        long-summary: |
-            Usage: --resource-provider-authentication allowed-audiences=XX
-
-      - name: --authorizations
-        long-summary: |
-            Usage: --authorizations principal-id=XX role-definition-id=XX
-
-
-            Multiple actions can be specified by using more than one --authorizations argument.
+               az providerhub custom-rollout create --provider-namespace "Microsoft.Contoso" \
+--rollout-name "canaryTesting99" --canary regions="EastUS2EUAP"
 """
 
 helps['providerhub default-rollout'] = """
@@ -181,23 +71,29 @@ helps['providerhub default-rollout show'] = """
     examples:
       - name: DefaultRollouts_Get
         text: |-
-               az providerhub default-rollout show --provider-namespace "Microsoft.Contoso" --rollout-name \
-"2020week10"
+               az providerhub default-rollout show --provider-namespace "Microsoft.Contoso" \
+--rollout-name "2021week10"
 """
 
 helps['providerhub default-rollout create'] = """
     type: command
     short-summary: "Create the rollout details."
+    parameters:
+      - name: --row-two-wait-duration
+        type: string
+        short-summary: "Optional. The wait duration before rolling out to the Rest of the World Two regions."
+        long-summary: |
+            Usage: --row-two-wait-duration "PT24H"
+      - name: --skip-regions
+        type: string
+        short-summary: "Optional. The canary regions to skip applying the manifest in."
+        long-summary: |
+            Usage: --skip-regions "brazilus, centraluseuap"
     examples:
       - name: DefaultRollouts_CreateOrUpdate
         text: |-
-               az providerhub default-rollout create --provider-namespace "Microsoft.Contoso" --rollout-name \
-"2020week10"
-"""
-
-helps['providerhub default-rollout update'] = """
-    type: command
-    short-summary: "Update the rollout details."
+               az providerhub default-rollout create --provider-namespace "Microsoft.Contoso" \
+--rollout-name "2021week10" --skip-regions "brazilus, centraluseuap"
 """
 
 helps['providerhub default-rollout delete'] = """
@@ -206,8 +102,8 @@ helps['providerhub default-rollout delete'] = """
     examples:
       - name: DefaultRollouts_Delete
         text: |-
-               az providerhub default-rollout delete --provider-namespace "Microsoft.Contoso" --rollout-name \
-"2020week10"
+               az providerhub default-rollout delete --provider-namespace "Microsoft.Contoso" \
+--rollout-name "2021week10"
 """
 
 helps['providerhub default-rollout stop'] = """
@@ -216,8 +112,8 @@ helps['providerhub default-rollout stop'] = """
     examples:
       - name: DefaultRollouts_Stop
         text: |-
-               az providerhub default-rollout stop --provider-namespace "Microsoft.Contoso" --rollout-name \
-"2020week10"
+               az providerhub default-rollout stop --provider-namespace "Microsoft.Contoso" \
+--rollout-name "2021week10"
 """
 
 helps['providerhub default-rollout wait'] = """
@@ -228,10 +124,6 @@ helps['providerhub default-rollout wait'] = """
         text: |-
                az providerhub default-rollout wait --provider-namespace "Microsoft.Contoso" --rollout-name \
 "2020week10" --created
-      - name: Pause executing next line of CLI script until the providerhub default-rollout is successfully updated.
-        text: |-
-               az providerhub default-rollout wait --provider-namespace "Microsoft.Contoso" --rollout-name \
-"2020week10" --updated
 """
 
 helps['providerhub manifest'] = """
@@ -257,35 +149,6 @@ helps['providerhub manifest generate'] = """
                az providerhub manifest generate --provider-namespace "Microsoft.Contoso"
 """
 
-helps['providerhub operation'] = """
-    type: group
-    short-summary: Manage operation with providerhub
-"""
-
-helps['providerhub operation list'] = """
-    type: command
-    short-summary: "Gets the operations supported by the given provider."
-    parameters:
-      - name: --display
-        short-summary: "Display information of the operation."
-        long-summary: |
-            Usage: --display provider=XX resource=XX operation=XX description=XX
-
-    examples:
-      - name: Operations_ListByProviderRegistration
-        text: |-
-               az providerhub operation list --provider-namespace "Microsoft.Contoso"
-"""
-
-helps['providerhub operation delete'] = """
-    type: command
-    short-summary: "Deletes an operation."
-    examples:
-      - name: Operations_Delete
-        text: |-
-               az providerhub operation delete --provider-namespace "Microsoft.Contoso"
-"""
-
 helps['providerhub provider-registration'] = """
     type: group
     short-summary: Manage provider registration with providerhub
@@ -293,12 +156,8 @@ helps['providerhub provider-registration'] = """
 
 helps['providerhub provider-registration list'] = """
     type: command
-    short-summary: "Pending route: Gets the list of the provider registrations by the resource group. And Gets the \
-list of the provider registrations in the subscription."
+    short-summary: " Gets the list of the provider registrations in the subscription."
     examples:
-      - name: ProviderRegistrations_ListByResourceGroup
-        text: |-
-               az providerhub provider-registration list --resource-group "sampleResourceGroup"
       - name: ProviderRegistrations_List
         text: |-
                az providerhub provider-registration list
@@ -318,55 +177,126 @@ helps['providerhub provider-registration create'] = """
     short-summary: "Create the provider registration."
     parameters:
       - name: --provider-authentication
+        short-summary: "Used to set alternative audiences or resources that ARM should accept from the token while authenticating requests for the provider."
         long-summary: |
             Usage: --provider-authentication allowed-audiences=XX
 
+            allowed-audiences: Required. The allowed audiences.
+
       - name: --provider-authorizations
+        short-summary: "The resource provider authorizations."
         long-summary: |
             Usage: --provider-authorizations application-id=XX role-definition-id=XX managed-by-role-definition-id=XX
 
+            application-id: Required. The application ID.
+            role-definition-id: Required. The role definition ID.
+            managed-by-role-definition-id: Required. The managed by role definition ID.
 
-            Multiple actions can be specified by using more than one --provider-authorizations argument.
+      - name: --provider-version
+        type: string
+        short-summary: "The provider version."
+        long-summary: |
+            Usage: --provider-version "2.0"
+
+      - name: --provider-type
+        type: string
+        short-summary: "The provider type"
+        long-summary: |
+            Usage: --provider-type "Internal"
+
       - name: --capabilities
+        short-summary: ""
         long-summary: |
             Usage: --capabilities quota-id=XX effect=XX required-features=XX
 
-
             Multiple actions can be specified by using more than one --capabilities argument.
       - name: --template-deployment-options
+        short-summary: ""
         long-summary: |
             Usage: --template-deployment-options preflight-supported=XX preflight-options=XX
 
+      - name: --schema-owners
+        short-summary: "Specifies an array of needed ACIS claims to modify the resource provider schema via ACIS."
+        long-summary: |
+            Usage: --schema-owners "Contoso schema owners"
+
+             Multiple actions can be specified by using more than one --schema-owners argument.
+      - name: --manifest-owners
+        short-summary: "Specifies an array of required ACIS claims to modify the resource provider\'s manifest content via ACIS."
+        long-summary: |
+            Usage: --manifest-owners "SPARTA-PlatformServiceAdministrator"
+
+             Multiple actions can be specified by using more than one --manifest-owners argument.
+      - name: --incident-routing-service
+        type: string
+        short-summary: "The service in IcM when creating or transferring incidents to the RP."
+        long-summary: |
+            Usage: --incident-routing-service "Contoso Resource Provider"
+
+      - name: --incident-routing-team
+        type: string
+        short-summary: "The team in IcM when creating or transferring incidents to the RP."
+        long-summary: |
+            Usage: --incident-routing-team "Contoso Triage"
+
+      - name: --incident-contact-email
+        type: string
+        short-summary: "The email address of contacts for incidents related to the RP."
+        long-summary: |
+            Usage: --incident-contact-email "helpme@contoso.com"
+
       - name: --service-tree-infos
+        short-summary: "The ServiceTree information for the resource provider."
         long-summary: |
             Usage: --service-tree-infos service-id=XX component-id=XX
 
+            service-id: Required. The service ID.
+            component-id: Required. The component ID.
 
             Multiple actions can be specified by using more than one --service-tree-infos argument.
-      - name: --subscription-state-override-actions
+      - name: --resource-access-policy
+        type: string
+        short-summary: "The resource access policy."
         long-summary: |
-            Usage: --subscription-state-override-actions state=XX action=XX
+            Usage: --resource-access-policy "AcisReadAllowed, AcisActionAllowed"
 
-
-            Multiple actions can be specified by using more than one --subscription-state-override-actions argument.
-      - name: --provider-hub-metadata-provider-authorizations
+      - name: --required-features-policy
+        type: string
+        short-summary: 'The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​'
         long-summary: |
-            Usage: --provider-hub-metadata-provider-authorizations application-id=XX role-definition-id=XX \
+            Usage: --required-features-policy "All"
+
+      - name: --providerhub-metadata-provider-authorizations
+        short-summary: "The provider authorizations."
+        long-summary: |
+            Usage: --providerhub-metadata-provider-authorizations application-id=XX role-definition-id=XX \
 managed-by-role-definition-id=XX
 
+            application-id: Required. The application ID.
+            role-definition-id: Required. The role definition ID.
+            managed-by-role-definition-id: Required. The managed by role definition ID.
 
-            Multiple actions can be specified by using more than one --provider-hub-metadata-provider-authorizations \
-argument.
-      - name: --resource-provider-authentication
+      - name: --providerhub-metadata-rp-authentication
+        short-summary: "Used to set alternative audiences or resources that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers."
         long-summary: |
-            Usage: --resource-provider-authentication allowed-audiences=XX
+            Usage: --providerhub-metadata-rp-authentication allowed-audiences=XX
 
-      - name: --authorizations
+            allowed-audiences: Required. The allowed audiences.
+
+      - name: --lighthouse-authorizations
+        short-summary: "The lighthouse authorizations."
         long-summary: |
-            Usage: --authorizations principal-id=XX role-definition-id=XX
+            Usage: --lighthouse-authorizations principal-id=XX role-definition-id=XX
 
+            principal-id: Required. The principal ID.
+            role-definition-id: Required. The role definition ID.
 
-            Multiple actions can be specified by using more than one --authorizations argument.
+      - name: --managed-by-tenant-id
+        type: string
+        short-summary: "The managed by tenant ID."
+        long-summary: |
+            Usage: --managed-by-tenant-id "00000000-0000-0000-0000-000000000000"
+
     examples:
       - name: ProviderRegistrations_CreateOrUpdate
         text: |-
@@ -376,61 +306,6 @@ argument.
 "Internal" --provider-version "2.0" --provider-namespace "Microsoft.Contoso"
 """
 
-helps['providerhub provider-registration update'] = """
-    type: command
-    short-summary: "Update the provider registration."
-    parameters:
-      - name: --provider-authentication
-        long-summary: |
-            Usage: --provider-authentication allowed-audiences=XX
-
-      - name: --provider-authorizations
-        long-summary: |
-            Usage: --provider-authorizations application-id=XX role-definition-id=XX managed-by-role-definition-id=XX
-
-
-            Multiple actions can be specified by using more than one --provider-authorizations argument.
-      - name: --capabilities
-        long-summary: |
-            Usage: --capabilities quota-id=XX effect=XX required-features=XX
-
-
-            Multiple actions can be specified by using more than one --capabilities argument.
-      - name: --template-deployment-options
-        long-summary: |
-            Usage: --template-deployment-options preflight-supported=XX preflight-options=XX
-
-      - name: --service-tree-infos
-        long-summary: |
-            Usage: --service-tree-infos service-id=XX component-id=XX
-
-
-            Multiple actions can be specified by using more than one --service-tree-infos argument.
-      - name: --subscription-state-override-actions
-        long-summary: |
-            Usage: --subscription-state-override-actions state=XX action=XX
-
-
-            Multiple actions can be specified by using more than one --subscription-state-override-actions argument.
-      - name: --provider-hub-metadata-provider-authorizations
-        long-summary: |
-            Usage: --provider-hub-metadata-provider-authorizations application-id=XX role-definition-id=XX \
-managed-by-role-definition-id=XX
-
-
-            Multiple actions can be specified by using more than one --provider-hub-metadata-provider-authorizations \
-argument.
-      - name: --resource-provider-authentication
-        long-summary: |
-            Usage: --resource-provider-authentication allowed-audiences=XX
-
-      - name: --authorizations
-        long-summary: |
-            Usage: --authorizations principal-id=XX role-definition-id=XX
-
-
-            Multiple actions can be specified by using more than one --authorizations argument.
-"""
 
 helps['providerhub provider-registration delete'] = """
     type: command
@@ -458,10 +333,6 @@ helps['providerhub provider-registration wait'] = """
 created.
         text: |-
                az providerhub provider-registration wait --provider-namespace "Microsoft.Contoso" --created
-      - name: Pause executing next line of CLI script until the providerhub provider-registration is successfully \
-updated.
-        text: |-
-               az providerhub provider-registration wait --provider-namespace "Microsoft.Contoso" --updated
 """
 
 helps['providerhub resource-type-registration'] = """
@@ -498,161 +369,108 @@ helps['providerhub resource-type-registration create'] = """
     short-summary: "Create a resource type."
     parameters:
       - name: --swagger-specifications
+        short-summary: "The Swagger spec of the resource type."
         long-summary: |
             Usage: --swagger-specifications api-versions=XX swagger-spec-folder-uri=XX
 
+            api-versions: Required. The resource type API versions, separated by commas.
+            swagger-spec-folder-uri: Required. The Swagger spec URI.
 
             Multiple actions can be specified by using more than one --swagger-specifications argument.
       - name: --authorization-action-mappings
+        short-summary: "Allows RP to override action verb for RBAC purposes at ARM."
         long-summary: |
             Usage: --authorization-action-mappings original=XX desired=XX
 
+            original: Required. The original action name.
+            desired: Required. The desired action name.
 
             Multiple actions can be specified by using more than one --authorization-action-mappings argument.
       - name: --linked-access-checks
+        short-summary: "Enables additional Role Based Access Control (RBAC) checks on related resources."
         long-summary: |
             Usage: --linked-access-checks action-name=XX linked-property=XX linked-action=XX linked-action-verb=XX \
 linked-type=XX
 
+            action-name: Required. The action name.
+            linked-property: Required. The linked property.
+            linked-action: Required. The linked action.
+            linked-action-verb: Required. The linked action verb.
+            linked-type: Required. The linked type.
 
             Multiple actions can be specified by using more than one --linked-access-checks argument.
       - name: --throttling-rules
+        short-summary: "Allows RPs to set individual limits for different actions in terms of number of requests or number of resources (for collection read requests only)."
         long-summary: |
             Usage: --throttling-rules action=XX metrics=XX required-features=XX
 
+            action: Required. The action.
+            metrics: Required. The metrics.
+            required-features: Required. The required features.
 
             Multiple actions can be specified by using more than one --throttling-rules argument.
       - name: --identity-management
+        short-summary: "MSI related settings."
         long-summary: |
             Usage: --identity-management type=XX application-id=XX
 
       - name: --check-name-availability-specifications
+        short-summary: "Name availability checks feature at the platform level."
         long-summary: |
             Usage: --check-name-availability-specifications enable-default-validation=XX \
 resource-types-with-custom-validation=XX
 
       - name: --service-tree-infos
+        short-summary: "The ServiceTree information for the resource provider."
         long-summary: |
             Usage: --service-tree-infos service-id=XX component-id=XX
 
 
             Multiple actions can be specified by using more than one --service-tree-infos argument.
       - name: --subscription-state-rules
+        short-summary: ""
         long-summary: |
             Usage: --subscription-state-rules state=XX allowed-actions=XX
 
 
             Multiple actions can be specified by using more than one --subscription-state-rules argument.
       - name: --template-deployment-options
+        short-summary: ""
         long-summary: |
             Usage: --template-deployment-options preflight-supported=XX preflight-options=XX
 
       - name: --extended-locations
+        short-summary: ""
         long-summary: |
             Usage: --extended-locations type=XX supported-policy=XX
 
 
             Multiple actions can be specified by using more than one --extended-locations argument.
       - name: --resource-move-policy
+        short-summary: ""
         long-summary: |
             Usage: --resource-move-policy validation-required=XX cross-resource-group-move-enabled=XX \
 cross-subscription-move-enabled=XX
 
       - name: --subscription-state-override-actions
+        short-summary: ""
         long-summary: |
             Usage: --subscription-state-override-actions state=XX action=XX
 
 
             Multiple actions can be specified by using more than one --subscription-state-override-actions argument.
       - name: --resource-creation-begin
+        short-summary: ""
         long-summary: |
             Usage: --resource-creation-begin request=XX response=XX
 
     examples:
       - name: ResourceTypeRegistration_CreateOrUpdate
         text: |-
-               az providerhub resource-type-registration create --endpoints "[{\\"apiVersions\\":[\\"2020-06-01-preview\
-\\"],\\"locations\\":[\\"West US\\",\\"East US\\",\\"North Europe\\"],\\"requiredfeatures\\":[\\"<feature flag>\\"]}]" \
+               az providerhub resource-type-registration create --endpoints api-versions="2020-01-01-preview,2019-01-01" locations="West US, West Central US" required-features="Microsoft.Contoso/RPaaSSampleApp" \
 --regionality "regional" --routing-type "Default" --swagger-specifications api-versions="2020-06-01-preview" \
 swagger-spec-folder-uri="https://github.com/Azure/azure-rest-api-specs/blob/feature/azure/contoso/specification/contoso\
 /resource-manager/Microsoft.SampleRP/" --provider-namespace "Microsoft.Contoso" --resource-type "employees"
-"""
-
-helps['providerhub resource-type-registration update'] = """
-    type: command
-    short-summary: "Update a resource type."
-    parameters:
-      - name: --swagger-specifications
-        long-summary: |
-            Usage: --swagger-specifications api-versions=XX swagger-spec-folder-uri=XX
-
-
-            Multiple actions can be specified by using more than one --swagger-specifications argument.
-      - name: --authorization-action-mappings
-        long-summary: |
-            Usage: --authorization-action-mappings original=XX desired=XX
-
-
-            Multiple actions can be specified by using more than one --authorization-action-mappings argument.
-      - name: --linked-access-checks
-        long-summary: |
-            Usage: --linked-access-checks action-name=XX linked-property=XX linked-action=XX linked-action-verb=XX \
-linked-type=XX
-
-
-            Multiple actions can be specified by using more than one --linked-access-checks argument.
-      - name: --throttling-rules
-        long-summary: |
-            Usage: --throttling-rules action=XX metrics=XX required-features=XX
-
-
-            Multiple actions can be specified by using more than one --throttling-rules argument.
-      - name: --identity-management
-        long-summary: |
-            Usage: --identity-management type=XX application-id=XX
-
-      - name: --check-name-availability-specifications
-        long-summary: |
-            Usage: --check-name-availability-specifications enable-default-validation=XX \
-resource-types-with-custom-validation=XX
-
-      - name: --service-tree-infos
-        long-summary: |
-            Usage: --service-tree-infos service-id=XX component-id=XX
-
-
-            Multiple actions can be specified by using more than one --service-tree-infos argument.
-      - name: --subscription-state-rules
-        long-summary: |
-            Usage: --subscription-state-rules state=XX allowed-actions=XX
-
-
-            Multiple actions can be specified by using more than one --subscription-state-rules argument.
-      - name: --template-deployment-options
-        long-summary: |
-            Usage: --template-deployment-options preflight-supported=XX preflight-options=XX
-
-      - name: --extended-locations
-        long-summary: |
-            Usage: --extended-locations type=XX supported-policy=XX
-
-
-            Multiple actions can be specified by using more than one --extended-locations argument.
-      - name: --resource-move-policy
-        long-summary: |
-            Usage: --resource-move-policy validation-required=XX cross-resource-group-move-enabled=XX \
-cross-subscription-move-enabled=XX
-
-      - name: --subscription-state-override-actions
-        long-summary: |
-            Usage: --subscription-state-override-actions state=XX action=XX
-
-
-            Multiple actions can be specified by using more than one --subscription-state-override-actions argument.
-      - name: --resource-creation-begin
-        long-summary: |
-            Usage: --resource-creation-begin request=XX response=XX
-
 """
 
 helps['providerhub resource-type-registration delete'] = """

@@ -73,7 +73,7 @@ class AddProviderAuthentication(argparse.Action):
 class AddResourceProviderAuthentication(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.resource_provider_authentication = action
+        namespace.providerhub_metadata_rp_authentication = action
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -90,7 +90,7 @@ class AddResourceProviderAuthentication(argparse.Action):
             if kl == 'allowed-audiences':
                 d['allowed_audiences'] = v
             else:
-                raise CLIError('Unsupported Key {} is provided for parameter resource_provider_authentication. '
+                raise CLIError('Unsupported Key {} is provided for parameter providerhub_metadata_rp_authentication. '
                                ' All possible keys are: allowed-audiences'.format(k))
         return d
 
@@ -162,6 +162,15 @@ class AddSkipRegions(argparse.Action):
         return generate_list(values[0])
 
 
+class AddRequiredFeatures(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values)
+        namespace.required_features = action
+
+    def get_action(self, values):  # pylint: disable=no-self-use
+        return generate_list(values[0])
+
+
 class AddTemplateDeploymentOptions(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
@@ -189,7 +198,7 @@ class AddTemplateDeploymentOptions(argparse.Action):
         return d
 
 
-class AddCustomrolloutsServiceTreeInfos(argparse._AppendAction):
+class AddServiceTreeInfos(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         super().__call__(parser, namespace, action, option_string)
@@ -296,7 +305,7 @@ class AddProviderHubMetadataProviderAuthorizations(argparse._AppendAction):
             elif kl == 'managed-by-role-definition-id':
                 d['managed_by_role_definition_id'] = v[0]
             else:
-                raise CLIError('Unsupported Key {} is provided for parameter provider_hub_metadata_provider_authorizati'
+                raise CLIError('Unsupported Key {} is provided for parameter providerhub_metadata_provider_authorizati'
                                'ons. All possible keys are: application-id, role-definition-id, '
                                'managed-by-role-definition-id'.format(k))
         return d

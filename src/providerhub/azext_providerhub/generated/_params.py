@@ -25,7 +25,7 @@ from azext_providerhub.action import (
     AddCapabilities,
     AddSkipRegions,
     AddTemplateDeploymentOptions,
-    AddCustomrolloutsServiceTreeInfos,
+    AddServiceTreeInfos,
     AddResourceTypeEndpointProperties,
     AddProviderHubMetadataProviderAuthorizations,
     AddAuthorizations,
@@ -39,6 +39,7 @@ from azext_providerhub.action import (
     AddSubscriptionStateRules,
     AddExtendedLocations,
     AddResourceMovePolicy,
+    AddRequiredFeatures,
 )
 
 
@@ -128,38 +129,36 @@ def load_arguments(self, _):
                    help='The name of the resource provider hosted within ProviderHub.')
         c.argument('provider_authentication', action=AddProviderAuthentication, nargs='+', help='Used to set alternative "audiences or resources" that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers.')
         c.argument('provider_authorizations', action=AddProviderAuthorizations, nargs='+', help='The resource provider authorizations.')
-        c.argument('namespace', type=str, help='The name of the resource provider hosted within ProviderHub.')
         c.argument('provider_version', type=str, help='The provider version. 2.0 is the only supported version.')
         c.argument('provider_type', arg_type=get_enum_type(['NotSpecified', 'Internal', 'External', 'Hidden',
                                                             'RegistrationFree', 'LegacyRegistrationRequired',
                                                             'TenantOnly', 'AuthorizationFree']), help='Value can be "Internal", "External", "Hidden", "RegistrationFree", "TenantOnly" or "LegacyRegistrationRequired". RegistrationFree is for providers that do not need subscriptions to explicitly register to use the provider. Hidden flag ensures that discovery APIs (GET /Providers) will not show the provider, however a user can still write to the provider explicitly. TenantOnly will not appear in Get /Providers and will not allow registration from users. LegacyRegistrationRequired is for legacy providers that need RDFE registration in addition to ARM registration.')
-        c.argument('required_features', nargs='+', help='If specified, only subscriptions registered to the corresponding feature flag will be allowed.')
         c.argument('capabilities', action=AddCapabilities, nargs='+', help='Allow the access to the resource provider from a restrictive subscription quota (DreamSpark_2015-02-01 and CSP_2015-05-01​). The required​Features array is optional, if specified the subscription should meet the quota ​and at least one of the features. If no capabilities is specified the provider will be available to every subscription but the restrictive quotas. New providers are required to allow CSP_2015-05-01​​')
-        c.argument('metadata', type=validate_file_or_dict, help='Any object Expected value: json-string/@json-file.')
+        c.argument('metadata', type=validate_file_or_dict, help='The metadata.')
         c.argument('template_deployment_options', action=AddTemplateDeploymentOptions, nargs='+', help='The field for preflight options.')
         c.argument('schema_owners', nargs='+', help='Specifies an array of needed ACIS claims to modify the resource provider schema via ACIS.', arg_group='Management')
         c.argument('manifest_owners', nargs='+', help='Specifies an array of required ACIS claims to modify the resource provider\'s manifest content via ACIS.', arg_group='Management')
-        c.argument('incident_routing_service', type=str, help='The "Service" in IcM when creating or transferring incidents to the RP.', arg_group='Management')
-        c.argument('incident_routing_team', type=str, help='The "Team" in IcM when creating or transferring incidents to the RP.', arg_group='Management')
+        c.argument('incident_routing_service', type=str, help='The Service in IcM when creating or transferring incidents to the RP.', arg_group='Management')
+        c.argument('incident_routing_team', type=str, help='The Team in IcM when creating or transferring incidents to the RP.', arg_group='Management')
         c.argument('incident_contact_email', type=str, help='The email address of contacts for incidents related to the RP.', arg_group='Management')
-        c.argument('service_tree_infos', action=AddCustomrolloutsServiceTreeInfos, nargs='+', help='The ServiceTree information for the resource provider.',
+        c.argument('service_tree_infos', action=AddServiceTreeInfos, nargs='+', help='The ServiceTree information for the resource provider.',
                    arg_group='Management')
         c.argument('resource_access_policy', arg_type=get_enum_type(['NotSpecified', 'AcisReadAllowed',
-                                                                     'AcisActionAllowed']), help='Authorizes direct access to the Resource Provider resources from ARM\'s ACIS extension Resource Group Management/Get resource from URI operation. Use if the secret could not be revealed with a GET.',
+                                                                     'AcisActionAllowed']), help='The resource access policy.',
                    arg_group='Management')
         c.argument('resource_access_roles', type=validate_file_or_dict,
-                   help=' Expected value: json-string/@json-file.', arg_group='Management')
+                   help='Expected value: json-string/@json-file.', arg_group='Management')
         c.argument('opt_in_headers', arg_type=get_enum_type(['NotSpecified', 'SignedUserToken',
                                                              'ClientGroupMembership', 'SignedAuxiliaryTokens',
                                                              'UnboundedClientGroupMembership']), help='ARM allows customized headers when sending requests to the RP. This can be done both at the provider level or at the individual resource type level.',
                    arg_group='Request Header Options')
         c.argument('required_features_policy', arg_type=get_enum_type(['Any', 'All']), help='The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​', arg_group='Features '
                    'Rule')
-        c.argument('provider_hub_metadata_provider_authorizations',
+        c.argument('providerhub_metadata_provider_authorizations',
                    action=AddProviderHubMetadataProviderAuthorizations, nargs='+', help='Available only for first party providers, this section can be used to bootstrap Service-to-Service authentication and authorization for the provider\'s application. When set, it would allow provider to access users\' subscription registered with them.', arg_group='Provider Hub Metadata')
-        c.argument('resource_provider_authentication', action=AddResourceProviderAuthentication, nargs='+', help='Used to set alternative "audiences or resources" that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers.',
+        c.argument('providerhub_metadata_rp_authentication', action=AddResourceProviderAuthentication, nargs='+', help='Used to set alternative "audiences or resources" that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers.',
                    arg_group='Provider Hub Metadata')
-        c.argument('authorizations', action=AddAuthorizations, nargs='+', help='The lighthouse authorizations.', arg_group='Provider Hub Metadata '
+        c.argument('lighthouse_authorizations', action=AddAuthorizations, nargs='+', help='The lighthouse authorizations.', arg_group='Provider Hub Metadata '
                    'Third Party Provider Authorization')
         c.argument('managed_by_tenant_id', type=str, help='The managed by tenant ID.', arg_group='Provider Hub Metadata Third Party Provider '
                    'Authorization')
@@ -174,7 +173,7 @@ def load_arguments(self, _):
         c.argument('provider_type', arg_type=get_enum_type(['NotSpecified', 'Internal', 'External', 'Hidden',
                                                             'RegistrationFree', 'LegacyRegistrationRequired',
                                                             'TenantOnly', 'AuthorizationFree']), help='Value can be "Internal", "External", "Hidden", "RegistrationFree", "TenantOnly" or "LegacyRegistrationRequired". RegistrationFree is for providers that do not need subscriptions to explicitly register to use the provider. Hidden flag ensures that discovery APIs (GET /Providers) will not show the provider, however a user can still write to the provider explicitly. TenantOnly will not appear in Get /Providers and will not allow registration from users. LegacyRegistrationRequired is for legacy providers that need RDFE registration in addition to ARM registration.')
-        c.argument('required_features', nargs='+', help='If specified, only subscriptions registered to the corresponding feature flag will be allowed.')
+        c.argument('required_features', action=AddRequiredFeatures, nargs='+', help='If specified, only subscriptions registered to the corresponding feature flag will be allowed.')
         c.argument('capabilities', action=AddCapabilities, nargs='+', help='Allow the access to the resource provider from a restrictive subscription quota (DreamSpark_2015-02-01 and CSP_2015-05-01​). The required​Features array is optional, if specified the subscription should meet the quota ​and at least one of the features. If no capabilities is specified the provider will be available to every subscription but the restrictive quotas. New providers are required to allow CSP_2015-05-01​​')
         c.argument('metadata', type=validate_file_or_dict, help='Any object Expected value: json-string/@json-file.')
         c.argument('template_deployment_options', action=AddTemplateDeploymentOptions, nargs='+', help='The field for preflight options.')
@@ -183,10 +182,10 @@ def load_arguments(self, _):
         c.argument('incident_routing_service', type=str, help='The "Service" in IcM when creating or transferring incidents to the RP.', arg_group='Management')
         c.argument('incident_routing_team', type=str, help='The "Team" in IcM when creating or transferring incidents to the RP.', arg_group='Management')
         c.argument('incident_contact_email', type=str, help='The email address of contacts for incidents related to the RP.', arg_group='Management')
-        c.argument('service_tree_infos', action=AddCustomrolloutsServiceTreeInfos, nargs='+', help='The ServiceTree information for the resource provider.',
+        c.argument('service_tree_infos', action=AddServiceTreeInfos, nargs='+', help='The ServiceTree information for the resource provider.',
                    arg_group='Management')
         c.argument('resource_access_policy', arg_type=get_enum_type(['NotSpecified', 'AcisReadAllowed',
-                                                                     'AcisActionAllowed']), help='Authorizes direct access to the Resource Provider resources from ARM\'s ACIS extension Resource Group Management/Get resource from URI operation. Use if the secret could not be revealed with a GET.',
+                                                                     'AcisActionAllowed']), help='The resource access policy.',
                    arg_group='Management')
         c.argument('resource_access_roles', type=validate_file_or_dict,
                    help=' Expected value: json-string/@json-file.', arg_group='Management')
@@ -196,12 +195,12 @@ def load_arguments(self, _):
                    arg_group='Request Header Options')
         c.argument('required_features_policy', arg_type=get_enum_type(['Any', 'All']), help='The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​', arg_group='Features '
                    'Rule')
-        c.argument('provider_hub_metadata_provider_authorizations',
+        c.argument('providerhub_metadata_provider_authorizations',
                    action=AddProviderHubMetadataProviderAuthorizations, nargs='+', help='Available only for first party providers, this section can be used to bootstrap Service-to-Service authentication and authorization for the provider\'s application. When set, it would allow provider to access users\' subscription registered with them.', arg_group='Provider Hub '
                    'Metadata')
-        c.argument('resource_provider_authentication', action=AddResourceProviderAuthentication, nargs='+', help='Used to set alternative "audiences or resources" that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers.',
+        c.argument('providerhub_metadata_rp_authentication', action=AddResourceProviderAuthentication, nargs='+', help='Used to set alternative "audiences or resources" that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers.',
                    arg_group='Provider Hub Metadata')
-        c.argument('authorizations', action=AddAuthorizations, nargs='+', help='The lighthouse authorizations.', arg_group='Provider Hub Metadata '
+        c.argument('lighthouse_authorizations', action=AddAuthorizations, nargs='+', help='The lighthouse authorizations.', arg_group='Provider Hub Metadata '
                    'Third Party Provider Authorization')
         c.argument('managed_by_tenant_id', type=str, help='The managed by tenant ID.', arg_group='Provider Hub Metadata Third Party Provider '
                    'Authorization')
@@ -239,16 +238,16 @@ def load_arguments(self, _):
         c.argument('endpoints', action=AddResourceTypeEndpointProperties, nargs='+', help='The resource '
                    'type endpoint properties.')
         c.argument('marketplace_type', arg_type=get_enum_type(['NotSpecified', 'AddOn', 'Bypass', 'Store']), help='The resource type behavior in the marketplace.')
-        c.argument('swagger_specifications', action=AddSwaggerSpecifications, nargs='+', help='The OpenAPI (swagger specs) of this resource type. RPaaS will use the swagger specs to validate http requests/responses.')
+        c.argument('swagger_specifications', action=AddSwaggerSpecifications, nargs='+', help='The OpenAPI (swagger specs) of the resource type. RPaaS will use the swagger specs to validate http requests/responses.')
         c.argument('allowed_unauthorized_actions', nargs='+', help='The allowed unauthorized actions.')
-        c.argument('authorization_action_mappings', action=AddAuthorizationActionMappings, nargs='+', help='The read-only actions.')
+        c.argument('authorization_action_mappings', action=AddAuthorizationActionMappings, nargs='+', help='Allows RP to override action verb for RBAC purposes at ARM.')
         c.argument('linked_access_checks', action=AddLinkedAccessChecks, nargs='+', help='Enables additional Role Based Access Control (RBAC) checks on related resources.')
         c.argument('default_api_version', type=str, help='The default API version for the endpoint.')
         c.argument('logging_rules', type=validate_file_or_dict, help='Enables additional event logs RP wants customers to see in their subscription for a particular action.')
         c.argument('throttling_rules', action=AddThrottlingRules, nargs='+', help='Allows RPs to set individual limits for different actions in terms of number of requests or number of resources (for collection read requests only).')
-        c.argument('required_features', nargs='+', help='If specified, only subscriptions registered to the corresponding feature flag will be allowed.')
+        c.argument('required_features', action=AddRequiredFeatures, nargs='+', help='If specified, only subscriptions registered to the corresponding feature flag will be allowed.')
         c.argument('enable_async_operation', arg_type=get_three_state_flag(), help='Indicates whether the async operation is enabled for this resource type.')
-        c.argument('enable_third_party_s2_s', arg_type=get_three_state_flag(), help='Indicates whether to enable third party s2s.')
+        c.argument('enable_third_party_s2s', arg_type=get_three_state_flag(), help='Indicates whether to enable third party s2s.')
         c.argument('is_pure_proxy', arg_type=get_three_state_flag(), help='Indicates whether this is a "PureProxy" resource type.')
         c.argument('identity_management', action=AddIdentityManagement, nargs='+', help='MSI related settings. RPaaS supports Managed Identity and can help simplify the onboarding process.')
         c.argument('check_name_availability_specifications', action=AddCheckNameAvailabilitySpecifications, nargs='+',
@@ -280,14 +279,14 @@ def load_arguments(self, _):
         c.argument('marketplace_type', arg_type=get_enum_type(['NotSpecified', 'AddOn', 'Bypass', 'Store']), help='The resource type behavior in the marketplace.')
         c.argument('swagger_specifications', action=AddSwaggerSpecifications, nargs='+', help='The OpenAPI (swagger specs) of this resource type. RPaaS will use the swagger specs to validate http requests/responses.')
         c.argument('allowed_unauthorized_actions', nargs='+', help='The allowed unauthorized actions.')
-        c.argument('authorization_action_mappings', action=AddAuthorizationActionMappings, nargs='+', help='The read-only actions.')
+        c.argument('authorization_action_mappings', action=AddAuthorizationActionMappings, nargs='+', help='Allows RP to override action verb for RBAC purposes at ARM.')
         c.argument('linked_access_checks', action=AddLinkedAccessChecks, nargs='+', help='Enables additional Role Based Access Control (RBAC) checks on related resources.')
         c.argument('default_api_version', type=str, help='The default API version for the endpoint.')
         c.argument('logging_rules', type=validate_file_or_dict, help='Enables additional event logs RPs want customers to see in their subscription for a particular action.')
         c.argument('throttling_rules', action=AddThrottlingRules, nargs='+', help='Allows RPs to set individual limits for different actions in terms of number of requests or number of resources (for collection read requests only).')
-        c.argument('required_features', nargs='+', help='If specified, only subscriptions registered to the corresponding feature flag will be allowed.')
+        c.argument('required_features', action=AddRequiredFeatures, nargs='+', help='If specified, only subscriptions registered to the corresponding feature flag will be allowed.')
         c.argument('enable_async_operation', arg_type=get_three_state_flag(), help='Indicates whether the async operation is enabled for this resource type.')
-        c.argument('enable_third_party_s2_s', arg_type=get_three_state_flag(), help='Indicates whether to enable third party s2s.')
+        c.argument('enable_third_party_s2s', arg_type=get_three_state_flag(), help='Indicates whether to enable third party s2s.')
         c.argument('is_pure_proxy', arg_type=get_three_state_flag(), help='Indicates whether this is a "PureProxy" resource type.')
         c.argument('identity_management', action=AddIdentityManagement, nargs='+', help='MSI related settings. RPaaS supports Managed Identity and can help simplify the onboarding process.')
         c.argument('check_name_availability_specifications', action=AddCheckNameAvailabilitySpecifications, nargs='+',

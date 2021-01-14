@@ -248,10 +248,8 @@ effect="Allow" quota-id="CSP_MG_2017-12-01" --incident-contact-email "helpme@con
 |**--provider-namespace**|string|The name of the resource provider hosted within ProviderHub.|provider_namespace|providerNamespace|
 |**--provider-authentication**|object||provider_authentication|providerAuthentication|
 |**--provider-authorizations**|array||provider_authorizations|providerAuthorizations|
-|**--namespace**|string||namespace|namespace|
 |**--provider-version**|string||provider_version|providerVersion|
 |**--provider-type**|choice||provider_type|providerType|
-|**--required-features**|array||required_features|requiredFeatures|
 |**--capabilities**|array||capabilities|capabilities|
 |**--metadata**|any|Any object|metadata|metadata|
 |**--template-deployment-options**|object||template_deployment_options|templateDeploymentOptions|
@@ -263,11 +261,10 @@ effect="Allow" quota-id="CSP_MG_2017-12-01" --incident-contact-email "helpme@con
 |**--service-tree-infos**|array||service_tree_infos|serviceTreeInfos|
 |**--resource-access-policy**|choice||resource_access_policy|resourceAccessPolicy|
 |**--resource-access-roles**|array||resource_access_roles|resourceAccessRoles|
-|**--opt-in-headers**|choice||opt_in_headers|optInHeaders|
 |**--required-features-policy**|choice||required_features_policy|requiredFeaturesPolicy|
-|**--provider-hub-metadata-provider-authorizations**|array||provider_hub_metadata_provider_authorizations|providerAuthorizations|
-|**--resource-provider-authentication**|object||resource_provider_authentication|providerAuthentication|
-|**--third-party-provider-authorization**|array||third_party_provider_authorization|thirdPartyAuthorization|
+|**--providerhub-metadata-provider-authorizations**|array||provider_hub_metadata_provider_authorizations|providerAuthorizations|
+|**--providerhub-metadata-rp-authentication**|object||resource_provider_authentication|providerAuthentication|
+|**--lighthouse_authorizations**|array||third_party_provider_authorization|thirdPartyAuthorization|
 |**--managed-by-tenant-id**|string||managed_by_tenant_id|managedByTenantId|
 
 #### <a name="ProviderRegistrationsDelete">Command `az providerhub provider-registration delete`</a>
@@ -321,8 +318,7 @@ az providerhub resource-type-registration show --provider-namespace "Microsoft.C
 
 ##### <a name="ExamplesResourceTypeRegistrationCreateOrUpdate#Create">Example</a>
 ```
-az providerhub resource-type-registration create --endpoints "[{\\"apiVersions\\":[\\"2020-06-01-preview\\"],\\"locatio\
-ns\\":[\\"West US\\",\\"East US\\",\\"North Europe\\"],\\"requiredfeatures\\":[\\"<feature flag>\\"]}]" --regionality \
+az providerhub resource-type-registration create --endpoints api-versions="2020-01-01-preview,2019-01-01" locations="West US, West Central US" required-features="Microsoft.Contoso/RPaaSSampleApp" --regionality \
 "regional" --routing-type "Default" --swagger-specifications api-versions="2020-06-01-preview" \
 swagger-spec-folder-uri="https://github.com/Azure/azure-rest-api-specs/blob/feature/azure/contoso/specification/contoso\
 /resource-manager/Microsoft.SampleRP/" --provider-namespace "Microsoft.Contoso" --resource-type "employees"
@@ -345,7 +341,7 @@ swagger-spec-folder-uri="https://github.com/Azure/azure-rest-api-specs/blob/feat
 |**--throttling-rules**|array||throttling_rules|throttlingRules|
 |**--required-features**|array||required_features|requiredFeatures|
 |**--enable-async-operation**|boolean||enable_async_operation|enableAsyncOperation|
-|**--enable-third-party-s2-s**|boolean||enable_third_party_s2_s|enableThirdPartyS2S|
+|**--enable-third-party-s2s**|boolean||enable_third_party_s2s|enableThirdPartyS2S|
 |**--is-pure-proxy**|boolean||is_pure_proxy|isPureProxy|
 |**--identity-management**|object||identity_management|identityManagement|
 |**--check-name-availability-specifications**|object||check_name_availability_specifications|checkNameAvailabilitySpecifications|

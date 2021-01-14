@@ -120,10 +120,8 @@ class ProviderRegistrationsOperations(object):
         provider_namespace,  # type: str
         provider_authentication,  # type: "models.ResourceProviderAuthorization"
         provider_authorizations,  # type: "models.ThirdPartyProviderAuthorization"
-        namespace,  # type: str
         provider_version,  # type: str
         provider_type,  # type: str
-        required_features,  # type: list[str]
         capabilities,  # type: list["models.ResourceProviderCapabilities"]
         metadata,  # type: object
         template_deployment_options,  # type: "models.TemplateDeploymentOptions"
@@ -141,9 +139,10 @@ class ProviderRegistrationsOperations(object):
         managed_by_tenant_id,  # type: str
         # type: "models.ResourceProviderAuthorization"
         providerhub_metadata_provider_authorizations,
-        resource_provider_authentication,  # type: "models.ResourceProviderAuthentication"
-        # type: "models.ThirdPartyProviderAuthorization"
-        third_party_provider_authorization,
+        # type: "models.ResourceProviderAuthentication"
+        providerhub_metadata_rp_authentication,
+        # type: "models.LightHouseAuthorization"
+        lighthouse_authorizations,
         **kwargs  # type: Any
     ):
         # type: (...) -> Optional["models.ProviderRegistration"]
@@ -181,12 +180,14 @@ class ProviderRegistrationsOperations(object):
             required_features_policy=required_features_policy) if required_features_policy else None
         management = models.ResourceProviderManagement(schema_owners=schema_owners, manifest_owners=manifest_owners, incident_routing_service=incident_routing_service, incident_routing_team=incident_routing_team,
                                                        incident_contact_email=incident_contact_email, service_tree_infos=service_tree_infos, resource_access_policy=resource_access_policy, resource_access_roles=resource_access_roles)
+        third_party_provider_authorization = models.ThirdPartyProviderAuthorization(
+            authorizations=lighthouse_authorizations, managed_by_tenant_id=managed_by_tenant_id)
         providerhub_metadata = models.ProviderHubMetadata(provider_authorizations=providerhub_metadata_provider_authorizations,
-                                                          provider_authentication=resource_provider_authentication,
+                                                          provider_authentication=providerhub_metadata_rp_authentication,
                                                           third_party_provider_authorization=third_party_provider_authorization)
 
-        properties = models.ProviderRegistrationProperties(provider_authentication=provider_authentication, provider_authorizations=provider_authorizations, namespace=namespace, provider_version=provider_version, provider_type=provider_type, provider_hub_metadata=providerhub_metadata,
-                                                           required_features=required_features, features_rule=features_rule, management=management, capabilities=capabilities, metadata=metadata, template_deployment_options=template_deployment_options)
+        properties = models.ProviderRegistrationProperties(provider_authentication=provider_authentication, provider_authorizations=provider_authorizations, provider_version=provider_version, provider_type=provider_type, provider_hub_metadata=providerhub_metadata,
+                                                           features_rule=features_rule, management=management, capabilities=capabilities, metadata=metadata, template_deployment_options=template_deployment_options)
         parameters = models.ProviderRegistration(properties=properties)
 
         body_content_kwargs = {}  # type: Dict[str, Any]
@@ -222,10 +223,8 @@ class ProviderRegistrationsOperations(object):
         provider_namespace,  # type: str
         provider_authentication,  # type: "models.ResourceProviderAuthorization"
         provider_authorizations,  # type: "models.ThirdPartyProviderAuthorization"
-        namespace,  # type: str
         provider_version,  # type: str
         provider_type,  # type: str
-        required_features,  # type: list[str]
         capabilities,  # type: list["models.ResourceProviderCapabilities"]
         metadata,  # type: object
         template_deployment_options,  # type: "models.TemplateDeploymentOptions"
@@ -243,9 +242,10 @@ class ProviderRegistrationsOperations(object):
         managed_by_tenant_id,  # type: str
         # type: "models.ResourceProviderAuthorization"
         providerhub_metadata_provider_authorizations,
-        resource_provider_authentication,  # type: "models.ResourceProviderAuthentication"
-        # type: "models.ThirdPartyProviderAuthorization"
-        third_party_provider_authorization,
+        # type: "models.ResourceProviderAuthentication"
+        providerhub_metadata_rp_authentication,
+        # type: "models.LightHouseAuthorization"
+        lighthouse_authorizations,
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["models.ProviderRegistration"]
@@ -266,7 +266,6 @@ class ProviderRegistrationsOperations(object):
         :rtype: ~azure.core.polling.LROPoller[~providerhub.models.ProviderRegistration]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        print(resource_provider_authentication)
         polling = kwargs.pop(
             'polling', True)  # type: Union[bool, PollingMethod]
         # type: ClsType["models.ProviderRegistration"]
@@ -282,10 +281,8 @@ class ProviderRegistrationsOperations(object):
                 provider_namespace=provider_namespace,
                 provider_authentication=provider_authentication,
                 provider_authorizations=provider_authorizations,
-                namespace=namespace,
                 provider_version=provider_version,
                 provider_type=provider_type,
-                required_features=required_features,
                 capabilities=capabilities,
                 metadata=metadata,
                 template_deployment_options=template_deployment_options,
@@ -301,8 +298,8 @@ class ProviderRegistrationsOperations(object):
                 opt_in_headers=opt_in_headers,
                 managed_by_tenant_id=managed_by_tenant_id,
                 providerhub_metadata_provider_authorizations=providerhub_metadata_provider_authorizations,
-                resource_provider_authentication=resource_provider_authentication,
-                third_party_provider_authorization=third_party_provider_authorization,
+                providerhub_metadata_rp_authentication=providerhub_metadata_rp_authentication,
+                lighthouse_authorizations=lighthouse_authorizations,
                 cls=lambda x, y, z: x,
                 **kwargs
             )

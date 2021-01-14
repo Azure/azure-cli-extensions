@@ -147,7 +147,6 @@ def providerhub_provider_registration_create(
     provider_type=None,
     provider_authentication=None,
     provider_authorizations=None,
-    required_features=None,
     capabilities=None,
     metadata=None,
     template_deployment_options=None,
@@ -163,8 +162,8 @@ def providerhub_provider_registration_create(
     required_features_policy=None,
     managed_by_tenant_id=None,
     providerhub_metadata_provider_authorizations=None,
-    resource_provider_authentication=None,
-    third_party_provider_authorization=None,
+    providerhub_metadata_rp_authentication=None,
+    lighthouse_authorizations=None,
     no_wait=False,
 ):
     return sdk_no_wait(
@@ -176,7 +175,6 @@ def providerhub_provider_registration_create(
         namespace=namespace,
         provider_version=provider_version,
         provider_type=provider_type,
-        required_features=required_features,
         capabilities=capabilities,
         metadata=metadata,
         template_deployment_options=template_deployment_options,
@@ -192,8 +190,8 @@ def providerhub_provider_registration_create(
         required_features_policy=required_features_policy,
         managed_by_tenant_id=managed_by_tenant_id,
         providerhub_metadata_provider_authorizations=providerhub_metadata_provider_authorizations,
-        resource_provider_authentication=resource_provider_authentication,
-        third_party_provider_authorization=third_party_provider_authorization
+        providerhub_metadata_rp_authentication=providerhub_metadata_rp_authentication,
+        lighthouse_authorizations=lighthouse_authorizations
     )
 
 
@@ -201,11 +199,9 @@ def providerhub_provider_registration_update(
     client,
     provider_namespace,
     provider_version="2.0",
-    namespace=None,
     provider_type=None,
     provider_authentication=None,
     provider_authorizations=None,
-    required_features=None,
     capabilities=None,
     metadata=None,
     template_deployment_options=None,
@@ -221,8 +217,8 @@ def providerhub_provider_registration_update(
     required_features_policy=None,
     managed_by_tenant_id=None,
     providerhub_metadata_provider_authorizations=None,
-    resource_provider_authentication=None,
-    third_party_provider_authorization=None,
+    providerhub_metadata_rp_authentication=None,
+    lighthouse_authorizations=None,
     no_wait=False,
 ):
     return sdk_no_wait(
@@ -231,10 +227,8 @@ def providerhub_provider_registration_update(
         provider_namespace=provider_namespace,
         provider_authentication=provider_authentication,
         provider_authorizations=provider_authorizations,
-        namespace=namespace,
         provider_version=provider_version,
         provider_type=provider_type,
-        required_features=required_features,
         capabilities=capabilities,
         metadata=metadata,
         template_deployment_options=template_deployment_options,
@@ -250,8 +244,8 @@ def providerhub_provider_registration_update(
         required_features_policy=required_features_policy,
         managed_by_tenant_id=managed_by_tenant_id,
         providerhub_metadata_provider_authorizations=providerhub_metadata_provider_authorizations,
-        resource_provider_authentication=resource_provider_authentication,
-        third_party_provider_authorization=third_party_provider_authorization
+        providerhub_metadata_rp_authentication=providerhub_metadata_rp_authentication,
+        lighthouse_authorizations=lighthouse_authorizations
     )
 
 
@@ -292,7 +286,7 @@ def providerhub_resource_type_registration_create(  # pylint: disable=too-many-l
     throttling_rules=None,
     required_features=None,
     enable_async_operation=None,
-    enable_third_party_s2_s=None,
+    enable_third_party_s2s=None,
     is_pure_proxy=None,
     identity_management=None,
     check_name_availability_specifications=None,
@@ -322,7 +316,7 @@ def providerhub_resource_type_registration_create(  # pylint: disable=too-many-l
         throttling_rules=throttling_rules,
         required_features=required_features,
         enable_async_operation=enable_async_operation,
-        enable_third_party_s2_s=enable_third_party_s2_s,
+        enable_third_party_s2s=enable_third_party_s2s,
         is_pure_proxy=is_pure_proxy,
         identity_management=identity_management,
         check_name_availability_specifications=check_name_availability_specifications,
@@ -355,7 +349,7 @@ def providerhub_resource_type_registration_update(  # pylint: disable=too-many-l
     throttling_rules=None,
     required_features=None,
     enable_async_operation=None,
-    enable_third_party_s2_s=None,
+    enable_third_party_s2s=None,
     is_pure_proxy=None,
     identity_management=None,
     check_name_availability_specifications=None,
@@ -385,7 +379,7 @@ def providerhub_resource_type_registration_update(  # pylint: disable=too-many-l
         throttling_rules=throttling_rules,
         required_features=required_features,
         enable_async_operation=enable_async_operation,
-        enable_third_party_s2_s=enable_third_party_s2_s,
+        enable_third_party_s2s=enable_third_party_s2s,
         is_pure_proxy=is_pure_proxy,
         identity_management=identity_management,
         check_name_availability_specifications=check_name_availability_specifications,
