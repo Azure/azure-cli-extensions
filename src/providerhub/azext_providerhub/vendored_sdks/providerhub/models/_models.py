@@ -3061,10 +3061,13 @@ class ResourceTypeExtensionOptions(msrest.serialization.Model):
 
     :param resource_creation_begin:
     :type resource_creation_begin: ~providerhub.models.ExtensionOptions
+    :param resource_patch_begin:
+    :type resource_patch_begin: ~providerhub.models.ExtensionOptions
     """
 
     _attribute_map = {
         'resource_creation_begin': {'key': 'resourceCreationBegin', 'type': 'ExtensionOptions'},
+        'resource_patch_begin': {'key': 'resourcePatchBegin', 'type': 'ExtensionOptions'},
     }
 
     def __init__(
@@ -3073,6 +3076,7 @@ class ResourceTypeExtensionOptions(msrest.serialization.Model):
     ):
         super(ResourceTypeExtensionOptions, self).__init__(**kwargs)
         self.resource_creation_begin = kwargs.get('resource_creation_begin', None)
+        self.resource_patch_begin = kwargs.get('resource_patch_begin', None)
 
 
 class ResourceTypeExtensionOptionsResourceCreationBegin(ExtensionOptions):
@@ -3094,6 +3098,27 @@ class ResourceTypeExtensionOptionsResourceCreationBegin(ExtensionOptions):
         **kwargs
     ):
         super(ResourceTypeExtensionOptionsResourceCreationBegin, self).__init__(**kwargs)
+
+
+class ResourceTypeExtensionOptionsResourcePatchBegin(ExtensionOptions):
+    """ResourceTypeExtensionOptionsResourcePatchBegin.
+
+    :param request:
+    :type request: list[str or ~providerhub.models.ExtensionOptionType]
+    :param response:
+    :type response: list[str or ~providerhub.models.ExtensionOptionType]
+    """
+
+    _attribute_map = {
+        'request': {'key': 'request', 'type': '[str]'},
+        'response': {'key': 'response', 'type': '[str]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ResourceTypeExtensionOptionsResourcePatchBegin, self).__init__(**kwargs)
 
 
 class ResourceTypeFeaturesRule(FeaturesRule):

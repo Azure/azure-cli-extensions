@@ -58,7 +58,7 @@ def step_default_rollout_create(test, checks=None):
     test.cmd('az providerhub default-rollout create '
              '--provider-namespace "{providerNamespace}" '
              '--rollout-name "{defaultRolloutName}" '
-             '--row-two-wait-duration "PT2H" '
+             '--row2-wait-duration "PT2H" '
              '--skip-regions "brazilus, centraluseuap"',
              checks=checks)
 
@@ -136,7 +136,7 @@ def step_manifest_checkin(test, checks=None):
         checks = []
     test.cmd('az providerhub manifest checkin '
              '--environment "Prod" '
-             '--baseline-arm-manifest-location "EastUS2EUAP" '
+             '--arm-manifest-location "EastUS2EUAP" '
              '--provider-namespace "{providerNamespace}"',
              checks=checks)
 

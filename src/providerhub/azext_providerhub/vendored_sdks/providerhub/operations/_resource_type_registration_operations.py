@@ -56,6 +56,8 @@ class ResourceTypeRegistrationOperations(object):
         routing_type,  # type: "models.RoutingType"
         regionality,  # type: "models.Regionality"
         endpoints,  # type: list["models.ResourceTypeEndpoint"]
+        resource_creation_begin,  # type: "models.ExtensionOptions"
+        resource_patch_begin,  # type: "models.ExtensionOptions"
         marketplace_type,  # type: "models.ResourceTypeRegistrationPropertiesMarketplaceType"
         swagger_specifications,  # type: list["models.SwaggerSpecification"]
         allowed_unauthorized_actions,  # type: list[str]
@@ -115,11 +117,12 @@ class ResourceTypeRegistrationOperations(object):
         header_parameters['Accept'] = self._serialize.header(
             "accept", accept, 'str')
 
-        extension_options = None
         request_header_options = models.RequestHeaderOptions(
             opt_in_headers=opt_in_headers) if opt_in_headers else None
         features_rule = models.FeaturesRule(
             required_features_policy=required_features_policy) if required_features_policy else None
+        extension_options = models.ResourceTypeExtensionOptions(resource_creation_begin=resource_creation_begin,
+                                                                resource_patch_begin=resource_patch_begin)
         params = models.ResourceTypeRegistration(routing_type=routing_type, regionality=regionality, endpoints=endpoints, extension_options=extension_options, marketplace_type=marketplace_type, swagger_specifications=swagger_specifications, allowed_unauthorized_actions=allowed_unauthorized_actions, authorization_action_mappings=authorization_action_mappings, linked_access_checks=linked_access_checks, default_api_version=default_api_version, logging_rules=logging_rules, throttling_rules=throttling_rules, required_features=required_features, features_rule=features_rule, enable_async_operation=enable_async_operation,
                                                  enable_third_party_s2s=enable_third_party_s2s, is_pure_proxy=is_pure_proxy, identity_management=identity_management, check_name_availability_specifications=check_name_availability_specifications, disallowed_action_verbs=disallowed_action_verbs, service_tree_infos=service_tree_infos, request_header_options=request_header_options, subscription_state_rules=subscription_state_rules, template_deployment_options=template_deployment_options, extended_locations=extended_locations, resource_move_policy=resource_move_policy, resource_deletion_policy=resource_deletion_policy)
 
@@ -161,6 +164,8 @@ class ResourceTypeRegistrationOperations(object):
         routing_type,  # type: "models.RoutingType"
         regionality,  # type: "models.Regionality"
         endpoints,  # type: list["models.ResourceTypeEndpoint"]
+        resource_creation_begin,  # type: "models.ExtensionOptions"
+        resource_patch_begin,  # type: "models.ExtensionOptions"
         marketplace_type,  # type: "models.ResourceTypeRegistrationPropertiesMarketplaceType"
         swagger_specifications,  # type: list["models.SwaggerSpecification"]
         allowed_unauthorized_actions,  # type: list[str]
@@ -224,6 +229,8 @@ class ResourceTypeRegistrationOperations(object):
                 routing_type=routing_type,
                 regionality=regionality,
                 endpoints=endpoints,
+                resource_creation_begin=resource_creation_begin,
+                resource_patch_begin=resource_patch_begin,
                 marketplace_type=marketplace_type,
                 swagger_specifications=swagger_specifications,
                 allowed_unauthorized_actions=allowed_unauthorized_actions,

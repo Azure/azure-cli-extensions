@@ -19,7 +19,7 @@ helps['providerhub custom-rollout'] = """
 
 helps['providerhub custom-rollout list'] = """
     type: command
-    short-summary: "Gets the list of the custom rollouts for the given provider."
+    short-summary: 'Gets the list of the custom rollouts for the given provider.'
     examples:
       - name: CustomRollouts_ListByProviderRegistration
         text: |-
@@ -28,7 +28,7 @@ helps['providerhub custom-rollout list'] = """
 
 helps['providerhub custom-rollout show'] = """
     type: command
-    short-summary: "Gets the custom rollout details."
+    short-summary: 'Gets the custom rollout details.'
     examples:
       - name: CustomRollouts_Get
         text: |-
@@ -38,12 +38,14 @@ helps['providerhub custom-rollout show'] = """
 
 helps['providerhub custom-rollout create'] = """
     type: command
-    short-summary: "Create the rollout details."
+    short-summary: 'Create the rollout details.'
     parameters:
       - name: --canary
-        short-summary: "The canary regions to apply the manifest."
+        short-summary: 'The canary regions to apply the manifest.'
         long-summary: |
             Usage: --canary regions=XX
+
+            regions: Required. Comma separated list of canary regions.
     examples:
       - name: CustomRollouts_CreateOrUpdate
         text: |-
@@ -58,7 +60,7 @@ helps['providerhub default-rollout'] = """
 
 helps['providerhub default-rollout list'] = """
     type: command
-    short-summary: "Gets the list of the rollouts for the given provider."
+    short-summary: 'Gets the list of the rollouts for the given provider.'
     examples:
       - name: DefaultRollouts_ListByProviderRegistration
         text: |-
@@ -67,7 +69,7 @@ helps['providerhub default-rollout list'] = """
 
 helps['providerhub default-rollout show'] = """
     type: command
-    short-summary: "Gets the default rollout details."
+    short-summary: 'Gets the default rollout details.'
     examples:
       - name: DefaultRollouts_Get
         text: |-
@@ -77,28 +79,28 @@ helps['providerhub default-rollout show'] = """
 
 helps['providerhub default-rollout create'] = """
     type: command
-    short-summary: "Create the rollout details."
+    short-summary: 'Create the rollout details.'
     parameters:
-      - name: --row-two-wait-duration
+      - name: --row2-wait-duration
         type: string
-        short-summary: "Optional. The wait duration before rolling out to the Rest of the World Two regions."
+        short-summary: 'Optional. The wait duration before rolling out to the Rest of the World Two regions.'
         long-summary: |
-            Usage: --row-two-wait-duration "PT24H"
+            Usage: --row2-wait-duration "PT24H"
       - name: --skip-regions
         type: string
-        short-summary: "Optional. The canary regions to skip applying the manifest in."
+        short-summary: 'Optional. The canary regions to skip applying the manifest in.'
         long-summary: |
             Usage: --skip-regions "brazilus, centraluseuap"
     examples:
       - name: DefaultRollouts_CreateOrUpdate
         text: |-
                az providerhub default-rollout create --provider-namespace "Microsoft.Contoso" \
---rollout-name "2021week10" --skip-regions "brazilus, centraluseuap"
+--rollout-name "2021week10" --skip-regions "brazilus, centraluseuap" --row2-wait-duration "PT24H"
 """
 
 helps['providerhub default-rollout delete'] = """
     type: command
-    short-summary: "Deletes the rollout resource. Rollout must be in terminal state."
+    short-summary: 'Deletes the rollout resource. Rollout must be in terminal state.'
     examples:
       - name: DefaultRollouts_Delete
         text: |-
@@ -108,7 +110,7 @@ helps['providerhub default-rollout delete'] = """
 
 helps['providerhub default-rollout stop'] = """
     type: command
-    short-summary: "Stops or cancels the rollout, if in progress."
+    short-summary: 'Stops or cancels the rollout, if in progress.'
     examples:
       - name: DefaultRollouts_Stop
         text: |-
@@ -133,16 +135,29 @@ helps['providerhub manifest'] = """
 
 helps['providerhub manifest checkin'] = """
     type: command
-    short-summary: "Checkin the manifest."
+    short-summary: 'Checkin the manifest.'
+    parameters:
+      - name: --environment
+        type: string
+        short-summary: 'The environment to checkin the manifest.'
+        long-summary: |
+        Usage: --environment "2.0"
+
+      - name: --arm-arm-manifest-location
+        type: string
+        short-summary: 'The baseline ARM manifest location.'
+        long-summary: |
+        Usage: --arm-arm-manifest-location "2.0"
     examples:
       - name: CheckinManifest
         text: |-
-               az providerhub manifest checkin --provider-namespace "Microsoft.Contoso"
+               az providerhub manifest checkin --provider-namespace "Microsoft.Contoso" \
+--environment "Canary" --arm-arm-manifest-location "EastUS2EUAP"
 """
 
 helps['providerhub manifest generate'] = """
     type: command
-    short-summary: "Generates the manifest for the given provider."
+    short-summary: 'Generates the manifest for the given provider.'
     examples:
       - name: GenerateManifest
         text: |-
@@ -156,7 +171,7 @@ helps['providerhub provider-registration'] = """
 
 helps['providerhub provider-registration list'] = """
     type: command
-    short-summary: " Gets the list of the provider registrations in the subscription."
+    short-summary: ' Gets the list of the provider registrations in the subscription.'
     examples:
       - name: ProviderRegistrations_List
         text: |-
@@ -165,7 +180,7 @@ helps['providerhub provider-registration list'] = """
 
 helps['providerhub provider-registration show'] = """
     type: command
-    short-summary: "Gets the provider registration details."
+    short-summary: 'Gets the provider registration details.'
     examples:
       - name: ProviderRegistrations_Get
         text: |-
@@ -174,17 +189,17 @@ helps['providerhub provider-registration show'] = """
 
 helps['providerhub provider-registration create'] = """
     type: command
-    short-summary: "Create the provider registration."
+    short-summary: 'Create the provider registration.'
     parameters:
       - name: --provider-authentication
-        short-summary: "Used to set alternative audiences or resources that ARM should accept from the token while authenticating requests for the provider."
+        short-summary: 'Used to set alternative audiences or resources that ARM should accept from the token while authenticating requests for the provider.'
         long-summary: |
             Usage: --provider-authentication allowed-audiences=XX
 
             allowed-audiences: Required. The allowed audiences.
 
       - name: --provider-authorizations
-        short-summary: "The resource provider authorizations."
+        short-summary: 'The resource provider authorizations.'
         long-summary: |
             Usage: --provider-authorizations application-id=XX role-definition-id=XX managed-by-role-definition-id=XX
 
@@ -194,71 +209,76 @@ helps['providerhub provider-registration create'] = """
 
       - name: --provider-version
         type: string
-        short-summary: "The provider version."
+        short-summary: 'The provider version.'
         long-summary: |
             Usage: --provider-version "2.0"
 
       - name: --provider-type
         type: string
-        short-summary: "The provider type"
+        short-summary: 'The provider type.'
         long-summary: |
             Usage: --provider-type "Internal"
 
       - name: --capabilities
-        short-summary: ""
+        short-summary: 'The resource provider capabilities.'
         long-summary: |
             Usage: --capabilities quota-id=XX effect=XX required-features=XX
 
             Multiple actions can be specified by using more than one --capabilities argument.
       - name: --template-deployment-options
-        short-summary: ""
+        short-summary: 'The template deployment options.'
         long-summary: |
             Usage: --template-deployment-options preflight-supported=XX preflight-options=XX
 
       - name: --schema-owners
-        short-summary: "Specifies an array of needed ACIS claims to modify the resource provider schema via ACIS."
+        short-summary: 'Specifies an array of needed ACIS claims to modify the resource provider schema via ACIS.'
         long-summary: |
             Usage: --schema-owners "Contoso schema owners"
 
              Multiple actions can be specified by using more than one --schema-owners argument.
       - name: --manifest-owners
-        short-summary: "Specifies an array of required ACIS claims to modify the resource provider\'s manifest content via ACIS."
+        short-summary: "Specifies an array of required ACIS claims to modify the resource provider's manifest content via ACIS."
         long-summary: |
             Usage: --manifest-owners "SPARTA-PlatformServiceAdministrator"
 
              Multiple actions can be specified by using more than one --manifest-owners argument.
       - name: --incident-routing-service
         type: string
-        short-summary: "The service in IcM when creating or transferring incidents to the RP."
+        short-summary: 'The service in IcM when creating or transferring incidents to the RP.'
         long-summary: |
             Usage: --incident-routing-service "Contoso Resource Provider"
 
       - name: --incident-routing-team
         type: string
-        short-summary: "The team in IcM when creating or transferring incidents to the RP."
+        short-summary: 'The team in IcM when creating or transferring incidents to the RP.'
         long-summary: |
             Usage: --incident-routing-team "Contoso Triage"
 
       - name: --incident-contact-email
         type: string
-        short-summary: "The email address of contacts for incidents related to the RP."
+        short-summary: 'The email address of contacts for incidents related to the RP.'
         long-summary: |
             Usage: --incident-contact-email "helpme@contoso.com"
 
       - name: --service-tree-infos
-        short-summary: "The ServiceTree information for the resource provider."
+        short-summary: 'The ServiceTree information for the resource provider.'
         long-summary: |
             Usage: --service-tree-infos service-id=XX component-id=XX
 
             service-id: Required. The service ID.
             component-id: Required. The component ID.
 
-            Multiple actions can be specified by using more than one --service-tree-infos argument.
       - name: --resource-access-policy
         type: string
-        short-summary: "The resource access policy."
+        short-summary: 'The resource access policy.'
         long-summary: |
             Usage: --resource-access-policy "AcisReadAllowed, AcisActionAllowed"
+
+      - name: --opt-in-headers
+        type: string
+        short-summary: 'The opt-in headers.'
+        long-summary: |
+            Usage: --opt-in-headers "SignedUserToken"
 
       - name: --required-features-policy
         type: string
@@ -267,7 +287,7 @@ helps['providerhub provider-registration create'] = """
             Usage: --required-features-policy "All"
 
       - name: --providerhub-metadata-provider-authorizations
-        short-summary: "The provider authorizations."
+        short-summary: 'The provider authorizations.'
         long-summary: |
             Usage: --providerhub-metadata-provider-authorizations application-id=XX role-definition-id=XX \
 managed-by-role-definition-id=XX
@@ -277,14 +297,14 @@ managed-by-role-definition-id=XX
             managed-by-role-definition-id: Required. The managed by role definition ID.
 
       - name: --providerhub-metadata-rp-authentication
-        short-summary: "Used to set alternative audiences or resources that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers."
+        short-summary: 'Used to set alternative audiences or resources that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers.'
         long-summary: |
             Usage: --providerhub-metadata-rp-authentication allowed-audiences=XX
 
             allowed-audiences: Required. The allowed audiences.
 
       - name: --lighthouse-authorizations
-        short-summary: "The lighthouse authorizations."
+        short-summary: 'The lighthouse authorizations.'
         long-summary: |
             Usage: --lighthouse-authorizations principal-id=XX role-definition-id=XX
 
@@ -293,7 +313,7 @@ managed-by-role-definition-id=XX
 
       - name: --managed-by-tenant-id
         type: string
-        short-summary: "The managed by tenant ID."
+        short-summary: 'The managed by tenant ID.'
         long-summary: |
             Usage: --managed-by-tenant-id "00000000-0000-0000-0000-000000000000"
 
@@ -309,7 +329,7 @@ managed-by-role-definition-id=XX
 
 helps['providerhub provider-registration delete'] = """
     type: command
-    short-summary: "Deletes a provider registration."
+    short-summary: 'Deletes a provider registration.'
     examples:
       - name: ProviderRegistrations_Delete
         text: |-
@@ -318,7 +338,7 @@ helps['providerhub provider-registration delete'] = """
 
 helps['providerhub provider-registration generate-operation'] = """
     type: command
-    short-summary: "Generates the operations api for the given provider."
+    short-summary: 'Generates the operations api for the given provider.'
     examples:
       - name: ProviderRegistrations_GenerateOperations
         text: |-
@@ -342,7 +362,7 @@ helps['providerhub resource-type-registration'] = """
 
 helps['providerhub resource-type-registration list'] = """
     type: command
-    short-summary: "Gets the list of the resource types for the given provider."
+    short-summary: 'Gets the list of the resource types for the given provider.'
     examples:
       - name: ResourceTypeRegistrations_ListByProviderRegistration
         text: |-
@@ -351,25 +371,20 @@ helps['providerhub resource-type-registration list'] = """
 
 helps['providerhub resource-type-registration show'] = """
     type: command
-    short-summary: "Gets a resource type details in the given subscription and provider."
+    short-summary: 'Gets a resource type details in the given subscription and provider.'
     examples:
       - name: ResourceTypeRegistrations_Get
         text: |-
                az providerhub resource-type-registration show --provider-namespace "Microsoft.Contoso" --resource-type \
-"employees"
-"""
-
-helps['providerhub resource-type-registration'] = """
-    type: group
-    short-summary: Manage resource type registration with providerhub
+"testResourceType"
 """
 
 helps['providerhub resource-type-registration create'] = """
     type: command
-    short-summary: "Create a resource type."
+    short-summary: 'Create a resource type.'
     parameters:
       - name: --swagger-specifications
-        short-summary: "The Swagger spec of the resource type."
+        short-summary: 'The Swagger spec of the resource type.'
         long-summary: |
             Usage: --swagger-specifications api-versions=XX swagger-spec-folder-uri=XX
 
@@ -377,8 +392,61 @@ helps['providerhub resource-type-registration create'] = """
             swagger-spec-folder-uri: Required. The Swagger spec URI.
 
             Multiple actions can be specified by using more than one --swagger-specifications argument.
+      - name: --routing-type
+        type: string
+        short-summary: 'The resource routing type.​'
+        long-summary: |
+            Usage: --routing-type "Default"
+
+      - name: --regionality
+        type: string
+        short-summary: 'The regionality of the resource type.'
+        long-summary: |
+            Usage: --regionality "Regional"
+
+      - name: --endpoints
+        type: string
+        short-summary: 'The resource type endpoints.'
+        long-summary: |
+            Usage: --endpoints api-versions=XX locations=XX required-features=XX
+
+            api-versions: Required. Comma separated list of API versions.
+            locations: Required. Comma separated list of locations.
+            required-features: Required. Comma separated list of required features.
+
+            Multiple actions can be specified by using more than one --endpoints argument.
+      - name: --resource-creation-begin
+        type: string
+        short-summary: 'Extension options for handling the resource creation begin extension request.'
+        long-summary: |
+            Usage: --resource-creation-begin request=XX response=XX
+
+            request: The comma separated list of extension option types.
+            response: The comma separated list of extension option types.
+
+      - name: --resource-patch-begin
+        type: string
+        short-summary: 'Extension options for handling the resource patch begin extension request.'
+        long-summary: |
+            Usage: --resource-patch-begin request=XX response=XX
+
+            request: The comma separated list of extension option types.
+            response: The comma separated list of extension option types.
+
+      - name: --marketplace-type
+        type: string
+        short-summary: 'The type of marketplace behavior for the resource type.'
+        long-summary: |
+            Usage: --marketplace-type "AddOn"
+
+      - name: --allowed-unauthorized-actions
+        type: string
+        short-summary: 'The allowed unauthorized actions'
+        long-summary: |
+            Usage: --allowed-unauthorized-actions "Microsoft.Contoso/rpResourceType/read, Microsoft.Contoso/rpResourceType/delete"
+
       - name: --authorization-action-mappings
-        short-summary: "Allows RP to override action verb for RBAC purposes at ARM."
+        short-summary: 'Allows RP to override action verb for RBAC purposes at ARM.'
         long-summary: |
             Usage: --authorization-action-mappings original=XX desired=XX
 
@@ -387,95 +455,167 @@ helps['providerhub resource-type-registration create'] = """
 
             Multiple actions can be specified by using more than one --authorization-action-mappings argument.
       - name: --linked-access-checks
-        short-summary: "Enables additional Role Based Access Control (RBAC) checks on related resources."
+        type: string
+        short-summary: 'Enables additional Role Based Access Control (RBAC) checks on related resources.'
         long-summary: |
-            Usage: --linked-access-checks action-name=XX linked-property=XX linked-action=XX linked-action-verb=XX \
-linked-type=XX
+            Usage: --linked-access-checks action-name=XX linked-property=XX linked-action=XX linked-action-verb=XX linked-type=XX
 
-            action-name: Required. The action name.
-            linked-property: Required. The linked property.
-            linked-action: Required. The linked action.
-            linked-action-verb: Required. The linked action verb.
-            linked-type: Required. The linked type.
+            action-name: The action name.
+            linked-property: The linked property.
+            linked-action: The linked action.
+            linked-action-verb: The linked action verb.
+            linked-type: The linked type.
 
             Multiple actions can be specified by using more than one --linked-access-checks argument.
+      - name: --default-api-version
+        type: string
+        short-summary: 'The default API version for the endpoint.'
+        long-summary: |
+            Usage: --default-api-version "2021-01-01"
+
+      - name: --logging-rules
+        type: string
+        short-summary: 'The logging rules'
+        long-summary: |
+            Usage: --logging-rules action=XX direction=XX detail-level=XX
+
+            action: Required. The action name.
+            direction: Required. The direction.
+            detail-level: Required. The detail level.
+
+            Multiple actions can be specified by using more than one --logging-rules argument.
       - name: --throttling-rules
-        short-summary: "Allows RPs to set individual limits for different actions in terms of number of requests or number of resources (for collection read requests only)."
+        type: string
+        short-summary: 'Enables setting individual limits for different actions in terms of number of requests or number of resources (for collection read requests only).'
         long-summary: |
             Usage: --throttling-rules action=XX metrics=XX required-features=XX
 
-            action: Required. The action.
-            metrics: Required. The metrics.
-            required-features: Required. The required features.
+            action: Required. The action name.
+            metrics: Required. The throttling metrics.
+            required-features: The throttling rule required features.
 
             Multiple actions can be specified by using more than one --throttling-rules argument.
+      - name: --required-features
+        type: string
+        short-summary: 'The required features.'
+        long-summary: |
+            Usage: --required-features "Microsoft.Contoso/feature1, Microsoft.Contoso/feature2"
+
+      - name: --required-features-policy
+        type: string
+        short-summary: 'The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​'
+        long-summary: |
+            Usage: --required-features-policy "All"
+
+      - name: --enable-async-operation
+        type: string
+        short-summary: 'Indicates whether the async operation is enabled for this resource type.'
+        long-summary: |
+            Usage: --enable-async-operation "false"
+
+      - name: --enable-third-party-s2s
+        type: string
+        short-summary: 'Indicates whether third party s2s is enabled for this resource type.'
+        long-summary: |
+            Usage: --enable-third-party-s2s "false"
+
+      - name: --is-pure-proxy
+        type: string
+        short-summary: 'Indicates whether this is a PureProxy resource type.'
+        long-summary: |
+            Usage: --is-pure-proxy "false"
+
       - name: --identity-management
-        short-summary: "MSI related settings."
+        type: string
+        short-summary: 'MSI related settings.'
         long-summary: |
             Usage: --identity-management type=XX application-id=XX
 
+            type: The type of the identity management.
+            application-id: The application ID that handles the identity.
+
       - name: --check-name-availability-specifications
-        short-summary: "Name availability checks feature at the platform level."
+        short-summary: 'Name availability checks feature at the platform level.'
         long-summary: |
             Usage: --check-name-availability-specifications enable-default-validation=XX \
 resource-types-with-custom-validation=XX
 
+            enable-default-validation: Boolean indicating whether RP has chosen to opt-out of RPaaS to perform check name.
+            resource-types-with-custom-validation: The types which needs additional validation from the RP.
+
+      - name: --disallowed-action-verbs
+        type: string
+        short-summary: 'The disallowed action verbs.'
+        long-summary: |
+            Usage: --disallowed-action-verbs "read"
+
       - name: --service-tree-infos
-        short-summary: "The ServiceTree information for the resource provider."
+        short-summary: 'The ServiceTree information for the resource provider.'
         long-summary: |
             Usage: --service-tree-infos service-id=XX component-id=XX
 
+            service-id: Required. The service ID.
+            component-id: Required. The component ID.
 
             Multiple actions can be specified by using more than one --service-tree-infos argument.
+      - name: --opt-in-headers
+        type: string
+        short-summary: 'The opt-in headers.'
+        long-summary: |
+            Usage: --opt-in-headers "SignedUserToken"
+
       - name: --subscription-state-rules
-        short-summary: ""
+        short-summary: 'The subscription state rules.'
         long-summary: |
             Usage: --subscription-state-rules state=XX allowed-actions=XX
 
+            state: The subscription state.
+            allowed-actions: The allowed actions.
 
             Multiple actions can be specified by using more than one --subscription-state-rules argument.
       - name: --template-deployment-options
-        short-summary: ""
+        short-summary: 'The template deployment options.'
         long-summary: |
             Usage: --template-deployment-options preflight-supported=XX preflight-options=XX
 
+            preflight-supported: Boolean indicating whether preflight validation is supported.
+            preflight-options: The preflight options.
+
       - name: --extended-locations
-        short-summary: ""
+        short-summary: 'The extended location options'
         long-summary: |
             Usage: --extended-locations type=XX supported-policy=XX
 
+            type: The extended location type.
+            supported-policy: The supported policy.
 
             Multiple actions can be specified by using more than one --extended-locations argument.
       - name: --resource-move-policy
-        short-summary: ""
+        short-summary: 'The resource move policy.'
         long-summary: |
             Usage: --resource-move-policy validation-required=XX cross-resource-group-move-enabled=XX \
 cross-subscription-move-enabled=XX
 
-      - name: --subscription-state-override-actions
-        short-summary: ""
+            validation-required: Boolean indicating whether validation is required for moving the resource.
+            cross-resource-group-move-enabled: Boolean indicating whether moving resources across resource groups is allowed.
+            cross-subscription-move-enabled: Boolean indicating whether moving resources across subscriptions is allowed.
+
+      - name: --resource-deletion-policy
+        type: string
+        short-summary: 'The resource deletion policy.'
         long-summary: |
-            Usage: --subscription-state-override-actions state=XX action=XX
-
-
-            Multiple actions can be specified by using more than one --subscription-state-override-actions argument.
-      - name: --resource-creation-begin
-        short-summary: ""
-        long-summary: |
-            Usage: --resource-creation-begin request=XX response=XX
-
+            Usage: --resource-deletion-policy "CascadeDeleteAll"
     examples:
       - name: ResourceTypeRegistration_CreateOrUpdate
         text: |-
-               az providerhub resource-type-registration create --endpoints api-versions="2020-01-01-preview,2019-01-01" locations="West US, West Central US" required-features="Microsoft.Contoso/RPaaSSampleApp" \
+               az providerhub resource-type-registration create --endpoints api-versions="2020-01-01-preview,2019-01-01" locations="West US, West Central US" required-features="Microsoft.Contoso/SampleApp" \
 --regionality "regional" --routing-type "Default" --swagger-specifications api-versions="2020-06-01-preview" \
-swagger-spec-folder-uri="https://github.com/Azure/azure-rest-api-specs/blob/feature/azure/contoso/specification/contoso\
-/resource-manager/Microsoft.SampleRP/" --provider-namespace "Microsoft.Contoso" --resource-type "employees"
+swagger-spec-folder-uri="https://rp-swagger-spec-uri.com/" --provider-namespace "Microsoft.Contoso" --resource-type "testResourceType"
 """
 
 helps['providerhub resource-type-registration delete'] = """
     type: command
-    short-summary: "Deletes a resource type."
+    short-summary: 'Deletes a resource type.'
     examples:
       - name: ResourceTypeRegistration_Delete
         text: |-

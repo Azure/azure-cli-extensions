@@ -254,6 +254,61 @@ class AddResourceTypeEndpointProperties(argparse._AppendAction):
         return d
 
 
+class AddResourceMovePolicy(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.resource_creation_begin = action
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError as value_error:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'request':
+                d['request'] = v[0]
+            elif kl == 'response':
+                d['response'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter resource_creation_begin. All possible keys '
+                               'are: request, response'.format(k))
+        return d
+
+
+class AddResourceMovePolicy(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.resource_patch_begin = action
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError as value_error:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'request':
+                d['request'] = v[0]
+            elif kl == 'response':
+                d['response'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter resource_patch_begin. All possible keys '
+                               'are: request, response'.format(k))
+        return d
+
+
+
 class AddSubscriptionStateOverrideActions(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
@@ -454,6 +509,35 @@ class AddLinkedAccessChecks(argparse._AppendAction):
                 raise CLIError('Unsupported Key {} is provided for parameter linked_access_checks. All possible keys '
                                'are: action-name, linked-property, linked-action, linked-action-verb, linked-type'.
                                format(k))
+        return d
+
+
+class AddLoggingRules(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super().__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError as value_error:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string)) from value_error
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'action':
+                d['action'] = v[0]
+            elif kl == 'direction':
+                d['direction'] = v
+            elif kl == 'detail-level':
+                d['detail_level'] = v
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter logging_rules. All possible keys are: '
+                               'action, metrics, detail-level'.format(k))
         return d
 
 

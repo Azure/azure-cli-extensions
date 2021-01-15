@@ -78,7 +78,7 @@ def load_arguments(self, _):
         c.argument('provider_namespace', type=str,
                    help='The name of the resource provider hosted within ProviderHub.')
         c.argument('rollout_name', type=str, help='The rollout name.')
-        c.argument('row_two_wait_duration', type=str, help='The wait duration before the rollout '
+        c.argument('row2_wait_duration', type=str, help='The wait duration before the rollout '
                    'begins in rest of the world two.')
         c.argument('skip_regions', action=AddSkipRegions, nargs='*', help='The canary regions to skip.')
 
@@ -86,7 +86,7 @@ def load_arguments(self, _):
         c.argument('provider_namespace', type=str,
                    help='The name of the resource provider hosted within ProviderHub.')
         c.argument('rollout_name', type=str, help='The rollout name.')
-        c.argument('row_two_wait_duration', type=str, help='The wait duration before the rollout begins '
+        c.argument('row2_wait_duration', type=str, help='The wait duration before the rollout begins '
                    'in rest of the world two.')
         c.argument('skip_regions', action=AddSkipRegions, nargs='*', help='The canary regions to skip.')
 
@@ -110,7 +110,7 @@ def load_arguments(self, _):
                    id_part='name')
         c.argument('environment', type=str, help='The environment supplied to the checkin manifest '
                    'operation.')
-        c.argument('baseline_arm_manifest_location', type=str, help='The baseline ARM manifest location supplied to '
+        c.argument('arm_manifest_location', type=str, help='The baseline ARM manifest location supplied to '
                    'the checkin manifest operation.')
 
     with self.argument_context('providerhub manifest generate') as c:
@@ -146,8 +146,6 @@ def load_arguments(self, _):
         c.argument('resource_access_policy', arg_type=get_enum_type(['NotSpecified', 'AcisReadAllowed',
                                                                      'AcisActionAllowed']), help='The resource access policy.',
                    arg_group='Management')
-        c.argument('resource_access_roles', type=validate_file_or_dict,
-                   help='Expected value: json-string/@json-file.', arg_group='Management')
         c.argument('opt_in_headers', arg_type=get_enum_type(['NotSpecified', 'SignedUserToken',
                                                              'ClientGroupMembership', 'SignedAuxiliaryTokens',
                                                              'UnboundedClientGroupMembership']), help='ARM allows customized headers when sending requests to the RP. This can be done both at the provider level or at the individual resource type level.',
@@ -187,8 +185,6 @@ def load_arguments(self, _):
         c.argument('resource_access_policy', arg_type=get_enum_type(['NotSpecified', 'AcisReadAllowed',
                                                                      'AcisActionAllowed']), help='The resource access policy.',
                    arg_group='Management')
-        c.argument('resource_access_roles', type=validate_file_or_dict,
-                   help=' Expected value: json-string/@json-file.', arg_group='Management')
         c.argument('opt_in_headers', arg_type=get_enum_type(['NotSpecified', 'SignedUserToken',
                                                              'ClientGroupMembership', 'SignedAuxiliaryTokens',
                                                              'UnboundedClientGroupMembership']), help='ARM allows customized headers when sending requests to the RP. This can be done both at the provider level or at the individual resource type level.',
@@ -233,19 +229,23 @@ def load_arguments(self, _):
         c.argument('resource_type', type=str, help='The resource type.')
         c.argument('routing_type', arg_type=get_enum_type(['Default', 'ProxyOnly', 'HostBased', 'Extension',
                                                            'Tenant', 'Fanout', 'LocationBased', 'Failover',
-                                                           'CascadeExtension']), help='The resource type routing type.')
+                                                           'CascadeExtension']), help='The resource routing type.')
         c.argument('regionality', arg_type=get_enum_type(['NotSpecified', 'Global', 'Regional']), help='The regionality of the resource type.')
         c.argument('endpoints', action=AddResourceTypeEndpointProperties, nargs='+', help='The resource '
                    'type endpoint properties.')
+        c.argument('resource_creation_begin', action=AddResourceCreationBegin, help='Extension options for handling the resource creation begin extension request.')
+        c.argument('resource_patch_begin', action=AddResourcePatchBegin, help='Extension options for handling the resource patch begin extension request.')
         c.argument('marketplace_type', arg_type=get_enum_type(['NotSpecified', 'AddOn', 'Bypass', 'Store']), help='The resource type behavior in the marketplace.')
         c.argument('swagger_specifications', action=AddSwaggerSpecifications, nargs='+', help='The OpenAPI (swagger specs) of the resource type. RPaaS will use the swagger specs to validate http requests/responses.')
         c.argument('allowed_unauthorized_actions', nargs='+', help='The allowed unauthorized actions.')
         c.argument('authorization_action_mappings', action=AddAuthorizationActionMappings, nargs='+', help='Allows RP to override action verb for RBAC purposes at ARM.')
         c.argument('linked_access_checks', action=AddLinkedAccessChecks, nargs='+', help='Enables additional Role Based Access Control (RBAC) checks on related resources.')
         c.argument('default_api_version', type=str, help='The default API version for the endpoint.')
-        c.argument('logging_rules', type=validate_file_or_dict, help='Enables additional event logs RP wants customers to see in their subscription for a particular action.')
+        c.argument('logging_rules', type=AddLoggingRules, help='Enables additional event logs RP wants customers to see in their subscription for a particular action.')
         c.argument('throttling_rules', action=AddThrottlingRules, nargs='+', help='Allows RPs to set individual limits for different actions in terms of number of requests or number of resources (for collection read requests only).')
         c.argument('required_features', action=AddRequiredFeatures, nargs='+', help='If specified, only subscriptions registered to the corresponding feature flag will be allowed.')
+        c.argument('required_features_policy', arg_type=get_enum_type(['Any', 'All']), help='The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​', arg_group='Features '
+                   'Rule')
         c.argument('enable_async_operation', arg_type=get_three_state_flag(), help='Indicates whether the async operation is enabled for this resource type.')
         c.argument('enable_third_party_s2s', arg_type=get_three_state_flag(), help='Indicates whether to enable third party s2s.')
         c.argument('is_pure_proxy', arg_type=get_three_state_flag(), help='Indicates whether this is a "PureProxy" resource type.')
@@ -254,18 +254,16 @@ def load_arguments(self, _):
                    help='RPaaS provides this feature at the platform level to help UserRPs with name availability checks without calling into the POST extension endpoints for the "checkNameAvailability" resource type.')
         c.argument('disallowed_action_verbs', nargs='+', help='The supported values are "read", "write", "delete", "action".  This setting will block all operations of the specified type on the resource type. These actions map to the corresponding HTTP verbs.')
         c.argument('service_tree_infos', action=AddResourcetyperegistrationServiceTreeInfos, nargs='+', help='The ServiceTree information for the resource provider.')
+        c.argument('opt_in_headers', arg_type=get_enum_type(['NotSpecified', 'SignedUserToken',
+                                                             'ClientGroupMembership', 'SignedAuxiliaryTokens',
+                                                             'UnboundedClientGroupMembership']), help='ARM allows customized headers when sending requests to the RP. This can be done both at the provider level or at the individual resource type level.',
+                   arg_group='Request Header Options')
         c.argument('subscription_state_rules', action=AddSubscriptionStateRules, nargs='+', help='The subscription policy.')
         c.argument('template_deployment_options', action=AddTemplateDeploymentOptions, nargs='+', help='The field for preflight options.')
         c.argument('extended_locations', action=AddExtendedLocations, nargs='+', help='The extended locations property.')
         c.argument('resource_move_policy', action=AddResourceMovePolicy, nargs='+', help='Indicates the resource type has opted in to move operations.')
         c.argument('resource_deletion_policy', arg_type=get_enum_type(['NotSpecified', 'CascadeDeleteAll',
                                                                        'CascadeDeleteProxyOnlyChildren']), help='The property to customize RPaaS deletion operation.')
-        c.argument('opt_in_headers', arg_type=get_enum_type(['NotSpecified', 'SignedUserToken',
-                                                             'ClientGroupMembership', 'SignedAuxiliaryTokens',
-                                                             'UnboundedClientGroupMembership']), help='ARM allows customized headers when sending requests to the RP. This can be done both at the provider level or at the individual resource type level.',
-                   arg_group='Request Header Options')
-        c.argument('required_features_policy', arg_type=get_enum_type(['Any', 'All']), help='The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​', arg_group='Features '
-                   'Rule')
 
     with self.argument_context('providerhub resource-type-registration update') as c:
         c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
@@ -273,9 +271,9 @@ def load_arguments(self, _):
         c.argument('resource_type', type=str, help='The resource type.', id_part='child_name_1')
         c.argument('routing_type', arg_type=get_enum_type(['Default', 'ProxyOnly', 'HostBased', 'Extension', 'Tenant',
                                                            'Fanout', 'LocationBased', 'Failover', 'CascadeExtension']),
-                   help='The resource type routing type.')
+                   help='The resource routing type.')
         c.argument('regionality', arg_type=get_enum_type(['NotSpecified', 'Global', 'Regional']), help='The regionality of the resource type.')
-        c.argument('endpoints', type=validate_file_or_dict, help=' Expected value: json-string/@json-file.')
+        c.argument('endpoints', type=validate_file_or_dict, help='The resource type endpoints.')
         c.argument('marketplace_type', arg_type=get_enum_type(['NotSpecified', 'AddOn', 'Bypass', 'Store']), help='The resource type behavior in the marketplace.')
         c.argument('swagger_specifications', action=AddSwaggerSpecifications, nargs='+', help='The OpenAPI (swagger specs) of this resource type. RPaaS will use the swagger specs to validate http requests/responses.')
         c.argument('allowed_unauthorized_actions', nargs='+', help='The allowed unauthorized actions.')

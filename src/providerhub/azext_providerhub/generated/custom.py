@@ -53,7 +53,7 @@ def providerhub_default_rollout_create(
     client,
     provider_namespace,
     rollout_name,
-    row_two_wait_duration,
+    row2_wait_duration,
     skip_regions=None,
     no_wait=False,
 ):
@@ -62,7 +62,7 @@ def providerhub_default_rollout_create(
         client.begin_create_or_update,
         provider_namespace=provider_namespace,
         rollout_name=rollout_name,
-        row_two_wait_duration=row_two_wait_duration,
+        row2_wait_duration=row2_wait_duration,
         skip_regions=skip_regions,
     )
 
@@ -71,7 +71,7 @@ def providerhub_default_rollout_update(
     client,
     provider_namespace,
     rollout_name,
-    row_two_wait_duration,
+    row2_wait_duration,
     skip_regions=None,
     no_wait=False,
 ):
@@ -80,7 +80,7 @@ def providerhub_default_rollout_update(
         client.begin_create_or_update,
         provider_namespace=provider_namespace,
         rollout_name=rollout_name,
-        row_two_wait_duration=row_two_wait_duration,
+        row2_wait_duration=row2_wait_duration,
         skip_regions=skip_regions,
     )
 
@@ -96,13 +96,13 @@ def providerhub_default_rollout_stop(client, provider_namespace, rollout_name):
 
 
 def providerhub_manifest_checkin(
-    client, provider_namespace, environment, baseline_arm_manifest_location
+    client, provider_namespace, environment, arm_manifest_location
 ):
     checkin_manifest_params = {}
     checkin_manifest_params["environment"] = environment
     checkin_manifest_params[
-        "baseline_arm_manifest_location"
-    ] = baseline_arm_manifest_location
+        "arm_manifest_location"
+    ] = arm_manifest_location
     return client.checkin_manifest(
         provider_namespace=provider_namespace,
         checkin_manifest_params=checkin_manifest_params,

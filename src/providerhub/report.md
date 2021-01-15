@@ -75,7 +75,7 @@ az providerhub manifest checkin --provider-namespace "Microsoft.Contoso"
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--provider-namespace**|string|The name of the resource provider hosted within ProviderHub.|provider_namespace|providerNamespace|
-|**--baseline-arm-manifest-location**|string|The baseline ARM manifest location supplied to the checkin manifest operation.|baseline_arm_manifest_location|baselineArmManifestLocation|
+|**--arm-manifest-location**|string|The baseline ARM manifest location supplied to the checkin manifest operation.|arm_manifest_location|baselineArmManifestLocation|
 |**--environment**|string|The environment supplied to the checkin manifest operation.|environment|environment|
 
 #### <a name="GenerateManifest">Command `az providerhub manifest generate`</a>
@@ -162,7 +162,7 @@ az providerhub default-rollout create --provider-namespace "Microsoft.Contoso" -
 |------|----|-----------|----------|------------|
 |**--provider-namespace**|string|The name of the resource provider hosted within ProviderHub.|provider_namespace|providerNamespace|
 |**--rollout-name**|string|The rollout name.|rollout_name|rolloutName|
-|**--row-two-wait-duration**|string|The wait duration before the rollout begins in rest of the world two.|rest_of_the_world_group_two|restOfTheWorldGroupTwo|
+|**--row2-wait-duration**|string|The wait duration before the rollout begins in rest of the world two.|rest_of_the_world_group_two|restOfTheWorldGroupTwo|
 |**--skip-regions**|string|The canary regions to skip.|skip_regions|skipRegions|
 
 #### <a name="DefaultRolloutsDelete">Command `az providerhub default-rollout delete`</a>

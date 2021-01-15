@@ -180,7 +180,7 @@ class DefaultRolloutsOperations(object):
         self,
         provider_namespace,  # type: str
         rollout_name,  # type: str
-        row_two_wait_duration,  # type: str
+        row2_wait_duration,  # type: str
         skip_regions,  # type: list[str]
         **kwargs  # type: Any
     ):
@@ -217,7 +217,7 @@ class DefaultRolloutsOperations(object):
                 skip_regions=skip_regions
             ),
             rest_of_the_world_group_two=models.TrafficRegionRolloutConfiguration(
-                wait_duration=row_two_wait_duration
+                wait_duration=row2_wait_duration
             )
         )
         params = models.DefaultRollout(specification=specification)
@@ -256,7 +256,7 @@ class DefaultRolloutsOperations(object):
         self,
         provider_namespace,  # type: str
         rollout_name,  # type: str
-        row_two_wait_duration,  # type: str
+        row2_wait_duration,  # type: str
         skip_regions,  # type: list[str]
         **kwargs  # type: Any
     ):
@@ -290,7 +290,7 @@ class DefaultRolloutsOperations(object):
             raw_result = self._create_or_update_initial(
                 provider_namespace=provider_namespace,
                 rollout_name=rollout_name,
-                row_two_wait_duration=row_two_wait_duration,
+                row2_wait_duration=row2_wait_duration,
                 skip_regions=skip_regions,
                 cls=lambda x, y, z: x,
                 **kwargs
