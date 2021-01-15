@@ -3,7 +3,7 @@
 Release History
 ===============
 
-0.14.2012.1501
+0.14.2101.1401
 ++++++
 * Updating multi-region in data plane REST API
 * Aligned to QDK 0.14.2011120240.

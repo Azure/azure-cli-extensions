@@ -81,9 +81,6 @@ def _generate_submit_args(program_args, ws, target, token, project, job_name, sh
     args.append("--workspace")
     args.append(ws.name)
 
-    args.append("--location")
-    args.append(ws.location)
-
     args.append("--target")
     args.append(target.target_id)
 
