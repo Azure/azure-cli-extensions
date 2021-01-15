@@ -101,7 +101,7 @@ def providerhub_manifest_checkin(
     checkin_manifest_params = {}
     checkin_manifest_params["environment"] = environment
     checkin_manifest_params[
-        "arm_manifest_location"
+        "baseline_arm_manifest_location"
     ] = arm_manifest_location
     return client.checkin_manifest(
         provider_namespace=provider_namespace,

@@ -254,7 +254,7 @@ class AddResourceTypeEndpointProperties(argparse._AppendAction):
         return d
 
 
-class AddResourceMovePolicy(argparse.Action):
+class AddResourceCreationBegin(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.resource_creation_begin = action
@@ -276,12 +276,12 @@ class AddResourceMovePolicy(argparse.Action):
             elif kl == 'response':
                 d['response'] = v[0]
             else:
-                raise CLIError('Unsupported Key {} is provided for parameter resource_creation_begin. All possible keys '
-                               'are: request, response'.format(k))
+                raise CLIError('Unsupported Key {} is provided for parameter resource_creation_begin. '
+                               'All possible keys are: request, response'.format(k))
         return d
 
 
-class AddResourceMovePolicy(argparse.Action):
+class AddResourcePatchBegin(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.resource_patch_begin = action
@@ -306,7 +306,6 @@ class AddResourceMovePolicy(argparse.Action):
                 raise CLIError('Unsupported Key {} is provided for parameter resource_patch_begin. All possible keys '
                                'are: request, response'.format(k))
         return d
-
 
 
 class AddSubscriptionStateOverrideActions(argparse._AppendAction):

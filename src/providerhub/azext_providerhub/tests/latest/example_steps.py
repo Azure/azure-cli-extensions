@@ -8,11 +8,10 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-
-from .. import try_manual
-
 from azure.cli.testsdk import (live_only)
 from azure_devtools.scenario_tests import AllowLargeResponse
+from .. import try_manual
+
 
 # EXAMPLE: /CustomRollouts/put/CustomRollouts_CreateOrUpdate
 @try_manual
@@ -159,10 +158,10 @@ def step_provider_registration_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub provider-registration create '
-             '--provider-authorizations '
+             '--providerhub-metadata-provider-authorizations '
              'application-id="3d834152-5efa-46f7-85a4-a18c2b5d46f9" '
              'role-definition-id="760505bf-dcfa-4311-b890-18da392a00b2" '
-             '--resource-provider-authentication allowed-audiences="https://management.core.windows.net/" '
+             '--providerhub-metadata-rp-authentication allowed-audiences="https://management.core.windows.net/" '
              '--service-tree-infos service-id="6f53185c-ea09-4fc3-9075-318dec805303" '
              'component-id="6f53185c-ea09-4fc3-9075-318dec805303" '
              '--capabilities effect="Allow" quota-id="CSP_2015-05-01" '

@@ -122,6 +122,7 @@ class ProviderRegistrationsOperations(object):
         provider_authorizations,  # type: "models.ThirdPartyProviderAuthorization"
         provider_version,  # type: str
         provider_type,  # type: str
+        namespace,  # type: str
         capabilities,  # type: list["models.ResourceProviderCapabilities"]
         metadata,  # type: object
         template_deployment_options,  # type: "models.TemplateDeploymentOptions"
@@ -181,12 +182,12 @@ class ProviderRegistrationsOperations(object):
         management = models.ResourceProviderManagement(schema_owners=schema_owners, manifest_owners=manifest_owners, incident_routing_service=incident_routing_service, incident_routing_team=incident_routing_team,
                                                        incident_contact_email=incident_contact_email, service_tree_infos=service_tree_infos, resource_access_policy=resource_access_policy, resource_access_roles=resource_access_roles)
         third_party_provider_authorization = models.ThirdPartyProviderAuthorization(
-            authorizations=lighthouse_authorizations, managed_by_tenant_id=managed_by_tenant_id)
+            authorizations=lighthouse_authorizations, managed_by_tenant_id=managed_by_tenant_id) if lighthouse_authorizations or managed_by_tenant_id else None
         providerhub_metadata = models.ProviderHubMetadata(provider_authorizations=providerhub_metadata_provider_authorizations,
                                                           provider_authentication=providerhub_metadata_rp_authentication,
                                                           third_party_provider_authorization=third_party_provider_authorization)
 
-        properties = models.ProviderRegistrationProperties(provider_authentication=provider_authentication, provider_authorizations=provider_authorizations, provider_version=provider_version, provider_type=provider_type, provider_hub_metadata=providerhub_metadata,
+        properties = models.ProviderRegistrationProperties(provider_authentication=provider_authentication, provider_authorizations=provider_authorizations, provider_version=provider_version, provider_type=provider_type, provider_hub_metadata=providerhub_metadata, namespace=namespace,
                                                            features_rule=features_rule, management=management, capabilities=capabilities, metadata=metadata, template_deployment_options=template_deployment_options)
         parameters = models.ProviderRegistration(properties=properties)
 
@@ -225,6 +226,7 @@ class ProviderRegistrationsOperations(object):
         provider_authorizations,  # type: "models.ThirdPartyProviderAuthorization"
         provider_version,  # type: str
         provider_type,  # type: str
+        namespace,  # type: str
         capabilities,  # type: list["models.ResourceProviderCapabilities"]
         metadata,  # type: object
         template_deployment_options,  # type: "models.TemplateDeploymentOptions"
@@ -283,6 +285,7 @@ class ProviderRegistrationsOperations(object):
                 provider_authorizations=provider_authorizations,
                 provider_version=provider_version,
                 provider_type=provider_type,
+                namespace=namespace,
                 capabilities=capabilities,
                 metadata=metadata,
                 template_deployment_options=template_deployment_options,

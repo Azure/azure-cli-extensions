@@ -143,16 +143,16 @@ helps['providerhub manifest checkin'] = """
         long-summary: |
         Usage: --environment "2.0"
 
-      - name: --arm-arm-manifest-location
+      - name: --arm-manifest-location
         type: string
         short-summary: 'The baseline ARM manifest location.'
         long-summary: |
-        Usage: --arm-arm-manifest-location "2.0"
+        Usage: --arm-manifest-location "2.0"
     examples:
       - name: CheckinManifest
         text: |-
                az providerhub manifest checkin --provider-namespace "Microsoft.Contoso" \
---environment "Canary" --arm-arm-manifest-location "EastUS2EUAP"
+--environment "Canary" --arm-manifest-location "EastUS2EUAP"
 """
 
 helps['providerhub manifest generate'] = """
