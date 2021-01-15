@@ -52,7 +52,7 @@ class JobDetails(Model):
     :type output_data_format: str
     :ivar status: The job status. Possible values include: 'Waiting',
      'Executing', 'Succeeded', 'Failed', 'Cancelled'
-    :vartype status: str or ~azure.quantum.models.JobStatus
+    :vartype status: str or ~quantum.models.JobStatus
     :ivar creation_time: The creation time of the job.
     :vartype creation_time: datetime
     :ivar begin_execution_time: The time when the job began execution.
@@ -63,7 +63,7 @@ class JobDetails(Model):
     :vartype cancellation_time: datetime
     :ivar error_data: The error data for the job. This is expected only when
      Status 'Failed'.
-    :vartype error_data: ~azure.quantum.models.ErrorData
+    :vartype error_data: ~quantum.models.ErrorData
     """
 
     _validation = {

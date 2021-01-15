@@ -16,6 +16,7 @@ from .version import VERSION
 from .operations.jobs_operations import JobsOperations
 from .operations.providers_operations import ProvidersOperations
 from .operations.storage_operations import StorageOperations
+from .operations.quotas_operations import QuotasOperations
 from . import models
 
 
@@ -53,7 +54,7 @@ class QuantumClientConfiguration(AzureConfiguration):
 
         super(QuantumClientConfiguration, self).__init__(base_url)
 
-        self.add_user_agent('azure-quantum/{}'.format(VERSION))
+        self.add_user_agent('quantumclient/{}'.format(VERSION))
         self.add_user_agent('Azure-SDK-For-Python')
 
         self.credentials = credentials
@@ -69,11 +70,13 @@ class QuantumClient(SDKClient):
     :vartype config: QuantumClientConfiguration
 
     :ivar jobs: Jobs operations
-    :vartype jobs: azure.quantum.operations.JobsOperations
+    :vartype jobs: quantum.operations.JobsOperations
     :ivar providers: Providers operations
-    :vartype providers: azure.quantum.operations.ProvidersOperations
+    :vartype providers: quantum.operations.ProvidersOperations
     :ivar storage: Storage operations
-    :vartype storage: azure.quantum.operations.StorageOperations
+    :vartype storage: quantum.operations.StorageOperations
+    :ivar quotas: Quotas operations
+    :vartype quotas: quantum.operations.QuotasOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -104,4 +107,6 @@ class QuantumClient(SDKClient):
         self.providers = ProvidersOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.storage = StorageOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.quotas = QuotasOperations(
             self._client, self.config, self._serialize, self._deserialize)

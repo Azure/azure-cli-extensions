@@ -45,8 +45,7 @@ class JobsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of JobDetails
-        :rtype:
-         ~azure.quantum.models.JobDetailsPaged[~azure.quantum.models.JobDetails]
+        :rtype: ~quantum.models.JobDetailsPaged[~quantum.models.JobDetails]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def internal_paging(next_link=None, raw=False):
@@ -112,10 +111,10 @@ class JobsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: JobDetails or ClientRawResponse if raw=true
-        :rtype: ~azure.quantum.models.JobDetails or
+        :rtype: ~quantum.models.JobDetails or
          ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`RestErrorException<azure.quantum.models.RestErrorException>`
+         :class:`RestErrorException<quantum.models.RestErrorException>`
         """
         # Construct URL
         url = self.get.metadata['url']
@@ -166,17 +165,17 @@ class JobsOperations(object):
         :param job_id: Id of the job.
         :type job_id: str
         :param job: The complete metadata of the job to submit.
-        :type job: ~azure.quantum.models.JobDetails
+        :type job: ~quantum.models.JobDetails
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: JobDetails or ClientRawResponse if raw=true
-        :rtype: ~azure.quantum.models.JobDetails or
+        :rtype: ~quantum.models.JobDetails or
          ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`RestErrorException<azure.quantum.models.RestErrorException>`
+         :class:`RestErrorException<quantum.models.RestErrorException>`
         """
         # Construct URL
         url = self.create.metadata['url']
@@ -240,7 +239,7 @@ class JobsOperations(object):
         :return: None or ClientRawResponse if raw=true
         :rtype: None or ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`RestErrorException<azure.quantum.models.RestErrorException>`
+         :class:`RestErrorException<quantum.models.RestErrorException>`
         """
         # Construct URL
         url = self.cancel.metadata['url']

@@ -33,3 +33,15 @@ class TargetAvailability(str, Enum):
     available = "Available"
     degraded = "Degraded"
     unavailable = "Unavailable"
+
+
+class DimensionScope(str, Enum):
+
+    workspace = "Workspace"
+    subscription = "Subscription"
+
+
+class MeterPeriod(str, Enum):
+
+    none = "None"
+    monthly = "Monthly"

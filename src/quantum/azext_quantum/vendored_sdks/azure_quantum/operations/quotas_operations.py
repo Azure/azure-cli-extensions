@@ -15,8 +15,8 @@ from msrest.pipeline import ClientRawResponse
 from .. import models
 
 
-class ProvidersOperations(object):
-    """ProvidersOperations operations.
+class QuotasOperations(object):
+    """QuotasOperations operations.
 
     :param client: Client for service requests.
     :param config: Configuration of service client.
@@ -34,18 +34,17 @@ class ProvidersOperations(object):
 
         self.config = config
 
-    def get_status(
+    def list(
             self, custom_headers=None, raw=False, **operation_config):
-        """Get provider status.
+        """List quotas for the given workspace.
 
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of ProviderStatus
-        :rtype:
-         ~quantum.models.ProviderStatusPaged[~quantum.models.ProviderStatus]
+        :return: An iterator like instance of Quota
+        :rtype: ~quantum.models.QuotaPaged[~quantum.models.Quota]
         :raises:
          :class:`RestErrorException<quantum.models.RestErrorException>`
         """
@@ -53,7 +52,7 @@ class ProvidersOperations(object):
 
             if not next_link:
                 # Construct URL
-                url = self.get_status.metadata['url']
+                url = self.list.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("self.config.resource_group_name", self.config.resource_group_name, 'str'),
@@ -88,12 +87,12 @@ class ProvidersOperations(object):
             return response
 
         # Deserialize response
-        deserialized = models.ProviderStatusPaged(internal_paging, self._deserialize.dependencies)
+        deserialized = models.QuotaPaged(internal_paging, self._deserialize.dependencies)
 
         if raw:
             header_dict = {}
-            client_raw_response = models.ProviderStatusPaged(internal_paging, self._deserialize.dependencies, header_dict)
+            client_raw_response = models.QuotaPaged(internal_paging, self._deserialize.dependencies, header_dict)
             return client_raw_response
 
         return deserialized
-    get_status.metadata = {'url': '/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/providerStatus'}
+    list.metadata = {'url': '/v1.0/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}/quotas'}

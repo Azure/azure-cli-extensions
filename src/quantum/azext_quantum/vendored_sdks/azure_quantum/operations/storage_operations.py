@@ -35,28 +35,25 @@ class StorageOperations(object):
         self.config = config
 
     def sas_uri(
-            self, container_name, blob_name=None, custom_headers=None, raw=False, **operation_config):
+            self, blob_details, custom_headers=None, raw=False, **operation_config):
         """Gets a URL with SAS token for a container/blob in the storage account
         associated with the workspace. The SAS URL can be used to upload job
         input and/or download job output.
 
-        :param container_name: The container name.
-        :type container_name: str
-        :param blob_name: The blob name.
-        :type blob_name: str
+        :param blob_details: The details (name and container) of the blob to
+         store or download data.
+        :type blob_details: ~quantum.models.BlobDetails
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: SasUriResponse or ClientRawResponse if raw=true
-        :rtype: ~azure.quantum.models.SasUriResponse or
+        :rtype: ~quantum.models.SasUriResponse or
          ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`RestErrorException<azure.quantum.models.RestErrorException>`
+         :class:`RestErrorException<quantum.models.RestErrorException>`
         """
-        blob_details = models.BlobDetails(container_name=container_name, blob_name=blob_name)
-
         # Construct URL
         url = self.sas_uri.metadata['url']
         path_format_arguments = {

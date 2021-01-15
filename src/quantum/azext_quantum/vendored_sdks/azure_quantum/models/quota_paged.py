@@ -12,16 +12,16 @@
 from msrest.paging import Paged
 
 
-class JobDetailsPaged(Paged):
+class QuotaPaged(Paged):
     """
-    A paging container for iterating over a list of :class:`JobDetails <quantum.models.JobDetails>` object
+    A paging container for iterating over a list of :class:`Quota <quantum.models.Quota>` object
     """
 
     _attribute_map = {
         'next_link': {'key': 'nextLink', 'type': 'str'},
-        'current_page': {'key': 'value', 'type': '[JobDetails]'}
+        'current_page': {'key': 'value', 'type': '[Quota]'}
     }
 
     def __init__(self, *args, **kwargs):
 
-        super(JobDetailsPaged, self).__init__(*args, **kwargs)
+        super(QuotaPaged, self).__init__(*args, **kwargs)

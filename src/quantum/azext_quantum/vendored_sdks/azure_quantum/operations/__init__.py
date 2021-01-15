@@ -12,9 +12,11 @@
 from .jobs_operations import JobsOperations
 from .providers_operations import ProvidersOperations
 from .storage_operations import StorageOperations
+from .quotas_operations import QuotasOperations
 
 __all__ = [
     'JobsOperations',
     'ProvidersOperations',
     'StorageOperations',
+    'QuotasOperations',
 ]
