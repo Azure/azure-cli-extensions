@@ -53,7 +53,7 @@ def load_command_table(self, _):
 
     with self.command_group('cosmosdb restorable-database-account', cosmosdb_restorable_database_accounts_sdk, client_factory=cf_restorable_database_accounts, is_preview=True) as g:
         g.show_command('show', 'get_by_location')
-        g.command('list', 'list')
+        g.custom_command('list', 'cli_cosmosdb_restorable_database_account_list')
 
     with self.command_group('cosmosdb', cosmosdb_sdk, client_factory=cf_db_accounts) as g:
         g.show_command('show', 'get')
