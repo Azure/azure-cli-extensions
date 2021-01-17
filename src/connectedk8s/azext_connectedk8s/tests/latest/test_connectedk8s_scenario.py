@@ -23,24 +23,30 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     def test_connectedk8s(self):
 
         managed_cluster_name = self.create_random_name(prefix='cli-test-aks-', length=24)
+        rg_name = 'akkeshar-test2'
         self.kwargs.update({
             'name': self.create_random_name(prefix='cc-', length=12),
             'kubeconfig': "%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')),
-            'managed_cluster_name': managed_cluster_name
+            'managed_cluster_name': managed_cluster_name,
+            'rg_name': rg_name
         })
-        self.cmd('group create -l westeurope -n akkeshar-test2')
-        self.cmd('aks create -g akkeshar-test2 -n {} -s Standard_B2s -l westeurope -c 1 --generate-ssh-keys'.format(managed_cluster_name))
-        self.cmd('aks get-credentials -g akkeshar-test2 -n {managed_cluster_name} -f {kubeconfig}')
+        rg_exists = self.cmd('group exists -n {rg_name}').get_output_in_json()
+        if rg_exists:
+            print("Resource group {rg_name} exists from previous test. Deleting it...")
+            self.cmd('group delete -n {rg_name} -y')
+        self.cmd('group create -l westeurope -n {rg_name}')
+        self.cmd('aks create -g {} -n {} -s Standard_B2s -l westeurope -c 1 --generate-ssh-keys'.format(rg_name, managed_cluster_name))
+        self.cmd('aks get-credentials -g {rg_name} -n {managed_cluster_name} -f {kubeconfig}')
         os.environ['HELMCHART'] = _get_test_data_file('setupChart.tgz')
-        self.cmd('connectedk8s connect -g akkeshar-test2 -n {name} -l eastus2euap --tags foo=doo --kube-config {kubeconfig}', checks=[
+        self.cmd('connectedk8s connect -g {rg_name} -n {name} -l eastus2euap --tags foo=doo --kube-config {kubeconfig}', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
-        self.cmd('connectedk8s show -g akkeshar-test2 -n {name}', checks=[
+        self.cmd('connectedk8s show -g {rg_name} -n {name}', checks=[
             self.check('name', '{name}'),
-            self.check('resourceGroup', 'akkeshar-test2'),
+            self.check('resourceGroup', '{rg_name}'),
             self.check('tags.foo', 'doo')
         ])
-        self.cmd('connectedk8s delete -g akkeshar-test2 -n {name} --kube-config {kubeconfig} -y')
-        self.cmd('aks delete -g akkeshar-test2 -n {} -y'.format(managed_cluster_name))
-        self.cmd('group delete -n akkeshar-test2')
+        self.cmd('connectedk8s delete -g {rg_name} -n {name} --kube-config {kubeconfig} -y')
+        self.cmd('aks delete -g {} -n {} -y'.format(rg_name, managed_cluster_name))
+        self.cmd('group delete -n {rg_name} -y')
