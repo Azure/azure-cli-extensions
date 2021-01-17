@@ -9,73 +9,72 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from msrest.serialization import Model
+from .tracked_resource_py3 import TrackedResource
 
 
-class QuantumWorkspace(Model):
+class QuantumWorkspace(TrackedResource):
     """The resource proxy definition object for quantum workspace.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar id: The unique id for this workspace.
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
     :vartype id: str
-    :ivar name: The name of this workspace.
+    :ivar name: The name of the resource
     :vartype name: str
-    :ivar type: The type of this workspace.
+    :ivar type: The type of the resource. Ex-
+     Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :param location: The location (region) of this workspace.
+    :param tags: Resource tags.
+    :type tags: dict[str, str]
+    :param location: Required. The geo-location where the resource lives
     :type location: str
     :param providers: List of Providers selected for this Workspace
-    :type providers: list[~quantum.models.Provider]
-    :param usable: Whether the current workspace is ready to accept Jobs.
+    :type providers: list[~azure.quantum.models.Provider]
+    :ivar usable: Whether the current workspace is ready to accept Jobs.
      Possible values include: 'Yes', 'No', 'Partial'
-    :type usable: str or ~quantum.models.UsableStatus
-    :param provisioning_state: Provisioning status field. Possible values
+    :vartype usable: str or ~azure.quantum.models.UsableStatus
+    :ivar provisioning_state: Provisioning status field. Possible values
      include: 'Succeeded', 'ProviderLaunching', 'ProviderUpdating',
-     'ProviderDeleting', 'ProviderProvisioning', 'Deleted', 'Failed'
-    :type provisioning_state: str or ~quantum.models.ProvisioningStatus
-    :param resource_usage_id: Unique id to track resource usage.
-    :type resource_usage_id: str
+     'ProviderDeleting', 'ProviderProvisioning', 'Failed'
+    :vartype provisioning_state: str or
+     ~azure.quantum.models.ProvisioningStatus
     :param storage_account: ARM Resource Id of the storage account associated
      with this workspace.
     :type storage_account: str
-    :param tags: The tags associated with this workspace.
-    :type tags: object
-    :param identity: Managed Identity information
-    :type identity: ~quantum.models.QuantumWorkspaceIdentity
+    :param identity: Managed Identity information.
+    :type identity: ~azure.quantum.models.QuantumWorkspaceIdentity
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
+        'location': {'required': True},
+        'usable': {'readonly': True},
+        'provisioning_state': {'readonly': True},
     }
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
         'location': {'key': 'location', 'type': 'str'},
         'providers': {'key': 'properties.providers', 'type': '[Provider]'},
         'usable': {'key': 'properties.usable', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'resource_usage_id': {'key': 'properties.resourceUsageId', 'type': 'str'},
         'storage_account': {'key': 'properties.storageAccount', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': 'object'},
         'identity': {'key': 'identity', 'type': 'QuantumWorkspaceIdentity'},
     }
 
-    def __init__(self, *, location: str=None, providers=None, usable=None, provisioning_state=None, resource_usage_id: str=None, storage_account: str=None, tags=None, identity=None, **kwargs) -> None:
-        super(QuantumWorkspace, self).__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
-        self.location = location
+    def __init__(self, *, location: str, tags=None, providers=None, storage_account: str=None, identity=None, **kwargs) -> None:
+        super(QuantumWorkspace, self).__init__(tags=tags, location=location, **kwargs)
         self.providers = providers
-        self.usable = usable
-        self.provisioning_state = provisioning_state
-        self.resource_usage_id = resource_usage_id
+        self.usable = None
+        self.provisioning_state = None
         self.storage_account = storage_account
-        self.tags = tags
         self.identity = identity

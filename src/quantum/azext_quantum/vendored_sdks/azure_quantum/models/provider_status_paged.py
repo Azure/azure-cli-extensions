@@ -14,7 +14,7 @@ from msrest.paging import Paged
 
 class ProviderStatusPaged(Paged):
     """
-    A paging container for iterating over a list of :class:`ProviderStatus <quantum.models.ProviderStatus>` object
+    A paging container for iterating over a list of :class:`ProviderStatus <azure.quantum.models.ProviderStatus>` object
     """
 
     _attribute_map = {

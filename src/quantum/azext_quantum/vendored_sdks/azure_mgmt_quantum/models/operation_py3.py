@@ -17,16 +17,20 @@ class Operation(Model):
 
     :param name: Name of the operation
     :type name: str
+    :param is_data_action: Indicates whether the operation is a data action
+    :type is_data_action: bool
     :param display: Properties of the operation
-    :type display: ~quantum.models.OperationDisplay
+    :type display: ~azure.quantum.models.OperationDisplay
     """
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
+        'is_data_action': {'key': 'isDataAction', 'type': 'bool'},
         'display': {'key': 'display', 'type': 'OperationDisplay'},
     }
 
-    def __init__(self, *, name: str=None, display=None, **kwargs) -> None:
+    def __init__(self, *, name: str=None, is_data_action: bool=None, display=None, **kwargs) -> None:
         super(Operation, self).__init__(**kwargs)
         self.name = name
+        self.is_data_action = is_data_action
         self.display = display

@@ -15,23 +15,31 @@ from msrest.serialization import Model
 class QuantumWorkspaceIdentity(Model):
     """Managed Identity information.
 
-    :param type: Type of identity. Supported: SystemAssigned or None (case
-     insensitive)
-    :type type: str
-    :param principal_id: objectId of the managed identity,
-    :type principal_id: str
-    :param tenant_id: tenantId where the managed identity lives.
-    :type tenant_id: str
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar principal_id: The principal ID of resource identity.
+    :vartype principal_id: str
+    :ivar tenant_id: The tenant ID of resource.
+    :vartype tenant_id: str
+    :param type: The identity type. Possible values include: 'SystemAssigned',
+     'None'
+    :type type: str or ~azure.quantum.models.ResourceIdentityType
     """
 
+    _validation = {
+        'principal_id': {'readonly': True},
+        'tenant_id': {'readonly': True},
+    }
+
     _attribute_map = {
-        'type': {'key': 'type', 'type': 'str'},
         'principal_id': {'key': 'principalId', 'type': 'str'},
         'tenant_id': {'key': 'tenantId', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
         super(QuantumWorkspaceIdentity, self).__init__(**kwargs)
+        self.principal_id = None
+        self.tenant_id = None
         self.type = kwargs.get('type', None)
-        self.principal_id = kwargs.get('principal_id', None)
-        self.tenant_id = kwargs.get('tenant_id', None)

@@ -70,13 +70,13 @@ class QuantumClient(SDKClient):
     :vartype config: QuantumClientConfiguration
 
     :ivar jobs: Jobs operations
-    :vartype jobs: quantum.operations.JobsOperations
+    :vartype jobs: azure.quantum.operations.JobsOperations
     :ivar providers: Providers operations
-    :vartype providers: quantum.operations.ProvidersOperations
+    :vartype providers: azure.quantum.operations.ProvidersOperations
     :ivar storage: Storage operations
-    :vartype storage: quantum.operations.StorageOperations
+    :vartype storage: azure.quantum.operations.StorageOperations
     :ivar quotas: Quotas operations
-    :vartype quotas: quantum.operations.QuotasOperations
+    :vartype quotas: azure.quantum.operations.QuotasOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials

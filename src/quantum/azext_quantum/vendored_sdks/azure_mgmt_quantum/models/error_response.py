@@ -14,14 +14,14 @@ from msrest.exceptions import HttpOperationError
 
 
 class ErrorResponse(Model):
-    """Error response.
+    """The resource management error response.
 
-    :param error: The error details.
-    :type error: ~quantum.models.ErrorDefinition
+    :param error: The error object.
+    :type error: ~azure.quantum.models.ErrorResponseError
     """
 
     _attribute_map = {
-        'error': {'key': 'error', 'type': 'ErrorDefinition'},
+        'error': {'key': 'error', 'type': 'ErrorResponseError'},
     }
 
     def __init__(self, **kwargs):

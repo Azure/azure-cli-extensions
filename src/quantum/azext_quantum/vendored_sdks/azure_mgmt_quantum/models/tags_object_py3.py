@@ -9,19 +9,20 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from msrest.paging import Paged
+from msrest.serialization import Model
 
 
-class ProviderDescriptionPaged(Paged):
-    """
-    A paging container for iterating over a list of :class:`ProviderDescription <azure.quantum.models.ProviderDescription>` object
+class TagsObject(Model):
+    """Tags object for patch operations.
+
+    :param tags: Resource tags.
+    :type tags: dict[str, str]
     """
 
     _attribute_map = {
-        'next_link': {'key': 'nextLink', 'type': 'str'},
-        'current_page': {'key': 'value', 'type': '[ProviderDescription]'}
+        'tags': {'key': 'tags', 'type': '{str}'},
     }
 
-    def __init__(self, *args, **kwargs):
-
-        super(ProviderDescriptionPaged, self).__init__(*args, **kwargs)
+    def __init__(self, *, tags=None, **kwargs) -> None:
+        super(TagsObject, self).__init__(**kwargs)
+        self.tags = tags

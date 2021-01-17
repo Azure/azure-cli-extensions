@@ -45,9 +45,9 @@ class ProvidersOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of ProviderStatus
         :rtype:
-         ~quantum.models.ProviderStatusPaged[~quantum.models.ProviderStatus]
+         ~azure.quantum.models.ProviderStatusPaged[~azure.quantum.models.ProviderStatus]
         :raises:
-         :class:`RestErrorException<quantum.models.RestErrorException>`
+         :class:`RestErrorException<azure.quantum.models.RestErrorException>`
         """
         def internal_paging(next_link=None, raw=False):
 

@@ -44,9 +44,9 @@ class QuotasOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of Quota
-        :rtype: ~quantum.models.QuotaPaged[~quantum.models.Quota]
+        :rtype: ~azure.quantum.models.QuotaPaged[~azure.quantum.models.Quota]
         :raises:
-         :class:`RestErrorException<quantum.models.RestErrorException>`
+         :class:`RestErrorException<azure.quantum.models.RestErrorException>`
         """
         def internal_paging(next_link=None, raw=False):
 

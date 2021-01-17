@@ -17,7 +17,7 @@ class RestError(Model):
     """Error information returned by the API.
 
     :param error:
-    :type error: ~quantum.models.ErrorData
+    :type error: ~azure.quantum.models.ErrorData
     """
 
     _attribute_map = {

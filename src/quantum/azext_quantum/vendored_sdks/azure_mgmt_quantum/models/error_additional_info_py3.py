@@ -12,29 +12,29 @@
 from msrest.serialization import Model
 
 
-class ProviderPropertiesManagedApplication(Model):
-    """Provider's Managed-Application info.
+class ErrorAdditionalInfo(Model):
+    """The resource management error additional info.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar publisher_id: Provider's publisher id.
-    :vartype publisher_id: str
-    :ivar offer_id: Provider's offer id.
-    :vartype offer_id: str
+    :ivar type: The additional info type.
+    :vartype type: str
+    :ivar info: The additional info.
+    :vartype info: object
     """
 
     _validation = {
-        'publisher_id': {'readonly': True},
-        'offer_id': {'readonly': True},
+        'type': {'readonly': True},
+        'info': {'readonly': True},
     }
 
     _attribute_map = {
-        'publisher_id': {'key': 'publisherId', 'type': 'str'},
-        'offer_id': {'key': 'offerId', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'info': {'key': 'info', 'type': 'object'},
     }
 
     def __init__(self, **kwargs) -> None:
-        super(ProviderPropertiesManagedApplication, self).__init__(**kwargs)
-        self.publisher_id = None
-        self.offer_id = None
+        super(ErrorAdditionalInfo, self).__init__(**kwargs)
+        self.type = None
+        self.info = None

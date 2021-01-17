@@ -19,7 +19,7 @@ class Quota(Model):
     :type dimension: str
     :param scope: The scope at which the quota is applied. Possible values
      include: 'Workspace', 'Subscription'
-    :type scope: str or ~quantum.models.DimensionScope
+    :type scope: str or ~azure.quantum.models.DimensionScope
     :param provider_id: The unique identifier for the provider.
     :type provider_id: str
     :param utilization: The amount of the usage that has been applied for the
@@ -33,7 +33,7 @@ class Quota(Model):
     :param period: The time period in which the quota's underlying meter is
      accumulated. Based on calendar year. 'None' is used for concurrent quotas.
      Possible values include: 'None', 'Monthly'
-    :type period: str or ~quantum.models.MeterPeriod
+    :type period: str or ~azure.quantum.models.MeterPeriod
     """
 
     _attribute_map = {

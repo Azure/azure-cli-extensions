@@ -42,17 +42,17 @@ class StorageOperations(object):
 
         :param blob_details: The details (name and container) of the blob to
          store or download data.
-        :type blob_details: ~quantum.models.BlobDetails
+        :type blob_details: ~azure.quantum.models.BlobDetails
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: SasUriResponse or ClientRawResponse if raw=true
-        :rtype: ~quantum.models.SasUriResponse or
+        :rtype: ~azure.quantum.models.SasUriResponse or
          ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`RestErrorException<quantum.models.RestErrorException>`
+         :class:`RestErrorException<azure.quantum.models.RestErrorException>`
         """
         # Construct URL
         url = self.sas_uri.metadata['url']

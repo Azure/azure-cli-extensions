@@ -52,10 +52,10 @@ class WorkspacesOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: QuantumWorkspace or ClientRawResponse if raw=true
-        :rtype: ~quantum.models.QuantumWorkspace or
+        :rtype: ~azure.quantum.models.QuantumWorkspace or
          ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`ErrorResponseException<quantum.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.quantum.models.ErrorResponseException>`
         """
         # Construct URL
         url = self.get.metadata['url']
@@ -158,7 +158,7 @@ class WorkspacesOperations(object):
         :param workspace_name: The name of the quantum workspace resource.
         :type workspace_name: str
         :param quantum_workspace: Workspace details.
-        :type quantum_workspace: ~quantum.models.QuantumWorkspace
+        :type quantum_workspace: ~azure.quantum.models.QuantumWorkspace
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -167,11 +167,11 @@ class WorkspacesOperations(object):
         :return: An instance of LROPoller that returns QuantumWorkspace or
          ClientRawResponse<QuantumWorkspace> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~quantum.models.QuantumWorkspace]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.quantum.models.QuantumWorkspace]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~quantum.models.QuantumWorkspace]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.quantum.models.QuantumWorkspace]]
         :raises:
-         :class:`ErrorResponseException<quantum.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.quantum.models.ErrorResponseException>`
         """
         raw_result = self._create_or_update_initial(
             resource_group_name=resource_group_name,
@@ -200,29 +200,29 @@ class WorkspacesOperations(object):
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}'}
 
-    def update(
-            self, resource_group_name, workspace_name, quantum_workspace, custom_headers=None, raw=False, **operation_config):
-        """Updates a Workspace resource.
+    def update_tags(
+            self, resource_group_name, workspace_name, workspace_tags, custom_headers=None, raw=False, **operation_config):
+        """Updates an existing workspace's tags.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
         :param workspace_name: The name of the quantum workspace resource.
         :type workspace_name: str
-        :param quantum_workspace: Quantum workspace details.
-        :type quantum_workspace: ~quantum.models.QuantumWorkspace
+        :param workspace_tags: Parameters supplied to update tags.
+        :type workspace_tags: ~azure.quantum.models.TagsObject
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: QuantumWorkspace or ClientRawResponse if raw=true
-        :rtype: ~quantum.models.QuantumWorkspace or
+        :rtype: ~azure.quantum.models.QuantumWorkspace or
          ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`ErrorResponseException<quantum.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.quantum.models.ErrorResponseException>`
         """
         # Construct URL
-        url = self.update.metadata['url']
+        url = self.update_tags.metadata['url']
         path_format_arguments = {
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
@@ -246,7 +246,7 @@ class WorkspacesOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        body_content = self._serialize.body(quantum_workspace, 'QuantumWorkspace')
+        body_content = self._serialize.body(workspace_tags, 'TagsObject')
 
         # Construct and send request
         request = self._client.patch(url, query_parameters, header_parameters, body_content)
@@ -265,7 +265,7 @@ class WorkspacesOperations(object):
             return client_raw_response
 
         return deserialized
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}'}
+    update_tags.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Quantum/workspaces/{workspaceName}'}
 
 
     def _delete_initial(
@@ -285,7 +285,6 @@ class WorkspacesOperations(object):
 
         # Construct headers
         header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
         if custom_headers:
@@ -300,16 +299,9 @@ class WorkspacesOperations(object):
         if response.status_code not in [200, 202, 204]:
             raise models.ErrorResponseException(self._deserialize, response)
 
-        deserialized = None
-
-        if response.status_code == 202:
-            deserialized = self._deserialize('QuantumWorkspace', response)
-
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
+            client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
-
-        return deserialized
 
     def delete(
             self, resource_group_name, workspace_name, custom_headers=None, raw=False, polling=True, **operation_config):
@@ -324,14 +316,12 @@ class WorkspacesOperations(object):
          direct response alongside the deserialized response
         :param polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
-        :return: An instance of LROPoller that returns QuantumWorkspace or
-         ClientRawResponse<QuantumWorkspace> if raw==True
-        :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~quantum.models.QuantumWorkspace]
-         or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~quantum.models.QuantumWorkspace]]
+        :return: An instance of LROPoller that returns None or
+         ClientRawResponse<None> if raw==True
+        :rtype: ~msrestazure.azure_operation.AzureOperationPoller[None] or
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[None]]
         :raises:
-         :class:`ErrorResponseException<quantum.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.quantum.models.ErrorResponseException>`
         """
         raw_result = self._delete_initial(
             resource_group_name=resource_group_name,
@@ -342,13 +332,9 @@ class WorkspacesOperations(object):
         )
 
         def get_long_running_output(response):
-            deserialized = self._deserialize('QuantumWorkspace', response)
-
             if raw:
-                client_raw_response = ClientRawResponse(deserialized, response)
+                client_raw_response = ClientRawResponse(None, response)
                 return client_raw_response
-
-            return deserialized
 
         lro_delay = operation_config.get(
             'long_running_operation_timeout',
@@ -370,9 +356,9 @@ class WorkspacesOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of QuantumWorkspace
         :rtype:
-         ~quantum.models.QuantumWorkspacePaged[~quantum.models.QuantumWorkspace]
+         ~azure.quantum.models.QuantumWorkspacePaged[~azure.quantum.models.QuantumWorkspace]
         :raises:
-         :class:`ErrorResponseException<quantum.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.quantum.models.ErrorResponseException>`
         """
         def internal_paging(next_link=None, raw=False):
 
@@ -435,9 +421,9 @@ class WorkspacesOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of QuantumWorkspace
         :rtype:
-         ~quantum.models.QuantumWorkspacePaged[~quantum.models.QuantumWorkspace]
+         ~azure.quantum.models.QuantumWorkspacePaged[~azure.quantum.models.QuantumWorkspace]
         :raises:
-         :class:`ErrorResponseException<quantum.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.quantum.models.ErrorResponseException>`
         """
         def internal_paging(next_link=None, raw=False):
 

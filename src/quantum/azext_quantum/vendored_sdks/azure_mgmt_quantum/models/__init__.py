@@ -10,8 +10,6 @@
 # --------------------------------------------------------------------------
 
 try:
-    from .error_definition_py3 import ErrorDefinition
-    from .error_response_py3 import ErrorResponse, ErrorResponseException
     from .provider_py3 import Provider
     from .quantum_workspace_identity_py3 import QuantumWorkspaceIdentity
     from .quantum_workspace_py3 import QuantumWorkspace
@@ -24,11 +22,17 @@ try:
     from .pricing_dimension_py3 import PricingDimension
     from .provider_properties_py3 import ProviderProperties
     from .provider_description_py3 import ProviderDescription
+    from .tags_object_py3 import TagsObject
     from .operation_display_py3 import OperationDisplay
     from .operation_py3 import Operation
+    from .proxy_resource_py3 import ProxyResource
+    from .azure_entity_resource_py3 import AzureEntityResource
+    from .resource_py3 import Resource
+    from .tracked_resource_py3 import TrackedResource
+    from .error_additional_info_py3 import ErrorAdditionalInfo
+    from .error_response_error_py3 import ErrorResponseError
+    from .error_response_py3 import ErrorResponse, ErrorResponseException
 except (SyntaxError, ImportError):
-    from .error_definition import ErrorDefinition
-    from .error_response import ErrorResponse, ErrorResponseException
     from .provider import Provider
     from .quantum_workspace_identity import QuantumWorkspaceIdentity
     from .quantum_workspace import QuantumWorkspace
@@ -41,8 +45,16 @@ except (SyntaxError, ImportError):
     from .pricing_dimension import PricingDimension
     from .provider_properties import ProviderProperties
     from .provider_description import ProviderDescription
+    from .tags_object import TagsObject
     from .operation_display import OperationDisplay
     from .operation import Operation
+    from .proxy_resource import ProxyResource
+    from .azure_entity_resource import AzureEntityResource
+    from .resource import Resource
+    from .tracked_resource import TrackedResource
+    from .error_additional_info import ErrorAdditionalInfo
+    from .error_response_error import ErrorResponseError
+    from .error_response import ErrorResponse, ErrorResponseException
 from .quantum_workspace_paged import QuantumWorkspacePaged
 from .provider_description_paged import ProviderDescriptionPaged
 from .operation_paged import OperationPaged
@@ -50,11 +62,10 @@ from .quantum_management_client_enums import (
     Status,
     UsableStatus,
     ProvisioningStatus,
+    ResourceIdentityType,
 )
 
 __all__ = [
-    'ErrorDefinition',
-    'ErrorResponse', 'ErrorResponseException',
     'Provider',
     'QuantumWorkspaceIdentity',
     'QuantumWorkspace',
@@ -67,12 +78,21 @@ __all__ = [
     'PricingDimension',
     'ProviderProperties',
     'ProviderDescription',
+    'TagsObject',
     'OperationDisplay',
     'Operation',
+    'ProxyResource',
+    'AzureEntityResource',
+    'Resource',
+    'TrackedResource',
+    'ErrorAdditionalInfo',
+    'ErrorResponseError',
+    'ErrorResponse', 'ErrorResponseException',
     'QuantumWorkspacePaged',
     'ProviderDescriptionPaged',
     'OperationPaged',
     'Status',
     'UsableStatus',
     'ProvisioningStatus',
+    'ResourceIdentityType',
 ]

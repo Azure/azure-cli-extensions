@@ -24,9 +24,9 @@ class SkuDescription(Model):
     :param targets: The list of targets available for this sku.
     :type targets: list[str]
     :param quota_dimensions: The list of quota dimensions for this sku.
-    :type quota_dimensions: list[~quantum.models.QuotaDimension]
+    :type quota_dimensions: list[~azure.quantum.models.QuotaDimension]
     :param pricing_details: The list of pricing details for the sku.
-    :type pricing_details: list[~quantum.models.PricingDetail]
+    :type pricing_details: list[~azure.quantum.models.PricingDetail]
     """
 
     _attribute_map = {

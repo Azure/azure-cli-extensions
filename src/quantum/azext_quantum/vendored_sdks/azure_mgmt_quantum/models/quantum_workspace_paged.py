@@ -14,7 +14,7 @@ from msrest.paging import Paged
 
 class QuantumWorkspacePaged(Paged):
     """
-    A paging container for iterating over a list of :class:`QuantumWorkspace <quantum.models.QuantumWorkspace>` object
+    A paging container for iterating over a list of :class:`QuantumWorkspace <azure.quantum.models.QuantumWorkspace>` object
     """
 
     _attribute_map = {

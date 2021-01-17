@@ -12,33 +12,36 @@
 from msrest.serialization import Model
 
 
-class ProviderDescription(Model):
-    """Information about an offering. A provider offering is an entity that offers
-    Targets to run Azure Quantum Jobs.
+class Resource(Model):
+    """The resource model definition for a ARM tracked top level resource.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :param id: Unique provider's id.
-    :type id: str
-    :ivar name: Provider's display name.
+    :ivar id: Fully qualified resource Id for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
+    :vartype id: str
+    :ivar name: The name of the resource
     :vartype name: str
-    :param properties: A list of provider-specific properties.
-    :type properties: ~azure.quantum.models.ProviderProperties
+    :ivar type: The type of the resource. Ex-
+     Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
+    :vartype type: str
     """
 
     _validation = {
+        'id': {'readonly': True},
         'name': {'readonly': True},
+        'type': {'readonly': True},
     }
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
-        'properties': {'key': 'properties', 'type': 'ProviderProperties'},
+        'type': {'key': 'type', 'type': 'str'},
     }
 
-    def __init__(self, **kwargs):
-        super(ProviderDescription, self).__init__(**kwargs)
-        self.id = kwargs.get('id', None)
+    def __init__(self, **kwargs) -> None:
+        super(Resource, self).__init__(**kwargs)
+        self.id = None
         self.name = None
-        self.properties = kwargs.get('properties', None)
+        self.type = None

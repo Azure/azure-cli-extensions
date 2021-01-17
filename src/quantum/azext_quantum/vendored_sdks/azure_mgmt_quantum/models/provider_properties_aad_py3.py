@@ -15,18 +15,26 @@ from msrest.serialization import Model
 class ProviderPropertiesAad(Model):
     """Azure Active Directory info.
 
-    :param application_id: Provider's application id.
-    :type application_id: str
-    :param tenant_id: Provider's tenant id.
-    :type tenant_id: str
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar application_id: Provider's application id.
+    :vartype application_id: str
+    :ivar tenant_id: Provider's tenant id.
+    :vartype tenant_id: str
     """
+
+    _validation = {
+        'application_id': {'readonly': True},
+        'tenant_id': {'readonly': True},
+    }
 
     _attribute_map = {
         'application_id': {'key': 'applicationId', 'type': 'str'},
         'tenant_id': {'key': 'tenantId', 'type': 'str'},
     }
 
-    def __init__(self, *, application_id: str=None, tenant_id: str=None, **kwargs) -> None:
+    def __init__(self, **kwargs) -> None:
         super(ProviderPropertiesAad, self).__init__(**kwargs)
-        self.application_id = application_id
-        self.tenant_id = tenant_id
+        self.application_id = None
+        self.tenant_id = None

@@ -38,7 +38,8 @@ class OfferingsOperations(object):
 
     def list(
             self, location_name, custom_headers=None, raw=False, **operation_config):
-        """Returns the list of all providers available for the given location.
+        """Returns the list of all provider offerings available for the given
+        location.
 
         :param location_name: Location.
         :type location_name: str
@@ -49,9 +50,9 @@ class OfferingsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of ProviderDescription
         :rtype:
-         ~quantum.models.ProviderDescriptionPaged[~quantum.models.ProviderDescription]
+         ~azure.quantum.models.ProviderDescriptionPaged[~azure.quantum.models.ProviderDescription]
         :raises:
-         :class:`ErrorResponseException<quantum.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.quantum.models.ErrorResponseException>`
         """
         def internal_paging(next_link=None, raw=False):
 

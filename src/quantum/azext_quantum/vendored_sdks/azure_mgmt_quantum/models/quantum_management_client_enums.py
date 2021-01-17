@@ -36,5 +36,10 @@ class ProvisioningStatus(str, Enum):
     provider_updating = "ProviderUpdating"
     provider_deleting = "ProviderDeleting"
     provider_provisioning = "ProviderProvisioning"
-    deleted = "Deleted"
     failed = "Failed"
+
+
+class ResourceIdentityType(str, Enum):
+
+    system_assigned = "SystemAssigned"
+    none = "None"

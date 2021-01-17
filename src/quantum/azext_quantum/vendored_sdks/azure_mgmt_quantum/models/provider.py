@@ -30,7 +30,7 @@ class Provider(Model):
     :param provisioning_state: Provisioning status field. Possible values
      include: 'Succeeded', 'Launching', 'Updating', 'Deleting', 'Deleted',
      'Failed'
-    :type provisioning_state: str or ~quantum.models.Status
+    :type provisioning_state: str or ~azure.quantum.models.Status
     :param resource_usage_id: Id to track resource usage for the provider.
     :type resource_usage_id: str
     """

@@ -46,9 +46,10 @@ class Operations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of Operation
-        :rtype: ~quantum.models.OperationPaged[~quantum.models.Operation]
+        :rtype:
+         ~azure.quantum.models.OperationPaged[~azure.quantum.models.Operation]
         :raises:
-         :class:`ErrorResponseException<quantum.models.ErrorResponseException>`
+         :class:`ErrorResponseException<azure.quantum.models.ErrorResponseException>`
         """
         def internal_paging(next_link=None, raw=False):
 

@@ -58,11 +58,11 @@ class QuantumManagementClient(SDKClient):
     :vartype config: QuantumManagementClientConfiguration
 
     :ivar workspaces: Workspaces operations
-    :vartype workspaces: quantum.operations.WorkspacesOperations
+    :vartype workspaces: azure.quantum.operations.WorkspacesOperations
     :ivar offerings: Offerings operations
-    :vartype offerings: quantum.operations.OfferingsOperations
+    :vartype offerings: azure.quantum.operations.OfferingsOperations
     :ivar operations: Operations operations
-    :vartype operations: quantum.operations.Operations
+    :vartype operations: azure.quantum.operations.Operations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials

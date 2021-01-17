@@ -14,7 +14,7 @@ from msrest.paging import Paged
 
 class QuotaPaged(Paged):
     """
-    A paging container for iterating over a list of :class:`Quota <quantum.models.Quota>` object
+    A paging container for iterating over a list of :class:`Quota <azure.quantum.models.Quota>` object
     """
 
     _attribute_map = {
