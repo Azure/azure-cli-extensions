@@ -18,6 +18,8 @@ helps['connectedk8s connect'] = """
     examples:
     - name: Onboard a connected kubernetes cluster with default kube config and kube context.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName
+    - name: Onboard a connected kubernetes cluster with default kube config and kube context and disabling auto upgrade of arc agents.
+      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --disable-auto-upgrade
     - name: Onboard a connected kubernetes cluster by specifying the kubeconfig and kubecontext.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --kube-config /path/to/kubeconfig --kube-context kubeContextName
     - name: Onboard a connected kubernetes cluster by specifying the https proxy, http proxy, no proxy settings.
@@ -35,6 +37,8 @@ helps['connectedk8s update'] = """
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName  --proxy-cert /path/to/crt --proxy-https https://proxy-url --proxy-http http://proxy-url --proxy-skip-range excludedIP,excludedCIDR,exampleCIDRfollowed,10.0.0.0/24
     - name: Disable proxy settings for agents
       text: az connectedk8s update --disable-proxy
+    - name: Disable auto-upgrade of agents
+      text: az connectedk8s update --auto-upgrade false
 """
 
 helps['connectedk8s upgrade'] = """
@@ -42,9 +46,9 @@ helps['connectedk8s upgrade'] = """
     short-summary: Upgrade onboarded agents to the specific version or default to the latest version.
     examples:
     - name: Upgrade the agents to the latest version
-      text: az connectedk8s update -g resourceGroupName -n connectedClusterName
+      text: az connectedk8s upgrade -g resourceGroupName -n connectedClusterName
     - name: Upgrade the agents to a specific version
-      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --agent-version 0.2.28
+      text: az connectedk8s upgrade -g resourceGroupName -n connectedClusterName --agent-version 0.2.28
 """
 
 helps['connectedk8s list'] = """

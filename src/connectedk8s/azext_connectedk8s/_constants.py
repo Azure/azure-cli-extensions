@@ -7,7 +7,8 @@
 # pylint: disable=line-too-long
 
 Distribution_Enum_Values = ["auto", "generic", "openshift", "rancher_rke", "kind", "k3s", "minikube", "gke", "eks", "aks", "aks_hci", "capz", "aks_engine", "tkg"]
-Infrastructure_Enum_Values = ["auto", "generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere"]
+Infrastructure_Enum_Values = ["auto", "generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere", "windows_server"]
+Helm_Temp_Output_Value_File = 'azure-arc-helm-get-temp.txt'
 
 Azure_PublicCloudName = 'AZUREPUBLICCLOUD'
 Azure_USGovCloudName = 'AZUREUSGOVERNMENTCLOUD'
@@ -59,3 +60,5 @@ EnableProxy_Conflict_Error = 'Conflict detected: --disable-proxy can not be set 
 Manual_Upgrade_Called_In_Auto_Update_Enabled = 'Manual Upgrade was called while in auto_Update enabled mode'
 Upgrade_Agent_Success = 'Agents for Connected Cluster {} have been upgraded successfully'
 Upgrade_Agent_Failure = 'Error while upgrading agents. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of timeout error. Error: {}'
+Release_Namespace_Not_Found = 'Error while getting azure-arc releasenamespace'
+Get_Helm_Values_Failed = 'Error while doing helm get values azure-arc'

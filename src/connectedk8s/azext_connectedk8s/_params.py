@@ -27,7 +27,7 @@ def load_arguments(self, _):
         c.argument('proxy_cert', options_list=['--proxy-cert'], type=file_type, completer=FilesCompleter(), help='Path to the certificate file for proxy')
         c.argument('distribution', options_list=['--distribution'], help='The Kubernetes distribution which will be running on this connected cluster.', arg_type=get_enum_type(Distribution_Enum_Values))
         c.argument('infrastructure', options_list=['--infrastructure'], help='The infrastructure on which the Kubernetes cluster represented by this connected cluster will be running on.', arg_type=get_enum_type(Infrastructure_Enum_Values))
-        c.argument('auto_upgrade', options_list=['--auto-upgrade'], help='Flag to enable/disable auto upgrade of arc agents. By default, auto upgrade of agents is enabled.', arg_type=get_enum_type(["true", "false"]))
+        c.argument('disable_auto_upgrade', options_list=['--disable-auto-upgrade'], action='store_true', help='Flag to disable auto upgrade of arc agents.')
 
     with self.argument_context('connectedk8s update') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
@@ -44,7 +44,7 @@ def load_arguments(self, _):
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
-        c.argument('arc_agent_version', options_list=['--agent-version', '-av'], help='Version of agent to update the helm charts to.')
+        c.argument('arc_agent_version', options_list=['--agent-version'], help='Version of agent to update the helm charts to.')
 
     with self.argument_context('connectedk8s list') as c:
         pass
