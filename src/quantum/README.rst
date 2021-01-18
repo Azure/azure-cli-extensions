@@ -37,7 +37,7 @@ https://docs.microsoft.com/quantum/
     westus       ws-yyyyyy                          rg-yyyyyyyyy
    ```
 
-4. You can check the current default workspace with the command `az quantum workspace show`.
+4. You can check the current default workspace with command `az quantum workspace show`.
 
    ```dotnetcli
     az quantum workspace show -o table
