@@ -6,7 +6,7 @@ from quantum hardware to full-state simulators and quantum inspired optimization
 providing developers and customers access to the most competitive quantum offering
 on the market.
 
-To learn more about azure quantum visit:
+To learn more about azure quantum, visit:
 https://azure.microsoft.com/en-us/services/quantum/
 
 To learn more about quantum computing and Microsoft's Quantum Development Kit visit:
@@ -157,5 +157,4 @@ Result    Frequency
 [0,0]     0.25000000   ▐█████                  |
 [0,1]     0.75000000   ▐████████████████       |
 ```
-
 
