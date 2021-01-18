@@ -9,7 +9,7 @@ on the market.
 To learn more about azure quantum, visit:
 https://azure.microsoft.com/en-us/services/quantum/
 
-To learn more about quantum computing and Microsoft's Quantum Development Kit visit:
+To learn more about quantum computing and Microsoft's Quantum Development Kit, visit:
 https://docs.microsoft.com/quantum/
 
 
@@ -157,4 +157,3 @@ Result    Frequency
 [0,0]     0.25000000   ▐█████                  |
 [0,1]     0.75000000   ▐████████████████       |
 ```
-
