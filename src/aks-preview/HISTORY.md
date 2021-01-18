@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.73
++++++
+* Update to use 2020-12-01 api-version
+
 0.4.72
 ++++++
 * Add --no-uptime-sla
