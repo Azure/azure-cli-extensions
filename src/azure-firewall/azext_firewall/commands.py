@@ -14,12 +14,11 @@ from ._util import (
     list_network_resource_property, get_network_resource_property_entry, delete_network_resource_property_entry)
 
 from ._validators import validate_af_network_rule, validate_af_nat_rule, validate_af_application_rule
-
+from ._exception_handler import exception_handler
 
 # pylint: disable=too-many-locals, too-many-statements
 def load_command_table(self, _):
 
-    from ._exception_handler import exception_handler
     network_util = CliCommandType(
         operations_tmpl='azext_firewall._util#{}',
         client_factory=None
@@ -43,8 +42,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_firewall.vendored_sdks.v2020_07_01.operations#FirewallPoliciesOperations.{}',
         client_factory=cf_firewall_policies,
         resource_type=CUSTOM_FIREWALL,
-        min_api='2019-07-01',
-        exception_handler=exception_handler
+        min_api='2019-07-01'
     )
 
     network_firewall_policy_rule_groups = CliCommandType(
