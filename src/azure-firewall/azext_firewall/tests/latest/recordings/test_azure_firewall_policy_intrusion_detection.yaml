@@ -11,17 +11,17 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --sku --detect-mode
+      - -g -n --sku --idps-mode
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-resource/10.3.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-resource/12.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_firewall_policy_intrusion_detection000001?api-version=2020-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_firewall_policy_intrusion_detection000001?api-version=2020-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001","name":"test_azure_firewall_policy_intrusion_detection000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2020-12-23T11:54:33Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001","name":"test_azure_firewall_policy_intrusion_detection000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2021-01-18T06:44:55Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -30,7 +30,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:54:38 GMT
+      - Mon, 18 Jan 2021 06:44:58 GMT
       expires:
       - '-1'
       pragma:
@@ -61,29 +61,27 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
-      - -g -n --sku --detect-mode
+      - -g -n --sku --idps-mode
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
-        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
-        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Off\",\r\n      \"configuration\"\
-        : {\r\n        \"signatureOverrides\": [],\r\n        \"bypassTrafficSettings\"\
-        : []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Updating\"\r\n \
-        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\"\
-        ,\r\n  \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"202635a6-9c48-4d0a-adaa-64da1c8f61df\",\r\n  \"location\"\
-        : \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\":
+        {\r\n      \"mode\": \"Off\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
+        [],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n    \"provisioningState\":
+        \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
+        \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"0e306658-e23c-4bb0-9332-28564226c8b8\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/eb3c8ccf-ff20-43b9-bd95-d957f8670641?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/8ce8f131-051e-4ff4-8ecd-60c12411ded9?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -91,7 +89,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:54:46 GMT
+      - Mon, 18 Jan 2021 06:45:05 GMT
       expires:
       - '-1'
       pragma:
@@ -103,7 +101,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1180'
     status:
       code: 201
       message: Created
@@ -119,12 +117,12 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --sku --detect-mode
+      - -g -n --sku --idps-mode
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/eb3c8ccf-ff20-43b9-bd95-d957f8670641?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/8ce8f131-051e-4ff4-8ecd-60c12411ded9?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -136,7 +134,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:54:57 GMT
+      - Mon, 18 Jan 2021 06:45:16 GMT
       expires:
       - '-1'
       pragma:
@@ -166,24 +164,22 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --sku --detect-mode
+      - -g -n --sku --idps-mode
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
-        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
-        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Off\",\r\n      \"configuration\"\
-        : {\r\n        \"signatureOverrides\": [],\r\n        \"bypassTrafficSettings\"\
-        : []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n\
-        \  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\"\
-        ,\r\n  \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"202635a6-9c48-4d0a-adaa-64da1c8f61df\",\r\n  \"location\"\
-        : \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\":
+        {\r\n      \"mode\": \"Off\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
+        [],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n    \"provisioningState\":
+        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
+        \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"0e306658-e23c-4bb0-9332-28564226c8b8\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -192,7 +188,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:54:57 GMT
+      - Mon, 18 Jan 2021 06:45:16 GMT
       expires:
       - '-1'
       pragma:
@@ -222,26 +218,24 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --detect-mode
+      - -g -n --idps-mode
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
-        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
-        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Off\",\r\n      \"configuration\"\
-        : {\r\n        \"signatureOverrides\": [],\r\n        \"bypassTrafficSettings\"\
-        : []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n\
-        \  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\"\
-        ,\r\n  \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"202635a6-9c48-4d0a-adaa-64da1c8f61df\",\r\n  \"location\"\
-        : \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\":
+        {\r\n      \"mode\": \"Off\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
+        [],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n    \"provisioningState\":
+        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
+        \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"0e306658-e23c-4bb0-9332-28564226c8b8\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -250,7 +244,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:54:59 GMT
+      - Mon, 18 Jan 2021 06:45:18 GMT
       expires:
       - '-1'
       pragma:
@@ -287,29 +281,27 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
-      - -g -n --detect-mode
+      - -g -n --idps-mode
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
-        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
-        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\"\
-        : {\r\n        \"signatureOverrides\": [],\r\n        \"bypassTrafficSettings\"\
-        : []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Updating\"\r\n \
-        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\"\
-        ,\r\n  \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"26f3e440-e6ef-44f9-a20f-b407ef158524\",\r\n  \"location\"\
-        : \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\":
+        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
+        [],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n    \"provisioningState\":
+        \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
+        \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"a810c678-4497-4868-882e-014328290e19\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/ca9f544d-5cfe-40f0-9625-fdfa0ebd89be?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/90ee7200-b747-4783-9654-de33b3132cb2?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -317,7 +309,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:55:01 GMT
+      - Mon, 18 Jan 2021 06:45:19 GMT
       expires:
       - '-1'
       pragma:
@@ -333,7 +325,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1191'
     status:
       code: 200
       message: OK
@@ -349,12 +341,12 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --detect-mode
+      - -g -n --idps-mode
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/ca9f544d-5cfe-40f0-9625-fdfa0ebd89be?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/90ee7200-b747-4783-9654-de33b3132cb2?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -366,7 +358,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:55:12 GMT
+      - Mon, 18 Jan 2021 06:45:31 GMT
       expires:
       - '-1'
       pragma:
@@ -396,24 +388,22 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --detect-mode
+      - -g -n --idps-mode
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
-        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
-        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\"\
-        : {\r\n        \"signatureOverrides\": [],\r\n        \"bypassTrafficSettings\"\
-        : []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n\
-        \  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\"\
-        ,\r\n  \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"26f3e440-e6ef-44f9-a20f-b407ef158524\",\r\n  \"location\"\
-        : \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\":
+        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
+        [],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n    \"provisioningState\":
+        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
+        \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"a810c678-4497-4868-882e-014328290e19\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -422,7 +412,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:55:12 GMT
+      - Mon, 18 Jan 2021 06:45:31 GMT
       expires:
       - '-1'
       pragma:
@@ -448,30 +438,28 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall policy intrusion-detection add
+      - network firewall policy idps add
       Connection:
       - keep-alive
       ParameterSetName:
       - -g --policy-name --mode --signature-id
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
-        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
-        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\"\
-        : {\r\n        \"signatureOverrides\": [],\r\n        \"bypassTrafficSettings\"\
-        : []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n\
-        \  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\"\
-        ,\r\n  \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"26f3e440-e6ef-44f9-a20f-b407ef158524\",\r\n  \"location\"\
-        : \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\":
+        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
+        [],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n    \"provisioningState\":
+        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
+        \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"a810c678-4497-4868-882e-014328290e19\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -480,7 +468,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:55:13 GMT
+      - Mon, 18 Jan 2021 06:45:31 GMT
       expires:
       - '-1'
       pragma:
@@ -509,7 +497,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall policy intrusion-detection add
+      - network firewall policy idps add
       Connection:
       - keep-alive
       Content-Length:
@@ -519,28 +507,27 @@ interactions:
       ParameterSetName:
       - -g --policy-name --mode --signature-id
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
-        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
-        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\"\
-        : {\r\n        \"signatureOverrides\": [\r\n          {\r\n            \"\
-        id\": \"10001\",\r\n            \"mode\": \"Deny\"\r\n          }\r\n    \
-        \    ],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n\
-        \    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\"\
-        ,\r\n  \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"b600d75f-d437-4b6f-a25e-af14823a75e7\",\r\n  \"location\"\
-        : \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\":
+        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
+        [\r\n          {\r\n            \"id\": \"10001\",\r\n            \"mode\":
+        \"Deny\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
+        []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
+        \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"8b1ea079-5e7a-4206-a1f8-18115ec590e0\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/a9c343af-5d6d-4082-ae55-a1fdca7c9fd3?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/1359a773-4cc9-44ff-864c-0e2823b62729?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -548,7 +535,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:55:13 GMT
+      - Mon, 18 Jan 2021 06:45:32 GMT
       expires:
       - '-1'
       pragma:
@@ -564,7 +551,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1190'
     status:
       code: 200
       message: OK
@@ -576,16 +563,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall policy intrusion-detection add
+      - network firewall policy idps add
       Connection:
       - keep-alive
       ParameterSetName:
       - -g --policy-name --mode --signature-id
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/a9c343af-5d6d-4082-ae55-a1fdca7c9fd3?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/1359a773-4cc9-44ff-864c-0e2823b62729?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -597,7 +584,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:55:25 GMT
+      - Mon, 18 Jan 2021 06:45:43 GMT
       expires:
       - '-1'
       pragma:
@@ -623,29 +610,28 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall policy intrusion-detection add
+      - network firewall policy idps add
       Connection:
       - keep-alive
       ParameterSetName:
       - -g --policy-name --mode --signature-id
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
-        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
-        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\"\
-        : {\r\n        \"signatureOverrides\": [\r\n          {\r\n            \"\
-        id\": \"10001\",\r\n            \"mode\": \"Deny\"\r\n          }\r\n    \
-        \    ],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n\
-        \    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\"\
-        ,\r\n  \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"b600d75f-d437-4b6f-a25e-af14823a75e7\",\r\n  \"location\"\
-        : \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\":
+        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
+        [\r\n          {\r\n            \"id\": \"10001\",\r\n            \"mode\":
+        \"Deny\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
+        []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
+        \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"8b1ea079-5e7a-4206-a1f8-18115ec590e0\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -654,7 +640,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:55:25 GMT
+      - Mon, 18 Jan 2021 06:45:44 GMT
       expires:
       - '-1'
       pragma:
@@ -680,31 +666,30 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall policy intrusion-detection add
+      - network firewall policy idps add
       Connection:
       - keep-alive
       ParameterSetName:
       - -g --policy-name --mode --signature-id
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
-        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
-        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\"\
-        : {\r\n        \"signatureOverrides\": [\r\n          {\r\n            \"\
-        id\": \"10001\",\r\n            \"mode\": \"Deny\"\r\n          }\r\n    \
-        \    ],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n\
-        \    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\"\
-        ,\r\n  \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"b600d75f-d437-4b6f-a25e-af14823a75e7\",\r\n  \"location\"\
-        : \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\":
+        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
+        [\r\n          {\r\n            \"id\": \"10001\",\r\n            \"mode\":
+        \"Deny\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
+        []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
+        \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"8b1ea079-5e7a-4206-a1f8-18115ec590e0\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -713,7 +698,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:55:25 GMT
+      - Mon, 18 Jan 2021 06:45:44 GMT
       expires:
       - '-1'
       pragma:
@@ -743,7 +728,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall policy intrusion-detection add
+      - network firewall policy idps add
       Connection:
       - keep-alive
       Content-Length:
@@ -753,30 +738,28 @@ interactions:
       ParameterSetName:
       - -g --policy-name --mode --signature-id
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
-        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
-        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\"\
-        : {\r\n        \"signatureOverrides\": [\r\n          {\r\n            \"\
-        id\": \"10001\",\r\n            \"mode\": \"Deny\"\r\n          },\r\n   \
-        \       {\r\n            \"id\": \"20001\",\r\n            \"mode\": \"Alert\"\
-        \r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\": []\r\n\
-        \      }\r\n    },\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n\
-        \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\"\
-        ,\r\n  \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"5ea8fa62-9eb2-4c5e-b38d-0d8f81e5f0a2\",\r\n  \"location\"\
-        : \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\":
+        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
+        [\r\n          {\r\n            \"id\": \"10001\",\r\n            \"mode\":
+        \"Deny\"\r\n          },\r\n          {\r\n            \"id\": \"20001\",\r\n
+        \           \"mode\": \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
+        []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
+        \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"4a12d872-59f9-46c4-971a-80b9e5601483\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/5a1d4b00-2c43-403e-9bbf-4e4510e095df?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/16fe85d8-6752-4d12-ac45-9e77d57b4486?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -784,7 +767,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:55:26 GMT
+      - Mon, 18 Jan 2021 06:45:45 GMT
       expires:
       - '-1'
       pragma:
@@ -800,7 +783,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1188'
     status:
       code: 200
       message: OK
@@ -812,16 +795,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall policy intrusion-detection add
+      - network firewall policy idps add
       Connection:
       - keep-alive
       ParameterSetName:
       - -g --policy-name --mode --signature-id
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/5a1d4b00-2c43-403e-9bbf-4e4510e095df?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/16fe85d8-6752-4d12-ac45-9e77d57b4486?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -833,7 +816,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:55:37 GMT
+      - Mon, 18 Jan 2021 06:45:56 GMT
       expires:
       - '-1'
       pragma:
@@ -859,31 +842,29 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall policy intrusion-detection add
+      - network firewall policy idps add
       Connection:
       - keep-alive
       ParameterSetName:
       - -g --policy-name --mode --signature-id
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
-        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
-        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\"\
-        : {\r\n        \"signatureOverrides\": [\r\n          {\r\n            \"\
-        id\": \"10001\",\r\n            \"mode\": \"Deny\"\r\n          },\r\n   \
-        \       {\r\n            \"id\": \"20001\",\r\n            \"mode\": \"Alert\"\
-        \r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\": []\r\n\
-        \      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n\
-        \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\"\
-        ,\r\n  \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"5ea8fa62-9eb2-4c5e-b38d-0d8f81e5f0a2\",\r\n  \"location\"\
-        : \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\":
+        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
+        [\r\n          {\r\n            \"id\": \"10001\",\r\n            \"mode\":
+        \"Deny\"\r\n          },\r\n          {\r\n            \"id\": \"20001\",\r\n
+        \           \"mode\": \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
+        []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
+        \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"4a12d872-59f9-46c4-971a-80b9e5601483\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -892,7 +873,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:55:38 GMT
+      - Mon, 18 Jan 2021 06:45:56 GMT
       expires:
       - '-1'
       pragma:
@@ -918,34 +899,32 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall policy intrusion-detection add
+      - network firewall policy idps add
       Connection:
       - keep-alive
       ParameterSetName:
       - -g --policy-name --rule-name --rule-protocol --rule-src-addresses --rule-dest-addresses
         --rule-dest-ports
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
-        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
-        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\"\
-        : {\r\n        \"signatureOverrides\": [\r\n          {\r\n            \"\
-        id\": \"10001\",\r\n            \"mode\": \"Deny\"\r\n          },\r\n   \
-        \       {\r\n            \"id\": \"20001\",\r\n            \"mode\": \"Alert\"\
-        \r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\": []\r\n\
-        \      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n\
-        \  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\"\
-        ,\r\n  \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"5ea8fa62-9eb2-4c5e-b38d-0d8f81e5f0a2\",\r\n  \"location\"\
-        : \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\":
+        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
+        [\r\n          {\r\n            \"id\": \"10001\",\r\n            \"mode\":
+        \"Deny\"\r\n          },\r\n          {\r\n            \"id\": \"20001\",\r\n
+        \           \"mode\": \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
+        []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
+        \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"4a12d872-59f9-46c4-971a-80b9e5601483\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -954,7 +933,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:55:38 GMT
+      - Mon, 18 Jan 2021 06:45:57 GMT
       expires:
       - '-1'
       pragma:
@@ -986,7 +965,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall policy intrusion-detection add
+      - network firewall policy idps add
       Connection:
       - keep-alive
       Content-Length:
@@ -997,36 +976,34 @@ interactions:
       - -g --policy-name --rule-name --rule-protocol --rule-src-addresses --rule-dest-addresses
         --rule-dest-ports
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
-        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
-        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\"\
-        : {\r\n        \"signatureOverrides\": [\r\n          {\r\n            \"\
-        id\": \"10001\",\r\n            \"mode\": \"Deny\"\r\n          },\r\n   \
-        \       {\r\n            \"id\": \"20001\",\r\n            \"mode\": \"Alert\"\
-        \r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\": [\r\n\
-        \          {\r\n            \"name\": \"bypass-rule-1\",\r\n            \"\
-        protocol\": \"TCP\",\r\n            \"sourceAddresses\": [\r\n           \
-        \   \"10.0.0.12\",\r\n              \"10.0.0.15\"\r\n            ],\r\n  \
-        \          \"destinationAddresses\": [\r\n              \"192.168.0.103\"\
-        ,\r\n              \"192.168.0.104\"\r\n            ],\r\n            \"destinationPorts\"\
-        : [\r\n              \"8080\",\r\n              \"9090\",\r\n            \
-        \  \"5432\"\r\n            ]\r\n          }\r\n        ]\r\n      }\r\n  \
-        \  },\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\"\
-        ,\r\n  \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"e45339ba-700d-4155-87b5-fffd805be172\",\r\n  \"location\"\
-        : \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\":
+        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
+        [\r\n          {\r\n            \"id\": \"10001\",\r\n            \"mode\":
+        \"Deny\"\r\n          },\r\n          {\r\n            \"id\": \"20001\",\r\n
+        \           \"mode\": \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
+        [\r\n          {\r\n            \"name\": \"bypass-rule-1\",\r\n            \"protocol\":
+        \"TCP\",\r\n            \"sourceAddresses\": [\r\n              \"10.0.0.12\",\r\n
+        \             \"10.0.0.15\"\r\n            ],\r\n            \"destinationAddresses\":
+        [\r\n              \"192.168.0.103\",\r\n              \"192.168.0.104\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"8080\",\r\n
+        \             \"9090\",\r\n              \"5432\"\r\n            ]\r\n          }\r\n
+        \       ]\r\n      }\r\n    },\r\n    \"provisioningState\": \"Updating\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
+        \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"caf9a359-f2a9-47d1-8d05-70637e3bd7f6\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/1ab65854-c71c-4552-869d-7ce0fba7cfc9?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/576c50b1-e953-438e-a600-9e89da735f8f?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -1034,7 +1011,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:55:39 GMT
+      - Mon, 18 Jan 2021 06:45:58 GMT
       expires:
       - '-1'
       pragma:
@@ -1050,7 +1027,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1191'
     status:
       code: 200
       message: OK
@@ -1062,17 +1039,17 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall policy intrusion-detection add
+      - network firewall policy idps add
       Connection:
       - keep-alive
       ParameterSetName:
       - -g --policy-name --rule-name --rule-protocol --rule-src-addresses --rule-dest-addresses
         --rule-dest-ports
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/1ab65854-c71c-4552-869d-7ce0fba7cfc9?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/576c50b1-e953-438e-a600-9e89da735f8f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1084,7 +1061,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:55:50 GMT
+      - Mon, 18 Jan 2021 06:46:09 GMT
       expires:
       - '-1'
       pragma:
@@ -1110,39 +1087,36 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall policy intrusion-detection add
+      - network firewall policy idps add
       Connection:
       - keep-alive
       ParameterSetName:
       - -g --policy-name --rule-name --rule-protocol --rule-src-addresses --rule-dest-addresses
         --rule-dest-ports
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
-        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
-        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\"\
-        : {\r\n        \"signatureOverrides\": [\r\n          {\r\n            \"\
-        id\": \"10001\",\r\n            \"mode\": \"Deny\"\r\n          },\r\n   \
-        \       {\r\n            \"id\": \"20001\",\r\n            \"mode\": \"Alert\"\
-        \r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\": [\r\n\
-        \          {\r\n            \"name\": \"bypass-rule-1\",\r\n            \"\
-        protocol\": \"TCP\",\r\n            \"sourceAddresses\": [\r\n           \
-        \   \"10.0.0.12\",\r\n              \"10.0.0.15\"\r\n            ],\r\n  \
-        \          \"destinationAddresses\": [\r\n              \"192.168.0.103\"\
-        ,\r\n              \"192.168.0.104\"\r\n            ],\r\n            \"destinationPorts\"\
-        : [\r\n              \"8080\",\r\n              \"9090\",\r\n            \
-        \  \"5432\"\r\n            ]\r\n          }\r\n        ]\r\n      }\r\n  \
-        \  },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"\
-        /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\"\
-        ,\r\n  \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"e45339ba-700d-4155-87b5-fffd805be172\",\r\n  \"location\"\
-        : \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\":
+        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
+        [\r\n          {\r\n            \"id\": \"10001\",\r\n            \"mode\":
+        \"Deny\"\r\n          },\r\n          {\r\n            \"id\": \"20001\",\r\n
+        \           \"mode\": \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
+        [\r\n          {\r\n            \"name\": \"bypass-rule-1\",\r\n            \"protocol\":
+        \"TCP\",\r\n            \"sourceAddresses\": [\r\n              \"10.0.0.12\",\r\n
+        \             \"10.0.0.15\"\r\n            ],\r\n            \"destinationAddresses\":
+        [\r\n              \"192.168.0.103\",\r\n              \"192.168.0.104\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"8080\",\r\n
+        \             \"9090\",\r\n              \"5432\"\r\n            ]\r\n          }\r\n
+        \       ]\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
+        \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"caf9a359-f2a9-47d1-8d05-70637e3bd7f6\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1151,7 +1125,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:55:50 GMT
+      - Mon, 18 Jan 2021 06:46:09 GMT
       expires:
       - '-1'
       pragma:
@@ -1177,40 +1151,37 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall policy intrusion-detection list
+      - network firewall policy idps list
       Connection:
       - keep-alive
       ParameterSetName:
       - -g --policy-name
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
-        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
-        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\"\
-        : {\r\n        \"signatureOverrides\": [\r\n          {\r\n            \"\
-        id\": \"10001\",\r\n            \"mode\": \"Deny\"\r\n          },\r\n   \
-        \       {\r\n            \"id\": \"20001\",\r\n            \"mode\": \"Alert\"\
-        \r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\": [\r\n\
-        \          {\r\n            \"name\": \"bypass-rule-1\",\r\n            \"\
-        protocol\": \"TCP\",\r\n            \"sourceAddresses\": [\r\n           \
-        \   \"10.0.0.12\",\r\n              \"10.0.0.15\"\r\n            ],\r\n  \
-        \          \"destinationAddresses\": [\r\n              \"192.168.0.103\"\
-        ,\r\n              \"192.168.0.104\"\r\n            ],\r\n            \"destinationPorts\"\
-        : [\r\n              \"8080\",\r\n              \"9090\",\r\n            \
-        \  \"5432\"\r\n            ]\r\n          }\r\n        ]\r\n      }\r\n  \
-        \  },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"\
-        /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\"\
-        ,\r\n  \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"e45339ba-700d-4155-87b5-fffd805be172\",\r\n  \"location\"\
-        : \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\":
+        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
+        [\r\n          {\r\n            \"id\": \"10001\",\r\n            \"mode\":
+        \"Deny\"\r\n          },\r\n          {\r\n            \"id\": \"20001\",\r\n
+        \           \"mode\": \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
+        [\r\n          {\r\n            \"name\": \"bypass-rule-1\",\r\n            \"protocol\":
+        \"TCP\",\r\n            \"sourceAddresses\": [\r\n              \"10.0.0.12\",\r\n
+        \             \"10.0.0.15\"\r\n            ],\r\n            \"destinationAddresses\":
+        [\r\n              \"192.168.0.103\",\r\n              \"192.168.0.104\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"8080\",\r\n
+        \             \"9090\",\r\n              \"5432\"\r\n            ]\r\n          }\r\n
+        \       ]\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
+        \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"caf9a359-f2a9-47d1-8d05-70637e3bd7f6\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1219,7 +1190,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:55:52 GMT
+      - Mon, 18 Jan 2021 06:46:10 GMT
       expires:
       - '-1'
       pragma:
@@ -1245,40 +1216,37 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall policy intrusion-detection remove
+      - network firewall policy idps remove
       Connection:
       - keep-alive
       ParameterSetName:
       - -g --policy-name --rule-name --signature-id
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
-        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
-        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\"\
-        : {\r\n        \"signatureOverrides\": [\r\n          {\r\n            \"\
-        id\": \"10001\",\r\n            \"mode\": \"Deny\"\r\n          },\r\n   \
-        \       {\r\n            \"id\": \"20001\",\r\n            \"mode\": \"Alert\"\
-        \r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\": [\r\n\
-        \          {\r\n            \"name\": \"bypass-rule-1\",\r\n            \"\
-        protocol\": \"TCP\",\r\n            \"sourceAddresses\": [\r\n           \
-        \   \"10.0.0.12\",\r\n              \"10.0.0.15\"\r\n            ],\r\n  \
-        \          \"destinationAddresses\": [\r\n              \"192.168.0.103\"\
-        ,\r\n              \"192.168.0.104\"\r\n            ],\r\n            \"destinationPorts\"\
-        : [\r\n              \"8080\",\r\n              \"9090\",\r\n            \
-        \  \"5432\"\r\n            ]\r\n          }\r\n        ]\r\n      }\r\n  \
-        \  },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"\
-        /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\"\
-        ,\r\n  \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"e45339ba-700d-4155-87b5-fffd805be172\",\r\n  \"location\"\
-        : \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\":
+        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
+        [\r\n          {\r\n            \"id\": \"10001\",\r\n            \"mode\":
+        \"Deny\"\r\n          },\r\n          {\r\n            \"id\": \"20001\",\r\n
+        \           \"mode\": \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
+        [\r\n          {\r\n            \"name\": \"bypass-rule-1\",\r\n            \"protocol\":
+        \"TCP\",\r\n            \"sourceAddresses\": [\r\n              \"10.0.0.12\",\r\n
+        \             \"10.0.0.15\"\r\n            ],\r\n            \"destinationAddresses\":
+        [\r\n              \"192.168.0.103\",\r\n              \"192.168.0.104\"\r\n
+        \           ],\r\n            \"destinationPorts\": [\r\n              \"8080\",\r\n
+        \             \"9090\",\r\n              \"5432\"\r\n            ]\r\n          }\r\n
+        \       ]\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
+        \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"caf9a359-f2a9-47d1-8d05-70637e3bd7f6\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1287,7 +1255,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:55:53 GMT
+      - Mon, 18 Jan 2021 06:46:11 GMT
       expires:
       - '-1'
       pragma:
@@ -1316,7 +1284,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall policy intrusion-detection remove
+      - network firewall policy idps remove
       Connection:
       - keep-alive
       Content-Length:
@@ -1326,28 +1294,27 @@ interactions:
       ParameterSetName:
       - -g --policy-name --rule-name --signature-id
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
-        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
-        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\"\
-        : {\r\n        \"signatureOverrides\": [\r\n          {\r\n            \"\
-        id\": \"20001\",\r\n            \"mode\": \"Alert\"\r\n          }\r\n   \
-        \     ],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n\
-        \    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\"\
-        ,\r\n  \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"b94fb402-2d82-49af-84b4-1dafe757e18a\",\r\n  \"location\"\
-        : \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\":
+        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
+        [\r\n          {\r\n            \"id\": \"20001\",\r\n            \"mode\":
+        \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
+        []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
+        \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"167a895e-5068-4e5b-8c06-562d807eb64a\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/b4431e60-a8c9-4b99-ae2d-2d1bf1a68e26?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/9552a3ea-df22-4abb-b1cd-23dc00b58aad?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -1355,7 +1322,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:55:53 GMT
+      - Mon, 18 Jan 2021 06:46:11 GMT
       expires:
       - '-1'
       pragma:
@@ -1371,7 +1338,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1190'
     status:
       code: 200
       message: OK
@@ -1383,16 +1350,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall policy intrusion-detection remove
+      - network firewall policy idps remove
       Connection:
       - keep-alive
       ParameterSetName:
       - -g --policy-name --rule-name --signature-id
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/b4431e60-a8c9-4b99-ae2d-2d1bf1a68e26?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/nfvOperations/9552a3ea-df22-4abb-b1cd-23dc00b58aad?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1404,7 +1371,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:56:04 GMT
+      - Mon, 18 Jan 2021 06:46:23 GMT
       expires:
       - '-1'
       pragma:
@@ -1430,29 +1397,28 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall policy intrusion-detection remove
+      - network firewall policy idps remove
       Connection:
       - keep-alive
       ParameterSetName:
       - -g --policy-name --rule-name --signature-id
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
-        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
-        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\"\
-        : {\r\n        \"signatureOverrides\": [\r\n          {\r\n            \"\
-        id\": \"20001\",\r\n            \"mode\": \"Alert\"\r\n          }\r\n   \
-        \     ],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n\
-        \    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\"\
-        ,\r\n  \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"b94fb402-2d82-49af-84b4-1dafe757e18a\",\r\n  \"location\"\
-        : \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\":
+        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
+        [\r\n          {\r\n            \"id\": \"20001\",\r\n            \"mode\":
+        \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
+        []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
+        \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"167a895e-5068-4e5b-8c06-562d807eb64a\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1461,7 +1427,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:56:04 GMT
+      - Mon, 18 Jan 2021 06:46:23 GMT
       expires:
       - '-1'
       pragma:
@@ -1487,31 +1453,30 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall policy intrusion-detection list
+      - network firewall policy idps list
       Connection:
       - keep-alive
       ParameterSetName:
       - -g --policy-name
       User-Agent:
-      - python/3.8.6 (Linux-4.15.0-123-generic-x86_64-with-glibc2.27) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\
-        \r\n    },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\"\
-        : [],\r\n    \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n \
-        \   \"intrusionDetection\": {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\"\
-        : {\r\n        \"signatureOverrides\": [\r\n          {\r\n            \"\
-        id\": \"20001\",\r\n            \"mode\": \"Alert\"\r\n          }\r\n   \
-        \     ],\r\n        \"bypassTrafficSettings\": []\r\n      }\r\n    },\r\n\
-        \    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\"\
-        ,\r\n  \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\"\
-        ,\r\n  \"etag\": \"b94fb402-2d82-49af-84b4-1dafe757e18a\",\r\n  \"location\"\
-        : \"westus\"\r\n}"
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"intrusionDetection\":
+        {\r\n      \"mode\": \"Alert\",\r\n      \"configuration\": {\r\n        \"signatureOverrides\":
+        [\r\n          {\r\n            \"id\": \"20001\",\r\n            \"mode\":
+        \"Alert\"\r\n          }\r\n        ],\r\n        \"bypassTrafficSettings\":
+        []\r\n      }\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n
+        \ \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_policy_intrusion_detection000001/providers/Microsoft.Network/firewallPolicies/myFirewallPolicy\",\r\n
+        \ \"name\": \"myFirewallPolicy\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"167a895e-5068-4e5b-8c06-562d807eb64a\",\r\n  \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -1520,7 +1485,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 23 Dec 2020 11:56:06 GMT
+      - Mon, 18 Jan 2021 06:46:24 GMT
       expires:
       - '-1'
       pragma:

@@ -363,7 +363,7 @@ class AzureFirewallScenario(ScenarioTest):
             'rg': resource_group,
         })
 
-        self.cmd('network firewall policy create -g {rg} -n {policy} --sku Premium --detect-mode Off',
+        self.cmd('network firewall policy create -g {rg} -n {policy} --sku Premium --idps-mode Off',
                  checks=[
                      self.check('sku.tier', 'Premium'),
                      self.check('intrusionDetection.mode', 'Off'),
@@ -371,7 +371,7 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('intrusionDetection.configuration.signatureOverrides', []),
                  ])
 
-        self.cmd('network firewall policy update -g {rg} -n {policy} --detect-mode Alert',
+        self.cmd('network firewall policy update -g {rg} -n {policy} --idps-mode Alert',
                  checks=[
                      self.check('intrusionDetection.mode', 'Alert'),
                      self.check('intrusionDetection.configuration.bypassTrafficSettings', []),
@@ -439,7 +439,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall policy create -g {rg} -n {policy} -l {location} '
                  '--ip-addresses 101.0.0.0 101.0.0.1 --fqdns *.microsoft.com '
                  '--sku Premium '
-                 '--detect-mode Deny',
+                 '--idps-mode Deny',
                  checks=[
                      self.check('type', 'Microsoft.Network/FirewallPolicies'),
                      self.check('name', '{policy}'),
@@ -464,7 +464,7 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy update -g {rg} -n {policy} --threat-intel-mode Deny '
                  '--ip-addresses 102.0.0.0 102.0.0.1 --fqdns *.google.com '
-                 '--detect-mode Off',
+                 '--idps-mode Off',
                  checks=[
                      self.check('type', 'Microsoft.Network/FirewallPolicies'),
                      self.check('name', '{policy}'),
@@ -526,7 +526,7 @@ class AzureFirewallScenario(ScenarioTest):
                  --description "test" --destination-addresses "202.120.36.15" "202.120.36.16" --source-addresses "202.120.36.13" "202.120.36.14" --protocols Http=12800 Https=12801 \
                  --fqdn-tags AzureBackup HDInsight '
                  '--target-urls www.google.com www.bing.com '
-                 '--enable-terminate-tls true',
+                 '--enable-tls-inspection true',
                  checks=[
                      self.check('length(ruleCollections)', 3),
                      self.check('ruleCollections[2].ruleCollectionType', "FirewallPolicyFilterRuleCollection"),
