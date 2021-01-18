@@ -3,10 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import copy
 from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
-import copy
 
 from ._client_factory import network_client_factory
 
@@ -962,6 +962,11 @@ def remove_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_
     return client.create_or_update(resource_group_name, firewall_policy_name,
                                    rule_collection_group_name, rule_collection_group)
 
+
+def _judge(x, y):
+    return x if x else y
+
+
 # pylint: disable=too-many-locals
 def update_azure_firewall_policy_filter_rule(cmd, instance, rule_collection_name, rule_name,
                                              description=None, ip_protocols=None, source_addresses=None,
@@ -987,17 +992,16 @@ def update_azure_firewall_policy_filter_rule(cmd, instance, rule_collection_name
         rule = target_rule_collection.rules[i]
         if rule_name == rule.name:
             new_rule = {}
-            judge = lambda x, y: x if x else y
             if rule.rule_type == "NetworkRule":
                 new_rule = NetworkRule(name=rule_name,
-                                       description=judge(description, rule.description),
+                                       description=_judge(description, rule.description),
                                        rule_type=rule.rule_type,
-                                       ip_protocols=judge(ip_protocols, rule.ip_protocols),
-                                       source_addresses=judge(source_addresses, rule.source_addresses),
-                                       destination_addresses=judge(destination_addresses, rule.destination_addresses),
-                                       destination_ports=judge(destination_ports, rule.destination_ports),
-                                       source_ip_groups=judge(source_ip_groups, rule.source_ip_groups),
-                                       destination_ip_groups=judge(destination_ip_groups, rule.destination_ip_groups))
+                                       ip_protocols=_judge(ip_protocols, rule.ip_protocols),
+                                       source_addresses=_judge(source_addresses, rule.source_addresses),
+                                       destination_addresses=_judge(destination_addresses, rule.destination_addresses),
+                                       destination_ports=_judge(destination_ports, rule.destination_ports),
+                                       source_ip_groups=_judge(source_ip_groups, rule.source_ip_groups),
+                                       destination_ip_groups=_judge(destination_ip_groups, rule.destination_ip_groups))
             elif rule.rule_type == 'ApplicationRule':
                 def map_application_rule_protocol(item):
                     return FirewallPolicyRuleApplicationProtocol(protocol_type=item['protocol_type'],
@@ -1005,28 +1009,28 @@ def update_azure_firewall_policy_filter_rule(cmd, instance, rule_collection_name
 
                 protocols = list(map(map_application_rule_protocol, protocols))
                 new_rule = ApplicationRule(name=rule_name,
-                                           description=judge(description, rule.description),
+                                           description=_judge(description, rule.description),
                                            rule_type=rule.rule_type,
-                                           source_addresses=judge(source_addresses, rule.source_addresses),
-                                           protocols=judge(protocols, rule.protocols),
-                                           destination_addresses=judge(destination_addresses, rule.destination_addresses),
-                                           fqdn_tags=judge(fqdn_tags, rule.fqdn_tags),
-                                           target_fqdns=judge(target_fqdns, rule.target_fqdns),
-                                           target_urls=judge(target_urls, rule.target_urls),
-                                           source_ip_groups=judge(source_ip_groups, rule.source_ip_groups),
-                                           terminate_tls=judge(enable_tls_inspection, rule.terminate_tls),
-                                           web_categories=judge(web_categories, rule.web_categories))
+                                           source_addresses=_judge(source_addresses, rule.source_addresses),
+                                           protocols=_judge(protocols, rule.protocols),
+                                           destination_addresses=_judge(destination_addresses, rule.destination_addresses),
+                                           fqdn_tags=_judge(fqdn_tags, rule.fqdn_tags),
+                                           target_fqdns=_judge(target_fqdns, rule.target_fqdns),
+                                           target_urls=_judge(target_urls, rule.target_urls),
+                                           source_ip_groups=_judge(source_ip_groups, rule.source_ip_groups),
+                                           terminate_tls=_judge(enable_tls_inspection, rule.terminate_tls),
+                                           web_categories=_judge(web_categories, rule.web_categories))
             elif rule.rule_type == 'NatRule':
                 new_rule = NatRule(name=rule_name,
-                                   description=judge(description, rule.description),
+                                   description=_judge(description, rule.description),
                                    rule_type=rule.rule_type,
-                                   ip_protocols=judge(ip_protocols, rule.ip_protocols),
-                                   source_addresses=judge(source_addresses, rule.source_addresses),
-                                   destination_addresses=judge(destination_addresses, rule.destination_addresses),
-                                   destination_ports=judge(destination_ports, rule.destination_ports),
-                                   translated_address=judge(translated_address, rule.translated_address),
-                                   translated_port=judge(translated_port, rule.translated_port),
-                                   source_ip_groups=judge(source_ip_groups, rule.source_ip_groups))
+                                   ip_protocols=_judge(ip_protocols, rule.ip_protocols),
+                                   source_addresses=_judge(source_addresses, rule.source_addresses),
+                                   destination_addresses=_judge(destination_addresses, rule.destination_addresses),
+                                   destination_ports=_judge(destination_ports, rule.destination_ports),
+                                   translated_address=_judge(translated_address, rule.translated_address),
+                                   translated_port=_judge(translated_port, rule.translated_port),
+                                   source_ip_groups=_judge(source_ip_groups, rule.source_ip_groups))
             if new_rule:
                 target_rule_collection.rules[i] = copy.deepcopy(new_rule)
                 return instance

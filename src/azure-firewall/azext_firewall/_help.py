@@ -469,7 +469,7 @@ helps['network firewall policy rule-collection-group collection rule update'] = 
         NatRule collection supports including a list of nat rules.
     examples:
         - name: Update a rule of an Azure firewall policy rule collection.
-          text: az network firewall policy rule-collection-group collection rule update -g {rg} --policy-name {policy} 
-                --rule-collection-group-name {rcg} --collection-name {cn} -n {rule_name} --target-fqdns XXX        
+          text: az network firewall policy rule-collection-group collection rule update -g {rg} --policy-name {policy}
+                --rule-collection-group-name {rcg} --collection-name {cn} -n {rule_name} --target-fqdns XXX
 """
 # endregion
