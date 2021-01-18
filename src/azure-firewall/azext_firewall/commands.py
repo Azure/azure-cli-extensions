@@ -16,6 +16,7 @@ from ._util import (
 from ._validators import validate_af_network_rule, validate_af_nat_rule, validate_af_application_rule
 from ._exception_handler import exception_handler
 
+
 # pylint: disable=too-many-locals, too-many-statements
 def load_command_table(self, _):
 
