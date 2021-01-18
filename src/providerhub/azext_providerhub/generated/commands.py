@@ -14,7 +14,6 @@ from azure.cli.core.commands import CliCommandType
 from azext_providerhub.generated._client_factory import cf_custom_rollout
 from azext_providerhub.generated._client_factory import cf_default_rollout
 from azext_providerhub.generated._client_factory import cf_providerhub
-from azext_providerhub.generated._client_factory import cf_operation
 from azext_providerhub.generated._client_factory import cf_provider_registration
 from azext_providerhub.generated._client_factory import cf_resource_type_registration
 
