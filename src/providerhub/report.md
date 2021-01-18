@@ -189,9 +189,6 @@ az providerhub default-rollout stop --provider-namespace "Microsoft.Contoso" --r
 |**--provider-namespace**|string|The name of the resource provider hosted within ProviderHub.|provider_namespace|providerNamespace|
 |**--rollout-name**|string|The rollout name.|rollout_name|rolloutName|
 
-### group `az providerhub operation`
-#### <a name="OperationsListByProviderRegistration">Command `az providerhub operation list`</a>
-
 ##### <a name="ExamplesOperationsListByProviderRegistration">Example</a>
 ```
 az providerhub operation list --provider-namespace "Microsoft.Contoso"
@@ -260,7 +257,6 @@ effect="Allow" quota-id="CSP_MG_2017-12-01" --incident-contact-email "helpme@con
 |**--incident-contact-email**|string||incident_contact_email|incidentContactEmail|
 |**--service-tree-infos**|array||service_tree_infos|serviceTreeInfos|
 |**--resource-access-policy**|choice||resource_access_policy|resourceAccessPolicy|
-|**--resource-access-roles**|array||resource_access_roles|resourceAccessRoles|
 |**--required-features-policy**|choice||required_features_policy|requiredFeaturesPolicy|
 |**--providerhub-metadata-provider-authorizations**|array||provider_hub_metadata_provider_authorizations|providerAuthorizations|
 |**--providerhub-metadata-rp-authentication**|object||resource_provider_authentication|providerAuthentication|
@@ -331,6 +327,8 @@ swagger-spec-folder-uri="https://github.com/Azure/azure-rest-api-specs/blob/feat
 |**--routing-type**|choice||routing_type|routingType|
 |**--regionality**|choice||regionality|regionality|
 |**--endpoints**|array||endpoints|endpoints|
+|**--resource-patch-begin**|object||resource_patch_begin|resourcePatchBegin|
+|**--resource-creation-begin**|object||resource_creation_begin|resourceCreationBegin|
 |**--marketplace-type**|choice||marketplace_type|marketplaceType|
 |**--swagger-specifications**|array||swagger_specifications|swaggerSpecifications|
 |**--allowed-unauthorized-actions**|array||allowed_unauthorized_actions|allowedUnauthorizedActions|

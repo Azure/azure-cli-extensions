@@ -271,9 +271,9 @@ def load_arguments(self, _):
             ['NotSpecified', 'Global', 'Regional']), help='The regionality of the resource type.')
         c.argument('endpoints', action=AddResourceTypeEndpointProperties, nargs='+', help='The resource '
                    'type endpoint properties.')
-        c.argument('resource_creation_begin', action=AddResourceCreationBegin,
+        c.argument('resource_creation_begin', action=AddResourceCreationBegin, nargs='+',
                    help='Extension options for handling the resource creation begin extension request.')
-        c.argument('resource_patch_begin', action=AddResourcePatchBegin,
+        c.argument('resource_patch_begin', action=AddResourcePatchBegin, nargs='+',
                    help='Extension options for handling the resource patch begin extension request.')
         c.argument('marketplace_type', arg_type=get_enum_type(
             ['NotSpecified', 'AddOn', 'Bypass', 'Store']), help='The resource type behavior in the marketplace.')
@@ -325,21 +325,24 @@ def load_arguments(self, _):
                                                                        'CascadeDeleteProxyOnlyChildren']), help='The property to customize RPaaS deletion operation.')
 
     with self.argument_context('providerhub resource-type-registration update') as c:
-        c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
-                   id_part='name')
-        c.argument('resource_type', type=str,
-                   help='The resource type.', id_part='child_name_1')
-        c.argument('routing_type', arg_type=get_enum_type(['Default', 'ProxyOnly', 'HostBased', 'Extension', 'Tenant',
-                                                           'Fanout', 'LocationBased', 'Failover', 'CascadeExtension']),
-                   help='The resource routing type.')
+        c.argument('provider_namespace', type=str,
+                   help='The name of the resource provider hosted within ProviderHub.')
+        c.argument('resource_type', type=str, help='The resource type.')
+        c.argument('routing_type', arg_type=get_enum_type(['Default', 'ProxyOnly', 'HostBased', 'Extension',
+                                                           'Tenant', 'Fanout', 'LocationBased', 'Failover',
+                                                           'CascadeExtension']), help='The resource routing type.')
         c.argument('regionality', arg_type=get_enum_type(
             ['NotSpecified', 'Global', 'Regional']), help='The regionality of the resource type.')
-        c.argument('endpoints', type=validate_file_or_dict,
-                   help='The resource type endpoints.')
+        c.argument('endpoints', action=AddResourceTypeEndpointProperties, nargs='+', help='The resource '
+                   'type endpoint properties.')
+        c.argument('resource_creation_begin', action=AddResourceCreationBegin, nargs='+',
+                   help='Extension options for handling the resource creation begin extension request.')
+        c.argument('resource_patch_begin', action=AddResourcePatchBegin, nargs='+',
+                   help='Extension options for handling the resource patch begin extension request.')
         c.argument('marketplace_type', arg_type=get_enum_type(
             ['NotSpecified', 'AddOn', 'Bypass', 'Store']), help='The resource type behavior in the marketplace.')
         c.argument('swagger_specifications', action=AddSwaggerSpecifications, nargs='+',
-                   help='The OpenAPI (swagger specs) of this resource type. RPaaS will use the swagger specs to validate http requests/responses.')
+                   help='The OpenAPI (swagger specs) of the resource type. RPaaS will use the swagger specs to validate http requests/responses.')
         c.argument('allowed_unauthorized_actions', nargs='+',
                    help='The allowed unauthorized actions.')
         c.argument('authorization_action_mappings', action=AddAuthorizationActionMappings,
@@ -348,12 +351,14 @@ def load_arguments(self, _):
                    help='Enables additional Role Based Access Control (RBAC) checks on related resources.')
         c.argument('default_api_version', type=str,
                    help='The default API version for the endpoint.')
-        c.argument('logging_rules', type=validate_file_or_dict,
-                   help='Enables additional event logs RPs want customers to see in their subscription for a particular action.')
+        c.argument('logging_rules', type=AddLoggingRules,
+                   help='Enables additional event logs RP wants customers to see in their subscription for a particular action.')
         c.argument('throttling_rules', action=AddThrottlingRules, nargs='+',
                    help='Allows RPs to set individual limits for different actions in terms of number of requests or number of resources (for collection read requests only).')
         c.argument('required_features', action=AddRequiredFeatures, nargs='+',
                    help='If specified, only subscriptions registered to the corresponding feature flag will be allowed.')
+        c.argument('required_features_policy', arg_type=get_enum_type(['Any', 'All']), help='The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​', arg_group='Features '
+                   'Rule')
         c.argument('enable_async_operation', arg_type=get_three_state_flag(
         ), help='Indicates whether the async operation is enabled for this resource type.')
         c.argument('enable_third_party_s2s', arg_type=get_three_state_flag(
@@ -368,6 +373,10 @@ def load_arguments(self, _):
                    help='The supported values are "read", "write", "delete", "action".  This setting will block all operations of the specified type on the resource type. These actions map to the corresponding HTTP verbs.')
         c.argument('service_tree_infos', action=AddResourcetyperegistrationServiceTreeInfos,
                    nargs='+', help='The ServiceTree information for the resource provider.')
+        c.argument('opt_in_headers', arg_type=get_enum_type(['NotSpecified', 'SignedUserToken',
+                                                             'ClientGroupMembership', 'SignedAuxiliaryTokens',
+                                                             'UnboundedClientGroupMembership']), help='ARM allows customized headers when sending requests to the RP. This can be done both at the provider level or at the individual resource type level.',
+                   arg_group='Request Header Options')
         c.argument('subscription_state_rules', action=AddSubscriptionStateRules,
                    nargs='+', help='The subscription policy.')
         c.argument('template_deployment_options', action=AddTemplateDeploymentOptions,
@@ -378,12 +387,6 @@ def load_arguments(self, _):
                    help='Indicates the resource type has opted in to move operations.')
         c.argument('resource_deletion_policy', arg_type=get_enum_type(['NotSpecified', 'CascadeDeleteAll',
                                                                        'CascadeDeleteProxyOnlyChildren']), help='The property to customize RPaaS deletion operation.')
-        c.argument('opt_in_headers', arg_type=get_enum_type(['NotSpecified', 'SignedUserToken',
-                                                             'ClientGroupMembership', 'SignedAuxiliaryTokens',
-                                                             'UnboundedClientGroupMembership']), help='ARM allows customized headers when sending requests to the RP. This can be done both at the provider level or at the individual resource type level.',
-                   arg_group='Request Header Options')
-        c.argument('required_features_policy', arg_type=get_enum_type(
-            ['Any', 'All']), help='The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​', arg_group='Features Rule')
 
     with self.argument_context('providerhub resource-type-registration delete') as c:
         c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',

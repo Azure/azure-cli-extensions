@@ -219,6 +219,12 @@ helps['providerhub provider-registration create'] = """
         long-summary: |
             Usage: --provider-type "Internal"
 
+      - name: --namespace
+        type: string
+        short-summary: 'The name of the resource provider hosted within ProviderHub.'
+        long-summary: |
+            Usage: --namespace "Microsoft.Contoso"
+
       - name: --capabilities
         short-summary: 'The resource provider capabilities.'
         long-summary: |

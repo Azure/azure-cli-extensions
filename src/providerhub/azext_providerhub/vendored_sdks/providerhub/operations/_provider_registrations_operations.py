@@ -133,7 +133,6 @@ class ProviderRegistrationsOperations(object):
         incident_contact_email,  # type: str
         service_tree_infos,  # type: list["models.ServiceTreeInfo"]
         resource_access_policy,  # type: "models.ResourceProviderManagementResourceAccessPolicy"
-        resource_access_roles,  # type: list[object]
         required_features_policy,  # type: "models.FeaturesPolicy"
         opt_in_headers,  # type: "models.OptInHeaderType"
         # type: list["models.SubscriptionStateOverrideAction"]
@@ -180,7 +179,7 @@ class ProviderRegistrationsOperations(object):
         features_rule = models.FeaturesRule(
             required_features_policy=required_features_policy) if required_features_policy else None
         management = models.ResourceProviderManagement(schema_owners=schema_owners, manifest_owners=manifest_owners, incident_routing_service=incident_routing_service, incident_routing_team=incident_routing_team,
-                                                       incident_contact_email=incident_contact_email, service_tree_infos=service_tree_infos, resource_access_policy=resource_access_policy, resource_access_roles=resource_access_roles)
+                                                       incident_contact_email=incident_contact_email, service_tree_infos=service_tree_infos, resource_access_policy=resource_access_policy, resource_access_roles=None)
         third_party_provider_authorization = models.ThirdPartyProviderAuthorization(
             authorizations=lighthouse_authorizations, managed_by_tenant_id=managed_by_tenant_id) if lighthouse_authorizations or managed_by_tenant_id else None
         providerhub_metadata = models.ProviderHubMetadata(provider_authorizations=providerhub_metadata_provider_authorizations,
@@ -237,7 +236,6 @@ class ProviderRegistrationsOperations(object):
         incident_contact_email,  # type: str
         service_tree_infos,  # type: list["models.ServiceTreeInfo"]
         resource_access_policy,  # type: "models.ResourceProviderManagementResourceAccessPolicy"
-        resource_access_roles,  # type: list[object]
         required_features_policy,  # type: "models.FeaturesPolicy"
         opt_in_headers,  # type: "models.OptInHeaderType"
         # type: list["models.SubscriptionStateOverrideAction"]
@@ -296,7 +294,6 @@ class ProviderRegistrationsOperations(object):
                 incident_contact_email=incident_contact_email,
                 service_tree_infos=service_tree_infos,
                 resource_access_policy=resource_access_policy,
-                resource_access_roles=resource_access_roles,
                 required_features_policy=required_features_policy,
                 opt_in_headers=opt_in_headers,
                 managed_by_tenant_id=managed_by_tenant_id,

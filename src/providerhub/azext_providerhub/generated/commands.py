@@ -30,7 +30,6 @@ def load_command_table(self, _):
         g.custom_command('list', 'providerhub_custom_rollout_list')
         g.custom_show_command('show', 'providerhub_custom_rollout_show')
         g.custom_command('create', 'providerhub_custom_rollout_create')
-        g.custom_command('update', 'providerhub_custom_rollout_update')
 
     providerhub_default_rollout = CliCommandType(
         operations_tmpl='azext_providerhub.vendored_sdks.providerhub.operations._default_rollouts_operations#DefaultRol'
@@ -42,8 +41,6 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'providerhub_default_rollout_show')
         g.custom_command(
             'create', 'providerhub_default_rollout_create', supports_no_wait=True)
-        g.custom_command(
-            'update', 'providerhub_default_rollout_update', supports_no_wait=True)
         g.custom_command(
             'delete', 'providerhub_default_rollout_delete', confirmation=True)
         g.custom_command('stop', 'providerhub_default_rollout_stop')
@@ -58,16 +55,6 @@ def load_command_table(self, _):
         g.custom_command('checkin', 'providerhub_manifest_checkin')
         g.custom_command('generate', 'providerhub_manifest_generate')
 
-    providerhub_operation = CliCommandType(
-        operations_tmpl='azext_providerhub.vendored_sdks.providerhub.operations._operations_operations#Operations.{}',
-        client_factory=cf_operation)
-    with self.command_group('providerhub operation', providerhub_operation, client_factory=cf_operation) as g:
-        g.custom_command('list', 'providerhub_operation_list')
-        g.custom_command('create', 'providerhub_operation_create')
-        g.custom_command('update', 'providerhub_operation_update')
-        g.custom_command(
-            'delete', 'providerhub_operation_delete', confirmation=True)
-
     providerhub_provider_registration = CliCommandType(
         operations_tmpl='azext_providerhub.vendored_sdks.providerhub.operations._provider_registrations_operations#Prov'
         'iderRegistrationsOperations.{}',
@@ -78,8 +65,6 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'providerhub_provider_registration_show')
         g.custom_command(
             'create', 'providerhub_provider_registration_create', supports_no_wait=True)
-        g.custom_command(
-            'update', 'providerhub_provider_registration_update', supports_no_wait=True)
         g.custom_command(
             'delete', 'providerhub_provider_registration_delete', confirmation=True)
         g.custom_command('generate-operation',
@@ -104,7 +89,5 @@ def load_command_table(self, _):
                             client_factory=cf_resource_type_registration) as g:
         g.custom_command(
             'create', 'providerhub_resource_type_registration_create')
-        g.custom_command(
-            'update', 'providerhub_resource_type_registration_update')
         g.custom_command(
             'delete', 'providerhub_resource_type_registration_delete', confirmation=True)

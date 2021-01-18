@@ -272,9 +272,9 @@ class AddResourceCreationBegin(argparse.Action):
             kl = k.lower()
             v = properties[k]
             if kl == 'request':
-                d['request'] = v[0]
+                d['request'] = generate_list(v[0])
             elif kl == 'response':
-                d['response'] = v[0]
+                d['response'] = generate_list(v[0])
             else:
                 raise CLIError('Unsupported Key {} is provided for parameter resource_creation_begin. '
                                'All possible keys are: request, response'.format(k))
@@ -299,12 +299,12 @@ class AddResourcePatchBegin(argparse.Action):
             kl = k.lower()
             v = properties[k]
             if kl == 'request':
-                d['request'] = v[0]
+                d['request'] = generate_list(v[0])
             elif kl == 'response':
-                d['response'] = v[0]
+                d['response'] = generate_list(v[0])
             else:
-                raise CLIError('Unsupported Key {} is provided for parameter resource_patch_begin. All possible keys '
-                               'are: request, response'.format(k))
+                raise CLIError('Unsupported Key {} is provided for parameter resource_patch_begin. '
+                               'All possible keys are: request, response'.format(k))
         return d
 
 
