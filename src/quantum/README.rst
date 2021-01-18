@@ -47,7 +47,7 @@ https://docs.microsoft.com/quantum/
     westus       ws-yyyyyy                          rg-yyyyyyyyy
    ```
 
-5. You can see all the jobs submitted a workspace using `az quantum job list`.
+5. You can see all the jobs submitted to a workspace using `az quantum job list`.
 
    ```dotnetcli
     az quantum job list -o table
