@@ -12,8 +12,8 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 def timeseriesinsights_environment_list(client,
                                         resource_group_name=None):
     if resource_group_name:
-        return client.list_by_resource_group(resource_group_name=resource_group_name)
-    return client.list_by_subscription()
+        return client.list_by_resource_group(resource_group_name=resource_group_name).value
+    return client.list_by_subscription().value
 
 
 def timeseriesinsights_environment_show(client,
@@ -164,7 +164,7 @@ def timeseriesinsights_event_source_list(client,
                                          resource_group_name,
                                          environment_name):
     return client.list_by_environment(resource_group_name=resource_group_name,
-                                      environment_name=environment_name)
+                                      environment_name=environment_name).value
 
 
 def timeseriesinsights_event_source_show(client,
@@ -331,7 +331,7 @@ def timeseriesinsights_reference_data_set_list(client,
                                                resource_group_name,
                                                environment_name):
     return client.list_by_environment(resource_group_name=resource_group_name,
-                                      environment_name=environment_name)
+                                      environment_name=environment_name).value
 
 
 def timeseriesinsights_reference_data_set_show(client,
@@ -390,7 +390,7 @@ def timeseriesinsights_access_policy_list(client,
                                           resource_group_name,
                                           environment_name):
     return client.list_by_environment(resource_group_name=resource_group_name,
-                                      environment_name=environment_name)
+                                      environment_name=environment_name).value
 
 
 def timeseriesinsights_access_policy_show(client,

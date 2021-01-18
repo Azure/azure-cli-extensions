@@ -78,10 +78,10 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
 
         self.cmd('az tsi env list '
                  '--resource-group {rg}',
-                 checks=[self.check('length(value)', 1)])
+                 checks=[self.check('length(@)', 1)])
 
         self.cmd('az tsi env list',
-                 checks=[self.check("length(value[?name=='{env1}'])", 1)])
+                 checks=[self.check("length(@[?name=='{env1}'])", 1)])
 
         self.cmd('az tsi env delete '
                  '--resource-group {rg} '
@@ -90,7 +90,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
 
         self.cmd('az tsi env list '
                  '--resource-group {rg}',
-                 checks=[self.check('length(value)', 0)])
+                 checks=[self.check('length(@)', 0)])
 
     @ResourceGroupPreparer(name_prefix='clitsi.rg')
     @StorageAccountPreparer()
@@ -173,7 +173,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
 
         # List
         self.cmd('az tsi event-source list -g {rg} --environment-name {env}',
-                 checks=[self.check('length(value)', 1)])
+                 checks=[self.check('length(@)', 1)])
 
         # Show
         self.cmd('az tsi event-source show -g {rg} --environment-name {env} -n {es}')
@@ -269,7 +269,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
 
         # List
         self.cmd('az tsi reference-data-set list -g {rg} --environment-name {env}',
-                 checks=[self.check('length(value)', 2)])
+                 checks=[self.check('length(@)', 2)])
 
         # Show
         self.cmd('az tsi reference-data-set show -g {rg} --environment-name {env} -n {rds}')
@@ -308,7 +308,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
                  checks=[])
         # List
         self.cmd('az tsi access-policy list -g {rg} --environment-name {env}',
-                 checks=[self.check('length(value)', 1)])
+                 checks=[self.check('length(@)', 1)])
 
         # Delete
         self.cmd('az tsi access-policy delete -g {rg} --environment-name {env} --name ap1 --yes',
