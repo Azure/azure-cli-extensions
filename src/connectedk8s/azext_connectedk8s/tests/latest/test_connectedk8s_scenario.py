@@ -42,4 +42,3 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         ])
         self.cmd('connectedk8s delete -g akkeshar-test2 -n {name} --kube-config {kubeconfig} -y')
         self.cmd('aks delete -g akkeshar-test2 -n {} -y'.format(managed_cluster_name))
-        
