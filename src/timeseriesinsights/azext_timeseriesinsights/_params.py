@@ -92,7 +92,9 @@ def load_arguments(self, _):
         c.argument('environment_name', id_part=None)
 
     with self.argument_context('tsi event-source') as c:
-        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('resource_group_name', resource_group_name_type,
+                   help="Name of resource group of environment. "
+                        "You can configure the default group using `az configure --defaults group=<name>`",)
         c.argument('environment_name', type=str, help='The name of the Time Series '
                    'Insights environment associated with the specified resource group.', id_part='name')
         c.argument('event_source_name', options_list=['--name', '-n', '--event-source-name'], type=str, help='The name '
@@ -121,7 +123,8 @@ def load_arguments(self, _):
         c.argument('event_hub_name', type=str, help='The name of the event hub.')
         c.argument('consumer_group_name', type=str, help='The name of the event hub\'s consumer group that holds the '
                    'partitions from which events will be read.')
-        c.argument('key_name', type=str, help='The name of the SAS key that grants the Time Series Insights service '
+        c.argument('key_name', options_list=['--key-name', '--shared-access-policy-name'], type=str,
+                   help='The name of the SAS key that grants the Time Series Insights service '
                    'access to the event hub. The shared access policies for this key must grant \'Listen\' permissions '
                    'to the event hub.')
         c.argument('shared_access_key', type=str, help='The value of the shared access key that grants the Time Series '
@@ -150,7 +153,8 @@ def load_arguments(self, _):
         c.argument('iot_hub_name', type=str, help='The name of the iot hub.')
         c.argument('consumer_group_name', type=str, help='The name of the iot hub\'s consumer group that holds the '
                    'partitions from which events will be read.')
-        c.argument('key_name', type=str, help='The name of the Shared Access Policy key that grants the Time Series '
+        c.argument('key_name', options_list=['--key-name', '--shared-access-policy-name'], type=str,
+                   help='The name of the Shared Access Policy key that grants the Time Series '
                    'Insights service access to the iot hub. This shared access policy key must grant \'service '
                    'connect\' permissions to the iot hub.')
         c.argument('shared_access_key', type=str, help='The value of the Shared Access Policy key that grants the Time '
@@ -195,7 +199,10 @@ def load_arguments(self, _):
         c.argument('access_policy_name', options_list=['--name', '-n', '--access-policy-name'], type=str, help='The '
                    'name of the Time Series Insights access policy associated with the specified environment.',
                    id_part='child_name_1')
-        c.argument('principal_object_id', type=str, help='The objectId of the principal in Azure Active Directory.')
+        c.argument('principal_object_id', type=str,
+                   help="The objectId of the principal in Azure Active Directory."
+                        " The command 'az ad user' can help to create or get the User's principal id."
+                        " The command 'az ad sp' can help to create or get the Service Principal.")
         c.argument('description', type=str, help='An description of the access policy.')
         c.argument('roles', nargs='+', help='The list of roles the principal is assigned on the environment.')
 

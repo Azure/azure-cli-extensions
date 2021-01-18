@@ -146,7 +146,7 @@ available for query from the warm store.
 
 helps['tsi env gen2 update'] = """
     type: command
-    short-summary: "Create a gen2 environment in the specified subscription and resource group."
+    short-summary: "Update a gen2 environment in the specified subscription and resource group."
     parameters:
       - name: --storage-config --storage-configuration
         short-summary: "The storage configuration provides the connection details that allows the Time Series Insights \
@@ -331,8 +331,7 @@ helps['tsi reference-data-set create'] = """
 
 helps['tsi reference-data-set update'] = """
     type: command
-    short-summary: "Update the reference data set with the specified name in the specified subscription, resource \
-group, and environment."
+    short-summary: "Update the reference data set."
     examples:
       - name: ReferenceDataSetsUpdate
         text: |-
@@ -342,8 +341,7 @@ someKey="someValue" --resource-group "rg1"
 
 helps['tsi reference-data-set delete'] = """
     type: command
-    short-summary: "Delete the reference data set with the specified name in the specified subscription, resource \
-group, and environment."
+    short-summary: "Delete the reference data set."
     examples:
       - name: ReferenceDataSetsDelete
         text: |-
@@ -381,13 +379,12 @@ helps['tsi access-policy create'] = """
       - name: AccessPoliciesCreate
         text: |-
                az tsi access-policy create --name "ap1" --environment-name "env1" --description "some \
-description" --principal-object-id "aGuid" --roles "Reader" --resource-group "rg1"
+description" --principal-object-id "aGuid" --roles Reader Contributor --resource-group "rg1"
 """
 
 helps['tsi access-policy update'] = """
     type: command
-    short-summary: "Update the access policy with the specified name in the specified subscription, resource group, \
-and environment."
+    short-summary: "Update the access policy."
     examples:
       - name: AccessPoliciesUpdate
         text: |-
@@ -397,8 +394,7 @@ and environment."
 
 helps['tsi access-policy delete'] = """
     type: command
-    short-summary: "Delete the access policy with the specified name in the specified subscription, resource group, \
-and environment."
+    short-summary: "Delete the access policy."
     examples:
       - name: AccessPoliciesDelete
         text: |-
