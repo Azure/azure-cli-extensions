@@ -2,6 +2,37 @@
 
 Release History
 ===============
+0.4.72
+++++++
+* Add --no-uptime-sla
+* Create MSI clusters by default.
+
+0.4.71
+++++++
+* Add support using custom private dns zone resource id for parameter '--private-dns-zone'
+
+0.4.70
+++++++
+* Revert to use CLIError to be compatible with azure cli versions < 2.15.0
+
+0.4.69
++++++
+* Add argument 'subnetCIDR' to replace 'subnetPrefix' when using ingress-azure addon.
+
+0.4.68
++++++
+* Add support for AAD Pod Identity resources configuration in Azure CLI.
+
+0.4.67
++++++
+* Add support for node configuration when creating cluster or agent pool.
+* Support private DNS zone for AKS private cluster.
+
+0.4.66
++++++
+* Add support for GitOps as an AKS addon
+* Update standard load balancer (SLB) max idle timeout from 120 to 100 minutes
+
 0.4.65
 +++++
 * Honor addon names defined in Azure CLI

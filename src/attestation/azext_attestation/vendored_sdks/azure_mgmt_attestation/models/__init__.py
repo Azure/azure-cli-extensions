@@ -6,33 +6,22 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-try:
-    from ._models_py3 import AttestationProvider
-    from ._models_py3 import AttestationProviderListResult
-    from ._models_py3 import AttestationServiceCreationParams
-    from ._models_py3 import AttestationServicePatchParams
-    from ._models_py3 import CloudErrorBody
-    from ._models_py3 import JsonWebKey
-    from ._models_py3 import OperationList
-    from ._models_py3 import OperationsDefinition
-    from ._models_py3 import OperationsDisplayDefinition
-    from ._models_py3 import Resource
-    from ._models_py3 import TrackedResource
-except (SyntaxError, ImportError):
-    from ._models import AttestationProvider  # type: ignore
-    from ._models import AttestationProviderListResult  # type: ignore
-    from ._models import AttestationServiceCreationParams  # type: ignore
-    from ._models import AttestationServicePatchParams  # type: ignore
-    from ._models import CloudErrorBody  # type: ignore
-    from ._models import JsonWebKey  # type: ignore
-    from ._models import OperationList  # type: ignore
-    from ._models import OperationsDefinition  # type: ignore
-    from ._models import OperationsDisplayDefinition  # type: ignore
-    from ._models import Resource  # type: ignore
-    from ._models import TrackedResource  # type: ignore
+from ._models_py3 import AttestationProvider
+from ._models_py3 import AttestationProviderListResult
+from ._models_py3 import AttestationServiceCreationParams
+from ._models_py3 import AttestationServicePatchParams
+from ._models_py3 import CloudErrorBody
+from ._models_py3 import JsonWebKey
+from ._models_py3 import OperationList
+from ._models_py3 import OperationsDefinition
+from ._models_py3 import OperationsDisplayDefinition
+from ._models_py3 import Resource
+from ._models_py3 import SystemData
+from ._models_py3 import TrackedResource
 
 from ._attestation_management_client_enums import (
     AttestationServiceStatus,
+    CreatedByType,
 )
 
 __all__ = [
@@ -46,6 +35,8 @@ __all__ = [
     'OperationsDefinition',
     'OperationsDisplayDefinition',
     'Resource',
+    'SystemData',
     'TrackedResource',
     'AttestationServiceStatus',
+    'CreatedByType'
 ]

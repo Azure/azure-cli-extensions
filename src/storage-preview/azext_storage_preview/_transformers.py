@@ -120,3 +120,7 @@ def transform_storage_list_output(result):
         logger.warning('Next Marker:')
         logger.warning(result.next_marker)
     return list(result)
+
+
+def transform_file_upload(result):
+    return None

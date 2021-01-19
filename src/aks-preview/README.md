@@ -179,3 +179,16 @@ az aks create \
     --enable-managed-identity \
     --assign-identity <EXISTING_USER_ASSIGNED_IDENTITY_RESOURCE_ID>
 ```
+
+#### Create or update the tags of the managed cluster
+```
+az aks create \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --tags "foo=bar" "baz=qux"
+
+az aks update \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --tags "foo=bar" "baz=qux"
+```

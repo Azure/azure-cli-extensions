@@ -8,7 +8,7 @@ az extension add --name vmware
 ```
 
 ## Usage
-See the [extension reference documenation](https://docs.microsoft.com/en-us/cli/azure/ext/vmware/vmware?view=azure-cli-latest).
+See the [extension reference documenation](https://docs.microsoft.com/en-us/cli/azure/ext/vmware/vmware).
 
 ``` sh
 az vmware --help

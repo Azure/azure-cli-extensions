@@ -12,6 +12,7 @@
 import uuid
 from msrest.pipeline import ClientRawResponse
 from msrestazure.azure_exceptions import CloudError
+from knack.cli import CLIError
 
 from .. import models
 
@@ -25,7 +26,7 @@ class PolicyCertificatesOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: Client API version. Constant value: "2018-09-01-preview".
+    :ivar api_version: Client API version. Constant value: "2018-09-01".
     """
 
     models = models
@@ -35,7 +36,7 @@ class PolicyCertificatesOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2018-09-01-preview"
+        self.api_version = "2020-10-01"
 
         self.config = config
 
@@ -99,7 +100,7 @@ class PolicyCertificatesOperations(object):
             return client_raw_response
 
         return deserialized
-    get.metadata = {'url': '/operations/policy/certificates'}
+    get.metadata = {'url': '/certificates'}
 
     def add(
             self, tenant_base_url, policy_certificate_to_add, custom_headers=None, raw=False, **operation_config):
@@ -110,7 +111,7 @@ class PolicyCertificatesOperations(object):
          https://mytenant.attest.azure.net.
         :type tenant_base_url: str
         :param policy_certificate_to_add: An RFC7519 JSON Web Token containing
-         a claim named "aas-policyCertificate" whose value is an RFC7517 JSON
+         a claim named "maa-policyCertificate" whose value is an RFC7517 JSON
          Web Key which specifies a new key to add. The RFC7519 JWT must be
          signed with one of the existing signing certificates
         :type policy_certificate_to_add: str
@@ -133,6 +134,7 @@ class PolicyCertificatesOperations(object):
         # Construct parameters
         query_parameters = {}
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        # query_parameters['api-version'] = '2018-09-01-preview'
 
         # Construct headers
         header_parameters = {}
@@ -149,7 +151,7 @@ class PolicyCertificatesOperations(object):
         body_content = self._serialize.body(policy_certificate_to_add, 'str')
 
         # Construct and send request
-        request = self._client.put(url, query_parameters, header_parameters, body_content)
+        request = self._client.post(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200, 400, 401]:
@@ -161,7 +163,7 @@ class PolicyCertificatesOperations(object):
         if response.status_code == 200:
             deserialized = self._deserialize('str', response)
         if response.status_code == 400:
-            deserialized = self._deserialize('CloudError', response)
+            raise CLIError(response.text)
         if response.status_code == 401:
             deserialized = self._deserialize('str', response)
 
@@ -170,7 +172,8 @@ class PolicyCertificatesOperations(object):
             return client_raw_response
 
         return deserialized
-    add.metadata = {'url': '/operations/policy/certificates'}
+    add.metadata = {'url': '/certificates%3aadd'}
+    # add.metadata = {'url': '/operations/policy/certificates'}
 
     def remove(
             self, tenant_base_url, policy_certificate_to_remove, custom_headers=None, raw=False, **operation_config):
@@ -181,7 +184,7 @@ class PolicyCertificatesOperations(object):
          https://mytenant.attest.azure.net.
         :type tenant_base_url: str
         :param policy_certificate_to_remove: An RFC7519 JSON Web Token
-         containing a claim named "aas-policyCertificate" whose value is an
+         containing a claim named "maa-policyCertificate" whose value is an
          RFC7517 JSON Web Key which specifies a new key to update. The RFC7519
          JWT must be signed with one of the existing signing certificates
         :type policy_certificate_to_remove: str
@@ -204,6 +207,7 @@ class PolicyCertificatesOperations(object):
         # Construct parameters
         query_parameters = {}
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        # query_parameters['api-version'] = '2018-09-01-preview'
 
         # Construct headers
         header_parameters = {}
@@ -232,7 +236,7 @@ class PolicyCertificatesOperations(object):
         if response.status_code == 200:
             deserialized = self._deserialize('str', response)
         if response.status_code == 400:
-            deserialized = self._deserialize('CloudError', response)
+            raise CLIError(response.text)
         if response.status_code == 401:
             deserialized = self._deserialize('str', response)
 
@@ -241,4 +245,5 @@ class PolicyCertificatesOperations(object):
             return client_raw_response
 
         return deserialized
-    remove.metadata = {'url': '/operations/policy/certificates'}
+    remove.metadata = {'url': '/certificates%3aremove'}
+    # remove.metadata = {'url': '/operations/policy/certificates'}
