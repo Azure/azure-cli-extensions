@@ -995,7 +995,6 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:
         cmd_helm_upgrade.extend(["--kube-context", kube_context])
-    print(cmd_helm_upgrade)
     response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
     _, error_helm_upgrade = response_helm_upgrade.communicate()
 
