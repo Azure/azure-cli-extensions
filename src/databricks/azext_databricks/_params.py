@@ -14,7 +14,7 @@ from azure.cli.core.commands.parameters import (
 )
 
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from ._validators import validate_encryption_values
+from ._validators import validate_encryption_values, validate_network_id, validate_managed_resource_group
 
 
 def load_arguments(self, _):
@@ -23,8 +23,8 @@ def load_arguments(self, _):
         c.argument('workspace_name', options_list=['--name', '-n'], help='The name of the workspace.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
-        c.argument('managed_resource_group', help='The managed resource group to create. It can be either a name or a resource ID.')
-        c.argument('custom_virtual_network_id', options_list=['--vnet'], arg_group='Custom VNET', help='Virtual Network name or resource ID.')
+        c.argument('managed_resource_group', validator=validate_managed_resource_group, help='The managed resource group to create. It can be either a name or a resource ID.')
+        c.argument('custom_virtual_network_id', options_list=['--vnet'], arg_group='Custom VNET', validator=validate_network_id('custom_virtual_network_id'), help='Virtual Network name or resource ID.')
         c.argument('custom_public_subnet_name', options_list=['--public-subnet'], arg_group='Custom VNET', help='The name of a Public Subnet within the Virtual Network.')
         c.argument('custom_private_subnet_name', options_list=['--private-subnet'], arg_group='Custom VNET', help='The name of a Private Subnet within the Virtual Network.')
         c.argument('sku_name', options_list=['--sku'], arg_type=get_enum_type(['standard', 'premium', 'trial']), help='The SKU tier name.')
@@ -58,7 +58,7 @@ def load_arguments(self, _):
             c.argument('peering_name', options_list=['--name', '-n'], help='The name of the vnet peering.')
 
     with self.argument_context('databricks workspace vnet-peering create') as c:
-        c.argument('remote_virtual_network', options_list=['--remote-vnet'], help='The remote virtual network name or Resource ID.')
+        c.argument('remote_virtual_network', options_list=['--remote-vnet'], validator=validate_network_id('remote_virtual_network'), help='The remote virtual network name or Resource ID.')
 
     for scope in ['create', 'update']:
         with self.argument_context('databricks workspace vnet-peering {}'.format(scope)) as c:
