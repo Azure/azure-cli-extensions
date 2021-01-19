@@ -199,10 +199,7 @@ def load_arguments(self, _):
         c.argument('access_policy_name', options_list=['--name', '-n', '--access-policy-name'], type=str, help='The '
                    'name of the Time Series Insights access policy associated with the specified environment.',
                    id_part='child_name_1')
-        c.argument('principal_object_id', type=str,
-                   help="The objectId of the principal in Azure Active Directory."
-                        " The command 'az ad user' can help to create or get the User's principal id."
-                        " The command 'az ad sp' can help to create or get the Service Principal.")
+        c.argument('principal_object_id', type=str, help="The objectId of the principal in Azure Active Directory.")
         c.argument('description', type=str, help='An description of the access policy.')
         c.argument('roles', nargs='+', help='The list of roles the principal is assigned on the environment.')
 

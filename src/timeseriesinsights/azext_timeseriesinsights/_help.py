@@ -375,6 +375,11 @@ helps['tsi access-policy show'] = """
 helps['tsi access-policy create'] = """
     type: command
     short-summary: "Create an access policy in the specified environment."
+    parameters:
+      - name: --principal-object-id
+        populator-commands:
+          - az ad user
+          - az ad sp
     examples:
       - name: AccessPoliciesCreate
         text: |-
