@@ -881,6 +881,17 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
             utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
                                                error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
                                                message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
+        configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
+        configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
+        if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
+            if not (configmap_rg_name.lower() == resource_group_name.lower() and
+                    configmap_cluster_name.lower() == cluster_name.lower()):
+                telemetry.set_user_fault()
+                telemetry.set_exception(exception='The kubernetes cluster is already onboarded', fault_type=consts.Cluster_Already_Onboarded_Fault_Type,
+                                        summary='Kubernetes cluster already onboarded')
+                raise CLIError("The kubernetes cluster you are trying to onboard " +
+                               "is already onboarded to the resource group" +
+                               " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
 
         auto_update_enabled = configmap.data["AZURE_ARC_AUTOUPDATE"]
         if auto_update_enabled == "true":
@@ -893,7 +904,8 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
         telemetry.set_user_fault()
         telemetry.set_exception(exception="The azure-arc release namespace couldn't be retrieved", fault_type=consts.Release_Namespace_Not_Found,
                                 summary="The azure-arc release namespace couldn't be retrieved, which implies that the kubernetes cluster has not been onboarded to azure-arc.")
-        raise CLIError("The azure-arc release namespace couldn't be retrieved, which implies that the kubernetes cluster has not been onboarded to azure-arc.")
+        raise CLIError("The azure-arc release namespace couldn't be retrieved, which implies that the kubernetes cluster has not been onboarded to azure-arc." +
+                       "Please run 'az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>' to onboard the cluster")
 
         # Check whether Connected Cluster is present
     if not connected_cluster_exists(client, resource_group_name, cluster_name):
@@ -946,7 +958,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     # Get Helm chart path
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
 
-    cmd_helm_values = ["helm", "get", "values", "azure-arc"]
+    cmd_helm_values = ["helm", "get", "values", "azure-arc", "--namespace", release_namespace]
     if kube_config:
         cmd_helm_values.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -962,29 +974,30 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
         raise CLIError(str.format(consts.Upgrade_Agent_Failure, error_helm_get_values.decode("ascii")))
 
     output_helm_values = output_helm_values.decode("ascii")
-    output_folder = os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcK8sHelmValues')
-    if not os.path.exists(output_folder):
-        os.mkdir(output_folder)
-    output_file_name = os.path.join(output_folder, consts.Helm_Temp_Output_Value_File)
-    with open(output_file_name, "w+") as f:
-        f.write(output_helm_values)
 
-    cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path,
-                        "-f", output_file_name,
+    try:
+        existing_user_values = yaml.safe_load(output_helm_values)
+    except Exception as e:
+        telemetry.set_exception(exception=e, fault_type=consts.Helm_Existing_User_Supplied_Value_Get_Fault,
+                                summary='Problem loading the helm existing user supplied values')
+        raise CLIError("Problem loading the helm existing user supplied values: " + str(e))
+
+    cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "--wait", "--output", "json", "--atomic"]
+
+    for key, value in utils.flatten(existing_user_values).items():
+        if value is not None:
+            cmd_helm_upgrade.extend(["--set", "{}={}".format(key, value)])
+
     if values_file_provided:
         cmd_helm_upgrade.extend(["-f", values_file])
     if kube_config:
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:
         cmd_helm_upgrade.extend(["--kube-context", kube_context])
+    print(cmd_helm_upgrade)
     response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
     _, error_helm_upgrade = response_helm_upgrade.communicate()
-
-    if os.path.isdir(output_folder):
-        # making ignore_errors = True will not raise
-        # a FileNotFoundError
-        shutil.rmtree(output_folder, ignore_errors=True)
 
     if response_helm_upgrade.returncode != 0:
         if ('forbidden' in error_helm_upgrade.decode("ascii") or 'timed out waiting for the condition' in error_helm_upgrade.decode("ascii")):

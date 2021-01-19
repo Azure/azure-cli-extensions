@@ -306,3 +306,15 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
                                 summary='Unable to install helm release')
         logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state. A possible cause for pods stuck in pending state could be insufficient resources on the kubernetes cluster to onboard to arc.")
         raise CLIError("Unable to install helm release: " + error_helm_install.decode("ascii"))
+
+
+def flatten(dd, separator ='.', prefix =''):
+    try:
+        if isinstance(dd, dict):
+            return {prefix + separator + k if prefix else k:v for kk, vv in dd.items() for k, v in flatten(vv, separator, kk).items()}
+        else:
+            return {prefix:dd}
+    except Exception as e:
+        telemetry.set_exception(exception=e, fault_type=consts.Error_Flattening_User_Supplied_Value_Dict,
+                                summary='Error while flattening the user supplied helm values dict')
+        raise CLIError("Error while flattening the user supplied helm values dict")

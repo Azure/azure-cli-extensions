@@ -6,7 +6,7 @@
 
 # pylint: disable=line-too-long
 
-Distribution_Enum_Values = ["auto", "generic", "openshift", "rancher_rke", "kind", "k3s", "minikube", "gke", "eks", "aks", "aks_hci", "capz", "aks_engine", "tkg"]
+Distribution_Enum_Values = ["auto", "generic", "openshift", "rancher_rke", "kind", "k3s", "minikube", "gke", "eks", "aks", "aks_management", "aks_workload", "capz", "aks_engine", "tkg"]
 Infrastructure_Enum_Values = ["auto", "generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere", "windows_server"]
 Helm_Temp_Output_Value_File = 'azure-arc-helm-get-temp.txt'
 
@@ -62,3 +62,5 @@ Upgrade_Agent_Success = 'Agents for Connected Cluster {} have been upgraded succ
 Upgrade_Agent_Failure = 'Error while upgrading agents. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of timeout error. Error: {}'
 Release_Namespace_Not_Found = 'Error while getting azure-arc releasenamespace'
 Get_Helm_Values_Failed = 'Error while doing helm get values azure-arc'
+Helm_Existing_User_Supplied_Value_Get_Fault = 'Error while loading the user supplied helm values'
+Error_Flattening_User_Supplied_Value_Dict = 'Error while flattening the user supplied helm values dict'
