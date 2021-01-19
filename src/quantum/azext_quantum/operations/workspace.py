@@ -36,10 +36,6 @@ class WorkspaceInfo(object):
         self.name = select_value('workspace', workspace_name)
         self.location = select_value('location', location)
 
-        # Finally, if a location is not specified, resort to the default.
-        if self.location is None or self.location == "":
-            self.location = DEFAULT_WORKSPACE_LOCATION
-
     def clear(self):
         self.subscription = ''
         self.resource_group = ''
@@ -56,7 +52,7 @@ class WorkspaceInfo(object):
 
 
 def get_basic_quantum_workspace(location, info, storage_account):
-    qw = QuantumWorkspace()
+    qw = QuantumWorkspace(location=location)
     # Use a default provider 
     # Replace this with user specified providers as part of task 16184.
     prov = Provider()
@@ -66,7 +62,6 @@ def get_basic_quantum_workspace(location, info, storage_account):
     # Allow the system to assign the workspace identity
     qw.identity = QuantumWorkspaceIdentity()
     qw.identity.type = "SystemAssigned"
-    qw.location = location
     qw.storage_account = f"/subscriptions/{info.subscription}/resourceGroups/{info.resource_group}/providers/Microsoft.Storage/storageAccounts/{storage_account}"
     return qw
 
@@ -80,9 +75,11 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
         raise CLIError("An explicit workspace name is required for this command.")
     if (not storage_account):
         raise CLIError("A quantum workspace requires a valid storage account.")
-    info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
+    if (not location):
+        raise CLIError("A location for the new quantum workspace is required.")
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     if (not info.resource_group):
-        raise CLIError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
+        raise CLIError("Please run 'az quantum workspace set' first to select a default resource group.")
     quantum_workspace = get_basic_quantum_workspace(location, info, storage_account)
     return client.create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
 
