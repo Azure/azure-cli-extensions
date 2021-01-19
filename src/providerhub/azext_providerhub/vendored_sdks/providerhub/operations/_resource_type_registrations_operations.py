@@ -270,7 +270,7 @@ class ResourceTypeRegistrationsOperations(object):
         :type provider_namespace: str
         :param resource_type: The resource type.
         :type resource_type: str
-        :param properties: The Kusto cluster parameters supplied to the CreateOrUpdate operation.
+        :param properties: The resource type registration parameters supplied to the CreateOrUpdate operation.
         :type properties: ~providerhub.models.ResourceTypeRegistration
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
