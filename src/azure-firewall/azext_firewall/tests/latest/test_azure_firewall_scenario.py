@@ -297,7 +297,7 @@ class AzureFirewallScenario(ScenarioTest):
             'pubip': 'pubip',
             'vnet': 'myvnet',
             'ipconfig': 'myipconfig1',
-            'location': resource_group_location
+            'location': resource_group_location,
         })
         # test firewall policy with vhub firewall
         self.cmd('extension add -n virtual-wan')
@@ -325,11 +325,18 @@ class AzureFirewallScenario(ScenarioTest):
                 self.check('name', '{ipconfig}'),
                 self.check('subnet.id', subnet_id_default)
             ])
-        self.cmd('network firewall policy create -g {rg} -n {policy2} -l {location}', checks=[
+        self.cmd('network firewall policy create -g {rg} -n {policy2} -l {location} --sku Premium', checks=[
             self.check('type', 'Microsoft.Network/FirewallPolicies'),
             self.check('name', '{policy2}')
         ])
-        self.cmd('network firewall update -g {rg} -n {af2} --firewall-policy {policy2}')
+
+        # test firewall policy identity
+        identity = self.cmd('identity create -g {rg} -n identitytest').get_output_in_json()
+        self.kwargs.update({'id': identity['id']})
+        self.cmd('network firewall policy update -g {rg} -n {policy2} --identity {id}',
+                 checks=[self.exists('identity')])
+        self.cmd('network firewall policy update -g {rg} -n {policy2} --remove identity',
+                 checks=[self.not_exists('identity')])
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_with_threat_intel_allowlist', location='eastus2')
     def test_azure_firewall_policy_with_threat_intel_allowlist(self, resource_group, resource_group_location):

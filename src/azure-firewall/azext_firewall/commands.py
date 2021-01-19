@@ -53,6 +53,13 @@ def load_command_table(self, _):
         min_api='2019-07-01'
     )
 
+    network_firewall_policies_custom = CliCommandType(
+        operations_tmpl='azext_firewall.custom#{}',
+        client_factory=cf_firewall_policies,
+        resource_type=CUSTOM_FIREWALL,
+        min_api='2019-07-01'
+    )
+
     # region AzureFirewalls
     with self.command_group('network firewall', network_firewall_sdk) as g:
         g.custom_command('create', 'create_azure_firewall')
@@ -119,7 +126,10 @@ def load_command_table(self, _):
         g.command('delete', 'delete')
         g.custom_command('list', 'list_azure_firewall_policies')
         g.show_command('show')
-        g.generic_update_command('update', custom_func_name='update_azure_firewall_policies', exception_handler=exception_handler)
+        g.generic_update_command('update', custom_func_name='update_azure_firewall_policies',
+                                 setter_name='set_azure_firewall_policies',
+                                 setter_type=network_firewall_policies_custom,
+                                 exception_handler=exception_handler)
 
     with self.command_group('network firewall policy idps', resource_type=CUSTOM_FIREWALL, min_api='2020-07-01', is_preview=True) as g:
         g.custom_command('add', 'add_firewall_policy_intrusion_detection_config', exception_handler=exception_handler)

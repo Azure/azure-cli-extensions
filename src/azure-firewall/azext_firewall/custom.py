@@ -625,6 +625,17 @@ def update_azure_firewall_policies(cmd,
     return instance
 
 
+def set_azure_firewall_policies(cmd, resource_group_name, firewall_policy_name, parameters):
+    if parameters.identity is None:
+        ManagedServiceIdentity = cmd.get_models('ManagedServiceIdentity')
+
+        identity = ManagedServiceIdentity(type="None", user_assigned_identities=None)
+        parameters.identity = identity
+
+    client = network_client_factory(cmd.cli_ctx).firewall_policies
+    return client.create_or_update(resource_group_name, firewall_policy_name, parameters)
+
+
 def list_azure_firewall_policies(cmd, resource_group_name=None):
     client = network_client_factory(cmd.cli_ctx).firewall_policies
     if resource_group_name is not None:
