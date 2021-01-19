@@ -37,7 +37,7 @@ CLASSIFIERS = [
 DEPENDENCIES = [
     'kubernetes==11.0.0',
     'pycryptodome==3.9.8',
-    'websocket-client==0.56.0'
+    'pyyaml<=5.3.1'
 ]
 
 with open('README.md', 'r', encoding='utf-8') as f:
