@@ -114,7 +114,7 @@ def load_command_table(self, _):
         g.command('delete', 'delete', supports_no_wait=True, confirmation=True)
         g.show_command('show')
         g.command('list', 'list')
-        g.generic_update_command('update', custom_func_name='update_hub_vnet_connection', setter_arg_name='hub_virtual_network_connection_parameters', supports_no_wait=True)
+        g.generic_update_command('update', custom_func_name='update_hub_vnet_connection', setter_arg_name='hub_virtual_network_connection_parameters')
         g.wait_command('wait')
 
     with self.command_group('network vhub route', network_vhub_sdk) as g:
@@ -152,7 +152,7 @@ def load_command_table(self, _):
         g.show_command('show', 'get')
         g.command('delete', 'delete')
         g.generic_update_command('update', custom_func_name='update_vpn_gateway_connection',
-                                 setter_arg_name='vpn_connection_parameters', supports_no_wait=True)
+                                 setter_arg_name='vpn_connection_parameters')
         g.wait_command('wait')
 
     with self.command_group('network vpn-gateway connection ipsec-policy', network_vpn_gateway_sdk) as g:

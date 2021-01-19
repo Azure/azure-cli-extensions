@@ -99,7 +99,7 @@ helps['network vhub connection update'] = """
     - name: Add labels of a virtual hub connection.
       text: |
           az network vhub connection update -n MyConnection --vhub-name MyHub -g MyRG --labels Newlabel1 Newlabel2
-    - name: Add labels of a virtual hub connection.
+    - name: Add labels for propagatedRouteTables of a virtual hub connection.
       text: |
           az network vhub connection update -n MyConnection --vhub-name MyHub -g MyRG --add routingConfiguration.propagatedRouteTables.labels Newlabel1 Newlabel2
     - name: Reset labels of a virtual hub connection.
