@@ -30,25 +30,21 @@ def validate_network_id(parameter_name):
     return _validate
 
 
-def validate_workspace_values(cmd, namespace):
-    """Parse managed resource_group which can be either resource group name or id"""
+def validate_managed_resource_group(cmd, namespace):
+    """Parse managed resource_group which can be either resource group name or id, generate a randomized name if not provided"""
     from msrestazure.tools import is_valid_resource_id, resource_id
     from azure.cli.core.commands.client_factory import get_subscription_id
 
-    random_id = id_generator()
     subscription_id = get_subscription_id(cmd.cli_ctx)
     if not namespace.managed_resource_group:
         namespace.managed_resource_group = resource_id(
             subscription=subscription_id,
             resource_group='databricks-rg-' + namespace.workspace_name + '-' +
-            random_id)
+            id_generator())
     elif not is_valid_resource_id(namespace.managed_resource_group):
         namespace.managed_resource_group = resource_id(
             subscription=subscription_id,
             resource_group=namespace.managed_resource_group)
-
-    # name to resource id for virtual-network
-    validate_network_id('custom_virtual_network_id')(cmd, namespace)
 
 
 def validate_encryption_values(namespace):
