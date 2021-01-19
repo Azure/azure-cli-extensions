@@ -304,6 +304,9 @@ helps['aks create'] = """
         - name: --tags
           type: string
           short-summary: The tags of the managed cluster. The managed cluster instance and all resources managed by the cloud provider will be tagged.
+        - name: --enable-encryption-at-host
+          type: bool
+          short-summary: Enable EncryptionAtHost on agent node pool.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -341,6 +344,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
         - name: Create a kubernetes cluster with custom tags
           text: az aks create -g MyResourceGroup -n MyManagedCluster --tags "foo=bar" "baz=qux"
+        - name: Create a kubernetes cluster with EncryptionAtHost enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-encryption-at-host
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -665,10 +670,14 @@ helps['aks nodepool add'] = """
         - name: --linux-os-config
           type: string
           short-summary: OS configurations for Linux agent nodes.
+        - name: --enable-encryption-at-host
+          type: bool
+          short-summary: Enable EncryptionAtHost on agent node pool.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
-
+        - name: Create a nodepool with EncryptionAtHost enabled.
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --enable-encryption-at-host
 """
 
 helps['aks nodepool scale'] = """

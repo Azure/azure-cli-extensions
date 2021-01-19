@@ -900,6 +900,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                assign_identity=None,
                auto_upgrade_channel=None,
                enable_pod_identity=False,
+               enable_encryption_at_host=False,
                no_wait=False,
                yes=False):
     if not no_ssh_key:
@@ -945,6 +946,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         proximity_placement_group_id=ppg,
         availability_zones=node_zones,
         enable_node_public_ip=enable_node_public_ip,
+        enable_encryption_at_host=enable_encryption_at_host,
         max_pods=int(max_pods) if max_pods else None,
         type=vm_set_type
     )
@@ -2501,6 +2503,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       aks_custom_headers=None,
                       kubelet_config=None,
                       linux_os_config=None,
+                      enable_encryption_at_host=False,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -2547,6 +2550,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         node_taints=taints_array,
         scale_set_priority=priority,
         upgrade_settings=upgradeSettings,
+        enable_encryption_at_host=enable_encryption_at_host,
         mode=mode
     )
 
