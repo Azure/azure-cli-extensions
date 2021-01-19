@@ -42,7 +42,7 @@ class ServiceOperations(object):
 
         :param storage_service_properties: The StorageService properties.
         :type storage_service_properties:
-         ~azure.storage.blob.models.StorageServiceProperties
+         ~.models.StorageServiceProperties
         :param timeout: The timeout parameter is expressed in seconds. For
          more information, see <a
          href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations">Setting
@@ -57,7 +57,7 @@ class ServiceOperations(object):
         :return: None or the result of cls(response)
         :rtype: None
         :raises:
-         :class:`StorageErrorException<azure.storage.blob.models.StorageErrorException>`
+         :class:`StorageErrorException<.models.StorageErrorException>`
         """
         error_map = kwargs.pop('error_map', None)
         restype = "service"
@@ -123,9 +123,9 @@ class ServiceOperations(object):
         :param callable cls: A custom type or function that will be passed the
          direct response
         :return: StorageServiceProperties or the result of cls(response)
-        :rtype: ~azure.storage.blob.models.StorageServiceProperties
+        :rtype: ~.models.StorageServiceProperties
         :raises:
-         :class:`StorageErrorException<azure.storage.blob.models.StorageErrorException>`
+         :class:`StorageErrorException<.models.StorageErrorException>`
         """
         error_map = kwargs.pop('error_map', None)
         restype = "service"
@@ -195,9 +195,9 @@ class ServiceOperations(object):
         :param callable cls: A custom type or function that will be passed the
          direct response
         :return: StorageServiceStats or the result of cls(response)
-        :rtype: ~azure.storage.blob.models.StorageServiceStats
+        :rtype: ~.models.StorageServiceStats
         :raises:
-         :class:`StorageErrorException<azure.storage.blob.models.StorageErrorException>`
+         :class:`StorageErrorException<.models.StorageErrorException>`
         """
         error_map = kwargs.pop('error_map', None)
         restype = "service"
@@ -278,7 +278,7 @@ class ServiceOperations(object):
         :param include: Include this parameter to specify that the container's
          metadata be returned as part of the response body.
         :type include: list[str or
-         ~azure.storage.blob.models.ListContainersIncludeType]
+         ~.models.ListContainersIncludeType]
         :param timeout: The timeout parameter is expressed in seconds. For
          more information, see <a
          href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations">Setting
@@ -291,9 +291,9 @@ class ServiceOperations(object):
         :param callable cls: A custom type or function that will be passed the
          direct response
         :return: ListContainersSegmentResponse or the result of cls(response)
-        :rtype: ~azure.storage.blob.models.ListContainersSegmentResponse
+        :rtype: ~.models.ListContainersSegmentResponse
         :raises:
-         :class:`StorageErrorException<azure.storage.blob.models.StorageErrorException>`
+         :class:`StorageErrorException<.models.StorageErrorException>`
         """
         error_map = kwargs.pop('error_map', None)
         comp = "list"
@@ -357,7 +357,7 @@ class ServiceOperations(object):
         valid operation when using bearer token authentication.
 
         :param key_info:
-        :type key_info: ~azure.storage.blob.models.KeyInfo
+        :type key_info: ~.models.KeyInfo
         :param timeout: The timeout parameter is expressed in seconds. For
          more information, see <a
          href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations">Setting
@@ -370,9 +370,9 @@ class ServiceOperations(object):
         :param callable cls: A custom type or function that will be passed the
          direct response
         :return: UserDelegationKey or the result of cls(response)
-        :rtype: ~azure.storage.blob.models.UserDelegationKey
+        :rtype: ~.models.UserDelegationKey
         :raises:
-         :class:`StorageErrorException<azure.storage.blob.models.StorageErrorException>`
+         :class:`StorageErrorException<.models.StorageErrorException>`
         """
         error_map = kwargs.pop('error_map', None)
         restype = "service"
@@ -438,7 +438,7 @@ class ServiceOperations(object):
         :return: None or the result of cls(response)
         :rtype: None
         :raises:
-         :class:`StorageErrorException<azure.storage.blob.models.StorageErrorException>`
+         :class:`StorageErrorException<.models.StorageErrorException>`
         """
         error_map = kwargs.pop('error_map', None)
         restype = "account"
@@ -508,7 +508,7 @@ class ServiceOperations(object):
         :return: object or the result of cls(response)
         :rtype: Generator
         :raises:
-         :class:`StorageErrorException<azure.storage.blob.models.StorageErrorException>`
+         :class:`StorageErrorException<.models.StorageErrorException>`
         """
         error_map = kwargs.pop('error_map', None)
         comp = "batch"
@@ -602,9 +602,9 @@ class ServiceOperations(object):
         :param callable cls: A custom type or function that will be passed the
          direct response
         :return: FilterBlobSegment or the result of cls(response)
-        :rtype: ~azure.storage.blob.models.FilterBlobSegment
+        :rtype: ~.models.FilterBlobSegment
         :raises:
-         :class:`StorageErrorException<azure.storage.blob.models.StorageErrorException>`
+         :class:`StorageErrorException<.models.StorageErrorException>`
         """
         error_map = kwargs.pop('error_map', None)
         comp = "blobs"
