@@ -36,8 +36,7 @@ CLASSIFIERS = [
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
     'kubernetes==11.0.0',
-    'pycryptodome==3.9.8',
-    'pyyaml<5.3.1'
+    'pycryptodome==3.9.8'
 ]
 
 with open('README.md', 'r', encoding='utf-8') as f:
