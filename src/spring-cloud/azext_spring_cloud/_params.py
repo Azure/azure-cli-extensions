@@ -11,10 +11,11 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_name, validate_app_name, validate_deployment_name, validate_log_lines,
                           validate_log_limit, validate_log_since, validate_sku, validate_jvm_options,
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
-                          validate_tracing_parameters, validate_instance_count)
+                          validate_tracing_parameters, validate_app_insights_parameters, validate_java_agent_parameters,
+                          validate_instance_count)
 from ._utils import ApiType
 
-from .vendored_sdks.appplatform.models import RuntimeVersion, TestKeyType
+from .vendored_sdks.appplatform.v2020_07_01.models import RuntimeVersion, TestKeyType
 
 name_type = CLIArgumentType(options_list=[
     '--name', '-n'], help='The primary resource name', validator=validate_name)
@@ -41,14 +42,14 @@ def load_arguments(self, _):
         c.argument('service_runtime_subnet', options_list=['--service-runtime-subnet', '--svc-subnet'], help='The name or ID of an existing subnet in "vnet" into which to deploy the Spring Cloud service runtime. Required when deploying into a Virtual Network.', validator=validate_vnet)
         c.argument('service_runtime_network_resource_group', options_list=['--service-runtime-network-resource-group', '--svc-nrg'], help='The resource group where all network resources for Azure Spring Cloud service runtime will be created in.', validator=validate_node_resource_group)
         c.argument('app_network_resource_group', options_list=['--app-network-resource-group', '--app-nrg'], help='The resource group where all network resources for apps will be created in.', validator=validate_node_resource_group)
-
+        c.argument('enable_java_agent', is_preview=True, arg_type=get_three_state_flag(), help="Enable java in-process agent", validator=validate_java_agent_parameters)
     with self.argument_context('spring-cloud update') as c:
         c.argument('sku', type=str, validator=validate_sku, help='Name of SKU, the value is "Basic" or "Standard"')
 
     for scope in ['spring-cloud create', 'spring-cloud update']:
         with self.argument_context(scope) as c:
             c.argument('app_insights_key',
-                       help="Instrumentation key of the existing Application Insights to be added for the distributed tracing",
+                       help="Instrumentation key of the existing Application Insights.",
                        validator=validate_tracing_parameters)
             c.argument('app_insights',
                        help="Name of the existing Application Insights in the same Resource Group. Or Resource ID of the existing Application Insights in a different Resource Group.",
@@ -56,6 +57,11 @@ def load_arguments(self, _):
             c.argument('disable_distributed_tracing',
                        arg_type=get_three_state_flag(),
                        help="Disable distributed tracing, if not disabled and no existing Application Insights specified with --app-insights-key or --app-insights, will create a new Application Insights instance in the same resource group.",
+                       validator=validate_tracing_parameters,
+                       deprecate_info=c.deprecate(target='--disable-distributed-tracing', redirect='--disable-app-insights', hide=True))
+            c.argument('disable_app_insights',
+                       arg_type=get_three_state_flag(),
+                       help="Disable Application Insights, if not disabled and no existing Application Insights specified with --app-insights-key or --app-insights, will create a new Application Insights instance in the same resource group.",
                        validator=validate_tracing_parameters)
             c.argument('tags', arg_type=tags_type)
 
@@ -246,3 +252,19 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app custom-domain update') as c:
         c.argument('certificate', help='Certificate name in Azure Spring Cloud.')
+
+    with self.argument_context('spring-cloud app-insights update') as c:
+        c.argument('app_insights_key',
+                   help="Instrumentation key of the existing Application Insights",
+                   validator=validate_app_insights_parameters)
+        c.argument('app_insights',
+                   help="Name of the existing Application Insights in the same Resource Group. Or Resource ID of the existing Application Insights in a different Resource Group.",
+                   validator=validate_app_insights_parameters)
+        c.argument('sampling_rate',
+                   type=float,
+                   help="Sampling Rate of application insights. Maximum is 100.",
+                   validator=validate_app_insights_parameters)
+        c.argument('disable',
+                   arg_type=get_three_state_flag(),
+                   help="Disable Application Insights.",
+                   validator=validate_app_insights_parameters)

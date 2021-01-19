@@ -213,12 +213,17 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.extra('tags', tags_type)
 
     with self.argument_context('storage blob delete') as c:
+        t_delete_snapshots = self.get_sdk('_generated.models#DeleteSnapshotsOptionType',
+                                          resource_type=CUSTOM_DATA_STORAGE_BLOB)
         c.register_blob_arguments()
         c.register_precondition_options()
 
         c.extra('lease', lease_type)
         c.extra('snapshot', snapshot_type)
         c.extra('version_id', version_id_type)
+        c.argument('delete_snapshots', arg_type=get_enum_type(t_delete_snapshots),
+                   help='Required if the blob has associated snapshots. "only": Deletes only the blobs snapshots. '
+                        '"include": Deletes the blob along with all snapshots.')
 
     with self.argument_context('storage blob download') as c:
         from ._validators import add_progress_callback_v2
@@ -299,7 +304,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage blob lease acquire') as c:
         c.register_precondition_options()
-        c.register_blob_arguments()
+        c.register_lease_blob_arguments()
         c.extra('lease_id', options_list='--proposed-lease-id', help='Proposed lease ID, in a GUID string format. '
                 'The Blob service returns 400 (Invalid request) if the proposed lease ID is not in the correct format.')
         c.argument('lease_duration', help='Specify the duration of the lease, in seconds, or negative one (-1) for '
@@ -309,7 +314,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage blob lease break') as c:
         c.register_precondition_options()
-        c.register_blob_arguments()
+        c.register_lease_blob_arguments()
         c.argument('lease_break_period', type=int,
                    help="This is the proposed duration of seconds that the lease should continue before it is broken, "
                    "between 0 and 60 seconds. This break period is only used if it is shorter than the time remaining "
@@ -321,7 +326,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage blob lease change') as c:
         c.register_precondition_options()
-        c.register_blob_arguments()
+        c.register_lease_blob_arguments()
         c.extra('proposed_lease_id', help='Proposed lease ID, in a GUID string format. The Blob service returns 400 '
                 '(Invalid request) if the proposed lease ID is not in the correct format.', required=True)
         c.extra('lease_id', help='Required if the blob has an active lease.', required=True)
@@ -330,7 +335,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     for item in ['release', 'renew']:
         with self.argument_context('storage blob lease {}'.format(item)) as c:
             c.register_precondition_options()
-            c.register_blob_arguments()
+            c.register_lease_blob_arguments()
             c.extra('lease_id', help='Required if the blob has an active lease.', required=True)
             c.extra('if_tags_match_condition', tags_condition_type)
 
@@ -402,39 +407,45 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage blob upload') as c:
         from ._validators import validate_encryption_scope_client_params, \
-            add_progress_callback_v2
+            add_progress_callback_v2, validate_upload_blob
         from .sdkutil import get_blob_types
 
         t_blob_content_settings = self.get_sdk('_models#ContentSettings', resource_type=CUSTOM_DATA_STORAGE_BLOB)
 
         c.register_blob_arguments()
         c.register_precondition_options()
-        c.register_content_settings_argument(t_blob_content_settings, update=False)
+        c.register_content_settings_argument(t_blob_content_settings, update=False, arg_group="Content Control")
 
         c.argument('file_path', options_list=('--file', '-f'), type=file_type, completer=FilesCompleter(),
-                   help='Path of the file to upload as the blob content.')
-        c.argument('overwrite', arg_type=get_three_state_flag(),
+                   help='Path of the file to upload as the blob content.', validator=validate_upload_blob)
+        c.argument('data', help='The blob data to upload.', required=False, is_preview=True, min_api='2019-02-02')
+        c.argument('length', type=int, help='Number of bytes to read from the stream. This is optional, but should be '
+                   'supplied for optimal performance. Cooperate with --data.', is_preview=True, min_api='2019-02-02')
+        c.argument('overwrite', arg_type=get_three_state_flag(), arg_group="Additional Flags",
                    help='Whether the blob to be uploaded should overwrite the current data. If True, upload_blob will '
                    'overwrite the existing data. If set to False, the operation will fail with ResourceExistsError. '
                    'The exception to the above is with Append blob types: if set to False and the data already exists, '
                    'an error will not be raised and the data will be appended to the existing blob. If set '
                    'overwrite=True, then the existing append blob will be deleted, and a new one created. '
                    'Defaults to False.', is_preview=True)
-        c.argument('max_connections', type=int,
+        c.argument('max_connections', type=int, arg_group="Additional Flags",
                    help='Maximum number of parallel connections to use when the blob size exceeds 64MB.')
-        c.extra('maxsize_condition', type=int,
+        c.extra('maxsize_condition', type=int, arg_group="Content Control",
                 help='The max length in bytes permitted for the append blob.')
         c.argument('blob_type', options_list=('--type', '-t'), validator=validate_blob_type,
-                   arg_type=get_enum_type(get_blob_types()))
-        c.argument('validate_content', action='store_true', min_api='2016-05-31')
-        c.extra('no_progress', progress_type, validator=add_progress_callback_v2)
+                   arg_type=get_enum_type(get_blob_types()), arg_group="Additional Flags")
+        c.argument('validate_content', action='store_true', min_api='2016-05-31', arg_group="Content Control")
+        c.extra('no_progress', progress_type, validator=add_progress_callback_v2, arg_group="Additional Flags")
         c.argument('socket_timeout', deprecate_info=c.deprecate(hide=True),
                    help='The socket timeout(secs), used by the service to regulate data flow.')
-        c.extra('tier', tier_type, validator=blob_tier_validator)
+        c.extra('tier', tier_type, validator=blob_tier_validator, arg_group="Additional Flags")
         c.argument('encryption_scope', validator=validate_encryption_scope_client_params,
-                   help='A predefined encryption scope used to encrypt the data on the service.')
+                   help='A predefined encryption scope used to encrypt the data on the service.',
+                   arg_group="Additional Flags")
         c.argument('lease_id', help='Required if the blob has an active lease.')
-        c.extra('tags', arg_type=tags_type)
+        c.extra('tags', arg_type=tags_type, arg_group="Additional Flags")
+        c.argument('metadata', arg_group="Additional Flags")
+        c.argument('timeout', arg_group="Additional Flags")
 
     with self.argument_context('storage container') as c:
         c.argument('container_name', container_name_type, options_list=('--name', '-n'))

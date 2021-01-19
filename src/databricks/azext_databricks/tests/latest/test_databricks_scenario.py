@@ -41,16 +41,19 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '--name {custom_workspace_name} '
                  '--location "westus" '
                  '--sku standard '
-                 '--managed-resource-group {managed_resource_group}',
+                 '--managed-resource-group {managed_resource_group} '
+                 '--tags env=dev',
                  checks=[self.check('name', '{custom_workspace_name}'),
-                         self.check('managedResourceGroupId', managed_resource_group_id)])
+                         self.check('managedResourceGroupId', managed_resource_group_id),
+                         self.check('tags.env', 'dev')])
 
         workspace = self.cmd('az databricks workspace update '
                              '--resource-group {rg} '
                              '--name {workspace_name} '
-                             '--tags type=test '
+                             '--tags type=test env=dev '
                              '--prepare-encryption',
                              checks=[self.check('tags.type', 'test'),
+                                     self.check('tags.env', 'dev'),
                                      self.exists('storageAccountIdentity.principalId')]).get_output_in_json()
         principalId = workspace['storageAccountIdentity']['principalId']
 
