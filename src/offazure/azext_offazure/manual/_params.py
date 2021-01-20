@@ -79,7 +79,7 @@ def load_arguments(self, _):
         c.argument('identity', action=AddServicePrincipalIdentityDetails, nargs='+',
                    help='Service principal identity details used by agent for communication to the service.')
         c.argument('agent', action=AddAgentDetails, nargs='+', help='On-premises agent details.')
-        c.argument('discovery_solution_id', type=str, help='ARM ID of migration hub solution for SDS.')
+        c.argument('solution_id', type=str, help='ARM ID of migration hub solution for SDS.')
         c.argument('appliance_name', type=str, help='Name of the appliance')
 
     with self.argument_context('offazure hyperv site delete') as c:
@@ -122,7 +122,7 @@ def load_arguments(self, _):
         c.argument('identity', action=AddServicePrincipalIdentityDetails, nargs='+',
                    help='Service principal identity details used by agent for communication to the service.')
         c.argument('agent', action=AddAgentDetails, nargs='+', help='On-premises agent details.')
-        c.argument('discovery_solution_id', type=str, help='ARM ID of migration hub solution for SDS.')
+        c.argument('solution_id', type=str, help='ARM ID of migration hub solution for SDS.')
         c.argument('appliance_name', type=str, help='Name of the appliance')
 
     with self.argument_context('offazure vmware site delete') as c:

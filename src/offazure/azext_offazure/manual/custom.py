@@ -149,7 +149,7 @@ def offazure_hyperv_site_create(cmd,
                                 location=None,
                                 identity=None,
                                 agent=None,
-                                discovery_solution_id=None,
+                                solution_id=None,
                                 appliance_name=None):
     from azure.cli.core.commands.client_factory import get_subscription_id
 
@@ -163,7 +163,7 @@ def offazure_hyperv_site_create(cmd,
     body['properties'] = {}
     body['properties']['service_principal_identity_details'] = identity
     body['properties']['agent_details'] = agent
-    body['properties']['discovery_solution_id'] = discovery_solution_id
+    body['properties']['discovery_solution_id'] = solution_id
     body['properties']['appliance_name'] = appliance_name
     return client.put_site(subscription_id=subscription_id,
                            resource_group_name=resource_group_name,
@@ -265,7 +265,7 @@ def offazure_vmware_site_create(cmd,
                                 location=None,
                                 identity=None,
                                 agent=None,
-                                discovery_solution_id=None,
+                                solution_id=None,
                                 appliance_name=None):
     from azure.cli.core.commands.client_factory import get_subscription_id
 
@@ -279,7 +279,7 @@ def offazure_vmware_site_create(cmd,
     body['properties'] = {}
     body['properties']['service_principal_identity_details'] = identity
     body['properties']['agent_details'] = agent
-    body['properties']['discovery_solution_id'] = discovery_solution_id
+    body['properties']['discovery_solution_id'] = solution_id
     body['properties']['appliance_name'] = appliance_name
     return client.put_site(subscription_id=subscription_id,
                            resource_group_name=resource_group_name,
