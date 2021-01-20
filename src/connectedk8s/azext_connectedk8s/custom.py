@@ -887,11 +887,17 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
             if not (configmap_rg_name.lower() == resource_group_name.lower() and
                     configmap_cluster_name.lower() == cluster_name.lower()):
                 telemetry.set_user_fault()
-                telemetry.set_exception(exception='The kubernetes cluster is already onboarded', fault_type=consts.Cluster_Already_Onboarded_Fault_Type,
-                                        summary='Kubernetes cluster already onboarded')
-                raise CLIError("The kubernetes cluster you are trying to onboard " +
-                               "is already onboarded to the resource group" +
-                               " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
+                telemetry.set_exception(exception='The provided cluster name and rg correspond to different cluster', fault_type=consts.Upgrade_RG_Cluster_Name_Conflict,
+                                        summary='The provided cluster name and resource group name do not correspond to the kubernetes cluster being upgraded.')
+                raise CLIError("The provided cluster name and resource group name do not correspond to the kubernetes cluster you are trying to upgrade." +
+                               "Please upgrade the cluster using az upgrade agents -g <configmap_rg_name> -n <configmap_cluster_name>")
+        else:
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception='The corresponding CC resource does not exist', fault_type=consts.Corresponding_CC_Resource_Deleted_Fault,
+                                    summary='CC resource corresponding to this cluster has been deleted by the customer')
+            raise CLIError("There exist no ConnectedCluster resource corresponding to this kubernetes Cluster." +
+                           "Please cleanup the helm release first using 'helm delete azure-arc -n <release_namespace>' and re-onboard the cluster using " +
+                           "'az connectedk8s connect -n <> -g <>'")
 
         auto_update_enabled = configmap.data["AZURE_ARC_AUTOUPDATE"]
         if auto_update_enabled == "true":
@@ -906,15 +912,6 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
                                 summary="The azure-arc release namespace couldn't be retrieved, which implies that the kubernetes cluster has not been onboarded to azure-arc.")
         raise CLIError("The azure-arc release namespace couldn't be retrieved, which implies that the kubernetes cluster has not been onboarded to azure-arc." +
                        "Please run 'az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>' to onboard the cluster")
-
-        # Check whether Connected Cluster is present
-    if not connected_cluster_exists(client, resource_group_name, cluster_name):
-        telemetry.set_user_fault()
-        telemetry.set_exception(exception='The connected cluster resource does not exist', fault_type=consts.Resource_Does_Not_Exist_Fault_Type,
-                                summary='Connected cluster resource does not exist')
-        raise CLIError("The connected cluster resource {} does not exist ".format(cluster_name) +
-                       "in the resource group {} ".format(resource_group_name) +
-                       "Please onboard the connected cluster using: az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>")
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
