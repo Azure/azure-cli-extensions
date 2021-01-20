@@ -7,7 +7,6 @@
 try:
     from ._models_py3 import AdminCredentials
     from ._models_py3 import Circuit
-    from ._models_py3 import CloudError
     from ._models_py3 import Cluster
     from ._models_py3 import ClusterList
     from ._models_py3 import ClusterProperties
@@ -43,7 +42,6 @@ try:
 except (SyntaxError, ImportError):
     from ._models import AdminCredentials  # type: ignore
     from ._models import Circuit  # type: ignore
-    from ._models import CloudError  # type: ignore
     from ._models import Cluster  # type: ignore
     from ._models import ClusterList  # type: ignore
     from ._models import ClusterProperties  # type: ignore
@@ -77,7 +75,7 @@ except (SyntaxError, ImportError):
     from ._models import TrackedResource  # type: ignore
     from ._models import Trial  # type: ignore
 
-from ._azure_vmware_solution_api_enums import (
+from ._avs_client_enums import (
     ClusterProvisioningState,
     ExpressRouteAuthorizationProvisioningState,
     HcxEnterpriseSiteStatus,
@@ -91,7 +89,6 @@ from ._azure_vmware_solution_api_enums import (
 __all__ = [
     'AdminCredentials',
     'Circuit',
-    'CloudError',
     'Cluster',
     'ClusterList',
     'ClusterProperties',

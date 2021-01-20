@@ -4,7 +4,6 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from azure.core.exceptions import HttpResponseError
 import msrest.serialization
 
 
@@ -88,25 +87,6 @@ class Circuit(msrest.serialization.Model):
         self.express_route_private_peering_id = None
 
 
-class CloudError(msrest.serialization.Model):
-    """API error response.
-
-    :param error: An error returned by the API.
-    :type error: ~azure_vmware_solution_api.models.ErrorResponse
-    """
-
-    _attribute_map = {
-        'error': {'key': 'error', 'type': 'ErrorResponse'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(CloudError, self).__init__(**kwargs)
-        self.error = kwargs.get('error', None)
-
-
 class Resource(msrest.serialization.Model):
     """The core properties of ARM resources.
 
@@ -156,12 +136,12 @@ class Cluster(Resource):
     :ivar type: Resource type.
     :vartype type: str
     :param sku: Required. The cluster SKU.
-    :type sku: ~azure_vmware_solution_api.models.Sku
+    :type sku: ~avs_client.models.Sku
     :param cluster_size: The cluster size.
     :type cluster_size: int
     :ivar provisioning_state: The state of the cluster provisioning. Possible values include:
      "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure_vmware_solution_api.models.ClusterProvisioningState
+    :vartype provisioning_state: str or ~avs_client.models.ClusterProvisioningState
     :ivar cluster_id: The identity.
     :vartype cluster_id: int
     :ivar hosts: The hosts.
@@ -207,7 +187,7 @@ class ClusterList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on a page.
-    :vartype value: list[~azure_vmware_solution_api.models.Cluster]
+    :vartype value: list[~avs_client.models.Cluster]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -259,7 +239,7 @@ class ManagementCluster(ClusterUpdateProperties):
     :type cluster_size: int
     :ivar provisioning_state: The state of the cluster provisioning. Possible values include:
      "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure_vmware_solution_api.models.ClusterProvisioningState
+    :vartype provisioning_state: str or ~avs_client.models.ClusterProvisioningState
     :ivar cluster_id: The identity.
     :vartype cluster_id: int
     :ivar hosts: The hosts.
@@ -298,7 +278,7 @@ class ClusterProperties(ManagementCluster):
     :type cluster_size: int
     :ivar provisioning_state: The state of the cluster provisioning. Possible values include:
      "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
-    :vartype provisioning_state: str or ~azure_vmware_solution_api.models.ClusterProvisioningState
+    :vartype provisioning_state: str or ~avs_client.models.ClusterProvisioningState
     :ivar cluster_id: The identity.
     :vartype cluster_id: int
     :ivar hosts: The hosts.
@@ -421,9 +401,9 @@ class ErrorResponse(msrest.serialization.Model):
     :ivar target: The error target.
     :vartype target: str
     :ivar details: The error details.
-    :vartype details: list[~azure_vmware_solution_api.models.ErrorResponse]
+    :vartype details: list[~avs_client.models.ErrorResponse]
     :ivar additional_info: The error additional info.
-    :vartype additional_info: list[~azure_vmware_solution_api.models.ErrorAdditionalInfo]
+    :vartype additional_info: list[~avs_client.models.ErrorAdditionalInfo]
     """
 
     _validation = {
@@ -468,7 +448,7 @@ class ExpressRouteAuthorization(Resource):
     :ivar provisioning_state: The state of the  ExpressRoute Circuit Authorization provisioning.
      Possible values include: "Succeeded", "Failed", "Updating".
     :vartype provisioning_state: str or
-     ~azure_vmware_solution_api.models.ExpressRouteAuthorizationProvisioningState
+     ~avs_client.models.ExpressRouteAuthorizationProvisioningState
     :ivar express_route_authorization_id: The ID of the ExpressRoute Circuit Authorization.
     :vartype express_route_authorization_id: str
     :ivar express_route_authorization_key: The key of the ExpressRoute Circuit Authorization.
@@ -509,7 +489,7 @@ class ExpressRouteAuthorizationList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on a page.
-    :vartype value: list[~azure_vmware_solution_api.models.ExpressRouteAuthorization]
+    :vartype value: list[~avs_client.models.ExpressRouteAuthorization]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -548,7 +528,7 @@ class HcxEnterpriseSite(Resource):
     :vartype activation_key: str
     :ivar status: The status of the HCX Enterprise Site. Possible values include: "Available",
      "Consumed", "Deactivated", "Deleted".
-    :vartype status: str or ~azure_vmware_solution_api.models.HcxEnterpriseSiteStatus
+    :vartype status: str or ~avs_client.models.HcxEnterpriseSiteStatus
     """
 
     _validation = {
@@ -582,7 +562,7 @@ class HcxEnterpriseSiteList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on a page.
-    :vartype value: list[~azure_vmware_solution_api.models.HcxEnterpriseSite]
+    :vartype value: list[~avs_client.models.HcxEnterpriseSite]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -625,7 +605,7 @@ class IdentitySource(msrest.serialization.Model):
     :type secondary_server: str
     :param ssl: Protect LDAP communication using SSL certificate (LDAPS). Possible values include:
      "Enabled", "Disabled".
-    :type ssl: str or ~azure_vmware_solution_api.models.SslEnum
+    :type ssl: str or ~avs_client.models.SslEnum
     :param username: The ID of an Active Directory user with a minimum of read-only access to Base
      DN for users and group.
     :type username: str
@@ -748,7 +728,7 @@ class MetricSpecification(msrest.serialization.Model):
      duration where no metric is emitted/published.
     :type fill_gap_with_zero: bool
     :param dimensions: Dimensions of the metric.
-    :type dimensions: list[~azure_vmware_solution_api.models.MetricDimension]
+    :type dimensions: list[~avs_client.models.MetricDimension]
     :param enable_regional_mdm_account: Whether or not the service is using regional MDM accounts.
     :type enable_regional_mdm_account: str
     :param source_mdm_account: The name of the MDM account.
@@ -801,14 +781,14 @@ class Operation(msrest.serialization.Model):
     :ivar name: Name of the operation being performed on this object.
     :vartype name: str
     :ivar display: Contains the localized display information for this operation.
-    :vartype display: ~azure_vmware_solution_api.models.OperationDisplay
+    :vartype display: ~avs_client.models.OperationDisplay
     :param is_data_action: Gets or sets a value indicating whether the operation is a data action
      or not.
     :type is_data_action: bool
     :param origin: Origin of the operation.
     :type origin: str
     :param properties: Properties of the operation.
-    :type properties: ~azure_vmware_solution_api.models.OperationProperties
+    :type properties: ~avs_client.models.OperationProperties
     """
 
     _validation = {
@@ -882,7 +862,7 @@ class OperationList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: List of operations.
-    :vartype value: list[~azure_vmware_solution_api.models.Operation]
+    :vartype value: list[~avs_client.models.Operation]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -910,7 +890,7 @@ class OperationProperties(msrest.serialization.Model):
     """Extra Operation properties.
 
     :param service_specification: Service specifications of the operation.
-    :type service_specification: ~azure_vmware_solution_api.models.ServiceSpecification
+    :type service_specification: ~avs_client.models.ServiceSpecification
     """
 
     _attribute_map = {
@@ -983,22 +963,21 @@ class PrivateCloud(TrackedResource):
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
     :param sku: Required. The private cloud SKU.
-    :type sku: ~azure_vmware_solution_api.models.Sku
+    :type sku: ~avs_client.models.Sku
     :param management_cluster: The default cluster used for management.
-    :type management_cluster: ~azure_vmware_solution_api.models.ManagementCluster
+    :type management_cluster: ~avs_client.models.ManagementCluster
     :param internet: Connectivity to internet is enabled or disabled. Possible values include:
      "Enabled", "Disabled". Default value: "Disabled".
-    :type internet: str or ~azure_vmware_solution_api.models.InternetEnum
+    :type internet: str or ~avs_client.models.InternetEnum
     :param identity_sources: vCenter Single Sign On Identity Sources.
-    :type identity_sources: list[~azure_vmware_solution_api.models.IdentitySource]
+    :type identity_sources: list[~avs_client.models.IdentitySource]
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
      "Failed", "Cancelled", "Pending", "Building", "Deleting", "Updating".
-    :vartype provisioning_state: str or
-     ~azure_vmware_solution_api.models.PrivateCloudProvisioningState
+    :vartype provisioning_state: str or ~avs_client.models.PrivateCloudProvisioningState
     :param circuit: An ExpressRoute Circuit.
-    :type circuit: ~azure_vmware_solution_api.models.Circuit
+    :type circuit: ~avs_client.models.Circuit
     :ivar endpoints: The endpoints.
-    :vartype endpoints: ~azure_vmware_solution_api.models.Endpoints
+    :vartype endpoints: ~avs_client.models.Endpoints
     :param network_block: Required. The block of addresses should be unique across VNet in your
      subscription as well as on-premise. Make sure the CIDR format is conformed to (A.B.C.D/X) where
      A,B,C,D are between 0 and 255, and X is between 0 and 22.
@@ -1088,7 +1067,7 @@ class PrivateCloudList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: The items on the page.
-    :vartype value: list[~azure_vmware_solution_api.models.PrivateCloud]
+    :vartype value: list[~avs_client.models.PrivateCloud]
     :ivar next_link: URL to get the next page if any.
     :vartype next_link: str
     """
@@ -1116,12 +1095,12 @@ class PrivateCloudUpdateProperties(msrest.serialization.Model):
     """The properties of a private cloud resource that may be updated.
 
     :param management_cluster: The default cluster used for management.
-    :type management_cluster: ~azure_vmware_solution_api.models.ManagementCluster
+    :type management_cluster: ~avs_client.models.ManagementCluster
     :param internet: Connectivity to internet is enabled or disabled. Possible values include:
      "Enabled", "Disabled". Default value: "Disabled".
-    :type internet: str or ~azure_vmware_solution_api.models.InternetEnum
+    :type internet: str or ~avs_client.models.InternetEnum
     :param identity_sources: vCenter Single Sign On Identity Sources.
-    :type identity_sources: list[~azure_vmware_solution_api.models.IdentitySource]
+    :type identity_sources: list[~avs_client.models.IdentitySource]
     """
 
     _attribute_map = {
@@ -1148,20 +1127,19 @@ class PrivateCloudProperties(PrivateCloudUpdateProperties):
     All required parameters must be populated in order to send to Azure.
 
     :param management_cluster: The default cluster used for management.
-    :type management_cluster: ~azure_vmware_solution_api.models.ManagementCluster
+    :type management_cluster: ~avs_client.models.ManagementCluster
     :param internet: Connectivity to internet is enabled or disabled. Possible values include:
      "Enabled", "Disabled". Default value: "Disabled".
-    :type internet: str or ~azure_vmware_solution_api.models.InternetEnum
+    :type internet: str or ~avs_client.models.InternetEnum
     :param identity_sources: vCenter Single Sign On Identity Sources.
-    :type identity_sources: list[~azure_vmware_solution_api.models.IdentitySource]
+    :type identity_sources: list[~avs_client.models.IdentitySource]
     :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
      "Failed", "Cancelled", "Pending", "Building", "Deleting", "Updating".
-    :vartype provisioning_state: str or
-     ~azure_vmware_solution_api.models.PrivateCloudProvisioningState
+    :vartype provisioning_state: str or ~avs_client.models.PrivateCloudProvisioningState
     :param circuit: An ExpressRoute Circuit.
-    :type circuit: ~azure_vmware_solution_api.models.Circuit
+    :type circuit: ~avs_client.models.Circuit
     :ivar endpoints: The endpoints.
-    :vartype endpoints: ~azure_vmware_solution_api.models.Endpoints
+    :vartype endpoints: ~avs_client.models.Endpoints
     :param network_block: Required. The block of addresses should be unique across VNet in your
      subscription as well as on-premise. Make sure the CIDR format is conformed to (A.B.C.D/X) where
      A,B,C,D are between 0 and 255, and X is between 0 and 22.
@@ -1237,12 +1215,12 @@ class PrivateCloudUpdate(msrest.serialization.Model):
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
     :param management_cluster: The default cluster used for management.
-    :type management_cluster: ~azure_vmware_solution_api.models.ManagementCluster
+    :type management_cluster: ~avs_client.models.ManagementCluster
     :param internet: Connectivity to internet is enabled or disabled. Possible values include:
      "Enabled", "Disabled". Default value: "Disabled".
-    :type internet: str or ~azure_vmware_solution_api.models.InternetEnum
+    :type internet: str or ~avs_client.models.InternetEnum
     :param identity_sources: vCenter Single Sign On Identity Sources.
-    :type identity_sources: list[~azure_vmware_solution_api.models.IdentitySource]
+    :type identity_sources: list[~avs_client.models.IdentitySource]
     """
 
     _attribute_map = {
@@ -1272,7 +1250,7 @@ class Quota(msrest.serialization.Model):
     :vartype hosts_remaining: dict[str, int]
     :ivar quota_enabled: Host quota is active for current subscription. Possible values include:
      "Enabled", "Disabled".
-    :vartype quota_enabled: str or ~azure_vmware_solution_api.models.QuotaEnabled
+    :vartype quota_enabled: str or ~avs_client.models.QuotaEnabled
     """
 
     _validation = {
@@ -1298,9 +1276,9 @@ class ServiceSpecification(msrest.serialization.Model):
     """Service specification payload.
 
     :param log_specifications: Specifications of the Log for Azure Monitoring.
-    :type log_specifications: list[~azure_vmware_solution_api.models.LogSpecification]
+    :type log_specifications: list[~avs_client.models.LogSpecification]
     :param metric_specifications: Specifications of the Metrics for Azure Monitoring.
-    :type metric_specifications: list[~azure_vmware_solution_api.models.MetricSpecification]
+    :type metric_specifications: list[~avs_client.models.MetricSpecification]
     """
 
     _attribute_map = {
@@ -1349,7 +1327,7 @@ class Trial(msrest.serialization.Model):
 
     :ivar status: Trial status. Possible values include: "TrialAvailable", "TrialUsed",
      "TrialDisabled".
-    :vartype status: str or ~azure_vmware_solution_api.models.TrialStatus
+    :vartype status: str or ~avs_client.models.TrialStatus
     :ivar available_hosts: Number of trial hosts available.
     :vartype available_hosts: int
     """

@@ -4,5 +4,11 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._azure_vmware_solution_api import AzureVMwareSolutionAPI
-__all__ = ['AzureVMwareSolutionAPI']
+from ._avs_client import AVSClient
+__all__ = ['AVSClient']
+
+try:
+    from ._patch import patch_sdk  # type: ignore
+    patch_sdk()
+except ImportError:
+    pass
