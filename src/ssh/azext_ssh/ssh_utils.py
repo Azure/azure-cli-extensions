@@ -27,10 +27,12 @@ def create_ssh_keyfile(private_key_file):
     subprocess.call(command, shell=platform.system() == 'Windows')
 
 
-def write_ssh_config(config_path, resource_group, vm_name,
+def write_ssh_config(config_path, resource_group, vm_name, overwrite,
                      ip, username, cert_file, private_key_file):
     file_utils.make_dirs_for_file(config_path)
-    lines = []
+
+    lines = [""]
+
     if resource_group and vm_name:
         lines.append("Host " + resource_group + "-" + vm_name)
         lines.append("\tUser " + username)
@@ -49,7 +51,12 @@ def write_ssh_config(config_path, resource_group, vm_name,
     if private_key_file:
         lines.append("\tIdentityFile " + private_key_file)
 
-    with open(config_path, 'w') as f:
+    if overwrite:
+        mode = 'w'
+    else:
+        mode = 'a'
+
+    with open(config_path, mode) as f:
         f.write('\n'.join(lines))
 
 

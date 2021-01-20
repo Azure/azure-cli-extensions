@@ -264,6 +264,14 @@ def step__monitors_delete_monitors_delete(test, rg):
 
 
 @try_manual
+def step__terms_list(test, rg):
+    test.cmd('az datadog terms list',
+             checks=[
+                 test.check('length(@)', 2)
+             ])
+
+
+@try_manual
 def cleanup(test, rg):
     pass
 
@@ -290,6 +298,7 @@ def call_scenario(test, rg):
     step__apikeys_post_apikeys_setdefaultkey(test, rg)
     step__apikeys_post_apikeys_getdefaultkey(test, rg)
     step__monitors_delete_monitors_delete(test, rg)
+    step__terms_list(test, rg)
     cleanup(test, rg)
 
 
