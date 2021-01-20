@@ -980,7 +980,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
         raise CLIError("Problem loading the helm existing user supplied values: " + str(e))
 
     cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
-                        "--wait", "--output", "json", "--atomic"]
+                        "--output", "json", "--atomic"]
 
     for key, value in utils.flatten(existing_user_values).items():
         if value is not None:
