@@ -41,7 +41,7 @@ def load_arguments(self, _):
         c.argument('azure_firewall_name', firewall_name_type, options_list=['--name', '-n'], id_part='name')
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('description', help='Rule description.')
-        c.argument('destination_addresses', nargs='+', help="Space-separated list of destination IP addresses. Use '*' to match all.")
+        c.argument('destination_addresses', options_list=['--destination-addresses', '--dest-addr'], nargs='+', help="Space-separated list of destination IP addresses. Use '*' to match all.")
         c.argument('destination_fqdns', nargs='+', help="Space-separated list of destination FQDNs.")
         c.argument('source_addresses', nargs='+', help="Space-separated list of source IP addresses. Use '*' to match all.")
         c.argument('destination_ports', nargs='+', help="Space-separated list of destination ports. Use '*' to match all.")
@@ -204,7 +204,7 @@ def load_arguments(self, _):
         c.argument('priority', type=int, help='Priority of the Firewall Policy Rule Collection Group')
 
     with self.argument_context('network firewall policy rule-collection-group collection') as c:
-        c.argument('rule_collection_group_name', options_list=['--rule-collection-group-name'], help='The name of the Firewall Policy Rule Collection Group.')
+        c.argument('rule_collection_group_name', options_list=['--rule-collection-group-name', '--rcg-name'], help='The name of the Firewall Policy Rule Collection Group.')
         c.argument('rule_collection_name', options_list=['--name', '-n'], help='The name of the collection in Firewall Policy Rule Collection Group.')
         c.argument('rule_priority', options_list=['--collection-priority'], type=int, help='The priority of the rule in Firewall Policy Rule Collection Group')
 
@@ -228,13 +228,13 @@ def load_arguments(self, _):
     with self.argument_context('network firewall policy rule-collection-group collection', arg_group='Application Rule') as c:
         c.argument('target_fqdns', nargs='+', help='Space-separated list of FQDNs for this rule.', validator=validate_rule_group_collection)
         c.argument('target_urls', nargs='+', help='Space-separated list of target urls for this rule', is_preview=True, min_api='2020-07-01')
-        c.argument('enable_tls_inspection', arg_type=get_three_state_flag(), help='Enable flag to terminate TLS connection for this rule', is_preview=True, min_api='2020-07-01')
+        c.argument('enable_tls_inspection', options_list=['--enable-tls-inspection', '--enable-tls-insp'], arg_type=get_three_state_flag(), help='Enable flag to terminate TLS connection for this rule', is_preview=True, min_api='2020-07-01')
         c.argument('fqdn_tags', nargs='+', help='Space-separated list of FQDN tags for this rule.', validator=validate_rule_group_collection)
         c.argument('protocols', nargs='+', validator=validate_application_rule_protocols, help='Space-separated list of protocols and port numbers to use, in PROTOCOL=PORT format. Valid protocols are Http, Https.')
         c.argument('web_categories', nargs='+', help='Space-separated list of web categories for this rule.')
 
     with self.argument_context('network firewall policy rule-collection-group collection', arg_group='Network Rule') as c:
-        c.argument('destination_ip_groups', nargs='+', validator=validate_ip_groups,
+        c.argument('destination_ip_groups', options_list=['--destination-ip-groups', '--dest-ipg'], nargs='+', validator=validate_ip_groups,
                    help='Space-separated list of name or resource id of destination IpGroups')
 
     with self.argument_context('network firewall policy rule-collection-group collection add-filter-collection') as c:
