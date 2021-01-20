@@ -77,7 +77,7 @@ def load_arguments(self, _):
 
     with self.argument_context('cosmosdb restorable-database-account list') as c:
         c.argument('location', options_list=['--location', '-l'], help="Location", required=False)
-        c.argument('account_name', options_list=['--accout-name', '-n'], help="Name of the Account", required=False, id_part=None)
+        c.argument('account_name', options_list=['--account-name', '-n'], help="Name of the Account", required=False, id_part=None)
 
     # Restorable Sql Databases
     with self.argument_context('cosmosdb sql restorable-database') as c:
