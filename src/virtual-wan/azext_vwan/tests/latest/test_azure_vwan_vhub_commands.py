@@ -496,6 +496,7 @@ class P2SVpnGatewayVpnClientTestScenario(ScenarioTest):
         self.cmd('network vwan create -g {rg} -n {vwan}')
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan} --address-prefix 10.0.1.0/24')
 
+        # when live test, run in Linux environment or annotate "self.escape = '\\'" in shlex.py in Powershell before run
         self.cmd('network vpn-server-config create -g {rg} -n {vpn_server_config} '
                  '--vpn-client-root-certs {vpn_server_cert} '
                  '--vpn-client-revoked-certs {vpn_server_pem}')
