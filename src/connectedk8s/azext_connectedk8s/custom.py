@@ -983,6 +983,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
                         "--output", "json", "--atomic"]
 
     proxy_enabled_added = False
+    infra_added = False
     for key, value in utils.flatten(existing_user_values).items():
         if value is not None:
             if key == "global.isProxyEnabled":
@@ -991,10 +992,17 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
                 if value and not proxy_enabled_added:
                     cmd_helm_upgrade.extend(["--set", "global.isProxyEnabled={}".format(True)])
                     proxy_enabled_added = True
+            if key == "global.kubernetesDistro" and value == "default":
+                value = "generic"
+            if key == "global.kubernetesInfra":
+                infra_added = True
             cmd_helm_upgrade.extend(["--set", "{}={}".format(key, value)])
 
     if not proxy_enabled_added:
         cmd_helm_upgrade.extend(["--set", "global.isProxyEnabled={}".format(False)])
+
+    if not infra_added:
+        cmd_helm_upgrade.extend(["--set", "global.kubernetesInfra={}".format("generic")])
 
     if values_file_provided:
         cmd_helm_upgrade.extend(["-f", values_file])
