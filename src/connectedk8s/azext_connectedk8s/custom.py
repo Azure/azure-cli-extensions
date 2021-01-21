@@ -994,7 +994,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
             cmd_helm_upgrade.extend(["--set", "{}={}".format(key, value)])
     
     if not proxy_enabled_added:
-        cmd_helm_upgrade.extend(["--set", "global.isProxyEnabled={}".format(True)])
+        cmd_helm_upgrade.extend(["--set", "global.isProxyEnabled={}".format(False)])
 
 
     if values_file_provided:
