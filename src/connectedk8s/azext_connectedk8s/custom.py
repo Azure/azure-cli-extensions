@@ -890,7 +890,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
                 telemetry.set_exception(exception='The provided cluster name and rg correspond to different cluster', fault_type=consts.Upgrade_RG_Cluster_Name_Conflict,
                                         summary='The provided cluster name and resource group name do not correspond to the kubernetes cluster being upgraded.')
                 raise CLIError("The provided cluster name and resource group name do not correspond to the kubernetes cluster you are trying to upgrade." +
-                               "Please upgrade the cluster using az upgrade agents -g <configmap_rg_name> -n <configmap_cluster_name>")
+                               "Please upgrade the cluster, with correct resource group and cluster name, using 'az upgrade agents -g <rg_name> -n <cluster_name>'.")
         else:
             telemetry.set_user_fault()
             telemetry.set_exception(exception='The corresponding CC resource does not exist', fault_type=consts.Corresponding_CC_Resource_Deleted_Fault,
