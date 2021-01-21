@@ -1,5 +1,14 @@
 Release History
 ===============
+2.1.2
+-----
+* Add optional '--deployment' to 'az spring-cloud app logs' command
+
+2.1.1
+-----
+* Remove preview parameter '--enable-java-agent' from 'az spring-cloud update'.
+* Fix warning message of '--disable-distributed-tracing'.
+
 2.1.0
 -----
 * Support Java In-Process Agent.
