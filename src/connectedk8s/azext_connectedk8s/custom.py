@@ -896,8 +896,8 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
             telemetry.set_exception(exception='The corresponding CC resource does not exist', fault_type=consts.Corresponding_CC_Resource_Deleted_Fault,
                                     summary='CC resource corresponding to this cluster has been deleted by the customer')
             raise CLIError("There exist no ConnectedCluster resource corresponding to this kubernetes Cluster." +
-                           "Please cleanup the helm release first using 'az connectedk8s delete -n <> -g <>' and re-onboard the cluster using " +
-                           "'az connectedk8s connect -n <> -g <>'")
+                           "Please cleanup the helm release first using 'az connectedk8s delete -n <connected-cluster-name> -g <resource-group-name>' and re-onboard the cluster using " +
+                           "'az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>'")
 
         auto_update_enabled = configmap.data["AZURE_ARC_AUTOUPDATE"]
         if auto_update_enabled == "true":
@@ -982,23 +982,23 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "--output", "json", "--atomic"]
 
-    proxy_enabled_added = False
+    proxy_enabled_param_added = False
     infra_added = False
     for key, value in utils.flatten(existing_user_values).items():
         if value is not None:
             if key == "global.isProxyEnabled":
-                proxy_enabled_added = True
+                proxy_enabled_param_added = True
             if (key == "global.httpProxy" or key == "global.httpsProxy" or key == "global.noProxy"):
-                if value and not proxy_enabled_added:
+                if value and not proxy_enabled_param_added:
                     cmd_helm_upgrade.extend(["--set", "global.isProxyEnabled={}".format(True)])
-                    proxy_enabled_added = True
+                    proxy_enabled_param_added = True
             if key == "global.kubernetesDistro" and value == "default":
                 value = "generic"
             if key == "global.kubernetesInfra":
                 infra_added = True
             cmd_helm_upgrade.extend(["--set", "{}={}".format(key, value)])
 
-    if not proxy_enabled_added:
+    if not proxy_enabled_param_added:
         cmd_helm_upgrade.extend(["--set", "global.isProxyEnabled={}".format(False)])
 
     if not infra_added:
