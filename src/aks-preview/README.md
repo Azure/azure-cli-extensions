@@ -169,3 +169,26 @@ az aks create \
     -n MyManagedCluster \
     --enable-managed-identity
 ```
+
+#### Create aks cluster whose cluster resource group will be managed by a user assigned managed identity (instead of a service principal)
+*Examples:*
+```
+az aks create \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --enable-managed-identity \
+    --assign-identity <EXISTING_USER_ASSIGNED_IDENTITY_RESOURCE_ID>
+```
+
+#### Create or update the tags of the managed cluster
+```
+az aks create \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --tags "foo=bar" "baz=qux"
+
+az aks update \
+    -g MyResourceGroup \
+    -n MyManagedCluster \
+    --tags "foo=bar" "baz=qux"
+```

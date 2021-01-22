@@ -146,7 +146,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                      '--assignee-object-id {} '
                      '--assignee-principal-type ServicePrincipal '
                      '--scope {}'.format(accountPrincipalId, storage_account_json['id']))
-            time.sleep(5)
+            time.sleep(10)
 
         self.cmd('az storage container create '
                  '--account-name {ProviderStorageAccount} '
@@ -369,7 +369,7 @@ class DataShareManagementClientScenarioTest(ScenarioTest):
                      '--assignee-principal-type ServicePrincipal '
                      '--scope "{StorageAccountId2}" '
                      '--subscription "{ConsumerSubscription}"')
-            time.sleep(5)
+            time.sleep(10)
 
         datasetMappingContent = {"data_set_id": "{}".format(sourceDatasetId),
                                  "container_name": "{}".format(self.kwargs.get('ConsumerContainer', '')),

@@ -10,18 +10,22 @@
 
 from azure.cli.core import AzCommandsLoader
 from azext_kusto.generated._help import helps  # pylint: disable=unused-import
+try:
+    from azext_kusto.manual._help import helps  # pylint: disable=reimported
+except ImportError:
+    pass
 
 
 class KustoManagementClientCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_kusto.generated._client_factory import cf_kusto
+        from azext_kusto.generated._client_factory import cf_kusto_cl
         kusto_custom = CliCommandType(
             operations_tmpl='azext_kusto.custom#{}',
-            client_factory=cf_kusto)
-        super(KustoManagementClientCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                                  custom_command_type=kusto_custom)
+            client_factory=cf_kusto_cl)
+        parent = super(KustoManagementClientCommandsLoader, self)
+        parent.__init__(cli_ctx=cli_ctx, custom_command_type=kusto_custom)
 
     def load_command_table(self, args):
         from azext_kusto.generated.commands import load_command_table

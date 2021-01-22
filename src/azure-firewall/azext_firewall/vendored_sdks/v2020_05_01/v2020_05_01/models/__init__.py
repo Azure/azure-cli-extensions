@@ -39,6 +39,10 @@ try:
     from ._models_py3 import ApplicationGatewayIPConfiguration
     from ._models_py3 import ApplicationGatewayOnDemandProbe
     from ._models_py3 import ApplicationGatewayPathRule
+    from ._models_py3 import ApplicationGatewayPrivateEndpointConnection
+    from ._models_py3 import ApplicationGatewayPrivateLinkConfiguration
+    from ._models_py3 import ApplicationGatewayPrivateLinkIpConfiguration
+    from ._models_py3 import ApplicationGatewayPrivateLinkResource
     from ._models_py3 import ApplicationGatewayProbe
     from ._models_py3 import ApplicationGatewayProbeHealthResponseMatch
     from ._models_py3 import ApplicationGatewayRedirectConfiguration
@@ -458,6 +462,10 @@ except (SyntaxError, ImportError):
     from ._models import ApplicationGatewayIPConfiguration
     from ._models import ApplicationGatewayOnDemandProbe
     from ._models import ApplicationGatewayPathRule
+    from ._models import ApplicationGatewayPrivateEndpointConnection
+    from ._models import ApplicationGatewayPrivateLinkConfiguration
+    from ._models import ApplicationGatewayPrivateLinkIpConfiguration
+    from ._models import ApplicationGatewayPrivateLinkResource
     from ._models import ApplicationGatewayProbe
     from ._models import ApplicationGatewayProbeHealthResponseMatch
     from ._models import ApplicationGatewayRedirectConfiguration
@@ -848,6 +856,8 @@ except (SyntaxError, ImportError):
     from ._models import WebApplicationFirewallCustomRule
     from ._models import WebApplicationFirewallPolicy
 from ._paged_models import ApplicationGatewayPaged
+from ._paged_models import ApplicationGatewayPrivateEndpointConnectionPaged
+from ._paged_models import ApplicationGatewayPrivateLinkResourcePaged
 from ._paged_models import ApplicationGatewaySslPredefinedPolicyPaged
 from ._paged_models import ApplicationSecurityGroupPaged
 from ._paged_models import AutoApprovedPrivateLinkServicePaged
@@ -951,7 +961,6 @@ from ._network_management_client_enums import (
     RouteNextHopType,
     PublicIPAddressSkuName,
     DdosSettingsProtectionCoverage,
-    VirtualNetworkPeeringState,
     TransportProtocol,
     ApplicationGatewayCookieBasedAffinity,
     ApplicationGatewayBackendHealthServerHealth,
@@ -1034,6 +1043,7 @@ from ._network_management_client_enums import (
     PublicIPPrefixSkuName,
     SecurityProviderName,
     SecurityPartnerProviderConnectionStatus,
+    VirtualNetworkPeeringState,
     VirtualNetworkGatewayType,
     VpnType,
     VpnGatewayGeneration,
@@ -1103,6 +1113,10 @@ __all__ = [
     'ApplicationGatewayIPConfiguration',
     'ApplicationGatewayOnDemandProbe',
     'ApplicationGatewayPathRule',
+    'ApplicationGatewayPrivateEndpointConnection',
+    'ApplicationGatewayPrivateLinkConfiguration',
+    'ApplicationGatewayPrivateLinkIpConfiguration',
+    'ApplicationGatewayPrivateLinkResource',
     'ApplicationGatewayProbe',
     'ApplicationGatewayProbeHealthResponseMatch',
     'ApplicationGatewayRedirectConfiguration',
@@ -1494,6 +1508,8 @@ __all__ = [
     'WebApplicationFirewallPolicy',
     'ApplicationGatewayPaged',
     'ApplicationGatewaySslPredefinedPolicyPaged',
+    'ApplicationGatewayPrivateLinkResourcePaged',
+    'ApplicationGatewayPrivateEndpointConnectionPaged',
     'ApplicationSecurityGroupPaged',
     'AvailableDelegationPaged',
     'AvailableServiceAliasPaged',
@@ -1595,7 +1611,6 @@ __all__ = [
     'RouteNextHopType',
     'PublicIPAddressSkuName',
     'DdosSettingsProtectionCoverage',
-    'VirtualNetworkPeeringState',
     'TransportProtocol',
     'ApplicationGatewayCookieBasedAffinity',
     'ApplicationGatewayBackendHealthServerHealth',
@@ -1678,6 +1693,7 @@ __all__ = [
     'PublicIPPrefixSkuName',
     'SecurityProviderName',
     'SecurityPartnerProviderConnectionStatus',
+    'VirtualNetworkPeeringState',
     'VirtualNetworkGatewayType',
     'VpnType',
     'VpnGatewayGeneration',

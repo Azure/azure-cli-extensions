@@ -78,4 +78,4 @@ def load_command_table(self, _):
         client_factory=cf_subscriptions)
     with self.command_group('stream-analytics quota', stream_analytics_subscriptions,
                             client_factory=cf_subscriptions) as g:
-        g.custom_command('show', 'show_stream_analytics_quotas')
+        g.custom_show_command('show', 'show_stream_analytics_quotas')

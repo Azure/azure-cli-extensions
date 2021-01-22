@@ -37,6 +37,18 @@ helps['network vhub delete'] = """
     short-summary: Delete a virtual hub.
 """
 
+helps['network vhub get-effective-routes'] = """
+    type: command
+    short-summary: Get the effective routes configured for the Virtual Hub resource or the specified resource.
+    examples:
+    - name: Get the effective routes configured for route table in the virtual hub.
+      text: |
+          az network vhub get-effective-routes --resource-type RouteTable --resource-id /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/MyRouteTable -g MyRG -n MyHub
+    - name: Get the effective routes configured for P2S connection in the virtual hub.
+      text: |
+          az network vhub get-effective-routes --resource-type P2SConnection --resource-id /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/p2sVpnGateways/MyGateway/p2sConnectionConfigurations/MyConnection -g MyRG -n MyHub
+"""
+
 helps['network vhub connection'] = """
     type: group
     short-summary: Manage virtual hub VNet connections.
@@ -45,21 +57,45 @@ helps['network vhub connection'] = """
 helps['network vhub connection create'] = """
     type: command
     short-summary: Create a virtual hub VNet connection.
+    examples:
+    - name: Create a virtual hub VNet connection without routing configuration.
+      text: |
+          az network vhub connection create -n MyConnection --vhub-name MyHub -g MyRG --remote-vnet MyVNet
+    - name: Create a virtual hub VNet connection with routing configuration.
+      text: |
+          az network vhub connection create -n MyConnection --vhub-name MyHub -g MyRG --remote-vnet MyVNet --associated-route-table /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/RouteTable1 --propagated-route-tables /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/RouteTable1 /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/RouteTable2 --labels label1 label2 --route-name route1 --next-hop 70.0.0.2 --address-prefixes 10.80.0.0/16 10.90.0.0/16
 """
 
 helps['network vhub connection list'] = """
     type: command
     short-summary: List virtual hub VNet connections.
+    examples:
+    - name: List VNet connections in a given virtual hub.
+      text: |
+          az network vhub connection list --vhub-name MyHub -g MyRG
 """
 
 helps['network vhub connection show'] = """
     type: command
     short-summary: Get the details of a virtual hub VNet connection.
+    examples:
+    - name: Get the details of a virtual hub VNet connection.
+      text: |
+          az network vhub connection show -n MyConnection --vhub-name MyHub -g MyRG
 """
 
 helps['network vhub connection delete'] = """
     type: command
     short-summary: Delete a virtual hub VNet connection.
+    examples:
+    - name: Delete a virtual hub VNet connection.
+      text: |
+          az network vhub connection delete -n MyConnection --vhub-name MyHub -g MyRG
+"""
+
+helps['network vhub connection wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of virtual hub VNet connection is met.
 """
 
 helps['network vhub route'] = """
@@ -80,6 +116,11 @@ helps['network vhub route list'] = """
 helps['network vhub route remove'] = """
     type: command
     short-summary: Remove a route from the virtual hub route table.
+"""
+
+helps['network vhub route reset'] = """
+    type: command
+    short-summary: Reset virtual hub route when the route state is failed.
 """
 
 helps['network vhub route-table'] = """
@@ -204,77 +245,98 @@ helps['network vwan delete'] = """
 # region VpnGateway
 helps['network vpn-gateway'] = """
     type: group
-    short-summary: Manage VPN gateways.
+    short-summary: Manage site-to-site VPN gateways.
 """
 
 helps['network vpn-gateway create'] = """
     type: command
-    short-summary: Create a VPN gateway.
+    short-summary: Create a site-to-site VPN gateway.
 """
 
 helps['network vpn-gateway list'] = """
     type: command
-    short-summary: List VPN gateways.
+    short-summary: List site-to-site VPN gateways.
 """
 
 helps['network vpn-gateway show'] = """
     type: command
-    short-summary: Get the details of a VPN gateway.
+    short-summary: Get the details of a site-to-site VPN gateway.
 """
 
 helps['network vpn-gateway update'] = """
     type: command
-    short-summary: Update settings of a VPN gateway.
+    short-summary: Update settings of a site-to-site VPN gateway.
 """
 
 helps['network vpn-gateway delete'] = """
     type: command
-    short-summary: Delete a VPN gateway.
+    short-summary: Delete a site-to-site VPN gateway.
 """
 
 helps['network vpn-gateway connection'] = """
     type: group
-    short-summary: Manage VPN gateway connections.
+    short-summary: Manage site-to-site VPN gateway connections.
 """
 
 helps['network vpn-gateway connection create'] = """
     type: command
-    short-summary: Create a VPN gateway connection.
+    short-summary: Create a site-to-site VPN gateway connection.
+    examples:
+      - name: Create a site-to-site VPN gateway connection
+        text: |
+            az network vpn-gateway connection create -g MyRG -n MyConnection --gateway-name MyGateway --remote-vpn-site /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/vpnSites/MyVPNSite --associated-route-table /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/MyRouteTable1 --propagated-route-tables /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/MyRouteTable1 /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/MyRouteTable2 --labels label1 label2
 """
 
 helps['network vpn-gateway connection list'] = """
     type: command
-    short-summary: List VPN gateway connections.
+    short-summary: List site-to-site VPN gateway connections.
+    examples:
+      - name: List all connections for a given site-to-site VPN gateway
+        text: |
+            az network vpn-gateway connection list -g MyRG --gateway-name MyGateway
 """
 
 helps['network vpn-gateway connection show'] = """
     type: command
-    short-summary: Get the details of a VPN gateway connection.
+    short-summary: Get the details of a site-to-site VPN gateway connection.
+    examples:
+      - name: Get the details of a site-to-site VPN gateway connection
+        text: |
+            az network vpn-gateway connection show -g MyRG -n MyConnection --gateway-name MyGateway
 """
 
 helps['network vpn-gateway connection delete'] = """
     type: command
-    short-summary: Delete a VPN gateway connection.
+    short-summary: Delete a site-to-site VPN gateway connection.
+    examples:
+      - name: Delete a site-to-site VPN gateway connection
+        text: |
+            az network vpn-gateway connection delete -g MyRG -n MyConnection --gateway-name MyGateway
+"""
+
+helps['network vpn-gateway connection wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the site-to-site VPN gateway connection is met.
 """
 
 helps['network vpn-gateway connection ipsec-policy'] = """
     type: group
-    short-summary: Manage VPN gateway connection IPSec policies.
+    short-summary: Manage site-to-site VPN gateway connection IPSec policies.
 """
 
 helps['network vpn-gateway connection ipsec-policy add'] = """
     type: command
-    short-summary: Add an IPSec policy to a VPN gateway connection.
+    short-summary: Add an IPSec policy to a site-to-site VPN gateway connection.
 """
 
 helps['network vpn-gateway connection ipsec-policy list'] = """
     type: command
-    short-summary: List VPN gateway connection IPSec policies.
+    short-summary: List site-to-site VPN gateway connection IPSec policies.
 """
 
 helps['network vpn-gateway connection ipsec-policy remove'] = """
     type: command
-    short-summary: Remove an IPSec policy from a VPN gateway connection.
+    short-summary: Remove an IPSec policy from a site-to-site VPN gateway connection.
 """
 # endregion
 
@@ -312,5 +374,152 @@ helps['network vpn-site delete'] = """
 helps['network vpn-site download'] = """
     type: command
     short-summary: Provide a SAS-URL to download the configuration for a VPN site.
+"""
+# endregion
+
+# region VpnServerConfig
+helps['network vpn-server-config'] = """
+    type: group
+    short-summary: Manage VPN server configuration.
+"""
+
+helps['network vpn-server-config create'] = """
+    type: command
+    short-summary: Create a VPN server configuration.
+    examples:
+      - name: Create a VPN server configuration with VPN auth type
+        text: |
+            az network vpn-server-config create -n MyVPNServerConfig -g MyRG --vpn-client-root-certs "ApplicationGatewayAuthCert.cer" --vpn-client-revoked-certs "ApplicationGatewayAuthCert.pem"
+"""
+
+helps['network vpn-server-config list'] = """
+    type: command
+    short-summary: List all VPN server configuration.
+"""
+
+helps['network vpn-server-config show'] = """
+    type: command
+    short-summary: Show the details of a VPN server configuration.
+"""
+
+helps['network vpn-server-config set'] = """
+    type: command
+    short-summary: Set settings of a VPN server configuration.
+    examples:
+      - name: Set a VPN server configuration with Radius auth type
+        text: |
+            az network vpn-server-config set -n MyVPNServerConfig -g MyRG --radius-client-root-certs "ApplicationGatewayAuthCert.cer" --radius-server-root-certs "ApplicationGatewayAuthCert.pem" --radius-servers address=test1 secret=clitest score=10 --radius-servers address=test2 secret=clitest score=10
+"""
+
+helps['network vpn-server-config delete'] = """
+    type: command
+    short-summary: Delete a VPN server configuration.
+"""
+
+helps['network vpn-server-config wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the VPN server configuration is met.
+"""
+
+helps['network vpn-server-config ipsec-policy'] = """
+    type: group
+    short-summary: Manage VPN server configuration IPSec policies.
+"""
+
+helps['network vpn-server-config ipsec-policy add'] = """
+    type: command
+    short-summary: Add an IPSec policy to a VPN server configuration.
+"""
+
+helps['network vpn-server-config ipsec-policy list'] = """
+    type: command
+    short-summary: List VPN server configuration IPSec policies.
+"""
+
+helps['network vpn-server-config ipsec-policy remove'] = """
+    type: command
+    short-summary: Remove an IPSec policy from a VPN server configuration.
+"""
+
+helps['network vpn-server-config ipsec-policy wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the IPSec policy of a VPN server configuration is met.
+"""
+# endregion
+
+# region VpnServerConfig
+helps['network p2s-vpn-gateway'] = """
+    type: group
+    short-summary: Manage point-to-site VPN gateway.
+"""
+
+helps['network p2s-vpn-gateway create'] = """
+    type: command
+    short-summary: Create a point-to-site VPN gateway.
+    examples:
+      - name: Create a point-to-site VPN gateway.
+        text: |
+            az network p2s-vpn-gateway create -g MyRG -n MyP2SVPNGateway --scale-unit 2 --vhub MyVhub --vpn-server-config MyVPNServerConfig --address-space 10.0.0.0/24 11.0.0.0/24
+      - name: Create a point-to-site VPN gateway with routing configuration.
+        text: |
+            az network p2s-vpn-gateway create -g MyRG -n MyP2SVPNGateway --scale-unit 2 --vhub MyVhub --vpn-server-config MyVPNServerConfig --address-space 10.0.0.0/24 11.0.0.0/24 --associated-route-table /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/MyRouteTable1 --propagated-route-tables /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/MyRouteTable1 /subscriptions/MySub/resourceGroups/MyRG/providers/Microsoft.Network/virtualHubs/MyHub/hubRouteTables/MyRouteTable2 --labels label1 label2
+"""
+
+helps['network p2s-vpn-gateway list'] = """
+    type: command
+    short-summary: List all point-to-site VPN gateway.
+"""
+
+helps['network p2s-vpn-gateway show'] = """
+    type: command
+    short-summary: Show the details of a point-to-site VPN gateway.
+"""
+
+helps['network p2s-vpn-gateway update'] = """
+    type: command
+    short-summary: Update settings of a point-to-site VPN gateway.
+"""
+
+helps['network p2s-vpn-gateway delete'] = """
+    type: command
+    short-summary: Delete a point-to-site VPN gateway.
+"""
+
+helps['network p2s-vpn-gateway wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the point-to-site VPN gateway is met.
+"""
+
+helps['network p2s-vpn-gateway connection'] = """
+    type: group
+    short-summary: Manage point-to-site VPN gateway connections.
+"""
+
+helps['network p2s-vpn-gateway connection list'] = """
+    type: command
+    short-summary: List all connections for a given point-to-site VPN gateway.
+    examples:
+      - name: List all connections for a given point-to-site VPN gateway
+        text: |
+            az network p2s-vpn-gateway connection list -g MyRG --gateway-name MyP2SVPNGateway
+"""
+
+helps['network p2s-vpn-gateway connection show'] = """
+    type: command
+    short-summary: Show the details of a point-to-site VPN gateway connection.
+    examples:
+      - name: Show the details of a point-to-site VPN gateway connection
+        text: |
+            az network p2s-vpn-gateway connection show -g MyRG -n connection --gateway-name MyP2SVPNGateway
+"""
+
+helps['network p2s-vpn-gateway vpn-client'] = """
+    type: group
+    short-summary: Download a VPN client configuration required to connect to Azure via point-to-site
+"""
+
+helps['network p2s-vpn-gateway vpn-client generate'] = """
+    type: command
+    short-summary: Generate VPN profile for P2S client of the P2SVpnGateway in the specified resource group
 """
 # endregion

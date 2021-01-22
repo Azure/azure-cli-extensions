@@ -13,11 +13,12 @@ from msrest.service_client import SDKClient
 from msrest import Serializer, Deserializer
 
 from ._configuration import FrontDoorManagementClientConfiguration
-from .operations import FrontDoorManagementClientOperationsMixin
 from .operations import NetworkExperimentProfilesOperations
 from .operations import PreconfiguredEndpointsOperations
 from .operations import ExperimentsOperations
 from .operations import ReportsOperations
+from .operations import FrontDoorNameAvailabilityOperations
+from .operations import FrontDoorNameAvailabilityWithSubscriptionOperations
 from .operations import FrontDoorsOperations
 from .operations import FrontendEndpointsOperations
 from .operations import EndpointsOperations
@@ -27,7 +28,7 @@ from .operations import ManagedRuleSetsOperations
 from . import models
 
 
-class FrontDoorManagementClient(FrontDoorManagementClientOperationsMixin, SDKClient):
+class FrontDoorManagementClient(SDKClient):
     """FrontDoor Client
 
     :ivar config: Configuration for client.
@@ -41,6 +42,10 @@ class FrontDoorManagementClient(FrontDoorManagementClientOperationsMixin, SDKCli
     :vartype experiments: azure.mgmt.frontdoor.operations.ExperimentsOperations
     :ivar reports: Reports operations
     :vartype reports: azure.mgmt.frontdoor.operations.ReportsOperations
+    :ivar front_door_name_availability: FrontDoorNameAvailability operations
+    :vartype front_door_name_availability: azure.mgmt.frontdoor.operations.FrontDoorNameAvailabilityOperations
+    :ivar front_door_name_availability_with_subscription: FrontDoorNameAvailabilityWithSubscription operations
+    :vartype front_door_name_availability_with_subscription: azure.mgmt.frontdoor.operations.FrontDoorNameAvailabilityWithSubscriptionOperations
     :ivar front_doors: FrontDoors operations
     :vartype front_doors: azure.mgmt.frontdoor.operations.FrontDoorsOperations
     :ivar frontend_endpoints: FrontendEndpoints operations
@@ -81,6 +86,10 @@ class FrontDoorManagementClient(FrontDoorManagementClientOperationsMixin, SDKCli
         self.experiments = ExperimentsOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.reports = ReportsOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.front_door_name_availability = FrontDoorNameAvailabilityOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.front_door_name_availability_with_subscription = FrontDoorNameAvailabilityWithSubscriptionOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.front_doors = FrontDoorsOperations(
             self._client, self.config, self._serialize, self._deserialize)

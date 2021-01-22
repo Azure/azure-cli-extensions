@@ -210,7 +210,7 @@ def update_blueprint_resource_group(cmd,
     if description is not None:
         resource_group['description'] = description  # str
     if depends_on is not None:
-        resource_group['depends_on'] = depends_on
+        resource_group['depends_on'] = _process_depends_on_for_update(depends_on)
     if tags is not None:
         resource_group['tags'] = tags
 
@@ -298,7 +298,7 @@ def update_blueprint_artifact_policy(cmd,
     if description is not None:
         body['description'] = description
     if depends_on is not None:
-        body['depends_on'] = depends_on
+        body['depends_on'] = _process_depends_on_for_update(depends_on)
 
     return client.create_or_update(scope=scope,
                                    blueprint_name=blueprint_name,
@@ -360,7 +360,7 @@ def update_blueprint_artifact_role(cmd,
     if description is not None:
         body['description'] = description
     if depends_on is not None:
-        body['depends_on'] = depends_on
+        body['depends_on'] = _process_depends_on_for_update(depends_on)
 
     return client.create_or_update(scope=scope,
                                    blueprint_name=blueprint_name,
@@ -424,7 +424,7 @@ def update_blueprint_artifact_template(cmd,
     if description is not None:
         body['description'] = description
     if depends_on is not None:
-        body['depends_on'] = depends_on
+        body['depends_on'] = _process_depends_on_for_update(depends_on)
 
     return client.create_or_update(scope=scope,
                                    blueprint_name=blueprint_name,
@@ -442,6 +442,7 @@ def publish_blueprint(cmd,
                       change_notes=None):
     body = {}
     body['change_notes'] = change_notes  # str
+    body['blueprint_name'] = blueprint_name
     return client.create(scope=scope,
                          blueprint_name=blueprint_name,
                          version_id=version_id,
@@ -479,9 +480,14 @@ def list_blueprint_version_artifact(cmd, client, blueprint_name,
                        version_id=version_id)
 
 
-def _del_artifact_name(rg):
-    del rg['artifact_name']
-    return rg
+def resource_group_list_2_dict(resource_groups):
+    result = {}
+    if resource_groups is not None:
+        for rg in resource_groups:
+            key = rg['artifact_name']
+            del rg['artifact_name']
+            result[key] = rg
+    return result
 
 
 def create_blueprint_assignment(cmd,
@@ -493,9 +499,7 @@ def create_blueprint_assignment(cmd,
                                 scope=None,
                                 location=None,
                                 resource_groups=None,
-                                identity_principal_id=None,
-                                identity_tenant_id=None,
-                                identity_user_assigned_identities=None,
+                                user_assigned_identity=None,
                                 display_name=None,
                                 description=None,
                                 blueprint_id=None,
@@ -513,24 +517,23 @@ def create_blueprint_assignment(cmd,
     body = {}
     body['location'] = location  # str
     body.setdefault('identity', {})['type'] = identity_type  # str
-    body.setdefault('identity',
-                    {})['principal_id'] = identity_principal_id  # str
-    body.setdefault('identity', {})['tenant_id'] = identity_tenant_id  # str
-    body.setdefault(
-        'identity', {}
-    )['user_assigned_identities'] = identity_user_assigned_identities  # dictionary
+    if user_assigned_identity is not None:
+        body.setdefault(
+            'identity', {}
+        )['user_assigned_identities'] = {user_assigned_identity: {}}  # dictionary
     body['display_name'] = display_name  # str
     body['description'] = description  # str
     body['blueprint_id'] = blueprint_id  # str
     body['parameters'] = parameters  # dictionary
-    body['resource_groups'] = {rg['artifact_name']: _del_artifact_name(rg) for rg in resource_groups} if resource_groups is not None else {}
+    body['resource_groups'] = resource_group_list_2_dict(resource_groups)  # dictionary
+
     body.setdefault('locks', {})['mode'] = locks_mode  # str
     body.setdefault('locks', {})['excluded_principals'] = locks_excluded_principals
 
     # Assign owner permission to Blueprint SPN only if assignment is being done using
     # system assigned identity.
     # This is a no-op for user assigned identity.
-    if identity_type != ManagedServiceIdentityType.user_assigned.value:
+    if identity_type == ManagedServiceIdentityType.system_assigned.value:
         result = client.who_is_blueprint(scope=scope, assignment_name=assignment_name)
         if result is None:
             raise CLIError("Blueprint service failed to return the SPN for assignment:{}".format(assignment_name))
@@ -555,9 +558,7 @@ def update_blueprint_assignment(cmd,
                                 scope=None,
                                 location=None,
                                 identity_type=None,
-                                identity_principal_id=None,
-                                identity_tenant_id=None,
-                                identity_user_assigned_identities=None,
+                                user_assigned_identity=None,
                                 display_name=None,
                                 description=None,
                                 blueprint_id=None,
@@ -571,17 +572,14 @@ def update_blueprint_assignment(cmd,
     if location is not None:
         body['location'] = location  # str
     if identity_type is not None:
-        body.setdefault('identity', {})['type'] = identity_type  # str
-    if identity_principal_id is not None:
-        body.setdefault('identity',
-                        {})['principal_id'] = identity_principal_id  # str
-    if identity_tenant_id is not None:
-        body.setdefault('identity',
-                        {})['tenant_id'] = identity_tenant_id  # str
-    if identity_user_assigned_identities is not None:
-        body.setdefault(
-            'identity', {}
-        )['user_assigned_identities'] = identity_user_assigned_identities  # dictionary
+        body['identity'] = {}
+        body['identity']['type'] = identity_type  # str
+    if user_assigned_identity is not None:
+        body['identity']['user_assigned_identities'] = {user_assigned_identity: {}}  # dictionary
+    elif 'user_assigned_identities' in body['identity']:
+        for identity in body['identity']['user_assigned_identities']:
+            body['identity']['user_assigned_identities'][identity] = {}  # service only accept empty json of a user-assigned identity in request
+
     if display_name is not None:
         body['display_name'] = display_name  # str
     if description is not None:
@@ -591,7 +589,7 @@ def update_blueprint_assignment(cmd,
     if parameters is not None:
         body['parameters'] = parameters  # dictionary
     if resource_groups is not None:
-        body['resource_groups'] = {rg['artifact_name']: _del_artifact_name(rg) for rg in resource_groups}  # dictionary
+        body['resource_groups'] = resource_group_list_2_dict(resource_groups)  # dictionary
     if locks_mode is not None:
         body.setdefault('locks', {})['mode'] = locks_mode  # str
     if locks_excluded_principals is not None:
@@ -600,7 +598,7 @@ def update_blueprint_assignment(cmd,
     # Assign owner permission to Blueprint SPN only if assignment is being done using
     # system assigned identity.
     # This is a no-op for user assigned identity.
-    if identity_type != ManagedServiceIdentityType.user_assigned.value:
+    if identity_type == ManagedServiceIdentityType.system_assigned.value:
         result = client.who_is_blueprint(scope=scope, assignment_name=assignment_name)
         if result is None:
             raise CLIError("Blueprint service failed to return the SPN for assignment:{}".format(assignment_name))
@@ -629,3 +627,11 @@ def wait_for_blueprint_assignment(cmd, client, assignment_name, management_group
 
 def who_is_blueprint_blueprint_assignment(cmd, client, assignment_name, management_group=None, subscription=None, scope=None):
     return client.who_is_blueprint(scope=scope, assignment_name=assignment_name)
+
+
+def _process_depends_on_for_update(depends_on):
+    if not depends_on:  # [] for case: --depends-on
+        return None
+    if not any(depends_on):  # [''] for case: --depends-on= /--depends-on ""
+        return None
+    return depends_on

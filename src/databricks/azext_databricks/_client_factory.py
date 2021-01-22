@@ -16,3 +16,7 @@ def cf_workspaces(cli_ctx, *_):
 
 def cf_operations(cli_ctx, *_):
     return cf_databricks(cli_ctx).operations
+
+
+def cf_vnet_peering(cli_ctx, *_):
+    return cf_databricks(cli_ctx).vnet_peering

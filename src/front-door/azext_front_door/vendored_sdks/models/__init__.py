@@ -63,8 +63,10 @@ try:
     from ._models_py3 import Resource
     from ._models_py3 import RouteConfiguration
     from ._models_py3 import RoutingRule
+    from ._models_py3 import RoutingRuleLink
     from ._models_py3 import RoutingRuleListResult
     from ._models_py3 import RoutingRuleUpdateParameters
+    from ._models_py3 import RoutingRuleUpdateParametersWebApplicationFirewallPolicyLink
     from ._models_py3 import RulesEngine
     from ._models_py3 import RulesEngineAction
     from ._models_py3 import RulesEngineMatchCondition
@@ -131,8 +133,10 @@ except (SyntaxError, ImportError):
     from ._models import Resource
     from ._models import RouteConfiguration
     from ._models import RoutingRule
+    from ._models import RoutingRuleLink
     from ._models import RoutingRuleListResult
     from ._models import RoutingRuleUpdateParameters
+    from ._models import RoutingRuleUpdateParametersWebApplicationFirewallPolicyLink
     from ._models import RulesEngine
     from ._models import RulesEngineAction
     from ._models import RulesEngineMatchCondition
@@ -257,8 +261,10 @@ __all__ = [
     'Resource',
     'RouteConfiguration',
     'RoutingRule',
+    'RoutingRuleLink',
     'RoutingRuleListResult',
     'RoutingRuleUpdateParameters',
+    'RoutingRuleUpdateParametersWebApplicationFirewallPolicyLink',
     'RulesEngine',
     'RulesEngineAction',
     'RulesEngineMatchCondition',

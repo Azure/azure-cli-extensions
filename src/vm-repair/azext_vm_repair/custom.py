@@ -4,10 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long, too-many-locals, too-many-statements, broad-except, too-many-branches
-import json
 import timeit
-import os
-import pkgutil
 import traceback
 import requests
 from knack.log import get_logger
@@ -33,6 +30,7 @@ from .repair_utils import (
     _check_script_succeeded,
     _fetch_disk_info,
     _unlock_singlepass_encrypted_disk,
+    _invoke_run_command
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
 logger = get_logger(__name__)
@@ -42,7 +40,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
-
     # Main command calling block
     try:
         # Fetch source VM data
@@ -71,6 +68,11 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             raise SkuNotAvailableError('Failed to find compatible VM size for source VM\'s OS disk within given region and subscription.')
         create_repair_vm_command += ' --size {sku}'.format(sku=sku)
 
+        # Set availability zone for vm
+        if source_vm.zones:
+            zone = source_vm.zones[0]
+            create_repair_vm_command += ' --zone {zone}'.format(zone=zone)
+
         # Create new resource group
         create_resource_group_command = 'az group create -l {loc} -n {group_name}' \
                                         .format(loc=source_vm.location, group_name=repair_group_name)
@@ -88,25 +90,29 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             # Only add hyperV variable when available
             if hyperV_generation:
                 copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation)
-            # Validate create vm create command to validate parameters before runnning copy disk command
-            validate_create_vm_command = create_repair_vm_command + ' --validate'
-
-            logger.info('Validating VM template before continuing...')
-            _call_az_command(validate_create_vm_command, secure_params=[repair_password, repair_username])
+            # Set availability zone for vm when available
+            if source_vm.zones:
+                zone = source_vm.zones[0]
+                copy_disk_command += ' --zone {zone}'.format(zone=zone)
+            # Copy OS Disk
             logger.info('Copying OS disk of source VM...')
             copy_disk_id = _call_az_command(copy_disk_command).strip('\n')
-
-            attach_disk_command = 'az vm disk attach -g {g} --vm-name {repair} --name {id}' \
-                                  .format(g=repair_group_name, repair=repair_vm_name, id=copy_disk_id)
-
+            # Add copied OS Disk to VM creat command so that the VM is created with the disk attached
+            create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
+            # Validate create vm create command to validate parameters before runnning copy disk command
+            validate_create_vm_command = create_repair_vm_command + ' --validate'
+            logger.info('Validating VM template before continuing...')
+            _call_az_command(validate_create_vm_command, secure_params=[repair_password, repair_username])
+            # Create repair VM
             logger.info('Creating repair VM...')
             _call_az_command(create_repair_vm_command, secure_params=[repair_password, repair_username])
-            logger.info('Attaching copied disk to repair VM...')
-            _call_az_command(attach_disk_command)
 
             # Handle encrypted VM cases
             if unlock_encrypted_vm:
-                _unlock_singlepass_encrypted_disk(source_vm, is_linux, repair_group_name, repair_vm_name)
+                stdout, stderr = _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux)
+                logger.debug('Unlock script STDOUT:\n%s', stdout)
+                if stderr:
+                    logger.warning('Encryption unlock script error was generated:\n%s', stderr)
 
         # UNMANAGED DISK
         else:
@@ -301,47 +307,36 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair run')
 
-    REPAIR_DIR_NAME = 'azext_vm_repair'
-    SCRIPTS_DIR_NAME = 'scripts'
     LINUX_RUN_SCRIPT_NAME = 'linux-run-driver.sh'
     WINDOWS_RUN_SCRIPT_NAME = 'win-run-driver.ps1'
-    RUN_COMMAND_RUN_SHELL_ID = 'RunShellScript'
-    RUN_COMMAND_RUN_PS_ID = 'RunPowerShellScript'
 
     try:
         # Fetch VM data
         source_vm = get_vm(cmd, resource_group_name, vm_name)
-
-        # Build absoulte path of driver script
-        loader = pkgutil.get_loader(REPAIR_DIR_NAME)
-        mod = loader.load_module(REPAIR_DIR_NAME)
-        rootpath = os.path.dirname(mod.__file__)
         is_linux = _is_linux_os(source_vm)
+
         if is_linux:
-            run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, LINUX_RUN_SCRIPT_NAME)
-            command_id = RUN_COMMAND_RUN_SHELL_ID
+            script_name = LINUX_RUN_SCRIPT_NAME
         else:
-            run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, WINDOWS_RUN_SCRIPT_NAME)
-            command_id = RUN_COMMAND_RUN_PS_ID
+            script_name = WINDOWS_RUN_SCRIPT_NAME
 
         # If run_on_repair is False, then repair_vm is the source_vm (scripts run directly on source vm)
         repair_vm_id = parse_resource_id(repair_vm_id)
         repair_vm_name = repair_vm_id['name']
         repair_resource_group = repair_vm_id['resource_group']
 
-        repair_run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
-                             '--scripts "@{run_script}" -o json' \
-                             .format(rg=repair_resource_group, vm=repair_vm_name, command_id=command_id, run_script=run_script)
+        run_command_params = []
+        additional_scripts = []
 
         # Normal scenario with run id
         if not custom_script_file:
             # Fetch run path from GitHub
             repair_script_path = _fetch_run_script_path(run_id)
-            repair_run_command += ' --parameters script_path="./{repair_script}"'.format(repair_script=repair_script_path)
+            run_command_params.append('script_path="./{}"'.format(repair_script_path))
         # Custom script scenario for script testers
         else:
-            # no-op run id
-            repair_run_command += ' "@{custom_file}" --parameters script_path=no-op'.format(custom_file=custom_script_file)
+            run_command_params.append('script_path=no-op')
+            additional_scripts.append(custom_script_file)
 
         # Append Parameters
         if parameters:
@@ -349,9 +344,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
                 param_string = _process_bash_parameters(parameters)
             else:
                 param_string = _process_ps_parameters(parameters)
-            # Work around for run-command bug, unexpected behavior with space characters
-            param_string = param_string.replace(' ', '%20')
-            repair_run_command += ' params="{}"'.format(param_string)
+            run_command_params.append('params="{}"'.format(param_string))
         if run_on_repair:
             vm_string = 'repair VM'
         else:
@@ -360,18 +353,8 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
 
         # Run script and measure script run-time
         script_start_time = timeit.default_timer()
-        return_str = _call_az_command(repair_run_command)
+        stdout, stderr = _invoke_run_command(script_name, repair_vm_name, repair_resource_group, is_linux, run_command_params, additional_scripts)
         command.script.run_time = timeit.default_timer() - script_start_time
-
-        # Extract stdout and stderr, if stderr exists then possible error
-        run_command_return = json.loads(return_str)
-        if is_linux:
-            run_command_message = run_command_return['value'][0]['message'].split('[stdout]')[1].split('[stderr]')
-            stdout = run_command_message[0].strip('\n')
-            stderr = run_command_message[1].strip('\n')
-        else:
-            stdout = run_command_return['value'][0]['message']
-            stderr = run_command_return['value'][1]['message']
         logger.debug("stderr: %s", stderr)
 
         # Parse through stdout to populate log properties: 'level', 'message'

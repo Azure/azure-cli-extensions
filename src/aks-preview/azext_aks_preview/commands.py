@@ -13,6 +13,8 @@ from ._format import aks_agentpool_show_table_format
 from ._format import aks_agentpool_list_table_format
 from ._format import aks_versions_table_format
 from ._format import aks_upgrades_table_format
+from ._format import aks_pod_identities_table_format
+from ._format import aks_pod_identity_exceptions_table_format
 
 
 def load_command_table(self, _):
@@ -53,6 +55,8 @@ def load_command_table(self, _):
                          confirmation='Kubernetes will be unavailable during certificate rotation process.\n' +
                          'Are you sure you want to perform this operation?')
         g.wait_command('wait')
+        g.command('stop', 'stop', supports_no_wait=True)
+        g.command('start', 'start', supports_no_wait=True)
 
     # AKS container service commands
     with self.command_group('aks', container_services_sdk, client_factory=cf_container_services) as g:
@@ -67,3 +71,19 @@ def load_command_table(self, _):
         g.custom_command('upgrade', 'aks_agentpool_upgrade', supports_no_wait=True)
         g.custom_command('update', 'aks_agentpool_update', supports_no_wait=True)
         g.custom_command('delete', 'aks_agentpool_delete', supports_no_wait=True)
+        g.custom_command('get-upgrades', 'aks_agentpool_get_upgrade_profile')
+
+    # AKS pod identity commands
+    with self.command_group('aks pod-identity', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
+        g.custom_command('add', 'aks_pod_identity_add')
+        g.custom_command('delete', 'aks_pod_identity_delete')
+        g.custom_command('list', 'aks_pod_identity_list',
+                         table_transformer=aks_pod_identities_table_format)
+
+    # AKS pod identity exception commands
+    with self.command_group('aks pod-identity exception', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
+        g.custom_command('add', 'aks_pod_identity_exception_add')
+        g.custom_command('delete', 'aks_pod_identity_exception_delete')
+        g.custom_command('update', 'aks_pod_identity_exception_update')
+        g.custom_command('list', 'aks_pod_identity_exception_list',
+                         table_transformer=aks_pod_identity_exceptions_table_format)

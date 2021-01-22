@@ -2,6 +2,102 @@
 
 Release History
 ===============
+0.4.72
+++++++
+* Add --no-uptime-sla
+* Create MSI clusters by default.
+
+0.4.71
+++++++
+* Add support using custom private dns zone resource id for parameter '--private-dns-zone'
+
+0.4.70
+++++++
+* Revert to use CLIError to be compatible with azure cli versions < 2.15.0
+
+0.4.69
++++++
+* Add argument 'subnetCIDR' to replace 'subnetPrefix' when using ingress-azure addon.
+
+0.4.68
++++++
+* Add support for AAD Pod Identity resources configuration in Azure CLI.
+
+0.4.67
++++++
+* Add support for node configuration when creating cluster or agent pool.
+* Support private DNS zone for AKS private cluster.
+
+0.4.66
++++++
+* Add support for GitOps as an AKS addon
+* Update standard load balancer (SLB) max idle timeout from 120 to 100 minutes
+
+0.4.65
++++++
+* Honor addon names defined in Azure CLI
+* Add LicenseType support for Windows
+* Remove patterns for adminUsername and adminPassword in WindowsProfile
+
+0.4.64
++++++
+* Add support for Open Service Mesh as an AKS addon
+* Add support to get available upgrade versions for an agent pool in AKS
+
+0.4.63
++++++
+* Enable the September (2020-09-01) for use with the AKS commands
+* Support Start/Stop cluster feature in preview
+* Support ephemeral OS functionality
+* Add new properties to the autoscaler profile: max-empty-bulk-delete, skip-nodes-with-local-storage, skip-nodes-with-system-pods, expander, max-total-unready-percentage, ok-total-unready-count and new-pod-scale-up-delay
+* Fix case sensitive issue for AKS dashboard addon
+* Remove PREVIEW from azure policy addon
+
+0.4.62
++++++
+* Add support for enable/disable confcom (sgx) addon.
+
+0.4.61
++++++
+* Fix AGIC typo and remove preview label from VN #2141
+* Set network profile when using basic load balancer. #2137
+* Fix bug that compare float number with 0 #2213
+
+0.4.60
++++++
+* Fix regression due to a change in the azure-mgmt-resource APIs in CLI 2.10.0
+
+0.4.59
++++++
+* Support bring-your-own VNET scenario for MSI clusters which use user assigned identity in control plane.
+
+0.4.58
++++++
+* Added clearer error message for invalid addon names
+
+0.4.57
++++++
+* Support "--assign-identity" for specifying an existing user assigned identity for control plane's usage in MSI clusters.
+
+0.4.56
++++++
+* Support "--enable-aad" for "az aks update" to update an existing RBAC-enabled non-AAD cluster to the new AKS-managed AAD experience
+
+0.4.55
++++++
+* Add "--enable-azure-rbac" for enabling Azure RBAC for Kubernetes authorization
+
+0.4.54
++++++
+* Support "--enable-aad" for "az aks update" to update an existing AAD-Integrated cluster to the new AKS-managed AAD experience
+
+0.4.53
++++++
+* Add --ppg for "az aks create" and "az aks nodepool add"
+
+0.4.52
++++++
+* Add --uptime-sla for az aks update
 
 0.4.51
 +++++

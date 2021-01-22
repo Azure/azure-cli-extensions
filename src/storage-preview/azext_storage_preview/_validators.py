@@ -14,7 +14,7 @@ from knack.log import get_logger
 from ._client_factory import get_storage_data_service_client, blob_data_service_factory
 from .util import guess_content_type
 from .oauth_token_util import TokenUpdater
-from .profiles import CUSTOM_MGMT_STORAGE
+from .profiles import CUSTOM_MGMT_PREVIEW_STORAGE
 
 logger = get_logger(__name__)
 
@@ -30,7 +30,7 @@ def _query_account_key(cli_ctx, account_name):
     """Query the storage account key. This is used when the customer doesn't offer account key but name."""
     rg, scf = _query_account_rg(cli_ctx, account_name)
     t_storage_account_keys = get_sdk(
-        cli_ctx, CUSTOM_MGMT_STORAGE, 'models.storage_account_keys#StorageAccountKeys')
+        cli_ctx, CUSTOM_MGMT_PREVIEW_STORAGE, 'models.storage_account_keys#StorageAccountKeys')
 
     if t_storage_account_keys:
         return scf.storage_accounts.list_keys(rg, account_name).key1
@@ -40,7 +40,7 @@ def _query_account_key(cli_ctx, account_name):
 
 def _query_account_rg(cli_ctx, account_name):
     """Query the storage account's resource group, which the mgmt sdk requires."""
-    scf = get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_STORAGE)
+    scf = get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_PREVIEW_STORAGE)
     acc = next((x for x in scf.storage_accounts.list() if x.name == account_name), None)
     if acc:
         from msrestazure.tools import parse_resource_id
@@ -222,7 +222,7 @@ def validate_azcopy_target_url(cmd, namespace):
     del namespace.target_path
 
 
-def get_content_setting_validator(settings_class, update, guess_from_file=None):
+def get_content_setting_validator(settings_class, update, guess_from_file=None, process_md5=False):
     def _class_name(class_type):
         return class_type.__module__ + "." + class_type.__class__.__name__
 
@@ -286,6 +286,15 @@ def get_content_setting_validator(settings_class, update, guess_from_file=None):
             if guess_from_file:
                 new_props = guess_content_type(ns[guess_from_file], new_props, settings_class)
 
+        # In the model serialization of ContentSettings, the required type for content_md5 is str. But when uploading,
+        # content_md5 needs to be converted to bytearray and it would cause a bug when converting a string to bytearray.
+        # So we pass in the content_md5 of the bytearray type as a workaround.
+        # There is an issue of Python SDK to follow up this problem, and if the SDK is fixed, the logic can be removed
+        # Issue link: https://github.com/Azure/azure-sdk-for-python/issues/15919
+        if process_md5:
+            from .track2_util import string_to_bytes
+            new_props.content_md5 = string_to_bytes(new_props.content_md5)
+
         ns['content_settings'] = new_props
 
     return validator
@@ -301,7 +310,7 @@ def validate_encryption_services(cmd, namespace):
     Builds up the encryption services object for storage account operations based on the list of services passed in.
     """
     if namespace.encryption_services:
-        t_encryption_services, t_encryption_service = get_sdk(cmd.cli_ctx, CUSTOM_MGMT_STORAGE,
+        t_encryption_services, t_encryption_service = get_sdk(cmd.cli_ctx, CUSTOM_MGMT_PREVIEW_STORAGE,
                                                               'EncryptionServices', 'EncryptionService', mod='models')
         services = {service: t_encryption_service(enabled=True) for service in namespace.encryption_services}
 
@@ -323,7 +332,7 @@ def validate_encryption_source(cmd, namespace):
         if namespace.encryption_key_source != 'Microsoft.Keyvault':
             raise ValueError('--encryption-key-name, --encryption-key-vault, and --encryption-key-version are not '
                              'applicable when --encryption-key-source=Microsoft.Keyvault is not specified.')
-        KeyVaultProperties = get_sdk(cmd.cli_ctx, CUSTOM_MGMT_STORAGE, 'KeyVaultProperties',
+        KeyVaultProperties = get_sdk(cmd.cli_ctx, CUSTOM_MGMT_PREVIEW_STORAGE, 'KeyVaultProperties',
                                      mod='models')
         if not KeyVaultProperties:
             return
@@ -333,22 +342,26 @@ def validate_encryption_source(cmd, namespace):
 
 
 def get_file_path_validator(default_file_param=None):
-    """ Creates a namespace validator that splits out 'path' into 'directory_name' and 'file_name'.
-    Allows another path-type parameter to be named which can supply a default filename. """
+    """ Allows another path-type parameter to be named which can supply a default filename. """
 
     def validator(namespace):
         if not hasattr(namespace, 'path'):
             return
 
         path = namespace.path
+        del namespace.path
+
+        if not path:
+            namespace.file_path = os.path.split(getattr(namespace, default_file_param))[1]
+            return
+
         dir_name, file_name = os.path.split(path) if path else (None, '')
 
         if default_file_param and '.' not in file_name:
             dir_name = path
             file_name = os.path.split(getattr(namespace, default_file_param))[1]
-        namespace.directory_name = dir_name
-        namespace.file_name = file_name
-        del namespace.path
+
+        namespace.file_path = dir_name + '/' + file_name if dir_name else file_name
 
     return validator
 
@@ -539,3 +552,62 @@ def validate_directory_name(cmd, namespace):
         raise ValueError('usage error: The specified --directory-path already exists in current container. '
                          'Please change to a valid blob directory name. If you want to rename a directory, '
                          'please use `az storage blob directory move` command.')
+
+
+def validate_delete_retention_days(namespace):
+    if namespace.enable_delete_retention is True and namespace.delete_retention_days is None:
+        raise ValueError(
+            "incorrect usage: you have to provide value for '--delete-retention-days' when '--enable-delete-retention' "
+            "is set to true")
+
+    if namespace.enable_delete_retention is False and namespace.delete_retention_days is not None:
+        raise ValueError(
+            "incorrect usage: '--delete-retention-days' is invalid when '--enable-delete-retention' is set to false")
+
+
+def add_upload_progress_callback(cmd, namespace):
+    def _update_progress(response):
+        if response.http_response.status_code not in [200, 201]:
+            return
+
+        message = getattr(_update_progress, 'message', 'Alive')
+        reuse = getattr(_update_progress, 'reuse', False)
+        current = response.context['upload_stream_current']
+        total = response.context['data_stream_total']
+
+        if total:
+            hook.add(message=message, value=current, total_val=total)
+            if total == current and not reuse:
+                hook.end()
+
+    hook = cmd.cli_ctx.get_progress_controller(det=True)
+    _update_progress.hook = hook
+
+    if not namespace.no_progress:
+        namespace.progress_callback = _update_progress
+    del namespace.no_progress
+
+
+def process_file_upload_batch_parameters(cmd, namespace):
+    """Process the parameters of storage file batch upload command"""
+    # 1. quick check
+    if not os.path.exists(namespace.source):
+        raise ValueError('incorrect usage: source {} does not exist'.format(namespace.source))
+
+    if not os.path.isdir(namespace.source):
+        raise ValueError('incorrect usage: source must be a directory')
+
+    # 2. try to extract account name and container name from destination string
+    from .storage_url_helpers import StorageResourceIdentifier
+    identifier = StorageResourceIdentifier(cmd.cli_ctx.cloud, namespace.destination)
+    if identifier.is_url():
+        if identifier.filename or identifier.directory:
+            raise ValueError('incorrect usage: destination must be a file share url')
+
+        namespace.destination = identifier.share
+
+        if not namespace.account_name:
+            namespace.account_name = identifier.account_name
+
+    namespace.source = os.path.realpath(namespace.source)
+    namespace.share_name = namespace.destination

@@ -5,7 +5,19 @@
 
 # pylint: disable=len-as-condition
 from knack.util import CLIError
-from msrestazure.tools import is_valid_resource_id
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
+
+
+def validate_app_service(namespace):
+    if namespace.app_service and is_valid_resource_id(namespace.app_service):
+        namespace.app_service = parse_resource_id(namespace.app_service)['name']
+
+
+def validate_dest_account(namespace):
+    if is_valid_resource_id(namespace.dest_account):
+        parsed_storage = parse_resource_id(namespace.dest_account)
+        storage_name = parsed_storage['resource_name']
+        namespace.dest_account = storage_name
 
 
 def validate_applications(namespace):

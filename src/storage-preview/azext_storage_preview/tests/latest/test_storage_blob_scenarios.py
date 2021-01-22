@@ -8,16 +8,16 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer,
                                JMESPathCheck, api_version_constraint)
 
 from .storage_test_util import StorageScenarioMixin
-from ...profiles import CUSTOM_MGMT_STORAGE
+from ...profiles import CUSTOM_MGMT_PREVIEW_STORAGE
 
 
-@api_version_constraint(CUSTOM_MGMT_STORAGE, min_api='2016-12-01')
+@api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2016-12-01')
 class StorageBlobUploadTests(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer(location='westcentralus')
     def test_storage_blob_update_service_properties(self, resource_group):
         storage_account = self.create_random_name(prefix='account', length=24)
 
-        self.cmd('storage account create -n {} -g {} --kind StorageV2'.format(storage_account, resource_group))
+        self.cmd('storage account create -n {} -g {} --kind StorageV2 --https-only '.format(storage_account, resource_group))
         account_info = self.get_account_info(resource_group, storage_account)
 
         self.storage_cmd('storage blob service-properties show', account_info) \

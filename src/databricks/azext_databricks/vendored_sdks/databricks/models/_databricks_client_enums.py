@@ -19,6 +19,12 @@ class CustomParameterType(str, Enum):
     string = "String"
 
 
+class KeySource(str, Enum):
+
+    default = "Default"
+    microsoft_keyvault = "Microsoft.Keyvault"
+
+
 class ProvisioningState(str, Enum):
 
     accepted = "Accepted"
@@ -32,3 +38,18 @@ class ProvisioningState(str, Enum):
     failed = "Failed"
     succeeded = "Succeeded"
     updating = "Updating"
+
+
+class PeeringProvisioningState(str, Enum):
+
+    succeeded = "Succeeded"
+    updating = "Updating"
+    deleting = "Deleting"
+    failed = "Failed"
+
+
+class PeeringState(str, Enum):
+
+    initiated = "Initiated"
+    connected = "Connected"
+    disconnected = "Disconnected"

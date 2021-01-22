@@ -1,0 +1,123 @@
+interactions:
+- request:
+    body: '{"resourceGroup": "test-rg", "subscriptionId": "00000000-0000-0000-0000-000000000000",
+      "template": {"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+      "contentVersion": "1.0.0.0", "parameters": {"location": {"type": "string"},
+      "networkInterfaceName": {"type": "string"}, "subnetName": {"type": "string"},
+      "virtualNetworkName": {"type": "string"}, "addressPrefixes": {"type": "array"},
+      "subnets": {"type": "array"}, "publicIpAddressName": {"type": "string"}, "publicIpAddressType":
+      {"type": "string"}, "publicIpAddressSku": {"type": "string"}, "virtualMachineName":
+      {"type": "string"}, "virtualMachineComputerName": {"type": "string"}, "virtualMachineRG":
+      {"type": "string"}, "osDiskType": {"type": "string"}, "dataDisks": {"type":
+      "array"}, "dataDiskResources": {"type": "array"}, "virtualMachineSize": {"type":
+      "string"}, "adminUsername": {"type": "string"}}, "variables": {"vnetId": "[resourceId(resourceGroup().name,''Microsoft.Network/virtualNetworks'',
+      parameters(''virtualNetworkName''))]", "subnetRef": "[concat(variables(''vnetId''),
+      ''/subnets/'', parameters(''subnetName''))]"}, "resources": [{"name": "[parameters(''networkInterfaceName'')]",
+      "type": "Microsoft.Network/networkInterfaces", "apiVersion": "2019-07-01", "location":
+      "[parameters(''location'')]", "dependsOn": ["[concat(''Microsoft.Network/virtualNetworks/'',
+      parameters(''virtualNetworkName''))]", "[concat(''Microsoft.Network/publicIpAddresses/'',
+      parameters(''publicIpAddressName''))]"], "properties": {"ipConfigurations":
+      [{"name": "ipconfig1", "properties": {"subnet": {"id": "[variables(''subnetRef'')]"},
+      "privateIPAllocationMethod": "Dynamic", "publicIpAddress": {"id": "[resourceId(resourceGroup().name,
+      ''Microsoft.Network/publicIpAddresses'', parameters(''publicIpAddressName''))]"}}}]}},
+      {"name": "[parameters(''virtualNetworkName'')]", "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2019-09-01", "location": "[parameters(''location'')]", "properties":
+      {"addressSpace": {"addressPrefixes": "[parameters(''addressPrefixes'')]"}, "subnets":
+      "[parameters(''subnets'')]"}}, {"name": "[parameters(''publicIpAddressName'')]",
+      "type": "Microsoft.Network/publicIpAddresses", "apiVersion": "2019-02-01", "location":
+      "[parameters(''location'')]", "properties": {"publicIpAllocationMethod": "[parameters(''publicIpAddressType'')]"},
+      "sku": {"name": "[parameters(''publicIpAddressSku'')]"}}, {"name": "[parameters(''dataDiskResources'')[copyIndex()].name]",
+      "type": "Microsoft.Compute/disks", "apiVersion": "2019-07-01", "location": "[parameters(''location'')]",
+      "properties": "[parameters(''dataDiskResources'')[copyIndex()].properties]",
+      "sku": {"name": "[parameters(''dataDiskResources'')[copyIndex()].sku]"}, "copy":
+      {"name": "managedDiskResources", "count": "[length(parameters(''dataDiskResources''))]"}},
+      {"name": "[parameters(''virtualMachineName'')]", "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2019-07-01", "location": "[parameters(''location'')]", "dependsOn":
+      ["managedDiskResources", "[concat(''Microsoft.Network/networkInterfaces/'',
+      parameters(''networkInterfaceName''))]"], "properties": {"hardwareProfile":
+      {"vmSize": "[parameters(''virtualMachineSize'')]"}, "storageProfile": {"osDisk":
+      {"createOption": "fromImage", "managedDisk": {"storageAccountType": "[parameters(''osDiskType'')]"}},
+      "imageReference": {"publisher": "Canonical", "offer": "UbuntuServer", "sku":
+      "18.04-LTS", "version": "latest"}, "copy": [{"name": "dataDisks", "count": "[length(parameters(''dataDisks''))]",
+      "input": {"lun": "[parameters(''dataDisks'')[copyIndex(''dataDisks'')].lun]",
+      "createOption": "[parameters(''dataDisks'')[copyIndex(''dataDisks'')].createOption]",
+      "caching": "[parameters(''dataDisks'')[copyIndex(''dataDisks'')].caching]",
+      "writeAcceleratorEnabled": "[parameters(''dataDisks'')[copyIndex(''dataDisks'')].writeAcceleratorEnabled]",
+      "diskSizeGB": "[parameters(''dataDisks'')[copyIndex(''dataDisks'')].diskSizeGB]",
+      "managedDisk": {"id": "[coalesce(parameters(''dataDisks'')[copyIndex(''dataDisks'')].id,
+      if(equals(parameters(''dataDisks'')[copyIndex(''dataDisks'')].name, json(''null'')),
+      json(''null''), resourceId(''Microsoft.Compute/disks'', parameters(''dataDisks'')[copyIndex(''dataDisks'')].name)))]",
+      "storageAccountType": "[parameters(''dataDisks'')[copyIndex(''dataDisks'')].storageAccountType]",
+      "diskEncryptionSet": {"id": "[parameters(''dataDisks'')[copyIndex(''dataDisks'')].diskEncryptionSet.id]"}}}}]},
+      "networkProfile": {"networkInterfaces": [{"id": "[resourceId(''Microsoft.Network/networkInterfaces'',
+      parameters(''networkInterfaceName''))]"}]}, "osProfile": {"computerName": "[parameters(''virtualMachineComputerName'')]",
+      "adminUsername": "[parameters(''adminUsername'')]", "linuxConfiguration": {"disablePasswordAuthentication":
+      true}}}}], "outputs": {"adminUsername": {"type": "string", "value": "[parameters(''adminUsername'')]"}}},
+      "parameters": {"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+      "contentVersion": "1.0.0.0", "parameters": {"location": {"value": "japaneast"},
+      "networkInterfaceName": {"value": "test-vm650"}, "subnetName": {"value": "default2"},
+      "virtualNetworkName": {"value": "test-rg-vnet"}, "addressPrefixes": {"value":
+      ["10.2.11.0/24"]}, "subnets": {"value": [{"name": "default1", "properties":
+      {"addressPrefix": "10.2.11.128/25"}}, {"name": "default2", "properties": {"addressPrefix":
+      "10.2.11.0/25"}}]}, "publicIpAddressName": {"value": "test-vm-ip"}, "publicIpAddressType":
+      {"value": "Dynamic"}, "publicIpAddressSku": {"value": "Basic"}, "virtualMachineName":
+      {"value": "test-vm"}, "virtualMachineComputerName": {"value": "test-vm"}, "virtualMachineRG":
+      {"value": "test-rg"}, "osDiskType": {"value": "Premium_LRS"}, "dataDisks": {"value":
+      [{"lun": 0, "createOption": "attach", "caching": "None", "writeAcceleratorEnabled":
+      false, "id": null, "name": "test-vm_DataDisk_0", "storageAccountType": null,
+      "diskSizeGB": null, "diskEncryptionSet": {"id": null}}]}, "dataDiskResources":
+      {"value": [{"name": "test-vm_DataDisk_0", "sku": "Premium_LRS", "properties":
+      {"diskSizeGB": 16, "creationData": {"createOption": "empty"}}}]}, "virtualMachineSize":
+      {"value": "Standard_D2s_v3"}, "adminUsername": {"value": "AzureUser"}}}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '6147'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: https://portal2cli.azurewebsites.net/api/v1
+  response:
+    body:
+      string: '["az account set --subscription 00000000-0000-0000-0000-000000000000","az
+        network vnet create --name test-rg-vnet --resource-group test-rg --address-prefixes
+        10.2.11.0/24 --location japaneast","az network vnet subnet create --name default1
+        --resource-group test-rg --vnet-name test-rg-vnet --address-prefixes 10.2.11.128/25","az
+        network vnet subnet create --name default2 --resource-group test-rg --vnet-name
+        test-rg-vnet --address-prefixes 10.2.11.0/25","az network public-ip create
+        --name test-vm-ip --resource-group test-rg --allocation-method Dynamic --location
+        japaneast --sku Basic","az disk create --name test-vm_DataDisk_0 --resource-group
+        test-rg --location japaneast --size-gb 16 --sku Premium_LRS","az network nic
+        create --name test-vm650 --resource-group test-rg --subnet /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Microsoft.Network/virtualNetworks/test-rg-vnet/subnets/default2
+        --location japaneast --public-ip-address /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Microsoft.Network/publicIpAddresses/test-vm-ip","az
+        vm create --name test-vm --resource-group test-rg --admin-username AzureUser
+        --attach-data-disks /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Microsoft.Compute/disks/test-vm_DataDisk_0
+        --computer-name test-vm --data-disk-caching 0=None --enable-agent true --image
+        Canonical:UbuntuServer:18.04-LTS:latest --location japaneast --nics /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test-rg/providers/Microsoft.Network/networkInterfaces/test-vm650
+        --size Standard_D2s_v3 --storage-sku Premium_LRS\n"]'
+    headers:
+      content-length:
+      - '1667'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 22 Oct 2020 10:34:15 GMT
+      set-cookie:
+      - ARRAffinity=43b7b600e92f29ba9be55a395446dfbee102fc46b22db5dd0d8b892a159b350a;Path=/;HttpOnly;Domain=portal2cli.azurewebsites.net
+      - ARRAffinity=8528420ccde62e3f7e0853edb739a8d6354b7e2ef9fb495e896bc5189e88015e;Path=/;HttpOnly;Secure;Domain=portal2cli.azurewebsites.net
+      - ARRAffinitySameSite=8528420ccde62e3f7e0853edb739a8d6354b7e2ef9fb495e896bc5189e88015e;Path=/;HttpOnly;SameSite=None;Secure;Domain=portal2cli.azurewebsites.net
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+version: 1

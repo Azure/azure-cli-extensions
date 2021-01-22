@@ -38,6 +38,11 @@ def get_config_value(db_type, option, fallback='_fallback_none'):
     return None
 
 
+def remove_config_value(db_type, option):
+    config_section = CONFIG_MAP[db_type]
+    DB_CONFIG.remove_option(config_section, option)
+
+
 def set_config_value(db_type, option, value):
     config_section = CONFIG_MAP[db_type]
     DB_CONFIG.set_value(config_section, option, value)

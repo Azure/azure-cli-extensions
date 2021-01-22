@@ -14,6 +14,7 @@ from msrest import Serializer, Deserializer
 
 from ._configuration import DatabricksClientConfiguration
 from .operations import WorkspacesOperations
+from .operations import VNetPeeringOperations
 from .operations import Operations
 from . import models
 
@@ -26,6 +27,8 @@ class DatabricksClient(SDKClient):
 
     :ivar workspaces: Workspaces operations
     :vartype workspaces: azure.mgmt.databricks.operations.WorkspacesOperations
+    :ivar vnet_peering: VNetPeering operations
+    :vartype vnet_peering: azure.mgmt.databricks.operations.VNetPeeringOperations
     :ivar operations: Operations operations
     :vartype operations: azure.mgmt.databricks.operations.Operations
 
@@ -49,6 +52,8 @@ class DatabricksClient(SDKClient):
         self._deserialize = Deserializer(client_models)
 
         self.workspaces = WorkspacesOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.vnet_peering = VNetPeeringOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.operations = Operations(
             self._client, self.config, self._serialize, self._deserialize)

@@ -31,7 +31,7 @@ class AzureVWanRouteTableScenario(ScenarioTest):
         ])
         self.cmd('network vhub route-table list -g {rg} --vhub-name {vhub}', checks=[
             self.check('@[0].name', self.kwargs['routetable']),
-            self.check('length(@)', 1)
+            self.check('length(@)', 3)
         ])
 
         self.cmd('network vhub route-table update -n {routetable} -g {rg} --vhub-name {vhub} --connections All_Branches', checks=[
@@ -63,10 +63,12 @@ class AzureVWanRouteTableScenario(ScenarioTest):
             'rg': resource_group
         })
 
+        self.cmd('extension add -n azure-firewall')
+
         # workaround due to service limitation. It should be fixed in the future.
         self.cmd('network vwan create -n {vwan} -g {rg}')
         self.cmd('network vhub create -g {rg} -n {vhub} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l eastus')
-        firewall = self.cmd('network firewall create -g {rg} -n {firewall} --vhub {vhub} --sku AZFW_Hub').get_output_in_json()
+        firewall = self.cmd('network firewall create -g {rg} -n {firewall} --vhub {vhub} --sku AZFW_Hub --count 1').get_output_in_json()
         self.cmd('network vpn-gateway create -n {vpngateway} -g {rg} --vhub {vhub} -l eastus')
 
         self.kwargs['firewall_id'] = firewall['id']
@@ -80,8 +82,8 @@ class AzureVWanRouteTableScenario(ScenarioTest):
         ])
 
         self.cmd('network vhub route-table list -g {rg} --vhub-name {vhub}', checks=[
-            self.check('@[0].name', self.kwargs['routetable']),
-            self.check('length(@)', 1)
+            self.check('@[2].name', self.kwargs['routetable']),
+            self.check('length(@)', 3)
         ])
 
         self.cmd('network vhub route-table update -n {routetable} -g {rg} --vhub-name {vhub} --labels label3 label4', checks=[
@@ -98,3 +100,5 @@ class AzureVWanRouteTableScenario(ScenarioTest):
         ])
 
         self.cmd('network vhub route-table delete -n {routetable} -g {rg} --vhub-name {vhub}')
+
+        self.cmd('extension remove -n azure-firewall')

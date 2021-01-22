@@ -65,7 +65,11 @@ def prepare_cli_command(cmd, output_as_json=True, tags=None, subscription=None):
         full_cmd += ['--tags', EXTENSION_TAG_STRING]
 
         if tags is not None:
-            full_cmd += tags.split()
+            for k, v in tags.items():
+                if v == '':
+                    full_cmd.append(k)
+                else:
+                    full_cmd.append(k + '=' + v)
 
     return full_cmd
 

@@ -11,58 +11,13 @@
 from azure.cli.testsdk.checkers import JMESPathCheck, JMESPathCheckExists
 
 
-# EXAMPLE: /HostPools/put/HostPool_Create
-def step__hostpools_put_hostpool_create(test, rg):
-    test.cmd('az desktopvirtualization hostpool create '
-             '--location "centralus" '
-             '--description "des1" '
-             '--friendly-name "friendly" '
-             '--host-pool-type "Pooled" '
-             '--load-balancer-type "BreadthFirst" '
-             '--max-session-limit 999999 '
-             '--personal-desktop-assignment-type "Automatic" '
-             '--registration-info expiration-time="2020-07-01T14:01:54.9571247Z" registration-token-operation="Update" '
-             ''
-             '--sso-context "KeyVaultPath" '
-             '--tags tag1="value1" tag2="value2" '
-             '--name "{MyHostPool}" '
-             '--resource-group "{rg}"',
-             checks=[
-                 # JMESPathCheckExists('[?name==\'{MyHostPool}\']'),
-                 JMESPathCheck('name', test.kwargs["MyHostPool"]),
-                 JMESPathCheck('tags.tag1', 'value1'),
-                 JMESPathCheck('tags.tag2', 'value2'),
-             ])
-
-
 # EXAMPLE: /HostPools/get/HostPool_List
 def step__hostpools_get_hostpool_list(test, rg):
     test.cmd('az desktopvirtualization hostpool list '
              '-g ""',
              checks=[
                  JMESPathCheckExists('[?name==\'{}\']'.format(
-                     test.kwargs["MyHostPool"])),
-             ])
-
-
-# EXAMPLE: /HostPools/patch/HostPool_Update
-def step__hostpools_patch_hostpool_update(test, rg):
-    test.cmd('az desktopvirtualization hostpool update '
-             '--description "des1" '
-             '--friendly-name "friendly" '
-             '--load-balancer-type "BreadthFirst" '
-             '--max-session-limit 999999 '
-             '--personal-desktop-assignment-type "Automatic" '
-             '--registration-info expiration-time="2020-07-01T15:01:54.9571247Z" registration-token-operation="Update" '
-             ''
-             '--sso-context "KeyVaultPath" '
-             '--tags tag1="value3" tag2="value4" '
-             '--name "{MyHostPool}" '
-             '--resource-group "{rg}"',
-             checks=[
-                 JMESPathCheck('name', test.kwargs["MyHostPool"]),
-                 JMESPathCheck('tags.tag1', 'value3'),
-                 JMESPathCheck('tags.tag2', 'value4'),
+                     test.kwargs["myHostPool"])),
              ])
 
 
@@ -74,12 +29,12 @@ def step__applicationgroups_put_applicationgroup_create(test, rg):
              '--application-group-type "RemoteApp" '
              '--friendly-name "friendly" '
              '--host-pool-arm-path "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DesktopVir'
-             'tualization/hostPools/{MyHostPool}" '
+             'tualization/hostPools/{myHostPool}" '
              '--tags tag1="value1" tag2="value2" '
-             '--name "{MyApplicationGroup}" '
+             '--name "{myApplicationGroup}" '
              '--resource-group "{rg}"',
              checks=[
-                 JMESPathCheck('name', test.kwargs["MyApplicationGroup"]),
+                 JMESPathCheck('name', test.kwargs["myApplicationGroup"]),
                  JMESPathCheck('tags.tag1', 'value1'),
                  JMESPathCheck('tags.tag2', 'value2'),
              ])
@@ -92,7 +47,7 @@ def step__applicationgroups_get_applicationgroup_listbyresourcegroup(test, rg):
              '--resource-group "{rg}"',
              checks=[
                  JMESPathCheckExists('[?name==\'{}\']'.format(
-                     test.kwargs["MyApplicationGroup"])),
+                     test.kwargs["myApplicationGroup"])),
              ])
 
 
@@ -102,10 +57,10 @@ def step__applicationgroups_patch_applicationgroups_update(test, rg):
              '--description "des1" '
              '--friendly-name "friendly" '
              '--tags tag1="value3" tag2="value4" '
-             '--name "{MyApplicationGroup}" '
+             '--name "{myApplicationGroup}" '
              '--resource-group "{rg}"',
              checks=[
-                 JMESPathCheck('name', test.kwargs["MyApplicationGroup"]),
+                 JMESPathCheck('name', test.kwargs["myApplicationGroup"]),
                  JMESPathCheck('tags.tag1', 'value3'),
                  JMESPathCheck('tags.tag2', 'value4'),
              ])
@@ -119,9 +74,9 @@ def step__workspaces_put_workspace_create(test, rg):
              '--description "des1" '
              '--friendly-name "friendly" '
              '--tags tag1="value1" tag2="value2" '
-             '--name "{MyWorkspace}"',
+             '--name "{myWorkspace}"',
              checks=[
-                 JMESPathCheck('name', test.kwargs["MyWorkspace"]),
+                 JMESPathCheck('name', test.kwargs["myWorkspace"]),
                  JMESPathCheck('tags.tag1', 'value1'),
                  JMESPathCheck('tags.tag2', 'value2'),
              ])
@@ -131,9 +86,9 @@ def step__workspaces_put_workspace_create(test, rg):
 def step__workspaces_get_workspace_get(test, rg):
     test.cmd('az desktopvirtualization workspace show '
              '--resource-group "{rg}" '
-             '--name "{MyWorkspace}"',
+             '--name "{myWorkspace}"',
              checks=[
-                 JMESPathCheck('name', test.kwargs["MyWorkspace"]),
+                 JMESPathCheck('name', test.kwargs["myWorkspace"]),
              ])
 
 
@@ -144,9 +99,9 @@ def step__workspaces_patch_workspace_update(test, rg):
              '--description "des1" '
              '--friendly-name "friendly" '
              '--tags tag1="value3" tag2="value4" '
-             '--name "{MyWorkspace}"',
+             '--name "{myWorkspace}"',
              checks=[
-                 JMESPathCheck('name', test.kwargs["MyWorkspace"]),
+                 JMESPathCheck('name', test.kwargs["myWorkspace"]),
                  JMESPathCheck('tags.tag1', 'value3'),
                  JMESPathCheck('tags.tag2', 'value4'),
              ])

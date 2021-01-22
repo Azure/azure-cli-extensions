@@ -202,6 +202,14 @@ class ApplicationGateway(Resource):
     :param autoscale_configuration: Autoscale Configuration.
     :type autoscale_configuration:
      ~azure.mgmt.network.v2020_05_01.models.ApplicationGatewayAutoscaleConfiguration
+    :param private_link_configurations: PrivateLink configurations on
+     application gateway.
+    :type private_link_configurations:
+     list[~azure.mgmt.network.v2020_05_01.models.ApplicationGatewayPrivateLinkConfiguration]
+    :ivar private_endpoint_connections: Private Endpoint connections on
+     application gateway.
+    :vartype private_endpoint_connections:
+     list[~azure.mgmt.network.v2020_05_01.models.ApplicationGatewayPrivateEndpointConnection]
     :ivar resource_guid: The resource GUID property of the application gateway
      resource.
     :vartype resource_guid: str
@@ -233,6 +241,7 @@ class ApplicationGateway(Resource):
         'name': {'readonly': True},
         'type': {'readonly': True},
         'operational_state': {'readonly': True},
+        'private_endpoint_connections': {'readonly': True},
         'resource_guid': {'readonly': True},
         'provisioning_state': {'readonly': True},
         'etag': {'readonly': True},
@@ -266,6 +275,8 @@ class ApplicationGateway(Resource):
         'enable_http2': {'key': 'properties.enableHttp2', 'type': 'bool'},
         'enable_fips': {'key': 'properties.enableFips', 'type': 'bool'},
         'autoscale_configuration': {'key': 'properties.autoscaleConfiguration', 'type': 'ApplicationGatewayAutoscaleConfiguration'},
+        'private_link_configurations': {'key': 'properties.privateLinkConfigurations', 'type': '[ApplicationGatewayPrivateLinkConfiguration]'},
+        'private_endpoint_connections': {'key': 'properties.privateEndpointConnections', 'type': '[ApplicationGatewayPrivateEndpointConnection]'},
         'resource_guid': {'key': 'properties.resourceGuid', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'custom_error_configurations': {'key': 'properties.customErrorConfigurations', 'type': '[ApplicationGatewayCustomError]'},
@@ -275,7 +286,7 @@ class ApplicationGateway(Resource):
         'identity': {'key': 'identity', 'type': 'ManagedServiceIdentity'},
     }
 
-    def __init__(self, *, id: str=None, location: str=None, tags=None, sku=None, ssl_policy=None, gateway_ip_configurations=None, authentication_certificates=None, trusted_root_certificates=None, ssl_certificates=None, frontend_ip_configurations=None, frontend_ports=None, probes=None, backend_address_pools=None, backend_http_settings_collection=None, http_listeners=None, url_path_maps=None, request_routing_rules=None, rewrite_rule_sets=None, redirect_configurations=None, web_application_firewall_configuration=None, firewall_policy=None, enable_http2: bool=None, enable_fips: bool=None, autoscale_configuration=None, custom_error_configurations=None, force_firewall_policy_association: bool=None, zones=None, identity=None, **kwargs) -> None:
+    def __init__(self, *, id: str=None, location: str=None, tags=None, sku=None, ssl_policy=None, gateway_ip_configurations=None, authentication_certificates=None, trusted_root_certificates=None, ssl_certificates=None, frontend_ip_configurations=None, frontend_ports=None, probes=None, backend_address_pools=None, backend_http_settings_collection=None, http_listeners=None, url_path_maps=None, request_routing_rules=None, rewrite_rule_sets=None, redirect_configurations=None, web_application_firewall_configuration=None, firewall_policy=None, enable_http2: bool=None, enable_fips: bool=None, autoscale_configuration=None, private_link_configurations=None, custom_error_configurations=None, force_firewall_policy_association: bool=None, zones=None, identity=None, **kwargs) -> None:
         super(ApplicationGateway, self).__init__(id=id, location=location, tags=tags, **kwargs)
         self.sku = sku
         self.ssl_policy = ssl_policy
@@ -299,6 +310,8 @@ class ApplicationGateway(Resource):
         self.enable_http2 = enable_http2
         self.enable_fips = enable_fips
         self.autoscale_configuration = autoscale_configuration
+        self.private_link_configurations = private_link_configurations
+        self.private_endpoint_connections = None
         self.resource_guid = None
         self.provisioning_state = None
         self.custom_error_configurations = custom_error_configurations
@@ -1050,6 +1063,10 @@ class ApplicationGatewayFrontendIPConfiguration(SubResource):
     :param public_ip_address: Reference to the PublicIP resource.
     :type public_ip_address:
      ~azure.mgmt.network.v2020_05_01.models.SubResource
+    :param private_link_configuration: Reference to the application gateway
+     private link configuration.
+    :type private_link_configuration:
+     ~azure.mgmt.network.v2020_05_01.models.SubResource
     :ivar provisioning_state: The provisioning state of the frontend IP
      configuration resource. Possible values include: 'Succeeded', 'Updating',
      'Deleting', 'Failed'
@@ -1077,18 +1094,20 @@ class ApplicationGatewayFrontendIPConfiguration(SubResource):
         'private_ip_allocation_method': {'key': 'properties.privateIPAllocationMethod', 'type': 'str'},
         'subnet': {'key': 'properties.subnet', 'type': 'SubResource'},
         'public_ip_address': {'key': 'properties.publicIPAddress', 'type': 'SubResource'},
+        'private_link_configuration': {'key': 'properties.privateLinkConfiguration', 'type': 'SubResource'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'etag': {'key': 'etag', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
     }
 
-    def __init__(self, *, id: str=None, private_ip_address: str=None, private_ip_allocation_method=None, subnet=None, public_ip_address=None, name: str=None, **kwargs) -> None:
+    def __init__(self, *, id: str=None, private_ip_address: str=None, private_ip_allocation_method=None, subnet=None, public_ip_address=None, private_link_configuration=None, name: str=None, **kwargs) -> None:
         super(ApplicationGatewayFrontendIPConfiguration, self).__init__(id=id, **kwargs)
         self.private_ip_address = private_ip_address
         self.private_ip_allocation_method = private_ip_allocation_method
         self.subnet = subnet
         self.public_ip_address = public_ip_address
+        self.private_link_configuration = private_link_configuration
         self.provisioning_state = None
         self.name = name
         self.etag = None
@@ -1431,6 +1450,234 @@ class ApplicationGatewayPathRule(SubResource):
         self.rewrite_rule_set = rewrite_rule_set
         self.provisioning_state = None
         self.firewall_policy = firewall_policy
+        self.name = name
+        self.etag = None
+        self.type = None
+
+
+class ApplicationGatewayPrivateEndpointConnection(SubResource):
+    """Private Endpoint connection on an application gateway.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :param id: Resource ID.
+    :type id: str
+    :ivar private_endpoint: The resource of private end point.
+    :vartype private_endpoint:
+     ~azure.mgmt.network.v2020_05_01.models.PrivateEndpoint
+    :param private_link_service_connection_state: A collection of information
+     about the state of the connection between service consumer and provider.
+    :type private_link_service_connection_state:
+     ~azure.mgmt.network.v2020_05_01.models.PrivateLinkServiceConnectionState
+    :ivar provisioning_state: The provisioning state of the application
+     gateway private endpoint connection resource. Possible values include:
+     'Succeeded', 'Updating', 'Deleting', 'Failed'
+    :vartype provisioning_state: str or
+     ~azure.mgmt.network.v2020_05_01.models.ProvisioningState
+    :ivar link_identifier: The consumer link id.
+    :vartype link_identifier: str
+    :param name: Name of the private endpoint connection on an application
+     gateway.
+    :type name: str
+    :ivar etag: A unique read-only string that changes whenever the resource
+     is updated.
+    :vartype etag: str
+    :ivar type: Type of the resource.
+    :vartype type: str
+    """
+
+    _validation = {
+        'private_endpoint': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+        'link_identifier': {'readonly': True},
+        'etag': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'private_endpoint': {'key': 'properties.privateEndpoint', 'type': 'PrivateEndpoint'},
+        'private_link_service_connection_state': {'key': 'properties.privateLinkServiceConnectionState', 'type': 'PrivateLinkServiceConnectionState'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'link_identifier': {'key': 'properties.linkIdentifier', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'etag': {'key': 'etag', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(self, *, id: str=None, private_link_service_connection_state=None, name: str=None, **kwargs) -> None:
+        super(ApplicationGatewayPrivateEndpointConnection, self).__init__(id=id, **kwargs)
+        self.private_endpoint = None
+        self.private_link_service_connection_state = private_link_service_connection_state
+        self.provisioning_state = None
+        self.link_identifier = None
+        self.name = name
+        self.etag = None
+        self.type = None
+
+
+class ApplicationGatewayPrivateLinkConfiguration(SubResource):
+    """Private Link Configuration on an application gateway.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :param id: Resource ID.
+    :type id: str
+    :param ip_configurations: An array of application gateway private link ip
+     configurations.
+    :type ip_configurations:
+     list[~azure.mgmt.network.v2020_05_01.models.ApplicationGatewayPrivateLinkIpConfiguration]
+    :ivar provisioning_state: The provisioning state of the application
+     gateway private link configuration. Possible values include: 'Succeeded',
+     'Updating', 'Deleting', 'Failed'
+    :vartype provisioning_state: str or
+     ~azure.mgmt.network.v2020_05_01.models.ProvisioningState
+    :param name: Name of the private link configuration that is unique within
+     an Application Gateway.
+    :type name: str
+    :ivar etag: A unique read-only string that changes whenever the resource
+     is updated.
+    :vartype etag: str
+    :ivar type: Type of the resource.
+    :vartype type: str
+    """
+
+    _validation = {
+        'provisioning_state': {'readonly': True},
+        'etag': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'ip_configurations': {'key': 'properties.ipConfigurations', 'type': '[ApplicationGatewayPrivateLinkIpConfiguration]'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'etag': {'key': 'etag', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(self, *, id: str=None, ip_configurations=None, name: str=None, **kwargs) -> None:
+        super(ApplicationGatewayPrivateLinkConfiguration, self).__init__(id=id, **kwargs)
+        self.ip_configurations = ip_configurations
+        self.provisioning_state = None
+        self.name = name
+        self.etag = None
+        self.type = None
+
+
+class ApplicationGatewayPrivateLinkIpConfiguration(SubResource):
+    """The application gateway private link ip configuration.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :param id: Resource ID.
+    :type id: str
+    :param private_ip_address: The private IP address of the IP configuration.
+    :type private_ip_address: str
+    :param private_ip_allocation_method: The private IP address allocation
+     method. Possible values include: 'Static', 'Dynamic'
+    :type private_ip_allocation_method: str or
+     ~azure.mgmt.network.v2020_05_01.models.IPAllocationMethod
+    :param subnet: Reference to the subnet resource.
+    :type subnet: ~azure.mgmt.network.v2020_05_01.models.SubResource
+    :param primary: Whether the ip configuration is primary or not.
+    :type primary: bool
+    :ivar provisioning_state: The provisioning state of the application
+     gateway private link IP configuration. Possible values include:
+     'Succeeded', 'Updating', 'Deleting', 'Failed'
+    :vartype provisioning_state: str or
+     ~azure.mgmt.network.v2020_05_01.models.ProvisioningState
+    :param name: The name of application gateway private link ip
+     configuration.
+    :type name: str
+    :ivar etag: A unique read-only string that changes whenever the resource
+     is updated.
+    :vartype etag: str
+    :ivar type: The resource type.
+    :vartype type: str
+    """
+
+    _validation = {
+        'provisioning_state': {'readonly': True},
+        'etag': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'private_ip_address': {'key': 'properties.privateIPAddress', 'type': 'str'},
+        'private_ip_allocation_method': {'key': 'properties.privateIPAllocationMethod', 'type': 'str'},
+        'subnet': {'key': 'properties.subnet', 'type': 'SubResource'},
+        'primary': {'key': 'properties.primary', 'type': 'bool'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'etag': {'key': 'etag', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(self, *, id: str=None, private_ip_address: str=None, private_ip_allocation_method=None, subnet=None, primary: bool=None, name: str=None, **kwargs) -> None:
+        super(ApplicationGatewayPrivateLinkIpConfiguration, self).__init__(id=id, **kwargs)
+        self.private_ip_address = private_ip_address
+        self.private_ip_allocation_method = private_ip_allocation_method
+        self.subnet = subnet
+        self.primary = primary
+        self.provisioning_state = None
+        self.name = name
+        self.etag = None
+        self.type = None
+
+
+class ApplicationGatewayPrivateLinkResource(SubResource):
+    """PrivateLink Resource of an application gateway.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :param id: Resource ID.
+    :type id: str
+    :ivar group_id: Group identifier of private link resource.
+    :vartype group_id: str
+    :ivar required_members: Required member names of private link resource.
+    :vartype required_members: list[str]
+    :param required_zone_names: Required DNS zone names of the the private
+     link resource.
+    :type required_zone_names: list[str]
+    :param name: Name of the private link resource that is unique within an
+     Application Gateway.
+    :type name: str
+    :ivar etag: A unique read-only string that changes whenever the resource
+     is updated.
+    :vartype etag: str
+    :ivar type: Type of the resource.
+    :vartype type: str
+    """
+
+    _validation = {
+        'group_id': {'readonly': True},
+        'required_members': {'readonly': True},
+        'etag': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'group_id': {'key': 'properties.groupId', 'type': 'str'},
+        'required_members': {'key': 'properties.requiredMembers', 'type': '[str]'},
+        'required_zone_names': {'key': 'properties.requiredZoneNames', 'type': '[str]'},
+        'name': {'key': 'name', 'type': 'str'},
+        'etag': {'key': 'etag', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(self, *, id: str=None, required_zone_names=None, name: str=None, **kwargs) -> None:
+        super(ApplicationGatewayPrivateLinkResource, self).__init__(id=id, **kwargs)
+        self.group_id = None
+        self.required_members = None
+        self.required_zone_names = required_zone_names
         self.name = name
         self.etag = None
         self.type = None
@@ -2788,7 +3035,7 @@ class AzureFirewall(Resource):
         'threat_intel_mode': {'key': 'properties.threatIntelMode', 'type': 'str'},
         'virtual_hub': {'key': 'properties.virtualHub', 'type': 'SubResource'},
         'firewall_policy': {'key': 'properties.firewallPolicy', 'type': 'SubResource'},
-        'hub_ip_addresses': {'key': 'properties.hubIpAddresses', 'type': 'HubIPAddresses'},
+        'hub_ip_addresses': {'key': 'properties.hubIPAddresses', 'type': 'HubIPAddresses'},
         'ip_groups': {'key': 'properties.ipGroups', 'type': '[AzureFirewallIpGroups]'},
         'sku': {'key': 'properties.sku', 'type': 'AzureFirewallSku'},
         'additional_properties': {'key': 'properties.additionalProperties', 'type': '{str}'},
@@ -9840,31 +10087,37 @@ class LoadBalancer(Resource):
 class LoadBalancerBackendAddress(Model):
     """Load balancer backend addresses.
 
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
     :param virtual_network: Reference to an existing virtual network.
-    :type virtual_network:
-     ~azure.mgmt.network.v2020_05_01.models.VirtualNetwork
+    :type virtual_network: ~azure.mgmt.network.v2020_05_01.models.SubResource
     :param ip_address: IP Address belonging to the referenced virtual network.
     :type ip_address: str
-    :param network_interface_ip_configuration: Reference to IP address defined
+    :ivar network_interface_ip_configuration: Reference to IP address defined
      in network interfaces.
-    :type network_interface_ip_configuration:
-     ~azure.mgmt.network.v2020_05_01.models.NetworkInterfaceIPConfiguration
+    :vartype network_interface_ip_configuration:
+     ~azure.mgmt.network.v2020_05_01.models.SubResource
     :param name: Name of the backend address.
     :type name: str
     """
 
+    _validation = {
+        'network_interface_ip_configuration': {'readonly': True},
+    }
+
     _attribute_map = {
-        'virtual_network': {'key': 'properties.virtualNetwork', 'type': 'VirtualNetwork'},
+        'virtual_network': {'key': 'properties.virtualNetwork', 'type': 'SubResource'},
         'ip_address': {'key': 'properties.ipAddress', 'type': 'str'},
-        'network_interface_ip_configuration': {'key': 'properties.networkInterfaceIPConfiguration', 'type': 'NetworkInterfaceIPConfiguration'},
+        'network_interface_ip_configuration': {'key': 'properties.networkInterfaceIPConfiguration', 'type': 'SubResource'},
         'name': {'key': 'name', 'type': 'str'},
     }
 
-    def __init__(self, *, virtual_network=None, ip_address: str=None, network_interface_ip_configuration=None, name: str=None, **kwargs) -> None:
+    def __init__(self, *, virtual_network=None, ip_address: str=None, name: str=None, **kwargs) -> None:
         super(LoadBalancerBackendAddress, self).__init__(**kwargs)
         self.virtual_network = virtual_network
         self.ip_address = ip_address
-        self.network_interface_ip_configuration = network_interface_ip_configuration
+        self.network_interface_ip_configuration = None
         self.name = name
 
 
@@ -11502,6 +11755,9 @@ class NetworkVirtualAppliance(Resource):
     :type location: str
     :param tags: Resource tags.
     :type tags: dict[str, str]
+    :param nva_sku: Network Virtual Appliance SKU.
+    :type nva_sku:
+     ~azure.mgmt.network.v2020_05_01.models.VirtualApplianceSkuProperties
     :param boot_strap_configuration_blobs: BootStrapConfigurationBlobs storage
      URLs.
     :type boot_strap_configuration_blobs: list[str]
@@ -11531,9 +11787,6 @@ class NetworkVirtualAppliance(Resource):
      and config blob.
     :type identity:
      ~azure.mgmt.network.v2020_05_01.models.ManagedServiceIdentity
-    :param sku: Network Virtual Appliance SKU.
-    :type sku:
-     ~azure.mgmt.network.v2020_05_01.models.VirtualApplianceSkuProperties
     :ivar etag: A unique read-only string that changes whenever the resource
      is updated.
     :vartype etag: str
@@ -11555,6 +11808,7 @@ class NetworkVirtualAppliance(Resource):
         'type': {'key': 'type', 'type': 'str'},
         'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
+        'nva_sku': {'key': 'properties.nvaSku', 'type': 'VirtualApplianceSkuProperties'},
         'boot_strap_configuration_blobs': {'key': 'properties.bootStrapConfigurationBlobs', 'type': '[str]'},
         'virtual_hub': {'key': 'properties.virtualHub', 'type': 'SubResource'},
         'cloud_init_configuration_blobs': {'key': 'properties.cloudInitConfigurationBlobs', 'type': '[str]'},
@@ -11564,12 +11818,12 @@ class NetworkVirtualAppliance(Resource):
         'virtual_appliance_sites': {'key': 'properties.virtualApplianceSites', 'type': '[SubResource]'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'identity': {'key': 'identity', 'type': 'ManagedServiceIdentity'},
-        'sku': {'key': 'sku', 'type': 'VirtualApplianceSkuProperties'},
         'etag': {'key': 'etag', 'type': 'str'},
     }
 
-    def __init__(self, *, id: str=None, location: str=None, tags=None, boot_strap_configuration_blobs=None, virtual_hub=None, cloud_init_configuration_blobs=None, cloud_init_configuration: str=None, virtual_appliance_asn: int=None, identity=None, sku=None, **kwargs) -> None:
+    def __init__(self, *, id: str=None, location: str=None, tags=None, nva_sku=None, boot_strap_configuration_blobs=None, virtual_hub=None, cloud_init_configuration_blobs=None, cloud_init_configuration: str=None, virtual_appliance_asn: int=None, identity=None, **kwargs) -> None:
         super(NetworkVirtualAppliance, self).__init__(id=id, location=location, tags=tags, **kwargs)
+        self.nva_sku = nva_sku
         self.boot_strap_configuration_blobs = boot_strap_configuration_blobs
         self.virtual_hub = virtual_hub
         self.cloud_init_configuration_blobs = cloud_init_configuration_blobs
@@ -11579,7 +11833,6 @@ class NetworkVirtualAppliance(Resource):
         self.virtual_appliance_sites = None
         self.provisioning_state = None
         self.identity = identity
-        self.sku = sku
         self.etag = None
 
 

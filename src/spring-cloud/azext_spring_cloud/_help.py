@@ -17,14 +17,28 @@ helps['spring-cloud create'] = """
     examples:
     - name: Create a new Azure Spring Cloud in westus.
       text: az spring-cloud create -n MyService -g MyResourceGroup -l westus
+    - name: Create a new Azure Spring Cloud in westus with an existing Application Insights by using the instrumentation key.
+      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --app-insights-key MyInstrumentationKey
+    - name: Create a new Azure Spring Cloud in westus with an existing Application Insights and enable Java In-Process Agent.
+      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --enable-java-agent true --app-insights MyInstrumentationName
+    - name: Create a new Azure Spring Cloud with distributed tracing disabled.
+      text: az spring-cloud create -n MyService -g MyResourceGroup --disable-app-insights
+    - name: Create a new Azure Spring Cloud with VNet-injected via giving VNet name in current resource group
+      text: az spring-cloud create -n MyService -g MyResourceGroup --vnet MyVNet --app-subnet MyAppSubnet --service-runtime-subnet MyServiceRuntimeSubnet
+    - name: Create a new Azure Spring Cloud with VNet-injected via giving subnets resource ID
+      text: az spring-cloud create -n MyService -g MyResourceGroup --app-subnet /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyVnetRg/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/app --service-runtime-subnet /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyVnetRg/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/svc --reserved-cidr-range 10.0.0.0/16,10.1.0.0/16,10.2.0.1/16
 """
 
 helps['spring-cloud update'] = """
     type: command
-    short-summary: Update pricing tier of an Azure Spring Cloud.
+    short-summary: Update an Azure Spring Cloud.
     examples:
     - name: Update pricing tier.
       text: az spring-cloud update -n MyService --sku Standard -g MyResourceGroup
+    - name: Enable the distributed tracing of the existing Azure Spring Cloud.
+      text: az spring-cloud update -n MyService -g MyResourceGroup --disable-app-insights false
+    - name: Update the tags of the existing Azure Spring Cloud.
+      text: az spring-cloud update -n MyService -g MyResourceGroup --tags key1=value1 key2=value2
 """
 
 helps['spring-cloud delete'] = """
@@ -194,6 +208,13 @@ helps['spring-cloud app set-deployment'] = """
       text: az spring-cloud app set-deployment -d green-deployment -n MyApp -s MyCluster -g MyResourceGroup
 """
 
+helps['spring-cloud app unset-deployment'] = """
+    type: command
+    short-summary: Unset production deployment of an app.
+    examples:
+    - name: Swap the production deployment of an app to staging if the app has the production deployment.
+      text: az spring-cloud app unset-deployment -n MyApp -s MyCluster -g MyResourceGroup
+"""
 
 helps['spring-cloud app log'] = """
     type: group
@@ -227,7 +248,7 @@ helps['spring-cloud app deployment delete'] = """
 
 helps['spring-cloud app deployment create'] = """
     type: command
-    short-summary: Create a staging deployment for the app. To deploy code or update setting to an existing deployment, use az spring-cloud app deploy/update --deployment <staging deployment>.
+    short-summary: Create a staging deployment for the app. To deploy code or update setting to an existing deployment, use `az spring-cloud app deploy/update --deployment <staging deployment>`.
     examples:
     - name: Deploy source code to a new deployment of an app. This will pack current directory, build binary with Pivotal Build Service and then deploy.
       text: az spring-cloud app deployment create -n green-deployment --app MyApp -s MyCluster -g MyResourceGroup
@@ -272,22 +293,22 @@ helps['spring-cloud config-server git set'] = """
 
 helps['spring-cloud config-server git repo add'] = """
     type: command
-    short-summary: Set add a new repositry of git property of Config Server.
+    short-summary: Add a new repository of git property of Config Server.
 """
 
 helps['spring-cloud config-server git repo remove'] = """
     type: command
-    short-summary: Remove an existing repositry of git property of Config Server.
+    short-summary: Remove an existing repository of git property of Config Server.
 """
 
 helps['spring-cloud config-server git repo update'] = """
     type: command
-    short-summary: Override an existing repositry of git property of Config Server, will totally override the old one.
+    short-summary: Override an existing repository of git property of Config Server, will totally override the old one.
 """
 
 helps['spring-cloud config-server git repo list'] = """
     type: command
-    short-summary: List all repositries of git property of Config Server.
+    short-summary: List all repositories of git property of Config Server.
 """
 
 helps['spring-cloud app binding'] = """
@@ -424,4 +445,24 @@ helps['spring-cloud app custom-domain update'] = """
 helps['spring-cloud app custom-domain unbind'] = """
     type: command
     short-summary: Unbind a custom-domain of the app.
+"""
+
+helps['spring-cloud app-insights'] = """
+    type: group
+    short-summary: Commands to management Application Insights in Azure Spring Cloud.
+"""
+
+helps['spring-cloud app-insights show'] = """
+    type: command
+    short-summary: Show Application Insights settings.
+"""
+
+helps['spring-cloud app-insights update'] = """
+    type: command
+    short-summary: Update Application Insights settings.
+    examples:
+        - name: Enable Application Insights and Java In-process Agent.
+          text: az spring-cloud app-insights update -n MyService -g MyResourceGroup --app-insights-key MyInstrumentationKey --sampling-rate 100
+        - name: Disable Application Insights.
+          text: az spring-cloud app-insights update -n MyService -g MyResourceGroup --disable
 """

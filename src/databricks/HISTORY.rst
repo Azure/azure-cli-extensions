@@ -3,6 +3,31 @@
 Release History
 ===============
 
+0.7.1
++++++
+* az databricks workspace create: Fix issue when creating a workspace with --tags
+
+0.7.0
++++++
+* GA databricks extension
+
+0.6.0
++++++
+* GA CMK feature
+* Make --key-version optional when updating CMK
+
+0.5.0
++++++
+* az databricks workspace create: add --require-infrastructure-encryption to enable double encryption
+
+0.4.0
++++++
+* az databricks workspace vnet-peering: support vnet peering operations for workspaces
+
+0.3.0
++++++
+* az databricks workspace create/update: add customer-managed key feature
+
 0.2.0
 +++++
 * Rename --virtual-network to --vnet

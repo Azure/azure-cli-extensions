@@ -33,6 +33,18 @@ Add your extension to the index to make it available in these CLI commands:
 - Your extension artifact (i.e. `.whl`) will not live in this repository. You can publish your extension to PyPI or somewhere else such as Azure Storage.
 - If you want your extension to appear in the index.json, modify the index.
 
+## About extension publishing
+
+There is a pipeline to automatically build, upload and publish extension wheels.
+
+Once your PR is merged into master branch, a new PR will be created to update `src/index.json` automatically.
+
+The precondition is to put your code inside this repo and upgrade the version in the PR but not to modify `src/index.json`.
+
+If you want to host the source code in your dedicated repo, you have to upload the WHL file and update the `src/index.json` manually.
+
+For detail, please visit [Publish section in Azure CLI Extension Authoring](https://github.com/Azure/azure-cli/blob/dev/doc/extensions/authoring.md#publish).
+
 ## FAQ
 
 ### How to generate sha256digest for an index.json entry?

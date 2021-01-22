@@ -34,3 +34,5 @@ def validate_workspace_resource_id(cmd, namespace):
 
         # The location of solution is the same as the location of the workspace
         namespace.location = workspaces.location
+
+        namespace.solution_name = namespace.solution_type + "(" + workspace_param['resource_name'] + ")"

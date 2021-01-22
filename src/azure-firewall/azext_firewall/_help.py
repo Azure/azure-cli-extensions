@@ -85,34 +85,34 @@ helps['network firewall management-ip-config show'] = """
 """
 # endregion
 
-# region AzureFirewall Threat Intelligence Whitelist
-helps['network firewall threat-intel-whitelist'] = """
+# region AzureFirewall Threat Intelligence allowlist
+helps['network firewall threat-intel-allowlist'] = """
     type: group
-    short-summary: Manage and configure Azure Firewall Threat Intelligence Whitelist.
+    short-summary: Manage and configure Azure Firewall Threat Intelligence Allow List.
 """
 
-helps['network firewall threat-intel-whitelist create'] = """
+helps['network firewall threat-intel-allowlist create'] = """
     type: command
-    short-summary: Create an Azure Firewall Threat Intelligence Whitelist.
+    short-summary: Create an Azure Firewall Threat Intelligence Allow List.
     examples:
-        - name: Create a threat intelligence whitelist
+        - name: Create a threat intelligence allow list
           text: |
-            az network firewall threat-intel-whitelist create -g MyResourceGroup -n MyFirewall --ip-addresses 10.0.0.0 10.0.0.1 --fqdns *.microsoft.com www.bing.com *google.com
+            az network firewall threat-intel-allowlist create -g MyResourceGroup -n MyFirewall --ip-addresses 10.0.0.0 10.0.0.1 --fqdns *.microsoft.com www.bing.com *google.com
 """
 
-helps['network firewall threat-intel-whitelist delete'] = """
+helps['network firewall threat-intel-allowlist delete'] = """
     type: command
-    short-summary: Delete an Azure Firewall Threat Intelligence Whitelist.
+    short-summary: Delete an Azure Firewall Threat Intelligence Allow List.
 """
 
-helps['network firewall threat-intel-whitelist update'] = """
+helps['network firewall threat-intel-allowlist update'] = """
     type: command
-    short-summary: Update Azure Firewall Threat Intelligence Whitelist.
+    short-summary: Update Azure Firewall Threat Intelligence Allow List.
 """
 
-helps['network firewall threat-intel-whitelist show'] = """
+helps['network firewall threat-intel-allowlist show'] = """
     type: command
-    short-summary: Get the details of an Azure Firewall Threat Intelligence Whitelist.
+    short-summary: Get the details of an Azure Firewall Threat Intelligence Allow List.
 """
 # endregion
 
@@ -129,7 +129,7 @@ helps['network firewall network-rule create'] = """
 
 helps['network firewall network-rule delete'] = """
     type: command
-    short-summary: Delete an Azure Firewall network rule.
+    short-summary: Delete an Azure Firewall network rule. If you want to delete the last rule in a collection, please delete the collection instead.
 """
 
 helps['network firewall network-rule list'] = """
@@ -339,6 +339,26 @@ helps['network firewall policy list'] = """
     short-summary: List all Azure firewall policies.
 """
 
+helps['network firewall policy intrusion-detection'] = """
+    type: group
+    short-summary: Manage intrusion signature rules and bypass rules
+"""
+
+helps['network firewall policy intrusion-detection add'] = """
+    type: command
+    short-summary: Add overrided intrusion signature or a bypass rule for intrusion detection
+"""
+
+helps['network firewall policy intrusion-detection list'] = """
+    type: command
+    short-summary: List all intrusion detection configuration
+"""
+
+helps['network firewall policy intrusion-detection remove'] = """
+    type: command
+    short-summary: Remove overrided intrusion signature or a bypass rule
+"""
+
 helps['network firewall policy rule-collection-group'] = """
     type: group
     short-summary: Manage and configure Azure firewall policy rule collection group.
@@ -373,8 +393,8 @@ helps['network firewall policy rule-collection-group collection'] = """
     type: group
     short-summary: Manage and configure Azure firewall policy rule collections in the rule collection group.
     long-summary: |
-        Currently, Azure Firewall policy support two kinds of rule collections which are Filter collection and NAT collection. There are also two kinds of rules which are application rule and network rule.
-        NAT collection only support having one network rule. Filter collection support including a list of rules in it. But all of rules should be the same type.
+        Currently, Azure Firewall policy support two kinds of rule collections which are Filter collection and NAT collection. There are three kinds of rules which are application rule, network rule and nat rule.
+        NAT collection support having a list of nat rule. Filter collection support including a list of rules(network rule or application rule) in it. But all of rules should be the same type.
 """
 
 helps['network firewall policy rule-collection-group collection add-filter-collection'] = """
@@ -421,20 +441,23 @@ helps['network firewall policy rule-collection-group collection rule'] = """
     type: group
     short-summary: Manage and configure the rule of a filter collection in the rule collection group of Azure firewall policy.
     long-summary: |
-        Only filter collection supports having a list of rules.
+        Filter collection supports having a list of network rules or application rules.
+        NatRule collection supports including a list of nat rules.
 """
 
 helps['network firewall policy rule-collection-group collection rule add'] = """
     type: command
     short-summary: Add a rule into an Azure firewall policy rule collection.
     long-summary: |
-        Only filter collection supports having a list of rules.
+        Filter collection supports having a list of network rules or application rules.
+        NatRule collection supports including a list of nat rules.
 """
 
 helps['network firewall policy rule-collection-group collection rule remove'] = """
     type: command
     short-summary: Remove a rule from an Azure firewall policy rule collection.
     long-summary: |
-        Only filter collection supports having a list of rules.
+        Filter collection supports having a list of network rules or application rules.
+        NatRule collection supports including a list of nat rules.
 """
 # endregion

@@ -14,8 +14,76 @@ helps['storage account create'] = """
     long-summary: >
         The SKU of the storage account defaults to 'Standard_RAGRS'.
     examples:
-        - name: Create a storage account 'MyStorageAccount' in resource group 'MyResourceGroup' in the West US region with locally redundant storage.
-          text: az storage account create -n MyStorageAccount -g MyResourceGroup -l westus --sku Standard_LRS
+        - name: Create a storage account 'mystorageaccount' in resource group 'MyResourceGroup' in the West US region with locally redundant storage.
+          text: az storage account create -n mystorageaccount -g MyResourceGroup -l westus --sku Standard_LRS
+"""
+
+helps['storage account blob-inventory-policy'] = """
+type: group
+short-summary: Manage storage account Blob Inventory Policy.
+"""
+
+helps['storage account blob-inventory-policy create'] = """
+type: command
+short-summary: Create Blob Inventory Policy for storage account.
+examples:
+  - name: Create Blob Inventory Policy trough json file for storage account.
+    text: az storage account blob-inventory-policy create -g ResourceGroupName --account-name storageAccountName --policy @policy.json
+"""
+
+helps['storage account blob-inventory-policy show'] = """
+type: command
+short-summary: Show Blob Inventory Policy properties associated with the specified storage account.
+examples:
+  - name: Show Blob Inventory Policy properties associated with the specified storage account without prompt.
+    text: az storage account blob-inventory-policy show -g ResourceGroupName --account-name storageAccountName
+"""
+
+helps['storage account blob-inventory-policy update'] = """
+type: command
+short-summary: Update Blob Inventory Policy associated with the specified storage account.
+examples:
+  - name: Update Blob Inventory Policy associated with the specified storage account.
+    text: az storage account blob-inventory-policy update -g ResourceGroupName --account-name storageAccountName --set "policy.rules[0].name=newname"
+"""
+
+helps['storage account blob-inventory-policy delete'] = """
+type: command
+short-summary: Delete Blob Inventory Policy associated with the specified storage account.
+examples:
+  - name: Delete Blob Inventory Policy associated with the specified storage account without prompt.
+    text: az storage account blob-inventory-policy delete -g ResourceGroupName --account-name storageAccountName -y
+"""
+
+helps['storage account file-service-properties'] = """
+type: group
+short-summary: Manage the properties of file service in storage account.
+"""
+
+helps['storage account file-service-properties show'] = """
+type: command
+short-summary: Show the properties of file service in storage account.
+long-summary: >
+    Show the properties of file service in storage account.
+examples:
+  - name: Show the properties of file service in storage account.
+    text: az storage account file-service-properties show -n mystorageaccount -g MyResourceGroup
+"""
+
+helps['storage account file-service-properties update'] = """
+type: command
+short-summary: Update the properties of file service in storage account.
+long-summary: >
+    Update the properties of file service in storage account.
+examples:
+  - name: Enable soft delete policy and set delete retention days to 100 for file service in storage account.
+    text: az storage account file-service-properties update --enable-delete-retention true --delete-retention-days 100 -n mystorageaccount -g MyResourceGroup
+  - name: Disable soft delete policy for file service.
+    text: az storage account file-service-properties update --enable-delete-retention false -n mystorageaccount -g MyResourceGroup
+  - name: Enable SMB Multichannel setting for file service.
+    text: az storage account file-service-properties update --enable-smb-multichannel -n mystorageaccount -g MyResourceGroup
+  - name: Disable SMB Multichannel setting for file service.
+    text: az storage account file-service-properties update --enable-smb-multichannel false -n mystorageaccount -g MyResourceGroup
 """
 
 helps['storage account keys list'] = """
@@ -24,6 +92,21 @@ short-summary: List the access keys or Kerberos keys (if active directory enable
 examples:
   - name: List the access keys for a storage account.
     text: az storage account keys list -g MyResourceGroup -n MyStorageAccount
+"""
+
+helps['storage account keys renew'] = """
+type: command
+short-summary: Regenerate one of the access keys or Kerberos keys (if active directory enabled) for a storage account.
+long-summary: >
+    Kerberos key is generated per storage account for Azure Files identity based authentication either with
+    Azure Active Directory Domain Service (Azure AD DS) or Active Directory Domain Service (AD DS). It is used as the
+    password of the identity registered in the domain service that represents the storage account. Kerberos key does not
+    provide access permission to perform any control or data plane read or write operations against the storage account.
+examples:
+  - name: Regenerate one of the access keys for a storage account.
+    text: az storage account keys renew -g MyResourceGroup -n MyStorageAccount --key primary
+  - name: Regenerate one of the Kerberos keys for a storage account.
+    text: az storage account keys renew -g MyResourceGroup -n MyStorageAccount --key secondary
 """
 
 helps['storage account update'] = """

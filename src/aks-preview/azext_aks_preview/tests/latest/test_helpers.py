@@ -65,3 +65,19 @@ class TestTrimContainerName(unittest.TestCase):
         expected_container_name = 'abcdef-dns-ed55ba6d-e48fe2bd-b4bc-4aac-bc23-29bc44154fe1-privat'
         trim_container_name = helpers._trim_fqdn_name_containing_hcp(container_name)
         self.assertEqual(expected_container_name, trim_container_name)
+
+
+class TestFuzzyMatch(unittest.TestCase):
+    def setUp(self):
+        self.expected = ['bord', 'birdy', 'fbird', 'bir', 'ird', 'birdwaj']
+
+    def test_fuzzy_match(self):
+        result = helpers._fuzzy_match(
+            "bird", ["plane", "bord", "birdy", "fbird", "bir", "ird", "birdwaj", "bored", "biron", "bead"])
+
+        self.assertCountEqual(result, self.expected)
+        self.assertListEqual(result, self.expected)
+
+
+if __name__ == "__main__":
+    unittest.main()

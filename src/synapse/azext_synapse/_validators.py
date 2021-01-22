@@ -20,7 +20,7 @@ def validate_statement_language(namespace):
     statement_language = {
         'spark': 'spark',
         'scala': 'spark',
-        'pypark': 'pyspark',
+        'pyspark': 'pyspark',
         'python': 'pyspark',
         'sparkdotnet': 'sparkdotnet',
         'csharp': 'sparkdotnet',

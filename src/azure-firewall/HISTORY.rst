@@ -2,7 +2,39 @@
 
 Release History
 ===============
+0.8.0
+++++++
+* `az network firewall policy create`: support `--sku` to create premium tier firewall policy
+* `az network firewall policy create`: support `--key-vault-secret-id` to configure transport security
+* `az network firewall policy rule-collection-group collection`: support `--target-urls` to configure target URLs and `--enable-terminate-tls` to enable TLS terminate for rules for premium tier firewall policy
+* `az network firewall policy intrusion-detection`: new commad group to support to configure intrusion detection policy for premium tier firewall policy
 
+0.6.2
+++++++
+* `az network firewall create`: improve documentation of application and network rules options
+0.6.1
+++++++
+* `az network firewall create`: make Network.DNS.EnableProxy option value lowercase
+0.6.0
+++++++
+* [Breaking Change] `az network firewall threat-intel-allowlist`: rename whitelist to allowlist
+
+0.5.1
+++++++
+* `az network firewall create/update`: support new `--allow-active-ftp` argument.
+* `az network firewall network-rule delete`: refine help message.
+
+0.5.0
+++++++
+* `az network firewall create/update`: support multiple ip addresses for vhub firewall.
+* `az network firewall policy rule-collection-group rule-collection`: support multiple DNAT rules and ip groups.
+
+0.4.0
+++++++
+* `az network firewall create/update`: add --dns-servers, --enable-dns-proxy, --require-dns-proxy-for-network-rules to configure DNS proxy settings.
+* `az network firewall policy create/update`: add --dns-servers, --enable-dns-proxy, --require-dns-proxy-for-network-rules to configure DNS proxy settings.
+* `az network firewall policy create`: support threat white list arguments.
+* `az network firewall create/update`: support --threat-intel-model argument.
 0.3.1
 ++++++
 * `az network firewall network-rule/nat-rule`: Bug fixes.

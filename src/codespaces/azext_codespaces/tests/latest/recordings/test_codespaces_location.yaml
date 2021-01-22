@@ -1,0 +1,93 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python/3.7.4 (Darwin-19.5.0-x86_64-i386) azure-cli/2.5.1 codespaces-extension/0.3.0
+    method: GET
+    uri: https://online.visualstudio.com/api/v1/locations
+  response:
+    body:
+      string: '{"current":"WestUs2","available":["EastUs","SouthEastAsia","WestEurope","WestUs2"],"hostnames":{"EastUs":"eastus.online.visualstudio.com","SouthEastAsia":"southeastasia.online.visualstudio.com","WestEurope":"westeurope.online.visualstudio.com","WestUs2":"westus2.online.visualstudio.com"}}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '289'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Jul 2020 23:12:20 GMT
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      vssaas-request-id:
+      - 5548602b-8c38-4e9a-8f01-d51b733443d4
+      x-content-type-options:
+      - nosniff
+      x-served-by:
+      - vsclk-online-prod-rel-usw2-cluster
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - application/json
+      User-Agent:
+      - python/3.7.4 (Darwin-19.5.0-x86_64-i386) azure-cli/2.5.1 codespaces-extension/0.3.0
+    method: GET
+    uri: https://online.visualstudio.com/api/v1/locations/westus2
+  response:
+    body:
+      string: '{"skus":[{"name":"standardLinux","displayName":"Standard (Linux): 4
+        cores, 8 GB RAM","os":"Linux"},{"name":"basicLinux","displayName":"Basic (Linux):
+        2 cores, 4 GB RAM","os":"Linux"},{"name":"premiumLinux","displayName":"Premium
+        (Linux): 8 cores, 16 GB RAM","os":"Linux"}],"defaultAutoSuspendDelayMinutes":[5,30,60,120]}'
+    headers:
+      connection:
+      - keep-alive
+      content-length:
+      - '320'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 13 Jul 2020 23:12:20 GMT
+      server:
+      - nginx/1.17.7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      vssaas-request-id:
+      - 34df3d06-4b69-4899-a59b-f62b7cb4b50c
+      x-content-type-options:
+      - nosniff
+      x-served-by:
+      - vsclk-online-prod-rel-usw2-cluster
+    status:
+      code: 200
+      message: OK
+version: 1

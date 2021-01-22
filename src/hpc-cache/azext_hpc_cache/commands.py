@@ -51,7 +51,7 @@ def load_command_table(self, _):
 
     with self.command_group('hpc-cache storage-target', hpc_cache_storage_targets, client_factory=cf_storage_targets) as g:
         g.custom_command('remove', 'delete_hpc_cache_storage_target')
-        g.custom_command('show', 'get_hpc_cache_storage_target')
+        g.custom_show_command('show', 'get_hpc_cache_storage_target')
         g.custom_command('list', 'list_hpc_cache_storage_target')
 
     with self.command_group('hpc-cache nfs-storage-target', hpc_cache_storage_targets, client_factory=cf_storage_targets) as g:

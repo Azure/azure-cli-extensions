@@ -29,7 +29,8 @@ class OperationsScenarioTest(ScenarioTest):
             'sub': self.get_subscription_id(),
             'la_prop_path': os.path.join(TEST_DIR, 'log_analytics.json')
         })
-        self.kwargs['solution_name'] = 'Containers(' + self.kwargs['workspace_name'] + ')'
+        self.kwargs['solution_type'] = 'Containers'
+        self.kwargs['solution_name'] = self.kwargs['solution_type'] + '(' + self.kwargs['workspace_name'] + ')'
 
         workspace = self.cmd('resource create -g {rg} -n {workspace_name} -l {loc} --resource-type '
                              'Microsoft.OperationalInsights/workspaces -p @"{la_prop_path}"').get_output_in_json()
@@ -41,26 +42,20 @@ class OperationsScenarioTest(ScenarioTest):
         with self.assertRaises(CLIError) as err:
             self.cmd('az monitor log-analytics solution create '
                      '--resource-group {rg} '
-                     '--name {solution_name} '
-                     '--plan-publisher "Microsoft" '
-                     '--plan-product "OMSGallery/Containers" '
+                     '--solution-type {solution_type} '
                      '--workspace "{wrong_workspace_resource_id}" ')
             self.assertTrue("usage error: --workspace is invalid" == err.exception)
 
         with self.assertRaises(CLIError) as err:
             self.cmd('az monitor log-analytics solution create '
                      '--resource-group {rg2} '
-                     '--name {solution_name} '
-                     '--plan-publisher "Microsoft" '
-                     '--plan-product "OMSGallery/Containers" '
+                     '--solution-type {solution_type} '
                      '--workspace "{workspace_resource_id}" ')
             self.assertTrue("usage error: workspace and solution must be under the same resource group" == err.exception)
 
         self.cmd('az monitor log-analytics solution create '
                  '--resource-group {rg} '
-                 '--name {solution_name} '
-                 '--plan-publisher "Microsoft" '
-                 '--plan-product "OMSGallery/Containers" '
+                 '--solution-type {solution_type} '
                  '--workspace "{workspace_resource_id}" '
                  '--tags key1=value1',
                  checks=[self.check('name', '{solution_name}')])
@@ -89,9 +84,7 @@ class OperationsScenarioTest(ScenarioTest):
 
         self.cmd('az monitor log-analytics solution create '
                  '--resource-group {rg2} '
-                 '--name {solution_name2} '
-                 '--plan-publisher "Microsoft" '
-                 '--plan-product "OMSGallery/Containers" '
+                 '-t {solution_type} '
                  '--workspace "{workspace_name2}" '
                  '--tags key3=value3',
                  checks=[self.check('name', '{solution_name2}')])
