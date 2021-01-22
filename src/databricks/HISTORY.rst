@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.7.1
++++++
+* az databricks workspace create: Fix issue when creating a workspace with --tags
+
 0.7.0
 +++++
 * GA databricks extension

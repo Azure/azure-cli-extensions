@@ -46,3 +46,7 @@ def cf_tag_rule(cli_ctx, *_):
 
 def cf_single_sign_on_configuration(cli_ctx, *_):
     return cf_datadog_cl(cli_ctx).single_sign_on_configuration
+
+
+def cf_marketplace_agreement(cli_ctx, *_):
+    return cf_datadog_cl(cli_ctx).marketplace_agreements

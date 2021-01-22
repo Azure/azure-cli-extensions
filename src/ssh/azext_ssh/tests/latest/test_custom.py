@@ -16,26 +16,26 @@ class SshCustomCommandTest(unittest.TestCase):
     @mock.patch('azext_ssh.custom.ssh_utils')
     def test_ssh_vm(self, mock_ssh_utils, mock_do_op):
         cmd = mock.Mock()
-        custom.ssh_vm(cmd, "rg", "vm", "ip", "public", "private")
+        custom.ssh_vm(cmd, "rg", "vm", "ip", "public", "private", False)
 
         mock_do_op.assert_called_once_with(
-            cmd, "rg", "vm", "ip", "public", "private", mock_ssh_utils.start_ssh_connection)
+            cmd, "rg", "vm", "ip", "public", "private", False, mock_ssh_utils.start_ssh_connection)
 
     @mock.patch('azext_ssh.custom._do_ssh_op')
     @mock.patch('azext_ssh.ssh_utils.write_ssh_config')
     def test_ssh_config(self, mock_ssh_utils, mock_do_op):
         cmd = mock.Mock()
 
-        def do_op_side_effect(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_key_file, op_call):
+        def do_op_side_effect(cmd, resource_group, vm_name, ssh_ip, public_key_file, private_key_file, use_private_ip, op_call):
             op_call(ssh_ip, "username", "cert_file", private_key_file)
 
         mock_do_op.side_effect = do_op_side_effect
-        custom.ssh_config(cmd, "path/to/file", "rg", "vm", "ip", "public", "private")
+        custom.ssh_config(cmd, "path/to/file", "rg", "vm", "ip", "public", "private", False, False)
 
-        mock_ssh_utils.assert_called_once_with("path/to/file", "rg", "vm", "ip", "username", "cert_file", "private")
+        mock_ssh_utils.assert_called_once_with("path/to/file", "rg", "vm", False, "ip", "username", "cert_file", "private")
 
         mock_do_op.assert_called_once_with(
-            cmd, "rg", "vm", "ip", "public", "private", mock.ANY)
+            cmd, "rg", "vm", "ip", "public", "private", False, mock.ANY)
 
     @mock.patch('os.path.join')
     @mock.patch('azext_ssh.custom._assert_args')
@@ -53,7 +53,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_ssh_creds.return_value = "username", "certificate"
         mock_join.return_value = "public-aadcert.pub"
 
-        custom._do_ssh_op(cmd, None, None, "1.2.3.4", "publicfile", "privatefile", mock_op)
+        custom._do_ssh_op(cmd, None, None, "1.2.3.4", "publicfile", "privatefile", False, mock_op)
 
         mock_assert.assert_called_once_with(None, None, "1.2.3.4")
         mock_check_files.assert_called_once_with("publicfile", "privatefile")
@@ -76,11 +76,11 @@ class SshCustomCommandTest(unittest.TestCase):
 
         self.assertRaises(
             util.CLIError, custom._do_ssh_op, cmd, "rg", "vm", None,
-            "publicfile", "privatefile", mock_op)
+            "publicfile", "privatefile", False, mock_op)
 
         mock_assert.assert_called_once_with("rg", "vm", None)
         mock_check_files.assert_called_once_with("publicfile", "privatefile")
-        mock_ip.assert_called_once_with(cmd, "rg", "vm")
+        mock_ip.assert_called_once_with(cmd, "rg", "vm", False)
 
     def test_assert_args_no_ip_or_vm(self):
         self.assertRaises(util.CLIError, custom._assert_args, None, None, None)
