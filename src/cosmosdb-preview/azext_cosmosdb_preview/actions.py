@@ -106,7 +106,6 @@ class UtcDatetimeAction(argparse.Action):
         help_string = 'Format: ' + ' '.join(accepted_formats)
         value_string = ''.join(values)
         dt_val = None
-        print(values)
         try:
             # attempt to parse ISO 8601
             dt_val = dateutil.parser.parse(value_string)
