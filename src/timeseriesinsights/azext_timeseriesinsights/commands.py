@@ -15,19 +15,19 @@ def load_command_table(self, _):
         operations_tmpl='azext_timeseriesinsights.vendored_sdks.timeseriesinsights.operations._environments_operations#'
         'EnvironmentsOperations.{}',
         client_factory=cf_environment)
-    with self.command_group('tsi env', timeseriesinsights_environment,
+    with self.command_group('tsi environment', timeseriesinsights_environment,
                             client_factory=cf_environment, is_experimental=True) as g:
         g.custom_command('list', 'timeseriesinsights_environment_list')
         g.custom_show_command('show', 'timeseriesinsights_environment_show')
         g.custom_command('delete', 'timeseriesinsights_environment_delete', confirmation=True)
         g.custom_wait_command('wait', 'timeseriesinsights_environment_show')
 
-    with self.command_group('tsi env gen1', timeseriesinsights_environment,
+    with self.command_group('tsi environment gen1', timeseriesinsights_environment,
                             client_factory=cf_environment) as g:
         g.custom_command('create', 'timeseriesinsights_environment_gen1_create', supports_no_wait=True)
         g.custom_command('update', 'timeseriesinsights_environment_gen1_update', supports_no_wait=True)
 
-    with self.command_group('tsi env gen2', timeseriesinsights_environment,
+    with self.command_group('tsi environment gen2', timeseriesinsights_environment,
                             client_factory=cf_environment) as g:
         g.custom_command('create', 'timeseriesinsights_environment_gen2_create', supports_no_wait=True)
         g.custom_command('update', 'timeseriesinsights_environment_gen2_update', supports_no_wait=True)

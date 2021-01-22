@@ -29,7 +29,7 @@ from azext_timeseriesinsights.action import (
 
 def load_arguments(self, _):
 
-    with self.argument_context('tsi env') as c:
+    with self.argument_context('tsi environment') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='The name '
                    'of the Time Series Insights environment associated with the specified resource group.', id_part=''
@@ -37,10 +37,10 @@ def load_arguments(self, _):
         c.argument('expand', type=str, help='Setting $expand=status will include the status of the internal services '
                    'of the environment in the Time Series Insights service.')
 
-    with self.argument_context('tsi env list') as c:
+    with self.argument_context('tsi environment list') as c:
         c.argument('environment_name', id_part=None)
 
-    with self.argument_context('tsi env gen1') as c:
+    with self.argument_context('tsi environment gen1') as c:
         c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='Name of the'
                    ' environment', id_part='name')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
@@ -64,10 +64,10 @@ def load_arguments(self, _):
                    'properties which will be used to partition data in the environment. Currently, only a single '
                    'partition key property is supported.')
 
-    with self.argument_context('tsi env gen1 create') as c:
+    with self.argument_context('tsi environment gen1 create') as c:
         c.argument('environment_name', id_part=None)
 
-    with self.argument_context('tsi env gen2') as c:
+    with self.argument_context('tsi environment gen2') as c:
         c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='Name of the'
                    ' environment', id_part='name')
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
@@ -88,7 +88,7 @@ def load_arguments(self, _):
                    'configuration provides the details to create a warm store cache that will retain a copy of the '
                    'environment\'s data available for faster query.')
 
-    with self.argument_context('tsi env gen2 create') as c:
+    with self.argument_context('tsi environment gen2 create') as c:
         c.argument('environment_name', id_part=None)
 
     with self.argument_context('tsi event-source') as c:
