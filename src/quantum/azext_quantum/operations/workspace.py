@@ -68,7 +68,7 @@ def get_basic_quantum_workspace(location, info, storage_account):
 
 def create(cmd, resource_group_name=None, workspace_name=None, location=None, storage_account=None):
     """
-    Creates a new Azure Quantum workspace.
+    Create a new Azure Quantum workspace.
     """
     client = cf_workspaces(cmd.cli_ctx)
     if (not workspace_name):
@@ -86,7 +86,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
 
 def delete(cmd, resource_group_name=None, workspace_name=None):
     """
-    Deletes the given (or current) Azure Quantum workspace.
+    Delete the given (or current) Azure Quantum workspace.
     """
     client = cf_workspaces(cmd.cli_ctx)
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name)
@@ -136,7 +136,7 @@ def set(cmd, workspace_name, resource_group_name=None, location=None):
 
 def clear(cmd):
     """
-    Unset the default Azure Quantum workspace.
+    Clear the default Azure Quantum workspace.
     """
     info = WorkspaceInfo(cmd)
     info.clear()
