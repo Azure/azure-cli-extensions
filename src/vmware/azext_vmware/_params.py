@@ -41,6 +41,7 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware private-cloud delete') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
+        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware authorization') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the authorization.')
