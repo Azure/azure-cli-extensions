@@ -373,3 +373,23 @@ def cli_cosmosdb_list(client, resource_group_name=None):
         return client.list_by_resource_group(resource_group_name)
 
     return client.list()
+
+
+def cli_cosmosdb_restorable_database_account_list(client,
+                                                  location=None,
+                                                  account_name=None):
+    restorable_database_accounts = None
+    if location is not None:
+        restorable_database_accounts = client.list_by_location(location)
+    else:
+        restorable_database_accounts = client.list()
+
+    if account_name is None:
+        return restorable_database_accounts
+
+    matching_restorable_accounts = []
+    restorable_database_accounts_list = list(restorable_database_accounts)
+    for account in restorable_database_accounts_list:
+        if account.account_name == account_name:
+            matching_restorable_accounts.append(account)
+    return matching_restorable_accounts
