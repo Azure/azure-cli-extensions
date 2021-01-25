@@ -7,6 +7,7 @@ Release History
 ++++++
 * Added checks for proxy and added disable-proxy
 * Updated config dataplane endpoint to support other clouds
+* `az connectedk8s connect`: Added support for kubernetes distro/infra parameters and heuristics
 
 0.2.7
 ++++++

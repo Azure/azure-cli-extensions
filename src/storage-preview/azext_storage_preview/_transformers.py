@@ -124,6 +124,10 @@ def transform_storage_list_output(result):
     return list(result)
 
 
+def transform_file_upload(result):
+    return None
+
+
 def transform_metadata(result):
     return result.metadata
 

@@ -282,7 +282,7 @@ class ResourceTypes(object):
         :param str string: Specify service, container, or object in
             in the string with the first letter of the word.
         :return: A ResourceTypes object
-        :rtype: ~azure.storage.blob.ResourceTypes
+        :rtype: ~.ResourceTypes
         """
         res_service = 's' in string
         res_container = 'c' in string
@@ -370,7 +370,7 @@ class AccountSasPermissions(object):
         :param str permission: Specify permissions in
             the string with the first letter of the word.
         :return: An AccountSasPermissions object
-        :rtype: ~azure.storage.blob.AccountSasPermissions
+        :rtype: ~.AccountSasPermissions
         """
         p_read = 'r' in permission
         p_write = 'w' in permission
@@ -386,14 +386,14 @@ class AccountSasPermissions(object):
         parsed = cls(read=p_read, write=p_write, delete=p_delete, delete_previous_version=p_delete_previous_version,
                      list=p_list, add=p_add, create=p_create, update=p_update, process=p_process, tag=p_tag,
                      filter_by_tags=p_filter_by_tags)
-        parsed._str = permission # pylint: disable = protected-access
+
         return parsed
 
 class Services(object):
     """Specifies the services accessible with the account SAS.
 
     :param bool blob:
-        Access for the `~azure.storage.blob.BlobServiceClient`
+        Access for the `~.BlobServiceClient`
     :param bool queue:
         Access for the `~azure.storage.queue.QueueServiceClient`
     :param bool fileshare:
@@ -422,7 +422,7 @@ class Services(object):
         :param str string: Specify blob, queue, or file in
             in the string with the first letter of the word.
         :return: A Services object
-        :rtype: ~azure.storage.blob.Services
+        :rtype: ~.Services
         """
         res_blob = 'b' in string
         res_queue = 'q' in string

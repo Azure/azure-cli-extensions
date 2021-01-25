@@ -39,7 +39,7 @@ logger = get_logger(__name__)
 
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
-                        kube_config=None, kube_context=None, no_wait=False, tags=None):
+                        kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto'):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -108,13 +108,21 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # if the user had not logged in.
     check_kube_connection(configuration)
 
-    # Get kubernetes cluster info for telemetry
+    # Get kubernetes cluster info
     kubernetes_version = get_server_version(configuration)
-    kubernetes_distro = get_kubernetes_distro(configuration)
+    if distribution == 'auto':
+        kubernetes_distro = get_kubernetes_distro(configuration)  # (cluster heuristics)
+    else:
+        kubernetes_distro = distribution
+    if infrastructure == 'auto':
+        kubernetes_infra = get_kubernetes_infra(configuration)  # (cluster heuristics)
+    else:
+        kubernetes_infra = infrastructure
 
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
-        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro
+        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
+        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
@@ -161,7 +169,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                             configmap_cluster_name).agent_public_key_certificate
                 except Exception as e:  # pylint: disable=broad-except
                     utils.arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type, 'Failed to check if connected cluster resource already exists.')
-                cc = generate_request_payload(configuration, location, public_key, tags)
+                cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra)
                 create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
             else:
                 telemetry.set_user_fault()
@@ -229,13 +237,13 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         raise CLIError("Failed to export private key." + str(e))
 
     # Generate request payload
-    cc = generate_request_payload(configuration, location, public_key, tags)
+    cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra)
 
     # Create connected cluster resource
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
 
     # Install azure-arc agents
-    helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
+    helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
                          kube_context, no_wait, values_file_provided, values_file, azure_cloud)
 
@@ -415,22 +423,67 @@ def get_server_version(configuration):
                                            raise_error=False)
 
 
-def get_kubernetes_distro(configuration):
+def get_kubernetes_distro(configuration):  # Heuristic
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     try:
         api_response = api_instance.list_node()
         if api_response.items:
             labels = api_response.items[0].metadata.labels
-            if labels.get("node.openshift.io/os_id") == "rhcos" or labels.get("node.openshift.io/os_id") == "rhel":
+            provider_id = str(api_response.items[0].spec.provider_id)
+            annotations = list(api_response.items)[0].metadata.annotations
+            if labels.get("node.openshift.io/os_id"):
                 return "openshift"
-        return "default"
+            if labels.get("kubernetes.azure.com/node-image-version"):
+                return "aks"
+            if labels.get("cloud.google.com/gke-nodepool") or labels.get("cloud.google.com/gke-os-distribution"):
+                return "gke"
+            if labels.get("eks.amazonaws.com/nodegroup"):
+                return "eks"
+            if labels.get("minikube.k8s.io/version"):
+                return "minikube"
+            if provider_id.startswith("kind://"):
+                return "kind"
+            if provider_id.startswith("k3s://"):
+                return "k3s"
+            if annotations.get("rke.cattle.io/external-ip") or annotations.get("rke.cattle.io/internal-ip"):
+                return "rancher_rke"
+            if provider_id.startswith("moc://"):   # Todo: ask from aks hci team for more reliable identifier in node labels,etc
+                return "generic"                   # return "aks_hci"
+        return "generic"
     except Exception as e:  # pylint: disable=broad-except
         logger.warning("Error occured while trying to fetch kubernetes distribution.")
         utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Distro_Fault_Type, 'Unable to fetch kubernetes distribution',
                                            raise_error=False)
+        return "generic"
 
 
-def generate_request_payload(configuration, location, public_key, tags):
+def get_kubernetes_infra(configuration):  # Heuristic
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    try:
+        api_response = api_instance.list_node()
+        if api_response.items:
+            provider_id = str(api_response.items[0].spec.provider_id)
+            infra = provider_id.split(':')[0]
+            if infra == "k3s" or infra == "kind":
+                return "generic"
+            if infra == "azure":
+                return "azure"
+            if infra == "gce":
+                return "gcp"
+            if infra == "aws":
+                return "aws"
+            if infra == "moc":                  # Todo: ask from aks hci team for more reliable identifier in node labels,etc
+                return "generic"                # return "azure_stack_hci"
+            return utils.validate_infrastructure_type(infra)
+        return "generic"
+    except Exception as e:  # pylint: disable=broad-except
+        logger.warning("Error occured while trying to fetch kubernetes infrastructure.")
+        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Infra_Fault_Type, 'Unable to fetch kubernetes infrastructure',
+                                           raise_error=False)
+        return "generic"
+
+
+def generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra):
     # Create connected cluster resource object
     aad_profile = ConnectedClusterAADProfile(
         tenant_id="",
@@ -447,7 +500,9 @@ def generate_request_payload(configuration, location, public_key, tags):
         identity=identity,
         agent_public_key_certificate=public_key,
         aad_profile=aad_profile,
-        tags=tags
+        tags=tags,
+        distribution=kubernetes_distro,
+        infrastructure=kubernetes_infra
     )
     return cc
 
@@ -598,12 +653,13 @@ def get_release_namespace(kube_config, kube_context):
     return None
 
 
-def helm_install_release(chart_path, subscription_id, kubernetes_distro, resource_group_name, cluster_name,
+def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
                          kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name):
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
+                        "--set", "global.kubernetesInfra={}".format(kubernetes_infra),
                         "--set", "global.resourceGroupName={}".format(resource_group_name),
                         "--set", "global.resourceName={}".format(cluster_name),
                         "--set", "global.location={}".format(location),
@@ -779,13 +835,6 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     # Get kubernetes cluster info for telemetry
     kubernetes_version = get_server_version(configuration)
-    kubernetes_distro = get_kubernetes_distro(configuration)
-
-    kubernetes_properties = {
-        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
-        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro
-    }
-    telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
     # Checking helm installation
     check_helm_install(kube_config, kube_context)
@@ -810,6 +859,23 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
+
+    if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
+        kubernetes_distro = connected_cluster.distribution
+    else:
+        kubernetes_distro = get_kubernetes_distro(configuration)
+
+    if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
+        kubernetes_infra = connected_cluster.infrastructure
+    else:
+        kubernetes_infra = get_kubernetes_infra(configuration)
+
+    kubernetes_properties = {
+        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
+        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
+        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
+    }
+    telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):

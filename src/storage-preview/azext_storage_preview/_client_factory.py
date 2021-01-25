@@ -8,7 +8,8 @@ from azure.cli.core.profiles import get_sdk, ResourceType
 from knack.util import CLIError
 from knack.log import get_logger
 
-from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_QUEUE
+from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_FILESHARE,
+                       CUSTOM_DATA_STORAGE_QUEUE)
 
 MISSING_CREDENTIALS_ERROR_MESSAGE = """
 Missing credentials to access storage service. The following variations are accepted:
@@ -131,6 +132,10 @@ def cf_blob_data_gen_update(cli_ctx, kwargs):
     return blob_data_service_factory(cli_ctx, kwargs.copy())
 
 
+def cf_mgmt_file_services(cli_ctx, _):
+    return storage_client_factory(cli_ctx).file_services
+
+
 def get_account_url(cli_ctx, account_name, service):
     from knack.util import CLIError
     if account_name is None:
@@ -161,3 +166,34 @@ def cf_queue_service(cli_ctx, kwargs):
 
 def cf_queue_client(cli_ctx, kwargs):
     return cf_queue_service(cli_ctx, kwargs).get_queue_client(queue=kwargs.pop('queue_name'))
+
+
+def cf_share_service(cli_ctx, kwargs):
+    t_share_service = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE_FILESHARE, '_share_service_client#ShareServiceClient')
+    connection_string = kwargs.pop('connection_string', None)
+    account_key = kwargs.pop('account_key', None)
+    token_credential = kwargs.pop('token_credential', None)
+    sas_token = kwargs.pop('sas_token', None)
+    account_name = kwargs.pop('account_name', None)
+    if connection_string:
+        return t_share_service.from_connection_string(conn_str=connection_string)
+
+    account_url = get_account_url(cli_ctx, account_name=account_name, service='file')
+    credential = account_key or sas_token or token_credential
+
+    if account_url and credential:
+        return t_share_service(account_url=account_url, credential=credential)
+    return None
+
+
+def cf_share_client(cli_ctx, kwargs):
+    return cf_share_service(cli_ctx, kwargs).get_share_client(share=kwargs.pop('share_name'),
+                                                              snapshot=kwargs.pop('snapshot', None))
+
+
+def cf_share_directory_client(cli_ctx, kwargs):
+    return cf_share_client(cli_ctx, kwargs).get_directory_client(directory_path=kwargs.pop('directory_path'))
+
+
+def cf_share_file_client(cli_ctx, kwargs):
+    return cf_share_client(cli_ctx, kwargs).get_file_client(file_path=kwargs.pop('file_path'))

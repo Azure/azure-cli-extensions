@@ -10,9 +10,11 @@ from ._validators import (get_datetime_type, validate_metadata,
                           validate_azcopy_upload_destination_url, validate_azcopy_download_source_url,
                           validate_azcopy_target_url, validate_included_datasets,
                           validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url,
-                          validate_storage_data_plane_list, process_resource_group, ipv4_range_type,
+                          validate_storage_data_plane_list, validate_delete_retention_days,
+                          process_resource_group, add_upload_progress_callback, ipv4_range_type,
                           get_permission_help_string, get_permission_validator)
-from .profiles import CUSTOM_DATA_STORAGE_QUEUE
+
+from .profiles import CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_QUEUE
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements
@@ -56,6 +58,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                     '"[default:]user|group|other|mask:[entity id or UPN]:r|-w|-x|-,'
                                     '[default:]user|group|other|mask:[entity id or UPN]:r|-w|-x|-,...". '
                                     'e.g."user::rwx,user:john.doe@contoso:rwx,group::r--,other::---,mask::rwx".')
+    progress_type = CLIArgumentType(help='Include this flag to disable progress reporting for the command.',
+                                    action='store_true', validator=add_upload_progress_callback)
 
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
@@ -112,6 +116,25 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     #     c.argument('destination', help='')
     #     c.argument('enabled', help='')
     #     c.argument('type', help='')
+
+    with self.argument_context('storage account file-service-properties show',
+                               resource_type=CUSTOM_MGMT_PREVIEW_STORAGE) as c:
+        c.argument('account_name', acct_name_type, id_part=None)
+        c.argument('resource_group_name', required=False, validator=process_resource_group)
+
+    with self.argument_context('storage account file-service-properties update',
+                               resource_type=CUSTOM_MGMT_PREVIEW_STORAGE) as c:
+        c.argument('account_name', acct_name_type, id_part=None)
+        c.argument('resource_group_name', required=False, validator=process_resource_group)
+        c.argument('enable_delete_retention', arg_type=get_three_state_flag(), arg_group='Delete Retention Policy',
+                   min_api='2019-06-01', help='Enable file service properties for share soft delete.')
+        c.argument('delete_retention_days', type=int, arg_group='Delete Retention Policy',
+                   validator=validate_delete_retention_days, min_api='2019-06-01',
+                   help=' Indicate the number of days that the deleted item should be retained. The minimum specified '
+                        'value can be 1 and the maximum value can be 365.')
+        c.argument('enable_smb_multichannel', options_list=['--enable-smb-multichannel', '--mc'],
+                   arg_type=get_three_state_flag(), min_api='2020-08-01-preview',
+                   help='Set SMB Multichannel setting for file service. Applies to Premium FileStorage only.')
 
     with self.argument_context('storage account network-rule') as c:
         from ._validators import validate_subnet
@@ -424,3 +447,30 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                      'relative to server time. The new value must be larger than or equal to 0, and cannot be larger '
                      'than 7 days. The visibility timeout of a message cannot be set to a value later than the expiry '
                      'time. A message can be updated until it has been deleted or has expired.')
+
+    with self.argument_context('storage file upload') as c:
+        t_file_content_settings = self.get_sdk('file.models#ContentSettings')
+
+        c.register_path_argument(default_file_param='local_file_path')
+        c.register_content_settings_argument(t_file_content_settings, update=False, guess_from_file='local_file_path',
+                                             process_md5=True)
+        c.argument('local_file_path', options_list='--source', type=file_type, completer=FilesCompleter(),
+                   help='Path of the local file to upload as the file content.')
+        c.extra('no_progress', progress_type)
+        c.argument('max_connections', type=int, help='Maximum number of parallel connections to use.')
+        c.extra('share_name', share_name_type, required=True)
+        c.argument('validate_content', action='store_true', min_api='2016-05-31',
+                   help='If true, calculates an MD5 hash for each range of the file. The storage service checks the '
+                        'hash of the content that has arrived with the hash that was sent. This is primarily valuable '
+                        'for detecting bitflips on the wire if using http instead of https as https (the default) will '
+                        'already validate. Note that this MD5 hash is not stored with the file.')
+
+    with self.argument_context('storage file upload-batch') as c:
+        from ._validators import process_file_upload_batch_parameters
+        c.argument('source', options_list=('--source', '-s'), validator=process_file_upload_batch_parameters)
+        c.argument('destination', options_list=('--destination', '-d'))
+        c.argument('max_connections', arg_group='Upload Control', type=int)
+        c.argument('validate_content', action='store_true', min_api='2016-05-31')
+        c.register_content_settings_argument(t_file_content_settings, update=False, arg_group='Content Settings',
+                                             process_md5=True)
+        c.extra('no_progress', progress_type)

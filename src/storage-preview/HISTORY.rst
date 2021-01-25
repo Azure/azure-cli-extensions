@@ -3,10 +3,17 @@
 Release History
 ===============
 
-0.7.0 (2020-12-07)
+0.7.1 (2021-01-25)
 ++++++++++++++++++
-* Add `az storage queue` command group and its sub command groups
-* Add `az storage message` command group
+* `az storage queue/message`: migrate python sdk to track2
+
+0.7.0 (2020-12-28)
+++++++++++++++++
+* Add support for `az storage file upload`, `az storage file upload-batch` (Track 2)
+
+0.6.1 (2020-12-15)
+++++++++++++++++++
+* `az storage account file-service-properties`: Support SMB multichannel in file service properties
 
 0.6.0 (2020-11-04)
 ++++++++++++++++++
@@ -47,35 +54,35 @@ Release History
 * Add blob move command and blob access command group
 
 0.2.8 (2019-7-5)
-++++++++++++++++
+++++++++++++++++++
 * Remove file-add command argument
 
 0.2.7 (2019-6-14)
-+++++++++++++++++
+++++++++++++++++++
 * Remove min_profile
 
 0.2.6 (2019-5-28)
-+++++++++++++++++
+++++++++++++++++++
 * Update the max CLI core version as 2.0.66
 
 0.2.5 (2019-5-1)
-++++++++++++++++
+++++++++++++++++++
 * Release management policy
 
 0.2.4 (2019-4-11)
-+++++++++++++++++
+++++++++++++++++++
 * Release azcopy commands: `az storage azcopy blob sync`
 
 0.2.3 (2019-3-21)
-+++++++++++++++++
+++++++++++++++++++
 * Release initial azcopy commands: `az storage azcopy blob delete/upload/download`
 
 0.2.2 (2019-1-18)
-+++++++++++++++++
+++++++++++++++++++
 * set minCliCoreVersion metadata to v2.0.52
 
 0.2.1 (2019-1-4)
-++++++++++++++++
+++++++++++++++++++
 * fixed missing `--auth-mode` from data-plane commands
 * add validation for StorageV2 account when using static website
 
