@@ -42,6 +42,12 @@ class AEMCommandsLoader(AzCommandsLoader):
                        help='Disables the test for table content')
             c.argument('skip_storage_analytics', action='store_true',
                        help='skip enabling analytics on storage accounts')
+            c.argument('install_new_extension', action='store_true',
+                       options_list=['--install-new-extension', '-i'],
+                       help='Install the new VM Extension for SAP.')
+            c.argument('set_access_to_individual_resources', action='store_true',
+                       options_list=['--set-access-to-individual-resources', '-s'],
+                       help='Set the access of the VM identity to the individual resources, e.g. data disks instead of the complete resource group.')
             c.argument('wait_time_in_minutes', type=int,
                        help='Maximum minutes to wait for the storage metrics to be available')
 
