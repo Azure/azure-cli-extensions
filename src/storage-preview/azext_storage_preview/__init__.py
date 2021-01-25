@@ -8,8 +8,8 @@ from azure.cli.core.profiles import register_resource_type
 from azure.cli.core.commands import AzCommandGroup, AzArgumentContext
 
 import azext_storage_preview._help  # pylint: disable=unused-import
-from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_DATA_STORAGE_QUEUE,
-                       CUSTOM_DATA_STORAGE_FILESHARE)
+from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_ADLS,
+                       CUSTOM_DATA_STORAGE_FILESHARE, CUSTOM_DATA_STORAGE_QUEUE)
 
 
 class StorageCommandsLoader(AzCommandsLoader):
@@ -64,6 +64,7 @@ class StorageArgumentContext(AzArgumentContext):
 
         self.ignore('content_settings')
 
+        # pylint: disable = line-too-long
         # The parameter process_md5 is used to determine whether it is compatible with the process_md5 parameter type of Python SDK
         # When the Python SDK is fixed (Issue: https://github.com/Azure/azure-sdk-for-python/issues/15919),
         # this parameter should not be passed in any more

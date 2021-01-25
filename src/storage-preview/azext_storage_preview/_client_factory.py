@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, _get_add_headers_callback
-from azure.cli.core.profiles import get_sdk, ResourceType
+from azure.cli.core.profiles import get_sdk
 from knack.util import CLIError
 from knack.log import get_logger
 
@@ -137,15 +137,14 @@ def cf_mgmt_file_services(cli_ctx, _):
 
 
 def get_account_url(cli_ctx, account_name, service):
-    from knack.util import CLIError
+    from azure.cli.core.azclierror import RequiredArgumentMissingError
     if account_name is None:
-        raise CLIError("Please provide storage account name or connection string.")
+        raise RequiredArgumentMissingError("Please provide storage account name or connection string.")
     storage_endpoint = cli_ctx.cloud.suffixes.storage_endpoint
     return "https://{}.{}.{}".format(account_name, service, storage_endpoint)
 
 
 def cf_queue_service(cli_ctx, kwargs):
-    from knack.util import CLIError
     t_queue_service = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE_QUEUE, '_queue_service_client#QueueServiceClient')
     connection_string = kwargs.pop('connection_string', None)
     account_name = kwargs.pop('account_name', None)
@@ -160,12 +159,11 @@ def cf_queue_service(cli_ctx, kwargs):
 
     if account_url and credential:
         return t_queue_service(account_url=account_url, credential=credential)
-    raise CLIError("Please provide valid connection string, or account name with account key, "
-                   "sas token or login auth mode.")
+    return None
 
 
 def cf_queue_client(cli_ctx, kwargs):
-    return cf_queue_service(cli_ctx, kwargs).get_queue_client(queue=kwargs.pop('queue_name'))
+    return cf_queue_service(cli_ctx, kwargs).get_queue_client(queue=kwargs.pop('q_name'))
 
 
 def cf_share_service(cli_ctx, kwargs):

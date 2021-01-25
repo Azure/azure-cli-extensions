@@ -20,7 +20,7 @@ def queue_exists(cmd, client, **kwargs):
 
 
 def generate_queue_sas(cmd, client, permission=None, expiry=None, start=None,
-                       policy_id=None, ip=None, protocol=None, **kwargs):
+                       policy_id=None, ip=None, protocol=None):
     generate_queue_sas_fn = cmd.get_models('_shared_access_signature#generate_queue_sas')
 
     sas_kwargs = {'protocol': protocol}

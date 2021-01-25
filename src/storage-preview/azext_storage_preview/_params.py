@@ -345,7 +345,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     for item in ['exists', 'generate-sas', 'create', 'delete', 'metadata show', 'metadata update']:
         with self.argument_context('storage queue {}'.format(item)) as c:
-            c.extra('queue_name', queue_name_type, options_list=('--name', '-n'), required=True)
+            c.extra('q_name', queue_name_type, options_list=('--name', '-n'), required=True)
 
     with self.argument_context('storage queue create') as c:
         c.argument('fail_on_exist', help='Specify whether to throw an exception if the queue already exists.')
@@ -380,7 +380,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     for item in ['create', 'delete', 'show', 'list', 'update']:
         with self.argument_context('storage queue policy {}'.format(item)) as c:
-            c.extra('queue_name', queue_name_type, required=True)
+            c.extra('q_name', queue_name_type, required=True)
 
     with self.argument_context('storage queue policy') as c:
         from .completers import get_storage_acl_name_completion_list
@@ -401,7 +401,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     from six import u as unicode_string
     for item in ['get', 'peek', 'put', 'update', 'delete', 'clear']:
         with self.argument_context('storage message {}'.format(item)) as c:
-            c.extra('queue_name', queue_name_type, required=True)
+            c.extra('q_name', queue_name_type, required=True)
             c.extra('timeout', help='Request timeout in seconds. Applies to each call to the service.', type=int)
 
     for item in ['update', 'delete']:
