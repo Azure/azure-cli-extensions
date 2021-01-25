@@ -28,14 +28,21 @@ Using the `az quantum` extension to list and manage jobs in Azure Quantum
       subscription you want to use. You can do this with the command `az account set -s <Your subscription ID>`.
 
 
-2. You can see all the Azure Quantum workspaces in your subscription with the `az quantum workspace list` command:
+2. Install the Quantum extension for the Azure CLI
+
+   .. code-block::
+
+      az extension add --name quantum
+
+
+3. You can see all the Azure Quantum workspaces in your subscription with the `az quantum workspace list` command:
 
    .. code-block::
 
       az quantum workspace list
 
 
-3. You can use `quantum workspace set` to select a default workspace you want to use 
+4. You can use `quantum workspace set` to select a default workspace you want to use 
    to list and submit jobs. Note that you also need to specify the resource group.
 
    .. code-block::
@@ -47,7 +54,7 @@ Using the `az quantum` extension to list and manage jobs in Azure Quantum
       westus       ws-yyyyyy                          rg-yyyyyyyyy
 
 
-4. You can check the current default workspace with command `az quantum workspace show`.
+5. You can check the current default workspace with command `az quantum workspace show`.
 
    .. code-block::
 
@@ -58,7 +65,7 @@ Using the `az quantum` extension to list and manage jobs in Azure Quantum
       westus       ws-yyyyyy                          rg-yyyyyyyyy
 
 
-5. You can see all the jobs submitted to a workspace using `az quantum job list`.
+6. You can see all the jobs submitted to a workspace using `az quantum job list`.
 
    .. code-block::
 
@@ -71,7 +78,7 @@ Using the `az quantum` extension to list and manage jobs in Azure Quantum
    The console will output the information about the job, including the ID of the job.
 
 
-6. You can use the ID of the job to track its status:
+7. You can use the ID of the job to track its status.
 
    .. code-block::
 
@@ -82,7 +89,7 @@ Using the `az quantum` extension to list and manage jobs in Azure Quantum
       yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy  Waiting  MyProvider.MyTarget  2020-06-12T14:20:18.6109317+00:00
 
 
-7. Once the job finishes you can visualize the job's results with `az quantum job output`:
+8. Once the job finishes you can visualize the job's results with `az quantum job output`:
 
    .. code-block::
 
