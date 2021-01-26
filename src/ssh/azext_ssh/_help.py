@@ -42,7 +42,7 @@ helps['ssh config'] = """
 
 helps['ssh cert'] = """
     type: command
-    short-summary: Create an SSH RSA certifcate signed by AAD
+    short-summary: Create an SSH RSA certificate signed by AAD
     examples:
         - name: Create a short lived ssh certificate signed by AAD
           text: |

@@ -6,6 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
+from ._marketplace_agreements_operations import MarketplaceAgreementsOperations
 from ._api_key_operations import ApiKeyOperations
 from ._host_operations import HostOperations
 from ._linked_resource_operations import LinkedResourceOperations
