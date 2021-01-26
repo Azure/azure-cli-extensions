@@ -240,7 +240,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                                                CUSTOM_DATA_STORAGE_QUEUE),
                             resource_type=CUSTOM_DATA_STORAGE_QUEUE, min_api='2018-03-28') as g:
         from ._format import transform_boolean_for_table
-        from ._transformers import (create_boolean_result_output_transformer, transform_metadata)
+        from ._transformers import create_boolean_result_output_transformer
         g.storage_custom_command_oauth('exists', 'queue_exists',
                                        transform=create_boolean_result_output_transformer('exists'))
         g.storage_custom_command('generate-sas', 'generate_queue_sas')
@@ -251,7 +251,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                        transform=create_boolean_result_output_transformer('deleted'),
                                        table_transformer=transform_boolean_for_table)
         g.storage_command_oauth('metadata show', 'get_queue_properties',
-                                exception_handler=show_exception_handler, transform=transform_metadata)
+                                exception_handler=show_exception_handler, transform=lambda x: getattr(x, 'metadata', x))
         g.storage_command_oauth('metadata update', 'set_queue_metadata',
                                 transform=create_boolean_result_output_transformer('updated'))
 

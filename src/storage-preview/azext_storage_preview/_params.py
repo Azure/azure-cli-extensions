@@ -28,7 +28,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     t_base_blob_service = self.get_sdk('blob.baseblobservice#BaseBlobService')
     t_file_service = self.get_sdk('file#FileService')
     t_table_service = get_table_data_type(self.cli_ctx, 'table', 'TableService')
-    t_queue_service = self.get_sdk('_queue_service_client#QueueServiceClient')
+    t_queue_service = self.get_sdk('_queue_service_client#QueueServiceClient', resource_type=CUSTOM_DATA_STORAGE_QUEUE)
 
     acct_name_type = CLIArgumentType(options_list=['--account-name', '-n'], help='The storage account name.',
                                      id_part='name',
@@ -357,19 +357,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         from .completers import get_storage_acl_name_completion_list
         t_queue_permissions = self.get_sdk('_models#QueueSasPermissions', resource_type=CUSTOM_DATA_STORAGE_QUEUE)
 
-        c.argument('ip', type=ipv4_range_type,
-                   help='Specify the IP address or range of IP addresses from which to accept requests. '
-                        'Support only IPv4 style addresses.')
-        c.argument('expiry', type=get_datetime_type(True),
-                   help='Specify the UTC datetime (Y-m-d\'T\'H:M\'Z\') at which the SAS becomes invalid. Do not '
-                        'use if a stored access policy is referenced with --policy-name that specifies this value.')
-        c.argument('start', type=get_datetime_type(True),
-                   help='Specify the UTC datetime (Y-m-d\'T\'H:M\'Z\') at which the SAS becomes valid. Do not use '
-                        'if a stored access policy is referenced with --policy-name that specifies this value. '
-                        'Default to the time of the request.')
-        c.argument('protocol', options_list=('--https-only',), action='store_const', const='https',
-                   help='Only permit requests made with the HTTPS protocol. If omitted, requests from both the HTTP '
-                        'and HTTPS protocol are permitted.')
+        c.register_sas_arguments()
         c.argument('policy_id', options_list='--policy-name',
                    help='The name of a stored access policy within the queue\'s ACL.',
                    completer=get_storage_acl_name_completion_list(t_queue_service, 'get_queue_access_policy'))

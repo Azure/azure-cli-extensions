@@ -129,31 +129,15 @@ def transform_file_upload(result):
     return None
 
 
-def transform_metadata(result):
-    return result.metadata
-
-
 def transform_queue_stats_output(result):
-    if type(result).__name__ == 'dict':
+    if isinstance(result, dict):
         new_result = {}
+        from azure.cli.core.commands.arm import make_camel_case
         for key in result.keys():
-            new_key = convert_to_camel_case(key)
+            new_key = make_camel_case(key)
             new_result[new_key] = transform_queue_stats_output(result[key])
         return new_result
     return result
-
-
-def convert_to_camel_case(src):
-    string_arr = src.split('_')
-    first_flag = True
-    res = ''
-    for substring in string_arr:
-        if first_flag:
-            res += substring
-            first_flag = False
-        else:
-            res += substring.capitalize()
-    return res
 
 
 def transform_message_list_output(result):
