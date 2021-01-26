@@ -485,11 +485,6 @@ def get_kubernetes_infra(configuration):  # Heuristic
 
 def generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra):
     # Create connected cluster resource object
-    aad_profile = ConnectedClusterAADProfile(
-        tenant_id="",
-        client_app_id="",
-        server_app_id=""
-    )
     identity = ConnectedClusterIdentity(
         type="SystemAssigned"
     )
@@ -499,7 +494,6 @@ def generate_request_payload(configuration, location, public_key, tags, kubernet
         location=location,
         identity=identity,
         agent_public_key_certificate=public_key,
-        aad_profile=aad_profile,
         tags=tags,
         distribution=kubernetes_distro,
         infrastructure=kubernetes_infra
