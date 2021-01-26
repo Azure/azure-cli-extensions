@@ -31,8 +31,7 @@ from .repair_utils import (
     _fetch_disk_info,
     _unlock_singlepass_encrypted_disk,
     _invoke_run_command,
-    _check_hyperV_gen,
-    _invoke_nested
+    _check_hyperV_gen
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError
 logger = get_logger(__name__)
@@ -59,8 +58,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         else:
             os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
             os_type = 'Windows'
-        
-        #check hyperv Generation
+        # check hyperv Generation
         if enable_nested:
             _check_hyperV_gen(source_vm)
 
@@ -69,7 +67,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                                    .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password)
         # Fetch VM size of repair VM
         sku = _fetch_compatible_sku(source_vm, enable_nested)
-        
         if not sku:
             raise SkuNotAvailableError('Failed to find compatible VM size for source VM\'s OS disk within given region and subscription.')
         create_repair_vm_command += ' --size {sku}'.format(sku=sku)
@@ -170,7 +167,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                                   .format(g=repair_group_name, disk_name=copy_disk_name, vm_name=repair_vm_name, uri=copy_disk_id)
             _call_az_command(attach_disk_command)
 
-        #invoke enable-NestedHyperV.ps1 again to attach Disk to Nested
+        # invoke enable-NestedHyperV.ps1 again to attach Disk to Nested
         if enable_nested:
             logger.info("Running hyperv")
 
@@ -180,15 +177,15 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                 logger.debug(stderr)
                 raise ScriptReturnsError('error when running script')
 
-            logger.debug("stdout: %s", stdout)        
+            logger.debug("stdout: %s", stdout)
             if str.find(stdout, "SuccessRestartRequired") > -1:
                 restart_cmd = 'az vm restart -g {rg} -n {vm}'.format(rg=repair_group_name, vm=repair_vm_name)
                 logger.info("restarting")
                 restart_ret = _call_az_command(restart_cmd)
                 logger.info(restart_ret)
 
-                #invoking hyperv script again   
-                logger.info("Running HyperV script again")     
+                # invoking hyperv script again
+                logger.info("Running HyperV script again")
                 stdout, stderr = _invoke_run_command("win-enable-nested-hyperv.ps1", repair_vm_name, repair_group_name, 0)
                 if stderr:
                     raise ScriptReturnsError('Error when running script')

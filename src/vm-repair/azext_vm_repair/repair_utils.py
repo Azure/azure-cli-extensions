@@ -66,6 +66,7 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
         return stdout
     return None
 
+
 def _invoke_run_command(script_name, vm_name, rg_name, is_linux, parameters=None, additional_custom_scripts=None):
     """
     Use azure run command to run the scripts within the vm-repair/scripts file and return stdout, stderr.
@@ -176,8 +177,8 @@ def _fetch_compatible_sku(source_vm, hyperv):
     location = source_vm.location
     source_vm_sku = source_vm.hardware_profile.vm_size
 
-    if not (not source_vm_sku.endswith('v3') and hyperv):
     # First get the source_vm sku, if its available go with it
+    if not (not source_vm_sku.endswith('v3') and hyperv):
         check_sku_command = 'az vm list-skus -s {sku} -l {loc} --query [].name -o tsv'.format(sku=source_vm_sku, loc=location)
 
         logger.info('Checking if source VM size is available...')
@@ -193,25 +194,25 @@ def _fetch_compatible_sku(source_vm, hyperv):
     # TODO, premium IO only when needed
     if not hyperv:
         list_sku_command = 'az vm list-skus -s standard_d -l {loc} --query ' \
-                        '"[?capabilities[?name==\'vCPUs\' && to_number(value)>= to_number(\'2\')] && ' \
-                        'capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'16\')] && ' \
-                        'capabilities[?name==\'MemoryGB\' && to_number(value)>=to_number(\'8\')] && ' \
-                        'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'32\')] && ' \
-                        'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
-                        'capabilities[?name==\'PremiumIO\' && value==\'True\'] && ' \
-                        'capabilities[?name==\'HyperVGenerations\']].name" -o json ' \
-                        .format(loc=location)
-    
+            '"[?capabilities[?name==\'vCPUs\' && to_number(value)>= to_number(\'2\')] && ' \
+            'capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'16\')] && ' \
+            'capabilities[?name==\'MemoryGB\' && to_number(value)>=to_number(\'8\')] && ' \
+            'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'32\')] && ' \
+            'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
+            'capabilities[?name==\'PremiumIO\' && value==\'True\'] && ' \
+            'capabilities[?name==\'HyperVGenerations\']].name" -o json ' \
+            .format(loc=location)
+
     else:
         list_sku_command = 'az vm list-skus -s _v3 -l {loc} --query ' \
-                       '"[?capabilities[?name==\'vCPUs\' && to_number(value)>= to_number(\'2\')] && ' \
-                       'capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'16\')] && ' \
-                       'capabilities[?name==\'MemoryGB\' && to_number(value)>=to_number(\'8\')] && ' \
-                       'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'32\')] && ' \
-                       'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
-                       'capabilities[?name==\'PremiumIO\' && value==\'True\'] && ' \
-                       'capabilities[?name==\'HyperVGenerations\']].name" -o json ' \
-                       .format(loc=location)
+            '"[?capabilities[?name==\'vCPUs\' && to_number(value)>= to_number(\'2\')] && ' \
+            'capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'16\')] && ' \
+            'capabilities[?name==\'MemoryGB\' && to_number(value)>=to_number(\'8\')] && ' \
+            'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'32\')] && ' \
+            'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
+            'capabilities[?name==\'PremiumIO\' && value==\'True\'] && ' \
+            'capabilities[?name==\'HyperVGenerations\']].name" -o json ' \
+            .format(loc=location)
 
     logger.info('Fetching available VM sizes for repair VM...')
     sku_list = loads(_call_az_command(list_sku_command).strip('\n'))
@@ -266,12 +267,12 @@ def _fetch_encryption_settings(source_vm):
     key_vault, kekurl, secreturl = key_vault[0], kekurl[0], secreturl[0]
     return Encryption.SINGLE_WITH_KEK, key_vault, kekurl, secreturl
 
+
 def _check_hyperV_gen(source_vm):
     disk_id = source_vm.storage_profile.os_disk.managed_disk.id
     show_disk_command = 'az disk show --id {i} --query [hyperVgeneration] -o json' \
                         .format(i=disk_id)
     hyperVGen = loads(_call_az_command(show_disk_command))
-    
     if hyperVGen == 'V2':
         raise SkuDoesNotSupportHyperV('Cannot support V2 HyperV generation. Please run command without --enabled-nested')
 
