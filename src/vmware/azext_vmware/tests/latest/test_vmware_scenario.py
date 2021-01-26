@@ -108,7 +108,7 @@ class VmwareScenarioTest(ScenarioTest):
         self.cmd('vmware cluster delete -g {rg} -c {privatecloud} -n {cluster}')
 
         # delete the private cloud
-        self.cmd('vmware private-cloud delete -g {rg} -n {privatecloud}')
+        # self.cmd('vmware private-cloud delete -g {rg} -n {privatecloud}')
 
-        count = len(self.cmd('vmware private-cloud list -g {rg}').get_output_in_json())
-        self.assertEqual(count, 0, 'private cloud count expected to be 0')
+        # count = len(self.cmd('vmware private-cloud list -g {rg}').get_output_in_json())
+        # self.assertEqual(count, 0, 'private cloud count expected to be 0')
