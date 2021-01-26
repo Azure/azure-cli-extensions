@@ -12,39 +12,39 @@ helps['tsi'] = """
     short-summary: Manage Azure Time Series Insights.
 """
 
-helps['tsi env'] = """
+helps['tsi environment'] = """
     type: group
     short-summary: Manage environment with timeseriesinsights
 """
 
-helps['tsi env list'] = """
+helps['tsi environment list'] = """
     type: command
     short-summary: "List all the available environments associated with the subscription and within the specified \
     resource group."
     examples:
       - name: EnvironmentsByResourceGroup
         text: |-
-               az tsi env list --resource-group "rg1"
+               az tsi environment list --resource-group "rg1"
       - name: EnvironmentsBySubscription
         text: |-
-               az tsi env list
+               az tsi environment list
 """
 
-helps['tsi env show'] = """
+helps['tsi environment show'] = """
     type: command
     short-summary: "Show the environment with the specified name in the specified subscription and resource group."
     examples:
       - name: EnvironmentsGet
         text: |-
-               az tsi env show --name "env1" --resource-group "rg1"
+               az tsi environment show --name "env1" --resource-group "rg1"
 """
 
-helps['tsi env gen1'] = """
+helps['tsi environment gen1'] = """
     type: group
     short-summary: "Manage a gen1 environment in the specified subscription and resource group."
 """
 
-helps['tsi env gen1 create'] = """
+helps['tsi environment gen1 create'] = """
     type: command
     short-summary: "Create a gen1 environment in the specified subscription and resource group."
     parameters:
@@ -70,11 +70,11 @@ Currently, only a single partition key property is supported."
     examples:
       - name: EnvironmentsGen1Create
         text: |-
-               az tsi env gen1 create --name "env1" --location westus --data-retention-time \
+               az tsi environment gen1 create --name "env1" --location westus --data-retention-time \
 "P31D" --partition-key-properties name="DeviceId1" type="String" --sku name="S1" capacity=1 --resource-group "rg1"
 """
 
-helps['tsi env gen1 update'] = """
+helps['tsi environment gen1 update'] = """
     type: command
     short-summary: "Update a gen1 environment in the specified subscription and resource group."
     parameters:
@@ -90,16 +90,16 @@ environments the sku determines the capacity of the environment, the ingress rat
     examples:
       - name: EnvironmentsGen1Update
         text: |-
-               az tsi env gen1 update --name "env1" --sku name="S1" capacity=2 \
+               az tsi environment gen1 update --name "env1" --sku name="S1" capacity=2 \
                --resource-group "rg1" --data-retention-time "P30D" --storage-limit-exceeded-behavior PurgeOldData
 """
 
-helps['tsi env gen2'] = """
+helps['tsi environment gen2'] = """
     type: group
     short-summary: Manage a gen2 environment in the specified subscription and resource group.
 """
 
-helps['tsi env gen2 create'] = """
+helps['tsi environment gen2 create'] = """
     type: command
     short-summary: "Create a gen2 environment in the specified subscription and resource group."
     parameters:
@@ -139,12 +139,12 @@ available for query from the warm store.
     examples:
       - name: EnvironmentsGen2Create
         text: |-
-               az tsi env gen2 create --name "env2" --location westus --resource-group "rg1" \
+               az tsi environment gen2 create --name "env2" --location westus --resource-group "rg1" \
                --sku name="L1" capacity=1 --time-series-id-properties name=idName type=String \
                --storage-configuration account-name=your-account-name  management-key=your-account-key
 """
 
-helps['tsi env gen2 update'] = """
+helps['tsi environment gen2 update'] = """
     type: command
     short-summary: "Update a gen2 environment in the specified subscription and resource group."
     parameters:
@@ -168,32 +168,32 @@ available for query from the warm store.
     examples:
       - name: EnvironmentsGen2Update
         text: |-
-               az tsi env gen2 update --name "env2" --resource-group "rg1" \
+               az tsi environment gen2 update --name "env2" --resource-group "rg1" \
                --warm-store-configuration data-retention=P30D \
                --storage-configuration account-name=your-account-name management-key=your-account-key
 """
 
-helps['tsi env delete'] = """
+helps['tsi environment delete'] = """
     type: command
     short-summary: "Delete the environment with the specified name in the specified subscription and resource group."
     examples:
       - name: EnvironmentsDelete
         text: |-
-               az tsi env delete --name "env1" --resource-group "rg1"
+               az tsi environment delete --name "env1" --resource-group "rg1"
 """
 
-helps['tsi env wait'] = """
+helps['tsi environment wait'] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the timeseriesinsights environment is met.
     examples:
       - name: Pause executing next line of CLI script until the timeseriesinsights environment is successfully \
 created.
         text: |-
-               az tsi env wait --name "env1" --resource-group "rg1" --created
+               az tsi environment wait --name "env1" --resource-group "rg1" --created
       - name: Pause executing next line of CLI script until the timeseriesinsights environment is successfully \
 updated.
         text: |-
-               az tsi env wait --name "env1" --resource-group "rg1" --updated
+               az tsi environment wait --name "env1" --resource-group "rg1" --updated
 """
 
 helps['tsi event-source'] = """
