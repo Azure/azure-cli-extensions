@@ -164,6 +164,9 @@ def validate_tracing_parameters(namespace):
         raise CLIError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
     if namespace.app_insights == "":
         raise CLIError("Conflict detected: '--app-insights' can not be empty.")
+
+
+def validate_java_agent_parameters(namespace):
     if namespace.disable_app_insights and namespace.enable_java_agent:
         raise CLIError("Conflict detected: '--enable-java-in-process-agent' and '--disable-app-insights' can not be set at the same time.")
 

@@ -32,13 +32,13 @@ from .operations import TableResourcesOperations
 from .operations import CassandraResourcesOperations
 from .operations import GremlinResourcesOperations
 from .operations import RestorableDatabaseAccountsOperations
+from .operations import NotebookWorkspacesOperations
 from .operations import RestorableSqlDatabasesOperations
 from .operations import RestorableSqlContainersOperations
 from .operations import RestorableSqlResourcesOperations
 from .operations import RestorableMongodbDatabasesOperations
 from .operations import RestorableMongodbCollectionsOperations
 from .operations import RestorableMongodbResourcesOperations
-from .operations import NotebookWorkspacesOperations
 from .operations import PrivateLinkResourcesOperations
 from .operations import PrivateEndpointConnectionsOperations
 from . import models
@@ -88,6 +88,8 @@ class CosmosDBManagementClient(SDKClient):
     :vartype gremlin_resources: azure.mgmt.cosmosdb.operations.GremlinResourcesOperations
     :ivar restorable_database_accounts: RestorableDatabaseAccounts operations
     :vartype restorable_database_accounts: azure.mgmt.cosmosdb.operations.RestorableDatabaseAccountsOperations
+    :ivar notebook_workspaces: NotebookWorkspaces operations
+    :vartype notebook_workspaces: azure.mgmt.cosmosdb.operations.NotebookWorkspacesOperations
     :ivar restorable_sql_databases: RestorableSqlDatabases operations
     :vartype restorable_sql_databases: azure.mgmt.cosmosdb.operations.RestorableSqlDatabasesOperations
     :ivar restorable_sql_containers: RestorableSqlContainers operations
@@ -100,8 +102,6 @@ class CosmosDBManagementClient(SDKClient):
     :vartype restorable_mongodb_collections: azure.mgmt.cosmosdb.operations.RestorableMongodbCollectionsOperations
     :ivar restorable_mongodb_resources: RestorableMongodbResources operations
     :vartype restorable_mongodb_resources: azure.mgmt.cosmosdb.operations.RestorableMongodbResourcesOperations
-    :ivar notebook_workspaces: NotebookWorkspaces operations
-    :vartype notebook_workspaces: azure.mgmt.cosmosdb.operations.NotebookWorkspacesOperations
     :ivar private_link_resources: PrivateLinkResources operations
     :vartype private_link_resources: azure.mgmt.cosmosdb.operations.PrivateLinkResourcesOperations
     :ivar private_endpoint_connections: PrivateEndpointConnections operations
@@ -163,6 +163,8 @@ class CosmosDBManagementClient(SDKClient):
             self._client, self.config, self._serialize, self._deserialize)
         self.restorable_database_accounts = RestorableDatabaseAccountsOperations(
             self._client, self.config, self._serialize, self._deserialize)
+        self.notebook_workspaces = NotebookWorkspacesOperations(
+            self._client, self.config, self._serialize, self._deserialize)
         self.restorable_sql_databases = RestorableSqlDatabasesOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.restorable_sql_containers = RestorableSqlContainersOperations(
@@ -174,8 +176,6 @@ class CosmosDBManagementClient(SDKClient):
         self.restorable_mongodb_collections = RestorableMongodbCollectionsOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.restorable_mongodb_resources = RestorableMongodbResourcesOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.notebook_workspaces = NotebookWorkspacesOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.private_link_resources = PrivateLinkResourcesOperations(
             self._client, self.config, self._serialize, self._deserialize)

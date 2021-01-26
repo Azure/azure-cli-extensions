@@ -50,7 +50,7 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_11_01.models import (ContainerServiceLinuxProfile,
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_12_01.models import (ContainerServiceLinuxProfile,
                                                                       ManagedClusterWindowsProfile,
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
@@ -893,12 +893,14 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_aad=False,
                enable_azure_rbac=False,
                aad_admin_group_object_ids=None,
+               aci_subnet_name=None,
                disable_sgxquotehelper=False,
                kubelet_config=None,
                linux_os_config=None,
                assign_identity=None,
                auto_upgrade_channel=None,
                enable_pod_identity=False,
+               enable_encryption_at_host=False,
                no_wait=False,
                yes=False):
     if not no_ssh_key:
@@ -944,6 +946,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         proximity_placement_group_id=ppg,
         availability_zones=node_zones,
         enable_node_public_ip=enable_node_public_ip,
+        enable_encryption_at_host=enable_encryption_at_host,
         max_pods=int(max_pods) if max_pods else None,
         type=vm_set_type
     )
@@ -1104,7 +1107,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         appgw_id,
         appgw_subnet_id,
         appgw_watch_namespace,
-        disable_sgxquotehelper
+        disable_sgxquotehelper,
+        aci_subnet_name,
+        vnet_subnet_id
     )
     monitoring = False
     if CONST_MONITORING_ADDON_NAME in addon_profiles:
@@ -1952,7 +1957,9 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
                         appgw_id=None,
                         appgw_subnet_id=None,
                         appgw_watch_namespace=None,
-                        disable_sgxquotehelper=False):
+                        disable_sgxquotehelper=False,
+                        aci_subnet_name=None,
+                        vnet_subnet_id=None):
     if not addon_profiles:
         addon_profiles = {}
     addons = addons_str.split(',') if addons_str else []
@@ -2012,6 +2019,16 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
             addon_profile.config[CONST_ACC_SGX_QUOTE_HELPER_ENABLED] = "false"
         addon_profiles[CONST_CONFCOM_ADDON_NAME] = addon_profile
         addons.remove('confcom')
+    if 'virtual-node' in addons:
+        if not aci_subnet_name or not vnet_subnet_id:
+            raise CLIError('"--enable-addons virtual-node" requires "--aci-subnet-name" and "--vnet-subnet-id".')
+        # TODO: how about aciConnectorwindows, what is its addon name?
+        os_type = 'Linux'
+        addon_profiles[CONST_VIRTUAL_NODE_ADDON_NAME + os_type] = ManagedClusterAddonProfile(
+            enabled=True,
+            config={CONST_VIRTUAL_NODE_SUBNET_NAME: aci_subnet_name}
+        )
+        addons.remove('virtual-node')
 
     # error out if any (unrecognized) addons remain
     if addons:
@@ -2486,6 +2503,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       aks_custom_headers=None,
                       kubelet_config=None,
                       linux_os_config=None,
+                      enable_encryption_at_host=False,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -2532,6 +2550,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         node_taints=taints_array,
         scale_set_priority=priority,
         upgrade_settings=upgradeSettings,
+        enable_encryption_at_host=enable_encryption_at_host,
         mode=mode
     )
 
