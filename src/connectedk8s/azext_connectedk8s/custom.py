@@ -26,7 +26,7 @@ from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 
-from .vendored_sdks.models import ConnectedCluster, ConnectedClusterAADProfile, ConnectedClusterIdentity
+from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity
 
 
 logger = get_logger(__name__)
