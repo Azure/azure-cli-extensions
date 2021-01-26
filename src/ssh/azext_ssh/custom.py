@@ -54,10 +54,14 @@ def _get_and_write_certificate(cmd, public_key_file, cert_file):
     data = _prepare_jwk_data(public_key_file)
     from azure.cli.core._profile import Profile
     profile = Profile(cli_ctx=cmd.cli_ctx)
-    username, certificate = profile.get_msal_token(scopes, data)
+    # we used to use the username from the token but now we throw it away
+    _, certificate = profile.get_msal_token(scopes, data)
     if not cert_file:
         cert_file = public_key_file + "-aadcert.pub"
-    return _write_cert_file(certificate, cert_file), username.lower()
+    _write_cert_file(certificate, cert_file)
+    # instead we use the validprincipals from the cert due to mismatched upn and email in guest scenarios
+    username = ssh_utils.get_ssh_cert_principals(cert_file)[0]
+    return cert_file, username.lower()
 
 
 def _prepare_jwk_data(public_key_file):

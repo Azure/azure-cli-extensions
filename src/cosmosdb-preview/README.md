@@ -35,6 +35,14 @@ This command returns all the continuous mode backup accounts that can be restore
 az cosmosdb restorable-database-account list
 ```
 
+#### List all the CosmosDB accounts with the given name that can be restored (live and deleted) ####
+
+This command returns all the continuous mode backup accounts with the given name that can be restored.
+
+```sh
+az cosmosdb restorable-database-account list --name "account-name"
+```
+
 #### Restore from an existing(live or deleted) database account to a new account ####
 
 ```sh

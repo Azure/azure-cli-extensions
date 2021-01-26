@@ -185,16 +185,19 @@ class AutoUpgradePolicyResource(Model):
 class Resource(Model):
     """Resource.
 
+    Common fields that are returned in the response for all Azure Resource
+    Manager resources.
+
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
     :vartype id: str
     :ivar name: The name of the resource
     :vartype name: str
-    :ivar type: The type of the resource. Ex-
-     Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g.
+     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
     :vartype type: str
     """
 
@@ -218,19 +221,21 @@ class Resource(Model):
 
 
 class AzureEntityResource(Resource):
-    """The resource model definition for a Azure Resource Manager resource with an
-    etag.
+    """Entity Resource.
+
+    The resource model definition for an Azure Resource Manager resource with
+    an etag.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
     :vartype id: str
     :ivar name: The name of the resource
     :vartype name: str
-    :ivar type: The type of the resource. Ex-
-     Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g.
+     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
     :vartype type: str
     :ivar etag: Resource Etag.
     :vartype etag: str
@@ -3783,19 +3788,21 @@ class Permission(Model):
 
 
 class ProxyResource(Resource):
-    """The resource model definition for a ARM proxy resource. It will have
-    everything other than required location and tags.
+    """Proxy Resource.
+
+    The resource model definition for a Azure Resource Manager proxy resource.
+    It will not have tags and a location.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
     :vartype id: str
     :ivar name: The name of the resource
     :vartype name: str
-    :ivar type: The type of the resource. Ex-
-     Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g.
+     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
     :vartype type: str
     """
 
@@ -3821,13 +3828,13 @@ class PrivateEndpointConnection(ProxyResource):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
     :vartype id: str
     :ivar name: The name of the resource
     :vartype name: str
-    :ivar type: The type of the resource. Ex-
-     Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g.
+     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
     :vartype type: str
     :param private_endpoint: Private endpoint which the connection belongs to.
     :type private_endpoint:
@@ -4009,9 +4016,9 @@ class RestorableDatabaseAccountGetResult(ARMResourceProperties):
     :param deletion_time: The time at which the restorable database account
      has been deleted (ISO-8601 format).
     :type deletion_time: datetime
-    :ivar api_type: Enum to indicate the API type of the restorable database
-     account. Possible values include: 'MongoDB', 'Gremlin', 'Cassandra',
-     'Table', 'Sql', 'Etcd', 'GremlinV2'
+    :ivar api_type: The API type of the restorable database account. Possible
+     values include: 'MongoDB', 'Gremlin', 'Cassandra', 'Table', 'Sql',
+     'GremlinV2'
     :vartype api_type: str or ~azure.mgmt.cosmosdb.models.ApiType
     :ivar restorable_locations: List of regions where the of the database
      account can be restored from.
@@ -4145,7 +4152,8 @@ class RestorableMongodbCollectionPropertiesResource(Model):
     :ivar _rid: A system generated property. A unique identifier.
     :vartype _rid: str
     :ivar operation_type: The operation type of this collection event.
-    :vartype operation_type: str
+     Possible values include: 'Create', 'Replace', 'Delete', 'SystemOperation'
+    :vartype operation_type: str or ~azure.mgmt.cosmosdb.models.OperationType
     :ivar event_timestamp: The timestamp of this collection event.
     :vartype event_timestamp: str
     :ivar owner_id: The name of this restorable MongoDB collection.
@@ -4233,8 +4241,9 @@ class RestorableMongodbDatabasePropertiesResource(Model):
 
     :ivar _rid: A system generated property. A unique identifier.
     :vartype _rid: str
-    :ivar operation_type: The operation type of this database event.
-    :vartype operation_type: str
+    :ivar operation_type: The operation type of this database event. Possible
+     values include: 'Create', 'Replace', 'Delete', 'SystemOperation'
+    :vartype operation_type: str or ~azure.mgmt.cosmosdb.models.OperationType
     :ivar event_timestamp: The timestamp of this database event.
     :vartype event_timestamp: str
     :ivar owner_id: The name of this restorable MongoDB database.
@@ -4322,8 +4331,9 @@ class RestorableSqlContainerPropertiesResource(Model):
 
     :ivar _rid: A system generated property. A unique identifier.
     :vartype _rid: str
-    :ivar operation_type: The operation type of this container event.
-    :vartype operation_type: str
+    :ivar operation_type: The operation type of this container event. Possible
+     values include: 'Create', 'Replace', 'Delete', 'SystemOperation'
+    :vartype operation_type: str or ~azure.mgmt.cosmosdb.models.OperationType
     :ivar event_timestamp: The timestamp of this container event.
     :vartype event_timestamp: str
     :ivar owner_id: The name of this restorable SQL container.
@@ -4490,8 +4500,9 @@ class RestorableSqlDatabasePropertiesResource(Model):
 
     :ivar _rid: A system generated property. A unique identifier.
     :vartype _rid: str
-    :ivar operation_type: The operation type of this database event.
-    :vartype operation_type: str
+    :ivar operation_type: The operation type of this database event. Possible
+     values include: 'Create', 'Replace', 'Delete', 'SystemOperation'
+    :vartype operation_type: str or ~azure.mgmt.cosmosdb.models.OperationType
     :ivar event_timestamp: The timestamp of this database event.
     :vartype event_timestamp: str
     :ivar owner_id: The name of this restorable SQL database.
@@ -6332,20 +6343,23 @@ class ThroughputSettingsUpdateParameters(ARMResourceProperties):
 
 
 class TrackedResource(Resource):
-    """The resource model definition for a ARM tracked top level resource.
+    """Tracked Resource.
+
+    The resource model definition for an Azure Resource Manager tracked top
+    level resource which has 'tags' and a 'location'.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
     :vartype id: str
     :ivar name: The name of the resource
     :vartype name: str
-    :ivar type: The type of the resource. Ex-
-     Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g.
+     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
     :vartype type: str
     :param tags: Resource tags.
     :type tags: dict[str, str]
