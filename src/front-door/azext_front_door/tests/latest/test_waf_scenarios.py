@@ -221,7 +221,6 @@ az network front-door update --name {frontdoorName}--resource-group {resource_gr
         self.assertIn('id', result)
         self.assertEqual(result['sku']['name'], "Classic_AzureFrontDoor")
 
-
         cmd = 'az network front-door waf-policy rule create  -g {resource_group} --policy-name {policyName} -n {ruleName} --priority 6 --rule-type MatchRule --action Block --defer'.format(**locals())
         result = self.cmd(cmd).get_output_in_json()
 
