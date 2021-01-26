@@ -174,8 +174,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         if enable_nested:
             logger.info("Running hyperv")
 
-            stdout, stderr = _invoke_nested(repair_vm_name, repair_group_name)
-            
+            stdout, stderr = _invoke_run_command("win-enable-nested-hyperv.ps1", repair_vm_name, repair_group_name, 0)
             logger.debug("stderr: %s", stderr)
             if stderr:
                 logger.debug(stderr)
@@ -190,7 +189,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
                 #invoking hyperv script again   
                 logger.info("Running HyperV script again")     
-                stdout, stderr = _invoke_nested(repair_vm_name, repair_group_name)
+                stdout, stderr = _invoke_run_command("win-enable-nested-hyperv.ps1", repair_vm_name, repair_group_name, 0)
                 if stderr:
                     raise ScriptReturnsError('Error when running script')
 
@@ -347,7 +346,6 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair run')
-
     LINUX_RUN_SCRIPT_NAME = 'linux-run-driver.sh'
     WINDOWS_RUN_SCRIPT_NAME = 'win-run-driver.ps1'
 

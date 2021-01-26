@@ -1,4 +1,4 @@
-. .\src\windows\common\setup\init.ps1
+Write-Output 'Running Script Enable-NestedHyperV'
 
 $scriptStartTime = get-date -f yyyyMMddHHmmss
 $scriptPath = split-path -path $MyInvocation.MyCommand.Path -parent
@@ -23,7 +23,7 @@ $rsatDhcp = $features | where Name -eq 'RSAT-DHCP'
 
 if ($hyperv.Installed -and $hypervTools.Installed -and $hypervPowerShell.Installed)
 {
-    Log-Info 'START: Creating nested guest VM' | out-file -FilePath $logFile -Append
+    Write-Output 'START: Creating nested guest VM' | out-file -FilePath $logFile -Append
     # Sets "Do not start Server Manager automatically at logon"
     $return = New-ItemProperty -Path HKLM:\Software\Microsoft\ServerManager -Name DoNotOpenServerManagerAtLogon -PropertyType DWORD -Value 1 -force -ErrorAction SilentlyContinue
     $return = New-ItemProperty -Path HKLM:\Software\Microsoft\ServerManager\Oobe -Name DoNotOpenInitialConfigurationTasksAtLogon -PropertyType DWORD -Value 1 -force -ErrorAction SilentlyContinue
@@ -32,11 +32,11 @@ if ($hyperv.Installed -and $hypervTools.Installed -and $hypervPowerShell.Install
 
         # Configure NAT so nested guest has external network connectivity
         # See also https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/user-guide/nested-virtualization#networking-options
-        $switch = get-vmswitch -Name Internal -SwitchType Internal -ErrorAction SilentlyContinue | select -first 1
+        $switch = Get-VMSwitch -Name Internal -SwitchType Internal -ErrorAction SilentlyContinue | select -first 1
         if (!$switch)
         {
             $switch = New-VMSwitch -Name Internal -SwitchType Internal -ErrorAction Stop
-            Log-Info 'New VMSwitch Successfully created' | out-file -FilePath $logFile -Append
+            #Log-Info 'New VMSwitch Successfully created' | out-file -FilePath $logFile -Append
         }
         $adapter = Get-NetAdapter -Name 'vEthernet (Internal)' -ErrorAction Stop
 
@@ -44,21 +44,21 @@ if ($hyperv.Installed -and $hypervTools.Installed -and $hypervPowerShell.Install
         if (!$ip)
         {
             $return = New-NetIPAddress -IPAddress 192.168.0.1 -PrefixLength 24 -InterfaceIndex $adapter.ifIndex -ErrorAction Stop
-            Log-Info 'New NetIPAddress Successfully created' | out-file -FilePath $logFile -Append
+            #Log-Info 'New NetIPAddress Successfully created' | out-file -FilePath $logFile -Append
         }
 
         $nat = Get-NetNat -Name InternalNAT -ErrorAction SilentlyContinue | select -first 1
         if (!$nat)
         {
             $return = New-NetNat -Name InternalNAT -InternalIPInterfaceAddressPrefix 192.168.0.0/24 -ErrorAction Stop
-            Log-Info 'New NetNat Successfully created' | out-file -FilePath $logFile -Append
+            #Log-Info 'New NetNat Successfully created' | out-file -FilePath $logFile -Append
         }
 
         # Configure DHCP server service so nested guest can get an IP from DHCP and will use 168.63.129.16 for DNS and 192.168.0.1 as default gateway
         if ($dhcp.Installed -eq $false -or $rsatDhcp.Installed -eq $false)
         {
             $return = Install-WindowsFeature -Name DHCP -IncludeManagementTools -ErrorAction Stop
-            Log-Info 'New NetIPAddress Successfully created' | out-file -FilePath $logFile -Append
+            #Log-Info 'New NetIPAddress Successfully created' | out-file -FilePath $logFile -Append
         }
         $scope = Get-DhcpServerv4Scope -ErrorAction SilentlyContinue | where Name -eq Scope1 | select -first 1
         if (!$scope)
@@ -86,11 +86,9 @@ if ($hyperv.Installed -and $hypervTools.Installed -and $hypervPowerShell.Install
     }
     catch {
         throw $_
-        return $STATUS_ERROR
     }
-
     # Returns the nested guest VM status to the calling script - "Running" if all went well.
-    $nestedGuestVmState
+    return $nestedGuestVmState
 }
 else
 {
@@ -101,12 +99,10 @@ else
     }
     catch {
         throw $_
-        return $STATUS_ERROR
     }
     "END: Installing Hyper-V" | out-file -FilePath $logFile -Append
-    $return.ExitCode
     write-host $return.ExitCode
-    return $STATUS_SUCCESS
+    return
 }
 
 $scriptEndTime = get-date -f yyyyMMddHHmmss

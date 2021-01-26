@@ -66,29 +66,6 @@ def _call_az_command(command_string, run_async=False, secure_params=None):
         return stdout
     return None
 
-def _invoke_nested(vm_name, rg_name):
-    REPAIR_DIR_NAME = 'azext_vm_repair'
-    SCRIPTS_DIR_NAME = 'scripts'
-    RUN_COMMAND_RUN_PS_ID = 'RunPowerShellScript'
-
-    # Build absoulte path of driver script
-    loader = pkgutil.get_loader(REPAIR_DIR_NAME)
-    mod = loader.load_module(REPAIR_DIR_NAME)
-    rootpath = os.path.dirname(mod.__file__)
-    run_script = os.path.join(rootpath, SCRIPTS_DIR_NAME, 'enable-nestedhyperv.ps1')
-    run_command = 'az vm run-command invoke -g {rg} -n {vm} --command-id {command_id} ' \
-                '--scripts @"{run_script}" -o json' \
-                .format(rg=rg_name, vm=vm_name, command_id=RUN_COMMAND_RUN_PS_ID, run_script=run_script)
-    
-    return_str = _call_az_command(run_command)
-
-    # Extract stdout and stderr, if stderr exists then possible error
-    run_command_return = loads(return_str)
-    stdout = run_command_return['value'][0]['message']
-    stderr = run_command_return['value'][1]['message']
-    return stdout, stderr
-
-
 def _invoke_run_command(script_name, vm_name, rg_name, is_linux, parameters=None, additional_custom_scripts=None):
     """
     Use azure run command to run the scripts within the vm-repair/scripts file and return stdout, stderr.
