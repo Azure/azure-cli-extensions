@@ -72,17 +72,16 @@ examples:
     text: |-
            az ad ds create --domain "TestDS.com" --replica-sets location="West US" subnet-id="<subnetId>" --name "TestDS.com" --resource-group "rg"
   - name: Create Domain Service with specified settings (Line breaks for legibility only)
-    text: |- 
-           az ad ds create --domain "TestDS.com" --replica-sets location="West US" subnet-id="<subnetId>" --name "TestDS.com" --resource-group "rg" 
-           --ntlm-v1 "Enabled" --sync-ntlm-pwd "Enabled" --tls-v1 "Disabled" --filtered-sync "Enabled" --external-access "Enabled" 
+    text: |-
+           az ad ds create --domain "TestDS.com" --replica-sets location="West US" subnet-id="<subnetId>" --name "TestDS.com" --resource-group "rg"
+           --ntlm-v1 "Enabled" --sync-ntlm-pwd "Enabled" --tls-v1 "Disabled" --filtered-sync "Enabled" --external-access "Enabled"
            --ldaps "Enabled" --pfx-cert "cert or path to cert" --pfx-cert-pwd "<pfxCertificatePassword>"
            --notify-others "a@gmail.com" "b@gmail.com" --notify-dc-admins "Enabled" --notify-global-admins "Enabled"
 """
 
 helps['ad ds update'] = """
 type: command
-short-summary: "The Update Domain Service operation can be used to update the existing deployment. The update call \
-only supports the properties listed in the PATCH body."
+short-summary: "Update the existing deployment properties for domain service."
 parameters:
   - name: --replica-sets
     short-summary: "List of ReplicaSets"
@@ -90,15 +89,13 @@ parameters:
         Usage: --replica-sets location=XX subnet-id=XX
 
         location: Virtual network location
-        subnet-id: The name of the virtual network that Domain Services will be deployed on. The id of the subnet \
-that Domain Services will be deployed on. /virtualNetwork/vnetName/subnets/subnetName.
+        subnet-id: The id of the subnet that Domain Services will be deployed on.
 
         Multiple actions can be specified by using more than one --replica-sets argument.
   - name: --settings
     short-summary: "List of settings for Resource Forest"
     long-summary: |
-        Usage: --settings trusted-domain-fqdn=XX trust-direction=XX friendly-name=XX remote-dns-ips=XX \
-trust-password=XX
+        Usage: --settings trusted-domain-fqdn=XX trust-direction=XX friendly-name=XX remote-dns-ips=XX trust-password=XX
 
         trusted-domain-fqdn: Trusted Domain FQDN
         trust-direction: Trust Direction
