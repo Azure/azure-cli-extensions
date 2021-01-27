@@ -19,3 +19,5 @@ def load_arguments(self, _):
                             'passed here should be the file path to the certificate pfx file '
                             'or a base64encoded representation of the certificate pfx file.',
                        arg_group='Ldaps Settings')
+            c.argument('settings', type=file_type, completer=FilesCompleter(), help='List of settings for Resource Forest',
+                       arg_group='Resource Forest Settings')

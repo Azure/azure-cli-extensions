@@ -56,17 +56,19 @@ parameters:
 
         Multiple actions can be specified by using more than one --replica-sets argument.
   - name: --settings
-    short-summary: "List of settings for Resource Forest"
+    short-summary: "List of settings for Resource Forest. This can be either a JSON-formatted string or the location to a file containing the JSON object."
     long-summary: |
-        Usage: --settings trusted-domain-fqdn=XX trust-direction=XX friendly-name=XX remote-dns-ips=XX trust-password=XX
-
-        trusted-domain-fqdn: Trusted Domain FQDN
-        trust-direction: Trust Direction
-        friendly-name: Friendly Name
-        remote-dns-ips: Remote Dns ips
-        trust-password: Trust Password
-
-        Multiple actions can be specified by using more than one --settings argument.
+        The format of the settings JSON object for Resource Forest:
+        [
+            {
+                'trusted_domain_fqdn': 'XX',
+                'trust_direction': 'XX',
+                'friendly_name': 'XX',
+                'remote_dns_ips': 'XX',
+                'trust_password': 'XX'
+            },
+            ...n
+        ]
 examples:
   - name: Create Domain Service
     text: |-
@@ -93,17 +95,19 @@ parameters:
 
         Multiple actions can be specified by using more than one --replica-sets argument.
   - name: --settings
-    short-summary: "List of settings for Resource Forest"
+    short-summary: "List of settings for Resource Forest. This can be either a JSON-formatted string or the location to a file containing the JSON object."
     long-summary: |
-        Usage: --settings trusted-domain-fqdn=XX trust-direction=XX friendly-name=XX remote-dns-ips=XX trust-password=XX
-
-        trusted-domain-fqdn: Trusted Domain FQDN
-        trust-direction: Trust Direction
-        friendly-name: Friendly Name
-        remote-dns-ips: Remote Dns ips
-        trust-password: Trust Password
-
-        Multiple actions can be specified by using more than one --settings argument.
+        The format of the settings JSON object for Resource Forest:
+        [
+            {
+                'trusted_domain_fqdn': 'XX',
+                'trust_direction': 'XX',
+                'friendly_name': 'XX',
+                'remote_dns_ips': 'XX',
+                'trust_password': 'XX'
+            },
+            ...n
+        ]
 examples:
   - name: Update sku
     text: |-

@@ -63,7 +63,7 @@ def ad_ds_create(client,
 
     if any([settings, resource_forest]):
         domain_service['resource_forest_settings'] = {}
-        domain_service['resource_forest_settings']['settings'] = settings
+        domain_service['resource_forest_settings']['settings'] = _get_resource_forest_settings(settings)
         domain_service['resource_forest_settings']['resource_forest'] = resource_forest
 
     if any([ldaps, pfx_certificate, pfx_certificate_password, external_access]):
@@ -144,7 +144,7 @@ def ad_ds_update(client,
         resource_forest_settings = domain_service.resource_forest_settings
         new_domain_service['resource_forest_settings'] = {}
         new_domain_service['resource_forest_settings']['settings'] = \
-            _get_domain_service_property_value(resource_forest_settings, 'settings', None) if settings is None else settings
+            _get_domain_service_property_value(resource_forest_settings, 'settings', None) if settings is None else _get_resource_forest_settings(settings)
         new_domain_service['resource_forest_settings']['resource_forest'] = \
             _get_domain_service_property_value(resource_forest_settings, 'resource_forest', None) if resource_forest is None else resource_forest
 
@@ -172,6 +172,17 @@ def _get_domain_service_property_value(old_property, sub_property_name, default_
     if old_property is not None:
         return getattr(old_property, sub_property_name, default_value)
     return default_value
+
+
+def _get_resource_forest_settings(settings):
+    if not settings:
+        return settings
+    import os
+    from azure.cli.core.util import get_file_json, shell_safe_json_parse
+    if os.path.exists(settings):
+        return get_file_json(settings)
+    else:
+        return shell_safe_json_parse(settings)
 
 
 def _get_pfx_certificate_content(pfx_certificate):
