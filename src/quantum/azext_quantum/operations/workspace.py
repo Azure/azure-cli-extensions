@@ -11,8 +11,13 @@ from .._client_factory import cf_workspaces
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
 from ..vendored_sdks.azure_mgmt_quantum.models import Provider
+from msrestazure.azure_exceptions import CloudError
+
+import time
 
 DEFAULT_WORKSPACE_LOCATION = 'westus'
+POLLING_TIME_DURATION = 3
+MAX_RETRIES_ROLE_ASSIGNMENT = 10
 
 class WorkspaceInfo(object):
     def __init__(self, cmd, resource_group_name=None, workspace_name=None, location=None):
@@ -51,7 +56,15 @@ class WorkspaceInfo(object):
             cmd.cli_ctx.config.set_value('quantum', 'location', self.location)
 
 
-def get_basic_quantum_workspace(location, info, storage_account):
+def _get_storage_account_path(workspaceInfo, storage_account_name):
+    if (storage_account_name[0] == "/"):
+        path = storage_account_name
+    else:
+        path = f"/subscriptions/{workspaceInfo.subscription}/resourceGroups/{workspaceInfo.resource_group}/providers/Microsoft.Storage/storageAccounts/{storage_account_name}"
+    return path
+
+
+def _get_basic_quantum_workspace(location, info, storage_account):
     qw = QuantumWorkspace(location=location)
     # Use a default provider 
     # Replace this with user specified providers as part of task 16184.
@@ -62,8 +75,35 @@ def get_basic_quantum_workspace(location, info, storage_account):
     # Allow the system to assign the workspace identity
     qw.identity = QuantumWorkspaceIdentity()
     qw.identity.type = "SystemAssigned"
-    qw.storage_account = f"/subscriptions/{info.subscription}/resourceGroups/{info.resource_group}/providers/Microsoft.Storage/storageAccounts/{storage_account}"
+    qw.storage_account = _get_storage_account_path(info, storage_account)
     return qw
+
+
+def _create_role_assignment(cmd, quantum_workspace):
+    from azure.cli.command_modules.role.custom import create_role_assignment
+    retry_attempts = 0
+
+    while (retry_attempts < MAX_RETRIES_ROLE_ASSIGNMENT):
+        try:
+            create_role_assignment(cmd, role="Contributor", scope=quantum_workspace.storage_account, assignee=quantum_workspace.identity.principal_id)
+            break
+        except (CloudError, CLIError) as e:
+            error = str(e.args).lower()
+            if (("does not exist" in error) or ("cannot find" in error)):
+                print('.', end='', flush=True)
+                time.sleep(POLLING_TIME_DURATION)
+                retry_attempts += 1
+                continue
+            raise e
+        except Exception as x:
+            raise CLIError(f"Role assignment encountered exception ({type(x).__name__}): {x}")
+
+    if (retry_attempts > 0):
+        print("") # To end the line of the waiting indicators.
+    if (retry_attempts == MAX_RETRIES_ROLE_ASSIGNMENT):
+        raise CLIError(f"Role assignment could not be added to storage account {quantum_workspace.storage_account}.")
+
+    return quantum_workspace
 
 
 def create(cmd, resource_group_name=None, workspace_name=None, location=None, storage_account=None):
@@ -80,8 +120,12 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     if (not info.resource_group):
         raise CLIError("Please run 'az quantum workspace set' first to select a default resource group.")
-    quantum_workspace = get_basic_quantum_workspace(location, info, storage_account)
-    return client.create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
+    quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
+    poller = client.create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
+    while not poller.done():
+        time.sleep(POLLING_TIME_DURATION)
+    quantum_workspace = poller.result()
+    return _create_role_assignment(cmd, quantum_workspace)
 
 
 def delete(cmd, resource_group_name=None, workspace_name=None):
