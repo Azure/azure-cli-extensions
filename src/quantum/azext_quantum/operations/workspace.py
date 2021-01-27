@@ -56,6 +56,12 @@ class WorkspaceInfo(object):
             cmd.cli_ctx.config.set_value('quantum', 'location', self.location)
 
 
+def _show_tip(msg):
+    import colorama
+    colorama.init()
+    print(f"\033[1m{colorama.Fore.YELLOW}{msg}{colorama.Style.RESET_ALL}")
+
+
 def _get_storage_account_path(workspaceInfo, storage_account_name):
     if (storage_account_name[0] == "/"):
         path = storage_account_name
@@ -82,7 +88,6 @@ def _get_basic_quantum_workspace(location, info, storage_account):
 def _create_role_assignment(cmd, quantum_workspace):
     from azure.cli.command_modules.role.custom import create_role_assignment
     retry_attempts = 0
-
     while (retry_attempts < MAX_RETRIES_ROLE_ASSIGNMENT):
         try:
             create_role_assignment(cmd, role="Contributor", scope=quantum_workspace.storage_account, assignee=quantum_workspace.identity.principal_id)
@@ -97,12 +102,10 @@ def _create_role_assignment(cmd, quantum_workspace):
             raise e
         except Exception as x:
             raise CLIError(f"Role assignment encountered exception ({type(x).__name__}): {x}")
-
     if (retry_attempts > 0):
         print("") # To end the line of the waiting indicators.
     if (retry_attempts == MAX_RETRIES_ROLE_ASSIGNMENT):
         raise CLIError(f"Role assignment could not be added to storage account {quantum_workspace.storage_account}.")
-
     return quantum_workspace
 
 
@@ -120,6 +123,8 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     if (not info.resource_group):
         raise CLIError("Please run 'az quantum workspace set' first to select a default resource group.")
+    _show_tip(f"Workspace {info.name} will be created with the Basic SKU of the Microsoft QIO optimization provider.")
+    _show_tip("Please go to the Azure portal https://portal.azure.com/ to configure additional providers.")
     quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
     poller = client.create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
     while not poller.done():
