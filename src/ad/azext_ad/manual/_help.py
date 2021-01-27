@@ -61,11 +61,11 @@ parameters:
         The format of the settings JSON object for Resource Forest:
         [
             {
-                'trusted_domain_fqdn': 'XX',
-                'trust_direction': 'XX',
-                'friendly_name': 'XX',
-                'remote_dns_ips': 'XX',
-                'trust_password': 'XX'
+                "trusted_domain_fqdn": "XX",
+                "trust_direction": "XX",
+                "friendly_name": "XX",
+                "remote_dns_ips": "XX",
+                "trust_password": "XX"
             },
             ...n
         ]
@@ -100,11 +100,11 @@ parameters:
         The format of the settings JSON object for Resource Forest:
         [
             {
-                'trusted_domain_fqdn': 'XX',
-                'trust_direction': 'XX',
-                'friendly_name': 'XX',
-                'remote_dns_ips': 'XX',
-                'trust_password': 'XX'
+                "trusted_domain_fqdn": "XX",
+                "trust_direction": "XX",
+                "friendly_name": "XX",
+                "remote_dns_ips": "XX",
+                "trust_password": "XX"
             },
             ...n
         ]
