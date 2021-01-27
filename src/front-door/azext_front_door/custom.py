@@ -672,7 +672,7 @@ def create_waf_policy(cmd, resource_group_name, policy_name,
 def update_waf_policy(instance, tags=None, mode=None, redirect_url=None,
                       custom_block_response_status_code=None, custom_block_response_body=None,
                       disabled=False, request_body_check=None, sku=None):
-    from azext_front_door.vendored_sdks.models import ( SkuName )
+    from azext_front_door.vendored_sdks.models import SkuName
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
 
