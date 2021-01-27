@@ -35,7 +35,7 @@ helps['confluent organization delete'] = """
       - name: Delete organization
         text: |-
                az confluent organization delete --name "myOrganization" --resource-group "myResourceGroup"
-      - name: Delete organization with ids
+      - name: Delete organization using IDs
         text: |-
                az confluent organization delete --ids "/subscriptions/{SubID}/resourceGroups/{ResourceGroup}/providers/Microsoft.Confluent/organizations/{myOrganization}"
 """
