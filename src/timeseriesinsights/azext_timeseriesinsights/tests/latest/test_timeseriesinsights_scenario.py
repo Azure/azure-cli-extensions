@@ -23,6 +23,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
         })
         return self.cmd('az tsi environment gen1 create '
                         '--resource-group {rg} '
+                        '--location westus '
                         '--name {env} '
                         '--sku name=S1 capacity=1 '
                         '--data-retention-time "P31D" '
@@ -38,6 +39,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
         # Test `environment gen1 create` with optional arguments
         self.cmd('az tsi environment gen1 create '
                  '--resource-group {rg} '
+                 '--location westus '
                  '--name {env1} '
                  '--sku name=S1 capacity=1 '
                  '--data-retention-time "P31D" '
@@ -105,6 +107,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
         # Test `environment gen2 create` with optional arguments
         self.cmd('az tsi environment gen2 create '
                  '--resource-group {rg} '
+                 '--location westus '
                  '--name {env} '
                  '--sku name=L1 capacity=1 '
                  '--time-series-id-properties name=DeviceId1 type=String '
@@ -148,6 +151,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
         self.kwargs["shared_access_key"] = result["primaryKey"]
 
         self.cmd('az tsi event-source eventhub create -g {rg} --environment-name {env} --name {es} '
+                 '--location westus '
                  '--event-hub-name {eh} '
                  '--service-bus-namespace {ehns} '
                  '--key-name RootManageSharedAccessKey '
@@ -201,6 +205,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
 
         # Test --timestamp-property-name is not given
         self.cmd('az tsi event-source iothub create -g {rg} --environment-name {env} --name {es} '
+                 '--location westus '
                  '--consumer-group-name "cgn" '
                  '--iot-hub-name {iothub} '
                  '--key-name {key_name} --shared-access-key {shared_access_key} '
@@ -243,6 +248,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
 
         # Create
         self.cmd('az tsi reference-data-set create -g {rg} --environment-name {env} --name {rds} '
+                 '--location westus '
                  '--key-properties name=DeviceFloor type=Double '
                  '--data-string-comparison-behavior Ordinal',
                  checks=[
@@ -252,6 +258,7 @@ class TimeseriesinsightsScenarioTest(ScenarioTest):
                  ])
 
         self.cmd('az tsi reference-data-set create -g {rg} --environment-name {env} --name {rds2} '
+                 '--location westus '
                  '--key-properties name=DeviceId1 type=String '
                  '--key-properties name=DeviceFloor type=Double '
                  '--data-string-comparison-behavior OrdinalIgnoreCase',

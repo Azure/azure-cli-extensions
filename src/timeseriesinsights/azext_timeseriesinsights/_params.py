@@ -43,7 +43,7 @@ def load_arguments(self, _):
     with self.argument_context('tsi environment gen1') as c:
         c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='Name of the'
                    ' environment', id_part='name')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
         c.argument('sku', action=AddSku, nargs='+', help='The sku determines the type of environment, either Gen1 (S1 '
@@ -70,7 +70,7 @@ def load_arguments(self, _):
     with self.argument_context('tsi environment gen2') as c:
         c.argument('environment_name', options_list=['--name', '-n', '--environment-name'], type=str, help='Name of the'
                    ' environment', id_part='name')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
         c.argument('sku', action=AddSku, nargs='+', help='The sku determines the type of environment, either Gen1 (S1 '
@@ -105,7 +105,7 @@ def load_arguments(self, _):
         c.argument('environment_name', id_part=None)
 
     with self.argument_context('tsi event-source eventhub') as c:
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
         c.argument('local_timestamp', type=validate_file_or_dict, help='An object that represents the local timestamp '
@@ -136,7 +136,7 @@ def load_arguments(self, _):
         c.argument('event_source_name', id_part=None)
 
     with self.argument_context('tsi event-source iothub') as c:
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
         c.argument('local_timestamp', type=validate_file_or_dict, help='An object that represents the local timestamp '
@@ -172,7 +172,7 @@ def load_arguments(self, _):
         c.argument('reference_data_set_name', options_list=['--name', '-n', '--reference-data-set-name'], type=str,
                    help='The name of the Time Series Insights reference data set associated with the specified '
                    'environment.', id_part='child_name_1')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+        c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
         c.argument('key_properties', action=AddKeyProperties, nargs='+', help='The list of key properties for the '
