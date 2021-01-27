@@ -19,7 +19,7 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
@@ -36,7 +36,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 21:49:05 GMT
+      - Wed, 27 Jan 2021 23:24:51 GMT
       expires:
       - '-1'
       odata-version:
@@ -50,7 +50,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
     status:
       code: 201
       message: Created
@@ -68,7 +68,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n --priority --rule-type --action --defer
       User-Agent:
-      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
@@ -85,7 +85,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 21:49:06 GMT
+      - Wed, 27 Jan 2021 23:24:51 GMT
       expires:
       - '-1'
       odata-version:
@@ -128,7 +128,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n --match-variable --operator --values
       User-Agent:
-      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
@@ -145,7 +145,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 21:49:07 GMT
+      - Wed, 27 Jan 2021 23:24:53 GMT
       expires:
       - '-1'
       odata-version:
@@ -204,7 +204,7 @@ interactions:
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
@@ -212,10 +212,10 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
   response:
     body:
-      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Creating","resourceState":"Creating","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"8a10c1ae-096b-4659-9b7e-05e9350fa8c5","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Creating","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Creating","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Creating","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Creating"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Creating","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Creating","resourceState":"Creating","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"4b870904-9ce8-4a92-8813-8b8513bcada8","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Creating","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Creating","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Creating","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Creating"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Creating","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/68c8f02a-e1cb-4491-880a-f9469a740ab8?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/d1ff6b12-648d-4f35-8f73-8acde4b96533?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -223,7 +223,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 21:49:12 GMT
+      - Wed, 27 Jan 2021 23:24:59 GMT
       expires:
       - '-1'
       odata-version:
@@ -255,10 +255,10 @@ interactions:
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/68c8f02a-e1cb-4491-880a-f9469a740ab8?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/d1ff6b12-648d-4f35-8f73-8acde4b96533?api-version=2020-05-01
   response:
     body:
       string: '{"status":"InProgress","error":{"code":"None","message":null}}'
@@ -270,7 +270,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 21:49:22 GMT
+      - Wed, 27 Jan 2021 23:25:09 GMT
       expires:
       - '-1'
       odata-version:
@@ -304,10 +304,10 @@ interactions:
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/68c8f02a-e1cb-4491-880a-f9469a740ab8?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/d1ff6b12-648d-4f35-8f73-8acde4b96533?api-version=2020-05-01
   response:
     body:
       string: '{"status":"Succeeded","error":{"code":"None","message":null}}'
@@ -319,7 +319,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 21:49:53 GMT
+      - Wed, 27 Jan 2021 23:25:40 GMT
       expires:
       - '-1'
       odata-version:
@@ -353,13 +353,13 @@ interactions:
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
   response:
     body:
-      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"8a10c1ae-096b-4659-9b7e-05e9350fa8c5","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"4b870904-9ce8-4a92-8813-8b8513bcada8","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
     headers:
       cache-control:
       - no-cache
@@ -368,7 +368,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 21:49:54 GMT
+      - Wed, 27 Jan 2021 23:25:40 GMT
       expires:
       - '-1'
       odata-version:
@@ -402,7 +402,7 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
@@ -410,7 +410,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
   response:
     body:
-      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"8a10c1ae-096b-4659-9b7e-05e9350fa8c5","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"4b870904-9ce8-4a92-8813-8b8513bcada8","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
     headers:
       cache-control:
       - no-cache
@@ -419,7 +419,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 21:49:54 GMT
+      - Wed, 27 Jan 2021 23:25:40 GMT
       expires:
       - '-1'
       odata-version:
@@ -482,7 +482,7 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
@@ -490,10 +490,10 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
   response:
     body:
-      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"8a10c1ae-096b-4659-9b7e-05e9350fa8c5","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002"},"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"4b870904-9ce8-4a92-8813-8b8513bcada8","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002"},"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/d1781380-4b3c-41b1-be38-e4ff4a7e2fa5?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/47e8cef1-9e42-4df0-a6eb-2c49f5a49fff?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -501,11 +501,11 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 21:49:57 GMT
+      - Wed, 27 Jan 2021 23:25:44 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/d1781380-4b3c-41b1-be38-e4ff4a7e2fa5/frontdoorresults/cli000004?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/47e8cef1-9e42-4df0-a6eb-2c49f5a49fff/frontdoorresults/cli000004?api-version=2020-05-01
       odata-version:
       - '4.0'
       pragma:
@@ -517,7 +517,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1195'
     status:
       code: 202
       message: Accepted
@@ -535,10 +535,10 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/d1781380-4b3c-41b1-be38-e4ff4a7e2fa5?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/47e8cef1-9e42-4df0-a6eb-2c49f5a49fff?api-version=2020-05-01
   response:
     body:
       string: '{"status":"InProgress","error":{"code":"None","message":null}}'
@@ -550,7 +550,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 21:50:08 GMT
+      - Wed, 27 Jan 2021 23:25:54 GMT
       expires:
       - '-1'
       odata-version:
@@ -584,10 +584,10 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/d1781380-4b3c-41b1-be38-e4ff4a7e2fa5?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/47e8cef1-9e42-4df0-a6eb-2c49f5a49fff?api-version=2020-05-01
   response:
     body:
       string: '{"status":"Succeeded","error":{"code":"None","message":null}}'
@@ -599,7 +599,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 21:50:38 GMT
+      - Wed, 27 Jan 2021 23:26:24 GMT
       expires:
       - '-1'
       odata-version:
@@ -633,13 +633,13 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
   response:
     body:
-      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"8a10c1ae-096b-4659-9b7e-05e9350fa8c5","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002"},"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"4b870904-9ce8-4a92-8813-8b8513bcada8","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002"},"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
     headers:
       cache-control:
       - no-cache
@@ -648,7 +648,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 21:50:38 GMT
+      - Wed, 27 Jan 2021 23:26:25 GMT
       expires:
       - '-1'
       odata-version:
@@ -690,13 +690,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:50:38 GMT
+      - Wed, 27 Jan 2021 23:26:26 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: A9FDA18D7EC742EDB22F61CDABEF7362 Ref B: PDX31EDGE0213 Ref C: 2021-01-27T21:50:39Z'
+      - 'Ref A: 80126DD4D53841D2B9FA3BABC8713048 Ref B: PDX31EDGE0211 Ref C: 2021-01-27T23:26:26Z'
     status:
       code: 302
       message: Found
@@ -716,16 +716,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:fe406e2a-f01e-0059-4df6-f4acec000000\nTime:2021-01-27T21:50:40.0319038Z</Message></Error>"
+        request URI is invalid.\nRequestId:639dc627-301e-001b-6603-f5156c000000\nTime:2021-01-27T23:26:26.2732749Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:50:39 GMT
+      - Wed, 27 Jan 2021 23:26:26 GMT
       x-msedge-ref:
-      - 'Ref A: 5E235353BE624AFEA3AE27CAAF0E223D Ref B: PDX31EDGE0213 Ref C: 2021-01-27T21:50:39Z'
+      - 'Ref A: FD21C74B13D34EA8B6521210B0ACEB2B Ref B: PDX31EDGE0211 Ref C: 2021-01-27T23:26:26Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -751,13 +751,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:50:49 GMT
+      - Wed, 27 Jan 2021 23:26:36 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 977ABBE4DB344AB6B2D219D3A22B5F97 Ref B: PDX31EDGE0213 Ref C: 2021-01-27T21:50:50Z'
+      - 'Ref A: 3878F92B77B44C67B3BB956B15E65FA5 Ref B: PDX31EDGE0211 Ref C: 2021-01-27T23:26:36Z'
     status:
       code: 302
       message: Found
@@ -777,16 +777,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:fe4073d3-f01e-0059-0ef6-f4acec000000\nTime:2021-01-27T21:50:50.1942159Z</Message></Error>"
+        request URI is invalid.\nRequestId:639dca26-301e-001b-5e03-f5156c000000\nTime:2021-01-27T23:26:36.4316137Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:50:49 GMT
+      - Wed, 27 Jan 2021 23:26:36 GMT
       x-msedge-ref:
-      - 'Ref A: 802043533BC74863948FF395BB5EEB16 Ref B: PDX31EDGE0213 Ref C: 2021-01-27T21:50:50Z'
+      - 'Ref A: 3ADDB88FD99844D69A0833B74AA42AFD Ref B: PDX31EDGE0211 Ref C: 2021-01-27T23:26:36Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -812,13 +812,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:50:59 GMT
+      - Wed, 27 Jan 2021 23:26:46 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 5C8EA8A78642487E89A7A33EEA038A79 Ref B: PDX31EDGE0221 Ref C: 2021-01-27T21:51:00Z'
+      - 'Ref A: A34C75BE9E7840478488F861678280CD Ref B: PDX31EDGE0213 Ref C: 2021-01-27T23:26:46Z'
     status:
       code: 302
       message: Found
@@ -838,16 +838,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:5794a892-901e-002d-16f6-f4981c000000\nTime:2021-01-27T21:51:00.5304490Z</Message></Error>"
+        request URI is invalid.\nRequestId:cc3a250e-801e-0021-1a03-f50f14000000\nTime:2021-01-27T23:26:46.7518111Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:50:59 GMT
+      - Wed, 27 Jan 2021 23:26:46 GMT
       x-msedge-ref:
-      - 'Ref A: 04A0937A17CD492297B2C507EDBDA191 Ref B: PDX31EDGE0221 Ref C: 2021-01-27T21:51:00Z'
+      - 'Ref A: 1BEE6A8973444E2A891FB974AC149742 Ref B: PDX31EDGE0213 Ref C: 2021-01-27T23:26:46Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -873,13 +873,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:51:10 GMT
+      - Wed, 27 Jan 2021 23:26:56 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: D7812A2FC3814559A4B240D3F811E8A1 Ref B: PDX31EDGE0207 Ref C: 2021-01-27T21:51:10Z'
+      - 'Ref A: 9744AFBE2F14461DB65E36A3AF8D142E Ref B: PDX31EDGE0222 Ref C: 2021-01-27T23:26:56Z'
     status:
       code: 302
       message: Found
@@ -899,16 +899,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:77971a49-301e-0024-39f6-f4ddcf000000\nTime:2021-01-27T21:51:10.7902357Z</Message></Error>"
+        request URI is invalid.\nRequestId:cc3a2ac7-801e-0021-4a03-f50f14000000\nTime:2021-01-27T23:26:57.0814402Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:51:10 GMT
+      - Wed, 27 Jan 2021 23:26:56 GMT
       x-msedge-ref:
-      - 'Ref A: 4167BC4FC5744CFBB7E9EC390542D9A4 Ref B: PDX31EDGE0207 Ref C: 2021-01-27T21:51:10Z'
+      - 'Ref A: 5AF705543CC94CF793F1E0E5A70E5C80 Ref B: PDX31EDGE0222 Ref C: 2021-01-27T23:26:56Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -934,13 +934,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:51:19 GMT
+      - Wed, 27 Jan 2021 23:27:06 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 768514376C0343B2BD50A560A9A87805 Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:51:20Z'
+      - 'Ref A: 4D3BD73575A7440A86A438911B50E441 Ref B: PDX31EDGE0214 Ref C: 2021-01-27T23:27:07Z'
     status:
       code: 302
       message: Found
@@ -960,16 +960,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:9868e686-501e-0032-0cf6-f42b18000000\nTime:2021-01-27T21:51:21.1128131Z</Message></Error>"
+        request URI is invalid.\nRequestId:05c02a30-b01e-0067-0103-f53b93000000\nTime:2021-01-27T23:27:07.4482415Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:51:20 GMT
+      - Wed, 27 Jan 2021 23:27:06 GMT
       x-msedge-ref:
-      - 'Ref A: 9504135651A44650B047D6F9AF092B65 Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:51:20Z'
+      - 'Ref A: 7A0DED3C665A49038FC4362782192163 Ref B: PDX31EDGE0214 Ref C: 2021-01-27T23:27:07Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -995,13 +995,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:51:30 GMT
+      - Wed, 27 Jan 2021 23:27:16 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: C49E2054521A4CEAB72D15C817B1F1E5 Ref B: PDX31EDGE0217 Ref C: 2021-01-27T21:51:31Z'
+      - 'Ref A: CD2E3041E97F4882834BEBF59B6DF46E Ref B: PDX31EDGE0217 Ref C: 2021-01-27T23:27:17Z'
     status:
       code: 302
       message: Found
@@ -1021,16 +1021,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:0f7ef8e8-f01e-0049-03f6-f46984000000\nTime:2021-01-27T21:51:31.4403512Z</Message></Error>"
+        request URI is invalid.\nRequestId:fe52a862-f01e-0059-6903-f5acec000000\nTime:2021-01-27T23:27:17.7185574Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:51:31 GMT
+      - Wed, 27 Jan 2021 23:27:16 GMT
       x-msedge-ref:
-      - 'Ref A: 8B2F0376B774475197476E95AAA272B5 Ref B: PDX31EDGE0217 Ref C: 2021-01-27T21:51:31Z'
+      - 'Ref A: C51AAB847B534595A3EA558C3D8FEDE4 Ref B: PDX31EDGE0217 Ref C: 2021-01-27T23:27:17Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1056,13 +1056,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:51:40 GMT
+      - Wed, 27 Jan 2021 23:27:27 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 813F0497F86841AF9524EC36BC3D4F97 Ref B: PDX31EDGE0216 Ref C: 2021-01-27T21:51:41Z'
+      - 'Ref A: E2CC67606C6D4579A089FB8BFB333E86 Ref B: PDX31EDGE0215 Ref C: 2021-01-27T23:27:27Z'
     status:
       code: 302
       message: Found
@@ -1082,16 +1082,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:9ba16c1f-601e-0016-78f6-f4ddb8000000\nTime:2021-01-27T21:51:41.7099641Z</Message></Error>"
+        request URI is invalid.\nRequestId:336a0c6d-601e-0029-7503-f5151b000000\nTime:2021-01-27T23:27:28.0121439Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:51:41 GMT
+      - Wed, 27 Jan 2021 23:27:27 GMT
       x-msedge-ref:
-      - 'Ref A: 55F26D659BA84CD4BB805BCDDB8D6C21 Ref B: PDX31EDGE0216 Ref C: 2021-01-27T21:51:41Z'
+      - 'Ref A: 0D9BA42DAF1C4101A8CB6A3CA474B1F1 Ref B: PDX31EDGE0215 Ref C: 2021-01-27T23:27:27Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1117,13 +1117,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:51:51 GMT
+      - Wed, 27 Jan 2021 23:27:37 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 9CE7C057D21E4AC7A23C0DAEBD70B7EE Ref B: PDX31EDGE0215 Ref C: 2021-01-27T21:51:51Z'
+      - 'Ref A: 3996A2BAAC074B60B174318E1BD90BC0 Ref B: PDX31EDGE0211 Ref C: 2021-01-27T23:27:38Z'
     status:
       code: 302
       message: Found
@@ -1143,16 +1143,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:a57e32bf-d01e-002c-2bf6-f4c7c0000000\nTime:2021-01-27T21:51:51.9812525Z</Message></Error>"
+        request URI is invalid.\nRequestId:639de230-301e-001b-1f03-f5156c000000\nTime:2021-01-27T23:27:38.2119929Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:51:51 GMT
+      - Wed, 27 Jan 2021 23:27:37 GMT
       x-msedge-ref:
-      - 'Ref A: 0884D27D84BD4034BF02DFED6BAE964D Ref B: PDX31EDGE0215 Ref C: 2021-01-27T21:51:51Z'
+      - 'Ref A: E044DBC4559A4665B51DEF343D84D701 Ref B: PDX31EDGE0211 Ref C: 2021-01-27T23:27:38Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1178,13 +1178,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:52:01 GMT
+      - Wed, 27 Jan 2021 23:27:47 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 8A11A69A0E8A4D83B5D114B35D750549 Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:52:02Z'
+      - 'Ref A: 222B88ED68E5493CA4BA0293F8907361 Ref B: PDX31EDGE0209 Ref C: 2021-01-27T23:27:48Z'
     status:
       code: 302
       message: Found
@@ -1204,16 +1204,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:9868ff89-501e-0032-21f6-f42b18000000\nTime:2021-01-27T21:52:02.2569605Z</Message></Error>"
+        request URI is invalid.\nRequestId:c72d2267-e01e-0045-1b04-f5fe8c000000\nTime:2021-01-27T23:27:48.5159715Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:52:02 GMT
+      - Wed, 27 Jan 2021 23:27:48 GMT
       x-msedge-ref:
-      - 'Ref A: 08901356914F4F63AE84F85487AB15BE Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:52:02Z'
+      - 'Ref A: 397DFF8F4DE74AB495F54D217078D020 Ref B: PDX31EDGE0209 Ref C: 2021-01-27T23:27:48Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1239,13 +1239,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:52:12 GMT
+      - Wed, 27 Jan 2021 23:27:58 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: E5DC80A080D7492681012BFEF722346C Ref B: PDX31EDGE0221 Ref C: 2021-01-27T21:52:12Z'
+      - 'Ref A: CD7DDB50C7D0440BA7244E20E4DC9A82 Ref B: PDX31EDGE0216 Ref C: 2021-01-27T23:27:58Z'
     status:
       code: 302
       message: Found
@@ -1265,16 +1265,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:5794ca3b-901e-002d-2ff6-f4981c000000\nTime:2021-01-27T21:52:12.4611236Z</Message></Error>"
+        request URI is invalid.\nRequestId:96b8aac7-c01e-0030-4a04-f595a0000000\nTime:2021-01-27T23:27:58.7919794Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:52:12 GMT
+      - Wed, 27 Jan 2021 23:27:58 GMT
       x-msedge-ref:
-      - 'Ref A: CB4BEF2353F04DE29DFDA4F5F4CC4F9D Ref B: PDX31EDGE0221 Ref C: 2021-01-27T21:52:12Z'
+      - 'Ref A: E5A8633707994C429DB46891FE2FE0AE Ref B: PDX31EDGE0216 Ref C: 2021-01-27T23:27:58Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1300,13 +1300,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:52:22 GMT
+      - Wed, 27 Jan 2021 23:28:08 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: F975EFDCE3884CB8A9AEC9DA63539F84 Ref B: PDX31EDGE0215 Ref C: 2021-01-27T21:52:22Z'
+      - 'Ref A: A3A2D11B40F74C84B1CF3AA2D61F34CB Ref B: PDX31EDGE0211 Ref C: 2021-01-27T23:28:08Z'
     status:
       code: 302
       message: Found
@@ -1326,16 +1326,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:a57e3eec-d01e-002c-5ff6-f4c7c0000000\nTime:2021-01-27T21:52:22.6545380Z</Message></Error>"
+        request URI is invalid.\nRequestId:639dee02-301e-001b-1204-f5156c000000\nTime:2021-01-27T23:28:08.9578137Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:52:22 GMT
+      - Wed, 27 Jan 2021 23:28:08 GMT
       x-msedge-ref:
-      - 'Ref A: A3B8D83A1A984C4FB8D8C10825FBB58B Ref B: PDX31EDGE0215 Ref C: 2021-01-27T21:52:22Z'
+      - 'Ref A: 860110D1F75E4AAAA93435B06AF055BF Ref B: PDX31EDGE0211 Ref C: 2021-01-27T23:28:08Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1361,13 +1361,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:52:32 GMT
+      - Wed, 27 Jan 2021 23:28:18 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: CFCB1F1E5076470EA87C0300D589D297 Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:52:32Z'
+      - 'Ref A: 387421D821E84181B22C71B2A2C55DC7 Ref B: PDX31EDGE0222 Ref C: 2021-01-27T23:28:19Z'
     status:
       code: 302
       message: Found
@@ -1387,16 +1387,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:986910e7-501e-0032-04f6-f42b18000000\nTime:2021-01-27T21:52:32.8674107Z</Message></Error>"
+        request URI is invalid.\nRequestId:cc3a6115-801e-0021-6a04-f50f14000000\nTime:2021-01-27T23:28:19.2087114Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:52:32 GMT
+      - Wed, 27 Jan 2021 23:28:18 GMT
       x-msedge-ref:
-      - 'Ref A: 1601B0AE9CF14297978BBBD7BD1A5C0E Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:52:32Z'
+      - 'Ref A: 514C64721E824EEFA6B418AAD75E4205 Ref B: PDX31EDGE0222 Ref C: 2021-01-27T23:28:19Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1422,13 +1422,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:52:42 GMT
+      - Wed, 27 Jan 2021 23:28:28 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 2BB4C0675D65417699A6B6CF53C176C8 Ref B: PDX31EDGE0209 Ref C: 2021-01-27T21:52:42Z'
+      - 'Ref A: 30069AFDF8BD4BDC9CE681D3F514559A Ref B: PDX31EDGE0213 Ref C: 2021-01-27T23:28:29Z'
     status:
       code: 302
       message: Found
@@ -1448,16 +1448,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:8472a1d9-301e-000b-07f6-f4d004000000\nTime:2021-01-27T21:52:43.1142967Z</Message></Error>"
+        request URI is invalid.\nRequestId:24eefbab-701e-0047-1e04-f54034000000\nTime:2021-01-27T23:28:29.5544902Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:52:42 GMT
+      - Wed, 27 Jan 2021 23:28:29 GMT
       x-msedge-ref:
-      - 'Ref A: 27D3D3D4CBD94A219C6F627D50A43463 Ref B: PDX31EDGE0209 Ref C: 2021-01-27T21:52:43Z'
+      - 'Ref A: BB666F9BCA5C40B293860141848FE489 Ref B: PDX31EDGE0213 Ref C: 2021-01-27T23:28:29Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1483,13 +1483,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:52:52 GMT
+      - Wed, 27 Jan 2021 23:28:39 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 9EA8048651DA402E920C52287A844879 Ref B: PDX31EDGE0222 Ref C: 2021-01-27T21:52:53Z'
+      - 'Ref A: 822EB1E36EFA4346967450D5C085BABB Ref B: PDX31EDGE0209 Ref C: 2021-01-27T23:28:39Z'
     status:
       code: 302
       message: Found
@@ -1509,16 +1509,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:8677aa00-601e-0074-13f6-f41f9f000000\nTime:2021-01-27T21:52:53.4046334Z</Message></Error>"
+        request URI is invalid.\nRequestId:c72d465c-e01e-0045-2904-f5fe8c000000\nTime:2021-01-27T23:28:39.7339681Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:52:52 GMT
+      - Wed, 27 Jan 2021 23:28:39 GMT
       x-msedge-ref:
-      - 'Ref A: 6C5ED54E8A9C41659726B8735ED4BF0F Ref B: PDX31EDGE0222 Ref C: 2021-01-27T21:52:53Z'
+      - 'Ref A: 9F11C2631E254738AD291781B709F430 Ref B: PDX31EDGE0209 Ref C: 2021-01-27T23:28:39Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1544,13 +1544,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:53:02 GMT
+      - Wed, 27 Jan 2021 23:28:49 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: B356970C75614844B2D3D096F3508442 Ref B: PDX31EDGE0206 Ref C: 2021-01-27T21:53:03Z'
+      - 'Ref A: D210DDE61FFE43569C06FD721FEC76F6 Ref B: PDX31EDGE0217 Ref C: 2021-01-27T23:28:49Z'
     status:
       code: 302
       message: Found
@@ -1570,16 +1570,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:7b00859e-201e-0075-7af6-f44043000000\nTime:2021-01-27T21:53:03.7708772Z</Message></Error>"
+        request URI is invalid.\nRequestId:0e9c5eb3-201e-0065-0f04-f5852b000000\nTime:2021-01-27T23:28:50.0200717Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:53:03 GMT
+      - Wed, 27 Jan 2021 23:28:49 GMT
       x-msedge-ref:
-      - 'Ref A: B54F36B7CB1F4E88ABA437935AFED7D0 Ref B: PDX31EDGE0206 Ref C: 2021-01-27T21:53:03Z'
+      - 'Ref A: C474479F76904378808B3E5458F58B6B Ref B: PDX31EDGE0217 Ref C: 2021-01-27T23:28:49Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1605,13 +1605,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:53:13 GMT
+      - Wed, 27 Jan 2021 23:28:59 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 86A60D6DAFD24C2E8AABCEC1F451FBFE Ref B: PDX31EDGE0217 Ref C: 2021-01-27T21:53:13Z'
+      - 'Ref A: 078CF621520B4163A267BE9CFBB03033 Ref B: PDX31EDGE0215 Ref C: 2021-01-27T23:29:00Z'
     status:
       code: 302
       message: Found
@@ -1631,16 +1631,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:414f2194-501e-006f-2ff6-f4219c000000\nTime:2021-01-27T21:53:14.0387879Z</Message></Error>"
+        request URI is invalid.\nRequestId:c8f3e9d9-a01e-0054-5a04-f56438000000\nTime:2021-01-27T23:29:00.3717997Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:53:13 GMT
+      - Wed, 27 Jan 2021 23:28:59 GMT
       x-msedge-ref:
-      - 'Ref A: 2CF4520260C74B9D9DAE4753435EEDDA Ref B: PDX31EDGE0217 Ref C: 2021-01-27T21:53:13Z'
+      - 'Ref A: D704527AA4974B7681FC0BC5347AD0A6 Ref B: PDX31EDGE0215 Ref C: 2021-01-27T23:29:00Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1666,13 +1666,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:53:23 GMT
+      - Wed, 27 Jan 2021 23:29:10 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 5217BB58086B4351AB60FF9EA8F4824C Ref B: PDX31EDGE0215 Ref C: 2021-01-27T21:53:24Z'
+      - 'Ref A: 0CE7289F61C242BF8C9EFC15245C97D0 Ref B: PDX31EDGE0217 Ref C: 2021-01-27T23:29:10Z'
     status:
       code: 302
       message: Found
@@ -1692,16 +1692,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:a57e5678-d01e-002c-2af6-f4c7c0000000\nTime:2021-01-27T21:53:24.2241024Z</Message></Error>"
+        request URI is invalid.\nRequestId:0e9c6d07-201e-0065-1c04-f5852b000000\nTime:2021-01-27T23:29:10.5418589Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:53:23 GMT
+      - Wed, 27 Jan 2021 23:29:10 GMT
       x-msedge-ref:
-      - 'Ref A: FD47656E3A7343398C73DFED70A253DA Ref B: PDX31EDGE0215 Ref C: 2021-01-27T21:53:24Z'
+      - 'Ref A: BF9208E275314A82952375A2CC18D054 Ref B: PDX31EDGE0217 Ref C: 2021-01-27T23:29:10Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1727,13 +1727,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:53:35 GMT
+      - Wed, 27 Jan 2021 23:29:20 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: C503FEA116E54F8982973BA3C19D1FB2 Ref B: PDX31EDGE0216 Ref C: 2021-01-27T21:53:35Z'
+      - 'Ref A: 4DFE15E5C7AE442BB6ED3C4BDC8EB8F2 Ref B: PDX31EDGE0207 Ref C: 2021-01-27T23:29:20Z'
     status:
       code: 302
       message: Found
@@ -1753,16 +1753,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:761fe77c-b01e-0005-39f6-f4f9b4000000\nTime:2021-01-27T21:53:35.8554251Z</Message></Error>"
+        request URI is invalid.\nRequestId:24ef2470-701e-0047-4404-f54034000000\nTime:2021-01-27T23:29:20.8321987Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:53:35 GMT
+      - Wed, 27 Jan 2021 23:29:20 GMT
       x-msedge-ref:
-      - 'Ref A: BD880F55165A4D6FAEA46804C6F80A54 Ref B: PDX31EDGE0216 Ref C: 2021-01-27T21:53:35Z'
+      - 'Ref A: 0C93939572CD476A993B8171F10B315E Ref B: PDX31EDGE0207 Ref C: 2021-01-27T23:29:20Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1788,13 +1788,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:53:45 GMT
+      - Wed, 27 Jan 2021 23:29:30 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: EC3C4B9D71824AA7A3DCA0497E2AF431 Ref B: PDX31EDGE0221 Ref C: 2021-01-27T21:53:45Z'
+      - 'Ref A: 3CC0DCA88BE341A2AB192FC91E7C0677 Ref B: PDX31EDGE0206 Ref C: 2021-01-27T23:29:30Z'
     status:
       code: 302
       message: Found
@@ -1814,16 +1814,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:0e0bcf59-e01e-0008-19f6-f43160000000\nTime:2021-01-27T21:53:46.1824831Z</Message></Error>"
+        request URI is invalid.\nRequestId:2e72eca2-d01e-005e-0404-f5c08f000000\nTime:2021-01-27T23:29:31.1699623Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:53:45 GMT
+      - Wed, 27 Jan 2021 23:29:30 GMT
       x-msedge-ref:
-      - 'Ref A: 146631A4546D476AA4F326730F20CB05 Ref B: PDX31EDGE0221 Ref C: 2021-01-27T21:53:46Z'
+      - 'Ref A: 16AE5A658B9B40EA9779D01BF609AB95 Ref B: PDX31EDGE0206 Ref C: 2021-01-27T23:29:31Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1849,13 +1849,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:53:55 GMT
+      - Wed, 27 Jan 2021 23:29:41 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 80987C96B81546928424420A77386F0B Ref B: PDX31EDGE0207 Ref C: 2021-01-27T21:53:56Z'
+      - 'Ref A: 4412E503905644D691AB6AC07E9BE696 Ref B: PDX31EDGE0214 Ref C: 2021-01-27T23:29:41Z'
     status:
       code: 302
       message: Found
@@ -1875,16 +1875,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:3842a447-701e-0078-5af6-f48897000000\nTime:2021-01-27T21:53:56.5301971Z</Message></Error>"
+        request URI is invalid.\nRequestId:b3bd76b6-b01e-0077-7104-f5fefb000000\nTime:2021-01-27T23:29:41.5074965Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:53:55 GMT
+      - Wed, 27 Jan 2021 23:29:41 GMT
       x-msedge-ref:
-      - 'Ref A: 0F2B5AEF9BDD4C3F8C5BA1C24C8CDB71 Ref B: PDX31EDGE0207 Ref C: 2021-01-27T21:53:56Z'
+      - 'Ref A: B368181F0FFC430984B62AF804C731C9 Ref B: PDX31EDGE0214 Ref C: 2021-01-27T23:29:41Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1910,13 +1910,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:54:05 GMT
+      - Wed, 27 Jan 2021 23:29:51 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: A8D9F51AAAA1429EAA1638DE51516CD9 Ref B: PDX31EDGE0214 Ref C: 2021-01-27T21:54:06Z'
+      - 'Ref A: DD86FBACF2254D7EA2E25821779F42D2 Ref B: PDX31EDGE0217 Ref C: 2021-01-27T23:29:51Z'
     status:
       code: 302
       message: Found
@@ -1936,16 +1936,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:9ba1af67-601e-0016-47f6-f4ddb8000000\nTime:2021-01-27T21:54:06.8378074Z</Message></Error>"
+        request URI is invalid.\nRequestId:0e9c894f-201e-0065-0a04-f5852b000000\nTime:2021-01-27T23:29:51.7307916Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:54:06 GMT
+      - Wed, 27 Jan 2021 23:29:51 GMT
       x-msedge-ref:
-      - 'Ref A: 342CB8CEBB52437E962C7D012273F0EA Ref B: PDX31EDGE0214 Ref C: 2021-01-27T21:54:06Z'
+      - 'Ref A: 72AE8DA9D7E843A2928428D7D8BE7EF1 Ref B: PDX31EDGE0217 Ref C: 2021-01-27T23:29:51Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1971,13 +1971,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:54:16 GMT
+      - Wed, 27 Jan 2021 23:30:01 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 297AEAEDDA9F41519E3FA1AD4C53228C Ref B: PDX31EDGE0214 Ref C: 2021-01-27T21:54:16Z'
+      - 'Ref A: 7ADEA00814094CAFA8C8CD7BB1D162EA Ref B: PDX31EDGE0211 Ref C: 2021-01-27T23:30:01Z'
     status:
       code: 302
       message: Found
@@ -1997,16 +1997,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:9ba1b465-601e-0016-2ff6-f4ddb8000000\nTime:2021-01-27T21:54:16.9891684Z</Message></Error>"
+        request URI is invalid.\nRequestId:da7b7914-c01e-006d-3404-f59f24000000\nTime:2021-01-27T23:30:02.0813705Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:54:16 GMT
+      - Wed, 27 Jan 2021 23:30:01 GMT
       x-msedge-ref:
-      - 'Ref A: 544D453D3CC5469D90EC9660599EB389 Ref B: PDX31EDGE0214 Ref C: 2021-01-27T21:54:16Z'
+      - 'Ref A: 8C0B886C2FEC43D9B82F8B0E6925EAAB Ref B: PDX31EDGE0211 Ref C: 2021-01-27T23:30:01Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -2032,13 +2032,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:54:26 GMT
+      - Wed, 27 Jan 2021 23:30:11 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 8D9AFF4A660B4E87912C5809C5A21A71 Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:54:27Z'
+      - 'Ref A: 9750EB38987F47E59F7790E650EE5AA0 Ref B: PDX31EDGE0216 Ref C: 2021-01-27T23:30:12Z'
     status:
       code: 302
       message: Found
@@ -2058,16 +2058,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:364379c0-401e-005c-62f6-f47e37000000\nTime:2021-01-27T21:54:27.2669801Z</Message></Error>"
+        request URI is invalid.\nRequestId:2e730beb-d01e-005e-7904-f5c08f000000\nTime:2021-01-27T23:30:12.3161763Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:54:26 GMT
+      - Wed, 27 Jan 2021 23:30:11 GMT
       x-msedge-ref:
-      - 'Ref A: DC15326490B5437CA0C659A4240FD88A Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:54:27Z'
+      - 'Ref A: FDD83134A9EE44558BB4AA104F0C30A7 Ref B: PDX31EDGE0216 Ref C: 2021-01-27T23:30:12Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -2093,13 +2093,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:54:37 GMT
+      - Wed, 27 Jan 2021 23:30:22 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 9A907F0F2C7E4A84A3E11DA651297509 Ref B: PDX31EDGE0206 Ref C: 2021-01-27T21:54:37Z'
+      - 'Ref A: 5EB9AA7AE7BB404F84875DA7B4F7F5D8 Ref B: PDX31EDGE0222 Ref C: 2021-01-27T23:30:22Z'
     status:
       code: 302
       message: Found
@@ -2119,16 +2119,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:4e47a5ab-e01e-0027-19f7-f43cab000000\nTime:2021-01-27T21:54:37.5975118Z</Message></Error>"
+        request URI is invalid.\nRequestId:f17d18d9-401e-003e-7804-f5bc10000000\nTime:2021-01-27T23:30:22.5983147Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:54:37 GMT
+      - Wed, 27 Jan 2021 23:30:22 GMT
       x-msedge-ref:
-      - 'Ref A: F332AA9B664D49CEB52C067941987BC0 Ref B: PDX31EDGE0206 Ref C: 2021-01-27T21:54:37Z'
+      - 'Ref A: EB51E7C265AF4F889D331B6AA23974C3 Ref B: PDX31EDGE0222 Ref C: 2021-01-27T23:30:22Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -2154,13 +2154,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:54:47 GMT
+      - Wed, 27 Jan 2021 23:30:31 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 30CE8770EA2A43409C445E3176AD2820 Ref B: PDX31EDGE0208 Ref C: 2021-01-27T21:54:47Z'
+      - 'Ref A: FEFFDD828C4841588C4C59EC563C3FE4 Ref B: PDX31EDGE0219 Ref C: 2021-01-27T23:30:32Z'
     status:
       code: 302
       message: Found
@@ -2180,16 +2180,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:ff06336f-c01e-0042-80f7-f492ef000000\nTime:2021-01-27T21:54:47.8886682Z</Message></Error>"
+        request URI is invalid.\nRequestId:336a8e7a-601e-0029-0304-f5151b000000\nTime:2021-01-27T23:30:32.8530525Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:54:47 GMT
+      - Wed, 27 Jan 2021 23:30:32 GMT
       x-msedge-ref:
-      - 'Ref A: F72EFCB13D364354B7C28F527C007102 Ref B: PDX31EDGE0208 Ref C: 2021-01-27T21:54:47Z'
+      - 'Ref A: 44628E8F4E014B97B4FBB59A80CDC528 Ref B: PDX31EDGE0219 Ref C: 2021-01-27T23:30:32Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -2215,13 +2215,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:54:57 GMT
+      - Wed, 27 Jan 2021 23:30:42 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 1088BB2C785F4A3D87BE5BC69AB95D96 Ref B: PDX31EDGE0212 Ref C: 2021-01-27T21:54:58Z'
+      - 'Ref A: A6472D90E800451DB85CD887E02FEA3F Ref B: PDX31EDGE0215 Ref C: 2021-01-27T23:30:42Z'
     status:
       code: 302
       message: Found
@@ -2241,16 +2241,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:71777b8f-701e-0035-6bf7-f4477b000000\nTime:2021-01-27T21:54:58.2266186Z</Message></Error>"
+        request URI is invalid.\nRequestId:0f91feb5-f01e-0049-6604-f56984000000\nTime:2021-01-27T23:30:43.1280461Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:54:57 GMT
+      - Wed, 27 Jan 2021 23:30:42 GMT
       x-msedge-ref:
-      - 'Ref A: 0C755DDA5B214D92BEF1D92696DE7FCC Ref B: PDX31EDGE0212 Ref C: 2021-01-27T21:54:58Z'
+      - 'Ref A: EF898089428E4FA6A798886B543A236C Ref B: PDX31EDGE0215 Ref C: 2021-01-27T23:30:42Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -2276,13 +2276,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 21:55:08 GMT
+      - Wed, 27 Jan 2021 23:30:52 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: AA084390BD7743EBAB27BB8FBC6EA932 Ref B: PDX31EDGE0207 Ref C: 2021-01-27T21:55:08Z'
+      - 'Ref A: E3EE251C9A2F40A1B0B103990CF7A12A Ref B: PDX31EDGE0217 Ref C: 2021-01-27T23:30:53Z'
     status:
       code: 302
       message: Found
@@ -2302,992 +2302,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:3842d40a-701e-0078-21f7-f48897000000\nTime:2021-01-27T21:55:08.4630794Z</Message></Error>"
+        request URI is invalid.\nRequestId:0e9cab6a-201e-0065-5f04-f5852b000000\nTime:2021-01-27T23:30:53.3847551Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 21:55:08 GMT
+      - Wed, 27 Jan 2021 23:30:52 GMT
       x-msedge-ref:
-      - 'Ref A: 2DFEFA2CAE5845C4AAEBCE33A2A81D4F Ref B: PDX31EDGE0207 Ref C: 2021-01-27T21:55:08Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 27 Jan 2021 21:55:18 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: 9BF3A62858764811A3FB0593CEC1A5C8 Ref B: PDX31EDGE0212 Ref C: 2021-01-27T21:55:18Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:71778abd-701e-0035-46f7-f4477b000000\nTime:2021-01-27T21:55:18.7672877Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 27 Jan 2021 21:55:18 GMT
-      x-msedge-ref:
-      - 'Ref A: 06B12787AC3C43F4BAF2BF178D524A27 Ref B: PDX31EDGE0212 Ref C: 2021-01-27T21:55:18Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 27 Jan 2021 21:55:28 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: 93036B0547F94673ABFE68957E779D60 Ref B: PDX31EDGE0215 Ref C: 2021-01-27T21:55:28Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:b04990ad-b01e-003a-75f7-f43117000000\nTime:2021-01-27T21:55:29.0914119Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 27 Jan 2021 21:55:28 GMT
-      x-msedge-ref:
-      - 'Ref A: 15270F564E6145A7BF20B952310FC73C Ref B: PDX31EDGE0215 Ref C: 2021-01-27T21:55:28Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 27 Jan 2021 21:55:39 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: 96D026FE42B241AC93C4481A3E9D3B79 Ref B: PDX31EDGE0214 Ref C: 2021-01-27T21:55:39Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:9ba1ddf0-601e-0016-3df7-f4ddb8000000\nTime:2021-01-27T21:55:39.3191278Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 27 Jan 2021 21:55:39 GMT
-      x-msedge-ref:
-      - 'Ref A: 0CAED99CD4DB4753AC89D25901B4940C Ref B: PDX31EDGE0214 Ref C: 2021-01-27T21:55:39Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 27 Jan 2021 21:55:48 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: 3EA45C61E9D5481186BFC6B7B8FBF6FB Ref B: PDX31EDGE0221 Ref C: 2021-01-27T21:55:49Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:e453caa5-001e-0062-50f7-f4e948000000\nTime:2021-01-27T21:55:49.6536847Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 27 Jan 2021 21:55:49 GMT
-      x-msedge-ref:
-      - 'Ref A: 108A24AEE1F34B09975DBAAF35906FAC Ref B: PDX31EDGE0221 Ref C: 2021-01-27T21:55:49Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 27 Jan 2021 21:55:59 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: ACC68DD211564DE5B2AAA5318B87D871 Ref B: PDX31EDGE0222 Ref C: 2021-01-27T21:55:59Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:0311ee95-001e-0010-64f7-f4ee07000000\nTime:2021-01-27T21:55:59.9292172Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 27 Jan 2021 21:55:59 GMT
-      x-msedge-ref:
-      - 'Ref A: BA952A201F1B4FE9BEC855E2272F3878 Ref B: PDX31EDGE0222 Ref C: 2021-01-27T21:55:59Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 27 Jan 2021 21:56:09 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: C4C44621FA41458085503421EB68485B Ref B: PDX31EDGE0216 Ref C: 2021-01-27T21:56:10Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:ecc517c8-901e-005f-50f7-f49f53000000\nTime:2021-01-27T21:56:10.2200647Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 27 Jan 2021 21:56:10 GMT
-      x-msedge-ref:
-      - 'Ref A: 7870A9634BF7460EBF0FD5EF4E1BF369 Ref B: PDX31EDGE0216 Ref C: 2021-01-27T21:56:10Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 27 Jan 2021 21:56:19 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: 66F581C9D6D74D41A4E57A206BBD5F66 Ref B: PDX31EDGE0222 Ref C: 2021-01-27T21:56:20Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:0311f784-001e-0010-5bf7-f4ee07000000\nTime:2021-01-27T21:56:20.4320857Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 27 Jan 2021 21:56:19 GMT
-      x-msedge-ref:
-      - 'Ref A: 4B85700BB63F42F880D81496E55B58B6 Ref B: PDX31EDGE0222 Ref C: 2021-01-27T21:56:20Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 27 Jan 2021 21:56:30 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: 2231D76C62814B2D8A255C12C73E722B Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:56:30Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:791e6938-f01e-003b-2cf7-f46ecb000000\nTime:2021-01-27T21:56:30.7957324Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 27 Jan 2021 21:56:30 GMT
-      x-msedge-ref:
-      - 'Ref A: 6337F938C1564BAA804B9C6FECBD5B2E Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:56:30Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 27 Jan 2021 21:56:40 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: BD30AE1D529B47C19A7E797C8268AF4E Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:56:40Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:791e6db0-f01e-003b-36f7-f46ecb000000\nTime:2021-01-27T21:56:40.9810083Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 27 Jan 2021 21:56:40 GMT
-      x-msedge-ref:
-      - 'Ref A: 2DAC1848E64244FC812904A89ED647FB Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:56:40Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 27 Jan 2021 21:56:50 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: A52DE302D3574E92993568B3EAD07333 Ref B: PDX31EDGE0219 Ref C: 2021-01-27T21:56:51Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:b9bc3e23-001e-0072-05f7-f42c20000000\nTime:2021-01-27T21:56:51.2941577Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 27 Jan 2021 21:56:51 GMT
-      x-msedge-ref:
-      - 'Ref A: D452FAA02F6444D8AF663A23EBD909B6 Ref B: PDX31EDGE0219 Ref C: 2021-01-27T21:56:51Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 27 Jan 2021 21:57:00 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: 031E79528E124588A717EB244867C18F Ref B: PDX31EDGE0209 Ref C: 2021-01-27T21:57:01Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:0e8eaed4-201e-0065-34f7-f4852b000000\nTime:2021-01-27T21:57:01.6043744Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 27 Jan 2021 21:57:00 GMT
-      x-msedge-ref:
-      - 'Ref A: BACBBBFE7A9945B181834FF0BD8E5267 Ref B: PDX31EDGE0209 Ref C: 2021-01-27T21:57:01Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 27 Jan 2021 21:57:11 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: 9F8527AE60D4472DA217F7C3AF46A819 Ref B: PDX31EDGE0211 Ref C: 2021-01-27T21:57:11Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:38312857-901e-0060-2af7-f457f0000000\nTime:2021-01-27T21:57:11.9267690Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 27 Jan 2021 21:57:11 GMT
-      x-msedge-ref:
-      - 'Ref A: 97A56D2CF52D4C1286F737E2FB846154 Ref B: PDX31EDGE0211 Ref C: 2021-01-27T21:57:11Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 27 Jan 2021 21:57:21 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: E22AE3230AE84A22910A21C437997560 Ref B: PDX31EDGE0220 Ref C: 2021-01-27T21:57:22Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:78699988-801e-0031-6ff7-f4ca7c000000\nTime:2021-01-27T21:57:22.1638350Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 27 Jan 2021 21:57:22 GMT
-      x-msedge-ref:
-      - 'Ref A: 59B7C53C6FCF4B6A88ED94764E2A7665 Ref B: PDX31EDGE0220 Ref C: 2021-01-27T21:57:22Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 27 Jan 2021 21:57:31 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: 6B1ECAB8724C4C0696A47A338B9E4400 Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:57:32Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:791e858a-f01e-003b-05f7-f46ecb000000\nTime:2021-01-27T21:57:32.3902722Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 27 Jan 2021 21:57:32 GMT
-      x-msedge-ref:
-      - 'Ref A: B933456ED32C4A8881554182484C253E Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:57:32Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 27 Jan 2021 21:57:42 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: 463C3BDC9D0F492FB32089175D6F3A71 Ref B: PDX31EDGE0213 Ref C: 2021-01-27T21:57:42Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:c95403ac-501e-0050-5cf7-f4e93f000000\nTime:2021-01-27T21:57:42.7430783Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 27 Jan 2021 21:57:42 GMT
-      x-msedge-ref:
-      - 'Ref A: A10ED62B84B64353AA7A4E9F7A2A1A9F Ref B: PDX31EDGE0213 Ref C: 2021-01-27T21:57:42Z'
-    status:
-      code: 400
-      message: The request URI is invalid.
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: ''
-    headers:
-      content-length:
-      - '0'
-      date:
-      - Wed, 27 Jan 2021 21:57:52 GMT
-      location:
-      - /pages/404.html
-      server:
-      - Microsoft-IIS/10.0
-      x-msedge-ref:
-      - 'Ref A: C215CB1D4F614DE7979664FB180E1540 Ref B: PDX31EDGE0220 Ref C: 2021-01-27T21:57:52Z'
-    status:
-      code: 302
-      message: Found
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.22.0
-    method: GET
-    uri: http://cli000004.azurefd.net/pages/404.html
-  response:
-    body:
-      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:7869abeb-801e-0031-5cf7-f4ca7c000000\nTime:2021-01-27T21:57:52.9873655Z</Message></Error>"
-    headers:
-      content-length:
-      - '207'
-      content-type:
-      - application/xml
-      date:
-      - Wed, 27 Jan 2021 21:57:52 GMT
-      x-msedge-ref:
-      - 'Ref A: B791569BC52D4ACA81FE872E2FC4E81A Ref B: PDX31EDGE0220 Ref C: 2021-01-27T21:57:52Z'
+      - 'Ref A: 8ED972E311704E9FB2C025BDF4507035 Ref B: PDX31EDGE0217 Ref C: 2021-01-27T23:30:53Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -3318,7 +2342,7 @@ interactions:
         }</style><title>Service unavailable</title></head><body><div id=''content''><div
         id=''message''><h2>Our services aren''t available right now</h2><p>We''re
         working to restore all services as soon as possible. Please check back soon.</p></div><div
-        id=''errorref''><span>06+ERYAAAAAAKAFHBSd7OSrpKrA/77AlNUERYMzFFREdFMDIxNgA4YTEwYzFhZS0wOTZiLTQ2NTktOWI3ZS0wNWU5MzUwZmE4YzU=</span></div></div></body></html>'
+        id=''errorref''><span>0t/cRYAAAAABYgxYyFzMgRaU8Yr7W5APVUERYMzFFREdFMDIyMgA0Yjg3MDkwNC05Y2U4LTRhOTItODgxMy04Yjg1MTNiY2FkYTg=</span></div></div></body></html>'
     headers:
       cache-control:
       - no-store
@@ -3327,51 +2351,9 @@ interactions:
       content-type:
       - text/html
       date:
-      - Wed, 27 Jan 2021 21:58:02 GMT
+      - Wed, 27 Jan 2021 23:31:03 GMT
       x-azure-ref:
-      - 06+ERYAAAAAAKAFHBSd7OSrpKrA/77AlNUERYMzFFREdFMDIxNgA4YTEwYzFhZS0wOTZiLTQ2NTktOWI3ZS0wNWU5MzUwZmE4YzU=
-    status:
-      code: 503
-      message: Service Unavailable
-- request:
-    body: '''key'':''something'''
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '17'
-      User-Agent:
-      - python-requests/2.22.0
-    method: POST
-    uri: http://cli000004.azurefd.net/
-  response:
-    body:
-      string: '<!DOCTYPE html PUBLIC ''-//W3C//DTD XHTML 1.0 Transitional//EN'' ''http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd''><html
-        xmlns=''http://www.w3.org/1999/xhtml''><head><meta content=''text/html; charset=utf-8''
-        http-equiv=''content-type''/><style type=''text/css''>body {font-family:Arial;
-        margin-left:40px; }img  { border:0 none; }#content { margin-left: auto; margin-right:
-        auto }#message h2 { font-size: 20px; font-weight: normal; color: #000000;
-        margin: 34px 0px 0px 0px }#message p  { font-size: 13px; color: #000000; margin:
-        7px 0px 0px0px}#errorref { font-size: 11px; color: #737373; margin-top: 41px
-        }</style><title>Service unavailable</title></head><body><div id=''content''><div
-        id=''message''><h2>Our services aren''t available right now</h2><p>We''re
-        working to restore all services as soon as possible. Please check back soon.</p></div><div
-        id=''errorref''><span>09eERYAAAAAAmaS+o1l6kQrbgRcma1zppUERYMzFFREdFMDIwNgA4YTEwYzFhZS0wOTZiLTQ2NTktOWI3ZS0wNWU5MzUwZmE4YzU=</span></div></div></body></html>'
-    headers:
-      cache-control:
-      - no-store
-      content-length:
-      - '998'
-      content-type:
-      - text/html
-      date:
-      - Wed, 27 Jan 2021 21:58:12 GMT
-      x-azure-ref:
-      - 09eERYAAAAAAmaS+o1l6kQrbgRcma1zppUERYMzFFREdFMDIwNgA4YTEwYzFhZS0wOTZiLTQ2NTktOWI3ZS0wNWU5MzUwZmE4YzU=
+      - 0t/cRYAAAAABYgxYyFzMgRaU8Yr7W5APVUERYMzFFREdFMDIyMgA0Yjg3MDkwNC05Y2U4LTRhOTItODgxMy04Yjg1MTNiY2FkYTg=
     status:
       code: 503
       message: Service Unavailable
@@ -3400,14 +2382,14 @@ interactions:
         margin: 34px 0px 0px 0px }#message p  { font-size: 13px; color: #000000; margin:
         7px 0px 0px 0px }#errorref { font-size: 11px; color: #737373; margin-top:
         41px }</style><title>Microsoft</title></head><body><div id=''content''><div
-        id=''message''><h2>The request is blocked.</h2></div><div id=''errorref''><span>0/+ERYAAAAAD+2blB5RsBS4QxaM8SwqEvUERYMzFFREdFMDIwOAA4YTEwYzFhZS0wOTZiLTQ2NTktOWI3ZS0wNWU5MzUwZmE4YzU=</span></div></div></body></html>'
+        id=''message''><h2>The request is blocked.</h2></div><div id=''errorref''><span>0wfcRYAAAAAAHOiGd0SklQ5vRaW5w2VaGUERYMzFFREdFMDIxNwA0Yjg3MDkwNC05Y2U4LTRhOTItODgxMy04Yjg1MTNiY2FkYTg=</span></div></div></body></html>'
     headers:
       date:
-      - Wed, 27 Jan 2021 21:58:23 GMT
+      - Wed, 27 Jan 2021 23:31:12 GMT
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0/+ERYAAAAAD+2blB5RsBS4QxaM8SwqEvUERYMzFFREdFMDIwOAA4YTEwYzFhZS0wOTZiLTQ2NTktOWI3ZS0wNWU5MzUwZmE4YzU=
+      - 0wfcRYAAAAAAHOiGd0SklQ5vRaW5w2VaGUERYMzFFREdFMDIxNwA0Yjg3MDkwNC05Y2U4LTRhOTItODgxMy04Yjg1MTNiY2FkYTg=
     status:
       code: 403
       message: Forbidden
@@ -3455,11 +2437,11 @@ interactions:
       content-type:
       - text/html; charset=UTF-8
       date:
-      - Wed, 27 Jan 2021 21:58:23 GMT
+      - Wed, 27 Jan 2021 23:31:13 GMT
       etag:
       - '"3147526947+gzip"'
       expires:
-      - Wed, 03 Feb 2021 21:58:23 GMT
+      - Wed, 03 Feb 2021 23:31:13 GMT
       last-modified:
       - Thu, 17 Oct 2019 07:18:26 GMT
       transfer-encoding:
@@ -3467,7 +2449,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-azure-ref:
-      - 0/+ERYAAAAACyFbvV8QRPQaudYdSmlXAfUERYMzFFREdFMDIwOAA4YTEwYzFhZS0wOTZiLTQ2NTktOWI3ZS0wNWU5MzUwZmE4YzU=
+      - 0wfcRYAAAAAAx87IzqTpbSIiR+2HTvg37UERYMzFFREdFMDIxMgA0Yjg3MDkwNC05Y2U4LTRhOTItODgxMy04Yjg1MTNiY2FkYTg=
     status:
       code: 200
       message: OK

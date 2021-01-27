@@ -677,7 +677,7 @@ def update_waf_policy(instance, tags=None, mode=None, redirect_url=None,
         c.update_param('tags', tags, True)
 
     with UpdateContext(instance.sku) as c:
-        c.update_param('name', sku, SkuName.classic_azure_front_door)
+        c.update_param('name', sku, None)
 
     with UpdateContext(instance.policy_settings) as c:
         c.update_param('enabled_state', 'Enabled' if not disabled else 'Disabled', None)
