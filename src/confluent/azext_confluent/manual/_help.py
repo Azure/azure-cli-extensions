@@ -23,7 +23,7 @@ helps['confluent organization show'] = """
       - name: Show organization
         text: |-
                az confluent organization show --name "myOrganization" --resource-group "myResourceGroup"
-      - name: Show organization with ids
+      - name: Show organization using IDs
         text: |-
                az confluent organization show --ids "/subscriptions/{SubID}/resourceGroups/{ResourceGroup}/providers/Microsoft.Confluent/organizations/{myOrganization}"
 """
