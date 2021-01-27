@@ -1,8 +1,8 @@
 interactions:
 - request:
     body: '{"location": "global", "properties": {"policySettings": {"enabledState":
-      "Enabled", "requestBodyCheck": "Disabled"}, "customRules": {"rules": []}, "managedRules":
-      {}}, "sku": {"name": "Classic_AzureFrontDoor"}}'
+      "Enabled"}, "customRules": {"rules": []}, "managedRules": {}}, "sku": {"name":
+      "Classic_AzureFrontDoor"}}'
     headers:
       Accept:
       - application/json
@@ -13,13 +13,13 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '210'
+      - '178'
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
@@ -36,7 +36,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 04:28:31 GMT
+      - Wed, 27 Jan 2021 21:49:05 GMT
       expires:
       - '-1'
       odata-version:
@@ -68,7 +68,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n --priority --rule-type --action --defer
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
@@ -85,7 +85,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 04:28:31 GMT
+      - Wed, 27 Jan 2021 21:49:06 GMT
       expires:
       - '-1'
       odata-version:
@@ -128,7 +128,7 @@ interactions:
       ParameterSetName:
       - -g --policy-name -n --match-variable --operator --values
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
@@ -145,7 +145,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 04:28:33 GMT
+      - Wed, 27 Jan 2021 21:49:07 GMT
       expires:
       - '-1'
       odata-version:
@@ -163,7 +163,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -204,7 +204,7 @@ interactions:
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
@@ -212,10 +212,10 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
   response:
     body:
-      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Creating","resourceState":"Creating","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"6bf884ca-2f7e-44e6-b9a3-6f9f8c89651c","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Creating","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Creating","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Creating","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Creating"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Creating","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Creating","resourceState":"Creating","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"8a10c1ae-096b-4659-9b7e-05e9350fa8c5","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Creating","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Creating","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Creating","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Creating"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Creating","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/10e58543-d084-45bb-8b99-c2a62c3b40b2?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/68c8f02a-e1cb-4491-880a-f9469a740ab8?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -223,7 +223,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 04:28:38 GMT
+      - Wed, 27 Jan 2021 21:49:12 GMT
       expires:
       - '-1'
       odata-version:
@@ -255,10 +255,10 @@ interactions:
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/10e58543-d084-45bb-8b99-c2a62c3b40b2?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/68c8f02a-e1cb-4491-880a-f9469a740ab8?api-version=2020-05-01
   response:
     body:
       string: '{"status":"InProgress","error":{"code":"None","message":null}}'
@@ -270,7 +270,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 04:28:48 GMT
+      - Wed, 27 Jan 2021 21:49:22 GMT
       expires:
       - '-1'
       odata-version:
@@ -304,10 +304,10 @@ interactions:
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/10e58543-d084-45bb-8b99-c2a62c3b40b2?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/68c8f02a-e1cb-4491-880a-f9469a740ab8?api-version=2020-05-01
   response:
     body:
       string: '{"status":"Succeeded","error":{"code":"None","message":null}}'
@@ -319,7 +319,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 04:29:19 GMT
+      - Wed, 27 Jan 2021 21:49:53 GMT
       expires:
       - '-1'
       odata-version:
@@ -353,13 +353,13 @@ interactions:
       ParameterSetName:
       - --resource-group --backend-address --name
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
   response:
     body:
-      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"6bf884ca-2f7e-44e6-b9a3-6f9f8c89651c","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"8a10c1ae-096b-4659-9b7e-05e9350fa8c5","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
     headers:
       cache-control:
       - no-cache
@@ -368,7 +368,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 04:29:20 GMT
+      - Wed, 27 Jan 2021 21:49:54 GMT
       expires:
       - '-1'
       odata-version:
@@ -402,7 +402,7 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
@@ -410,7 +410,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
   response:
     body:
-      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"6bf884ca-2f7e-44e6-b9a3-6f9f8c89651c","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"8a10c1ae-096b-4659-9b7e-05e9350fa8c5","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
     headers:
       cache-control:
       - no-cache
@@ -419,7 +419,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 04:29:20 GMT
+      - Wed, 27 Jan 2021 21:49:54 GMT
       expires:
       - '-1'
       odata-version:
@@ -482,7 +482,7 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
@@ -490,10 +490,10 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
   response:
     body:
-      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"6bf884ca-2f7e-44e6-b9a3-6f9f8c89651c","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002"},"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"8a10c1ae-096b-4659-9b7e-05e9350fa8c5","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002"},"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/aca407a2-6198-49c1-b897-3df6485998a9?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/d1781380-4b3c-41b1-be38-e4ff4a7e2fa5?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -501,11 +501,11 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 04:29:23 GMT
+      - Wed, 27 Jan 2021 21:49:57 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/aca407a2-6198-49c1-b897-3df6485998a9/frontdoorresults/cli000004?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/d1781380-4b3c-41b1-be38-e4ff4a7e2fa5/frontdoorresults/cli000004?api-version=2020-05-01
       odata-version:
       - '4.0'
       pragma:
@@ -517,7 +517,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1198'
     status:
       code: 202
       message: Accepted
@@ -535,10 +535,10 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/aca407a2-6198-49c1-b897-3df6485998a9?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/d1781380-4b3c-41b1-be38-e4ff4a7e2fa5?api-version=2020-05-01
   response:
     body:
       string: '{"status":"InProgress","error":{"code":"None","message":null}}'
@@ -550,7 +550,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 04:29:34 GMT
+      - Wed, 27 Jan 2021 21:50:08 GMT
       expires:
       - '-1'
       odata-version:
@@ -584,10 +584,10 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/aca407a2-6198-49c1-b897-3df6485998a9?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/d1781380-4b3c-41b1-be38-e4ff4a7e2fa5?api-version=2020-05-01
   response:
     body:
       string: '{"status":"Succeeded","error":{"code":"None","message":null}}'
@@ -599,7 +599,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 04:30:04 GMT
+      - Wed, 27 Jan 2021 21:50:38 GMT
       expires:
       - '-1'
       odata-version:
@@ -633,13 +633,13 @@ interactions:
       ParameterSetName:
       - --name --resource-group --set
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/cli000004?api-version=2020-05-01
   response:
     body:
-      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"6bf884ca-2f7e-44e6-b9a3-6f9f8c89651c","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002"},"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
+      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004","type":"Microsoft.Network/frontdoors","location":"Global","tags":{},"properties":{"provisioningState":"Succeeded","resourceState":"Enabled","enabledState":"Enabled","cName":"cli000004.azurefd.net","frontdoorId":"8a10c1ae-096b-4659-9b7e-05e9350fa8c5","friendlyName":"cli000004","backendPools":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/BackendPools/DefaultBackendPool","name":"DefaultBackendPool","type":"Microsoft.Network/Frontdoors/BackendPools","properties":{"resourceState":"Enabled","backends":[{"address":"www.example.com","httpPort":80,"httpsPort":443,"priority":1,"weight":50,"backendHostHeader":"www.example.com","enabledState":"Enabled","privateLinkAlias":null,"privateLinkApprovalMessage":null,"privateLinkResourceId":null,"privateLinkLocation":null,"privateEndpointStatus":null}],"healthProbeSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/healthProbeSettings/DefaultProbeSettings"},"loadBalancingSettings":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/loadBalancingSettings/DefaultLoadBalancingSettings"}}}],"healthProbeSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/HealthProbeSettings/DefaultProbeSettings","name":"DefaultProbeSettings","type":"Microsoft.Network/Frontdoors/HealthProbeSettings","properties":{"intervalInSeconds":30,"path":"/","protocol":"Https","resourceState":"Enabled","enabledState":"Enabled","healthProbeMethod":"Head"}}],"frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/FrontendEndpoints/DefaultFrontendEndpoint","name":"DefaultFrontendEndpoint","type":"Microsoft.Network/Frontdoors/FrontendEndpoints","properties":{"hostName":"cli000004.azurefd.net","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":null,"customHttpsProvisioningSubstate":null,"resourceState":"Enabled","webApplicationFirewallPolicyLink":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002"},"customHttpsConfiguration":null}}],"loadBalancingSettings":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/LoadBalancingSettings/DefaultLoadBalancingSettings","name":"DefaultLoadBalancingSettings","type":"Microsoft.Network/Frontdoors/LoadBalancingSettings","properties":{"additionalLatencyMilliseconds":0,"sampleSize":4,"successfulSamplesRequired":2,"resourceState":"Enabled"}}],"rulesEngines":[],"routingRules":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/Frontdoors/cli000004/RoutingRules/DefaultRoutingRule","name":"DefaultRoutingRule","type":"Microsoft.Network/Frontdoors/RoutingRules","properties":{"acceptedProtocols":["Http"],"patternsToMatch":["/*"],"enabledState":"Enabled","resourceState":"Enabled","frontendEndpoints":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/frontendEndpoints/DefaultFrontendEndpoint"}],"routeConfiguration":{"customForwardingPath":null,"forwardingProtocol":"MatchRequest","@odata.type":"#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration","cacheConfiguration":null,"backendPool":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/cli000004/backendPools/DefaultBackendPool"}},"rulesEngine":null,"webApplicationFirewallPolicyLink":null}}],"backendPoolsSettings":{"enforceCertificateNameCheck":"Enabled","sendRecvTimeoutSeconds":30}}}'
     headers:
       cache-control:
       - no-cache
@@ -648,7 +648,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 04:30:05 GMT
+      - Wed, 27 Jan 2021 21:50:38 GMT
       expires:
       - '-1'
       odata-version:
@@ -690,13 +690,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 04:30:05 GMT
+      - Wed, 27 Jan 2021 21:50:38 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: BD1F5333F1144F43B3EE863528205B32 Ref B: PDX31EDGE0215 Ref C: 2021-01-27T04:30:05Z'
+      - 'Ref A: A9FDA18D7EC742EDB22F61CDABEF7362 Ref B: PDX31EDGE0213 Ref C: 2021-01-27T21:50:39Z'
     status:
       code: 302
       message: Found
@@ -716,16 +716,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:deb1c515-801e-006c-1265-f4c0f8000000\nTime:2021-01-27T04:30:06.0469939Z</Message></Error>"
+        request URI is invalid.\nRequestId:fe406e2a-f01e-0059-4df6-f4acec000000\nTime:2021-01-27T21:50:40.0319038Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 04:30:05 GMT
+      - Wed, 27 Jan 2021 21:50:39 GMT
       x-msedge-ref:
-      - 'Ref A: 38CFF53EA5284B19B69E76540F87A965 Ref B: PDX31EDGE0215 Ref C: 2021-01-27T04:30:05Z'
+      - 'Ref A: 5E235353BE624AFEA3AE27CAAF0E223D Ref B: PDX31EDGE0213 Ref C: 2021-01-27T21:50:39Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -751,13 +751,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 04:30:15 GMT
+      - Wed, 27 Jan 2021 21:50:49 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 804FA4AADF2D4C0EABCAC58F87B7CC3C Ref B: PDX31EDGE0217 Ref C: 2021-01-27T04:30:16Z'
+      - 'Ref A: 977ABBE4DB344AB6B2D219D3A22B5F97 Ref B: PDX31EDGE0213 Ref C: 2021-01-27T21:50:50Z'
     status:
       code: 302
       message: Found
@@ -777,16 +777,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:605736e6-c01e-006d-5d65-f49f24000000\nTime:2021-01-27T04:30:16.3511769Z</Message></Error>"
+        request URI is invalid.\nRequestId:fe4073d3-f01e-0059-0ef6-f4acec000000\nTime:2021-01-27T21:50:50.1942159Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 04:30:15 GMT
+      - Wed, 27 Jan 2021 21:50:49 GMT
       x-msedge-ref:
-      - 'Ref A: 58C1ED97CFFB417A9800C01782A52AC0 Ref B: PDX31EDGE0217 Ref C: 2021-01-27T04:30:16Z'
+      - 'Ref A: 802043533BC74863948FF395BB5EEB16 Ref B: PDX31EDGE0213 Ref C: 2021-01-27T21:50:50Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -812,13 +812,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 04:30:26 GMT
+      - Wed, 27 Jan 2021 21:50:59 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: E3445CFAA5904BCA8207E14FB6432DAC Ref B: PDX31EDGE0211 Ref C: 2021-01-27T04:30:26Z'
+      - 'Ref A: 5C8EA8A78642487E89A7A33EEA038A79 Ref B: PDX31EDGE0221 Ref C: 2021-01-27T21:51:00Z'
     status:
       code: 302
       message: Found
@@ -838,16 +838,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:123d557e-301e-0046-6165-f41fe8000000\nTime:2021-01-27T04:30:26.6575384Z</Message></Error>"
+        request URI is invalid.\nRequestId:5794a892-901e-002d-16f6-f4981c000000\nTime:2021-01-27T21:51:00.5304490Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 04:30:26 GMT
+      - Wed, 27 Jan 2021 21:50:59 GMT
       x-msedge-ref:
-      - 'Ref A: AB12676560E64C51B0F614E6D1FBBA5C Ref B: PDX31EDGE0211 Ref C: 2021-01-27T04:30:26Z'
+      - 'Ref A: 04A0937A17CD492297B2C507EDBDA191 Ref B: PDX31EDGE0221 Ref C: 2021-01-27T21:51:00Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -873,13 +873,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 04:30:35 GMT
+      - Wed, 27 Jan 2021 21:51:10 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: F3DE72C7AF9042DBA1A9D544070F4C74 Ref B: PDX31EDGE0217 Ref C: 2021-01-27T04:30:36Z'
+      - 'Ref A: D7812A2FC3814559A4B240D3F811E8A1 Ref B: PDX31EDGE0207 Ref C: 2021-01-27T21:51:10Z'
     status:
       code: 302
       message: Found
@@ -899,16 +899,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:60573fcf-c01e-006d-6f65-f49f24000000\nTime:2021-01-27T04:30:36.8569980Z</Message></Error>"
+        request URI is invalid.\nRequestId:77971a49-301e-0024-39f6-f4ddcf000000\nTime:2021-01-27T21:51:10.7902357Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 04:30:35 GMT
+      - Wed, 27 Jan 2021 21:51:10 GMT
       x-msedge-ref:
-      - 'Ref A: 38A905C5405C440980F676D08668E492 Ref B: PDX31EDGE0217 Ref C: 2021-01-27T04:30:36Z'
+      - 'Ref A: 4167BC4FC5744CFBB7E9EC390542D9A4 Ref B: PDX31EDGE0207 Ref C: 2021-01-27T21:51:10Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -934,13 +934,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 04:30:46 GMT
+      - Wed, 27 Jan 2021 21:51:19 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: EC8B838C3A1244B98032AD6BE50BF814 Ref B: PDX31EDGE0214 Ref C: 2021-01-27T04:30:46Z'
+      - 'Ref A: 768514376C0343B2BD50A560A9A87805 Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:51:20Z'
     status:
       code: 302
       message: Found
@@ -960,16 +960,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:fa7f93fa-d01e-004e-0865-f405e7000000\nTime:2021-01-27T04:30:47.1694805Z</Message></Error>"
+        request URI is invalid.\nRequestId:9868e686-501e-0032-0cf6-f42b18000000\nTime:2021-01-27T21:51:21.1128131Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 04:30:46 GMT
+      - Wed, 27 Jan 2021 21:51:20 GMT
       x-msedge-ref:
-      - 'Ref A: E5A66598AFC74ADFA298FC5456D706C6 Ref B: PDX31EDGE0214 Ref C: 2021-01-27T04:30:47Z'
+      - 'Ref A: 9504135651A44650B047D6F9AF092B65 Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:51:20Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -995,13 +995,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 04:30:57 GMT
+      - Wed, 27 Jan 2021 21:51:30 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: CBEF6B9922A342C2BB147ED98F9A6145 Ref B: PDX31EDGE0222 Ref C: 2021-01-27T04:30:57Z'
+      - 'Ref A: C49E2054521A4CEAB72D15C817B1F1E5 Ref B: PDX31EDGE0217 Ref C: 2021-01-27T21:51:31Z'
     status:
       code: 302
       message: Found
@@ -1021,16 +1021,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:d4f91541-701e-0035-1e65-f4477b000000\nTime:2021-01-27T04:30:57.4197248Z</Message></Error>"
+        request URI is invalid.\nRequestId:0f7ef8e8-f01e-0049-03f6-f46984000000\nTime:2021-01-27T21:51:31.4403512Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 04:30:57 GMT
+      - Wed, 27 Jan 2021 21:51:31 GMT
       x-msedge-ref:
-      - 'Ref A: D31F66C420674364A7848257E02D988A Ref B: PDX31EDGE0222 Ref C: 2021-01-27T04:30:57Z'
+      - 'Ref A: 8B2F0376B774475197476E95AAA272B5 Ref B: PDX31EDGE0217 Ref C: 2021-01-27T21:51:31Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1056,13 +1056,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 04:31:06 GMT
+      - Wed, 27 Jan 2021 21:51:40 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 47E5D843395C46C2B1D7C26944DA0A12 Ref B: PDX31EDGE0214 Ref C: 2021-01-27T04:31:07Z'
+      - 'Ref A: 813F0497F86841AF9524EC36BC3D4F97 Ref B: PDX31EDGE0216 Ref C: 2021-01-27T21:51:41Z'
     status:
       code: 302
       message: Found
@@ -1082,16 +1082,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:fa7fa4e7-d01e-004e-7765-f405e7000000\nTime:2021-01-27T04:31:07.6206124Z</Message></Error>"
+        request URI is invalid.\nRequestId:9ba16c1f-601e-0016-78f6-f4ddb8000000\nTime:2021-01-27T21:51:41.7099641Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 04:31:06 GMT
+      - Wed, 27 Jan 2021 21:51:41 GMT
       x-msedge-ref:
-      - 'Ref A: 07D8DC6EC7BC4FAE939B3AF5E8837E0D Ref B: PDX31EDGE0214 Ref C: 2021-01-27T04:31:07Z'
+      - 'Ref A: 55F26D659BA84CD4BB805BCDDB8D6C21 Ref B: PDX31EDGE0216 Ref C: 2021-01-27T21:51:41Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1117,13 +1117,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 04:31:17 GMT
+      - Wed, 27 Jan 2021 21:51:51 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: B5F25740614747D891B0FBEEDD37642E Ref B: PDX31EDGE0221 Ref C: 2021-01-27T04:31:17Z'
+      - 'Ref A: 9CE7C057D21E4AC7A23C0DAEBD70B7EE Ref B: PDX31EDGE0215 Ref C: 2021-01-27T21:51:51Z'
     status:
       code: 302
       message: Found
@@ -1143,16 +1143,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:656a049f-501e-006f-1165-f4219c000000\nTime:2021-01-27T04:31:17.9056735Z</Message></Error>"
+        request URI is invalid.\nRequestId:a57e32bf-d01e-002c-2bf6-f4c7c0000000\nTime:2021-01-27T21:51:51.9812525Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 04:31:17 GMT
+      - Wed, 27 Jan 2021 21:51:51 GMT
       x-msedge-ref:
-      - 'Ref A: B1222A2B9E7B4E7FB21B3218D2FF8F18 Ref B: PDX31EDGE0221 Ref C: 2021-01-27T04:31:17Z'
+      - 'Ref A: 0884D27D84BD4034BF02DFED6BAE964D Ref B: PDX31EDGE0215 Ref C: 2021-01-27T21:51:51Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1178,13 +1178,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 04:31:27 GMT
+      - Wed, 27 Jan 2021 21:52:01 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 47E980EF449244DFB6C62518582F52BF Ref B: PDX31EDGE0216 Ref C: 2021-01-27T04:31:28Z'
+      - 'Ref A: 8A11A69A0E8A4D83B5D114B35D750549 Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:52:02Z'
     status:
       code: 302
       message: Found
@@ -1204,16 +1204,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:e781a77f-501e-001d-3565-f426d3000000\nTime:2021-01-27T04:31:28.2948375Z</Message></Error>"
+        request URI is invalid.\nRequestId:9868ff89-501e-0032-21f6-f42b18000000\nTime:2021-01-27T21:52:02.2569605Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 04:31:27 GMT
+      - Wed, 27 Jan 2021 21:52:02 GMT
       x-msedge-ref:
-      - 'Ref A: 3B9A777936DC4A669179604882ADCBC3 Ref B: PDX31EDGE0216 Ref C: 2021-01-27T04:31:28Z'
+      - 'Ref A: 08901356914F4F63AE84F85487AB15BE Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:52:02Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1239,13 +1239,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 04:31:37 GMT
+      - Wed, 27 Jan 2021 21:52:12 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: EC625E37B2614600AF509E80CBA84252 Ref B: PDX31EDGE0216 Ref C: 2021-01-27T04:31:38Z'
+      - 'Ref A: E5DC80A080D7492681012BFEF722346C Ref B: PDX31EDGE0221 Ref C: 2021-01-27T21:52:12Z'
     status:
       code: 302
       message: Found
@@ -1265,16 +1265,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:e781ba48-501e-001d-0865-f426d3000000\nTime:2021-01-27T04:31:38.4581032Z</Message></Error>"
+        request URI is invalid.\nRequestId:5794ca3b-901e-002d-2ff6-f4981c000000\nTime:2021-01-27T21:52:12.4611236Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 04:31:38 GMT
+      - Wed, 27 Jan 2021 21:52:12 GMT
       x-msedge-ref:
-      - 'Ref A: 1F65CD401F924105A75B9D57F8D4DF3D Ref B: PDX31EDGE0216 Ref C: 2021-01-27T04:31:38Z'
+      - 'Ref A: CB4BEF2353F04DE29DFDA4F5F4CC4F9D Ref B: PDX31EDGE0221 Ref C: 2021-01-27T21:52:12Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1300,13 +1300,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 04:31:48 GMT
+      - Wed, 27 Jan 2021 21:52:22 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: F61C44F3F9444A7F8682C472372E6F0F Ref B: PDX31EDGE0212 Ref C: 2021-01-27T04:31:48Z'
+      - 'Ref A: F975EFDCE3884CB8A9AEC9DA63539F84 Ref B: PDX31EDGE0215 Ref C: 2021-01-27T21:52:22Z'
     status:
       code: 302
       message: Found
@@ -1326,16 +1326,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:862a4e81-a01e-0044-2865-f4a150000000\nTime:2021-01-27T04:31:48.7571688Z</Message></Error>"
+        request URI is invalid.\nRequestId:a57e3eec-d01e-002c-5ff6-f4c7c0000000\nTime:2021-01-27T21:52:22.6545380Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 04:31:48 GMT
+      - Wed, 27 Jan 2021 21:52:22 GMT
       x-msedge-ref:
-      - 'Ref A: 34B566B5378444AC88711090918CE93E Ref B: PDX31EDGE0212 Ref C: 2021-01-27T04:31:48Z'
+      - 'Ref A: A3B8D83A1A984C4FB8D8C10825FBB58B Ref B: PDX31EDGE0215 Ref C: 2021-01-27T21:52:22Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1361,13 +1361,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 04:31:58 GMT
+      - Wed, 27 Jan 2021 21:52:32 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 4ECEE3234B274EFBA6C799F4A25E4FD9 Ref B: PDX31EDGE0213 Ref C: 2021-01-27T04:31:58Z'
+      - 'Ref A: CFCB1F1E5076470EA87C0300D589D297 Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:52:32Z'
     status:
       code: 302
       message: Found
@@ -1387,16 +1387,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:dc157b14-d01e-0071-7565-f4cd44000000\nTime:2021-01-27T04:31:59.0991190Z</Message></Error>"
+        request URI is invalid.\nRequestId:986910e7-501e-0032-04f6-f42b18000000\nTime:2021-01-27T21:52:32.8674107Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 04:31:58 GMT
+      - Wed, 27 Jan 2021 21:52:32 GMT
       x-msedge-ref:
-      - 'Ref A: A0E78FB32E1741D8A6793D4C86AA41CB Ref B: PDX31EDGE0213 Ref C: 2021-01-27T04:31:58Z'
+      - 'Ref A: 1601B0AE9CF14297978BBBD7BD1A5C0E Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:52:32Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1422,13 +1422,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 04:32:08 GMT
+      - Wed, 27 Jan 2021 21:52:42 GMT
       location:
       - /pages/404.html
       server:
       - Microsoft-IIS/10.0
       x-msedge-ref:
-      - 'Ref A: 1E42AB16D4AF4FF6840442B02D29E363 Ref B: PDX31EDGE0215 Ref C: 2021-01-27T04:32:09Z'
+      - 'Ref A: 2BB4C0675D65417699A6B6CF53C176C8 Ref B: PDX31EDGE0209 Ref C: 2021-01-27T21:52:42Z'
     status:
       code: 302
       message: Found
@@ -1448,16 +1448,16 @@ interactions:
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
-        request URI is invalid.\nRequestId:96c2d3e4-601e-0039-4365-f4d073000000\nTime:2021-01-27T04:32:09.3346047Z</Message></Error>"
+        request URI is invalid.\nRequestId:8472a1d9-301e-000b-07f6-f4d004000000\nTime:2021-01-27T21:52:43.1142967Z</Message></Error>"
     headers:
       content-length:
       - '207'
       content-type:
       - application/xml
       date:
-      - Wed, 27 Jan 2021 04:32:08 GMT
+      - Wed, 27 Jan 2021 21:52:42 GMT
       x-msedge-ref:
-      - 'Ref A: A8C14A85D126439597FDDA22CDE69C6B Ref B: PDX31EDGE0215 Ref C: 2021-01-27T04:32:09Z'
+      - 'Ref A: 27D3D3D4CBD94A219C6F627D50A43463 Ref B: PDX31EDGE0209 Ref C: 2021-01-27T21:52:43Z'
     status:
       code: 400
       message: The request URI is invalid.
@@ -1478,49 +1478,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:32:19 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:32:19 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 00+wQYAAAAAAjWPyxr8UST7scZNyTn9ozUERYMzFFREdFMDIwNwA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:52:52 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 9EA8048651DA402E920C52287A844879 Ref B: PDX31EDGE0222 Ref C: 2021-01-27T21:52:53Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:8677aa00-601e-0074-13f6-f41f9f000000\nTime:2021-01-27T21:52:53.4046334Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:52:52 GMT
+      x-msedge-ref:
+      - 'Ref A: 6C5ED54E8A9C41659726B8735ED4BF0F Ref B: PDX31EDGE0222 Ref C: 2021-01-27T21:52:53Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -1538,49 +1539,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:32:29 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:32:29 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 03ewQYAAAAABmkeCqP2yPR4J8vr2tP3YnUERYMzFFREdFMDIyMgA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:53:02 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: B356970C75614844B2D3D096F3508442 Ref B: PDX31EDGE0206 Ref C: 2021-01-27T21:53:03Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:7b00859e-201e-0075-7af6-f44043000000\nTime:2021-01-27T21:53:03.7708772Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:53:03 GMT
+      x-msedge-ref:
+      - 'Ref A: B54F36B7CB1F4E88ABA437935AFED7D0 Ref B: PDX31EDGE0206 Ref C: 2021-01-27T21:53:03Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -1598,49 +1600,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:32:39 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:32:39 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 05+wQYAAAAABktph/7KQsTaAXhF9FQjfpUERYMzFFREdFMDIwNwA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:53:13 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 86A60D6DAFD24C2E8AABCEC1F451FBFE Ref B: PDX31EDGE0217 Ref C: 2021-01-27T21:53:13Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:414f2194-501e-006f-2ff6-f4219c000000\nTime:2021-01-27T21:53:14.0387879Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:53:13 GMT
+      x-msedge-ref:
+      - 'Ref A: 2CF4520260C74B9D9DAE4753435EEDDA Ref B: PDX31EDGE0217 Ref C: 2021-01-27T21:53:13Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -1658,49 +1661,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:32:49 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:32:49 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 08ewQYAAAAACs+4BCLzsqRIeZI9NrX93VUERYMzFFREdFMDIyMAA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:53:23 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 5217BB58086B4351AB60FF9EA8F4824C Ref B: PDX31EDGE0215 Ref C: 2021-01-27T21:53:24Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:a57e5678-d01e-002c-2af6-f4c7c0000000\nTime:2021-01-27T21:53:24.2241024Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:53:23 GMT
+      x-msedge-ref:
+      - 'Ref A: FD47656E3A7343398C73DFED70A253DA Ref B: PDX31EDGE0215 Ref C: 2021-01-27T21:53:24Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -1718,49 +1722,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:32:59 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:33:00 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0/OwQYAAAAADW1dvqVOTKTrSPimRmVrb4UERYMzFFREdFMDIxOAA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:53:35 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: C503FEA116E54F8982973BA3C19D1FB2 Ref B: PDX31EDGE0216 Ref C: 2021-01-27T21:53:35Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:761fe77c-b01e-0005-39f6-f4f9b4000000\nTime:2021-01-27T21:53:35.8554251Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:53:35 GMT
+      x-msedge-ref:
+      - 'Ref A: BD880F55165A4D6FAEA46804C6F80A54 Ref B: PDX31EDGE0216 Ref C: 2021-01-27T21:53:35Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -1778,49 +1783,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:33:09 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:33:10 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0Bu0QYAAAAAAH9NuJvBQRRLFJm8/b5A5sUERYMzFFREdFMDIwNgA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:53:45 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: EC3C4B9D71824AA7A3DCA0497E2AF431 Ref B: PDX31EDGE0221 Ref C: 2021-01-27T21:53:45Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:0e0bcf59-e01e-0008-19f6-f43160000000\nTime:2021-01-27T21:53:46.1824831Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:53:45 GMT
+      x-msedge-ref:
+      - 'Ref A: 146631A4546D476AA4F326730F20CB05 Ref B: PDX31EDGE0221 Ref C: 2021-01-27T21:53:46Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -1838,49 +1844,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:33:19 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:33:20 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0EO0QYAAAAADM2Y4H5B51RaQy0ZBDY9hrUERYMzFFREdFMDIyMgA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:53:55 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 80987C96B81546928424420A77386F0B Ref B: PDX31EDGE0207 Ref C: 2021-01-27T21:53:56Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:3842a447-701e-0078-5af6-f48897000000\nTime:2021-01-27T21:53:56.5301971Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:53:55 GMT
+      x-msedge-ref:
+      - 'Ref A: 0F2B5AEF9BDD4C3F8C5BA1C24C8CDB71 Ref B: PDX31EDGE0207 Ref C: 2021-01-27T21:53:56Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -1898,49 +1905,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:33:29 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:33:30 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0Gu0QYAAAAABr8HyZueYjR4kiU+vuJbjWUERYMzFFREdFMDIwNwA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:54:05 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: A8D9F51AAAA1429EAA1638DE51516CD9 Ref B: PDX31EDGE0214 Ref C: 2021-01-27T21:54:06Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:9ba1af67-601e-0016-47f6-f4ddb8000000\nTime:2021-01-27T21:54:06.8378074Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:54:06 GMT
+      x-msedge-ref:
+      - 'Ref A: 342CB8CEBB52437E962C7D012273F0EA Ref B: PDX31EDGE0214 Ref C: 2021-01-27T21:54:06Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -1958,49 +1966,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:33:40 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:33:40 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0JO0QYAAAAAC/2E7NPiRhSZaZvTaO6xhwUERYMzFFREdFMDIxMQA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:54:16 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 297AEAEDDA9F41519E3FA1AD4C53228C Ref B: PDX31EDGE0214 Ref C: 2021-01-27T21:54:16Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:9ba1b465-601e-0016-2ff6-f4ddb8000000\nTime:2021-01-27T21:54:16.9891684Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:54:16 GMT
+      x-msedge-ref:
+      - 'Ref A: 544D453D3CC5469D90EC9660599EB389 Ref B: PDX31EDGE0214 Ref C: 2021-01-27T21:54:16Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -2018,49 +2027,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:33:50 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:33:50 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0Lu0QYAAAAADIS40tTmWNT5/MDSG/KdC8UERYMzFFREdFMDIwOQA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:54:26 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 8D9AFF4A660B4E87912C5809C5A21A71 Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:54:27Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:364379c0-401e-005c-62f6-f47e37000000\nTime:2021-01-27T21:54:27.2669801Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:54:26 GMT
+      x-msedge-ref:
+      - 'Ref A: DC15326490B5437CA0C659A4240FD88A Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:54:27Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -2078,49 +2088,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:34:00 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:34:00 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0OO0QYAAAAAAwk9SUn2sSTJgVGUmjsW5pUERYMzFFREdFMDIxOQA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:54:37 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 9A907F0F2C7E4A84A3E11DA651297509 Ref B: PDX31EDGE0206 Ref C: 2021-01-27T21:54:37Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:4e47a5ab-e01e-0027-19f7-f43cab000000\nTime:2021-01-27T21:54:37.5975118Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:54:37 GMT
+      x-msedge-ref:
+      - 'Ref A: F332AA9B664D49CEB52C067941987BC0 Ref B: PDX31EDGE0206 Ref C: 2021-01-27T21:54:37Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -2138,47 +2149,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:34:10 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:34:10 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0Qu0QYAAAAABmB9eLmhssQKVsCqcAvIZGUERYMzFFREdFMDIxOAA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:54:47 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 30CE8770EA2A43409C445E3176AD2820 Ref B: PDX31EDGE0208 Ref C: 2021-01-27T21:54:47Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:ff06336f-c01e-0042-80f7-f492ef000000\nTime:2021-01-27T21:54:47.8886682Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:54:47 GMT
+      x-msedge-ref:
+      - 'Ref A: F72EFCB13D364354B7C28F527C007102 Ref B: PDX31EDGE0208 Ref C: 2021-01-27T21:54:47Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -2196,49 +2210,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:34:20 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:34:20 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0TO0QYAAAAABQ4wJ5PrPdQZeLxWgLItJXUERYMzFFREdFMDIxMgA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:54:57 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 1088BB2C785F4A3D87BE5BC69AB95D96 Ref B: PDX31EDGE0212 Ref C: 2021-01-27T21:54:58Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:71777b8f-701e-0035-6bf7-f4477b000000\nTime:2021-01-27T21:54:58.2266186Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:54:57 GMT
+      x-msedge-ref:
+      - 'Ref A: 0C755DDA5B214D92BEF1D92696DE7FCC Ref B: PDX31EDGE0212 Ref C: 2021-01-27T21:54:58Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -2256,49 +2271,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:34:30 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:34:31 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0V+0QYAAAAACcUYAsDivJRrSOxCiMjdYrUERYMzFFREdFMDIxMAA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:55:08 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: AA084390BD7743EBAB27BB8FBC6EA932 Ref B: PDX31EDGE0207 Ref C: 2021-01-27T21:55:08Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:3842d40a-701e-0078-21f7-f48897000000\nTime:2021-01-27T21:55:08.4630794Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:55:08 GMT
+      x-msedge-ref:
+      - 'Ref A: 2DFEFA2CAE5845C4AAEBCE33A2A81D4F Ref B: PDX31EDGE0207 Ref C: 2021-01-27T21:55:08Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -2316,49 +2332,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:34:40 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:34:41 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0Ye0QYAAAAAAuiGrrbvgKSaKQH/VE2I5SUERYMzFFREdFMDIxNAA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:55:18 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 9BF3A62858764811A3FB0593CEC1A5C8 Ref B: PDX31EDGE0212 Ref C: 2021-01-27T21:55:18Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:71778abd-701e-0035-46f7-f4477b000000\nTime:2021-01-27T21:55:18.7672877Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:55:18 GMT
+      x-msedge-ref:
+      - 'Ref A: 06B12787AC3C43F4BAF2BF178D524A27 Ref B: PDX31EDGE0212 Ref C: 2021-01-27T21:55:18Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -2376,49 +2393,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:34:50 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:34:51 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0a+0QYAAAAADDL53aaWsST46iXWVRRxvMUERYMzFFREdFMDIxOQA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:55:28 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 93036B0547F94673ABFE68957E779D60 Ref B: PDX31EDGE0215 Ref C: 2021-01-27T21:55:28Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:b04990ad-b01e-003a-75f7-f43117000000\nTime:2021-01-27T21:55:29.0914119Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:55:28 GMT
+      x-msedge-ref:
+      - 'Ref A: 15270F564E6145A7BF20B952310FC73C Ref B: PDX31EDGE0215 Ref C: 2021-01-27T21:55:28Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -2436,49 +2454,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:35:00 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:35:01 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0de0QYAAAAACb8LSBfD39QpjvFGvDvipKUERYMzFFREdFMDIxOQA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:55:39 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 96D026FE42B241AC93C4481A3E9D3B79 Ref B: PDX31EDGE0214 Ref C: 2021-01-27T21:55:39Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:9ba1ddf0-601e-0016-3df7-f4ddb8000000\nTime:2021-01-27T21:55:39.3191278Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:55:39 GMT
+      x-msedge-ref:
+      - 'Ref A: 0CAED99CD4DB4753AC89D25901B4940C Ref B: PDX31EDGE0214 Ref C: 2021-01-27T21:55:39Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -2496,49 +2515,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:35:11 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:35:11 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0f+0QYAAAAAC8FG1hzMUqRarj9Hj3SskpUERYMzFFREdFMDIwNgA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:55:48 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 3EA45C61E9D5481186BFC6B7B8FBF6FB Ref B: PDX31EDGE0221 Ref C: 2021-01-27T21:55:49Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:e453caa5-001e-0062-50f7-f4e948000000\nTime:2021-01-27T21:55:49.6536847Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:55:49 GMT
+      x-msedge-ref:
+      - 'Ref A: 108A24AEE1F34B09975DBAAF35906FAC Ref B: PDX31EDGE0221 Ref C: 2021-01-27T21:55:49Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -2556,49 +2576,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:35:21 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:35:21 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0ie0QYAAAAACMr06yC/g2SItsaeXKPvmzUERYMzFFREdFMDIxMgA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:55:59 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: ACC68DD211564DE5B2AAA5318B87D871 Ref B: PDX31EDGE0222 Ref C: 2021-01-27T21:55:59Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:0311ee95-001e-0010-64f7-f4ee07000000\nTime:2021-01-27T21:55:59.9292172Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:55:59 GMT
+      x-msedge-ref:
+      - 'Ref A: BA952A201F1B4FE9BEC855E2272F3878 Ref B: PDX31EDGE0222 Ref C: 2021-01-27T21:55:59Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -2616,49 +2637,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:35:31 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:35:31 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0k+0QYAAAAACtphPbtZW6S4EGkkcRxXj7UERYMzFFREdFMDIwOAA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:56:09 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: C4C44621FA41458085503421EB68485B Ref B: PDX31EDGE0216 Ref C: 2021-01-27T21:56:10Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:ecc517c8-901e-005f-50f7-f49f53000000\nTime:2021-01-27T21:56:10.2200647Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:56:10 GMT
+      x-msedge-ref:
+      - 'Ref A: 7870A9634BF7460EBF0FD5EF4E1BF369 Ref B: PDX31EDGE0216 Ref C: 2021-01-27T21:56:10Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -2676,49 +2698,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:35:41 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:35:42 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0nu0QYAAAAACJBE9arvo9Q6Z4zjevxi79UERYMzFFREdFMDIxNAA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:56:19 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 66F581C9D6D74D41A4E57A206BBD5F66 Ref B: PDX31EDGE0222 Ref C: 2021-01-27T21:56:20Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:0311f784-001e-0010-5bf7-f4ee07000000\nTime:2021-01-27T21:56:20.4320857Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:56:19 GMT
+      x-msedge-ref:
+      - 'Ref A: 4B85700BB63F42F880D81496E55B58B6 Ref B: PDX31EDGE0222 Ref C: 2021-01-27T21:56:20Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -2736,49 +2759,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:35:51 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:35:52 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0qO0QYAAAAABNqe1diaabS6eWPq7FGEQDUERYMzFFREdFMDIyMAA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:56:30 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 2231D76C62814B2D8A255C12C73E722B Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:56:30Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:791e6938-f01e-003b-2cf7-f46ecb000000\nTime:2021-01-27T21:56:30.7957324Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:56:30 GMT
+      x-msedge-ref:
+      - 'Ref A: 6337F938C1564BAA804B9C6FECBD5B2E Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:56:30Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -2796,49 +2820,50 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:36:02 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:36:02 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0su0QYAAAAABFubxCgo8eQr0CtRZzfA+3UERYMzFFREdFMDIxMwA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:56:40 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: BD30AE1D529B47C19A7E797C8268AF4E Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:56:40Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:791e6db0-f01e-003b-36f7-f46ecb000000\nTime:2021-01-27T21:56:40.9810083Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:56:40 GMT
+      x-msedge-ref:
+      - 'Ref A: 2DAC1848E64244FC812904A89ED647FB Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:56:40Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
 - request:
     body: '''key'':''something'''
     headers:
@@ -2856,49 +2881,500 @@ interactions:
     uri: http://cli000004.azurefd.net/
   response:
     body:
-      string: "<!doctype html>\n<html>\n<head>\n    <title>Example Domain</title>\n\n
-        \   <meta charset=\"utf-8\" />\n    <meta http-equiv=\"Content-type\" content=\"text/html;
-        charset=utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,
-        initial-scale=1\" />\n    <style type=\"text/css\">\n    body {\n        background-color:
-        #f0f0f2;\n        margin: 0;\n        padding: 0;\n        font-family: -apple-system,
-        system-ui, BlinkMacSystemFont, \"Segoe UI\", \"Open Sans\", \"Helvetica Neue\",
-        Helvetica, Arial, sans-serif;\n        \n    }\n    div {\n        width:
-        600px;\n        margin: 5em auto;\n        padding: 2em;\n        background-color:
-        #fdfdff;\n        border-radius: 0.5em;\n        box-shadow: 2px 3px 7px 2px
-        rgba(0,0,0,0.02);\n    }\n    a:link, a:visited {\n        color: #38488f;\n
-        \       text-decoration: none;\n    }\n    @media (max-width: 700px) {\n        div
-        {\n            margin: 0 auto;\n            width: auto;\n        }\n    }\n
-        \   </style>    \n</head>\n\n<body>\n<div>\n    <h1>Example Domain</h1>\n
-        \   <p>This domain is for use in illustrative examples in documents. You may
-        use this\n    domain in literature without prior coordination or asking for
-        permission.</p>\n    <p><a href=\"https://www.iana.org/domains/example\">More
-        information...</a></p>\n</div>\n</body>\n</html>\n"
+      string: ''
     headers:
-      accept-ranges:
-      - bytes
-      cache-control:
-      - max-age=604800
       content-length:
-      - '1256'
-      content-type:
-      - text/html; charset=UTF-8
+      - '0'
       date:
-      - Wed, 27 Jan 2021 04:36:12 GMT
-      etag:
-      - '"3147526947+gzip"'
-      expires:
-      - Wed, 03 Feb 2021 04:36:12 GMT
-      last-modified:
-      - Thu, 17 Oct 2019 07:18:26 GMT
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-azure-ref:
-      - 0vO0QYAAAAACr285cGMyrSJM2PqeX9TGAUERYMzFFREdFMDIxMAA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - Wed, 27 Jan 2021 21:56:50 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: A52DE302D3574E92993568B3EAD07333 Ref B: PDX31EDGE0219 Ref C: 2021-01-27T21:56:51Z'
     status:
-      code: 200
-      message: OK
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:b9bc3e23-001e-0072-05f7-f42c20000000\nTime:2021-01-27T21:56:51.2941577Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:56:51 GMT
+      x-msedge-ref:
+      - 'Ref A: D452FAA02F6444D8AF663A23EBD909B6 Ref B: PDX31EDGE0219 Ref C: 2021-01-27T21:56:51Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 27 Jan 2021 21:57:00 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 031E79528E124588A717EB244867C18F Ref B: PDX31EDGE0209 Ref C: 2021-01-27T21:57:01Z'
+    status:
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:0e8eaed4-201e-0065-34f7-f4852b000000\nTime:2021-01-27T21:57:01.6043744Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:57:00 GMT
+      x-msedge-ref:
+      - 'Ref A: BACBBBFE7A9945B181834FF0BD8E5267 Ref B: PDX31EDGE0209 Ref C: 2021-01-27T21:57:01Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 27 Jan 2021 21:57:11 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 9F8527AE60D4472DA217F7C3AF46A819 Ref B: PDX31EDGE0211 Ref C: 2021-01-27T21:57:11Z'
+    status:
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:38312857-901e-0060-2af7-f457f0000000\nTime:2021-01-27T21:57:11.9267690Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:57:11 GMT
+      x-msedge-ref:
+      - 'Ref A: 97A56D2CF52D4C1286F737E2FB846154 Ref B: PDX31EDGE0211 Ref C: 2021-01-27T21:57:11Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 27 Jan 2021 21:57:21 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: E22AE3230AE84A22910A21C437997560 Ref B: PDX31EDGE0220 Ref C: 2021-01-27T21:57:22Z'
+    status:
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:78699988-801e-0031-6ff7-f4ca7c000000\nTime:2021-01-27T21:57:22.1638350Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:57:22 GMT
+      x-msedge-ref:
+      - 'Ref A: 59B7C53C6FCF4B6A88ED94764E2A7665 Ref B: PDX31EDGE0220 Ref C: 2021-01-27T21:57:22Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 27 Jan 2021 21:57:31 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 6B1ECAB8724C4C0696A47A338B9E4400 Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:57:32Z'
+    status:
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:791e858a-f01e-003b-05f7-f46ecb000000\nTime:2021-01-27T21:57:32.3902722Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:57:32 GMT
+      x-msedge-ref:
+      - 'Ref A: B933456ED32C4A8881554182484C253E Ref B: PDX31EDGE0218 Ref C: 2021-01-27T21:57:32Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 27 Jan 2021 21:57:42 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: 463C3BDC9D0F492FB32089175D6F3A71 Ref B: PDX31EDGE0213 Ref C: 2021-01-27T21:57:42Z'
+    status:
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:c95403ac-501e-0050-5cf7-f4e93f000000\nTime:2021-01-27T21:57:42.7430783Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:57:42 GMT
+      x-msedge-ref:
+      - 'Ref A: A10ED62B84B64353AA7A4E9F7A2A1A9F Ref B: PDX31EDGE0213 Ref C: 2021-01-27T21:57:42Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: ''
+    headers:
+      content-length:
+      - '0'
+      date:
+      - Wed, 27 Jan 2021 21:57:52 GMT
+      location:
+      - /pages/404.html
+      server:
+      - Microsoft-IIS/10.0
+      x-msedge-ref:
+      - 'Ref A: C215CB1D4F614DE7979664FB180E1540 Ref B: PDX31EDGE0220 Ref C: 2021-01-27T21:57:52Z'
+    status:
+      code: 302
+      message: Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://cli000004.azurefd.net/pages/404.html
+  response:
+    body:
+      string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<Error><Code>InvalidUri</Code><Message>The
+        request URI is invalid.\nRequestId:7869abeb-801e-0031-5cf7-f4ca7c000000\nTime:2021-01-27T21:57:52.9873655Z</Message></Error>"
+    headers:
+      content-length:
+      - '207'
+      content-type:
+      - application/xml
+      date:
+      - Wed, 27 Jan 2021 21:57:52 GMT
+      x-msedge-ref:
+      - 'Ref A: B791569BC52D4ACA81FE872E2FC4E81A Ref B: PDX31EDGE0220 Ref C: 2021-01-27T21:57:52Z'
+    status:
+      code: 400
+      message: The request URI is invalid.
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: '<!DOCTYPE html PUBLIC ''-//W3C//DTD XHTML 1.0 Transitional//EN'' ''http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd''><html
+        xmlns=''http://www.w3.org/1999/xhtml''><head><meta content=''text/html; charset=utf-8''
+        http-equiv=''content-type''/><style type=''text/css''>body {font-family:Arial;
+        margin-left:40px; }img  { border:0 none; }#content { margin-left: auto; margin-right:
+        auto }#message h2 { font-size: 20px; font-weight: normal; color: #000000;
+        margin: 34px 0px 0px 0px }#message p  { font-size: 13px; color: #000000; margin:
+        7px 0px 0px0px}#errorref { font-size: 11px; color: #737373; margin-top: 41px
+        }</style><title>Service unavailable</title></head><body><div id=''content''><div
+        id=''message''><h2>Our services aren''t available right now</h2><p>We''re
+        working to restore all services as soon as possible. Please check back soon.</p></div><div
+        id=''errorref''><span>06+ERYAAAAAAKAFHBSd7OSrpKrA/77AlNUERYMzFFREdFMDIxNgA4YTEwYzFhZS0wOTZiLTQ2NTktOWI3ZS0wNWU5MzUwZmE4YzU=</span></div></div></body></html>'
+    headers:
+      cache-control:
+      - no-store
+      content-length:
+      - '998'
+      content-type:
+      - text/html
+      date:
+      - Wed, 27 Jan 2021 21:58:02 GMT
+      x-azure-ref:
+      - 06+ERYAAAAAAKAFHBSd7OSrpKrA/77AlNUERYMzFFREdFMDIxNgA4YTEwYzFhZS0wOTZiLTQ2NTktOWI3ZS0wNWU5MzUwZmE4YzU=
+    status:
+      code: 503
+      message: Service Unavailable
+- request:
+    body: '''key'':''something'''
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://cli000004.azurefd.net/
+  response:
+    body:
+      string: '<!DOCTYPE html PUBLIC ''-//W3C//DTD XHTML 1.0 Transitional//EN'' ''http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd''><html
+        xmlns=''http://www.w3.org/1999/xhtml''><head><meta content=''text/html; charset=utf-8''
+        http-equiv=''content-type''/><style type=''text/css''>body {font-family:Arial;
+        margin-left:40px; }img  { border:0 none; }#content { margin-left: auto; margin-right:
+        auto }#message h2 { font-size: 20px; font-weight: normal; color: #000000;
+        margin: 34px 0px 0px 0px }#message p  { font-size: 13px; color: #000000; margin:
+        7px 0px 0px0px}#errorref { font-size: 11px; color: #737373; margin-top: 41px
+        }</style><title>Service unavailable</title></head><body><div id=''content''><div
+        id=''message''><h2>Our services aren''t available right now</h2><p>We''re
+        working to restore all services as soon as possible. Please check back soon.</p></div><div
+        id=''errorref''><span>09eERYAAAAAAmaS+o1l6kQrbgRcma1zppUERYMzFFREdFMDIwNgA4YTEwYzFhZS0wOTZiLTQ2NTktOWI3ZS0wNWU5MzUwZmE4YzU=</span></div></div></body></html>'
+    headers:
+      cache-control:
+      - no-store
+      content-length:
+      - '998'
+      content-type:
+      - text/html
+      date:
+      - Wed, 27 Jan 2021 21:58:12 GMT
+      x-azure-ref:
+      - 09eERYAAAAAAmaS+o1l6kQrbgRcma1zppUERYMzFFREdFMDIwNgA4YTEwYzFhZS0wOTZiLTQ2NTktOWI3ZS0wNWU5MzUwZmE4YzU=
+    status:
+      code: 503
+      message: Service Unavailable
 - request:
     body: '''key'':''something'''
     headers:
@@ -2924,14 +3400,14 @@ interactions:
         margin: 34px 0px 0px 0px }#message p  { font-size: 13px; color: #000000; margin:
         7px 0px 0px 0px }#errorref { font-size: 11px; color: #737373; margin-top:
         41px }</style><title>Microsoft</title></head><body><div id=''content''><div
-        id=''message''><h2>The request is blocked.</h2></div><div id=''errorref''><span>0xu0QYAAAAADQKwr5BxwPSa1EhOkKNTdTUERYMzFFREdFMDIwOQA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=</span></div></div></body></html>'
+        id=''message''><h2>The request is blocked.</h2></div><div id=''errorref''><span>0/+ERYAAAAAD+2blB5RsBS4QxaM8SwqEvUERYMzFFREdFMDIwOAA4YTEwYzFhZS0wOTZiLTQ2NTktOWI3ZS0wNWU5MzUwZmE4YzU=</span></div></div></body></html>'
     headers:
       date:
-      - Wed, 27 Jan 2021 04:36:21 GMT
+      - Wed, 27 Jan 2021 21:58:23 GMT
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0xu0QYAAAAADQKwr5BxwPSa1EhOkKNTdTUERYMzFFREdFMDIwOQA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - 0/+ERYAAAAAD+2blB5RsBS4QxaM8SwqEvUERYMzFFREdFMDIwOAA4YTEwYzFhZS0wOTZiLTQ2NTktOWI3ZS0wNWU5MzUwZmE4YzU=
     status:
       code: 403
       message: Forbidden
@@ -2979,11 +3455,11 @@ interactions:
       content-type:
       - text/html; charset=UTF-8
       date:
-      - Wed, 27 Jan 2021 04:36:22 GMT
+      - Wed, 27 Jan 2021 21:58:23 GMT
       etag:
       - '"3147526947+gzip"'
       expires:
-      - Wed, 03 Feb 2021 04:36:22 GMT
+      - Wed, 03 Feb 2021 21:58:23 GMT
       last-modified:
       - Thu, 17 Oct 2019 07:18:26 GMT
       transfer-encoding:
@@ -2991,7 +3467,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-azure-ref:
-      - 0xu0QYAAAAAANKGNc9EmVSqVfj1TjfMAaUERYMzFFREdFMDIwNwA2YmY4ODRjYS0yZjdlLTQ0ZTYtYjlhMy02ZjlmOGM4OTY1MWM=
+      - 0/+ERYAAAAACyFbvV8QRPQaudYdSmlXAfUERYMzFFREdFMDIwOAA4YTEwYzFhZS0wOTZiLTQ2NTktOWI3ZS0wNWU5MzUwZmE4YzU=
     status:
       code: 200
       message: OK

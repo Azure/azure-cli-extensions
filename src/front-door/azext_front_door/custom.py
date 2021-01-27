@@ -650,7 +650,7 @@ def create_waf_policy(cmd, resource_group_name, policy_name,
                       request_body_check=None, sku=None):
     client = cf_waf_policies(cmd.cli_ctx, None)
     from azext_front_door.vendored_sdks.models import (
-        WebApplicationFirewallPolicy, ManagedRuleSetList, PolicySettings, CustomRuleList, Sku, SkuName, PolicyRequestBodyCheck)
+        WebApplicationFirewallPolicy, ManagedRuleSetList, PolicySettings, CustomRuleList, Sku, SkuName)
     policy = WebApplicationFirewallPolicy(
         location='global',
         tags=tags,
@@ -661,7 +661,7 @@ def create_waf_policy(cmd, resource_group_name, policy_name,
             redirect_url=redirect_url,
             custom_block_response_status_code=custom_block_response_status_code,
             custom_block_response_body=custom_block_response_body,
-            request_body_check=request_body_check if request_body_check is not None else PolicyRequestBodyCheck.disabled,
+            request_body_check=request_body_check,
         ),
         custom_rules=CustomRuleList(rules=[]),
         managed_rules=ManagedRuleSetList(rule_sets=[])
@@ -680,12 +680,12 @@ def update_waf_policy(instance, tags=None, mode=None, redirect_url=None,
         c.update_param('name', sku, SkuName.classic_azure_front_door)
 
     with UpdateContext(instance.policy_settings) as c:
-        c.update_param('enabled_state', 'Enabled' if not disabled else 'Disabled', 'Disabled')
-        c.update_param('mode', mode, False)
+        c.update_param('enabled_state', 'Enabled' if not disabled else 'Disabled', None)
+        c.update_param('mode', mode, None)
         c.update_param('redirect_url', redirect_url, None)
         c.update_param('custom_block_response_status_code', custom_block_response_status_code, None)
         c.update_param('custom_block_response_body', custom_block_response_body, None)
-        c.update_param('request_body_check', request_body_check, 'Disabled')
+        c.update_param('request_body_check', request_body_check, None)
     return instance
 
 
