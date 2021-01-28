@@ -147,10 +147,13 @@ def _parse_blob_url(url):
     from urllib.parse import urlparse
     o = urlparse(url)
 
-    account_name = o.netloc.split('.')[0]
-    container = o.path.split('/')[-2]
-    blob = o.path.split('/')[-1]
-    sas_token = o.query
+    try:
+        account_name = o.netloc.split('.')[0]
+        container = o.path.split('/')[-2]
+        blob = o.path.split('/')[-1]
+        sas_token = o.query
+    except IndexError:
+        raise CLIError(f"Failed to parse malformed blob URL: {url}")
 
     return {
         "account_name": account_name,
