@@ -88,6 +88,7 @@ def load_command_table(self, _):
         w.command('show', 'show', validator=validate_workspace_info_no_location)
         w.command('set', 'set', validator=validate_workspace_info)
         w.command('clear', 'clear')
+        w.command('quotas', 'quotas', validator=validate_workspace_info)
 
     with self.command_group('quantum target', target_ops) as t:
         t.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_targets)

@@ -63,6 +63,9 @@ helps['quantum workspace'] = """
       - name: Select a default Azure Quantum workspace for future commands
         text: |-
             az quantum workspace set -g MyResourceGroup -w MyWorkspace -l MyLocation
+      - name: List the quota information of a workspace
+        text: |-
+            az quantum workspace quotas -g MyResourceGroup -w MyWorkspace -l MyLocation
       - name: Show the currently selected default Azure Quantum workspace
         text: |-
             az quantum workspace show

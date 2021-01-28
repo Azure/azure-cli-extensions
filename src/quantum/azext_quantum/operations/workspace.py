@@ -7,7 +7,7 @@
 
 from knack.util import CLIError
 
-from .._client_factory import cf_workspaces
+from .._client_factory import cf_workspaces, cf_quotas
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
 from ..vendored_sdks.azure_mgmt_quantum.models import Provider
@@ -123,8 +123,8 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     if (not info.resource_group):
         raise CLIError("Please run 'az quantum workspace set' first to select a default resource group.")
-    _show_tip(f"Workspace {info.name} will be created with the Basic SKU of the Microsoft QIO optimization provider.")
-    _show_tip("Please go to the Azure portal https://portal.azure.com/ to configure additional providers.")
+    _show_tip(f"Workspace {info.name} will be created with the Basic SKU of the Microsoft QIO optimization provider.\n"
+              "Please go to the Azure portal https://portal.azure.com/ to configure additional providers.")
     quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
     poller = client.create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
     while not poller.done():
@@ -151,6 +151,7 @@ def delete(cmd, resource_group_name=None, workspace_name=None):
     ws = client.get(info.resource_group, info.name)
     return ws
 
+
 def list(cmd, resource_group_name=None, tag=None, location=None):
     """
     Get the list of Azure Quantum workspaces available.
@@ -169,6 +170,15 @@ def show(cmd, resource_group_name=None, workspace_name=None):
         raise CLIError("Please run 'az quantum workspace set' first to select a default Quantum Workspace.")
     ws = client.get(info.resource_group, info.name)
     return ws
+
+
+def quotas(cmd, resource_group_name=None, workspace_name=None, location=None):
+    """
+    List the quotas for the given (or current) Azure Quantum workspace.
+    """
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    client = cf_quotas(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    return client.list()
 
 
 def set(cmd, workspace_name, resource_group_name=None, location=None):
