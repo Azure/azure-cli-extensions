@@ -1667,7 +1667,8 @@ class ManagedRuleExclusion(Model):
 
     :param match_variable: Required. The variable type to be excluded.
      Possible values include: 'RequestHeaderNames', 'RequestCookieNames',
-     'QueryStringArgNames', 'RequestBodyPostArgNames'
+     'QueryStringArgNames', 'RequestBodyPostArgNames',
+     'RequestBodyJsonArgNames'
     :type match_variable: str or
      ~azure.mgmt.frontdoor.models.ManagedRuleExclusionMatchVariable
     :param selector_match_operator: Required. Comparison operator to apply to
@@ -1815,6 +1816,10 @@ class ManagedRuleSet(Model):
     :param rule_set_version: Required. Defines the version of the rule set to
      use.
     :type rule_set_version: str
+    :param rule_set_action: Possible values include: 'Block', 'Log',
+     'Redirect'
+    :type rule_set_action: str or
+     ~azure.mgmt.frontdoor.models.ManagedRuleSetActionType
     :param exclusions: Describes the exclusions that are applied to all rules
      in the set.
     :type exclusions: list[~azure.mgmt.frontdoor.models.ManagedRuleExclusion]
@@ -1832,14 +1837,16 @@ class ManagedRuleSet(Model):
     _attribute_map = {
         'rule_set_type': {'key': 'ruleSetType', 'type': 'str'},
         'rule_set_version': {'key': 'ruleSetVersion', 'type': 'str'},
+        'rule_set_action': {'key': 'ruleSetAction', 'type': 'str'},
         'exclusions': {'key': 'exclusions', 'type': '[ManagedRuleExclusion]'},
         'rule_group_overrides': {'key': 'ruleGroupOverrides', 'type': '[ManagedRuleGroupOverride]'},
     }
 
-    def __init__(self, *, rule_set_type: str, rule_set_version: str, exclusions=None, rule_group_overrides=None, **kwargs) -> None:
+    def __init__(self, *, rule_set_type: str, rule_set_version: str, rule_set_action=None, exclusions=None, rule_group_overrides=None, **kwargs) -> None:
         super(ManagedRuleSet, self).__init__(**kwargs)
         self.rule_set_type = rule_set_type
         self.rule_set_version = rule_set_version
+        self.rule_set_action = rule_set_action
         self.exclusions = exclusions
         self.rule_group_overrides = rule_group_overrides
 
@@ -1995,6 +2002,10 @@ class PolicySettings(Model):
      can override the response body. The body must be specified in base64
      encoding.
     :type custom_block_response_body: str
+    :param request_body_check: Describes if policy managed rules will inspect
+     the request body content. Possible values include: 'Disabled', 'Enabled'
+    :type request_body_check: str or
+     ~azure.mgmt.frontdoor.models.PolicyRequestBodyCheck
     """
 
     _validation = {
@@ -2007,15 +2018,17 @@ class PolicySettings(Model):
         'redirect_url': {'key': 'redirectUrl', 'type': 'str'},
         'custom_block_response_status_code': {'key': 'customBlockResponseStatusCode', 'type': 'int'},
         'custom_block_response_body': {'key': 'customBlockResponseBody', 'type': 'str'},
+        'request_body_check': {'key': 'requestBodyCheck', 'type': 'str'},
     }
 
-    def __init__(self, *, enabled_state=None, mode=None, redirect_url: str=None, custom_block_response_status_code: int=None, custom_block_response_body: str=None, **kwargs) -> None:
+    def __init__(self, *, enabled_state=None, mode=None, redirect_url: str=None, custom_block_response_status_code: int=None, custom_block_response_body: str=None, request_body_check=None, **kwargs) -> None:
         super(PolicySettings, self).__init__(**kwargs)
         self.enabled_state = enabled_state
         self.mode = mode
         self.redirect_url = redirect_url
         self.custom_block_response_status_code = custom_block_response_status_code
         self.custom_block_response_body = custom_block_response_body
+        self.request_body_check = request_body_check
 
 
 class PreconfiguredEndpoint(Resource):
@@ -2608,6 +2621,40 @@ class RulesEngineUpdateParameters(Model):
         self.rules = rules
 
 
+class SecurityPolicyLink(Model):
+    """Defines the Resource ID for a Security Policy.
+
+    :param id: Resource ID.
+    :type id: str
+    """
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+    }
+
+    def __init__(self, *, id: str=None, **kwargs) -> None:
+        super(SecurityPolicyLink, self).__init__(**kwargs)
+        self.id = id
+
+
+class Sku(Model):
+    """The pricing tier of the web application firewall policy.
+
+    :param name: Name of the pricing tier. Possible values include:
+     'Classic_AzureFrontDoor', 'Standard_AzureFrontDoor',
+     'Premium_AzureFrontDoor'
+    :type name: str or ~azure.mgmt.frontdoor.models.SkuName
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+    }
+
+    def __init__(self, *, name=None, **kwargs) -> None:
+        super(Sku, self).__init__(**kwargs)
+        self.name = name
+
+
 class TagsObject(Model):
     """Tags object for patch operations.
 
@@ -2802,6 +2849,10 @@ class WebApplicationFirewallPolicy(Resource):
      Application Firewall policy.
     :vartype routing_rule_links:
      list[~azure.mgmt.frontdoor.models.RoutingRuleLink]
+    :ivar security_policy_links: Describes Security Policy associated with
+     this Web Application Firewall policy.
+    :vartype security_policy_links:
+     list[~azure.mgmt.frontdoor.models.SecurityPolicyLink]
     :ivar provisioning_state: Provisioning state of the policy.
     :vartype provisioning_state: str
     :ivar resource_state: Resource status of the policy. Possible values
@@ -2812,6 +2863,9 @@ class WebApplicationFirewallPolicy(Resource):
     :param etag: Gets a unique read-only string that changes whenever the
      resource is updated.
     :type etag: str
+    :param sku: The pricing tier of web application firewall policy. Defaults
+     to Classic_AzureFrontDoor if not specified.
+    :type sku: ~azure.mgmt.frontdoor.models.Sku
     """
 
     _validation = {
@@ -2820,6 +2874,7 @@ class WebApplicationFirewallPolicy(Resource):
         'type': {'readonly': True},
         'frontend_endpoint_links': {'readonly': True},
         'routing_rule_links': {'readonly': True},
+        'security_policy_links': {'readonly': True},
         'provisioning_state': {'readonly': True},
         'resource_state': {'readonly': True},
     }
@@ -2835,18 +2890,22 @@ class WebApplicationFirewallPolicy(Resource):
         'managed_rules': {'key': 'properties.managedRules', 'type': 'ManagedRuleSetList'},
         'frontend_endpoint_links': {'key': 'properties.frontendEndpointLinks', 'type': '[FrontendEndpointLink]'},
         'routing_rule_links': {'key': 'properties.routingRuleLinks', 'type': '[RoutingRuleLink]'},
+        'security_policy_links': {'key': 'properties.securityPolicyLinks', 'type': '[SecurityPolicyLink]'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'resource_state': {'key': 'properties.resourceState', 'type': 'str'},
         'etag': {'key': 'etag', 'type': 'str'},
+        'sku': {'key': 'sku', 'type': 'Sku'},
     }
 
-    def __init__(self, *, location: str=None, tags=None, policy_settings=None, custom_rules=None, managed_rules=None, etag: str=None, **kwargs) -> None:
+    def __init__(self, *, location: str=None, tags=None, policy_settings=None, custom_rules=None, managed_rules=None, etag: str=None, sku=None, **kwargs) -> None:
         super(WebApplicationFirewallPolicy, self).__init__(location=location, tags=tags, **kwargs)
         self.policy_settings = policy_settings
         self.custom_rules = custom_rules
         self.managed_rules = managed_rules
         self.frontend_endpoint_links = None
         self.routing_rule_links = None
+        self.security_policy_links = None
         self.provisioning_state = None
         self.resource_state = None
         self.etag = etag
+        self.sku = sku
