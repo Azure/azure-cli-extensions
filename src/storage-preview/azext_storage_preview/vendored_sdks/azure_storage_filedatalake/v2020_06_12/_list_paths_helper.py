@@ -6,7 +6,7 @@
 from azure.core.paging import PageIterator
 from ._models import PathProperties
 from ._deserialize import process_storage_error, return_headers_and_deserialized_path_list, \
-    get_deleted_file_properties_from_generated_code
+    get_deleted_path_properties_from_generated_code
 from ._generated.models import StorageErrorException, BlobItemInternal, BlobPrefix as GenBlobPrefix
 from ._generated.models import Path
 from ._shared.models import DictMixin
@@ -141,11 +141,11 @@ class DeletedPathPropertiesPaged(PageIterator):
 
     def _build_item(self, item):
         if isinstance(item, BlobItemInternal):
-            file_props = get_deleted_file_properties_from_generated_code(item)
+            file_props = get_deleted_path_properties_from_generated_code(item)
             file_props.file_system = self.container
             return file_props
         if isinstance(item, GenBlobPrefix):
-            return DeletedDirectoryProperties(
+            return DirectoryPrefix(
                 container=self.container,
                 prefix=item.name,
                 results_per_page=self.results_per_page,
@@ -153,8 +153,8 @@ class DeletedPathPropertiesPaged(PageIterator):
         return item
 
 
-class DeletedDirectoryProperties(DictMixin):
-    """Deleted directory properties.
+class DirectoryPrefix(DictMixin):
+    """Directory prefix.
 
     :ivar str name: Name of the deleted directory.
     :ivar int results_per_page: The maximum number of results retrieved per API call.

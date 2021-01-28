@@ -19,8 +19,8 @@ from azure.core.paging import ItemPaged
 from ...blob import ContainerClient
 from ._shared.base_client import TransportWrapper, StorageAccountHostsMixin, parse_query, parse_connection_str
 from ._serialize import convert_dfs_url_to_blob_url
-from ._models import LocationMode, FileSystemProperties, PublicAccess, DeletedFileProperties
-from ._list_paths_helper import PathPropertiesPaged, DeletedDirectoryProperties, DeletedPathPropertiesPaged
+from ._models import LocationMode, FileSystemProperties, PublicAccess, DeletedPathProperties
+from ._list_paths_helper import PathPropertiesPaged, DirectoryPrefix, DeletedPathPropertiesPaged
 from ._data_lake_file_client import DataLakeFileClient
 from ._data_lake_directory_client import DataLakeDirectoryClient
 from ._data_lake_lease import DataLakeLeaseClient
@@ -710,7 +710,7 @@ class FileSystemClient(StorageAccountHostsMixin):
         file_client.delete_file(**kwargs)
         return file_client
 
-    def _undelete_path(self, deleted_path_name, deleted_path_version):
+    def _undelete_path(self, deleted_path_name, deletion_id):
         quoted_path = quote(unquote(deleted_path_name.strip('/')))
 
         url_and_token = self.url.replace('.dfs.', '.blob.').split('?')
@@ -719,11 +719,11 @@ class FileSystemClient(StorageAccountHostsMixin):
         except IndexError:
             url = url_and_token[0] + '/' + quoted_path
 
-        undelete_source = quoted_path + '?deletionid={}'.format(deleted_path_version) if deleted_path_version else None
+        undelete_source = quoted_path + '?deletionid={}'.format(deletion_id) if deletion_id else None
 
         return quoted_path, url, undelete_source
 
-    def undelete_path(self, deleted_path_name, deleted_path_version, **kwargs):
+    def undelete_path(self, deleted_path_name, deletion_id, **kwargs):
         # type: (str, str, **Any) -> Union[DataLakeDirectoryClient, DataLakeFileClient]
         """Restores soft-deleted path.
 
@@ -735,13 +735,13 @@ class FileSystemClient(StorageAccountHostsMixin):
 
         :param str deleted_path_name:
             Specifies the path (file or directory) to restore.
-        :param str deleted_path_version:
+        :param str deletion_id:
             Specifies the version of the deleted path to restore.
         :keyword int timeout:
             The timeout parameter is expressed in seconds.
         :rtype: ~azure.storage.file.datalake.DataLakeDirectoryClient or azure.storage.file.datalake.DataLakeFileClient
         """
-        _, url, undelete_source = self._undelete_path(deleted_path_name, deleted_path_version)
+        _, url, undelete_source = self._undelete_path(deleted_path_name, deletion_id)
 
         pipeline = Pipeline(
             transport=TransportWrapper(self._pipeline._transport), # pylint: disable = protected-access
@@ -847,7 +847,7 @@ class FileSystemClient(StorageAccountHostsMixin):
     def get_deleted_paths(self,
                           name_starts_with=None,    # type: Optional[str],
                           **kwargs):
-        # type: (...) -> ItemPaged[Union[DeletedFileProperties, DeletedDirectoryProperties]]
+        # type: (...) -> ItemPaged[DeletedPathProperties]
         """Returns a generator to list the paths(could be files or directories) under the specified file system.
         The generator will lazily follow the continuation tokens returned by
         the service.
@@ -864,15 +864,13 @@ class FileSystemClient(StorageAccountHostsMixin):
             The timeout parameter is expressed in seconds.
         :returns: An iterable (auto-paging) response of PathProperties.
         :rtype:
-            ~azure.core.paging.ItemPaged[~azure.storage.filedatalake.DeletedFileProperties or
-            ~azure.storage.filedatalake.DeletedDirectoryProperties]
+            ~azure.core.paging.ItemPaged[~azure.storage.filedatalake.DeletedPathProperties]
         """
         results_per_page = kwargs.pop('max_results', None)
         timeout = kwargs.pop('timeout', None)
         command = functools.partial(
             self._datalake_client_for_blob_operation.file_system.list_blob_hierarchy_segment,
             showonly=ListBlobsShowOnly.deleted,
-            delimiter="",
             timeout=timeout,
             **kwargs)
         return ItemPaged(

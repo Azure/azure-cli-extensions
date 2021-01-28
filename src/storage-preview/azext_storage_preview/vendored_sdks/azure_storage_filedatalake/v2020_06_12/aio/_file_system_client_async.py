@@ -29,8 +29,8 @@ from .._file_system_client import FileSystemClient as FileSystemClientBase
 from .._generated.aio import DataLakeStorageClient
 from .._shared.base_client_async import AsyncTransportWrapper, AsyncStorageAccountHostsMixin
 from .._shared.policies_async import ExponentialRetry
-from .._models import FileSystemProperties, PublicAccess, DeletedFileProperties
-from ._list_paths_helper import DeletedDirectoryProperties, DeletedPathPropertiesPaged
+from .._models import FileSystemProperties, PublicAccess, DeletedPathProperties
+from ._list_paths_helper import DirectoryPrefix, DeletedPathPropertiesPaged
 
 if TYPE_CHECKING:
     from datetime import datetime
@@ -671,7 +671,7 @@ class FileSystemClient(AsyncStorageAccountHostsMixin, FileSystemClientBase):
         return file_client
 
     @distributed_trace_async
-    async def undelete_path(self, deleted_path_name, deleted_path_version, **kwargs):
+    async def undelete_path(self, deleted_path_name, deletion_id, **kwargs):
         # type: (str, str, **Any) -> Union[DataLakeDirectoryClient, DataLakeFileClient]
         """Restores soft-deleted path.
 
@@ -683,14 +683,14 @@ class FileSystemClient(AsyncStorageAccountHostsMixin, FileSystemClientBase):
 
         :param str deleted_path_name:
             Specifies the name of the deleted container to restore.
-        :param str deleted_path_version:
+        :param str deletion_id:
             Specifies the version of the deleted container to restore.
         :keyword int timeout:
             The timeout parameter is expressed in seconds.
         :rtype: ~azure.storage.file.datalake.aio.DataLakeDirectoryClient
                 or azure.storage.file.datalake.aio.DataLakeFileClient
         """
-        _, url, undelete_source = self._undelete_path(deleted_path_name, deleted_path_version)
+        _, url, undelete_source = self._undelete_path(deleted_path_name, deletion_id)
 
         pipeline = AsyncPipeline(
             transport=AsyncTransportWrapper(self._pipeline._transport), # pylint: disable = protected-access
@@ -798,7 +798,7 @@ class FileSystemClient(AsyncStorageAccountHostsMixin, FileSystemClientBase):
     def get_deleted_paths(self,
                           name_starts_with=None,    # type: Optional[str],
                           **kwargs):
-        # type: (...) -> AsyncItemPaged[Union[DeletedFileProperties, DeletedDirectoryProperties]]
+        # type: (...) -> AsyncItemPaged[DeletedPathProperties]
         """Returns a generator to list the paths(could be files or directories) under the specified file system.
         The generator will lazily follow the continuation tokens returned by
         the service.
@@ -815,15 +815,13 @@ class FileSystemClient(AsyncStorageAccountHostsMixin, FileSystemClientBase):
             The timeout parameter is expressed in seconds.
         :returns: An iterable (auto-paging) response of PathProperties.
         :rtype:
-            ~azure.core.paging.ItemPaged[~azure.storage.filedatalake.DeletedFileProperties or
-            ~azure.storage.filedatalake.DeletedDirectoryProperties]
+            ~azure.core.paging.ItemPaged[~azure.storage.filedatalake.DeletedPathProperties]
         """
         results_per_page = kwargs.pop('max_results', None)
         timeout = kwargs.pop('timeout', None)
         command = functools.partial(
             self._datalake_client_for_blob_operation.file_system.list_blob_hierarchy_segment,
             showonly=ListBlobsShowOnly.deleted,
-            delimiter="",
             timeout=timeout,
             **kwargs)
         return AsyncItemPaged(

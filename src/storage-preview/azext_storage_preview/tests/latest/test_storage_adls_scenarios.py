@@ -18,7 +18,7 @@ class StorageADLSTests(StorageScenarioMixin, ScenarioTest):
     @ResourceGroupPreparer()
     @StorageAccountPreparer(kind="StorageV2", hns=True, location="eastus2euap")
     def test_storage_fs_soft_delete(self, resource_group, storage_account):
-        account_info = self.get_account_info(storage_account, resource_group)
+        account_info = self.get_account_info(resource_group, storage_account)
         container = self.create_file_system(account_info)
 
         # create a file
