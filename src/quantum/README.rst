@@ -171,7 +171,7 @@ Once the job completes (i.e. it's in a **Successful** state), use `az quantum jo
    [0,0]     0.25000000   ▐█████                  |
    [0,1]     0.75000000   ▐████████████████       |
 
-The output shows a histogram with the frequency a specific results was measured. In the example above
+The output shows a histogram with the frequency a specific result was measured. In the example above,
 the result `[0,1]` was observed 75% of the times.
 
 
