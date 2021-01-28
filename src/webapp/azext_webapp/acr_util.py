@@ -19,6 +19,7 @@ logger = get_logger(__name__)
 VERSION_2019_06_01_PREVIEW = "2019-06-01-preview"
 
 
+# pylint:disable=import-outside-toplevel
 def queue_acr_build(cmd, registry_rg, registry_name, img_name, src_dir):
     import os
     client_registries = get_acr_service_client(cmd.cli_ctx, VERSION_2019_06_01_PREVIEW).registries
@@ -38,6 +39,7 @@ def queue_acr_build(cmd, registry_rg, registry_name, img_name, src_dir):
     tar_file_path = os.path.join(tempfile.gettempdir(), 'build_archive_{}.tar.gz'.format(uuid.uuid4().hex))
 
     source_location = upload_source_code(
+        cmd,
         client_registries, registry_name, registry_rg,
         src_dir, tar_file_path,
         docker_file_path, docker_file_in_tar)
