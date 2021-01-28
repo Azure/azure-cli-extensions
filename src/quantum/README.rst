@@ -14,8 +14,50 @@ To learn more about quantum computing and Microsoft's Quantum Development Kit, v
 https://docs.microsoft.com/quantum/
 
 
-Using the `az quantum` extension to list and manage jobs in Azure Quantum
-=========================================================================
+Creating Q# programs for execution from the command line
+========================================================
+
+Prerequisites
+-------------
+
+- You need to have an Azure Quantum workspace in your subscription.
+- Install the [Quantum Development Kit](https://docs.microsoft.com/quantum/install-guide/standalone), if you haven't already.
+
+
+Write your quantum application
+------------------------------
+
+First you need to have the Q# quantum application that you want to execute in
+Azure Quantum.
+
+.. tip::
+   If this is the first time for you to create Q# quantum applications, you can learn how
+   in our [Microsoft Learn module](https://docs.microsoft.com/en-us/learn/modules/qsharp-create-first-quantum-development-kit/).
+
+In this case we will use a simple quantum random bit generator. We create a Q#
+project and substitute the content of `Program.qs` with the following code:
+
+.. code-block::
+
+   namespace RandomBit {
+
+       open Microsoft.Quantum.Canon;
+       open Microsoft.Quantum.Intrinsic;
+       open Microsoft.Quantum.Measurement;
+
+       @EntryPoint()
+       operation GenerateRandomBit() : Result {
+           use q = Qubit();
+           H(q);
+           return MResetZ(q);
+       }
+   }
+
+Note that the `@EntryPoint` attribute tells Q# which operation to run when the program starts.
+
+
+Prepare to submit and manage jobs in Azure Quantum using the `az quantum` extension
+===================================================================================
 
 1. Log in to Azure using your credentials.
 
@@ -75,7 +117,20 @@ Using the `az quantum` extension to list and manage jobs in Azure Quantum
       westus       ws-yyyyyy                          rg-yyyyyyyyy
 
 
-6. You can see all the jobs submitted to a workspace using `az quantum job list`.
+6. For this example we are going to use IonQ as the provider and the `ionq.simulator` as target.
+   To submit the job to the currently selected default quantum workspace, run the following from the directory
+   where you have the project created previously.
+
+   .. code-block::
+
+      az quantum job submit --target-id ionq.simulator --job-name Hello -o table
+
+      Name   Id                                    Status    Target          Submission time
+      -----  ------------------------------------  --------  --------------  ---------------------------------
+      Hello   yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy  Waiting   ionq.simulator  2020-06-17T17:07:07.3484901+00:00
+
+
+7. You can see all the jobs submitted to a workspace using `az quantum job list`.
 
    .. code-block::
 
@@ -88,7 +143,7 @@ Using the `az quantum` extension to list and manage jobs in Azure Quantum
    The console will output the information about the job, including the ID of the job.
 
 
-7. You can use the ID of the job to track its status.
+8. You can use the ID of the job to track its status.
 
    .. code-block::
 
@@ -99,7 +154,7 @@ Using the `az quantum` extension to list and manage jobs in Azure Quantum
       yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy  Waiting  MyProvider.MyTarget  2020-06-12T14:20:18.6109317+00:00
 
 
-8. Once the job finishes you can visualize the job's results with `az quantum job output`:
+9. Once the job finishes (i.e. it's in a **Successful** state) you can visualize the job's results.
 
    .. code-block::
 
@@ -113,84 +168,19 @@ Using the `az quantum` extension to list and manage jobs in Azure Quantum
       [1,1]     0.25000000   ▐█████                  |
 
 
-Submitting Q# programs for execution from the command line
-==========================================================
-
-Prerequisites
--------------
-
-- You need to have an Azure Quantum workspace in your subscription.
-- Install the [Quantum Development Kit](https://docs.microsoft.com/quantum/install-guide/standalone), if you haven't already.
+   The output shows a histogram with the frequency a specific result was measured. In the example above,
+   the result `[0,1]` was observed 25% of the times.
 
 
-Write your quantum application
-------------------------------
+10. Alternatively, you can run a job synchronously and wait for it to complete.
 
-First you need to have the Q# quantum application that you want to execute in
-Azure Quantum.
+    .. code-block::
 
-.. tip::
-   If this is the first time for you to create Q# quantum applications, you can learn how
-   in our [Microsoft Learn module](https://docs.microsoft.com/en-us/learn/modules/qsharp-create-first-quantum-development-kit/).
-
-In this case we will use a simple quantum random bit generator. We create a Q#
-project and substitute the content of `Program.qs` with the following code:
-
-.. code-block::
-
-   namespace RandomBit {
-
-       open Microsoft.Quantum.Canon;
-       open Microsoft.Quantum.Intrinsic;
-       open Microsoft.Quantum.Measurement;
-
-       @EntryPoint()
-       operation GenerateRandomBit() : Result {
-           use q = Qubit();
-           H(q);
-           return MResetZ(q);
-       }
-   }
-
-Note that the `@EntryPoint` attribute tells Q# which operation to run when the program starts.
-
-Submit the job
---------------
-
-In this example we are going to use IonQ as the provider and the
-`ionq.simulator` as target. To submit the job to the currently selected
-default quantum workspace, run `az quantum job submit`:
-
-.. code-block::
-
-   az quantum job submit --target-id ionq.simulator --job-name Hello -o table
-
-   Name   Id                                    Status    Target          Submission time
-   -----  ------------------------------------  --------  --------------  ---------------------------------
-   Hello   yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy  Waiting   ionq.simulator  2020-06-17T17:07:07.3484901+00:00
-
-Once the job completes (i.e. it's in a **Successful** state), use `az quantum job output` to see the results:
-
-.. code-block::
-
-   az quantum job output -id yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table
-
-   Result    Frequency
-   --------  -----------  -------------------------
-   [0,0]     0.25000000   ▐█████                  |
-   [0,1]     0.75000000   ▐████████████████       |
-
-The output shows a histogram with the frequency a specific result was measured. In the example above,
-the result `[0,1]` was observed 75% of the times.
-
-
-Finally, you can use `az quantum execute` as a shortcut for both, submitting and getting the results of execution.
-
-.. code-block::
-
-   az quantum execute --target-id ionq.simulator --job-name Hello2 -o table
+       az quantum execute --target-id ionq.simulator --job-name Hello2 -o table
    
-   Result    Frequency
-   --------  -----------  -------------------------
-   [0,0]     0.25000000   ▐█████                  |
-   [0,1]     0.75000000   ▐████████████████       |
+       Result    Frequency
+       --------  -----------  -------------------------
+       [0,0]     0.25000000   ▐█████                  |
+       [0,1]     0.75000000   ▐████████████████       |
+
+
