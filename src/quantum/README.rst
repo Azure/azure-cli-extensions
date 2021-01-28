@@ -47,7 +47,7 @@ Using the `az quantum` extension to list and manage jobs in Azure Quantum
 
    .. code-block::
 
-      az quantum workspace set -g MyResourceGroup -w MyWorkspace  -o table
+      az quantum workspace set -g MyResourceGroup -w MyWorkspace -o table
 
       Location     Name                               ResourceGroup
       -----------  ---------------------------------  --------------------------------
@@ -185,4 +185,3 @@ Finally, you can use `az quantum execute` as a shortcut for both, submitting and
    --------  -----------  -------------------------
    [0,0]     0.25000000   ▐█████                  |
    [0,1]     0.75000000   ▐████████████████       |
-
