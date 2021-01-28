@@ -205,18 +205,19 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
 
     # TODO: LROPoller...
-    w = False
+    wait_indicators_used = False
     poll_wait = 0.2
     job = client.get(job_id)
 
     while not has_completed(job):
         print('.', end='', flush=True)
-        w = True
+        wait_indicators_used = True
         time.sleep(poll_wait)
         job = client.get(job_id)
         poll_wait = max_poll_wait_secs if poll_wait >= max_poll_wait_secs else poll_wait * 1.5
 
-    if w:
+    if wait_indicators_used:
+        # Insert a new line if we had to display wait indicators.
         print("")
 
     return job
