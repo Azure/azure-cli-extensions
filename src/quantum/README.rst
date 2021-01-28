@@ -28,30 +28,40 @@ Using the `az quantum` extension to list and manage jobs in Azure Quantum
       subscription you want to use. You can do this with the command `az account set -s <Your subscription ID>`.
 
 
-2. Install the Quantum extension for the Azure CLI
+2. Install the Quantum extension for the Azure CLI.
 
    .. code-block::
 
       az extension add --name quantum
 
 
-3. You can see all the Azure Quantum workspaces in your subscription with the `az quantum workspace list` command:
+3. You can see all the Azure Quantum workspaces in your subscription with the `az quantum workspace list` command.
+   At this time, you need to create and set up your workspaces using the Azure Portal, please refer to the documentation
+   for Azure Quantum for details on this and how to choose providers.
 
    .. code-block::
 
       az quantum workspace list
 
 
-4. You can use `quantum workspace set` to select a default workspace you want to use 
-   to list and submit jobs. Note that you also need to specify the resource group.
+4. You can use `quantum workspace set` to select a default workspace you want to use to list and submit jobs.
+   Note that you also need to specify the resource group. If you set a default workspace by providing a resource group,
+   workspace name and location, you don't need to include those parameters in commands #5 to #8 below.
+   Anternatively, you can include them in each call.
 
    .. code-block::
 
-      az quantum workspace set -g MyResourceGroup -w MyWorkspace -o table
+      az quantum workspace set -g MyResourceGroup -w MyWorkspace -l MyLocation -o table
 
       Location     Name                               ResourceGroup
       -----------  ---------------------------------  --------------------------------
       westus       ws-yyyyyy                          rg-yyyyyyyyy
+
+
+.. note:
+   Commands below assume that a default workspace has been set. If you prefer to specify it
+   for each call, include the following parameters with commands below:
+   `-g MyResourceGroup -w MyWorkspace -l MyLocation`
 
 
 5. You can check the current default workspace with command `az quantum workspace show`.
@@ -136,10 +146,9 @@ project and substitute the content of `Program.qs` with the following code:
 
        @EntryPoint()
        operation GenerateRandomBit() : Result {
-           using (q = Qubit()) {
-               H(q);
-               return MResetZ(q);
-           }
+           use q = Qubit();
+           H(q);
+           return MResetZ(q);
        }
    }
 
