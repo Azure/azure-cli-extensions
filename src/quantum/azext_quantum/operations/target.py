@@ -62,7 +62,7 @@ def list(cmd, resource_group_name=None, workspace_name=None, location=None):
 
 def clear(cmd):
     """
-    Unset the default target-id.
+    Clear the default target-id.
     """
     info = TargetInfo(cmd)
     info.clear()

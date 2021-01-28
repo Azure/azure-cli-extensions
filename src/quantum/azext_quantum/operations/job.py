@@ -147,10 +147,13 @@ def _parse_blob_url(url):
     from urllib.parse import urlparse
     o = urlparse(url)
 
-    account_name = o.netloc.split('.')[0]
-    container = o.path.split('/')[-2]
-    blob = o.path.split('/')[-1]
-    sas_token = o.query
+    try:
+        account_name = o.netloc.split('.')[0]
+        container = o.path.split('/')[-2]
+        blob = o.path.split('/')[-1]
+        sas_token = o.query
+    except IndexError:
+        raise CLIError(f"Failed to parse malformed blob URL: {url}")
 
     return {
         "account_name": account_name,
@@ -205,18 +208,19 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
 
     # TODO: LROPoller...
-    w = False
+    wait_indicators_used = False
     poll_wait = 0.2
     job = client.get(job_id)
 
     while not has_completed(job):
         print('.', end='', flush=True)
-        w = True
+        wait_indicators_used = True
         time.sleep(poll_wait)
         job = client.get(job_id)
         poll_wait = max_poll_wait_secs if poll_wait >= max_poll_wait_secs else poll_wait * 1.5
 
-    if w:
+    if wait_indicators_used:
+        # Insert a new line if we had to display wait indicators.
         print("")
 
     return job
