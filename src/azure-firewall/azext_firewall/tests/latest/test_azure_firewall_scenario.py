@@ -123,6 +123,7 @@ class AzureFirewallScenario(ScenarioTest):
         #        self.check('subnet.id', subnet_id_management_ip_config)
         #    ])
 
+        # maybe need to fix in the future
         # self.cmd(
         #     'network firewall management-ip-config show -g {rg} -f {af}',
         #     checks=[
