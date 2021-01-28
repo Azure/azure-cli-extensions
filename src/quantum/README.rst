@@ -150,7 +150,7 @@ Submit the job
 
 In this example we are going to use IonQ as the provider and the
 `ionq.simulator` as target. To submit the job to the currently selected
-default quantum workspace `az quantum job submit`:
+default quantum workspace, run `az quantum job submit`:
 
 .. code-block::
 
