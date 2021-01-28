@@ -90,6 +90,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network public-ip create -g {rg} -n {management_pubip} --sku standard')
         self.cmd('network public-ip create -g {rg} -n {pubip3} --sku standard')
         self.cmd('network public-ip create -g {rg} -n {pubip4} --sku standard')
+        # maybe need to fix in the future
         # vnet_instance = self.cmd(
         #     'network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24').get_output_in_json()
         # subnet_id_ip_config = vnet_instance['newVNet']['subnets'][0]['id']
