@@ -7,7 +7,7 @@ import copy
 from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
-
+from azure.cli.core.azclierror import UserFault, ServiceError
 from ._client_factory import network_client_factory
 
 logger = get_logger(__name__)
@@ -993,7 +993,7 @@ def update_azure_firewall_policy_filter_rule(cmd, instance, rule_collection_name
             target_rule_collection = rule_collection
 
     if target_rule_collection is None:
-        raise CLIError("Cannot find corresponding rule, please check parameters")
+        raise UserFault("Cannot find corresponding rule, please check parameters")
 
     for i in range(0, len(target_rule_collection.rules)):
         rule = target_rule_collection.rules[i]
@@ -1042,7 +1042,7 @@ def update_azure_firewall_policy_filter_rule(cmd, instance, rule_collection_name
                 target_rule_collection.rules[i] = copy.deepcopy(new_rule)
                 return instance
             else:
-                raise CLIError(f'Undefined rule_type : {rule.rule_type}')
+                raise ServiceError(f'Undefined rule_type : {rule.rule_type}')
 
-    raise CLIError(f'{rule_name} does not exist!!!')
+    raise UserFault(f'{rule_name} does not exist!!!')
 # endregion
