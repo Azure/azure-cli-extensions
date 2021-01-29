@@ -221,7 +221,7 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
 
     if wait_indicators_used:
         # Insert a new line if we had to display wait indicators.
-        print("")
+        print()
 
     return job
 

@@ -104,7 +104,7 @@ def _create_role_assignment(cmd, quantum_workspace):
         except Exception as x:
             raise CLIError(f"Role assignment encountered exception ({type(x).__name__}): {x}")
     if (retry_attempts > 0):
-        print("")  # To end the line of the waiting indicators.
+        print()  # To end the line of the waiting indicators.
     if (retry_attempts == MAX_RETRIES_ROLE_ASSIGNMENT):
         raise CLIError(f"Role assignment could not be added to storage account {quantum_workspace.storage_account}.")
     return quantum_workspace
