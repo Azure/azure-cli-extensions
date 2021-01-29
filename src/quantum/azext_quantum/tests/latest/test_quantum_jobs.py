@@ -6,7 +6,7 @@
 import os
 import unittest
 
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure_devtools.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 from .utils import TEST_WORKSPACE, TEST_RG, TEST_WORKSPACE_LOCATION, TEST_SUBS
@@ -29,6 +29,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         targets = self.cmd('az quantum target list -o json').get_output_in_json()
         assert len(targets) > 0
 
+    @live_only()
     def test_submit_args(self):
         ws = WorkspaceInfo(self, TEST_RG_JOBS, TEST_WORKSPACE_JOBS, TEST_WORKSPACE_LOCATION_JOBS)
         target = TargetInfo(self, 'ionq.simulator')
