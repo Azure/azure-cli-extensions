@@ -161,7 +161,7 @@ def list(cmd, resource_group_name=None, tag=None, location=None):
     return list_resources(cmd, resource_group_name=resource_group_name, resource_type="Microsoft.Quantum/Workspaces", tag=tag, location=location)
 
 
-def show_command(cmd, resource_group_name=None, workspace_name=None):
+def show(cmd, resource_group_name=None, workspace_name=None):
     """
     Get the details of the given (or current) Azure Quantum workspace.
     """
