@@ -42,7 +42,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
         if not is_private_preview_subscription(self):
             self.skipTest(f"Need to run azure quantum tests in subscription {TEST_SUBS}")
 
-        ws = WorkspaceInfo(self, TEST_RG, TEST_WORKSPACE, TEST_WORKSPACE_LOCATION)
+        ws = WorkspaceInfo(self, TEST_RG_JOBS, TEST_WORKSPACE_JOBS, TEST_WORKSPACE_LOCATION_JOBS)
         target = TargetInfo(self, 'ionq.simulator')
 
         token = _get_data_credentials(self.cli_ctx, TEST_SUBS).get_token().token
@@ -54,8 +54,8 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.assertEquals(args[2], "--no-build")
         self.assertIn("--", args)
         self.assertIn("submit", args)
-        self.assertIn(TEST_WORKSPACE, args)
-        self.assertIn(TEST_RG, args)
+        self.assertIn(TEST_WORKSPACE_JOBS, args)
+        self.assertIn(TEST_RG_JOBS, args)
         self.assertIn("ionq.simulator", args)
         self.assertIn("--aad-token", args)
         self.assertIn(token, args)
