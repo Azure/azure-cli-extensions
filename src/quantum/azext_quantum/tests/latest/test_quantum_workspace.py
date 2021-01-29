@@ -47,7 +47,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         self.cmd(f'az quantum workspace clear')
 
         # create
-        self.cmd(f'az quantum workspace create -g {TEST_RG} -w {TEST_WORKSPACE_CREATE_DELETE} -l {TEST_WORKSPACE_LOCATION} -sa {TEST_WORKSPACE_SA} -o json', checks=[
+        self.cmd(f'az quantum workspace create -g {TEST_RG} -w {TEST_WORKSPACE_CREATE_DELETE} -l {TEST_WORKSPACE_LOCATION} -a {TEST_WORKSPACE_SA} -o json', checks=[
             self.check("name", TEST_WORKSPACE_CREATE_DELETE),
             self.check("provisioningState", "Succeeded")
         ])

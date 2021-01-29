@@ -9,32 +9,37 @@ from knack.arguments import CLIArgumentType
 
 def load_arguments(self, _):
     workspace_name_type = CLIArgumentType(options_list=['--workspace-name', '-w'], help='Name of the Quantum Workspace. You can configure the default workspace using `az quantum workspace set`.', id_part=None, required=False)
-    storage_account_name_type = CLIArgumentType(options_list=['--storage_account', '-sa'], help='Name of the storage account to be used by a quantum workspace.')
+    storage_account_name_type = CLIArgumentType(options_list=['--storage-account', '-a'], help='Name of the storage account to be used by a quantum workspace.')
     program_args_type = CLIArgumentType(nargs='*', help='List of arguments expected by the Q# operation specified as --name=value after `--`.')
     target_id_type = CLIArgumentType(options_list=['--target-id', '-t'], help='Execution engine for quantum computing jobs. When a workspace is configured with a set of provider, they each enable one or more targets.')
     project_type = CLIArgumentType(help='The location of the Q# project to submit. Defaults to current folder.')
     job_name_type = CLIArgumentType(help='A friendly name to give to this run of the program.')
+    job_id_type = CLIArgumentType(options_list=['--job-id', '-j'], help='Job unique identifier in GUID format.')
     shots_type = CLIArgumentType(help='The number of times to run the Q# program on the given target.')
     no_build_type = CLIArgumentType(help='If specified, the Q# program is not built before submitting.')
     storage_type = CLIArgumentType(help='If specified, the ConnectionString of an Azure Storage is used to store job data and results.')
+    max_poll_wait_secs_type = CLIArgumentType(help='Poll time in seconds to query Azure Quantum for results of the corresponding job.')
+    tag_type = CLIArgumentType(help='Show only quantum workspaces that have associated the specified tag.')
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)
-        c.argument('storage_account', storage_account_name_type)
+        c.argument('storage-account', storage_account_name_type)
+        c.argument('tag', tag_type)
 
     with self.argument_context('quantum target') as c:
         c.argument('workspace_name', workspace_name_type)
-        c.argument('target_id', options_list=['--target-id', '-t'], help='Target id.')
+        c.argument('target_id', target_id_type)
 
     with self.argument_context('quantum job') as c:
         c.argument('workspace_name', workspace_name_type)
-        c.argument('job_id', options_list=['--job-id', '-id'], help='Job id.')
+        c.argument('job_id', job_id_type)
         c.argument('target_id', target_id_type)
         c.argument('project', project_type)
         c.argument('job_name', job_name_type)
         c.argument('shots', shots_type)
         c.argument('storage', storage_type)
         c.argument('no_build', no_build_type)
+        c.argument('max_poll_wait_secs', max_poll_wait_secs_type)
 
     with self.argument_context('quantum job submit') as c:
         c.positional('program_args', program_args_type)

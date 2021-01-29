@@ -50,7 +50,7 @@ helps['quantum job output'] = """
       - name: Print the results of a successful Azure Quantum job.
         text: |-
             az quantum job output -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-                -id yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy -o table
 """
 
 helps['quantum job show'] = """
@@ -60,7 +60,7 @@ helps['quantum job show'] = """
       - name: Get the status of an Azure Quantum job.
         text: |-
             az quantum job show -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-                -id yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --query status
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --query status
 """
 
 helps['quantum job submit'] = """
@@ -80,7 +80,7 @@ helps['quantum job wait'] = """
       - name: Wait for completion of a job for 60 seconds.
         text: |-
             az quantum job wait -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-                -id yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table
+                -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table
 """
 
 
@@ -204,5 +204,5 @@ helps['quantum workspace show'] = """
             az quantum workspace show
       - name: Show the details of a provided Azure Quantum workspace.
         text: |-
-            az quantum workspace show -g MyResourceGroup -w MyWorkspace -l MyLocation
+            az quantum workspace show -g MyResourceGroup -w MyWorkspace
 """
