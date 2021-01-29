@@ -27,11 +27,6 @@ class QuantumJobsScenarioTest(ScenarioTest):
         if not is_private_preview_subscription(self):
             self.skipTest(f"Need to run azure quantum tests in subscription {TEST_SUBS}")
 
-        # Because we are in private preview, we need to set the subscription again so it gets
-        # reflected in the recordings. Once this is not dependent on a particular subscription
-        # this can be removed.
-        self.cmd(f"az account set -s {TEST_SUBS}")
-
         # set current workspace:
         self.cmd(f'az quantum workspace set -w e2e-tests-workspace-ionq -g testalias-e2e-tests-canary-rg -l eastus2euap')
 
@@ -58,7 +53,6 @@ class QuantumJobsScenarioTest(ScenarioTest):
         self.assertEquals(args[2], "--no-build")
         self.assertIn("--", args)
         self.assertIn("submit", args)
-        self.assertIn(TEST_SUBS, args)
         self.assertIn(TEST_WORKSPACE, args)
         self.assertIn(TEST_RG, args)
         self.assertIn("ionq.simulator", args)
