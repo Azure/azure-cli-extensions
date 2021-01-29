@@ -15,14 +15,3 @@ TEST_WORKSPACE_SA = 'aqvalidatorstorage'
 TEST_WORKSPACE_LOCATION = 'westus'
 TEST_WORKSPACE_LOCATION_JOBS = 'eastus2euap'
 TEST_WORKSPACE_LOCATION_TARGET = 'eastus2euap'
-
-
-def is_private_preview_subscription(scenario):
-    """ Returns True if running in AzureQuantum-test """
-
-    # Since azure quantum is still in private preview, we require
-    # tests to run in a specific subscription (AzureQuantum-test)
-    # this method checks if running in such subscription:
-    # account = scenario.cmd('az account show -o json').get_output_in_json()
-    # return account['id'] == TEST_SUBS
-    return True

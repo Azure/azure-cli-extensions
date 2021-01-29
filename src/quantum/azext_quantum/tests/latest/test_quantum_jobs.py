@@ -9,7 +9,7 @@ import unittest
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
-from .utils import is_private_preview_subscription, TEST_WORKSPACE, TEST_RG, TEST_WORKSPACE_LOCATION, TEST_SUBS
+from .utils import TEST_WORKSPACE, TEST_RG, TEST_WORKSPACE_LOCATION, TEST_SUBS
 from .utils import TEST_WORKSPACE_JOBS, TEST_RG_JOBS, TEST_WORKSPACE_LOCATION_JOBS
 from ..._client_factory import _get_data_credentials
 from ...operations.workspace import WorkspaceInfo
@@ -22,12 +22,6 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class QuantumJobsScenarioTest(ScenarioTest):
 
     def test_jobs(self):
-        # Since azure quantum is still in private preview, we require
-        # these tests to run in a specific subscription (AzureQuantum-test)
-        # if running somewhere else, just skip
-        if not is_private_preview_subscription(self):
-            self.skipTest(f"Need to run azure quantum tests in subscription {TEST_SUBS}")
-
         # set current workspace:
         self.cmd(f'az quantum workspace set -w {TEST_WORKSPACE_JOBS} -g {TEST_RG_JOBS} -l {TEST_WORKSPACE_LOCATION_JOBS}')
 
@@ -36,12 +30,6 @@ class QuantumJobsScenarioTest(ScenarioTest):
         assert len(targets) > 0
 
     def test_submit_args(self):
-        # Since azure quantum is still in private preview, we require
-        # these tests to run in a specific subscription (AzureQuantum-test)
-        # if running somewhere else, just skip
-        if not is_private_preview_subscription(self):
-            self.skipTest(f"Need to run azure quantum tests in subscription {TEST_SUBS}")
-
         ws = WorkspaceInfo(self, TEST_RG_JOBS, TEST_WORKSPACE_JOBS, TEST_WORKSPACE_LOCATION_JOBS)
         target = TargetInfo(self, 'ionq.simulator')
 
