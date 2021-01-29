@@ -110,7 +110,7 @@ def _create_role_assignment(cmd, quantum_workspace):
     return quantum_workspace
 
 
-def create(cmd, resource_group_name=None, workspace_name=None, location=None, storage_account=None):
+def create(cmd, resource_group_name=None, workspace_name=None, location=None, storage_account=None, skip_role_assignment=False):
     """
     Create a new Azure Quantum workspace.
     """
@@ -131,7 +131,9 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     while not poller.done():
         time.sleep(POLLING_TIME_DURATION)
     quantum_workspace = poller.result()
-    return _create_role_assignment(cmd, quantum_workspace)
+    if (not skip_role_assignment):
+        quantum_workspace = _create_role_assignment(cmd, quantum_workspace)
+    return quantum_workspace
 
 
 def delete(cmd, resource_group_name=None, workspace_name=None):

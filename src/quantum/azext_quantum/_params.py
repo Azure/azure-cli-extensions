@@ -20,11 +20,13 @@ def load_arguments(self, _):
     storage_type = CLIArgumentType(help='If specified, the ConnectionString of an Azure Storage is used to store job data and results.')
     max_poll_wait_secs_type = CLIArgumentType(help='Poll time in seconds to query Azure Quantum for results of the corresponding job.')
     tag_type = CLIArgumentType(help='Show only quantum workspaces that have associated the specified tag.')
+    skip_role_assignment_type = CLIArgumentType(help='Skips the role assignment step for the quantum workspace in the storage account.')
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)
         c.argument('storage_account', storage_account_name_type)
         c.argument('tag', tag_type)
+        c.argument('skip_role_assignment', skip_role_assignment_type)
 
     with self.argument_context('quantum target') as c:
         c.argument('workspace_name', workspace_name_type)
