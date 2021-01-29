@@ -8,6 +8,7 @@
 from .operations.workspace import WorkspaceInfo
 from .operations.target import TargetInfo
 
+
 def validate_workspace_internal(cmd, namespace, require_location):
     """
     Internal implementation to validate workspace info parameters with an optional location
@@ -24,7 +25,8 @@ def validate_workspace_internal(cmd, namespace, require_location):
     if not ws.name:
         raise ValueError("Missing workspace-name argument")
     if require_location and not ws.location:
-        raise ValueError("Missing location argument") 
+        raise ValueError("Missing location argument")
+
 
 def validate_workspace_info(cmd, namespace):
     """

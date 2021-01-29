@@ -7,6 +7,7 @@ import re
 
 DEFAULT_WORKSPACE_LOCATION = 'westus'
 
+
 # Currently, we're only checking that the provided location doesn't contain unsafe characters
 # but there is no guarantee that the returned value exists as an Azure region.
 # If an invalid region is specified, then the error will happen when the corresponding API
@@ -14,7 +15,7 @@ DEFAULT_WORKSPACE_LOCATION = 'westus'
 def normalize_location(raw_location):
     if not raw_location:
         return DEFAULT_WORKSPACE_LOCATION
-    location = re.sub("[^A-Za-z0-9]","",raw_location).lower()
+    location = re.sub("[^A-Za-z0-9]", "", raw_location).lower()
     if not location:
         return DEFAULT_WORKSPACE_LOCATION
     return location

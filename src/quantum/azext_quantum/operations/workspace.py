@@ -19,6 +19,7 @@ DEFAULT_WORKSPACE_LOCATION = 'westus'
 POLLING_TIME_DURATION = 3
 MAX_RETRIES_ROLE_ASSIGNMENT = 10
 
+
 class WorkspaceInfo(object):
     def __init__(self, cmd, resource_group_name=None, workspace_name=None, location=None):
         from azure.cli.core.commands.client_factory import get_subscription_id
@@ -72,7 +73,7 @@ def _get_storage_account_path(workspaceInfo, storage_account_name):
 
 def _get_basic_quantum_workspace(location, info, storage_account):
     qw = QuantumWorkspace(location=location)
-    # Use a default provider 
+    # Use a default provider
     # Replace this with user specified providers as part of task 16184.
     prov = Provider()
     prov.provider_id = "Microsoft"
@@ -103,7 +104,7 @@ def _create_role_assignment(cmd, quantum_workspace):
         except Exception as x:
             raise CLIError(f"Role assignment encountered exception ({type(x).__name__}): {x}")
     if (retry_attempts > 0):
-        print("") # To end the line of the waiting indicators.
+        print("")  # To end the line of the waiting indicators.
     if (retry_attempts == MAX_RETRIES_ROLE_ASSIGNMENT):
         raise CLIError(f"Role assignment could not be added to storage account {quantum_workspace.storage_account}.")
     return quantum_workspace

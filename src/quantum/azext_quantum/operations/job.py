@@ -227,7 +227,7 @@ def wait(cmd, job_id, resource_group_name=None, workspace_name=None, location=No
 
 
 def run(cmd, program_args, resource_group_name=None, workspace_name=None, location=None, target_id=None,
-            project=None, job_name=None, shots=None, storage=None, no_build=False):
+        project=None, job_name=None, shots=None, storage=None, no_build=False):
     """
     Submit a job to run on Azure Quantum, and waits for the result.
     """

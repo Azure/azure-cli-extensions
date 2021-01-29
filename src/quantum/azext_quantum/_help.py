@@ -22,7 +22,7 @@ helps['quantum execute'] = """
 
 helps['quantum run'] = """
     type: command
-    short-summary: Equivalent to `az quantum execute` 
+    short-summary: Equivalent to `az quantum execute`
     examples:
       - name: Submit the Q# program from the current folder and wait for the result.
         text: |-
@@ -205,5 +205,4 @@ helps['quantum workspace show'] = """
       - name: Show the details of a provided Azure Quantum workspace.
         text: |-
             az quantum workspace show -g MyResourceGroup -w MyWorkspace -l MyLocation
-
 """
