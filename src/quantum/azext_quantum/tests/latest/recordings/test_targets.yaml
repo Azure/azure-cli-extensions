@@ -13,26 +13,26 @@ interactions:
       ParameterSetName:
       - -g -w -l
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
-        quantummanagementclient/2019-11-04-preview Azure-SDK-For-Python AZURECLI/2.16.0
+      - python/3.8.2 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
+        quantummanagementclient/2019-11-04-preview Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/Microsoft.Quantum/workspaces/validator-workspace-westus?api-version=2019-11-04-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/Microsoft.Quantum/workspaces/validator-qio-parallel-tempering-cpu-eastus2euap?api-version=2019-11-04-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/microsoft.quantum/workspaces/validator-workspace-westus","name":"validator-workspace-westus","type":"microsoft.quantum/workspaces","location":"westus","properties":{"providers":[{"providerId":"Microsoft","providerSku":"Basic","applicationName":"validator-workspace-westus-Microsoft","provisioningState":"Succeeded"}],"provisioningState":"Succeeded","usable":"Yes"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/microsoft.quantum/workspaces/validator-qio-parallel-tempering-cpu-eastus2euap","name":"validator-qio-parallel-tempering-cpu-eastus2euap","type":"microsoft.quantum/workspaces","location":"eastus2euap","properties":{"providers":[{"providerId":"Microsoft","providerSku":"Basic","applicationName":"validator-qio-parallel-tempering-cpu-eastus2euap-Microsoft","provisioningState":"Succeeded"}],"provisioningState":"Succeeded","usable":"Yes"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '473'
+      - '544'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 19 Jan 2021 07:49:08 GMT
+      - Fri, 29 Jan 2021 07:02:33 GMT
       etag:
-      - '"57010011-0000-0700-0000-5fa604730000"'
+      - '"0200b0aa-0000-3400-0000-5fd8fcfb0000"'
       expires:
       - '-1'
       pragma:
@@ -60,73 +60,29 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - python/3.8.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+      - python/3.8.2 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
         quantumclient/2019-11-04-preview Azure-SDK-For-Python
       accept-language:
       - en-US
     method: GET
-    uri: https://westus.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/Microsoft.Quantum/workspaces/validator-workspace-westus/providerStatus
+    uri: https://eastus2euap.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/Microsoft.Quantum/workspaces/validator-qio-parallel-tempering-cpu-eastus2euap/providerStatus
   response:
     body:
-      string: '{"value":[{"id":"Microsoft","currentAvailability":"Available","targets":[{"id":"microsoft.simulatedannealing.fpga","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing-parameterfree.fpga","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.paralleltempering-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.paralleltempering.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.tabu-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.tabu.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]}],"nextLink":null}'
+      string: '{"value":[{"id":"Microsoft","currentAvailability":"Available","targets":[{"id":"microsoft.paralleltempering-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.paralleltempering.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.tabu-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.tabu.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing-parameterfree.fpga","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing.fpga","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.chemistry.all","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.qmc.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]}],"nextLink":null}'
     headers:
       content-length:
-      - '1040'
+      - '1246'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 19 Jan 2021 07:49:10 GMT
+      - Fri, 29 Jan 2021 07:02:35 GMT
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
       - Microsoft-IIS/10.0
       set-cookie:
-      - ARRAffinity=a80c7c3a42bc29f88c9055a7e2789984b224746994993027ab866c65455cca24;Path=/;HttpOnly;Secure;Domain=westus.quantum.azure.com
-      - ARRAffinitySameSite=a80c7c3a42bc29f88c9055a7e2789984b224746994993027ab866c65455cca24;Path=/;HttpOnly;SameSite=None;Secure;Domain=westus.quantum.azure.com
-      strict-transport-security:
-      - max-age=2592000
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python/3.8.2 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
-        quantumclient/2019-11-04-preview Azure-SDK-For-Python
-      accept-language:
-      - en-US
-    method: GET
-    uri: https://westus.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/Microsoft.Quantum/workspaces/validator-workspace-westus/providerStatus
-  response:
-    body:
-      string: '{"value":[{"id":"Microsoft","currentAvailability":"Available","targets":[{"id":"microsoft.simulatedannealing.fpga","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing-parameterfree.fpga","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.paralleltempering-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.paralleltempering.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.tabu-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.tabu.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]}],"nextLink":null}'
-    headers:
-      content-length:
-      - '1040'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 19 Jan 2021 07:49:10 GMT
-      request-context:
-      - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
-      server:
-      - Microsoft-IIS/10.0
-      set-cookie:
-      - ARRAffinity=a80c7c3a42bc29f88c9055a7e2789984b224746994993027ab866c65455cca24;Path=/;HttpOnly;Secure;Domain=westus.quantum.azure.com
-      - ARRAffinitySameSite=a80c7c3a42bc29f88c9055a7e2789984b224746994993027ab866c65455cca24;Path=/;HttpOnly;SameSite=None;Secure;Domain=westus.quantum.azure.com
+      - ARRAffinity=a80c7c3a42bc29f88c9055a7e2789984b224746994993027ab866c65455cca24;Path=/;HttpOnly;Secure;Domain=eastus2euap.quantum.azure.com
+      - ARRAffinitySameSite=a80c7c3a42bc29f88c9055a7e2789984b224746994993027ab866c65455cca24;Path=/;HttpOnly;SameSite=None;Secure;Domain=eastus2euap.quantum.azure.com
       strict-transport-security:
       - max-age=2592000
       transfer-encoding:
