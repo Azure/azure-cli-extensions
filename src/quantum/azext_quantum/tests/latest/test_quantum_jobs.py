@@ -28,7 +28,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
             self.skipTest(f"Need to run azure quantum tests in subscription {TEST_SUBS}")
 
         # set current workspace:
-        self.cmd(f'az quantum workspace set -g {TEST_RG} -w {TEST_WORKSPACE} -l {TEST_WORKSPACE_LOCATION}')
+        self.cmd(f'az quantum workspace set -w e2e-tests-workspace-ionq -g testalias-e2e-tests-canary-rg -l eastus2euap')
 
         # list
         targets = self.cmd('az quantum target list -o json').get_output_in_json()

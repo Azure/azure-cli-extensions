@@ -24,7 +24,7 @@ class QuantumTargetsScenarioTest(ScenarioTest):
             self.skipTest(f"Need to run azure quantum tests in subscription {TEST_SUBS}")
 
         # set current workspace:
-        self.cmd(f'az quantum workspace set -g {TEST_RG} -w {TEST_WORKSPACE} -l {TEST_WORKSPACE_LOCATION}')
+        self.cmd(f'az quantum workspace set -g {TEST_RG} -w validator-qio-parallel-tempering-cpu-eastus2euap -l eastus2euap')
 
         # clear current target
         self.cmd(f'az quantum target clear')
@@ -32,9 +32,6 @@ class QuantumTargetsScenarioTest(ScenarioTest):
         # list
         targets = self.cmd('az quantum target list -o json').get_output_in_json()
         assert len(targets) > 0
-        self.cmd('az quantum target list -o json', checks=[
-            self.check(f"[?id=='Microsoft'].targets | [0] | [?id=='microsoft.paralleltempering.cpu'].id | [0]", 'microsoft.paralleltempering.cpu')
-        ])
 
         # set
         self.cmd(f'az quantum target set -t microsoft.paralleltempering.cpu -o json', checks=[

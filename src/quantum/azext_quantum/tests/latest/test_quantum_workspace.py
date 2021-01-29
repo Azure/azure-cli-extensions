@@ -16,6 +16,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class QuantumWorkspacesScenarioTest(ScenarioTest):
 
+    @AllowLargeResponse()
     def test_workspace(self):
         # Since azure quantum is still in private preview, we require
         # these tests to run in a specific subscription (AzureQuantum-test)
@@ -27,7 +28,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         self.cmd(f'az quantum workspace clear')
 
         # list
-        workspaces = self.cmd('az quantum workspace list -o json').get_output_in_json()
+        workspaces = self.cmd(f'az quantum workspace list -l {TEST_WORKSPACE_LOCATION} -o json').get_output_in_json()
         assert len(workspaces) > 0
         self.cmd('az quantum workspace list -o json', checks=[
             self.check(f"[?name=='{TEST_WORKSPACE}'].resourceGroup | [0]", TEST_RG)
@@ -49,7 +50,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         # create
         self.cmd(f'az quantum workspace create -g {TEST_RG} -w {TEST_WORKSPACE_CREATE_DELETE} -l {TEST_WORKSPACE_LOCATION} -a {TEST_WORKSPACE_SA} -o json --skip-role-assignment', checks=[
             self.check("name", TEST_WORKSPACE_CREATE_DELETE),
-            self.check("provisioningState", "Succeeded")
+            self.check("provisioningState", "Accepted")  # Status is accepted since we're not linking the storage account.
         ])
 
         # delete
