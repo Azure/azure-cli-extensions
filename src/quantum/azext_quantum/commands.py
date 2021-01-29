@@ -85,20 +85,20 @@ def load_command_table(self, _):
         w.command('create', 'create')
         w.command('delete', 'delete', validator=validate_workspace_info_no_location)
         w.command('list', 'list')
-        w.command('show', 'show', validator=validate_workspace_info_no_location)
+        w.command('show', 'show_command', validator=validate_workspace_info_no_location)
         w.command('set', 'set', validator=validate_workspace_info)
         w.command('clear', 'clear')
         w.command('quotas', 'quotas', validator=validate_workspace_info)
 
     with self.command_group('quantum target', target_ops) as t:
         t.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_targets)
-        t.command('show', 'show', validator=validate_target_info)
+        t.command('show', 'show_command', validator=validate_target_info)
         t.command('set', 'set', validator=validate_target_info)
         t.command('clear', 'clear')
 
     with self.command_group('quantum job', job_ops) as j:
         j.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_jobs)
-        j.command('show', 'show', validator=validate_workspace_info, table_transformer=transform_job)
+        j.command('show', 'show_command', validator=validate_workspace_info, table_transformer=transform_job)
         j.command('submit', 'submit', validator=validate_workspace_and_target_info, table_transformer=transform_job)
         j.command('wait', 'wait', validator=validate_workspace_info, table_transformer=transform_job)
         j.command('output', 'output', validator=validate_workspace_info, table_transformer=transform_output)

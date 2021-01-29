@@ -146,7 +146,7 @@ helps['quantum workspace create'] = """
       - name: Create a new Azure Quantum workspace.
         text: |-
             az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-                -sa MyStorageAccountName
+                -a MyStorageAccountName
 """
 
 helps['quantum workspace delete'] = """

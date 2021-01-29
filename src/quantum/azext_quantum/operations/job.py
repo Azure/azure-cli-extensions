@@ -25,7 +25,7 @@ def list(cmd, resource_group_name=None, workspace_name=None, location=None):
     return client.list()
 
 
-def show(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
+def show_command(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
     """
     Get the job's status and details.
     """

@@ -23,7 +23,7 @@ def load_arguments(self, _):
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)
-        c.argument('storage-account', storage_account_name_type)
+        c.argument('storage_account', storage_account_name_type)
         c.argument('tag', tag_type)
 
     with self.argument_context('quantum target') as c:
