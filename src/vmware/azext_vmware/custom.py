@@ -32,9 +32,9 @@ def privatecloud_show(cmd, client: AVSClient, resource_group_name, name):
     return client.private_clouds.get(resource_group_name, name)
 
 
-def privatecloud_create(cmd, client: AVSClient, resource_group_name, name, location, sku, cluster_size, network_block, circuit_primary_subnet=None, circuit_secondary_subnet=None, internet=None, vcenter_password=None, nsxt_password=None, tags=[], yes=False):
+def privatecloud_create(cmd, client: AVSClient, resource_group_name, name, location, sku, cluster_size, network_block, circuit_primary_subnet=None, circuit_secondary_subnet=None, internet=None, vcenter_password=None, nsxt_password=None, tags=[], accept_eula=False):
     from knack.prompting import prompt_y_n
-    if not yes:
+    if not accept_eula:
         print(LEGAL_TERMS)
         msg = 'Do you agree to the above additional terms for AVS?'
         if not prompt_y_n(msg, default="n"):
