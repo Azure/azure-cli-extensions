@@ -33,7 +33,7 @@ class TargetInfo(object):
             cmd.cli_ctx.config.set_value('quantum', 'target_id', self.target_id)
 
 
-def show(cmd, target_id=None):
+def get(cmd, target_id=None):
     """
     Get the details of the given (or current) target to use when submitting jobs to Azure Quantum.
     """
