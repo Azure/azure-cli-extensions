@@ -32,16 +32,16 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_importpipeline')
         g.custom_command('delete', 'delete_importpipeline')
         g.custom_command('list', 'list_importpipeline')
-        g.custom_command('show', 'get_importpipeline')
+        g.custom_show_command('show', 'get_importpipeline')
 
     with self.command_group('acr export-pipeline', exportpipeline_sdk, table_transformer=export_pipeline_output_format, is_preview=True) as g:
         g.custom_command('create', 'create_exportpipeline')
         g.custom_command('delete', 'delete_exportpipeline')
         g.custom_command('list', 'list_exportpipeline')
-        g.custom_command('show', 'get_exportpipeline')
+        g.custom_show_command('show', 'get_exportpipeline')
 
     with self.command_group('acr pipeline-run', pipelinerun_sdk, table_transformer=pipeline_run_output_format, is_preview=True) as g:
         g.custom_command('create', 'create_pipelinerun')
         g.custom_command('delete', 'delete_pipelinerun')
         g.custom_command('list', 'list_pipelinerun')
-        g.custom_command('show', 'get_pipelinerun')
+        g.custom_show_command('show', 'get_pipelinerun')
