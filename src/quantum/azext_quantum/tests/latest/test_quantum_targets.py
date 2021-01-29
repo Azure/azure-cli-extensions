@@ -9,7 +9,7 @@ import unittest
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
-from .utils import is_private_preview_subscription, TEST_WORKSPACE, TEST_RG, TEST_WORKSPACE_LOCATION, TEST_SUBS
+from .utils import is_private_preview_subscription, TEST_WORKSPACE_TARGET, TEST_RG_TARGET, TEST_WORKSPACE_LOCATION_TARGET, TEST_SUBS
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -24,7 +24,7 @@ class QuantumTargetsScenarioTest(ScenarioTest):
             self.skipTest(f"Need to run azure quantum tests in subscription {TEST_SUBS}")
 
         # set current workspace:
-        self.cmd(f'az quantum workspace set -g {TEST_RG} -w validator-qio-parallel-tempering-cpu-eastus2euap -l eastus2euap')
+        self.cmd(f'az quantum workspace set -g {TEST_RG_TARGET} -w {TEST_WORKSPACE_TARGET} -l {TEST_WORKSPACE_LOCATION_TARGET}')
 
         # clear current target
         self.cmd(f'az quantum target clear')

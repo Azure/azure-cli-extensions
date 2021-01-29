@@ -10,6 +10,7 @@ from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 from .utils import is_private_preview_subscription, TEST_WORKSPACE, TEST_RG, TEST_WORKSPACE_LOCATION, TEST_SUBS
+from .utils import TEST_WORKSPACE_JOBS, TEST_RG_JOBS, TEST_WORKSPACE_LOCATION_JOBS
 from ..._client_factory import _get_data_credentials
 from ...operations.workspace import WorkspaceInfo
 from ...operations.target import TargetInfo
@@ -28,7 +29,7 @@ class QuantumJobsScenarioTest(ScenarioTest):
             self.skipTest(f"Need to run azure quantum tests in subscription {TEST_SUBS}")
 
         # set current workspace:
-        self.cmd(f'az quantum workspace set -w e2e-tests-workspace-ionq -g testalias-e2e-tests-canary-rg -l eastus2euap')
+        self.cmd(f'az quantum workspace set -w {TEST_WORKSPACE_JOBS} -g {TEST_RG_JOBS} -l {TEST_WORKSPACE_LOCATION_JOBS}')
 
         # list
         targets = self.cmd('az quantum target list -o json').get_output_in_json()
