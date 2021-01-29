@@ -40,3 +40,7 @@ def cf_restorable_mongodb_collections(cli_ctx, _):
 
 def cf_restorable_mongodb_resources(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).restorable_mongodb_resources
+
+
+def cf_sql_resources(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).sql_resources

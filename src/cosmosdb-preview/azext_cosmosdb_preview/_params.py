@@ -6,11 +6,18 @@
 
 from enum import Enum
 
+from argcomplete.completers import FilesCompleter
+
 from azure.cli.core.commands.parameters import (
     get_resource_name_completion_list, name_type, get_enum_type, get_three_state_flag, get_location_type)
 
 from azext_cosmosdb_preview._validators import (
-    validate_capabilities, validate_virtual_network_rules, validate_ip_range_filter)
+    validate_capabilities, validate_virtual_network_rules, validate_ip_range_filter,
+    validate_role_definition_body,
+    validate_role_definition_id,
+    validate_fully_qualified_role_definition_id,
+    validate_role_assignment_id,
+    validate_scope)
 
 from azext_cosmosdb_preview.actions import (
     CreateLocation, CreateDatabaseRestoreResource, UtcDatetimeAction)
@@ -24,7 +31,7 @@ class BackupPolicyTypes(str, Enum):
 
 
 def load_arguments(self, _):
-
+    from knack.arguments import CLIArgumentType
     from azure.cli.core.commands.parameters import tags_type
 
     with self.argument_context('cosmosdb') as c:
@@ -114,3 +121,19 @@ def load_arguments(self, _):
         c.argument('instance_id', options_list=['--instance-id', '-i'], help="InstanceId of the Account", required=True)
         c.argument('restore_location', options_list=['--restore-location', '-r'], help="The region of the restore.", required=True)
         c.argument('restore_timestamp_in_utc', options_list=['--restore-timestamp', '-t'], help="The timestamp of the restore", required=True)
+
+    account_name_type = CLIArgumentType(options_list=['--account-name', '-a'], help="Cosmosdb account name.")
+
+    # SQL role definition
+    with self.argument_context('cosmosdb sql role definition') as c:
+        c.argument('account_name', account_name_type, id_part=None)
+        c.argument('role_definition_id', options_list=['--id', '-i'], validator=validate_role_definition_id, help="Role Definition Id")
+        c.argument('role_definition_body', options_list=['--body', '-b'], validator=validate_role_definition_body, completer=FilesCompleter(), help="Role Definition body with Id (Optional for create), DataActions or Permissions, Type (Default is CustomRole), and AssignableScopes.  You can enter it as a string or as a file, e.g., --body @rdbody-file.json")
+
+    # SQL role assignment
+    with self.argument_context('cosmosdb sql role assignment') as c:
+        c.argument('account_name', account_name_type, id_part=None)
+        c.argument('role_definition_id', options_list=['--role-definition-id', '-d'], validator=validate_fully_qualified_role_definition_id, help="Role Definition Id assigned in the Role Assignment")
+        c.argument('role_assignment_id', options_list=['--role-assignment-id', '-i'], validator=validate_role_assignment_id, help="Role Assignment Id")
+        c.argument('scope', validator=validate_scope, options_list=['--scope', '-s'], help="Scope assigned in the Role Assignment")
+        c.argument('principal_id', options_list=['--principal-id', '-p'], help="Principal Id assigned in the Role Assignment")
