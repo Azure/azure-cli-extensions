@@ -6,7 +6,7 @@
 import os
 import unittest
 
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk import live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 
@@ -15,6 +15,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class Scheduled_queryScenarioTest(ScenarioTest):
 
+    @live_only()
     @ResourceGroupPreparer(name_prefix='cli_test_scheduled_query', location='eastus')
     def test_scheduled_query(self, resource_group):
         from azure.mgmt.core.tools import resource_id
