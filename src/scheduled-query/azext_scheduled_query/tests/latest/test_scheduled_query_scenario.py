@@ -6,7 +6,7 @@
 import os
 import unittest
 
-from azure_devtools.scenario_tests import AllowLargeResponse
+from azure.cli.testsdk import live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 
@@ -15,6 +15,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class Scheduled_queryScenarioTest(ScenarioTest):
 
+    @live_only()
     @ResourceGroupPreparer(name_prefix='cli_test_scheduled_query', location='eastus')
     def test_scheduled_query(self, resource_group):
         from azure.mgmt.core.tools import resource_id
@@ -129,6 +130,14 @@ class ScheduledQueryCondtionTest(unittest.TestCase):
         ns = self._build_namespace()
         self.call_condition(ns, 'avg "% Processor Time" from "Perf | where ObjectName == \\\"Processor\\\"" > 70 resource id resourceId')
         self.check_condition(ns, 'Average', 'Perf | where ObjectName == \\\"Processor\\\"', 'GreaterThan', '70', '% Processor Time', 'resourceId')
+
+        ns = self._build_namespace()
+        self.call_condition(ns, 'count "diagnostics | where Category == \\\"A\\\"| where SubscriptionId contains \\\"111\\\" | summarize count() by bin(TimeGenerated, 1m)" > 1')
+        self.check_condition(ns, 'Count', 'diagnostics | where Category == \\\"A\\\"| where SubscriptionId contains \\\"111\\\" | summarize count() by bin(TimeGenerated, 1m)', 'GreaterThan', '1')
+
+        ns = self._build_namespace()
+        self.call_condition(ns, 'count "diagnostics | where Time > ago(3h) | where Category == \\\"manager\\\" | where not (log_s hasprefix \\\"I11\\\") | where log_s contains \\\"Code=1\\\" | summarize count(log_s) by bin(TimeGenerated, 1m)" > 10')
+        self.check_condition(ns, 'Count', 'diagnostics | where Time > ago(3h) | where Category == \\\"manager\\\" | where not (log_s hasprefix \\\"I11\\\") | where log_s contains \\\"Code=1\\\" | summarize count(log_s) by bin(TimeGenerated, 1m)', 'GreaterThan', '10')
 
         ns = self._build_namespace()
         self.call_condition(ns, 'avg "% Processor Time" from "Perf | where ObjectName == \\\"Processor\\\" and C>=D && E<<F" > 70 resource id resourceId where ApiName includes GetBlob or PutBlob and DpiName excludes CCC at least 1.1 violations out of 10.1 aggregated points')
