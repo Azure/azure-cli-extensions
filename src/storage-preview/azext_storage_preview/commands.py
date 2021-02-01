@@ -8,7 +8,7 @@ from azure.cli.core.commands.arm import show_exception_handler
 from ._client_factory import (cf_sa, cf_blob_data_gen_update,
                               blob_data_service_factory, adls_blob_data_service_factory,
                               cf_sa_blob_inventory, cf_mgmt_file_services, cf_share_client, cf_share_file_client,
-                              cf_queue_service, cf_queue_client)
+                              cf_queue_service, cf_queue_client, multi_service_client_factory)
 from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_MGMT_PREVIEW_STORAGE,
                        CUSTOM_DATA_STORAGE_FILESHARE, CUSTOM_DATA_STORAGE_QUEUE)
 
@@ -287,3 +287,12 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                 table_transformer=transform_boolean_for_table)
         g.storage_command_oauth('clear', 'clear_messages')
         g.storage_command_oauth('update', 'update_message', transform=transform_message_output)
+
+    with self.command_group('storage logging', get_custom_sdk('multi_service', multi_service_client_factory),
+                            is_preview=True) as g:
+        from ._transformers import transform_logging_list_output
+        g.storage_command('update', 'set_logging')
+        g.storage_command('show', 'get_logging',
+                          table_transformer=transform_logging_list_output,
+                          exception_handler=show_exception_handler)
+        g.storage_command('off', 'disable_logging')

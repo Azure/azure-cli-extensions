@@ -9,7 +9,7 @@ from knack.util import CLIError
 from knack.log import get_logger
 
 from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_FILESHARE,
-                       CUSTOM_DATA_STORAGE_QUEUE)
+                       CUSTOM_DATA_STORAGE_QUEUE, CUSTOM_DATA_STORAGE_ADLS_V2)
 
 MISSING_CREDENTIALS_ERROR_MESSAGE = """
 Missing credentials to access storage service. The following variations are accepted:
@@ -195,3 +195,44 @@ def cf_share_directory_client(cli_ctx, kwargs):
 
 def cf_share_file_client(cli_ctx, kwargs):
     return cf_share_client(cli_ctx, kwargs).get_file_client(file_path=kwargs.pop('file_path'))
+
+
+def cf_adls_service(cli_ctx, kwargs):
+    t_adls_service = get_sdk(cli_ctx, CUSTOM_DATA_STORAGE_ADLS_V2, '_data_lake_service_client#DataLakeServiceClient')
+    connection_string = kwargs.pop('connection_string', None)
+    account_key = kwargs.pop('account_key', None)
+    token_credential = kwargs.pop('token_credential', None)
+    sas_token = kwargs.pop('sas_token', None)
+    account_name = kwargs.pop('account_name', None)
+    if connection_string:
+        return t_adls_service.from_connection_string(conn_str=connection_string)
+
+    account_url = get_account_url(cli_ctx, account_name=account_name, service='dfs')
+    credential = account_key or sas_token or token_credential
+
+    if account_url and credential:
+        return t_adls_service(account_url=account_url, credential=credential)
+    return None
+
+
+def multi_service_client_factory(cli_ctx, kwargs):
+    from azure.cli.command_modules.storage._client_factory import cf_blob_service, table_data_service_factory
+
+    account_name = kwargs.pop('account_name', None)
+    account_key = kwargs.pop('account_key', None)
+    connection_string = kwargs.pop('connection_string', None)
+    sas_token = kwargs.pop('sas_token', None)
+    services = kwargs.pop('services', [])
+    clients = {}
+    for s in services:
+        new_kwargs = {'account_name': account_name, 'account_key': account_key,
+                      'connection_string': connection_string, 'sas_token': sas_token}
+        if s == 'b':
+            clients['blob'] = cf_blob_service(cli_ctx, new_kwargs)
+        elif s == 'q':
+            clients['queue'] = cf_queue_service(cli_ctx, new_kwargs)
+        elif s == 'a':
+            clients['adls'] = cf_adls_service(cli_ctx, new_kwargs)
+        elif s == 't':
+            clients['table'] = table_data_service_factory(cli_ctx, new_kwargs)
+    return clients

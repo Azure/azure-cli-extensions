@@ -462,3 +462,15 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.register_content_settings_argument(t_file_content_settings, update=False, arg_group='Content Settings',
                                              process_md5=True)
         c.extra('no_progress', progress_type)
+
+    for item in ['show', 'off']:
+        with self.argument_context('storage logging {}'.format(item)) as c:
+            from azure.cli.command_modules.storage._validators import get_char_options_validator
+            c.extra('services', validator=get_char_options_validator('bqta', 'services'), default='bqta')
+
+    with self.argument_context('storage logging update') as c:
+        from azure.cli.command_modules.storage._validators import validate_logging_version
+        c.extra('services', validator=get_char_options_validator('bqta', 'services'), required=True)
+        c.argument('log', validator=get_char_options_validator('rwd', 'log'))
+        c.argument('retention', type=int)
+        c.argument('version', type=float, validator=validate_logging_version)

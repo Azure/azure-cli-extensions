@@ -13,3 +13,5 @@ CUSTOM_MGMT_PREVIEW_STORAGE = CustomResourceType('azext_storage_preview.vendored
 CUSTOM_DATA_STORAGE_QUEUE = CustomResourceType('azext_storage_preview.vendored_sdks.azure_storage_queue', None)
 CUSTOM_DATA_STORAGE_FILESHARE = CustomResourceType('azext_storage_preview.vendored_sdks.azure_storagev2.fileshare',
                                                    None)
+CUSTOM_DATA_STORAGE_ADLS_V2 = CustomResourceType('azext_storage_preview.vendored_sdks.azure_storagev2.filedatalake',
+                                                 None)
