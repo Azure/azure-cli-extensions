@@ -25,9 +25,8 @@ from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
-
+import azext_connectedk8s._validators as validate
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterAADProfile, ConnectedClusterIdentity
-
 
 logger = get_logger(__name__)
 
@@ -39,7 +38,8 @@ logger = get_logger(__name__)
 
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
-                        kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto', disable_auto_upgrade=False):
+                        kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto', disable_auto_upgrade=False,
+                        enable_azure_rbac=False, guard_client_id=None, guard_client_secret=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -95,6 +95,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Get kubernetes cluster info
     kubernetes_version = get_server_version(configuration)
+    # Validate enable-azure-rbac
+    if enable_azure_rbac:
+        validate.validate_enable_azure_rbac(kubernetes_version, guard_client_id, guard_client_secret)
+    
     if distribution == 'auto':
         kubernetes_distro = get_kubernetes_distro(configuration)  # (cluster heuristics)
     else:
@@ -230,7 +234,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Install azure-arc agents
     utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                                location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
-                               kube_context, no_wait, values_file_provided, values_file, azure_cloud, disable_auto_upgrade)
+                               kube_context, no_wait, values_file_provided, values_file, azure_cloud, disable_auto_upgrade,
+                               enable_azure_rbac, guard_client_id, guard_client_secret)
 
     return put_cc_response
 
@@ -672,7 +677,7 @@ def update_connectedk8s(cmd, instance, tags=None):
 
 
 def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
-                  disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None):
+                  disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None, azure_rbac=None, guard_client_id=None, guard_client_secret=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -700,7 +705,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
-    if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy and not auto_upgrade:
+    if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy and not auto_upgrade and (azure_rbac is None):
         raise CLIError(consts.No_Param_Error)
 
     if (https_proxy or http_proxy or no_proxy or proxy_cert) and disable_proxy:
@@ -727,6 +732,10 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     # Get kubernetes cluster info for telemetry
     kubernetes_version = get_server_version(configuration)
 
+    # Validate enable-azure-rbac
+    if azure_rbac:
+        validate.validate_enable_azure_rbac(kubernetes_version, guard_client_id, guard_client_secret)
+    
     # Checking helm installation
     check_helm_install(kube_config, kube_context)
 
@@ -810,6 +819,11 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         cmd_helm_upgrade.extend(["--set", "global.isProxyEnabled={}".format(False)])
     if proxy_cert:
         cmd_helm_upgrade.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
+    if azure_rbac is not None:
+        cmd_helm_upgrade.extend(["--set-file", "systemDefaultValues.guard.enabled={}".format(azure_rbac)])
+        if azure_rbac:
+            cmd_helm_upgrade.extend(["--set-file", "systemDefaultValues.guard.clientId={}".format(guard_client_id)])
+            cmd_helm_upgrade.extend(["--set-file", "systemDefaultValues.guard.clientSecret={}".format(guard_client_secret)])
     if kube_config:
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:

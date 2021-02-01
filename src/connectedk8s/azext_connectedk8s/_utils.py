@@ -263,7 +263,8 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, configuratio
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
-                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade):
+                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade,
+                         enable_azure_rbac, guard_client_id, guard_client_secret):
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
@@ -291,6 +292,10 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
         cmd_helm_install.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
     if https_proxy or http_proxy or no_proxy:
         cmd_helm_install.extend(["--set", "global.isProxyEnabled={}".format(True)])
+    if enable_azure_rbac:
+        cmd_helm_upgrade.extend(["--set-file", "systemDefaultValues.guard.enabled={}".format(azure_rbac)])
+        cmd_helm_upgrade.extend(["--set-file", "systemDefaultValues.guard.clientId={}".format(guard_client_id)])
+        cmd_helm_upgrade.extend(["--set-file", "systemDefaultValues.guard.clientSecret={}".format(guard_client_secret)])
     if kube_config:
         cmd_helm_install.extend(["--kubeconfig", kube_config])
     if kube_context:
