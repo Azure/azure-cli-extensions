@@ -70,6 +70,10 @@ def validate_create(cmd, namespace):
     else:
         logger.debug('The source VM\'s OS disk is not encrypted')
 
+    if namespace.enable_nested:
+        if is_linux:
+            raise CLIError('Nested Vm is not supported for linux vm')
+
     # Validate Auth Params
     # Prompt vm username
     if not namespace.repair_username:
@@ -164,6 +168,8 @@ def validate_run(cmd, namespace):
 
     if not is_valid_resource_id(namespace.repair_vm_id):
         raise CLIError('Repair resource id is not valid.')
+
+
 
 
 def _prompt_encrypted_vm(namespace):
