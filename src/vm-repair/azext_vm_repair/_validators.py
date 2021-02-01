@@ -170,8 +170,6 @@ def validate_run(cmd, namespace):
         raise CLIError('Repair resource id is not valid.')
 
 
-
-
 def _prompt_encrypted_vm(namespace):
     from knack.prompting import prompt_y_n, NoTTYException
     try:
