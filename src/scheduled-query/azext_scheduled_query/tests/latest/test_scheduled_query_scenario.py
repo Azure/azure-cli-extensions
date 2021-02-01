@@ -6,7 +6,6 @@
 import os
 import unittest
 
-from azure.cli.testsdk import live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 
@@ -15,7 +14,6 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class Scheduled_queryScenarioTest(ScenarioTest):
 
-    @live_only()
     @ResourceGroupPreparer(name_prefix='cli_test_scheduled_query', location='eastus')
     def test_scheduled_query(self, resource_group):
         from azure.mgmt.core.tools import resource_id
@@ -120,8 +118,6 @@ class ScheduledQueryCondtionTest(unittest.TestCase):
         self.assertEqual(falling_period.number_of_evaluation_periods, number_of_evaluation_periods)
 
     def test_monitor_scheduled_query_condition_action(self):
-
-        from knack.util import CLIError
 
         ns = self._build_namespace()
         self.call_condition(ns, 'avg "Perf" > 90')
