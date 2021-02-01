@@ -259,7 +259,7 @@ helps['tsi event-source iothub create'] = """
       - name: CreateIotHubEventSource
         text: |-
                az tsi event-source iothub create -g "rg" --environment-name "env1" --name "eventsource" \
---consumer-group-name "consumer-group" --iot-hub-name "iothub" \
+--consumer-group-name "consumer-group" --iot-hub-name "iothub" --location westus \
 --key-name "key-name" --shared-access-key "someSecretvalue" --event-source-resource-id "resource-id"
 """
 
