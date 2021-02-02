@@ -19,7 +19,7 @@ class VmwareScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_vmware')
     def test_vmware(self):
         self.kwargs.update({
-            'loc': 'centralus',
+            'loc': 'eastus',
             'privatecloud': 'cloud1',
             'cluster': 'cluster1'
         })

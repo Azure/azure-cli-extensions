@@ -28,6 +28,6 @@ az extension remove --name vmware
 ``` powershell
 rm ..\azure-cli-extensions\src\vmware\azext_vmware\vendored_sdks -Recurse
 
-autorest --python --output-folder=..\azure-cli-extensions\src\vmware\azext_vmware\vendored_sdks  --use=@autorest/python@5.6.0 --tag=package-2020-03-20 --azure-arm=true --override-client-name=AVSClient specification\vmware\resource-manager\readme.md
+autorest --python --output-folder=..\azure-cli-extensions\src\vmware\azext_vmware\vendored_sdks --use=@autorest/python@5.6.0 --tag=package-2021-01-01-preview --azure-arm=true --override-client-name=AVSClient specification\vmware\resource-manager\readme.md
 ```
 It was run from a git clone of [azure-rest-api-specs](https://github.com/Azure/azure-rest-api-specs).
