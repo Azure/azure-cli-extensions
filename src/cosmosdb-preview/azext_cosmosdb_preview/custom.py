@@ -5,6 +5,7 @@
 
 from knack.util import CLIError
 from knack.log import get_logger
+from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import DefaultErrorResponseException
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ConsistencyPolicy,
@@ -17,10 +18,18 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     RestoreParameters,
     PeriodicModeBackupPolicy,
     PeriodicModeProperties,
-    ContinuousModeBackupPolicy
+    ContinuousModeBackupPolicy,
+    SqlRoleAssignmentCreateUpdateParameters,
+    SqlRoleDefinitionCreateUpdateParameters
 )
 
 logger = get_logger(__name__)
+
+
+def _handle_exists_exception(cloud_error):
+    if cloud_error.status_code == 404:
+        return False
+    raise cloud_error
 
 
 # pylint: disable=too-many-locals,too-many-statements,line-too-long
@@ -393,3 +402,109 @@ def cli_cosmosdb_restorable_database_account_list(client,
         if account.account_name == account_name:
             matching_restorable_accounts.append(account)
     return matching_restorable_accounts
+
+
+def cli_cosmosdb_sql_role_definition_create(client,
+                                            resource_group_name,
+                                            account_name,
+                                            role_definition_body):
+    '''Creates an Azure Cosmos DB SQL Role Definition '''
+    role_definition_create_resource = SqlRoleDefinitionCreateUpdateParameters(
+        role_name=role_definition_body['RoleName'],
+        type=role_definition_body['Type'],
+        assignable_scopes=role_definition_body['AssignableScopes'],
+        permissions=role_definition_body['Permissions'])
+
+    return client.create_update_sql_role_definition(role_definition_body['Id'], resource_group_name, account_name, role_definition_create_resource)
+
+
+def cli_cosmosdb_sql_role_definition_update(client,
+                                            resource_group_name,
+                                            account_name,
+                                            role_definition_body):
+    '''Update an existing Azure Cosmos DB Sql Role Definition'''
+    logger.debug('reading SQL role definition')
+    role_definition = client.get_sql_role_definition(role_definition_body['Id'], resource_group_name, account_name)
+
+    if role_definition_body['RoleName'] is not None:
+        role_definition.role_name = role_definition_body['RoleName']
+
+    if role_definition_body['AssignableScopes'] is not None:
+        role_definition.assignable_scopes = role_definition_body['AssignableScopes']
+
+    if role_definition_body['Permissions'] is not None:
+        role_definition.permissions = role_definition_body['Permissions']
+
+    role_definition_update_resource = SqlRoleDefinitionCreateUpdateParameters(
+        role_name=role_definition.role_name,
+        type=role_definition_body['Type'],
+        assignable_scopes=role_definition.assignable_scopes,
+        permissions=role_definition.permissions)
+
+    return client.create_update_sql_role_definition(role_definition_body['Id'], resource_group_name, account_name, role_definition_update_resource)
+
+
+def cli_cosmosdb_sql_role_definition_exists(client,
+                                            resource_group_name,
+                                            account_name,
+                                            role_definition_id):
+    """Checks if an Azure Cosmos DB Sql Role Definition exists"""
+    try:
+        client.get_sql_role_definition(role_definition_id, resource_group_name, account_name)
+    except DefaultErrorResponseException as ex:
+        return _handle_exists_exception(ex.response)
+
+    return True
+
+
+def cli_cosmosdb_sql_role_assignment_create(client,
+                                            resource_group_name,
+                                            account_name,
+                                            role_definition_id,
+                                            scope,
+                                            principal_id,
+                                            role_assignment_id=None):
+    """Creates an Azure Cosmos DB Sql Role Assignment"""
+    sql_role_assignment_create_update_parameters = SqlRoleAssignmentCreateUpdateParameters(
+        role_definition_id=role_definition_id,
+        scope=scope,
+        principal_id=principal_id)
+
+    return client.create_update_sql_role_assignment(role_assignment_id, resource_group_name, account_name, sql_role_assignment_create_update_parameters)
+
+
+def cli_cosmosdb_sql_role_assignment_update(client,
+                                            resource_group_name,
+                                            account_name,
+                                            role_definition_id,
+                                            role_assignment_id):
+    """Updates an Azure Cosmos DB Sql Role Assignment"""
+    logger.debug('reading Sql Role Assignment')
+    role_assignment = client.get_sql_role_assignment(role_assignment_id, resource_group_name, account_name)
+
+    logger.debug('replacing Sql Role Assignment')
+
+    sql_role_assignment_create_update_parameters = SqlRoleAssignmentCreateUpdateParameters(
+        role_definition_id=role_definition_id,
+        scope=role_assignment.scope,
+        principal_id=role_assignment.principal_id)
+
+    return client.create_update_sql_role_assignment(role_assignment_id, resource_group_name, account_name, sql_role_assignment_create_update_parameters)
+
+
+def cli_cosmosdb_sql_role_assignment_exists(client,
+                                            resource_group_name,
+                                            account_name,
+                                            role_assignment_id):
+    """Checks if an Azure Cosmos DB Sql Role Assignment exists"""
+    try:
+        client.get_sql_role_assignment(role_assignment_id, resource_group_name, account_name)
+    except DefaultErrorResponseException as ex:
+        return _handle_exists_exception(ex.response)
+
+    return True
+
+
+def _gen_guid():
+    import uuid
+    return uuid.uuid4()
