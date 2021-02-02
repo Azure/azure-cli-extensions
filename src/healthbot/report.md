@@ -62,7 +62,7 @@ az healthbot show --name "samplebotname" --resource-group "healthbotClient"
 
 ##### <a name="ExamplesBotsCreate">Example</a>
 ```
-az healthbot create --bot-name "samplebotname" --location "East US" --name "F0" --resource-group "healthbotClient"
+az healthbot create --name "samplebotname" --location "East US" --sku "F0" --resource-group "healthbotClient"
 ```
 ##### <a name="ParametersBotsCreate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -77,7 +77,7 @@ az healthbot create --bot-name "samplebotname" --location "East US" --name "F0" 
 
 ##### <a name="ExamplesBotsUpdate">Example</a>
 ```
-az healthbot update --bot-name "samplebotname" --name "F0" --resource-group "healthbotClient"
+az healthbot update --name "samplebotname" --sku "F0" --resource-group "healthbotClient"
 ```
 ##### <a name="ParametersBotsUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
