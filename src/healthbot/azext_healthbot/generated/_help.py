@@ -45,7 +45,7 @@ helps['healthbot create'] = """
     examples:
       - name: BotCreate
         text: |-
-               az healthbot create --bot-name "samplebotname" --location "East US" --name "F0" --resource-group \
+               az healthbot create --name "samplebotname" --location "East US" --sku "F0" --resource-group \
 "healthbotClient"
 """
 

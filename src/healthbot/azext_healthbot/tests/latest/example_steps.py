@@ -18,9 +18,9 @@ def step_create(test, rg, rg_2, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthbot create '
-             '--bot-name "{myBot}" '
+             '--name "{myBot}" '
              '--location "East US" '
-             '--name "F0" '
+             '--sku "F0" '
              '--resource-group "{rg_2}"',
              checks=checks)
 
