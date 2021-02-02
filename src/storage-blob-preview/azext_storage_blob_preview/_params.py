@@ -59,8 +59,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                       completer=get_storage_name_completion_list(t_table_service, 'list_tables'))
     progress_type = CLIArgumentType(help='Include this flag to disable progress reporting for the command.',
                                     action='store_true')
-    socket_timeout_type = CLIArgumentType(help='The socket timeout(secs), used by the service to regulate data flow.',
-                                          type=int)
     sas_help = 'The permissions the SAS grants. Allowed values: {}. Do not use if a stored access policy is ' \
                'referenced with --policy-name that specifies this value. Can be combined.'
 

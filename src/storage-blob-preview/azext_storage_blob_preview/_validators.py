@@ -1077,6 +1077,7 @@ def validate_upload_blob(namespace):
     if not namespace.file_path and not namespace.data:
         raise InvalidArgumentValueError("usage error: please specify one of --file and --data to upload.")
 
+
 def _match_path(path, pattern):
     from fnmatch import fnmatch
     return fnmatch(path, pattern)
