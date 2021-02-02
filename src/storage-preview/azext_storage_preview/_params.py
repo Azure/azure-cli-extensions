@@ -11,16 +11,17 @@ from ._validators import (get_datetime_type, validate_metadata,
                           validate_azcopy_target_url, validate_included_datasets,
                           validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url,
                           validate_storage_data_plane_list, validate_delete_retention_days,
-                          process_resource_group, add_upload_progress_callback, ipv4_range_type,
+                          process_resource_group, add_upload_progress_callback,
                           get_permission_help_string, get_permission_validator)
 
-from .profiles import CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_QUEUE
+from .profiles import CUSTOM_MGMT_PREVIEW_STORAGE
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements
     from argcomplete.completers import FilesCompleter
     from knack.arguments import CLIArgumentType
     from azure.cli.core.commands.parameters import get_resource_name_completion_list
+    from azure.cli.core.profiles import ResourceType
 
     from .sdkutil import get_table_data_type
     from .completers import get_storage_name_completion_list, get_container_name_completions
@@ -28,7 +29,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     t_base_blob_service = self.get_sdk('blob.baseblobservice#BaseBlobService')
     t_file_service = self.get_sdk('file#FileService')
     t_table_service = get_table_data_type(self.cli_ctx, 'table', 'TableService')
-    t_queue_service = self.get_sdk('_queue_service_client#QueueServiceClient', resource_type=CUSTOM_DATA_STORAGE_QUEUE)
+    t_queue_service = self.get_sdk('_queue_service_client#QueueServiceClient',
+                                   resource_type=ResourceType.DATA_STORAGE_QUEUE)
 
     acct_name_type = CLIArgumentType(options_list=['--account-name', '-n'], help='The storage account name.',
                                      id_part='name',
@@ -355,7 +357,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage queue generate-sas') as c:
         from .completers import get_storage_acl_name_completion_list
-        t_queue_permissions = self.get_sdk('_models#QueueSasPermissions', resource_type=CUSTOM_DATA_STORAGE_QUEUE)
+        t_queue_permissions = self.get_sdk('_models#QueueSasPermissions', resource_type=ResourceType.DATA_STORAGE_QUEUE)
 
         c.register_sas_arguments()
         c.argument('policy_id', options_list='--policy-name',
@@ -372,7 +374,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage queue policy') as c:
         from .completers import get_storage_acl_name_completion_list
-        t_queue_permissions = self.get_sdk('_models#QueueSasPermissions', resource_type=CUSTOM_DATA_STORAGE_QUEUE)
+        t_queue_permissions = self.get_sdk('_models#QueueSasPermissions', resource_type=ResourceType.DATA_STORAGE_QUEUE)
 
         c.argument('policy_name', options_list=('--name', '-n'), help='The stored access policy name.',
                    completer=get_storage_acl_name_completion_list(t_queue_service, 'get_queue_access_policy'))
