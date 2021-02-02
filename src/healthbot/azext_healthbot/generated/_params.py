@@ -31,18 +31,18 @@ def load_arguments(self, _):
 
     with self.argument_context('healthbot create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('bot_name', type=str, help='The name of the Bot resource.')
+        c.argument('bot_name', options_list=['--name', '-n', '--bot-name'], type=str, help='The name of the Bot resource.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('name', arg_type=get_enum_type(['F0', 'S1', 'C0']), help='The name of the HealthBot SKU',
+        c.argument('sku', arg_type=get_enum_type(['F0', 'S1', 'C0']), help='The name of the HealthBot SKU',
                    arg_group='Sku')
 
     with self.argument_context('healthbot update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('bot_name', type=str, help='The name of the Bot resource.', id_part='name')
+        c.argument('bot_name', options_list=['--name', '-n', '--bot-name'], type=str, help='The name of the Bot resource.', id_part='name')
         c.argument('tags', tags_type)
-        c.argument('name', arg_type=get_enum_type(['F0', 'S1', 'C0']), help='The name of the HealthBot SKU',
+        c.argument('sku', arg_type=get_enum_type(['F0', 'S1', 'C0']), help='The name of the HealthBot SKU',
                    arg_group='Sku')
 
     with self.argument_context('healthbot delete') as c:
