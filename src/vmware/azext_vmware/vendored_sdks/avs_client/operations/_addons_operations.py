@@ -52,9 +52,9 @@ class AddonsOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> Iterable["_models.AddonList"]
-        """List addons in a private cloud.
+        """List add-ons in a private cloud.
 
-        List addons in a private cloud.
+        List add-ons in a private cloud.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -130,15 +130,15 @@ class AddonsOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> "_models.Addon"
-        """Get an addon by name in a private cloud.
+        """Get an add-on by name in a private cloud.
 
-        Get an addon by name in a private cloud.
+        Get an add-on by name in a private cloud.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param private_cloud_name: Name of the private cloud.
         :type private_cloud_name: str
-        :param addon_name: Name of the addon for the private cloud.
+        :param addon_name: Name of the add-on for the private cloud.
         :type addon_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: Addon, or the result of cls(response)
@@ -256,17 +256,17 @@ class AddonsOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["_models.Addon"]
-        """Create or update a addon in a private cloud.
+        """Create or update an add-on in a private cloud.
 
-        Create or update a addon in a private cloud.
+        Create or update an add-on in a private cloud.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param private_cloud_name: The name of the private cloud.
         :type private_cloud_name: str
-        :param addon_name: Name of the addon for the private cloud.
+        :param addon_name: Name of the add-on for the private cloud.
         :type addon_name: str
-        :param addon: A addon in the private cloud.
+        :param addon: An add-on in the private cloud.
         :type addon: ~avs_client.models.Addon
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
@@ -364,7 +364,7 @@ class AddonsOperations(object):
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
+        if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
@@ -381,15 +381,15 @@ class AddonsOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller[None]
-        """Delete a addon in a private cloud.
+        """Delete an add-on in a private cloud.
 
-        Delete a addon in a private cloud.
+        Delete an add-on in a private cloud.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param private_cloud_name: Name of the private cloud.
         :type private_cloud_name: str
-        :param addon_name: Name of the addon for the private cloud.
+        :param addon_name: Name of the add-on for the private cloud.
         :type addon_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.

@@ -47,7 +47,7 @@ class Resource(msrest.serialization.Model):
 
 
 class Addon(Resource):
-    """An addon resource.
+    """An add-on resource.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -59,9 +59,9 @@ class Addon(Resource):
     :vartype type: str
     :param license_key: The SRM license.
     :type license_key: str
-    :param addon_type: The type of private cloud addon. Possible values include: "SRM", "VR".
+    :param addon_type: The type of private cloud add-on. Possible values include: "SRM", "VR".
     :type addon_type: str or ~avs_client.models.AddonType
-    :ivar provisioning_state: The state of the addon provisioning. Possible values include:
+    :ivar provisioning_state: The state of the add-on provisioning. Possible values include:
      "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
     :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
     """
@@ -96,7 +96,7 @@ class Addon(Resource):
 
 
 class AddonList(msrest.serialization.Model):
-    """A paged list of addons.
+    """A paged list of add-ons.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -126,7 +126,7 @@ class AddonList(msrest.serialization.Model):
 
 
 class AddonSrmProperties(msrest.serialization.Model):
-    """The properties of an SRM addon that may be updated.
+    """The properties of an SRM add-on that may be updated.
 
     :param license_key: The SRM license.
     :type license_key: str
@@ -147,15 +147,15 @@ class AddonSrmProperties(msrest.serialization.Model):
 
 
 class AddonProperties(AddonSrmProperties):
-    """The properties of an addon that may be updated.
+    """The properties of an add-on that may be updated.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param license_key: The SRM license.
     :type license_key: str
-    :param addon_type: The type of private cloud addon. Possible values include: "SRM", "VR".
+    :param addon_type: The type of private cloud add-on. Possible values include: "SRM", "VR".
     :type addon_type: str or ~avs_client.models.AddonType
-    :ivar provisioning_state: The state of the addon provisioning. Possible values include:
+    :ivar provisioning_state: The state of the add-on provisioning. Possible values include:
      "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
     :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
     """
@@ -183,15 +183,15 @@ class AddonProperties(AddonSrmProperties):
 
 
 class AddonUpdate(msrest.serialization.Model):
-    """An update of an addon resource.
+    """An update of an add-on resource.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param license_key: The SRM license.
     :type license_key: str
-    :param addon_type: The type of private cloud addon. Possible values include: "SRM", "VR".
+    :param addon_type: The type of private cloud add-on. Possible values include: "SRM", "VR".
     :type addon_type: str or ~avs_client.models.AddonType
-    :ivar provisioning_state: The state of the addon provisioning. Possible values include:
+    :ivar provisioning_state: The state of the add-on provisioning. Possible values include:
      "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
     :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
     """
@@ -542,29 +542,59 @@ class Datastore(Resource):
         self.disk_pool_volume = disk_pool_volume
 
 
+class DatastoreList(msrest.serialization.Model):
+    """A paged list of datastores.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: The items on a page.
+    :vartype value: list[~avs_client.models.Datastore]
+    :ivar next_link: URL to get the next page if any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[Datastore]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DatastoreList, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
 class DiskPoolVolumeProperties(msrest.serialization.Model):
     """A model which holds properties of an iSCSI volume of Microsoft.StoragePool provider.
 
-    :param target_id: Resource ID of the iSCSI target.
-    :type target_id: str
+    :param endpoints: iSCSI provider target IP address list.
+    :type endpoints: list[str]
     :param lun_name: Name of the LUN to be used.
     :type lun_name: str
     """
 
     _attribute_map = {
-        'target_id': {'key': 'targetId', 'type': 'str'},
+        'endpoints': {'key': 'endpoints', 'type': '[str]'},
         'lun_name': {'key': 'lunName', 'type': 'str'},
     }
 
     def __init__(
         self,
         *,
-        target_id: Optional[str] = None,
+        endpoints: Optional[List[str]] = None,
         lun_name: Optional[str] = None,
         **kwargs
     ):
         super(DiskPoolVolumeProperties, self).__init__(**kwargs)
-        self.target_id = target_id
+        self.endpoints = endpoints
         self.lun_name = lun_name
 
 

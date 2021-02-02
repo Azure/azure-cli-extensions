@@ -18,6 +18,7 @@ try:
     from ._models_py3 import ClusterUpdate
     from ._models_py3 import CommonClusterProperties
     from ._models_py3 import Datastore
+    from ._models_py3 import DatastoreList
     from ._models_py3 import DiskPoolVolumeProperties
     from ._models_py3 import Endpoints
     from ._models_py3 import ErrorAdditionalInfo
@@ -85,6 +86,7 @@ except (SyntaxError, ImportError):
     from ._models import ClusterUpdate  # type: ignore
     from ._models import CommonClusterProperties  # type: ignore
     from ._models import Datastore  # type: ignore
+    from ._models import DatastoreList  # type: ignore
     from ._models import DiskPoolVolumeProperties  # type: ignore
     from ._models import Endpoints  # type: ignore
     from ._models import ErrorAdditionalInfo  # type: ignore
@@ -183,6 +185,7 @@ __all__ = [
     'ClusterUpdate',
     'CommonClusterProperties',
     'Datastore',
+    'DatastoreList',
     'DiskPoolVolumeProperties',
     'Endpoints',
     'ErrorAdditionalInfo',

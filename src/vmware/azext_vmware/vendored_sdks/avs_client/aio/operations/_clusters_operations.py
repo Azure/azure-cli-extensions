@@ -361,15 +361,11 @@ class ClustersOperations:
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 201]:
+        if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        if response.status_code == 200:
-            deserialized = self._deserialize('Cluster', pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize('Cluster', pipeline_response)
+        deserialized = self._deserialize('Cluster', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -492,7 +488,7 @@ class ClustersOperations:
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202, 204]:
+        if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
