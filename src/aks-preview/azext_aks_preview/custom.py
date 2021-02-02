@@ -2760,8 +2760,13 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
 
     monitoring = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
     ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].enabled
-    need_post_creation_role_assignment = monitoring or ingress_appgw_addon_enabled
 
+    os_type = 'Linux'
+    enable_virtual_node = False
+    if CONST_VIRTUAL_NODE_ADDON_NAME + os_type in instance.addon_profiles:
+        enable_virtual_node = True
+
+    need_post_creation_role_assignment = monitoring or ingress_appgw_addon_enabled or enable_virtual_node
     if need_post_creation_role_assignment:
         # adding a wait here since we rely on the result for role assignment
         result = LongRunningOperation(cmd.cli_ctx)(client.create_or_update(resource_group_name, name, instance))
@@ -2778,6 +2783,14 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
             _add_monitoring_role_assignment(result, cluster_resource_id, cmd)
         if ingress_appgw_addon_enabled:
             _add_ingress_appgw_addon_role_assignment(result, cmd)
+        if enable_virtual_node:
+            # All agent pool will reside in the same vnet, we will grant vnet level Contributor role
+            # in later function, so using a random agent pool here is OK
+            random_agent_pool = result.agent_pool_profiles[0]
+            if random_agent_pool.vnet_subnet_id != "":
+                _add_virtual_node_role_assignment(cmd, result, random_agent_pool.vnet_subnet_id)
+            # Else, the cluster is not using custom VNet, the permission is already granted in AKS RP,
+            # we don't need to handle it in client side in this case.
 
     else:
         result = sdk_no_wait(no_wait, client.create_or_update,
