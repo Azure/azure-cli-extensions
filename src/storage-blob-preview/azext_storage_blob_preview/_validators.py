@@ -1141,6 +1141,7 @@ def process_blob_upload_batch_parameters(cmd, namespace):
     t_blob_content_settings = get_sdk(cmd.cli_ctx, CUSTOM_DATA_STORAGE_BLOB, '_models#ContentSettings')
     get_content_setting_validator(t_blob_content_settings, update=False)(cmd, namespace)
     add_upload_progress_callback(cmd, namespace)
+    blob_tier_validator(cmd, namespace)
 
 
 def process_blob_delete_batch_parameters(cmd, namespace):

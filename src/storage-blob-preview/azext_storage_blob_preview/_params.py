@@ -127,6 +127,14 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         arg_type=get_enum_type(t_delete_snapshots),
         help='Required if the blob has associated snapshots. "only": Deletes only the blobs snapshots. '
              '"include": Deletes the blob along with all snapshots.')
+    overwrite_type = CLIArgumentType(
+        arg_type=get_three_state_flag(),
+        help='Whether the blob to be uploaded should overwrite the current data. If True, upload_blob will '
+        'overwrite the existing data. If set to False, the operation will fail with ResourceExistsError. '
+        'The exception to the above is with Append blob types: if set to False and the data already exists, '
+        'an error will not be raised and the data will be appended to the existing blob. If set '
+        'overwrite=True, then the existing append blob will be deleted, and a new one created. '
+        'Defaults to False.')
 
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
@@ -465,13 +473,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('data', help='The blob data to upload.', required=False, is_preview=True, min_api='2019-02-02')
         c.argument('length', type=int, help='Number of bytes to read from the stream. This is optional, but should be '
                    'supplied for optimal performance. Cooperate with --data.', is_preview=True, min_api='2019-02-02')
-        c.argument('overwrite', arg_type=get_three_state_flag(), arg_group="Additional Flags",
-                   help='Whether the blob to be uploaded should overwrite the current data. If True, upload_blob will '
-                   'overwrite the existing data. If set to False, the operation will fail with ResourceExistsError. '
-                   'The exception to the above is with Append blob types: if set to False and the data already exists, '
-                   'an error will not be raised and the data will be appended to the existing blob. If set '
-                   'overwrite=True, then the existing append blob will be deleted, and a new one created. '
-                   'Defaults to False.', is_preview=True)
+        c.argument('overwrite', overwrite_type, arg_group="Additional Flags", is_preview=True)
         c.argument('max_connections', type=int, arg_group="Additional Flags",
                    help='Maximum number of parallel connections to use when the blob size exceeds 64MB.')
         c.extra('maxsize_condition', type=int, arg_group="Content Control",
@@ -507,6 +509,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('validate_content', action='store_true', min_api='2016-05-31', arg_group='Content Control')
         c.argument('blob_type', options_list=('--type', '-t'), arg_type=get_enum_type(get_blob_types()))
         c.extra('no_progress', progress_type)
+        c.extra('tier', tier_type, is_preview=True)
+        c.extra('overwrite', overwrite_type, is_preview=True)
 
     with self.argument_context('storage container') as c:
         c.argument('container_name', container_name_type, options_list=('--name', '-n'))

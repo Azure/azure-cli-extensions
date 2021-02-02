@@ -80,15 +80,17 @@ class StorageBatchOperationScenarios(StorageScenarioMixin, LiveScenarioTest):
                                   local_folder)
 
     @ResourceGroupPreparer()
-    @StorageAccountPreparer()
+    @StorageAccountPreparer(kind='StorageV2')
     @StorageTestFilesPreparer()
     def test_storage_blob_batch_upload_scenarios(self, test_dir, storage_account_info):
         # upload files without pattern
         container = self.create_container(storage_account_info)
-        self.storage_cmd('storage blob upload-batch -s "{}" -d {} --max-connections 3', storage_account_info,
-                         test_dir, container)
-        self.storage_cmd('storage blob list -c {}', storage_account_info, container).assert_with_checks(
-            JMESPathCheck('length(@)', 41))
+        self.storage_cmd('storage blob upload-batch -s "{}" -d {} --max-connections 3 --tier Cool --type block',
+                         storage_account_info, test_dir, container)
+        self.storage_cmd('storage blob list -c {}', storage_account_info, container) \
+            .assert_with_checks(JMESPathCheck('length(@)', 41)) \
+            .assert_with_checks(JMESPathCheck('[0].properties.blobTier', 'Cool')) \
+            .assert_with_checks(JMESPathCheck('[0].properties.blobType', 'BlockBlob'))
 
         # upload files with pattern apple/*
         container = self.create_container(storage_account_info)
