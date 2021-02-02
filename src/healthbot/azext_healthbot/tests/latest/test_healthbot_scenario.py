@@ -83,4 +83,3 @@ class HealthbotScenarioTest(ScenarioTest):
         call_scenario(self, rg, rg_2)
         calc_coverage(__file__)
         raise_if()
-

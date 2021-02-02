@@ -77,4 +77,3 @@ def step_delete(test, rg, rg_2, checks=None):
              '--name "{myBot}" '
              '--resource-group "{rg_2}"',
              checks=checks)
-
