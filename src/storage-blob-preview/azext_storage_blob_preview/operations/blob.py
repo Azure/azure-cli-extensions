@@ -214,6 +214,7 @@ def storage_blob_download_batch(client, source, destination, container_name, pat
             progress_callback.reuse = True
 
         for index, blob_normed in enumerate(blobs_to_download):
+            from azure.cli.core.azclierror import FileOperationError
             # add blob name and number to progress message
             if progress_callback:
                 progress_callback.message = '{}/{}: "{}"'.format(
@@ -223,9 +224,9 @@ def storage_blob_download_batch(client, source, destination, container_name, pat
             destination_path = os.path.join(destination, os.path.normpath(blob_normed))
             destination_folder = os.path.dirname(destination_path)
             # Failed when there is same name for file and folder
-            if os.path.isfile(destination_folder) and os.path.exists(destination_folder):
-                raise CLIError("There is a file having the same name with directory to create. Please rename the file "
-                               "and retry the command.")
+            if os.path.isfile(destination_path) and os.path.exists(destination_folder):
+                raise FileOperationError("%s already exists in %s. Please rename existing file or choose another "
+                                         "destination folder. ")
             if not os.path.exists(destination_folder):
                 mkdir_p(destination_folder)
             include, result = _download_blob(client=blob_client, file_path=destination_path,
