@@ -76,7 +76,6 @@ class HealthbotScenarioTest(ScenarioTest):
             'myBot': 'samplebotname',
         })
 
-
     @ResourceGroupPreparer(name_prefix='clitesthealthbot_OneResourceGroupName'[:7], key='rg', parameter_name='rg')
     @ResourceGroupPreparer(name_prefix='clitesthealthbot_healthbotClient'[:7], key='rg_2', parameter_name='rg_2')
     def test_healthbot_Scenario(self, rg, rg_2):
