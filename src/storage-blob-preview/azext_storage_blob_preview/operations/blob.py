@@ -179,7 +179,7 @@ def storage_blob_copy_batch(cmd, client, source_client, container_name=None,
 
 # pylint: disable=unused-argument, too-many-locals
 def storage_blob_download_batch(client, source, destination, container_name, pattern=None, dryrun=False,
-                                progress_callback=None, **kwargs):
+                                progress_callback=None, socket_timeout=None, **kwargs):
     source_blobs = collect_blobs(client, container_name, pattern)
     blobs_to_download = {}
     for blob_name in source_blobs:
@@ -249,7 +249,7 @@ def storage_blob_upload_batch(cmd, client, source, destination, pattern=None,  #
                               content_settings=None, metadata=None, validate_content=False,
                               maxsize_condition=None, max_connections=2, lease_id=None, progress_callback=None,
                               if_modified_since=None, if_unmodified_since=None, if_match=None,
-                              if_none_match=None, timeout=None, dryrun=False, **kwargs):
+                              if_none_match=None, timeout=None, dryrun=False, socket_timeout=None, **kwargs):
     def _create_return_result(blob_content_settings, upload_result=None):
         return {
             'Blob': client.url,

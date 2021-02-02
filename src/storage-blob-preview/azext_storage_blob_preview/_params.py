@@ -197,7 +197,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     with self.argument_context('storage blob') as c:
         c.argument('blob_name', options_list=('--name', '-n'), arg_type=blob_name_type)
         c.argument('destination_path', help='The destination path that will be appended to the blob name.')
-        c.argument('socket_timeout', deprecate_info=c.deprecate(),
+        c.argument('socket_timeout', deprecate_info=c.deprecate(hide=True),
                    help='The socket timeout(secs), used by the service to regulate data flow.')
 
     with self.argument_context('storage blob copy') as c:
@@ -287,8 +287,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                 help='The number of parallel connections with which to download.')
         c.argument('open_mode', help='Mode to use when opening the file. Note that specifying append only open_mode '
                    'prevents parallel download. So, max_connections must be set to 1 if this open_mode is used.')
-        c.argument('socket_timeout', deprecate_info=c.deprecate(hide=True),
-                   help='The socket timeout(secs), used by the service to regulate data flow.')
         c.extra('validate_content', action='store_true', min_api='2016-05-31',
                 help='If true, calculates an MD5 hash for each chunk of the blob. The storage service checks the '
                 'hash of the content that has arrived with the hash that was sent. This is primarily valuable for '
@@ -305,7 +303,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.extra('max_concurrency', options_list='--max-connections', type=int, default=2,
                 help='The number of parallel connections with which to download.')
         c.extra('no_progress', progress_type)
-        c.extra('socket_timeout', socket_timeout_type)
         c.argument('max_connections', type=int,
                    help='Maximum number of parallel connections to use when the blob size exceeds 64MB.')
 
@@ -482,8 +479,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    arg_type=get_enum_type(get_blob_types()), arg_group="Additional Flags")
         c.argument('validate_content', action='store_true', min_api='2016-05-31', arg_group="Content Control")
         c.extra('no_progress', progress_type, validator=add_upload_progress_callback, arg_group="Additional Flags")
-        c.argument('socket_timeout', deprecate_info=c.deprecate(hide=True),
-                   help='The socket timeout(secs), used by the service to regulate data flow.')
         c.extra('tier', tier_type, validator=blob_tier_validator, arg_group="Additional Flags")
         c.argument('encryption_scope', validator=validate_encryption_scope_client_params,
                    help='A predefined encryption scope used to encrypt the data on the service.',
