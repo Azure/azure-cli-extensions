@@ -148,9 +148,9 @@ def transform_message_list_output(result):
 
 def transform_message_output(result):
     result = todict(result)
-    new_result = {'expirationTime': result.pop('expires_on', None),
-                  'insertionTime': result.pop('inserted_on', None),
-                  'timeNextVisible': result.pop('next_visible_on', None)}
+    new_result = {'expirationTime': result.pop('expiresOn', None),
+                  'insertionTime': result.pop('insertedOn', None),
+                  'timeNextVisible': result.pop('nextVisibleOn', None)}
     from azure.cli.core.commands.arm import make_camel_case
     for key in sorted(result.keys()):
         new_result[make_camel_case(key)] = result[key]
