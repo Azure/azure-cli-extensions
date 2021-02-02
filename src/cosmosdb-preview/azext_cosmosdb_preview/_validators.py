@@ -65,7 +65,7 @@ def validate_virtual_network_rules(ns):
 
 def validate_role_definition_body(cmd, ns):
     """ Extracts role definition body """
-    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import Permission
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import Permission, RoleDefinitionType
     from azure.cli.core.util import get_file_json, shell_safe_json_parse
     import os
     if ns.role_definition_body is not None:
@@ -76,7 +76,7 @@ def validate_role_definition_body(cmd, ns):
 
         if not isinstance(role_definition, dict):
             raise InvalidArgumentValueError(
-                'Invalid role defintion. A valid dictionary JSON representation is expected.')
+                'Invalid role definition. A valid dictionary JSON representation is expected.')
 
         if 'Id' in role_definition:
             role_definition['Id'] = _parse_resource_path(role_definition['Id'], False, "sqlRoleDefinitions")
@@ -89,10 +89,8 @@ def validate_role_definition_body(cmd, ns):
             role_definition['Permissions'] = [Permission(data_actions=p['DataActions'])
                                               for p in role_definition['Permissions']]
 
-        if 'Type' in role_definition:
-            role_definition['Type'] = role_definition['Type']
-        else:
-            role_definition['Type'] = "CustomRole"
+        if 'Type' not in role_definition:
+            role_definition['Type'] = RoleDefinitionType.custom_role
 
         role_definition['AssignableScopes'] = [_parse_resource_path(
             scope,

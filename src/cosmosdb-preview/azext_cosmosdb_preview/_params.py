@@ -30,6 +30,10 @@ class BackupPolicyTypes(str, Enum):
     continuous = "Continuous"
 
 
+SQL_ROLE_DEFINITION_EXAMPLE = """--body "{ \\"Id\\": \\"be79875a-2cc4-40d5-8958-566017875b39\\", \\"RoleName\\": \\"My Read Write Role\\", \\"Type\\": \\"CustomRole\\", \\"AssignableScopes\\": [ \\"/\\" ], \\"DataActions\\": [ \\"Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/create\\", \\"Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/read\\" ]}"
+"""
+
+
 def load_arguments(self, _):
     from knack.arguments import CLIArgumentType
     from azure.cli.core.commands.parameters import tags_type
@@ -127,13 +131,13 @@ def load_arguments(self, _):
     # SQL role definition
     with self.argument_context('cosmosdb sql role definition') as c:
         c.argument('account_name', account_name_type, id_part=None)
-        c.argument('role_definition_id', options_list=['--id', '-i'], validator=validate_role_definition_id, help="Role Definition Id")
-        c.argument('role_definition_body', options_list=['--body', '-b'], validator=validate_role_definition_body, completer=FilesCompleter(), help="Role Definition body with Id (Optional for create), DataActions or Permissions, Type (Default is CustomRole), and AssignableScopes.  You can enter it as a string or as a file, e.g., --body @rdbody-file.json")
+        c.argument('role_definition_id', options_list=['--id', '-i'], validator=validate_role_definition_id, help="Unique ID for the Role Definition.")
+        c.argument('role_definition_body', options_list=['--body', '-b'], validator=validate_role_definition_body, completer=FilesCompleter(), help="Role Definition body with Id (Optional for create), DataActions or Permissions, Type (Default is CustomRole), and AssignableScopes.  You can enter it as a string or as a file, e.g., --body @rdbody-file.json or " + SQL_ROLE_DEFINITION_EXAMPLE)
 
     # SQL role assignment
     with self.argument_context('cosmosdb sql role assignment') as c:
         c.argument('account_name', account_name_type, id_part=None)
-        c.argument('role_definition_id', options_list=['--role-definition-id', '-d'], validator=validate_fully_qualified_role_definition_id, help="Role Definition Id assigned in the Role Assignment")
-        c.argument('role_assignment_id', options_list=['--role-assignment-id', '-i'], validator=validate_role_assignment_id, help="Role Assignment Id")
-        c.argument('scope', validator=validate_scope, options_list=['--scope', '-s'], help="Scope assigned in the Role Assignment")
-        c.argument('principal_id', options_list=['--principal-id', '-p'], help="Principal Id assigned in the Role Assignment")
+        c.argument('role_assignment_id', options_list=['--role-assignment-id', '-i'], validator=validate_role_assignment_id, help="Optional for Create. Unique ID for the Role Assignment. If not provided, a new GUID will be used.")
+        c.argument('role_definition_id', options_list=['--role-definition-id', '-d'], validator=validate_fully_qualified_role_definition_id, help="Unique ID of the Role Definition that this Role Assignment refers to.")
+        c.argument('scope', validator=validate_scope, options_list=['--scope', '-s'], help="Data plane resource path at which this Role Assignment is being granted.")
+        c.argument('principal_id', options_list=['--principal-id', '-p'], help="AAD Object ID of the principal to which this Role Assignment is being granted.")
