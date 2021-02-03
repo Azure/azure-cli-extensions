@@ -175,7 +175,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             logger.debug("stderr: %s", stderr)
             if stderr:
                 logger.debug(stderr)
-                raise ScriptReturnsError('error when running script')
+                raise ScriptReturnsError('Error when running script')
 
             logger.debug("stdout: %s", stdout)
             if str.find(stdout, "SuccessRestartRequired") > -1:
