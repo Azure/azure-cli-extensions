@@ -3,6 +3,13 @@
 Release History
 ===============
 
+0.3.1
+++++++
+
+* Add support for AcrConfiguration
+* Upgraded API version to latest stable
+* Fixed bugs
+
 0.3.0
 ++++++
 

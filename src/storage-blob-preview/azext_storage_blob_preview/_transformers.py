@@ -234,6 +234,23 @@ def transform_blob_json_output(result):
     return new_result
 
 
+def transform_blob_service_properties(result):
+    from azure.cli.core.commands.arm import make_camel_case
+    static_website = todict(result.pop("static_website", None))
+    static_website["errorDocument_404Path"] = static_website.pop("errorDocument404Path", None)
+    new_result = {
+        "cors": result.pop("cors", None),
+        "deleteRetentionPolicy": result.pop("delete_retention_policy", None),
+        "hourMetrics": result.pop("hour_metrics", None),
+        "logging": result.pop("analytics_logging", None),
+        "minuteMetrics": result.pop("minute_metrics", None),
+        "staticWebsite": static_website
+    }
+    for key in result:
+        new_result[make_camel_case(key)] = result[key]
+    return new_result
+
+
 def transform_container_list_output(result):
     for i, item in enumerate(result):
         if isinstance(item, dict) and 'nextMarker' in item:

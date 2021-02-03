@@ -70,7 +70,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-10-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2020-11-21T03:20:11Z"},"properties":{"provisioningState":"Succeeded"}}'
@@ -131,7 +131,7 @@ interactions:
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-12-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002\"\
@@ -147,7 +147,7 @@ interactions:
         ,\n     \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\"\
         : \"1.17.13\",\n     \"enableNodePublicIP\": false,\n     \"nodeLabels\":\
         \ {},\n     \"mode\": \"System\",\n     \"osType\": \"Linux\",\n     \"nodeImageVersion\"\
-        : \"AKSUbuntu-1604-2020.10.28\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
+        : \"AKSUbuntu-1804-2021.01.06\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
         \  \"adminUsername\": \"azureuser\",\n    \"ssh\": {\n     \"publicKeys\"\
         : [\n      {\n       \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ\
         \ hbc@gondor\\n\"\n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\"\
@@ -455,7 +455,7 @@ interactions:
       - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.14.2
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-12-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002\"\
@@ -471,7 +471,7 @@ interactions:
         ,\n     \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\"\
         : \"1.17.13\",\n     \"enableNodePublicIP\": false,\n     \"nodeLabels\":\
         \ {},\n     \"mode\": \"System\",\n     \"osType\": \"Linux\",\n     \"nodeImageVersion\"\
-        : \"AKSUbuntu-1604-2020.10.28\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
+        : \"AKSUbuntu-1804-2021.01.06\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
         \  \"adminUsername\": \"azureuser\",\n    \"ssh\": {\n     \"publicKeys\"\
         : [\n      {\n       \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ\
         \ hbc@gondor\\n\"\n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\"\
@@ -542,7 +542,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-12-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002\"\
@@ -558,7 +558,7 @@ interactions:
         ,\n     \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\"\
         : \"1.17.13\",\n     \"enableNodePublicIP\": false,\n     \"nodeLabels\":\
         \ {},\n     \"mode\": \"System\",\n     \"osType\": \"Linux\",\n     \"nodeImageVersion\"\
-        : \"AKSUbuntu-1604-2020.10.28\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
+        : \"AKSUbuntu-1804-2021.01.06\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
         \  \"adminUsername\": \"azureuser\",\n    \"ssh\": {\n     \"publicKeys\"\
         : [\n      {\n       \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ\
         \ hbc@gondor\\n\"\n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\"\
@@ -855,7 +855,7 @@ interactions:
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-12-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002\"\
@@ -871,7 +871,7 @@ interactions:
         ,\n     \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\"\
         : \"1.17.13\",\n     \"enableNodePublicIP\": false,\n     \"nodeLabels\":\
         \ {},\n     \"mode\": \"System\",\n     \"osType\": \"Linux\",\n     \"nodeImageVersion\"\
-        : \"AKSUbuntu-1604-2020.10.28\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
+        : \"AKSUbuntu-1804-2021.01.06\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
         \  \"adminUsername\": \"azureuser\",\n    \"ssh\": {\n     \"publicKeys\"\
         : [\n      {\n       \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ\
         \ hbc@gondor\\n\"\n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\"\
@@ -1091,7 +1091,7 @@ interactions:
       - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.14.2
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-12-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002\"\
@@ -1107,7 +1107,7 @@ interactions:
         ,\n     \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\"\
         : \"1.17.13\",\n     \"enableNodePublicIP\": false,\n     \"nodeLabels\":\
         \ {},\n     \"mode\": \"System\",\n     \"osType\": \"Linux\",\n     \"nodeImageVersion\"\
-        : \"AKSUbuntu-1604-2020.10.28\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
+        : \"AKSUbuntu-1804-2021.01.06\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
         \  \"adminUsername\": \"azureuser\",\n    \"ssh\": {\n     \"publicKeys\"\
         : [\n      {\n       \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ\
         \ hbc@gondor\\n\"\n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\"\
@@ -1183,7 +1183,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-12-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002\"\
@@ -1199,7 +1199,7 @@ interactions:
         ,\n     \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\"\
         : \"1.17.13\",\n     \"enableNodePublicIP\": false,\n     \"nodeLabels\":\
         \ {},\n     \"mode\": \"System\",\n     \"osType\": \"Linux\",\n     \"nodeImageVersion\"\
-        : \"AKSUbuntu-1604-2020.10.28\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
+        : \"AKSUbuntu-1804-2021.01.06\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
         \  \"adminUsername\": \"azureuser\",\n    \"ssh\": {\n     \"publicKeys\"\
         : [\n      {\n       \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ\
         \ hbc@gondor\\n\"\n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\"\
@@ -1297,7 +1297,7 @@ interactions:
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-12-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002\"\
@@ -1313,7 +1313,7 @@ interactions:
         ,\n     \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\"\
         : \"1.17.13\",\n     \"enableNodePublicIP\": false,\n     \"nodeLabels\":\
         \ {},\n     \"mode\": \"System\",\n     \"osType\": \"Linux\",\n     \"nodeImageVersion\"\
-        : \"AKSUbuntu-1604-2020.10.28\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
+        : \"AKSUbuntu-1804-2021.01.06\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
         \  \"adminUsername\": \"azureuser\",\n    \"ssh\": {\n     \"publicKeys\"\
         : [\n      {\n       \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ\
         \ hbc@gondor\\n\"\n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\"\
@@ -1533,7 +1533,7 @@ interactions:
       - python/3.8.6 (macOS-10.15.7-x86_64-i386-64bit) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.14.2
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-12-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002\"\
@@ -1549,7 +1549,7 @@ interactions:
         ,\n     \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\"\
         : \"1.17.13\",\n     \"enableNodePublicIP\": false,\n     \"nodeLabels\":\
         \ {},\n     \"mode\": \"System\",\n     \"osType\": \"Linux\",\n     \"nodeImageVersion\"\
-        : \"AKSUbuntu-1604-2020.10.28\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
+        : \"AKSUbuntu-1804-2021.01.06\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
         \  \"adminUsername\": \"azureuser\",\n    \"ssh\": {\n     \"publicKeys\"\
         : [\n      {\n       \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbjLa8BTCDuW1DgjYugxeygM30l6HaPoOTL/HD2WvqwkJbNDLmbxYKL9AMWxzA8OlhX2tx/ehapctLeQb64bh8jkVnUwWVYAxWQGsfDl4f8/NgVXp4fFrmuiTTTkypzMD/8BURJfV4KX4jk/cjogrEg4KKUsnnNmQoIeuTc5f4dTE3TGXdf7GZGJfHT0f8gbu7CDLkTkCnCXJy+PAvimL3nWn6uNG3KxMh08Hqm6VPbBziWBlyO3O0WThAKBTEUb9qnj9+eNH0Q4CH4ST5y4sJVXIF7vCuEw9+AE9pZWAkv3SObcZqMI8jY0JwBRenUjW29M8+8yGGG+GFfQFsBYZ\
         \ hbc@gondor\\n\"\n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\"\

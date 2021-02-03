@@ -37,6 +37,17 @@ class UpdateContext(object):
         elif value is not None:
             setattr(self.instance, prop, value)
 
+    def set_param(self, prop, value, allow_clear=True, curr_obj=None):
+        curr_obj = curr_obj or self.instance
+        if '.' in prop:
+            prop, path = prop.split('.', 1)
+            curr_obj = getattr(curr_obj, prop)
+            self.set_param(path, value, allow_clear=allow_clear, curr_obj=curr_obj)
+        elif value == '' and allow_clear:
+            setattr(curr_obj, prop, None)
+        elif value is not None:
+            setattr(curr_obj, prop, value)
+
 
 def _generic_list(cli_ctx, operation_name, resource_group_name):
     ncf = network_client_factory(cli_ctx)
@@ -151,6 +162,20 @@ def update_virtual_hub(instance, cmd, address_prefix=None, virtual_wan=None, tag
 
 def list_virtual_hubs(cmd, resource_group_name=None):
     return _generic_list(cmd.cli_ctx, 'virtual_hubs', resource_group_name)
+
+
+def update_hub_vnet_connection(instance, cmd, associated_route_table=None, propagated_route_tables=None, labels=None):
+    SubResource = cmd.get_models('SubResource')
+
+    ids = [SubResource(id=propagated_route_table) for propagated_route_table in
+           propagated_route_tables] if propagated_route_tables else None  # pylint: disable=line-too-long
+    associated_route_table = SubResource(id=associated_route_table) if associated_route_table else None
+    with UpdateContext(instance) as c:
+        c.set_param('routing_configuration.associated_route_table', associated_route_table, False)
+        c.set_param('routing_configuration.propagated_route_tables.labels', labels, False)
+        c.set_param('routing_configuration.propagated_route_tables.ids', ids, False)
+
+    return instance
 
 
 # pylint: disable=too-many-locals
@@ -468,6 +493,21 @@ def update_vpn_gateway(instance, cmd, virtual_hub=None, tags=None, scale_unit=No
         c.update_param('asn', asn, False)
         c.update_param('bgp_peering_address', bgp_peering_address, False)
         c.update_param('peer_weight', peer_weight, False)
+
+    return instance
+
+
+def update_vpn_gateway_connection(instance, cmd, associated_route_table=None, propagated_route_tables=None,
+                                  labels=None):
+    SubResource = cmd.get_models('SubResource')
+
+    ids = [SubResource(id=propagated_route_table) for propagated_route_table in
+           propagated_route_tables] if propagated_route_tables else None
+    associated_route_table = SubResource(id=associated_route_table) if associated_route_table else None
+    with UpdateContext(instance) as c:
+        c.set_param('routing_configuration.associated_route_table', associated_route_table, False)
+        c.set_param('routing_configuration.propagated_route_tables.labels', labels, False)
+        c.set_param('routing_configuration.propagated_route_tables.ids', ids, False)
 
     return instance
 
@@ -822,14 +862,20 @@ def update_p2s_vpn_gateway(instance, cmd, tags=None, scale_unit=None,
                            associated_route_table=None, propagated_route_tables=None, labels=None):
     SubResource = cmd.get_models('SubResource')
     with UpdateContext(instance) as c:
-        c.update_param('tags', tags, True)
-        c.update_param('vpn_gateway_scale_unit', scale_unit, False)
-        c.update_param('vpn_server_configuration', SubResource(id=vpn_server_config) if vpn_server_config else None, True)
-        c.update_param('p2_sconnection_configurations.vpn_client_address_pool.address_prefixes', address_space, False)
-        c.update_param('p2_sconnection_configurations.name', p2s_conn_config_name, False)
-        c.update_param('p2_sconnection_configurations.routing_configuration.associated_route_table', SubResource(id=associated_route_table) if associated_route_table else None, True)
-        c.update_param('p2_sconnection_configurations.routing_configuration.propagated_route_tables.labels', labels, True)
-        c.update_param('p2_sconnection_configurations.routing_configuration.propagated_route_tables.ids', [SubResource(id=propagated_route_table) for propagated_route_table in propagated_route_tables] if propagated_route_tables else None, True)
+        c.set_param('tags', tags, True)
+        c.set_param('vpn_gateway_scale_unit', scale_unit, False)
+        c.set_param('vpn_server_configuration', SubResource(id=vpn_server_config) if vpn_server_config else None, True)
+    p2_sconnection_configurations = getattr(instance, 'p2_sconnection_configurations')
+    if p2_sconnection_configurations:
+        with UpdateContext(p2_sconnection_configurations[0]) as c:
+            c.set_param('vpn_client_address_pool.address_prefixes', address_space, False)
+            c.set_param('name', p2s_conn_config_name, False)
+            c.set_param('routing_configuration.associated_route_table',
+                        SubResource(id=associated_route_table) if associated_route_table else None, False)
+            c.set_param('routing_configuration.propagated_route_tables.labels', labels, False)
+            c.set_param('routing_configuration.propagated_route_tables.ids',
+                        [SubResource(id=propagated_route_table) for propagated_route_table in
+                         propagated_route_tables] if propagated_route_tables else None, False)
 
     return instance
 
