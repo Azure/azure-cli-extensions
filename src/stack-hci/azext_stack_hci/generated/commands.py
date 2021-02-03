@@ -19,8 +19,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_stack_hci.vendored_sdks.azurestackhci.operations._cluster_operations#ClusterOperations.{}',
         client_factory=cf_cluster)
 
-    with self.command_group('stack-hci cluster', stack_hci_cluster, client_factory=cf_cluster,
-                            is_experimental=True) as g:
+    with self.command_group('stack-hci cluster', stack_hci_cluster, client_factory=cf_cluster) as g:
         g.custom_command('list', 'stack_hci_cluster_list')
         g.custom_show_command('show', 'stack_hci_cluster_show')
         g.custom_command('create', 'stack_hci_cluster_create')
