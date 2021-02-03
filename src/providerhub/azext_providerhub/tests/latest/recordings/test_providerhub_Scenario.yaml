@@ -1,0 +1,1129 @@
+interactions:
+- request:
+    body: '{"properties": {"specification": {"canary": {"regions": ["EastUS2EUAP"]}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub custom-rollout create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '75'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --provider-namespace --rollout-name --canary --canary
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso/customRollouts/canaryTesting01?api-version=2020-11-20
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["EastUS2EUAP"]}},"status":{"completedRegions":["EastUS2EUAP"],"failedOrSkippedRegions":{}}},"name":"canaryTesting01"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '202'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 01:41:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub custom-rollout show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --provider-namespace --rollout-name
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso/customRollouts/canaryTesting01?api-version=2020-11-20
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["EastUS2EUAP"]}},"status":{"completedRegions":["EastUS2EUAP"],"failedOrSkippedRegions":{}}},"name":"canaryTesting01"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '202'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 01:41:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub custom-rollout list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --provider-namespace
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso/customRollouts?api-version=2020-11-20
+  response:
+    body:
+      string: '{"value":[{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["Eastus2euap","brazilus","centraluseuap"]}},"status":{"completedRegions":["Eastus2euap","centraluseuap","brazilus"],"failedOrSkippedRegions":{}}},"name":"cr1"},{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["centraluseuap"]}},"status":{"completedRegions":["centraluseuap"],"failedOrSkippedRegions":{}}},"name":"rolloutTest1"},{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["EastUS2EUAP"]}},"status":{"completedRegions":["EastUS2EUAP"],"failedOrSkippedRegions":{}}},"name":"canaryTesting01"},{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["centraluseuap"]}},"status":{"completedRegions":["centraluseuap"],"failedOrSkippedRegions":{}}},"name":"2021week2"},{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["centraluseuap"]}},"status":{"completedRegions":["centraluseuap"],"failedOrSkippedRegions":{}}},"name":"test_rollout"},{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["centraluseuap"]}},"status":{"completedRegions":["centraluseuap"],"failedOrSkippedRegions":{}}},"name":"cliRollout"},{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["Eastus2euap","centraluseuap","brazilus"]}},"status":{"completedRegions":["Eastus2euap","brazilus","centraluseuap"],"failedOrSkippedRegions":{}}},"name":"cliDefaultRollout"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1529'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 01:41:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"specification": {"canary": {"skipRegions": ["brazilus",
+      "centraluseuap"]}, "restOfTheWorldGroupTwo": {"waitDuration": "PT2H"}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub default-rollout create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '145'
+      ParameterSetName:
+      - --provider-namespace --rollout-name --row2-wait-duration --skip-regions
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso/defaultRollouts/cliDefaultRollout?api-version=2020-11-20
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"RolloutInProgress","specification":{"canary":{"skipRegions":["brazilus","centraluseuap"],"regions":["eastus2euap"]},"lowTraffic":{"waitDuration":"P1D","regions":["westcentralus"]},"mediumTraffic":{"waitDuration":"P1D","regions":["northcentralus","centralindia"]},"highTraffic":{"waitDuration":"P1D","regions":["westus2"]},"restOfTheWorldGroupOne":{"waitDuration":"P1D","regions":["westeurope","eastus","southcentralus","eastasia","uksouth","indiawest","uknorth","canadacentral","japanwest","australiasoutheast","koreacentral","francecentral","australiacentral","westus","uaecentral","southafricawest","switzerlandwest","germanycentral","norwaywest"]},"restOfTheWorldGroupTwo":{"waitDuration":"PT2H","regions":["northeurope","centralus","southeastasia","ukwest","indiasouth","uksouth2","canadaeast","brazilsouth","japaneast","australiaeast","koreasouth","eastus2","francesouth","australiacentral2","uaenorth","southafricanorth","switzerlandnorth","germanynorth","norwayeast"]}},"status":{"nextTrafficRegion":"Canary","nextTrafficRegionScheduledTime":"2021-01-13T01:41:16.3440609Z","completedRegions":[],"failedOrSkippedRegions":{}}},"name":"cliDefaultRollout"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ProviderHub/operationStatuses/00000000-0000-0000-0000-000000000000?api-version=2019-10-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1195'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 01:41:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub default-rollout list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --provider-namespace
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso/defaultRollouts?api-version=2020-11-20
+  response:
+    body:
+      string: '{"value":[{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["brazilus","eastus2euap","centraluseuap"]},"lowTraffic":{"waitDuration":"P1D","regions":["westcentralus"]},"mediumTraffic":{"waitDuration":"P1D","regions":["northcentralus","centralindia"]},"highTraffic":{"waitDuration":"P1D","regions":["westus2"]},"restOfTheWorldGroupOne":{"waitDuration":"P1D","regions":["westeurope","eastus","southcentralus","eastasia","uksouth","indiawest","uknorth","canadacentral","japanwest","australiasoutheast","koreacentral","francecentral","australiacentral","westus","uaecentral","southafricawest","switzerlandwest","germanycentral","norwaywest"]},"restOfTheWorldGroupTwo":{"waitDuration":"P1D","regions":["northeurope","centralus","southeastasia","ukwest","indiasouth","uksouth2","canadaeast","brazilsouth","japaneast","australiaeast","koreasouth","eastus2","francesouth","australiacentral2","uaenorth","southafricanorth","switzerlandnorth","germanynorth","norwayeast"]}},"status":{"nextTrafficRegion":"None","completedRegions":["centralus","centraluseuap","eastasia","southeastasia","eastus","eastus2","eastus2euap","westus","westus2","northcentralus","southcentralus","westcentralus","northeurope","westeurope","japaneast","japanwest","brazilsouth","brazilus","australiasoutheast","australiaeast","westindia","southindia","centralindia","canadacentral","canadaeast","uksouth","ukwest","koreacentral","koreasouth","francecentral","francesouth","australiacentral","australiacentral2","uaecentral","uaenorth","southafricanorth","southafricawest","switzerlandnorth","switzerlandwest","germanynorth","germanywestcentral","norwayeast","norwaywest","brazilsoutheast"],"failedOrSkippedRegions":{}}},"name":"rolloutTest1"},{"properties":{"provisioningState":"Canceled","specification":{"canary":{"regions":["brazilus","eastus2euap","centraluseuap"]},"lowTraffic":{"waitDuration":"P1D","regions":["westcentralus"]},"mediumTraffic":{"waitDuration":"P1D","regions":["northcentralus","centralindia"]},"highTraffic":{"waitDuration":"P1D","regions":["westus2"]},"restOfTheWorldGroupOne":{"waitDuration":"P1D","regions":["westeurope","eastus","southcentralus","eastasia","uksouth","indiawest","uknorth","canadacentral","japanwest","australiasoutheast","koreacentral","francecentral","australiacentral","westus","uaecentral","southafricawest","switzerlandwest","germanycentral","norwaywest"]},"restOfTheWorldGroupTwo":{"waitDuration":"P1D","regions":["northeurope","centralus","southeastasia","ukwest","indiasouth","uksouth2","canadaeast","brazilsouth","japaneast","australiaeast","koreasouth","eastus2","francesouth","australiacentral2","uaenorth","southafricanorth","switzerlandnorth","germanynorth","norwayeast"]}},"status":{"nextTrafficRegion":"MediumTraffic","nextTrafficRegionScheduledTime":"2020-07-24T22:11:01.4914842Z","completedRegions":["brazilus","eastus2euap","centraluseuap","westcentralus"],"failedOrSkippedRegions":{}}},"name":"rolloutTest5"},{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["brazilus","eastus2euap","centraluseuap"]},"lowTraffic":{"waitDuration":"P1D","regions":["westcentralus"]},"mediumTraffic":{"waitDuration":"P1D","regions":["northcentralus","centralindia"]},"highTraffic":{"waitDuration":"P1D","regions":["westus2"]},"restOfTheWorldGroupOne":{"waitDuration":"P1D","regions":["westeurope","eastus","southcentralus","eastasia","uksouth","indiawest","uknorth","canadacentral","japanwest","australiasoutheast","koreacentral","francecentral","australiacentral","westus","uaecentral","southafricawest","switzerlandwest","germanycentral","norwaywest"]},"restOfTheWorldGroupTwo":{"waitDuration":"P1D","regions":["northeurope","centralus","southeastasia","ukwest","indiasouth","uksouth2","canadaeast","brazilsouth","japaneast","australiaeast","koreasouth","eastus2","francesouth","australiacentral2","uaenorth","southafricanorth","switzerlandnorth","germanynorth","norwayeast"]}},"status":{"nextTrafficRegion":"None","completedRegions":["centralus","centraluseuap","eastasia","southeastasia","eastus","eastus2","eastus2euap","westus","westus2","northcentralus","southcentralus","westcentralus","northeurope","westeurope","japaneast","japanwest","brazilsouth","brazilus","australiasoutheast","australiaeast","westindia","southindia","centralindia","canadacentral","canadaeast","uksouth","ukwest","koreacentral","koreasouth","francecentral","francesouth","australiacentral","australiacentral2","uaecentral","uaenorth","southafricanorth","southafricawest","switzerlandnorth","switzerlandwest","germanynorth","germanywestcentral","norwayeast","norwaywest","brazilsoutheast"],"failedOrSkippedRegions":{}}},"name":"rolloutTest9"},{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["brazilus","eastus2euap","centraluseuap"]},"lowTraffic":{"waitDuration":"P1D","regions":["westcentralus"]},"mediumTraffic":{"waitDuration":"P1D","regions":["northcentralus","centralindia"]},"highTraffic":{"waitDuration":"P1D","regions":["westus2"]},"restOfTheWorldGroupOne":{"waitDuration":"P1D","regions":["westeurope","eastus","southcentralus","eastasia","uksouth","indiawest","uknorth","canadacentral","japanwest","australiasoutheast","koreacentral","francecentral","australiacentral","westus","uaecentral","southafricawest","switzerlandwest","germanycentral","norwaywest"]},"restOfTheWorldGroupTwo":{"waitDuration":"PT2H","regions":["northeurope","centralus","southeastasia","ukwest","indiasouth","uksouth2","canadaeast","brazilsouth","japaneast","australiaeast","koreasouth","eastus2","francesouth","australiacentral2","uaenorth","southafricanorth","switzerlandnorth","germanynorth","norwayeast"]}},"status":{"nextTrafficRegion":"None","completedRegions":["centralus","centraluseuap","eastasia","southeastasia","eastus","eastus2","eastus2euap","westus","westus2","northcentralus","southcentralus","westcentralus","northeurope","westeurope","japaneast","japanwest","brazilsouth","brazilus","australiasoutheast","australiaeast","westindia","southindia","centralindia","canadacentral","canadaeast","uksouth","ukwest","koreacentral","koreasouth","francecentral","francesouth","australiacentral","australiacentral2","uaecentral","uaenorth","southafricanorth","southafricawest","switzerlandnorth","switzerlandwest","germanynorth","germanywestcentral","norwayeast","norwaywest","brazilsoutheast"],"failedOrSkippedRegions":{}}},"name":"foo"},{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["brazilus","eastus2euap","centraluseuap"]},"lowTraffic":{"waitDuration":"P1D","regions":["westcentralus"]},"mediumTraffic":{"waitDuration":"P1D","regions":["northcentralus","centralindia"]},"highTraffic":{"waitDuration":"P1D","regions":["westus2"]},"restOfTheWorldGroupOne":{"waitDuration":"P1D","regions":["westeurope","eastus","southcentralus","eastasia","uksouth","indiawest","uknorth","canadacentral","japanwest","australiasoutheast","koreacentral","francecentral","australiacentral","westus","uaecentral","southafricawest","switzerlandwest","germanycentral","norwaywest"]},"restOfTheWorldGroupTwo":{"waitDuration":"PT2H","regions":["northeurope","centralus","southeastasia","ukwest","indiasouth","uksouth2","canadaeast","brazilsouth","japaneast","australiaeast","koreasouth","eastus2","francesouth","australiacentral2","uaenorth","southafricanorth","switzerlandnorth","germanynorth","norwayeast"]}},"status":{"nextTrafficRegion":"None","completedRegions":["centralus","eastasia","southeastasia","eastus","westus","northcentralus","southcentralus","northeurope","westeurope","eastus2","brazilsouth","japanwest","japaneast","australiaeast","australiasoutheast","westindia","southindia","centralindia","canadacentral","canadaeast","australiacentral","australiacentral2","westus2","westcentralus","uksouth","ukwest","centraluseuap","koreacentral","koreasouth","francecentral","francesouth","germanynorth","germanywestcentral","southafricanorth","southafricawest","uaecentral","uaenorth","norwayeast","norwaywest","switzerlandnorth","switzerlandwest","brazilsoutheast","eastus2euap","brazilus","westus3"],"failedOrSkippedRegions":{}}},"name":"foo3"},{"properties":{"provisioningState":"Canceled","specification":{"canary":{"regions":["brazilus","eastus2euap","centraluseuap"]},"lowTraffic":{"waitDuration":"P1D","regions":["westcentralus"]},"mediumTraffic":{"waitDuration":"P1D","regions":["northcentralus","centralindia"]},"highTraffic":{"waitDuration":"P1D","regions":["westus2"]},"restOfTheWorldGroupOne":{"waitDuration":"P1D","regions":["westeurope","eastus","southcentralus","eastasia","uksouth","indiawest","uknorth","canadacentral","japanwest","australiasoutheast","koreacentral","francecentral","australiacentral","westus","uaecentral","southafricawest","switzerlandwest","germanycentral","norwaywest"]},"restOfTheWorldGroupTwo":{"waitDuration":"P1D","regions":["northeurope","centralus","southeastasia","ukwest","indiasouth","uksouth2","canadaeast","brazilsouth","japaneast","australiaeast","koreasouth","eastus2","francesouth","australiacentral2","uaenorth","southafricanorth","switzerlandnorth","germanynorth","norwayeast"]}},"status":{"nextTrafficRegion":"LowTraffic","nextTrafficRegionScheduledTime":"2021-01-12T19:51:13.5550006Z","completedRegions":["brazilus","eastus2euap","centraluseuap"],"failedOrSkippedRegions":{"westcentralus":null,"northcentralus":null,"centralindia":null,"westus2":null,"westeurope":null,"eastus":null,"southcentralus":null,"eastasia":null,"uksouth":null,"indiawest":null,"uknorth":null,"canadacentral":null,"japanwest":null,"australiasoutheast":null,"koreacentral":null,"francecentral":null,"australiacentral":null,"westus":null,"uaecentral":null,"southafricawest":null,"switzerlandwest":null,"germanycentral":null,"norwaywest":null,"northeurope":null,"centralus":null,"southeastasia":null,"ukwest":null,"indiasouth":null,"uksouth2":null,"canadaeast":null,"brazilsouth":null,"japaneast":null,"australiaeast":null,"koreasouth":null,"eastus2":null,"francesouth":null,"australiacentral2":null,"uaenorth":null,"southafricanorth":null,"switzerlandnorth":null,"germanynorth":null,"norwayeast":null}}},"name":"sanjaiga_rollout"},{"properties":{"provisioningState":"Canceled","specification":{"canary":{"regions":["brazilus","eastus2euap","centraluseuap"]},"lowTraffic":{"waitDuration":"P1D","regions":["westcentralus"]},"mediumTraffic":{"waitDuration":"P1D","regions":["northcentralus","centralindia"]},"highTraffic":{"waitDuration":"P1D","regions":["westus2"]},"restOfTheWorldGroupOne":{"waitDuration":"P1D","regions":["westeurope","eastus","southcentralus","eastasia","uksouth","indiawest","uknorth","canadacentral","japanwest","australiasoutheast","koreacentral","francecentral","australiacentral","westus","uaecentral","southafricawest","switzerlandwest","germanycentral","norwaywest"]},"restOfTheWorldGroupTwo":{"waitDuration":"PT2H","regions":["northeurope","centralus","southeastasia","ukwest","indiasouth","uksouth2","canadaeast","brazilsouth","japaneast","australiaeast","koreasouth","eastus2","francesouth","australiacentral2","uaenorth","southafricanorth","switzerlandnorth","germanynorth","norwayeast"]}},"status":{"nextTrafficRegion":"LowTraffic","nextTrafficRegionScheduledTime":"2021-01-13T07:16:00.0719813Z","completedRegions":["eastus2euap","centraluseuap","brazilus"],"failedOrSkippedRegions":{"westcentralus":null,"northcentralus":null,"centralindia":null,"westus2":null,"westeurope":null,"eastus":null,"southcentralus":null,"eastasia":null,"uksouth":null,"indiawest":null,"uknorth":null,"canadacentral":null,"japanwest":null,"australiasoutheast":null,"koreacentral":null,"francecentral":null,"australiacentral":null,"westus":null,"uaecentral":null,"southafricawest":null,"switzerlandwest":null,"germanycentral":null,"norwaywest":null,"northeurope":null,"centralus":null,"southeastasia":null,"ukwest":null,"indiasouth":null,"uksouth2":null,"canadaeast":null,"brazilsouth":null,"japaneast":null,"australiaeast":null,"koreasouth":null,"eastus2":null,"francesouth":null,"australiacentral2":null,"uaenorth":null,"southafricanorth":null,"switzerlandnorth":null,"germanynorth":null,"norwayeast":null}}},"name":"2021week2"},{"properties":{"provisioningState":"RolloutInProgress","specification":{"canary":{"skipRegions":["brazilus","centraluseuap"],"regions":["eastus2euap"]},"lowTraffic":{"waitDuration":"P1D","regions":["westcentralus"]},"mediumTraffic":{"waitDuration":"P1D","regions":["northcentralus","centralindia"]},"highTraffic":{"waitDuration":"P1D","regions":["westus2"]},"restOfTheWorldGroupOne":{"waitDuration":"P1D","regions":["westeurope","eastus","southcentralus","eastasia","uksouth","indiawest","uknorth","canadacentral","japanwest","australiasoutheast","koreacentral","francecentral","australiacentral","westus","uaecentral","southafricawest","switzerlandwest","germanycentral","norwaywest"]},"restOfTheWorldGroupTwo":{"waitDuration":"PT2H","regions":["northeurope","centralus","southeastasia","ukwest","indiasouth","uksouth2","canadaeast","brazilsouth","japaneast","australiaeast","koreasouth","eastus2","francesouth","australiacentral2","uaenorth","southafricanorth","switzerlandnorth","germanynorth","norwayeast"]}},"status":{"nextTrafficRegion":"Canary","nextTrafficRegionScheduledTime":"2021-01-13T01:41:16.3440609Z","completedRegions":[],"failedOrSkippedRegions":{}}},"name":"cliDefaultRollout"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '13378'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 01:41:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub default-rollout show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --provider-namespace --rollout-name
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso/defaultRollouts/cliDefaultRollout?api-version=2020-11-20
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"RolloutInProgress","specification":{"canary":{"skipRegions":["brazilus","centraluseuap"],"regions":["eastus2euap"]},"lowTraffic":{"waitDuration":"P1D","regions":["westcentralus"]},"mediumTraffic":{"waitDuration":"P1D","regions":["northcentralus","centralindia"]},"highTraffic":{"waitDuration":"P1D","regions":["westus2"]},"restOfTheWorldGroupOne":{"waitDuration":"P1D","regions":["westeurope","eastus","southcentralus","eastasia","uksouth","indiawest","uknorth","canadacentral","japanwest","australiasoutheast","koreacentral","francecentral","australiacentral","westus","uaecentral","southafricawest","switzerlandwest","germanycentral","norwaywest"]},"restOfTheWorldGroupTwo":{"waitDuration":"PT2H","regions":["northeurope","centralus","southeastasia","ukwest","indiasouth","uksouth2","canadaeast","brazilsouth","japaneast","australiaeast","koreasouth","eastus2","francesouth","australiacentral2","uaenorth","southafricanorth","switzerlandnorth","germanynorth","norwayeast"]}},"status":{"nextTrafficRegion":"Canary","nextTrafficRegionScheduledTime":"2021-01-13T01:41:16.3440609Z","completedRegions":[],"failedOrSkippedRegions":{}}},"name":"cliDefaultRollout"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1195'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 01:41:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub default-rollout stop
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --provider-namespace --rollout-name
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso/defaultRollouts/cliDefaultRollout/stop?api-version=2020-11-20
+  response:
+    body:
+      string: 'null'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 01:41:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub default-rollout delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --provider-namespace --rollout-name
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso/defaultRollouts/cliDefaultRollout?api-version=2020-11-20
+  response:
+    body:
+      string: 'null'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 01:41:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub manifest generate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --provider-namespace
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso/generateManifest?api-version=2020-11-20
+  response:
+    body:
+      string: '{"providerAuthorizations":[{"applicationId":"3d834152-5efa-46f7-85a4-a18c2b5d46f9","roleDefinitionId":"760505bf-dcfa-4311-b890-18da392a00b2"}],"namespace":"Microsoft.Contoso","providerVersion":"2.0","providerType":"Internal","resourceTypes":[{"name":"extensionresourcetype","routingType":"ProxyOnly,
+        Extension","resourceValidation":"ReservedWords, ProfaneWords","endpoints":[{"apiVersions":["2020-01-01-preview"],"endpointUri":"https://global.metarp.azure.com/","locations":[""],"requiredFeatures":["Microsoft.Contoso/RPaaSSampleApp"],"timeout":"PT20S"}],"linkedOperationRules":[]},{"name":"Operations","routingType":"ProxyOnly,
+        Tenant","resourceValidation":"ReservedWords, ProfaneWords","allowedUnauthorizedActions":["microsoft.contoso/operations/read"],"endpoints":[{"apiVersions":["2020-01-01-preview"],"endpointUri":"https://global.metarp.azure.com/","locations":[""],"timeout":"PT20S"}],"linkedOperationRules":[]},{"name":"clusters","routingType":"Default","resourceValidation":"ReservedWords,
+        ProfaneWords","endpoints":[{"apiVersions":["2020-01-01-preview"],"endpointUri":"https://eastus2euap.metarp.azure.com/rolelocation/eastus2euap/","locations":["East
+        US 2 EUAP"],"requiredFeatures":["Microsoft.Contoso/RPaaSBridge"],"timeout":"PT20S"},{"apiVersions":["2020-01-01-preview"],"endpointUri":"https://eastus.metarp.azure.com/rolelocation/eastus/","locations":["East
+        US"],"requiredFeatures":["Microsoft.Contoso/RPaaSBridge"],"timeout":"PT20S"},{"apiVersions":["2020-01-01-preview"],"endpointUri":"https://westeurope.metarp.azure.com/rolelocation/westeurope/","locations":["West
+        Europe"],"requiredFeatures":["Microsoft.Contoso/RPaaSBridge"],"timeout":"PT20S"}],"extendedLocations":[{"type":"CustomLocation","supportedPolicy":"NotSpecified"}],"linkedOperationRules":[]},{"name":"Locations","routingType":"ProxyOnly","resourceValidation":"ReservedWords,
+        ProfaneWords","endpoints":[{"apiVersions":["2020-01-01-preview"],"endpointUri":"https://global.metarp.azure.com/","locations":[""],"timeout":"PT20S"}],"linkedOperationRules":[]},{"name":"locations/operationstatuses","routingType":"ProxyOnly,
+        Tenant, LocationBased","resourceValidation":"ReservedWords, ProfaneWords","allowedUnauthorizedActions":["Microsoft.Contoso/Locations/OperationStatuses/read","Microsoft.Contoso/Locations/OperationStatuses/write"],"endpoints":[{"apiVersions":["2020-01-01-preview"],"endpointUri":"https://eastus2euap.metarp.azure.com/rolelocation/eastus2euap/","locations":["East
+        US 2 EUAP"],"timeout":"PT20S"},{"apiVersions":["2020-01-01-preview"],"endpointUri":"https://eastus.metarp.azure.com/rolelocation/eastus/","locations":["East
+        US"],"timeout":"PT20S"},{"apiVersions":["2020-01-01-preview"],"endpointUri":"https://westeurope.metarp.azure.com/rolelocation/westeurope/","locations":["West
+        Europe"],"timeout":"PT20S"}],"linkedOperationRules":[]},{"name":"towers","routingType":"Default","resourceValidation":"ReservedWords,
+        ProfaneWords","endpoints":[{"apiVersions":["2020-01-01-preview"],"endpointUri":"https://eastus2euap.metarp.azure.com/rolelocation/eastus2euap/","locations":["East
+        US 2 EUAP"],"requiredFeatures":["Microsoft.Contoso/RPaaSBridge"],"timeout":"PT20S"},{"apiVersions":["2020-01-01-preview"],"endpointUri":"https://eastus.metarp.azure.com/rolelocation/eastus/","locations":["East
+        US"],"requiredFeatures":["Microsoft.Contoso/RPaaSBridge"],"timeout":"PT20S"},{"apiVersions":["2020-01-01-preview"],"endpointUri":"https://westeurope.metarp.azure.com/rolelocation/westeurope/","locations":["West
+        Europe"],"requiredFeatures":["Microsoft.Contoso/RPaaSBridge"],"timeout":"PT20S"}],"extendedLocations":[{"type":"CustomLocation","supportedPolicy":"NotSpecified"}],"linkedOperationRules":[]},{"name":"employees","routingType":"Default","resourceValidation":"ReservedWords,
+        ProfaneWords","endpoints":[{"apiVersions":["2018-11-01-preview","2020-01-01-preview","2019-01-01"],"endpointUri":"https://westus.metarp.azure.com/rolelocation/westus/","locations":["West
+        US"],"requiredFeatures":["Microsoft.Contoso/RPaaSSampleApp"],"timeout":"PT20S"},{"apiVersions":["2018-11-01-preview","2020-01-01-preview","2019-01-01"],"endpointUri":"https://westcentralus.metarp.azure.com/rolelocation/westcentralus/","locations":["West
+        Central US"],"requiredFeatures":["Microsoft.Contoso/RPaaSSampleApp"],"timeout":"PT20S"},{"apiVersions":["2018-11-01-preview","2020-01-01-preview","2019-01-01"],"endpointUri":"https://westeurope.metarp.azure.com/rolelocation/westeurope/","locations":["West
+        Europe"],"requiredFeatures":["Microsoft.Contoso/RPaaSSampleApp"],"timeout":"PT20S"},{"apiVersions":["2018-11-01-preview","2020-01-01-preview","2019-01-01"],"endpointUri":"https://southeastasia.metarp.azure.com/rolelocation/southeastasia/","locations":["Southeast
+        Asia"],"requiredFeatures":["Microsoft.Contoso/RPaaSSampleApp"],"timeout":"PT20S"},{"apiVersions":["2018-11-01-preview","2020-01-01-preview","2019-01-01"],"endpointUri":"https://westus2.metarp.azure.com/rolelocation/westus2/","locations":["West
+        US 2"],"requiredFeatures":["Microsoft.Contoso/RPaaSSampleApp"],"timeout":"PT20S"},{"apiVersions":["2018-11-01-preview","2020-01-01-preview","2019-01-01"],"endpointUri":"https://eastus2euap.metarp.azure.com/rolelocation/eastus2euap/","locations":["East
+        US 2 EUAP"],"requiredFeatures":["Microsoft.Contoso/RPaaSSampleApp"],"timeout":"PT20S"},{"apiVersions":["2018-11-01-preview","2020-01-01-preview","2019-01-01"],"endpointUri":"https://northeurope.metarp.azure.com/rolelocation/northeurope/","locations":["North
+        Europe"],"requiredFeatures":["Microsoft.Contoso/RPaaSSampleApp"],"timeout":"PT20S"},{"apiVersions":["2018-11-01-preview","2020-01-01-preview","2019-01-01"],"endpointUri":"https://eastus.metarp.azure.com/rolelocation/eastus/","locations":["East
+        US"],"requiredFeatures":["Microsoft.Contoso/RPaaSSampleApp"],"timeout":"PT20S"},{"apiVersions":["2018-11-01-preview","2020-01-01-preview","2019-01-01"],"endpointUri":"https://southeastasia.metarp.azure.com/rolelocation/eastasia/","locations":["East
+        Asia"],"requiredFeatures":["Microsoft.Contoso/RPaaSSampleApp"],"timeout":"PT20S"}],"linkedOperationRules":[{"linkedOperation":"CrossResourceGroupResourceMove","linkedAction":"Enabled"},{"linkedOperation":"CrossSubscriptionResourceMove","linkedAction":"Enabled"}]}],"management":{"manifestOwners":["SPARTA-PlatformServiceAdministrator"],"incidentRoutingService":"Contoso
+        Resource Provider","incidentRoutingTeam":"Contoso Triage","incidentContactEmail":"helpme@contoso.com","serviceTreeInfos":[{"serviceId":"6f53185c-ea09-4fc3-9075-318dec805303","componentId":"6f53185c-ea09-4fc3-9075-318dec805303"}],"resourceAccessPolicy":"NotSpecified"},"capabilities":[{"quotaId":"CSP_2015-05-01","effect":"Allow"},{"quotaId":"CSP_MG_2017-12-01","effect":"Allow"}],"metadata":{"onboardedVia":"ProviderHub"},"globalNotificationEndpoints":[{"enabled":true,"endpointUri":"https://global.metarp.azure.com"}],"reRegisterSubscriptionMetadata":{"enabled":true,"concurrencyLimit":100}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '6932'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 01:41:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"environment": "Prod", "baselineArmManifestLocation": "EastUS2EUAP"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub manifest checkin
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '69'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --environment --arm-manifest-location --provider-namespace
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso/checkinManifest?api-version=2020-11-20
+  response:
+    body:
+      string: '{"isCheckedIn":false,"statusMessage":"Manifest is successfully merged.
+        Use the Default/Custom rollout (http://aka.ms/rpaasrollout) to roll out the
+        manifest in ARM."}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '165'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 01:41:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"providerAuthorizations": [{"applicationId": "3d834152-5efa-46f7-85a4-a18c2b5d46f9",
+      "roleDefinitionId": "760505bf-dcfa-4311-b890-18da392a00b2"}], "namespace": "Microsoft.Contoso",
+      "providerVersion": "2.0", "providerType": "Internal", "management": {"manifestOwners":
+      ["SPARTA-PlatformServiceAdministrator"], "incidentRoutingService": "Contoso
+      Resource Provider", "incidentRoutingTeam": "Contoso Triage", "incidentContactEmail":
+      "helpme@contoso.com", "serviceTreeInfos": [{"serviceId": "6f53185c-ea09-4fc3-9075-318dec805303",
+      "componentId": "6f53185c-ea09-4fc3-9075-318dec805303"}]}, "capabilities": [{"quotaId":
+      "CSP_2015-05-01", "effect": "Allow"}, {"quotaId": "CSP_MG_2017-12-01", "effect":
+      "Allow"}], "providerHubMetadata": {"providerAuthentication": {"allowedAudiences":
+      ["https://management.core.windows.net/"]}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub provider-registration create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '836'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --provider-authorizations --resource-provider-authentication --service-tree-infos
+        --capabilities --capabilities --manifest-owners --incident-contact-email --incident-routing-service
+        --incident-routing-team --provider-type --provider-version --provider-namespace
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso?api-version=2020-11-20
+  response:
+    body:
+      string: '{"properties":{"providerHubMetadata":{"providerAuthentication":{"allowedAudiences":["https://management.core.windows.net/"]}},"provisioningState":"Succeeded","providerAuthorizations":[{"applicationId":"3d834152-5efa-46f7-85a4-a18c2b5d46f9","roleDefinitionId":"760505bf-dcfa-4311-b890-18da392a00b2"}],"namespace":"Microsoft.Contoso","providerVersion":"2.0","providerType":"Internal","management":{"manifestOwners":["SPARTA-PlatformServiceAdministrator"],"incidentRoutingService":"Contoso
+        Resource Provider","incidentRoutingTeam":"Contoso Triage","incidentContactEmail":"helpme@contoso.com","serviceTreeInfos":[{"serviceId":"6f53185c-ea09-4fc3-9075-318dec805303","componentId":"6f53185c-ea09-4fc3-9075-318dec805303"}],"resourceAccessPolicy":"NotSpecified"},"capabilities":[{"quotaId":"CSP_2015-05-01","effect":"Allow"},{"quotaId":"CSP_MG_2017-12-01","effect":"Allow"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '868'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 01:41:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub provider-registration show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --provider-namespace
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso?api-version=2020-11-20
+  response:
+    body:
+      string: '{"properties":{"providerHubMetadata":{"providerAuthentication":{"allowedAudiences":["https://management.core.windows.net/"]}},"provisioningState":"Succeeded","providerAuthorizations":[{"applicationId":"3d834152-5efa-46f7-85a4-a18c2b5d46f9","roleDefinitionId":"760505bf-dcfa-4311-b890-18da392a00b2"}],"namespace":"Microsoft.Contoso","providerVersion":"2.0","providerType":"Internal","management":{"manifestOwners":["SPARTA-PlatformServiceAdministrator"],"incidentRoutingService":"Contoso
+        Resource Provider","incidentRoutingTeam":"Contoso Triage","incidentContactEmail":"helpme@contoso.com","serviceTreeInfos":[{"serviceId":"6f53185c-ea09-4fc3-9075-318dec805303","componentId":"6f53185c-ea09-4fc3-9075-318dec805303"}],"resourceAccessPolicy":"NotSpecified"},"capabilities":[{"quotaId":"CSP_2015-05-01","effect":"Allow"},{"quotaId":"CSP_MG_2017-12-01","effect":"Allow"}],"metadata":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '884'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 01:41:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub provider-registration list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations?api-version=2020-11-20
+  response:
+    body:
+      string: '{"value":[{"subscriptionId":"6f53185c-ea09-4fc3-9075-318dec805303","namespace":"Microsoft.Contoso","providerAuthorizations":[{"applicationId":"3d834152-5efa-46f7-85a4-a18c2b5d46f9","roleDefinitionId":"760505bf-dcfa-4311-b890-18da392a00b2"}],"providerHubMetadata":{"providerAuthentication":{"allowedAudiences":["https://management.core.windows.net/"]}},"management":{"manifestOwners":["SPARTA-PlatformServiceAdministrator"],"incidentRoutingService":"Contoso
+        Resource Provider","incidentRoutingTeam":"Contoso Triage","incidentContactEmail":"helpme@contoso.com","serviceTreeInfos":[{"serviceId":"6f53185c-ea09-4fc3-9075-318dec805303","componentId":"6f53185c-ea09-4fc3-9075-318dec805303"}],"resourceAccessPolicy":"NotSpecified"},"providerType":"Internal","providerVersion":"2.0","capabilities":[{"quotaId":"CSP_2015-05-01","effect":"Allow"},{"quotaId":"CSP_MG_2017-12-01","effect":"Allow"}],"provisioningState":"Succeeded","metadata":null,"partitionKey":"FIXED","id":"MICROSOFTCONTOSO","createdTime":"2021-01-13T01:41:26.9872993Z","changedTime":"2021-01-13T01:41:26.9872993Z","_ETag":"\"63060b2b-0000-0700-0000-5ffe4fc60000\""}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1125'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 01:41:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub provider-registration delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --provider-namespace
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso?api-version=2020-11-20
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 13 Jan 2021 01:41:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"providerAuthorizations": [{"applicationId": "3d834152-5efa-46f7-85a4-a18c2b5d46f9",
+      "roleDefinitionId": "760505bf-dcfa-4311-b890-18da392a00b2"}], "namespace": "Microsoft.Contoso",
+      "providerVersion": "2.0", "providerType": "Internal", "management": {"manifestOwners":
+      ["SPARTA-PlatformServiceAdministrator"], "incidentRoutingService": "Contoso
+      Resource Provider", "incidentRoutingTeam": "Contoso Triage", "incidentContactEmail":
+      "helpme@contoso.com", "serviceTreeInfos": [{"serviceId": "6f53185c-ea09-4fc3-9075-318dec805303",
+      "componentId": "6f53185c-ea09-4fc3-9075-318dec805303"}]}, "capabilities": [{"quotaId":
+      "CSP_2015-05-01", "effect": "Allow"}, {"quotaId": "CSP_MG_2017-12-01", "effect":
+      "Allow"}], "providerHubMetadata": {"providerAuthentication": {"allowedAudiences":
+      ["https://management.core.windows.net/"]}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub provider-registration create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '836'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --provider-authorizations --resource-provider-authentication --service-tree-infos
+        --capabilities --capabilities --manifest-owners --incident-contact-email --incident-routing-service
+        --incident-routing-team --provider-type --provider-version --provider-namespace
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso?api-version=2020-11-20
+  response:
+    body:
+      string: '{"properties":{"providerHubMetadata":{"providerAuthentication":{"allowedAudiences":["https://management.core.windows.net/"]}},"provisioningState":"Succeeded","providerAuthorizations":[{"applicationId":"3d834152-5efa-46f7-85a4-a18c2b5d46f9","roleDefinitionId":"760505bf-dcfa-4311-b890-18da392a00b2"}],"namespace":"Microsoft.Contoso","providerVersion":"2.0","providerType":"Internal","management":{"manifestOwners":["SPARTA-PlatformServiceAdministrator"],"incidentRoutingService":"Contoso
+        Resource Provider","incidentRoutingTeam":"Contoso Triage","incidentContactEmail":"helpme@contoso.com","serviceTreeInfos":[{"serviceId":"6f53185c-ea09-4fc3-9075-318dec805303","componentId":"6f53185c-ea09-4fc3-9075-318dec805303"}],"resourceAccessPolicy":"NotSpecified"},"capabilities":[{"quotaId":"CSP_2015-05-01","effect":"Allow"},{"quotaId":"CSP_MG_2017-12-01","effect":"Allow"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '868'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 01:41:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub provider-registration generate-operation
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --provider-namespace
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso/generateOperations?api-version=2020-11-20
+  response:
+    body:
+      string: '[{"name":"Microsoft.Contoso/operations/read","isDataAction":false,"display":{"provider":"Microsoft.Contoso/","resource":"operations","operation":"Operations_List","description":"read
+        operations"}},{"name":"Microsoft.Contoso/clusters/read","isDataAction":false,"display":{"provider":"Microsoft.Contoso/","resource":"clusters","operation":"clusters_Retrieve","description":"read
+        clusters"}},{"name":"Microsoft.Contoso/clusters/write","isDataAction":false,"display":{"provider":"Microsoft.Contoso/","resource":"clusters","operation":"clusters_CreateOrUpdate","description":"write
+        clusters"}},{"name":"Microsoft.Contoso/clusters/delete","isDataAction":false,"display":{"provider":"Microsoft.Contoso/","resource":"clusters","operation":"clusters_Delete","description":"delete
+        clusters"}},{"name":"Microsoft.Contoso/clusters/write","isDataAction":false,"display":{"provider":"Microsoft.Contoso/","resource":"clusters","operation":"clusters_Update","description":"write
+        clusters"}},{"name":"Microsoft.Contoso/clusters/read","isDataAction":false,"display":{"provider":"Microsoft.Contoso/","resource":"clusters","operation":"clusters_ListByResourceGroup","description":"read
+        clusters"}},{"name":"Microsoft.Contoso/clusters/read","isDataAction":false,"display":{"provider":"Microsoft.Contoso/","resource":"clusters","operation":"clusters_ListBySubscription","description":"read
+        clusters"}},{"name":"Microsoft.Contoso/towers/read","isDataAction":false,"display":{"provider":"Microsoft.Contoso/","resource":"towers","operation":"Towers_Get","description":"read
+        towers"}},{"name":"Microsoft.Contoso/towers/write","isDataAction":false,"display":{"provider":"Microsoft.Contoso/","resource":"towers","operation":"Towers_CreateOrUpdate","description":"write
+        towers"}},{"name":"Microsoft.Contoso/towers/delete","isDataAction":false,"display":{"provider":"Microsoft.Contoso/","resource":"towers","operation":"Towers_Delete","description":"delete
+        towers"}},{"name":"Microsoft.Contoso/towers/write","isDataAction":false,"display":{"provider":"Microsoft.Contoso/","resource":"towers","operation":"Towers_Update","description":"write
+        towers"}},{"name":"Microsoft.Contoso/towers/read","isDataAction":false,"display":{"provider":"Microsoft.Contoso/","resource":"towers","operation":"Towers_ListByResourceGroup","description":"read
+        towers"}},{"name":"Microsoft.Contoso/towers/read","isDataAction":false,"display":{"provider":"Microsoft.Contoso/","resource":"towers","operation":"Towers_ListBySubscription","description":"read
+        towers"}},{"name":"microsoft.contoso/employees/read","isDataAction":false,"display":{"provider":"microsoft.contoso/","resource":"employees","operation":"Employee_ListBySubscription","description":"Returns
+        list of employees."}},{"name":"microsoft.contoso/employees/read","isDataAction":false,"display":{"provider":"microsoft.contoso/","resource":"employees","operation":"Employee_List","description":"Returns
+        list of employees."}},{"name":"microsoft.contoso/employees/read","isDataAction":false,"display":{"provider":"microsoft.contoso/","resource":"employees","operation":"Employee_Get","description":"Returns
+        employee resource for a given name."}},{"name":"microsoft.contoso/employees/write","isDataAction":false,"display":{"provider":"microsoft.contoso/","resource":"employees","operation":"Employee_CreateAndUpdate","description":"Create
+        or update employee resource."}},{"name":"microsoft.contoso/employees/delete","isDataAction":false,"display":{"provider":"microsoft.contoso/","resource":"employees","operation":"Employee_Delete","description":"Deletes
+        employee resource for a given name."}},{"name":"microsoft.contoso/employees/write","isDataAction":false,"display":{"provider":"microsoft.contoso/","resource":"employees","operation":"Employees_Update","description":"Update
+        employee details."}}]'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3802'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 01:41:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"routingType": "Default", "regionality": "Regional", "endpoints":
+      [{"apiVersions": ["2018-11-01-preview", "2020-01-01-preview", "2019-01-01"],
+      "locations": ["West US", "West Central US", "West Europe", "Southeast Asia",
+      "West US 2", "East US 2 EUAP", "North Europe", "East US", "East Asia"], "requiredFeatures":
+      ["Microsoft.Contoso/RPaaSSampleApp"]}], "swaggerSpecifications": [{"apiVersions":
+      ["2018-11-01-preview", "2020-01-01-preview", "2019-01-01"], "swaggerSpecFolderUri":
+      "https://github.com/Azure/azure-rest-api-specs-pr/blob/RPSaaSMaster/specification/rpsaas/resource-manager/Microsoft.Contoso/"}],
+      "enableAsyncOperation": true, "resourceMovePolicy": {"validationRequired": false,
+      "crossResourceGroupMoveEnabled": true, "crossSubscriptionMoveEnabled": true}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub resource-type-registration create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '783'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --endpoints --regionality --routing-type --swagger-specifications --provider-namespace
+        --enable-async-operation --resource-move-policy --resource-type
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso/resourcetypeRegistrations/employees?api-version=2020-11-20
+  response:
+    body:
+      string: '{"properties":{"name":"employees","routingType":"Default","regionality":"Regional","endpoints":[{"apiVersions":["2018-11-01-preview","2020-01-01-preview","2019-01-01"],"locations":["West
+        US","West Central US","West Europe","Southeast Asia","West US 2","East US
+        2 EUAP","North Europe","East US","East Asia"],"requiredFeatures":["Microsoft.Contoso/RPaaSSampleApp"]}],"swaggerSpecifications":[{"apiVersions":["2018-11-01-preview","2020-01-01-preview","2019-01-01"],"swaggerSpecFolderUri":"https://github.com/Azure/azure-rest-api-specs-pr/blob/RPSaaSMaster/specification/rpsaas/resource-manager/Microsoft.Contoso/"}],"enableAsyncOperation":true,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"resourceMovePolicy":{"validationRequired":false,"crossResourceGroupMoveEnabled":true,"crossSubscriptionMoveEnabled":true}},"name":"employees"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '844'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 01:41:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub resource-type-registration show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --provider-namespace --resource-type
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso/resourcetypeRegistrations/employees?api-version=2020-11-20
+  response:
+    body:
+      string: '{"properties":{"name":"employees","routingType":"Default","regionality":"Regional","endpoints":[{"apiVersions":["2018-11-01-preview","2020-01-01-preview","2019-01-01"],"locations":["West
+        US","West Central US","West Europe","Southeast Asia","West US 2","East US
+        2 EUAP","North Europe","East US","East Asia"],"requiredFeatures":["Microsoft.Contoso/RPaaSSampleApp"]}],"swaggerSpecifications":[{"apiVersions":["2018-11-01-preview","2020-01-01-preview","2019-01-01"],"swaggerSpecFolderUri":"https://github.com/Azure/azure-rest-api-specs-pr/blob/RPSaaSMaster/specification/rpsaas/resource-manager/Microsoft.Contoso/"}],"enableAsyncOperation":true,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"resourceMovePolicy":{"validationRequired":false,"crossResourceGroupMoveEnabled":true,"crossSubscriptionMoveEnabled":true}},"name":"employees"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '844'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 01:41:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub resource-type-registration list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --provider-namespace
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso/resourcetypeRegistrations?api-version=2020-11-20
+  response:
+    body:
+      string: '{"value":[{"properties":{"name":"extensionresourcetype","routingType":"ProxyOnly,
+        Extension","regionality":"Global","endpoints":[{"apiVersions":["2020-01-01-preview"],"locations":[""],"requiredFeatures":["Microsoft.Contoso/RPaaSSampleApp"]}],"swaggerSpecifications":[{"apiVersions":["2020-01-01-preview"],"swaggerSpecFolderUri":"https://github.com/Azure/azure-rest-api-specs-pr/blob/RPSaaSMaster/specification/contoso/resource-manager/Microsoft.Contoso/"}],"enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false},"name":"extensionresourcetype"},{"properties":{"name":"Operations","routingType":"ProxyOnly,
+        Tenant","regionality":"Global","endpoints":[{"apiVersions":["2020-01-01-preview"],"locations":[""]}],"swaggerSpecifications":[{"apiVersions":["2020-01-01-preview"],"swaggerSpecFolderUri":"https://github.com/Azure/azure-rest-api-specs-pr/blob/RPSaaSMaster/specification/contoso/resource-manager/Microsoft.Contoso/"}],"allowedUnauthorizedActions":["microsoft.contoso/operations/read"],"enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false},"name":"Operations"},{"properties":{"name":"clusters","routingType":"Default","regionality":"Regional","endpoints":[{"apiVersions":["2020-01-01-preview"],"locations":["East
+        US 2 EUAP"],"requiredFeatures":["Microsoft.Contoso/RPaaSBridge"],"extensions":[{"endpointUri":"https://k8bridge.canary.production.fusion.azure.com/","extensionCategories":["ResourceCreationBegin","ResourceDeletionBegin"]}]},{"apiVersions":["2020-01-01-preview"],"locations":["East
+        US"],"requiredFeatures":["Microsoft.Contoso/RPaaSBridge"],"extensions":[{"endpointUri":"https://k8bridge.unitedstates.production.fusion.azure.com/","extensionCategories":["ResourceCreationBegin","ResourceDeletionBegin"]}]},{"apiVersions":["2020-01-01-preview"],"locations":["West
+        Europe"],"requiredFeatures":["Microsoft.Contoso/RPaaSBridge"],"extensions":[{"endpointUri":"https://k8bridge.europe.production.fusion.azure.com/","extensionCategories":["ResourceCreationBegin","ResourceDeletionBegin"]}]}],"swaggerSpecifications":[{"apiVersions":["2020-01-01-preview"],"swaggerSpecFolderUri":"https://github.com/Azure/azure-rest-api-specs-pr/blob/RPSaaSMaster/specification/rpsaas/resource-manager/Microsoft.Contoso/"}],"enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"extendedLocations":[{"type":"CustomLocation","supportedPolicy":"NotSpecified"}]},"name":"clusters"},{"properties":{"name":"Locations","routingType":"ProxyOnly","regionality":"Global","endpoints":[{"apiVersions":["2020-01-01-preview"],"locations":[""]}],"swaggerSpecifications":[{"apiVersions":["2020-01-01-preview"],"swaggerSpecFolderUri":"https://github.com/Azure/azure-rest-api-specs-pr/blob/RPSaaSMaster/specification/rpsaas/resource-manager/Microsoft.Contoso/"}],"enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false},"name":"Locations"},{"properties":{"name":"locations/operationstatuses","routingType":"ProxyOnly,
+        Tenant, LocationBased","regionality":"Regional","endpoints":[{"apiVersions":["2020-01-01-preview"],"locations":["East
+        US 2 EUAP"]},{"apiVersions":["2020-01-01-preview"],"locations":["East US"]},{"apiVersions":["2020-01-01-preview"],"locations":["West
+        Europe"]}],"swaggerSpecifications":[{"apiVersions":["2020-01-01-preview"],"swaggerSpecFolderUri":"https://github.com/Azure/azure-rest-api-specs-pr/blob/RPSaaSMaster/specification/rpsaas/resource-manager/Microsoft.Contoso/"}],"allowedUnauthorizedActions":["Microsoft.Contoso/Locations/OperationStatuses/read","Microsoft.Contoso/Locations/OperationStatuses/write"],"enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false},"name":"locations/operationstatuses"},{"properties":{"name":"towers","routingType":"Default","regionality":"Regional","endpoints":[{"apiVersions":["2020-01-01-preview"],"locations":["East
+        US 2 EUAP"],"requiredFeatures":["Microsoft.Contoso/RPaaSBridge"],"extensions":[{"endpointUri":"https://k8bridge.canary.production.fusion.azure.com/","extensionCategories":["ResourceCreationBegin","ResourceDeletionBegin"]}]},{"apiVersions":["2020-01-01-preview"],"locations":["East
+        US"],"requiredFeatures":["Microsoft.Contoso/RPaaSBridge"],"extensions":[{"endpointUri":"https://k8bridge.unitedstates.production.fusion.azure.com/","extensionCategories":["ResourceCreationBegin","ResourceDeletionBegin"]}]},{"apiVersions":["2020-01-01-preview"],"locations":["West
+        Europe"],"requiredFeatures":["Microsoft.Contoso/RPaaSBridge"],"extensions":[{"endpointUri":"https://k8bridge.europe.production.fusion.azure.com/","extensionCategories":["ResourceCreationBegin","ResourceDeletionBegin"]}]}],"swaggerSpecifications":[{"apiVersions":["2020-01-01-preview"],"swaggerSpecFolderUri":"https://github.com/Azure/azure-rest-api-specs-pr/blob/RPSaaSMaster/specification/contoso/resource-manager/Microsoft.Contoso/"}],"enableAsyncOperation":true,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"extendedLocations":[{"type":"CustomLocation","supportedPolicy":"NotSpecified"}]},"name":"towers"},{"properties":{"name":"employees","routingType":"Default","regionality":"Regional","endpoints":[{"apiVersions":["2018-11-01-preview","2020-01-01-preview","2019-01-01"],"locations":["West
+        US","West Central US","West Europe","Southeast Asia","West US 2","East US
+        2 EUAP","North Europe","East US","East Asia"],"requiredFeatures":["Microsoft.Contoso/RPaaSSampleApp"]}],"swaggerSpecifications":[{"apiVersions":["2018-11-01-preview","2020-01-01-preview","2019-01-01"],"swaggerSpecFolderUri":"https://github.com/Azure/azure-rest-api-specs-pr/blob/RPSaaSMaster/specification/rpsaas/resource-manager/Microsoft.Contoso/"}],"enableAsyncOperation":true,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"resourceMovePolicy":{"validationRequired":false,"crossResourceGroupMoveEnabled":true,"crossSubscriptionMoveEnabled":true}},"name":"employees"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5951'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 01:41:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub resource-type-registration delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --provider-namespace --resource-type
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso/resourcetypeRegistrations/employees?api-version=2020-11-20
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 13 Jan 2021 01:41:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"routingType": "Default", "regionality": "Regional", "endpoints":
+      [{"apiVersions": ["2018-11-01-preview", "2020-01-01-preview", "2019-01-01"],
+      "locations": ["West US", "West Central US", "West Europe", "Southeast Asia",
+      "West US 2", "East US 2 EUAP", "North Europe", "East US", "East Asia"], "requiredFeatures":
+      ["Microsoft.Contoso/RPaaSSampleApp"]}], "swaggerSpecifications": [{"apiVersions":
+      ["2018-11-01-preview", "2020-01-01-preview", "2019-01-01"], "swaggerSpecFolderUri":
+      "https://github.com/Azure/azure-rest-api-specs-pr/blob/RPSaaSMaster/specification/rpsaas/resource-manager/Microsoft.Contoso/"}],
+      "enableAsyncOperation": true, "resourceMovePolicy": {"validationRequired": false,
+      "crossResourceGroupMoveEnabled": true, "crossSubscriptionMoveEnabled": true}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub resource-type-registration create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '783'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --endpoints --regionality --routing-type --swagger-specifications --provider-namespace
+        --enable-async-operation --resource-move-policy --resource-type
+      User-Agent:
+      - AZURECLI/2.15.0 azsdk-python-providerhub/unknown Python/3.8.6 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Microsoft.Contoso/resourcetypeRegistrations/employees?api-version=2020-11-20
+  response:
+    body:
+      string: '{"properties":{"name":"employees","routingType":"Default","regionality":"Regional","endpoints":[{"apiVersions":["2018-11-01-preview","2020-01-01-preview","2019-01-01"],"locations":["West
+        US","West Central US","West Europe","Southeast Asia","West US 2","East US
+        2 EUAP","North Europe","East US","East Asia"],"requiredFeatures":["Microsoft.Contoso/RPaaSSampleApp"]}],"swaggerSpecifications":[{"apiVersions":["2018-11-01-preview","2020-01-01-preview","2019-01-01"],"swaggerSpecFolderUri":"https://github.com/Azure/azure-rest-api-specs-pr/blob/RPSaaSMaster/specification/rpsaas/resource-manager/Microsoft.Contoso/"}],"enableAsyncOperation":true,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"resourceMovePolicy":{"validationRequired":false,"crossResourceGroupMoveEnabled":true,"crossSubscriptionMoveEnabled":true}},"name":"employees"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '844'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Jan 2021 01:42:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+version: 1
