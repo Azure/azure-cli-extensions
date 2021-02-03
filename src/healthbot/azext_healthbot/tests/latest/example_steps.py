@@ -62,8 +62,8 @@ def step_update(test, rg, rg_2, checks=None):
     if checks is None:
         checks = []
     test.cmd('az healthbot update '
-             '--bot-name "{myBot}" '
-             '--name "F0" '
+             '--name "{myBot}" '
+             '--sku "F0" '
              '--resource-group "{rg_2}"',
              checks=checks)
 
