@@ -8,6 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
+
 def validate_resource_forest_settings(namespace):
     if not namespace.settings:
         return
