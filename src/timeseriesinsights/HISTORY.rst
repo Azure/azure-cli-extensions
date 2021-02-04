@@ -5,7 +5,9 @@ Release History
 
 0.2.0
 ++++++
-* Breaking Change: use track2 SDK
+* [BREAKING CHANGE] Deprecate ``az timeseriesinsights`` command group, add a command group ``az tsi``
+* ``az tsi environment`` support ``gen1 environment`` and ``gen2 environment``
+* Add command group `az tsi reference-data-set`
 
 0.1.3
 ++++++

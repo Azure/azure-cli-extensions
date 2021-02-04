@@ -14,7 +14,7 @@ helps['tsi'] = """
 
 helps['tsi environment'] = """
     type: group
-    short-summary: Manage environment with timeseriesinsights
+    short-summary: Manage environment with Azure Time Series Insights.
 """
 
 helps['tsi environment list'] = """
@@ -141,7 +141,7 @@ available for query from the warm store.
         text: |-
                az tsi environment gen2 create --name "env2" --location westus --resource-group "rg1" \
                --sku name="L1" capacity=1 --time-series-id-properties name=idName type=String \
-               --storage-configuration account-name=your-account-name  management-key=your-account-key
+               --storage-configuration account-name=your-account-name management-key=your-account-key
 """
 
 helps['tsi environment gen2 update'] = """
