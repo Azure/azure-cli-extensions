@@ -25,7 +25,7 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
 
 
 class AddonProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The state of the add-on provisioning
+    """The state of the addon provisioning
     """
 
     SUCCEEDED = "Succeeded"
@@ -35,7 +35,7 @@ class AddonProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)
     UPDATING = "Updating"
 
 class AddonType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The type of private cloud add-on
+    """The type of private cloud addon
     """
 
     SRM = "SRM"

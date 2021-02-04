@@ -181,7 +181,7 @@ class WorkloadNetworksOperations:
         return deserialized
     get_segment.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/segments/{segmentId}'}  # type: ignore
 
-    async def _create_or_update_segment_initial(
+    async def _create_segments_initial(
         self,
         resource_group_name: str,
         private_cloud_name: str,
@@ -199,7 +199,7 @@ class WorkloadNetworksOperations:
         accept = "application/json"
 
         # Construct URL
-        url = self._create_or_update_segment_initial.metadata['url']  # type: ignore
+        url = self._create_segments_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
@@ -238,9 +238,144 @@ class WorkloadNetworksOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_segment_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/segments/{segmentId}'}  # type: ignore
+    _create_segments_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/segments/{segmentId}'}  # type: ignore
 
-    async def begin_create_or_update_segment(
+    async def begin_create_segments(
+        self,
+        resource_group_name: str,
+        private_cloud_name: str,
+        segment_id: str,
+        workload_network_segment: "_models.WorkloadNetworkSegment",
+        **kwargs
+    ) -> AsyncLROPoller["_models.WorkloadNetworkSegment"]:
+        """Create a segment by id in a private cloud workload network.
+
+        Create a segment by id in a private cloud workload network.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+        :type resource_group_name: str
+        :param private_cloud_name: Name of the private cloud.
+        :type private_cloud_name: str
+        :param segment_id: NSX Segment identifier. Generally the same as the Segment's display name.
+        :type segment_id: str
+        :param workload_network_segment: NSX Segment.
+        :type workload_network_segment: ~avs_client.models.WorkloadNetworkSegment
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either WorkloadNetworkSegment or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~avs_client.models.WorkloadNetworkSegment]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkSegment"]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._create_segments_initial(
+                resource_group_name=resource_group_name,
+                private_cloud_name=private_cloud_name,
+                segment_id=segment_id,
+                workload_network_segment=workload_network_segment,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize('WorkloadNetworkSegment', pipeline_response)
+
+            if cls:
+                return cls(pipeline_response, deserialized, {})
+            return deserialized
+
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'segmentId': self._serialize.url("segment_id", segment_id, 'str'),
+        }
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = AsyncNoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_create_segments.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/segments/{segmentId}'}  # type: ignore
+
+    async def _update_segments_initial(
+        self,
+        resource_group_name: str,
+        private_cloud_name: str,
+        segment_id: str,
+        workload_network_segment: "_models.WorkloadNetworkSegment",
+        **kwargs
+    ) -> Optional["_models.WorkloadNetworkSegment"]:
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.WorkloadNetworkSegment"]]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-01-01-preview"
+        content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
+
+        # Construct URL
+        url = self._update_segments_initial.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
+            'segmentId': self._serialize.url("segment_id", segment_id, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(workload_network_segment, 'WorkloadNetworkSegment')
+        body_content_kwargs['content'] = body_content
+        request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 202]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        deserialized = None
+        if response.status_code == 200:
+            deserialized = self._deserialize('WorkloadNetworkSegment', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    _update_segments_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/segments/{segmentId}'}  # type: ignore
+
+    async def begin_update_segments(
         self,
         resource_group_name: str,
         private_cloud_name: str,
@@ -278,7 +413,7 @@ class WorkloadNetworksOperations:
         )
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
-            raw_result = await self._create_or_update_segment_initial(
+            raw_result = await self._update_segments_initial(
                 resource_group_name=resource_group_name,
                 private_cloud_name=private_cloud_name,
                 segment_id=segment_id,
@@ -316,140 +451,7 @@ class WorkloadNetworksOperations:
             )
         else:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update_segment.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/segments/{segmentId}'}  # type: ignore
-
-    async def _update_segment_initial(
-        self,
-        resource_group_name: str,
-        private_cloud_name: str,
-        segment_id: str,
-        workload_network_segment: "_models.WorkloadNetworkSegment",
-        **kwargs
-    ) -> "_models.WorkloadNetworkSegment":
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkSegment"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-01-01-preview"
-        content_type = kwargs.pop("content_type", "application/json")
-        accept = "application/json"
-
-        # Construct URL
-        url = self._update_segment_initial.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'segmentId': self._serialize.url("segment_id", segment_id, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(workload_network_segment, 'WorkloadNetworkSegment')
-        body_content_kwargs['content'] = body_content
-        request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
-        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize('WorkloadNetworkSegment', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-    _update_segment_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/segments/{segmentId}'}  # type: ignore
-
-    async def begin_update_segment(
-        self,
-        resource_group_name: str,
-        private_cloud_name: str,
-        segment_id: str,
-        workload_network_segment: "_models.WorkloadNetworkSegment",
-        **kwargs
-    ) -> AsyncLROPoller["_models.WorkloadNetworkSegment"]:
-        """Update a segment by id in a private cloud workload network.
-
-        Update a segment by id in a private cloud workload network.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-        :type resource_group_name: str
-        :param private_cloud_name: Name of the private cloud.
-        :type private_cloud_name: str
-        :param segment_id: NSX Segment identifier. Generally the same as the Segment's display name.
-        :type segment_id: str
-        :param workload_network_segment: NSX Segment.
-        :type workload_network_segment: ~avs_client.models.WorkloadNetworkSegment
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of AsyncLROPoller that returns either WorkloadNetworkSegment or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~avs_client.models.WorkloadNetworkSegment]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkSegment"]
-        lro_delay = kwargs.pop(
-            'polling_interval',
-            self._config.polling_interval
-        )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
-        if cont_token is None:
-            raw_result = await self._update_segment_initial(
-                resource_group_name=resource_group_name,
-                private_cloud_name=private_cloud_name,
-                segment_id=segment_id,
-                workload_network_segment=workload_network_segment,
-                cls=lambda x,y,z: x,
-                **kwargs
-            )
-
-        kwargs.pop('error_map', None)
-        kwargs.pop('content_type', None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('WorkloadNetworkSegment', pipeline_response)
-
-            if cls:
-                return cls(pipeline_response, deserialized, {})
-            return deserialized
-
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'segmentId': self._serialize.url("segment_id", segment_id, 'str'),
-        }
-
-        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
-        elif polling is False: polling_method = AsyncNoPolling()
-        else: polling_method = polling
-        if cont_token:
-            return AsyncLROPoller.from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output
-            )
-        else:
-            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_update_segment.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/segments/{segmentId}'}  # type: ignore
+    begin_update_segments.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/segments/{segmentId}'}  # type: ignore
 
     async def _delete_segment_initial(
         self,
@@ -488,7 +490,7 @@ class WorkloadNetworksOperations:
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 204]:
+        if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
@@ -574,9 +576,9 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         **kwargs
     ) -> AsyncIterable["_models.WorkloadNetworkDhcpList"]:
-        """List DHCP configurations in a private cloud workload network.
+        """List dhcp in a private cloud workload network.
 
-        List DHCP configurations in a private cloud workload network.
+        List dhcp in a private cloud workload network.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -651,9 +653,9 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         **kwargs
     ) -> "_models.WorkloadNetworkDhcp":
-        """Get a DHCP configuration by id in a private cloud workload network.
+        """Get dhcp by id in a private cloud workload network.
 
-        Get a DHCP configuration by id in a private cloud workload network.
+        Get dhcp by id in a private cloud workload network.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -708,7 +710,7 @@ class WorkloadNetworksOperations:
         return deserialized
     get_dhcp.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/dhcpConfigurations/{dhcpId}'}  # type: ignore
 
-    async def _create_or_update_dhcp_initial(
+    async def _create_dhcp_initial(
         self,
         resource_group_name: str,
         private_cloud_name: str,
@@ -726,7 +728,7 @@ class WorkloadNetworksOperations:
         accept = "application/json"
 
         # Construct URL
-        url = self._create_or_update_dhcp_initial.metadata['url']  # type: ignore
+        url = self._create_dhcp_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
@@ -765,9 +767,9 @@ class WorkloadNetworksOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_dhcp_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/dhcpConfigurations/{dhcpId}'}  # type: ignore
+    _create_dhcp_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/dhcpConfigurations/{dhcpId}'}  # type: ignore
 
-    async def begin_create_or_update_dhcp(
+    async def begin_create_dhcp(
         self,
         resource_group_name: str,
         private_cloud_name: str,
@@ -775,9 +777,9 @@ class WorkloadNetworksOperations:
         workload_network_dhcp: "_models.WorkloadNetworkDhcp",
         **kwargs
     ) -> AsyncLROPoller["_models.WorkloadNetworkDhcp"]:
-        """Create a DHCP configuration by id in a private cloud workload network.
+        """Create dhcp by id in a private cloud workload network.
 
-        Create a DHCP configuration by id in a private cloud workload network.
+        Create dhcp by id in a private cloud workload network.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -805,7 +807,7 @@ class WorkloadNetworksOperations:
         )
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
-            raw_result = await self._create_or_update_dhcp_initial(
+            raw_result = await self._create_dhcp_initial(
                 resource_group_name=resource_group_name,
                 private_cloud_name=private_cloud_name,
                 dhcp_id=dhcp_id,
@@ -843,7 +845,7 @@ class WorkloadNetworksOperations:
             )
         else:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update_dhcp.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/dhcpConfigurations/{dhcpId}'}  # type: ignore
+    begin_create_dhcp.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/dhcpConfigurations/{dhcpId}'}  # type: ignore
 
     async def _update_dhcp_initial(
         self,
@@ -852,8 +854,8 @@ class WorkloadNetworksOperations:
         dhcp_id: str,
         workload_network_dhcp: "_models.WorkloadNetworkDhcp",
         **kwargs
-    ) -> "_models.WorkloadNetworkDhcp":
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkDhcp"]
+    ) -> Optional["_models.WorkloadNetworkDhcp"]:
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.WorkloadNetworkDhcp"]]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -888,11 +890,13 @@ class WorkloadNetworksOperations:
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('WorkloadNetworkDhcp', pipeline_response)
+        deserialized = None
+        if response.status_code == 200:
+            deserialized = self._deserialize('WorkloadNetworkDhcp', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -908,9 +912,9 @@ class WorkloadNetworksOperations:
         workload_network_dhcp: "_models.WorkloadNetworkDhcp",
         **kwargs
     ) -> AsyncLROPoller["_models.WorkloadNetworkDhcp"]:
-        """Update a DHCP configuration by id in a private cloud workload network.
+        """Create or update dhcp by id in a private cloud workload network.
 
-        Update a DHCP configuration by id in a private cloud workload network.
+        Create or update dhcp by id in a private cloud workload network.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -1015,7 +1019,7 @@ class WorkloadNetworksOperations:
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 204]:
+        if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
@@ -1311,7 +1315,7 @@ class WorkloadNetworksOperations:
         )
     list_port_mirroring.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/portMirroringProfiles'}  # type: ignore
 
-    async def get_port_mirroring_profiles(
+    async def get_port_mirroring(
         self,
         resource_group_name: str,
         private_cloud_name: str,
@@ -1343,7 +1347,7 @@ class WorkloadNetworksOperations:
         accept = "application/json"
 
         # Construct URL
-        url = self.get_port_mirroring_profiles.metadata['url']  # type: ignore
+        url = self.get_port_mirroring.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
@@ -1374,7 +1378,7 @@ class WorkloadNetworksOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get_port_mirroring_profiles.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/portMirroringProfiles/{portMirroringId}'}  # type: ignore
+    get_port_mirroring.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/portMirroringProfiles/{portMirroringId}'}  # type: ignore
 
     async def _create_port_mirroring_initial(
         self,
@@ -1443,9 +1447,9 @@ class WorkloadNetworksOperations:
         workload_network_port_mirroring: "_models.WorkloadNetworkPortMirroring",
         **kwargs
     ) -> AsyncLROPoller["_models.WorkloadNetworkPortMirroring"]:
-        """Create or update a port mirroring profile by id in a private cloud workload network.
+        """Create a port mirroring profile by id in a private cloud workload network.
 
-        Create or update a port mirroring profile by id in a private cloud workload network.
+        Create a port mirroring profile by id in a private cloud workload network.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -1521,8 +1525,8 @@ class WorkloadNetworksOperations:
         port_mirroring_id: str,
         workload_network_port_mirroring: "_models.WorkloadNetworkPortMirroring",
         **kwargs
-    ) -> "_models.WorkloadNetworkPortMirroring":
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkPortMirroring"]
+    ) -> Optional["_models.WorkloadNetworkPortMirroring"]:
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.WorkloadNetworkPortMirroring"]]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -1557,11 +1561,13 @@ class WorkloadNetworksOperations:
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('WorkloadNetworkPortMirroring', pipeline_response)
+        deserialized = None
+        if response.status_code == 200:
+            deserialized = self._deserialize('WorkloadNetworkPortMirroring', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -1685,7 +1691,7 @@ class WorkloadNetworksOperations:
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 204]:
+        if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
@@ -1772,9 +1778,9 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         **kwargs
     ) -> AsyncIterable["_models.WorkloadNetworkVMGroupsList"]:
-        """List of VM groups in a private cloud workload network.
+        """List of vm groups in a private cloud workload network.
 
-        List of VM groups in a private cloud workload network.
+        List of vm groups in a private cloud workload network.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -1849,9 +1855,9 @@ class WorkloadNetworksOperations:
         vm_group_id: str,
         **kwargs
     ) -> "_models.WorkloadNetworkVMGroup":
-        """Get a VM group by id in a private cloud workload network.
+        """Get a vm group by id in a private cloud workload network.
 
-        Get a VM group by id in a private cloud workload network.
+        Get a vm group by id in a private cloud workload network.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -1906,7 +1912,7 @@ class WorkloadNetworksOperations:
         return deserialized
     get_vm_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/vmGroups/{vmGroupId}'}  # type: ignore
 
-    async def _create_or_update_vm_group_initial(
+    async def _create_vm_group_initial(
         self,
         resource_group_name: str,
         private_cloud_name: str,
@@ -1924,7 +1930,7 @@ class WorkloadNetworksOperations:
         accept = "application/json"
 
         # Construct URL
-        url = self._create_or_update_vm_group_initial.metadata['url']  # type: ignore
+        url = self._create_vm_group_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
@@ -1963,9 +1969,9 @@ class WorkloadNetworksOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_vm_group_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/vmGroups/{vmGroupId}'}  # type: ignore
+    _create_vm_group_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/vmGroups/{vmGroupId}'}  # type: ignore
 
-    async def begin_create_or_update_vm_group(
+    async def begin_create_vm_group(
         self,
         resource_group_name: str,
         private_cloud_name: str,
@@ -1973,9 +1979,9 @@ class WorkloadNetworksOperations:
         workload_network_vm_group: "_models.WorkloadNetworkVMGroup",
         **kwargs
     ) -> AsyncLROPoller["_models.WorkloadNetworkVMGroup"]:
-        """Create a VM group by id in a private cloud workload network.
+        """Create a vm group by id in a private cloud workload network.
 
-        Create a VM group by id in a private cloud workload network.
+        Create a vm group by id in a private cloud workload network.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -2003,7 +2009,7 @@ class WorkloadNetworksOperations:
         )
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
-            raw_result = await self._create_or_update_vm_group_initial(
+            raw_result = await self._create_vm_group_initial(
                 resource_group_name=resource_group_name,
                 private_cloud_name=private_cloud_name,
                 vm_group_id=vm_group_id,
@@ -2041,7 +2047,7 @@ class WorkloadNetworksOperations:
             )
         else:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update_vm_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/vmGroups/{vmGroupId}'}  # type: ignore
+    begin_create_vm_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/vmGroups/{vmGroupId}'}  # type: ignore
 
     async def _update_vm_group_initial(
         self,
@@ -2050,8 +2056,8 @@ class WorkloadNetworksOperations:
         vm_group_id: str,
         workload_network_vm_group: "_models.WorkloadNetworkVMGroup",
         **kwargs
-    ) -> "_models.WorkloadNetworkVMGroup":
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkVMGroup"]
+    ) -> Optional["_models.WorkloadNetworkVMGroup"]:
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.WorkloadNetworkVMGroup"]]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -2086,11 +2092,13 @@ class WorkloadNetworksOperations:
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('WorkloadNetworkVMGroup', pipeline_response)
+        deserialized = None
+        if response.status_code == 200:
+            deserialized = self._deserialize('WorkloadNetworkVMGroup', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -2106,9 +2114,9 @@ class WorkloadNetworksOperations:
         workload_network_vm_group: "_models.WorkloadNetworkVMGroup",
         **kwargs
     ) -> AsyncLROPoller["_models.WorkloadNetworkVMGroup"]:
-        """Update a VM group by id in a private cloud workload network.
+        """Create or update a vm group by id in a private cloud workload network.
 
-        Update a VM group by id in a private cloud workload network.
+        Create or update a vm group by id in a private cloud workload network.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -2213,7 +2221,7 @@ class WorkloadNetworksOperations:
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 204]:
+        if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
@@ -2229,9 +2237,9 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         **kwargs
     ) -> AsyncLROPoller[None]:
-        """Delete a VM group by id in a private cloud workload network.
+        """Delete a vm group by id in a private cloud workload network.
 
-        Delete a VM group by id in a private cloud workload network.
+        Delete a vm group by id in a private cloud workload network.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -2299,9 +2307,9 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         **kwargs
     ) -> AsyncIterable["_models.WorkloadNetworkVirtualMachinesList"]:
-        """List virtual machines in a private cloud workload network.
+        """List of virtual machines in a private cloud workload network.
 
-        List virtual machines in a private cloud workload network.
+        List of virtual machines in a private cloud workload network.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -2439,9 +2447,9 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         **kwargs
     ) -> AsyncIterable["_models.WorkloadNetworkDnsServicesList"]:
-        """List DNS services in a private cloud workload network.
+        """List of DNS services in a private cloud workload network.
 
-        List DNS services in a private cloud workload network.
+        List of DNS services in a private cloud workload network.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -2574,7 +2582,7 @@ class WorkloadNetworksOperations:
         return deserialized
     get_dns_service.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/dnsServices/{dnsServiceId}'}  # type: ignore
 
-    async def _create_or_update_dns_service_initial(
+    async def _create_dns_service_initial(
         self,
         resource_group_name: str,
         private_cloud_name: str,
@@ -2592,7 +2600,7 @@ class WorkloadNetworksOperations:
         accept = "application/json"
 
         # Construct URL
-        url = self._create_or_update_dns_service_initial.metadata['url']  # type: ignore
+        url = self._create_dns_service_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
@@ -2631,9 +2639,9 @@ class WorkloadNetworksOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_dns_service_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/dnsServices/{dnsServiceId}'}  # type: ignore
+    _create_dns_service_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/dnsServices/{dnsServiceId}'}  # type: ignore
 
-    async def begin_create_or_update_dns_service(
+    async def begin_create_dns_service(
         self,
         resource_group_name: str,
         private_cloud_name: str,
@@ -2641,9 +2649,9 @@ class WorkloadNetworksOperations:
         workload_network_dns_service: "_models.WorkloadNetworkDnsService",
         **kwargs
     ) -> AsyncLROPoller["_models.WorkloadNetworkDnsService"]:
-        """Create or update a DNS service by id in a private cloud workload network.
+        """Create a DNS service by id in a private cloud workload network.
 
-        Create or update a DNS service by id in a private cloud workload network.
+        Create a DNS service by id in a private cloud workload network.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -2672,7 +2680,7 @@ class WorkloadNetworksOperations:
         )
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
-            raw_result = await self._create_or_update_dns_service_initial(
+            raw_result = await self._create_dns_service_initial(
                 resource_group_name=resource_group_name,
                 private_cloud_name=private_cloud_name,
                 dns_service_id=dns_service_id,
@@ -2710,7 +2718,7 @@ class WorkloadNetworksOperations:
             )
         else:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update_dns_service.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/dnsServices/{dnsServiceId}'}  # type: ignore
+    begin_create_dns_service.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/dnsServices/{dnsServiceId}'}  # type: ignore
 
     async def _update_dns_service_initial(
         self,
@@ -2719,8 +2727,8 @@ class WorkloadNetworksOperations:
         dns_service_id: str,
         workload_network_dns_service: "_models.WorkloadNetworkDnsService",
         **kwargs
-    ) -> "_models.WorkloadNetworkDnsService":
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkDnsService"]
+    ) -> Optional["_models.WorkloadNetworkDnsService"]:
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.WorkloadNetworkDnsService"]]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -2755,11 +2763,13 @@ class WorkloadNetworksOperations:
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('WorkloadNetworkDnsService', pipeline_response)
+        deserialized = None
+        if response.status_code == 200:
+            deserialized = self._deserialize('WorkloadNetworkDnsService', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -2775,9 +2785,9 @@ class WorkloadNetworksOperations:
         workload_network_dns_service: "_models.WorkloadNetworkDnsService",
         **kwargs
     ) -> AsyncLROPoller["_models.WorkloadNetworkDnsService"]:
-        """Update a DNS service by id in a private cloud workload network.
+        """Create or update a DNS service by id in a private cloud workload network.
 
-        Update a DNS service by id in a private cloud workload network.
+        Create or update a DNS service by id in a private cloud workload network.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -2883,7 +2893,7 @@ class WorkloadNetworksOperations:
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 204]:
+        if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
@@ -2970,9 +2980,9 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         **kwargs
     ) -> AsyncIterable["_models.WorkloadNetworkDnsZonesList"]:
-        """List DNS zones in a private cloud workload network.
+        """List of DNS zones in a private cloud workload network.
 
-        List DNS zones in a private cloud workload network.
+        List of DNS zones in a private cloud workload network.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -3104,7 +3114,7 @@ class WorkloadNetworksOperations:
         return deserialized
     get_dns_zone.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/dnsZones/{dnsZoneId}'}  # type: ignore
 
-    async def _create_or_update_dns_zone_initial(
+    async def _create_dns_zone_initial(
         self,
         resource_group_name: str,
         private_cloud_name: str,
@@ -3122,7 +3132,7 @@ class WorkloadNetworksOperations:
         accept = "application/json"
 
         # Construct URL
-        url = self._create_or_update_dns_zone_initial.metadata['url']  # type: ignore
+        url = self._create_dns_zone_initial.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
@@ -3161,9 +3171,9 @@ class WorkloadNetworksOperations:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_dns_zone_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/dnsZones/{dnsZoneId}'}  # type: ignore
+    _create_dns_zone_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/dnsZones/{dnsZoneId}'}  # type: ignore
 
-    async def begin_create_or_update_dns_zone(
+    async def begin_create_dns_zone(
         self,
         resource_group_name: str,
         private_cloud_name: str,
@@ -3201,7 +3211,7 @@ class WorkloadNetworksOperations:
         )
         cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
         if cont_token is None:
-            raw_result = await self._create_or_update_dns_zone_initial(
+            raw_result = await self._create_dns_zone_initial(
                 resource_group_name=resource_group_name,
                 private_cloud_name=private_cloud_name,
                 dns_zone_id=dns_zone_id,
@@ -3239,7 +3249,7 @@ class WorkloadNetworksOperations:
             )
         else:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update_dns_zone.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/dnsZones/{dnsZoneId}'}  # type: ignore
+    begin_create_dns_zone.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/workloadNetworks/default/dnsZones/{dnsZoneId}'}  # type: ignore
 
     async def _update_dns_zone_initial(
         self,
@@ -3248,8 +3258,8 @@ class WorkloadNetworksOperations:
         dns_zone_id: str,
         workload_network_dns_zone: "_models.WorkloadNetworkDnsZone",
         **kwargs
-    ) -> "_models.WorkloadNetworkDnsZone":
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkDnsZone"]
+    ) -> Optional["_models.WorkloadNetworkDnsZone"]:
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.WorkloadNetworkDnsZone"]]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -3284,11 +3294,13 @@ class WorkloadNetworksOperations:
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200]:
+        if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('WorkloadNetworkDnsZone', pipeline_response)
+        deserialized = None
+        if response.status_code == 200:
+            deserialized = self._deserialize('WorkloadNetworkDnsZone', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -3304,9 +3316,9 @@ class WorkloadNetworksOperations:
         workload_network_dns_zone: "_models.WorkloadNetworkDnsZone",
         **kwargs
     ) -> AsyncLROPoller["_models.WorkloadNetworkDnsZone"]:
-        """Update a DNS zone by id in a private cloud workload network.
+        """Create or update a DNS zone by id in a private cloud workload network.
 
-        Update a DNS zone by id in a private cloud workload network.
+        Create or update a DNS zone by id in a private cloud workload network.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -3411,7 +3423,7 @@ class WorkloadNetworksOperations:
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 204]:
+        if response.status_code not in [200, 202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 

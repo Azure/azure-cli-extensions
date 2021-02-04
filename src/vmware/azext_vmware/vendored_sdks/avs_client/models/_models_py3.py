@@ -47,7 +47,7 @@ class Resource(msrest.serialization.Model):
 
 
 class Addon(Resource):
-    """An add-on resource.
+    """An addon resource.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -59,9 +59,9 @@ class Addon(Resource):
     :vartype type: str
     :param license_key: The SRM license.
     :type license_key: str
-    :param addon_type: The type of private cloud add-on. Possible values include: "SRM", "VR".
+    :param addon_type: The type of private cloud addon. Possible values include: "SRM", "VR".
     :type addon_type: str or ~avs_client.models.AddonType
-    :ivar provisioning_state: The state of the add-on provisioning. Possible values include:
+    :ivar provisioning_state: The state of the addon provisioning. Possible values include:
      "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
     :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
     """
@@ -96,7 +96,7 @@ class Addon(Resource):
 
 
 class AddonList(msrest.serialization.Model):
-    """A paged list of add-ons.
+    """A paged list of addons.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -126,7 +126,7 @@ class AddonList(msrest.serialization.Model):
 
 
 class AddonSrmProperties(msrest.serialization.Model):
-    """The properties of an SRM add-on that may be updated.
+    """The properties of an SRM addon that may be updated.
 
     :param license_key: The SRM license.
     :type license_key: str
@@ -147,15 +147,15 @@ class AddonSrmProperties(msrest.serialization.Model):
 
 
 class AddonProperties(AddonSrmProperties):
-    """The properties of an add-on that may be updated.
+    """The properties of an addon that may be updated.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param license_key: The SRM license.
     :type license_key: str
-    :param addon_type: The type of private cloud add-on. Possible values include: "SRM", "VR".
+    :param addon_type: The type of private cloud addon. Possible values include: "SRM", "VR".
     :type addon_type: str or ~avs_client.models.AddonType
-    :ivar provisioning_state: The state of the add-on provisioning. Possible values include:
+    :ivar provisioning_state: The state of the addon provisioning. Possible values include:
      "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
     :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
     """
@@ -183,15 +183,15 @@ class AddonProperties(AddonSrmProperties):
 
 
 class AddonUpdate(msrest.serialization.Model):
-    """An update of an add-on resource.
+    """An update of an addon resource.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param license_key: The SRM license.
     :type license_key: str
-    :param addon_type: The type of private cloud add-on. Possible values include: "SRM", "VR".
+    :param addon_type: The type of private cloud addon. Possible values include: "SRM", "VR".
     :type addon_type: str or ~avs_client.models.AddonType
-    :ivar provisioning_state: The state of the add-on provisioning. Possible values include:
+    :ivar provisioning_state: The state of the addon provisioning. Possible values include:
      "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
     :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
     """
