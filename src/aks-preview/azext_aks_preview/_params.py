@@ -10,7 +10,7 @@ import platform
 
 from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import (
-    file_type, get_resource_name_completion_list, name_type, tags_type, zones_type, get_enum_type)
+    file_type, get_resource_name_completion_list, get_three_state_flag, name_type, tags_type, zones_type, get_enum_type)
 from knack.arguments import CLIArgumentType
 
 from ._completers import (
@@ -122,6 +122,9 @@ def load_arguments(self, _):
         c.argument('appgw_id', options_list=['--appgw-id'], arg_group='Application Gateway')
         c.argument('appgw_subnet_id', options_list=['--appgw-subnet-id'], arg_group='Application Gateway')
         c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
+        c.argument('aci_subnet_name', type=str)
+        c.argument('enable_encryption_at_host', arg_type=get_three_state_flag(), help='Enable EncryptionAtHost.')
+        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('aks update') as c:
         c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
@@ -131,6 +134,7 @@ def load_arguments(self, _):
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
         c.argument('uptime_sla', action='store_true')
+        c.argument('no_uptime_sla', action='store_true')
         c.argument('load_balancer_managed_outbound_ip_count', type=int)
         c.argument('load_balancer_outbound_ips', type=str, validator=validate_load_balancer_outbound_ips)
         c.argument('load_balancer_outbound_ip_prefixes', type=str, validator=validate_load_balancer_outbound_ip_prefixes)
@@ -184,6 +188,7 @@ def load_arguments(self, _):
             c.argument('pod_subnet_id', type=str, validator=validate_pod_subnet_id)
             c.argument('kubelet_config', type=str)
             c.argument('linux_os_config', type=str)
+            c.argument('enable_encryption_at_host', options_list=['--enable-encryption-at-host'], action='store_true')
 
     for scope in ['aks nodepool show', 'aks nodepool delete', 'aks nodepool scale', 'aks nodepool upgrade', 'aks nodepool update']:
         with self.argument_context(scope) as c:

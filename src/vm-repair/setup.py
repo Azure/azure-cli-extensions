@@ -41,6 +41,7 @@ setup(
         'azext_vm_repair': [
             'scripts/linux-run-driver.sh',
             'scripts/win-run-driver.ps1',
+            'scripts/enable-nestedhyperv.ps1',
             'scripts/linux-mount-encrypted-disk.sh',
             'scripts/win-mount-encrypted-disk.ps1',
             'azext_metadata.json'

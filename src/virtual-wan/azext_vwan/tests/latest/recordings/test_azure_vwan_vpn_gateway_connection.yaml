@@ -13,15 +13,15 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-resource/12.0.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_vwan_vpn_gateway_connection000001?api-version=2020-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_vwan_vpn_gateway_connection000001?api-version=2020-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001","name":"cli_test_azure_vwan_vpn_gateway_connection000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2020-11-25T05:31:10Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001","name":"cli_test_azure_vwan_vpn_gateway_connection000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2021-01-22T02:41:54Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -30,7 +30,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:31:13 GMT
+      - Fri, 22 Jan 2021 02:41:57 GMT
       expires:
       - '-1'
       pragma:
@@ -62,26 +62,25 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualWans/test_vwan?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"name\": \"test_vwan\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualWans/test_vwan\"\
-        ,\r\n  \"etag\": \"W/\\\"a47f2ba8-7c67-4194-b1d6-fb6aaa56ba0c\\\"\",\r\n \
-        \ \"type\": \"Microsoft.Network/virtualWans\",\r\n  \"location\": \"westus\"\
-        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n \
-        \   \"disableVpnEncryption\": false,\r\n    \"allowBranchToBranchTraffic\"\
-        : true,\r\n    \"office365LocalBreakoutCategory\": \"None\",\r\n    \"type\"\
-        : \"Standard\"\r\n  }\r\n}"
+      string: "{\r\n  \"name\": \"test_vwan\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualWans/test_vwan\",\r\n
+        \ \"etag\": \"W/\\\"a661ce85-c0ae-4ed7-afb3-11d803519ce0\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/virtualWans\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Updating\",\r\n    \"disableVpnEncryption\":
+        false,\r\n    \"allowBranchToBranchTraffic\": true,\r\n    \"office365LocalBreakoutCategory\":
+        \"None\",\r\n    \"type\": \"Standard\"\r\n  }\r\n}"
     headers:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/d7fbd7b4-7f60-4611-a8b8-55c7809e37a2?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c41e0fc2-3c67-4273-8089-3998ce26b910?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -89,7 +88,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:31:19 GMT
+      - Fri, 22 Jan 2021 02:42:04 GMT
       expires:
       - '-1'
       pragma:
@@ -102,9 +101,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 6f11b541-6115-42bd-8406-ac9788eb860c
+      - abb920f9-a814-454d-b51e-43b92b07445a
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1197'
     status:
       code: 201
       message: Created
@@ -122,10 +121,10 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/d7fbd7b4-7f60-4611-a8b8-55c7809e37a2?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c41e0fc2-3c67-4273-8089-3998ce26b910?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -137,7 +136,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:31:30 GMT
+      - Fri, 22 Jan 2021 02:42:14 GMT
       expires:
       - '-1'
       pragma:
@@ -154,7 +153,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 365ed64e-c2f8-486e-b78f-741dc5a70be3
+      - ca9a5ced-0dec-41d8-ab7d-ef575139958e
     status:
       code: 200
       message: OK
@@ -172,19 +171,18 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualWans/test_vwan?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"name\": \"test_vwan\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualWans/test_vwan\"\
-        ,\r\n  \"etag\": \"W/\\\"f9698c74-2b38-4b32-b364-4d4894b3fcf6\\\"\",\r\n \
-        \ \"type\": \"Microsoft.Network/virtualWans\",\r\n  \"location\": \"westus\"\
-        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n\
-        \    \"disableVpnEncryption\": false,\r\n    \"allowBranchToBranchTraffic\"\
-        : true,\r\n    \"office365LocalBreakoutCategory\": \"None\",\r\n    \"type\"\
-        : \"Standard\"\r\n  }\r\n}"
+      string: "{\r\n  \"name\": \"test_vwan\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualWans/test_vwan\",\r\n
+        \ \"etag\": \"W/\\\"3e42d1fa-ed97-47cb-926e-76f5c4cae05f\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/virtualWans\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"disableVpnEncryption\":
+        false,\r\n    \"allowBranchToBranchTraffic\": true,\r\n    \"office365LocalBreakoutCategory\":
+        \"None\",\r\n    \"type\": \"Standard\"\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -193,9 +191,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:31:31 GMT
+      - Fri, 22 Jan 2021 02:42:15 GMT
       etag:
-      - W/"f9698c74-2b38-4b32-b364-4d4894b3fcf6"
+      - W/"3e42d1fa-ed97-47cb-926e-76f5c4cae05f"
       expires:
       - '-1'
       pragma:
@@ -212,7 +210,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 4f2694ef-7dcf-431d-b1e7-bb4f67dcadd4
+      - 6aaa5f64-9cb3-4827-a837-25a7d48a6be1
     status:
       code: 200
       message: OK
@@ -230,15 +228,15 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-resource/12.0.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_vwan_vpn_gateway_connection000001?api-version=2020-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_vwan_vpn_gateway_connection000001?api-version=2020-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001","name":"cli_test_azure_vwan_vpn_gateway_connection000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2020-11-25T05:31:10Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001","name":"cli_test_azure_vwan_vpn_gateway_connection000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2021-01-22T02:41:54Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -247,7 +245,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:31:31 GMT
+      - Fri, 22 Jan 2021 02:42:16 GMT
       expires:
       - '-1'
       pragma:
@@ -280,28 +278,27 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"name\": \"test_vhub\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub\"\
-        ,\r\n  \"etag\": \"W/\\\"0b11730e-c8af-48c2-891f-295efaf8bd2d\\\"\",\r\n \
-        \ \"type\": \"Microsoft.Network/virtualHubs\",\r\n  \"location\": \"westus\"\
-        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n \
-        \   \"virtualHubRouteTableV2s\": [],\r\n    \"addressPrefix\": \"10.0.1.0/24\"\
-        ,\r\n    \"virtualRouterAsn\": 0,\r\n    \"virtualRouterIps\": [],\r\n   \
-        \ \"routeTable\": {\r\n      \"routes\": []\r\n    },\r\n    \"virtualWan\"\
-        : {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualWans/test_vwan\"\
-        \r\n    },\r\n    \"routingState\": \"None\"\r\n  }\r\n}"
+      string: "{\r\n  \"name\": \"test_vhub\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub\",\r\n
+        \ \"etag\": \"W/\\\"d4eb84f0-b9de-4ca8-92ca-6963c988fa27\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/virtualHubs\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Updating\",\r\n    \"virtualHubRouteTableV2s\":
+        [],\r\n    \"addressPrefix\": \"10.0.1.0/24\",\r\n    \"virtualRouterAsn\":
+        0,\r\n    \"virtualRouterIps\": [],\r\n    \"routeTable\": {\r\n      \"routes\":
+        []\r\n    },\r\n    \"virtualWan\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualWans/test_vwan\"\r\n
+        \   },\r\n    \"routingState\": \"None\"\r\n  }\r\n}"
     headers:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2a0c4a10-76a3-4b26-a63b-c0cc0b4fee5e?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/7f5795db-9ca0-47e2-a62b-a130db83d65c?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -309,7 +306,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:31:38 GMT
+      - Fri, 22 Jan 2021 02:42:22 GMT
       expires:
       - '-1'
       pragma:
@@ -322,9 +319,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 54fc9b77-e1e0-48d9-af66-b2060d5a43e8
+      - 8ac35ebb-9ed6-434c-be95-abf9d6a9798e
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1196'
     status:
       code: 201
       message: Created
@@ -342,10 +339,10 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2a0c4a10-76a3-4b26-a63b-c0cc0b4fee5e?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/7f5795db-9ca0-47e2-a62b-a130db83d65c?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -357,7 +354,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:31:48 GMT
+      - Fri, 22 Jan 2021 02:42:33 GMT
       expires:
       - '-1'
       pragma:
@@ -374,7 +371,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 87a2ca11-8f27-44b5-b48e-9793fdac60f9
+      - 3870735a-a8ae-4137-a051-7183783e9090
     status:
       code: 200
       message: OK
@@ -392,10 +389,10 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2a0c4a10-76a3-4b26-a63b-c0cc0b4fee5e?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/7f5795db-9ca0-47e2-a62b-a130db83d65c?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -407,7 +404,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:31:58 GMT
+      - Fri, 22 Jan 2021 02:42:43 GMT
       expires:
       - '-1'
       pragma:
@@ -424,7 +421,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 223fb877-bd3f-4c92-b62f-9cb18a6e1a4a
+      - 32f86b90-b7a5-4428-b69a-d92ff8873492
     status:
       code: 200
       message: OK
@@ -442,10 +439,10 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2a0c4a10-76a3-4b26-a63b-c0cc0b4fee5e?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/7f5795db-9ca0-47e2-a62b-a130db83d65c?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -457,7 +454,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:32:20 GMT
+      - Fri, 22 Jan 2021 02:43:03 GMT
       expires:
       - '-1'
       pragma:
@@ -474,7 +471,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 81ce9a49-2267-4122-8ee4-b0fcedc0c9cf
+      - 0240ae28-0750-4afa-b909-c7661b61ea30
     status:
       code: 200
       message: OK
@@ -492,10 +489,10 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2a0c4a10-76a3-4b26-a63b-c0cc0b4fee5e?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/7f5795db-9ca0-47e2-a62b-a130db83d65c?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -507,7 +504,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:32:40 GMT
+      - Fri, 22 Jan 2021 02:43:26 GMT
       expires:
       - '-1'
       pragma:
@@ -524,7 +521,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - b7478c4e-5da1-420c-8f2a-eb2f284365cb
+      - acce9ce0-5d05-42aa-9592-dbeea8c77dc1
     status:
       code: 200
       message: OK
@@ -542,10 +539,10 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2a0c4a10-76a3-4b26-a63b-c0cc0b4fee5e?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/7f5795db-9ca0-47e2-a62b-a130db83d65c?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -557,7 +554,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:33:20 GMT
+      - Fri, 22 Jan 2021 02:44:06 GMT
       expires:
       - '-1'
       pragma:
@@ -574,7 +571,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 3eca2038-082d-4aaa-8906-06bfd6556849
+      - 2886a9dc-0545-4ebf-b640-d74a4e5616ac
     status:
       code: 200
       message: OK
@@ -592,10 +589,10 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2a0c4a10-76a3-4b26-a63b-c0cc0b4fee5e?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/7f5795db-9ca0-47e2-a62b-a130db83d65c?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -607,7 +604,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:34:00 GMT
+      - Fri, 22 Jan 2021 02:44:46 GMT
       expires:
       - '-1'
       pragma:
@@ -624,7 +621,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 7d007b5c-ceaf-4f03-b275-25c433104ff8
+      - 3a27b71a-e63e-424c-bd16-ba3c2d1c80a3
     status:
       code: 200
       message: OK
@@ -642,10 +639,10 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2a0c4a10-76a3-4b26-a63b-c0cc0b4fee5e?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/7f5795db-9ca0-47e2-a62b-a130db83d65c?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -657,7 +654,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:35:21 GMT
+      - Fri, 22 Jan 2021 02:46:07 GMT
       expires:
       - '-1'
       pragma:
@@ -674,7 +671,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 4db02a5b-d30e-402b-b6bf-79ad71494284
+      - f8145141-e722-4215-a56d-99c0b3048727
     status:
       code: 200
       message: OK
@@ -692,21 +689,20 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"name\": \"test_vhub\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub\"\
-        ,\r\n  \"etag\": \"W/\\\"c1f991cb-a070-4810-9184-4925551f5e0b\\\"\",\r\n \
-        \ \"type\": \"Microsoft.Network/virtualHubs\",\r\n  \"location\": \"westus\"\
-        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n\
-        \    \"virtualHubRouteTableV2s\": [],\r\n    \"addressPrefix\": \"10.0.1.0/24\"\
-        ,\r\n    \"virtualRouterAsn\": 0,\r\n    \"virtualRouterIps\": [],\r\n   \
-        \ \"routeTable\": {\r\n      \"routes\": []\r\n    },\r\n    \"virtualWan\"\
-        : {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualWans/test_vwan\"\
-        \r\n    },\r\n    \"routingState\": \"Provisioning\"\r\n  }\r\n}"
+      string: "{\r\n  \"name\": \"test_vhub\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub\",\r\n
+        \ \"etag\": \"W/\\\"c8662303-8876-413a-b168-eb99602788ff\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/virtualHubs\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"virtualHubRouteTableV2s\":
+        [],\r\n    \"addressPrefix\": \"10.0.1.0/24\",\r\n    \"virtualRouterAsn\":
+        0,\r\n    \"virtualRouterIps\": [],\r\n    \"routeTable\": {\r\n      \"routes\":
+        []\r\n    },\r\n    \"virtualWan\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualWans/test_vwan\"\r\n
+        \   },\r\n    \"routingState\": \"Provisioning\"\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -715,7 +711,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:35:21 GMT
+      - Fri, 22 Jan 2021 02:46:07 GMT
       expires:
       - '-1'
       pragma:
@@ -732,7 +728,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 4388f991-fb6e-4289-bc01-91e68e5dadbe
+      - b3cb72ed-4af1-4479-b6f8-1966f2bc19f3
     status:
       code: 200
       message: OK
@@ -754,23 +750,22 @@ interactions:
       ParameterSetName:
       - -g --vhub-name -n
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"name\": \"test_vhub_routing_1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\
-        ,\r\n  \"etag\": \"W/\\\"8e9a053a-b709-4418-84b4-ec83b862096e\\\"\",\r\n \
-        \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"\
-        routes\": [],\r\n    \"labels\": [],\r\n    \"associatedConnections\": [],\r\
-        \n    \"propagatingConnections\": []\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualHubs/hubRouteTables\"\
-        \r\n}"
+      string: "{\r\n  \"name\": \"test_vhub_routing_1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\",\r\n
+        \ \"etag\": \"W/\\\"ce1449bd-750b-41d0-aa70-0f2f0f666164\\\"\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Updating\",\r\n    \"routes\": [],\r\n    \"labels\":
+        [],\r\n    \"associatedConnections\": [],\r\n    \"propagatingConnections\":
+        []\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualHubs/hubRouteTables\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/8d6701c4-13cb-4620-9e44-957e6e8ab5c2?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/0ad4eb53-d9c0-4c0b-a43a-c91ad0f4eed9?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -778,7 +773,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:35:24 GMT
+      - Fri, 22 Jan 2021 02:46:08 GMT
       expires:
       - '-1'
       pragma:
@@ -791,7 +786,173 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 595109de-1b71-46d0-b3c4-6a3ec2776654
+      - 3e02cafe-bdb3-46ad-a019-995a962342a9
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vhub route-table create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vhub-name -n
+      User-Agent:
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/0ad4eb53-d9c0-4c0b-a43a-c91ad0f4eed9?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Jan 2021 02:46:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 2a13b2c2-d182-487b-90eb-ab17a7518067
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vhub route-table create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vhub-name -n
+      User-Agent:
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"test_vhub_routing_1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\",\r\n
+        \ \"etag\": \"W/\\\"781aa082-bd58-4ca6-9069-3388573f6ed6\\\"\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"routes\": [],\r\n
+        \   \"labels\": [],\r\n    \"associatedConnections\": [],\r\n    \"propagatingConnections\":
+        []\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualHubs/hubRouteTables\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '563'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Jan 2021 02:46:19 GMT
+      etag:
+      - W/"781aa082-bd58-4ca6-9069-3388573f6ed6"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 27aa905f-87b3-4efb-a350-3311b5cfbecc
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vhub route-table create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g --vhub-name -n
+      User-Agent:
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"test_vhub_routing_2\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2\",\r\n
+        \ \"etag\": \"W/\\\"19698f4a-3696-41a9-af06-dd4bd8b9f725\\\"\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Updating\",\r\n    \"routes\": [],\r\n    \"labels\":
+        [],\r\n    \"associatedConnections\": [],\r\n    \"propagatingConnections\":
+        []\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualHubs/hubRouteTables\"\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2f159825-8ed1-4bd0-8975-11b00565ee54?api-version=2020-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '562'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Jan 2021 02:46:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 1cc0268d-376c-4e9c-ac57-e59b950d9c68
       x-ms-ratelimit-remaining-subscription-writes:
       - '1196'
     status:
@@ -811,10 +972,10 @@ interactions:
       ParameterSetName:
       - -g --vhub-name -n
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/8d6701c4-13cb-4620-9e44-957e6e8ab5c2?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2f159825-8ed1-4bd0-8975-11b00565ee54?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -826,7 +987,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:35:35 GMT
+      - Fri, 22 Jan 2021 02:46:31 GMT
       expires:
       - '-1'
       pragma:
@@ -843,7 +1004,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - b1d0deac-2989-43e0-87b0-3a0248025327
+      - 6150dd22-5cc1-4b26-98a7-50243b131519
     status:
       code: 200
       message: OK
@@ -861,18 +1022,17 @@ interactions:
       ParameterSetName:
       - -g --vhub-name -n
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"name\": \"test_vhub_routing_1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\
-        ,\r\n  \"etag\": \"W/\\\"950e4147-b179-4903-a4bf-ef9a49ef2e8d\\\"\",\r\n \
-        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"\
-        routes\": [],\r\n    \"labels\": [],\r\n    \"associatedConnections\": [],\r\
-        \n    \"propagatingConnections\": []\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualHubs/hubRouteTables\"\
-        \r\n}"
+      string: "{\r\n  \"name\": \"test_vhub_routing_2\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2\",\r\n
+        \ \"etag\": \"W/\\\"1076264b-e28b-4103-9ac0-17895c969087\\\"\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"routes\": [],\r\n
+        \   \"labels\": [],\r\n    \"associatedConnections\": [],\r\n    \"propagatingConnections\":
+        []\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualHubs/hubRouteTables\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -881,9 +1041,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:35:35 GMT
+      - Fri, 22 Jan 2021 02:46:32 GMT
       etag:
-      - W/"950e4147-b179-4903-a4bf-ef9a49ef2e8d"
+      - W/"1076264b-e28b-4103-9ac0-17895c969087"
       expires:
       - '-1'
       pragma:
@@ -900,175 +1060,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 9a89a9cb-e594-4d11-a122-a91727beb560
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vhub route-table create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '2'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - -g --vhub-name -n
-      User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2?api-version=2020-05-01
-  response:
-    body:
-      string: "{\r\n  \"name\": \"test_vhub_routing_2\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2\"\
-        ,\r\n  \"etag\": \"W/\\\"4f35c2b0-eb2d-4bbc-881e-f8dba6f9b182\\\"\",\r\n \
-        \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"\
-        routes\": [],\r\n    \"labels\": [],\r\n    \"associatedConnections\": [],\r\
-        \n    \"propagatingConnections\": []\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualHubs/hubRouteTables\"\
-        \r\n}"
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/e6d9a732-909c-49fd-8d11-107611eee65c?api-version=2020-05-01
-      cache-control:
-      - no-cache
-      content-length:
-      - '562'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 25 Nov 2020 05:35:37 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - f513f789-4755-42c4-8bda-7ebaecce25dd
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-    status:
-      code: 201
-      message: Created
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vhub route-table create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --vhub-name -n
-      User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/e6d9a732-909c-49fd-8d11-107611eee65c?api-version=2020-05-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '29'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 25 Nov 2020 05:35:48 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - cc401119-b7fa-4e1d-8f5b-251378e84fc0
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vhub route-table create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --vhub-name -n
-      User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2?api-version=2020-05-01
-  response:
-    body:
-      string: "{\r\n  \"name\": \"test_vhub_routing_2\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2\"\
-        ,\r\n  \"etag\": \"W/\\\"ca146c79-b7bb-4c9c-a025-afeff3c49262\\\"\",\r\n \
-        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"\
-        routes\": [],\r\n    \"labels\": [],\r\n    \"associatedConnections\": [],\r\
-        \n    \"propagatingConnections\": []\r\n  },\r\n  \"type\": \"Microsoft.Network/virtualHubs/hubRouteTables\"\
-        \r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '563'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 25 Nov 2020 05:35:48 GMT
-      etag:
-      - W/"ca146c79-b7bb-4c9c-a025-afeff3c49262"
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 9e14a46d-f494-463c-95d2-4cea9908cee6
+      - 6ae42caa-b9d7-48e0-9ce7-974d0e3edb49
     status:
       code: 200
       message: OK
@@ -1086,15 +1078,15 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-resource/12.0.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_vwan_vpn_gateway_connection000001?api-version=2020-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_vwan_vpn_gateway_connection000001?api-version=2020-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001","name":"cli_test_azure_vwan_vpn_gateway_connection000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2020-11-25T05:31:10Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001","name":"cli_test_azure_vwan_vpn_gateway_connection000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2021-01-22T02:41:54Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -1103,7 +1095,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:35:49 GMT
+      - Fri, 22 Jan 2021 02:46:31 GMT
       expires:
       - '-1'
       pragma:
@@ -1131,8 +1123,8 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: GET
@@ -1150,7 +1142,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:35:50 GMT
+      - Fri, 22 Jan 2021 02:46:33 GMT
       expires:
       - '-1'
       pragma:
@@ -1183,29 +1175,28 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"name\": \"test_s2s_vpn_gateway\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway\"\
-        ,\r\n  \"etag\": \"W/\\\"a81aca4b-36a4-4c2d-9c4d-181d38d4f610\\\"\",\r\n \
-        \ \"type\": \"Microsoft.Network/vpnGateways\",\r\n  \"location\": \"westus\"\
-        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n \
-        \   \"connections\": [],\r\n    \"virtualHub\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub\"\
-        \r\n    },\r\n    \"bgpSettings\": {\r\n      \"asn\": 65515,\r\n      \"\
-        peerWeight\": 0\r\n    },\r\n    \"vpnGatewayScaleUnit\": 1,\r\n    \"packetCaptureDiagnosticState\"\
-        : \"None\",\r\n    \"ipConfigurations\": [],\r\n    \"natRules\": [],\r\n\
-        \    \"enableBgpRouteTranslationForNat\": false,\r\n    \"isRoutingPreferenceInternet\"\
-        : false\r\n  }\r\n}"
+      string: "{\r\n  \"name\": \"test_s2s_vpn_gateway\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway\",\r\n
+        \ \"etag\": \"W/\\\"0a531e32-fe3a-46bd-b668-2215fa828cc9\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/vpnGateways\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Updating\",\r\n    \"connections\": [],\r\n
+        \   \"virtualHub\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub\"\r\n
+        \   },\r\n    \"bgpSettings\": {\r\n      \"asn\": 65515,\r\n      \"peerWeight\":
+        0\r\n    },\r\n    \"vpnGatewayScaleUnit\": 1,\r\n    \"packetCaptureDiagnosticState\":
+        \"None\",\r\n    \"ipConfigurations\": [],\r\n    \"natRules\": [],\r\n    \"enableBgpRouteTranslationForNat\":
+        false,\r\n    \"isRoutingPreferenceInternet\": false\r\n  }\r\n}"
     headers:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -1213,7 +1204,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:35:56 GMT
+      - Fri, 22 Jan 2021 02:46:41 GMT
       expires:
       - '-1'
       pragma:
@@ -1226,7 +1217,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 4d99878f-f72e-4b35-b899-eef694145fb6
+      - 065550aa-b94e-475e-81b1-a9fec04867ad
       x-ms-ratelimit-remaining-subscription-writes:
       - '1198'
     status:
@@ -1246,10 +1237,10 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1261,7 +1252,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:36:07 GMT
+      - Fri, 22 Jan 2021 02:46:51 GMT
       expires:
       - '-1'
       pragma:
@@ -1278,7 +1269,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 934facfa-c747-4af7-a48a-8b06fd374315
+      - 7236c68b-bc10-4cf7-8ec5-467a5f61bcf5
     status:
       code: 200
       message: OK
@@ -1296,10 +1287,10 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1311,7 +1302,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:36:17 GMT
+      - Fri, 22 Jan 2021 02:47:02 GMT
       expires:
       - '-1'
       pragma:
@@ -1328,7 +1319,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - ba718ceb-2d78-479c-8bb2-ea50393091c8
+      - c1e4bd85-603b-4d18-ac84-3ea1b11baae9
     status:
       code: 200
       message: OK
@@ -1346,10 +1337,10 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1361,7 +1352,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:36:37 GMT
+      - Fri, 22 Jan 2021 02:47:22 GMT
       expires:
       - '-1'
       pragma:
@@ -1378,7 +1369,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 70aec1c4-b0ff-4997-a7dc-54a917eb3da3
+      - 7dca5098-6183-43bc-a9bb-8e0d440660dc
     status:
       code: 200
       message: OK
@@ -1396,10 +1387,10 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1411,7 +1402,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:36:58 GMT
+      - Fri, 22 Jan 2021 02:47:42 GMT
       expires:
       - '-1'
       pragma:
@@ -1428,7 +1419,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 67347a1a-4379-4aed-be20-f2a2a4693b2b
+      - 40f68712-0c95-426d-a12e-eb3bf5807c90
     status:
       code: 200
       message: OK
@@ -1446,10 +1437,10 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1461,7 +1452,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:37:38 GMT
+      - Fri, 22 Jan 2021 02:48:22 GMT
       expires:
       - '-1'
       pragma:
@@ -1478,7 +1469,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 7cedd0b9-15fe-412f-9e75-9116c20b5322
+      - b07d2390-4629-439a-842b-82b65e2d67e2
     status:
       code: 200
       message: OK
@@ -1496,10 +1487,10 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1511,7 +1502,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:38:19 GMT
+      - Fri, 22 Jan 2021 02:49:03 GMT
       expires:
       - '-1'
       pragma:
@@ -1528,7 +1519,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 57c1eec1-bf82-4fdf-b992-8bde07cc342b
+      - f1c6fc90-6e2b-4376-b890-d65f8bfc2752
     status:
       code: 200
       message: OK
@@ -1546,10 +1537,10 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1561,7 +1552,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:39:39 GMT
+      - Fri, 22 Jan 2021 02:50:23 GMT
       expires:
       - '-1'
       pragma:
@@ -1578,7 +1569,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 94a3d417-a953-4c9c-b03e-ba53ab38794e
+      - c0118348-6e2b-492a-ae94-d85d5eb26fb3
     status:
       code: 200
       message: OK
@@ -1596,10 +1587,10 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1611,7 +1602,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:42:21 GMT
+      - Fri, 22 Jan 2021 02:53:04 GMT
       expires:
       - '-1'
       pragma:
@@ -1628,7 +1619,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - e0999da4-11bc-4b3e-a539-5eeb939fec47
+      - 6a4cfe7b-1cdc-4a1c-963d-4fc5b6a2fece
     status:
       code: 200
       message: OK
@@ -1646,10 +1637,10 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1661,7 +1652,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:44:02 GMT
+      - Fri, 22 Jan 2021 02:54:44 GMT
       expires:
       - '-1'
       pragma:
@@ -1678,7 +1669,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - d162065a-dabc-4ccb-b021-a0d193131297
+      - 8265b127-9abd-4222-8959-0d13a92ae5b3
     status:
       code: 200
       message: OK
@@ -1696,10 +1687,10 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1711,7 +1702,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:45:42 GMT
+      - Fri, 22 Jan 2021 02:56:25 GMT
       expires:
       - '-1'
       pragma:
@@ -1728,7 +1719,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f957c529-280c-4382-bf9a-c4a614345acc
+      - 5fed03fd-e2db-42b4-a453-e1f8dea877db
     status:
       code: 200
       message: OK
@@ -1746,10 +1737,10 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1761,7 +1752,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:47:23 GMT
+      - Fri, 22 Jan 2021 02:58:05 GMT
       expires:
       - '-1'
       pragma:
@@ -1778,7 +1769,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 0b4d888d-8456-449c-ad81-fbae920d555c
+      - 48f809a2-bb1e-46cc-bc81-63c357060a37
     status:
       code: 200
       message: OK
@@ -1796,10 +1787,10 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1811,7 +1802,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:49:05 GMT
+      - Fri, 22 Jan 2021 02:59:45 GMT
       expires:
       - '-1'
       pragma:
@@ -1828,7 +1819,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - e982044a-eaba-438e-a0df-77ae5adc2021
+      - 82719fa8-0d62-4cca-8ff4-8adbdbc02da3
     status:
       code: 200
       message: OK
@@ -1846,10 +1837,10 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1861,7 +1852,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:50:45 GMT
+      - Fri, 22 Jan 2021 03:01:26 GMT
       expires:
       - '-1'
       pragma:
@@ -1878,7 +1869,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 7cfb32f0-2c44-4119-9417-e52a80359c07
+      - 2a3b2a7e-aa4b-40ef-8408-43b80774e6c6
     status:
       code: 200
       message: OK
@@ -1896,10 +1887,10 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1911,7 +1902,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:52:26 GMT
+      - Fri, 22 Jan 2021 03:03:06 GMT
       expires:
       - '-1'
       pragma:
@@ -1928,7 +1919,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 62b1d264-ed69-4339-9614-e8665604e73a
+      - 76222aa4-134f-4862-8d4f-c5c4bd0f168f
     status:
       code: 200
       message: OK
@@ -1946,10 +1937,10 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1961,7 +1952,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:54:07 GMT
+      - Fri, 22 Jan 2021 03:04:47 GMT
       expires:
       - '-1'
       pragma:
@@ -1978,7 +1969,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 0bf6397a-9592-4ef8-bac0-20a83669b885
+      - c8466b81-f6e3-472e-b965-6848150d0710
     status:
       code: 200
       message: OK
@@ -1996,10 +1987,10 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -2011,7 +2002,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:55:48 GMT
+      - Fri, 22 Jan 2021 03:06:27 GMT
       expires:
       - '-1'
       pragma:
@@ -2028,7 +2019,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 65ff6059-e6cd-4d07-a714-9f2183de7ff5
+      - 7e81773b-8a8f-4ea6-a0a8-4cff638c80ef
     status:
       code: 200
       message: OK
@@ -2046,10 +2037,10 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -2061,7 +2052,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:57:29 GMT
+      - Fri, 22 Jan 2021 03:08:07 GMT
       expires:
       - '-1'
       pragma:
@@ -2078,7 +2069,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 5d9340e1-2982-4931-8fa3-c35281c4a5df
+      - 6f44b6c1-986c-4f4e-afcb-75d2aaa2b1bc
     status:
       code: 200
       message: OK
@@ -2096,10 +2087,10 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -2111,7 +2102,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 05:59:10 GMT
+      - Fri, 22 Jan 2021 03:09:48 GMT
       expires:
       - '-1'
       pragma:
@@ -2128,7 +2119,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 0b17254c-9719-4af6-bb9f-56cb44ea7516
+      - 28aaaab1-f958-4e15-884d-a9fe92bf493a
     status:
       code: 200
       message: OK
@@ -2146,10 +2137,10 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/c3222076-79c0-45e7-8261-0cefd35fc190?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09deca1a-0371-4d47-8b59-7b9ae3fa799d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -2161,7 +2152,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 06:00:51 GMT
+      - Fri, 22 Jan 2021 03:11:27 GMT
       expires:
       - '-1'
       pragma:
@@ -2178,7 +2169,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - c2954df7-52d1-4609-91d9-b4434c370f04
+      - 4b985a30-3063-4c50-b612-1c274cac7f4e
     status:
       code: 200
       message: OK
@@ -2196,44 +2187,42 @@ interactions:
       ParameterSetName:
       - -g --vhub --name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"name\": \"test_s2s_vpn_gateway\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway\"\
-        ,\r\n  \"etag\": \"W/\\\"ed02603c-ce0e-41f0-a93b-4810feb83910\\\"\",\r\n \
-        \ \"type\": \"Microsoft.Network/vpnGateways\",\r\n  \"location\": \"westus\"\
-        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n\
-        \    \"connections\": [],\r\n    \"virtualHub\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub\"\
-        \r\n    },\r\n    \"bgpSettings\": {\r\n      \"asn\": 65515,\r\n      \"\
-        peerWeight\": 0,\r\n      \"bgpPeeringAddresses\": [\r\n        {\r\n    \
-        \      \"ipconfigurationId\": \"Instance0\",\r\n          \"defaultBgpIpAddresses\"\
-        : [\r\n            \"10.0.1.12\"\r\n          ],\r\n          \"customBgpIpAddresses\"\
-        : [],\r\n          \"tunnelIpAddresses\": [\r\n            \"13.64.26.39\"\
-        ,\r\n            \"10.0.1.4\"\r\n          ]\r\n        },\r\n        {\r\n\
-        \          \"ipconfigurationId\": \"Instance1\",\r\n          \"defaultBgpIpAddresses\"\
-        : [\r\n            \"10.0.1.13\"\r\n          ],\r\n          \"customBgpIpAddresses\"\
-        : [],\r\n          \"tunnelIpAddresses\": [\r\n            \"13.64.26.5\"\
-        ,\r\n            \"10.0.1.5\"\r\n          ]\r\n        }\r\n      ]\r\n \
-        \   },\r\n    \"vpnGatewayScaleUnit\": 1,\r\n    \"packetCaptureDiagnosticState\"\
-        : \"None\",\r\n    \"ipConfigurations\": [\r\n      {\r\n        \"id\": \"\
-        Instance0\",\r\n        \"publicIpAddress\": \"13.64.26.39\",\r\n        \"\
-        privateIpAddress\": \"10.0.1.4\"\r\n      },\r\n      {\r\n        \"id\"\
-        : \"Instance1\",\r\n        \"publicIpAddress\": \"13.64.26.5\",\r\n     \
-        \   \"privateIpAddress\": \"10.0.1.5\"\r\n      }\r\n    ],\r\n    \"natRules\"\
-        : [],\r\n    \"enableBgpRouteTranslationForNat\": false,\r\n    \"isRoutingPreferenceInternet\"\
-        : false\r\n  }\r\n}"
+      string: "{\r\n  \"name\": \"test_s2s_vpn_gateway\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway\",\r\n
+        \ \"etag\": \"W/\\\"832d6cc8-2db0-4afc-a06e-2686786d9d81\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/vpnGateways\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"connections\": [],\r\n
+        \   \"virtualHub\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub\"\r\n
+        \   },\r\n    \"bgpSettings\": {\r\n      \"asn\": 65515,\r\n      \"peerWeight\":
+        0,\r\n      \"bgpPeeringAddresses\": [\r\n        {\r\n          \"ipconfigurationId\":
+        \"Instance0\",\r\n          \"defaultBgpIpAddresses\": [\r\n            \"10.0.1.12\"\r\n
+        \         ],\r\n          \"customBgpIpAddresses\": [],\r\n          \"tunnelIpAddresses\":
+        [\r\n            \"168.62.6.174\",\r\n            \"10.0.1.4\"\r\n          ]\r\n
+        \       },\r\n        {\r\n          \"ipconfigurationId\": \"Instance1\",\r\n
+        \         \"defaultBgpIpAddresses\": [\r\n            \"10.0.1.13\"\r\n          ],\r\n
+        \         \"customBgpIpAddresses\": [],\r\n          \"tunnelIpAddresses\":
+        [\r\n            \"168.62.6.43\",\r\n            \"10.0.1.5\"\r\n          ]\r\n
+        \       }\r\n      ]\r\n    },\r\n    \"vpnGatewayScaleUnit\": 1,\r\n    \"packetCaptureDiagnosticState\":
+        \"None\",\r\n    \"ipConfigurations\": [\r\n      {\r\n        \"id\": \"Instance0\",\r\n
+        \       \"publicIpAddress\": \"168.62.6.174\",\r\n        \"privateIpAddress\":
+        \"10.0.1.4\"\r\n      },\r\n      {\r\n        \"id\": \"Instance1\",\r\n
+        \       \"publicIpAddress\": \"168.62.6.43\",\r\n        \"privateIpAddress\":
+        \"10.0.1.5\"\r\n      }\r\n    ],\r\n    \"natRules\": [],\r\n    \"enableBgpRouteTranslationForNat\":
+        false,\r\n    \"isRoutingPreferenceInternet\": false\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1864'
+      - '1868'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 06:00:51 GMT
+      - Fri, 22 Jan 2021 03:11:28 GMT
       expires:
       - '-1'
       pragma:
@@ -2250,7 +2239,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 970389c3-a2db-42fd-9d09-f17cda255a43
+      - 3fcaba0d-755d-4227-8d39-6f8a00ffbdd1
     status:
       code: 200
       message: OK
@@ -2268,15 +2257,15 @@ interactions:
       ParameterSetName:
       - -g -n --ip-address
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-resource/12.0.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_vwan_vpn_gateway_connection000001?api-version=2020-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_vwan_vpn_gateway_connection000001?api-version=2020-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001","name":"cli_test_azure_vwan_vpn_gateway_connection000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2020-11-25T05:31:10Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001","name":"cli_test_azure_vwan_vpn_gateway_connection000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2021-01-22T02:41:54Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -2285,7 +2274,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 06:00:52 GMT
+      - Fri, 22 Jan 2021 03:11:30 GMT
       expires:
       - '-1'
       pragma:
@@ -2318,29 +2307,28 @@ interactions:
       ParameterSetName:
       - -g -n --ip-address
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnSites/remote_vpn_site_1?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"name\": \"remote_vpn_site_1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnSites/remote_vpn_site_1\"\
-        ,\r\n  \"etag\": \"W/\\\"a57810d7-b46d-4fe0-8801-0ca79e62140e\\\"\",\r\n \
-        \ \"type\": \"Microsoft.Network/vpnSites\",\r\n  \"location\": \"westus\"\
-        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n \
-        \   \"addressSpace\": {\r\n      \"addressPrefixes\": []\r\n    },\r\n   \
-        \ \"deviceProperties\": {\r\n      \"linkSpeedInMbps\": 0\r\n    },\r\n  \
-        \  \"isSecuritySite\": false,\r\n    \"o365Policy\": {\r\n      \"breakOutCategories\"\
-        : {\r\n        \"optimize\": false,\r\n        \"allow\": false,\r\n     \
-        \   \"default\": false\r\n      }\r\n    },\r\n    \"ipAddress\": \"10.0.1.110\"\
-        \r\n  }\r\n}"
+      string: "{\r\n  \"name\": \"remote_vpn_site_1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnSites/remote_vpn_site_1\",\r\n
+        \ \"etag\": \"W/\\\"922761bd-c495-4d74-97a8-1d5c1986b4f2\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/vpnSites\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Updating\",\r\n    \"addressSpace\": {\r\n
+        \     \"addressPrefixes\": []\r\n    },\r\n    \"deviceProperties\": {\r\n
+        \     \"linkSpeedInMbps\": 0\r\n    },\r\n    \"isSecuritySite\": false,\r\n
+        \   \"o365Policy\": {\r\n      \"breakOutCategories\": {\r\n        \"optimize\":
+        false,\r\n        \"allow\": false,\r\n        \"default\": false\r\n      }\r\n
+        \   },\r\n    \"ipAddress\": \"10.0.1.110\"\r\n  }\r\n}"
     headers:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/da4dc1db-ab63-497f-bd58-a82c57616f27?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/9334e1f7-bd30-42b8-ac35-e9eab6f2128d?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -2348,7 +2336,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 06:00:57 GMT
+      - Fri, 22 Jan 2021 03:11:39 GMT
       expires:
       - '-1'
       pragma:
@@ -2361,9 +2349,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - cf8114de-de67-457e-8a48-f7fdf4f4754c
+      - fc310f4c-1952-4fc1-b507-fd02811e591b
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1196'
     status:
       code: 201
       message: Created
@@ -2381,10 +2369,10 @@ interactions:
       ParameterSetName:
       - -g -n --ip-address
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/da4dc1db-ab63-497f-bd58-a82c57616f27?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/9334e1f7-bd30-42b8-ac35-e9eab6f2128d?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -2396,7 +2384,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 06:01:11 GMT
+      - Fri, 22 Jan 2021 03:11:49 GMT
       expires:
       - '-1'
       pragma:
@@ -2413,7 +2401,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 2773f86c-207c-4705-905b-f67aa5f591a3
+      - 34621cb5-8af1-4eca-b7b5-6906ce5b524d
     status:
       code: 200
       message: OK
@@ -2431,22 +2419,21 @@ interactions:
       ParameterSetName:
       - -g -n --ip-address
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnSites/remote_vpn_site_1?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"name\": \"remote_vpn_site_1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnSites/remote_vpn_site_1\"\
-        ,\r\n  \"etag\": \"W/\\\"db1d83ba-08c6-46c2-8115-359e12207131\\\"\",\r\n \
-        \ \"type\": \"Microsoft.Network/vpnSites\",\r\n  \"location\": \"westus\"\
-        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n\
-        \    \"addressSpace\": {\r\n      \"addressPrefixes\": []\r\n    },\r\n  \
-        \  \"deviceProperties\": {\r\n      \"linkSpeedInMbps\": 0\r\n    },\r\n \
-        \   \"isSecuritySite\": false,\r\n    \"o365Policy\": {\r\n      \"breakOutCategories\"\
-        : {\r\n        \"optimize\": false,\r\n        \"allow\": false,\r\n     \
-        \   \"default\": false\r\n      }\r\n    },\r\n    \"ipAddress\": \"10.0.1.110\"\
-        \r\n  }\r\n}"
+      string: "{\r\n  \"name\": \"remote_vpn_site_1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnSites/remote_vpn_site_1\",\r\n
+        \ \"etag\": \"W/\\\"d6d7e251-a54f-4619-9040-9379b17d36f1\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/vpnSites\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
+        {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"addressSpace\": {\r\n
+        \     \"addressPrefixes\": []\r\n    },\r\n    \"deviceProperties\": {\r\n
+        \     \"linkSpeedInMbps\": 0\r\n    },\r\n    \"isSecuritySite\": false,\r\n
+        \   \"o365Policy\": {\r\n      \"breakOutCategories\": {\r\n        \"optimize\":
+        false,\r\n        \"allow\": false,\r\n        \"default\": false\r\n      }\r\n
+        \   },\r\n    \"ipAddress\": \"10.0.1.110\"\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -2455,9 +2442,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 06:01:11 GMT
+      - Fri, 22 Jan 2021 03:11:50 GMT
       etag:
-      - W/"db1d83ba-08c6-46c2-8115-359e12207131"
+      - W/"d6d7e251-a54f-4619-9040-9379b17d36f1"
       expires:
       - '-1'
       pragma:
@@ -2474,7 +2461,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 150c5ba2-aaf0-4a82-87cd-f853a13ca538
+      - c4a01f0b-107f-4a8d-89a8-a7755b095ec7
     status:
       code: 200
       message: OK
@@ -2501,36 +2488,35 @@ interactions:
       - -g -n --gateway-name --remote-vpn-site --associated-route-table --propagated-route-tables
         --labels
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"name\": \"test_s2s_vpn_gateway_connection\",\r\n  \"id\":\
-        \ \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection\"\
-        ,\r\n  \"etag\": \"W/\\\"87e34969-b9d2-472d-9685-e7aa7535ef57\\\"\",\r\n \
-        \ \"type\": \"Microsoft.Network/vpnGateways/vpnConnections\",\r\n  \"properties\"\
-        : {\r\n    \"provisioningState\": \"Updating\",\r\n    \"routingConfiguration\"\
-        : {\r\n      \"associatedRouteTable\": {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\
-        \r\n      },\r\n      \"propagatedRouteTables\": {\r\n        \"labels\":\
-        \ [\r\n          \"label1\",\r\n          \"label2\"\r\n        ],\r\n   \
-        \     \"ids\": [\r\n          {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\
-        \r\n          },\r\n          {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2\"\
-        \r\n          }\r\n        ]\r\n      },\r\n      \"vnetRoutes\": {\r\n  \
-        \      \"staticRoutes\": []\r\n      }\r\n    },\r\n    \"enableInternetSecurity\"\
-        : false,\r\n    \"remoteVpnSite\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnSites/remote_vpn_site_1\"\
-        \r\n    },\r\n    \"ingressBytesTransferred\": 0,\r\n    \"egressBytesTransferred\"\
-        : 0,\r\n    \"connectionBandwidth\": 10,\r\n    \"ipsecPolicies\": [],\r\n\
-        \    \"vpnConnectionProtocolType\": \"IKEv2\",\r\n    \"enableBgp\": false,\r\
-        \n    \"enableRateLimiting\": false,\r\n    \"useLocalAzureIpAddress\": false,\r\
-        \n    \"usePolicyBasedTrafficSelectors\": false,\r\n    \"routingWeight\"\
-        : 0\r\n  }\r\n}"
+      string: "{\r\n  \"name\": \"test_s2s_vpn_gateway_connection\",\r\n  \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection\",\r\n
+        \ \"etag\": \"W/\\\"4a757d2c-d702-45a2-82d2-dab8bf61b072\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/vpnGateways/vpnConnections\",\r\n  \"properties\": {\r\n
+        \   \"provisioningState\": \"Updating\",\r\n    \"routingConfiguration\":
+        {\r\n      \"associatedRouteTable\": {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\r\n
+        \     },\r\n      \"propagatedRouteTables\": {\r\n        \"labels\": [\r\n
+        \         \"label1\",\r\n          \"label2\"\r\n        ],\r\n        \"ids\":
+        [\r\n          {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\r\n
+        \         },\r\n          {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2\"\r\n
+        \         }\r\n        ]\r\n      },\r\n      \"vnetRoutes\": {\r\n        \"staticRoutes\":
+        []\r\n      }\r\n    },\r\n    \"enableInternetSecurity\": false,\r\n    \"remoteVpnSite\":
+        {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnSites/remote_vpn_site_1\"\r\n
+        \   },\r\n    \"ingressBytesTransferred\": 0,\r\n    \"egressBytesTransferred\":
+        0,\r\n    \"connectionBandwidth\": 10,\r\n    \"ipsecPolicies\": [],\r\n    \"vpnConnectionProtocolType\":
+        \"IKEv2\",\r\n    \"enableBgp\": false,\r\n    \"enableRateLimiting\": false,\r\n
+        \   \"useLocalAzureIpAddress\": false,\r\n    \"usePolicyBasedTrafficSelectors\":
+        false,\r\n    \"routingWeight\": 0\r\n  }\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/45689b09-b14a-47fa-99bd-66a7ea0cd25e?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09e6d82d-5cb3-49b8-83d9-4944bcb62e5f?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -2538,7 +2524,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 06:01:13 GMT
+      - Fri, 22 Jan 2021 03:11:50 GMT
       expires:
       - '-1'
       pragma:
@@ -2551,9 +2537,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 840b3706-1292-4506-a060-61beddf44162
+      - 821b8152-e5b3-450f-a339-472c6b27a9f3
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1196'
     status:
       code: 201
       message: Created
@@ -2572,10 +2558,10 @@ interactions:
       - -g -n --gateway-name --remote-vpn-site --associated-route-table --propagated-route-tables
         --labels
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/45689b09-b14a-47fa-99bd-66a7ea0cd25e?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09e6d82d-5cb3-49b8-83d9-4944bcb62e5f?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -2587,7 +2573,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 06:01:24 GMT
+      - Fri, 22 Jan 2021 03:12:02 GMT
       expires:
       - '-1'
       pragma:
@@ -2604,7 +2590,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - a3292129-1ca8-43a9-b72c-28a3ba1e1617
+      - 8edf5d00-ee1a-4f13-a5a6-04b1b5b15f40
     status:
       code: 200
       message: OK
@@ -2623,10 +2609,10 @@ interactions:
       - -g -n --gateway-name --remote-vpn-site --associated-route-table --propagated-route-tables
         --labels
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/45689b09-b14a-47fa-99bd-66a7ea0cd25e?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09e6d82d-5cb3-49b8-83d9-4944bcb62e5f?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -2638,7 +2624,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 06:01:34 GMT
+      - Fri, 22 Jan 2021 03:12:12 GMT
       expires:
       - '-1'
       pragma:
@@ -2655,7 +2641,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 3b9640b9-d30a-4d28-816a-5ba92aa12cf0
+      - 4767b231-d3c5-4ffe-bded-26bd1d532ffe
     status:
       code: 200
       message: OK
@@ -2674,10 +2660,61 @@ interactions:
       - -g -n --gateway-name --remote-vpn-site --associated-route-table --propagated-route-tables
         --labels
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/45689b09-b14a-47fa-99bd-66a7ea0cd25e?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09e6d82d-5cb3-49b8-83d9-4944bcb62e5f?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Jan 2021 03:12:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - bec440d7-de72-4f56-ad56-48a08377febc
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vpn-gateway connection create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --gateway-name --remote-vpn-site --associated-route-table --propagated-route-tables
+        --labels
+      User-Agent:
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/09e6d82d-5cb3-49b8-83d9-4944bcb62e5f?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -2689,7 +2726,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 06:01:54 GMT
+      - Fri, 22 Jan 2021 03:13:12 GMT
       expires:
       - '-1'
       pragma:
@@ -2706,7 +2743,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - c21e6eb9-d1d3-4ec4-8caa-b4532aa80bbc
+      - 5333db7e-8b60-499e-b12a-949e56f9477d
     status:
       code: 200
       message: OK
@@ -2725,31 +2762,31 @@ interactions:
       - -g -n --gateway-name --remote-vpn-site --associated-route-table --propagated-route-tables
         --labels
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"name\": \"test_s2s_vpn_gateway_connection\",\r\n  \"id\":\
-        \ \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection\"\
-        ,\r\n  \"etag\": \"W/\\\"b7640cb0-8e22-4a3d-803d-726ec4eea69c\\\"\",\r\n \
-        \ \"type\": \"Microsoft.Network/vpnGateways/vpnConnections\",\r\n  \"properties\"\
-        : {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"routingConfiguration\"\
-        : {\r\n      \"associatedRouteTable\": {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\
-        \r\n      },\r\n      \"propagatedRouteTables\": {\r\n        \"labels\":\
-        \ [\r\n          \"label1\",\r\n          \"label2\"\r\n        ],\r\n   \
-        \     \"ids\": [\r\n          {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\
-        \r\n          },\r\n          {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2\"\
-        \r\n          }\r\n        ]\r\n      },\r\n      \"vnetRoutes\": {\r\n  \
-        \      \"staticRoutes\": []\r\n      }\r\n    },\r\n    \"enableInternetSecurity\"\
-        : false,\r\n    \"remoteVpnSite\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnSites/remote_vpn_site_1\"\
-        \r\n    },\r\n    \"ingressBytesTransferred\": 0,\r\n    \"egressBytesTransferred\"\
-        : 0,\r\n    \"connectionStatus\": \"Unknown\",\r\n    \"connectionBandwidth\"\
-        : 10,\r\n    \"ipsecPolicies\": [],\r\n    \"vpnConnectionProtocolType\":\
-        \ \"IKEv2\",\r\n    \"enableBgp\": false,\r\n    \"enableRateLimiting\": false,\r\
-        \n    \"useLocalAzureIpAddress\": false,\r\n    \"usePolicyBasedTrafficSelectors\"\
-        : false,\r\n    \"routingWeight\": 0\r\n  }\r\n}"
+      string: "{\r\n  \"name\": \"test_s2s_vpn_gateway_connection\",\r\n  \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection\",\r\n
+        \ \"etag\": \"W/\\\"65d0374b-5b45-4edd-ba81-4115937377a0\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/vpnGateways/vpnConnections\",\r\n  \"properties\": {\r\n
+        \   \"provisioningState\": \"Succeeded\",\r\n    \"routingConfiguration\":
+        {\r\n      \"associatedRouteTable\": {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\r\n
+        \     },\r\n      \"propagatedRouteTables\": {\r\n        \"labels\": [\r\n
+        \         \"label1\",\r\n          \"label2\"\r\n        ],\r\n        \"ids\":
+        [\r\n          {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\r\n
+        \         },\r\n          {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2\"\r\n
+        \         }\r\n        ]\r\n      },\r\n      \"vnetRoutes\": {\r\n        \"staticRoutes\":
+        []\r\n      }\r\n    },\r\n    \"enableInternetSecurity\": false,\r\n    \"remoteVpnSite\":
+        {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnSites/remote_vpn_site_1\"\r\n
+        \   },\r\n    \"ingressBytesTransferred\": 0,\r\n    \"egressBytesTransferred\":
+        0,\r\n    \"connectionStatus\": \"Unknown\",\r\n    \"connectionBandwidth\":
+        10,\r\n    \"ipsecPolicies\": [],\r\n    \"vpnConnectionProtocolType\": \"IKEv2\",\r\n
+        \   \"enableBgp\": false,\r\n    \"enableRateLimiting\": false,\r\n    \"useLocalAzureIpAddress\":
+        false,\r\n    \"usePolicyBasedTrafficSelectors\": false,\r\n    \"routingWeight\":
+        0\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -2758,7 +2795,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 06:01:55 GMT
+      - Fri, 22 Jan 2021 03:13:13 GMT
       expires:
       - '-1'
       pragma:
@@ -2775,7 +2812,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - ec99813b-e1e7-4c51-a913-efcf3a6c1de8
+      - ae6eeebc-ce54-4378-92a2-5f995c4a6389
     status:
       code: 200
       message: OK
@@ -2793,33 +2830,33 @@ interactions:
       ParameterSetName:
       - -g -n --gateway-name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"name\": \"test_s2s_vpn_gateway_connection\",\r\n  \"id\":\
-        \ \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection\"\
-        ,\r\n  \"etag\": \"W/\\\"b7640cb0-8e22-4a3d-803d-726ec4eea69c\\\"\",\r\n \
-        \ \"type\": \"Microsoft.Network/vpnGateways/vpnConnections\",\r\n  \"properties\"\
-        : {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"routingConfiguration\"\
-        : {\r\n      \"associatedRouteTable\": {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\
-        \r\n      },\r\n      \"propagatedRouteTables\": {\r\n        \"labels\":\
-        \ [\r\n          \"label1\",\r\n          \"label2\"\r\n        ],\r\n   \
-        \     \"ids\": [\r\n          {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\
-        \r\n          },\r\n          {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2\"\
-        \r\n          }\r\n        ]\r\n      },\r\n      \"vnetRoutes\": {\r\n  \
-        \      \"staticRoutes\": []\r\n      }\r\n    },\r\n    \"enableInternetSecurity\"\
-        : false,\r\n    \"remoteVpnSite\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnSites/remote_vpn_site_1\"\
-        \r\n    },\r\n    \"ingressBytesTransferred\": 0,\r\n    \"egressBytesTransferred\"\
-        : 0,\r\n    \"connectionStatus\": \"Unknown\",\r\n    \"connectionBandwidth\"\
-        : 10,\r\n    \"ipsecPolicies\": [],\r\n    \"vpnConnectionProtocolType\":\
-        \ \"IKEv2\",\r\n    \"enableBgp\": false,\r\n    \"enableRateLimiting\": false,\r\
-        \n    \"useLocalAzureIpAddress\": false,\r\n    \"usePolicyBasedTrafficSelectors\"\
-        : false,\r\n    \"routingWeight\": 0\r\n  }\r\n}"
+      string: "{\r\n  \"name\": \"test_s2s_vpn_gateway_connection\",\r\n  \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection\",\r\n
+        \ \"etag\": \"W/\\\"65d0374b-5b45-4edd-ba81-4115937377a0\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/vpnGateways/vpnConnections\",\r\n  \"properties\": {\r\n
+        \   \"provisioningState\": \"Succeeded\",\r\n    \"routingConfiguration\":
+        {\r\n      \"associatedRouteTable\": {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\r\n
+        \     },\r\n      \"propagatedRouteTables\": {\r\n        \"labels\": [\r\n
+        \         \"label1\",\r\n          \"label2\"\r\n        ],\r\n        \"ids\":
+        [\r\n          {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\r\n
+        \         },\r\n          {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2\"\r\n
+        \         }\r\n        ]\r\n      },\r\n      \"vnetRoutes\": {\r\n        \"staticRoutes\":
+        []\r\n      }\r\n    },\r\n    \"enableInternetSecurity\": false,\r\n    \"remoteVpnSite\":
+        {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnSites/remote_vpn_site_1\"\r\n
+        \   },\r\n    \"ingressBytesTransferred\": 0,\r\n    \"egressBytesTransferred\":
+        0,\r\n    \"connectionStatus\": \"Unknown\",\r\n    \"connectionBandwidth\":
+        10,\r\n    \"ipsecPolicies\": [],\r\n    \"vpnConnectionProtocolType\": \"IKEv2\",\r\n
+        \   \"enableBgp\": false,\r\n    \"enableRateLimiting\": false,\r\n    \"useLocalAzureIpAddress\":
+        false,\r\n    \"usePolicyBasedTrafficSelectors\": false,\r\n    \"routingWeight\":
+        0\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -2828,7 +2865,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 06:01:57 GMT
+      - Fri, 22 Jan 2021 03:13:14 GMT
       expires:
       - '-1'
       pragma:
@@ -2845,7 +2882,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 2b1603f3-df7b-4c49-b9b7-a39ef9749771
+      - 3d1ec9f7-5458-485a-9afa-700f1a7a967d
     status:
       code: 200
       message: OK
@@ -2863,36 +2900,33 @@ interactions:
       ParameterSetName:
       - -g --gateway-name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"value\": [\r\n    {\r\n      \"name\": \"test_s2s_vpn_gateway_connection\"\
-        ,\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection\"\
-        ,\r\n      \"etag\": \"W/\\\"b7640cb0-8e22-4a3d-803d-726ec4eea69c\\\"\",\r\
-        \n      \"type\": \"Microsoft.Network/vpnGateways/vpnConnections\",\r\n  \
-        \    \"properties\": {\r\n        \"provisioningState\": \"Succeeded\",\r\n\
-        \        \"routingConfiguration\": {\r\n          \"associatedRouteTable\"\
-        : {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\
-        \r\n          },\r\n          \"propagatedRouteTables\": {\r\n           \
-        \ \"labels\": [\r\n              \"label1\",\r\n              \"label2\"\r\
-        \n            ],\r\n            \"ids\": [\r\n              {\r\n        \
-        \        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\
-        \r\n              },\r\n              {\r\n                \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2\"\
-        \r\n              }\r\n            ]\r\n          },\r\n          \"vnetRoutes\"\
-        : {\r\n            \"staticRoutes\": []\r\n          }\r\n        },\r\n \
-        \       \"enableInternetSecurity\": false,\r\n        \"remoteVpnSite\": {\r\
-        \n          \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnSites/remote_vpn_site_1\"\
-        \r\n        },\r\n        \"ingressBytesTransferred\": 0,\r\n        \"egressBytesTransferred\"\
-        : 0,\r\n        \"connectionBandwidth\": 10,\r\n        \"ipsecPolicies\"\
-        : [],\r\n        \"vpnConnectionProtocolType\": \"IKEv2\",\r\n        \"enableBgp\"\
-        : false,\r\n        \"enableRateLimiting\": false,\r\n        \"useLocalAzureIpAddress\"\
-        : false,\r\n        \"usePolicyBasedTrafficSelectors\": false,\r\n       \
-        \ \"routingWeight\": 0\r\n      }\r\n    }\r\n  ]\r\n}"
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"name\": \"test_s2s_vpn_gateway_connection\",\r\n
+        \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection\",\r\n
+        \     \"etag\": \"W/\\\"65d0374b-5b45-4edd-ba81-4115937377a0\\\"\",\r\n      \"type\":
+        \"Microsoft.Network/vpnGateways/vpnConnections\",\r\n      \"properties\":
+        {\r\n        \"provisioningState\": \"Succeeded\",\r\n        \"routingConfiguration\":
+        {\r\n          \"associatedRouteTable\": {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\r\n
+        \         },\r\n          \"propagatedRouteTables\": {\r\n            \"labels\":
+        [\r\n              \"label1\",\r\n              \"label2\"\r\n            ],\r\n
+        \           \"ids\": [\r\n              {\r\n                \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\r\n
+        \             },\r\n              {\r\n                \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2\"\r\n
+        \             }\r\n            ]\r\n          },\r\n          \"vnetRoutes\":
+        {\r\n            \"staticRoutes\": []\r\n          }\r\n        },\r\n        \"enableInternetSecurity\":
+        false,\r\n        \"remoteVpnSite\": {\r\n          \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnSites/remote_vpn_site_1\"\r\n
+        \       },\r\n        \"ingressBytesTransferred\": 0,\r\n        \"egressBytesTransferred\":
+        0,\r\n        \"connectionBandwidth\": 10,\r\n        \"ipsecPolicies\": [],\r\n
+        \       \"vpnConnectionProtocolType\": \"IKEv2\",\r\n        \"enableBgp\":
+        false,\r\n        \"enableRateLimiting\": false,\r\n        \"useLocalAzureIpAddress\":
+        false,\r\n        \"usePolicyBasedTrafficSelectors\": false,\r\n        \"routingWeight\":
+        0\r\n      }\r\n    }\r\n  ]\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -2901,7 +2935,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 06:01:57 GMT
+      - Fri, 22 Jan 2021 03:13:15 GMT
       expires:
       - '-1'
       pragma:
@@ -2918,7 +2952,332 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - d17f78e8-f72d-4c68-bb84-061527764ef1
+      - eea492a0-97b3-471f-bdf9-fc752578c86f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vpn-gateway connection update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --gateway-name -n --labels
+      User-Agent:
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"test_s2s_vpn_gateway_connection\",\r\n  \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection\",\r\n
+        \ \"etag\": \"W/\\\"65d0374b-5b45-4edd-ba81-4115937377a0\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/vpnGateways/vpnConnections\",\r\n  \"properties\": {\r\n
+        \   \"provisioningState\": \"Succeeded\",\r\n    \"routingConfiguration\":
+        {\r\n      \"associatedRouteTable\": {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\r\n
+        \     },\r\n      \"propagatedRouteTables\": {\r\n        \"labels\": [\r\n
+        \         \"label1\",\r\n          \"label2\"\r\n        ],\r\n        \"ids\":
+        [\r\n          {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\r\n
+        \         },\r\n          {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2\"\r\n
+        \         }\r\n        ]\r\n      },\r\n      \"vnetRoutes\": {\r\n        \"staticRoutes\":
+        []\r\n      }\r\n    },\r\n    \"enableInternetSecurity\": false,\r\n    \"remoteVpnSite\":
+        {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnSites/remote_vpn_site_1\"\r\n
+        \   },\r\n    \"ingressBytesTransferred\": 0,\r\n    \"egressBytesTransferred\":
+        0,\r\n    \"connectionStatus\": \"Unknown\",\r\n    \"connectionBandwidth\":
+        10,\r\n    \"ipsecPolicies\": [],\r\n    \"vpnConnectionProtocolType\": \"IKEv2\",\r\n
+        \   \"enableBgp\": false,\r\n    \"enableRateLimiting\": false,\r\n    \"useLocalAzureIpAddress\":
+        false,\r\n    \"usePolicyBasedTrafficSelectors\": false,\r\n    \"routingWeight\":
+        0\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2233'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Jan 2021 03:13:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 9347b474-187a-48c4-97c1-db0afac05447
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection",
+      "properties": {"remoteVpnSite": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnSites/remote_vpn_site_1"},
+      "routingWeight": 0, "connectionStatus": "Unknown", "vpnConnectionProtocolType":
+      "IKEv2", "connectionBandwidth": 10, "enableBgp": false, "usePolicyBasedTrafficSelectors":
+      false, "ipsecPolicies": [], "enableRateLimiting": false, "enableInternetSecurity":
+      false, "useLocalAzureIpAddress": false, "routingConfiguration": {"associatedRouteTable":
+      {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1"},
+      "propagatedRouteTables": {"labels": ["x1", "x2"], "ids": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1"},
+      {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2"}]},
+      "vnetRoutes": {"staticRoutes": []}}}, "name": "test_s2s_vpn_gateway_connection"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vpn-gateway connection update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1701'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g --gateway-name -n --labels
+      User-Agent:
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"test_s2s_vpn_gateway_connection\",\r\n  \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection\",\r\n
+        \ \"etag\": \"W/\\\"b67b137d-b1dd-432f-bc64-eaba2ca535a5\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/vpnGateways/vpnConnections\",\r\n  \"properties\": {\r\n
+        \   \"provisioningState\": \"Updating\",\r\n    \"routingConfiguration\":
+        {\r\n      \"associatedRouteTable\": {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\r\n
+        \     },\r\n      \"propagatedRouteTables\": {\r\n        \"labels\": [\r\n
+        \         \"x1\",\r\n          \"x2\"\r\n        ],\r\n        \"ids\": [\r\n
+        \         {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\r\n
+        \         },\r\n          {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2\"\r\n
+        \         }\r\n        ]\r\n      },\r\n      \"vnetRoutes\": {\r\n        \"staticRoutes\":
+        []\r\n      }\r\n    },\r\n    \"enableInternetSecurity\": false,\r\n    \"remoteVpnSite\":
+        {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnSites/remote_vpn_site_1\"\r\n
+        \   },\r\n    \"ingressBytesTransferred\": 0,\r\n    \"egressBytesTransferred\":
+        0,\r\n    \"connectionStatus\": \"Unknown\",\r\n    \"connectionBandwidth\":
+        10,\r\n    \"ipsecPolicies\": [],\r\n    \"vpnConnectionProtocolType\": \"IKEv2\",\r\n
+        \   \"enableBgp\": false,\r\n    \"enableRateLimiting\": false,\r\n    \"useLocalAzureIpAddress\":
+        false,\r\n    \"usePolicyBasedTrafficSelectors\": false,\r\n    \"routingWeight\":
+        0\r\n  }\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/a8139955-781b-45aa-a4fb-67eeafa51e1c?api-version=2020-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '2224'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Jan 2021 03:13:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 1dbf65f9-f880-4b30-9b69-e5d3d54a0d47
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1195'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vpn-gateway connection update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --gateway-name -n --labels
+      User-Agent:
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/a8139955-781b-45aa-a4fb-67eeafa51e1c?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Jan 2021 03:13:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 461cb348-af8d-4edc-998c-9c428f82d719
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vpn-gateway connection update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --gateway-name -n --labels
+      User-Agent:
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/a8139955-781b-45aa-a4fb-67eeafa51e1c?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Jan 2021 03:13:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 3cecf74c-aed2-41e5-b433-f5c8fc7f6671
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vpn-gateway connection update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --gateway-name -n --labels
+      User-Agent:
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"test_s2s_vpn_gateway_connection\",\r\n  \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection\",\r\n
+        \ \"etag\": \"W/\\\"d2fe55e0-9971-437a-99b5-dfbf3e351421\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/vpnGateways/vpnConnections\",\r\n  \"properties\": {\r\n
+        \   \"provisioningState\": \"Succeeded\",\r\n    \"routingConfiguration\":
+        {\r\n      \"associatedRouteTable\": {\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\r\n
+        \     },\r\n      \"propagatedRouteTables\": {\r\n        \"labels\": [\r\n
+        \         \"x1\",\r\n          \"x2\"\r\n        ],\r\n        \"ids\": [\r\n
+        \         {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_1\"\r\n
+        \         },\r\n          {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/virtualHubs/test_vhub/hubRouteTables/test_vhub_routing_2\"\r\n
+        \         }\r\n        ]\r\n      },\r\n      \"vnetRoutes\": {\r\n        \"staticRoutes\":
+        []\r\n      }\r\n    },\r\n    \"enableInternetSecurity\": false,\r\n    \"remoteVpnSite\":
+        {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnSites/remote_vpn_site_1\"\r\n
+        \   },\r\n    \"ingressBytesTransferred\": 0,\r\n    \"egressBytesTransferred\":
+        0,\r\n    \"connectionStatus\": \"Unknown\",\r\n    \"connectionBandwidth\":
+        10,\r\n    \"ipsecPolicies\": [],\r\n    \"vpnConnectionProtocolType\": \"IKEv2\",\r\n
+        \   \"enableBgp\": false,\r\n    \"enableRateLimiting\": false,\r\n    \"useLocalAzureIpAddress\":
+        false,\r\n    \"usePolicyBasedTrafficSelectors\": false,\r\n    \"routingWeight\":
+        0\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2225'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Jan 2021 03:13:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - f58ef4b5-4255-4732-8f3e-3a3d6ccc338e
     status:
       code: 200
       message: OK
@@ -2938,8 +3297,8 @@ interactions:
       ParameterSetName:
       - -g -n --gateway-name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: DELETE
@@ -2949,17 +3308,17 @@ interactions:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/9a82a634-84b8-40f1-9ca2-c08945319115?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/27840081-7308-48b5-99f7-03d04b556e3e?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Wed, 25 Nov 2020 06:01:58 GMT
+      - Fri, 22 Jan 2021 03:13:40 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operationResults/9a82a634-84b8-40f1-9ca2-c08945319115?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operationResults/27840081-7308-48b5-99f7-03d04b556e3e?api-version=2020-05-01
       pragma:
       - no-cache
       server:
@@ -2970,7 +3329,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 8f75c52e-6aac-48a2-8028-a4a31cf768c8
+      - e8a67ecb-95fe-4f0c-8191-2d1e10ce8da1
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
     status:
@@ -2990,10 +3349,10 @@ interactions:
       ParameterSetName:
       - -g -n --gateway-name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/9a82a634-84b8-40f1-9ca2-c08945319115?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/27840081-7308-48b5-99f7-03d04b556e3e?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3005,7 +3364,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 06:02:09 GMT
+      - Fri, 22 Jan 2021 03:13:50 GMT
       expires:
       - '-1'
       pragma:
@@ -3022,7 +3381,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 7801247b-5de5-40d2-8382-f95e86e142ad
+      - d9b49211-7a78-4252-a29a-98da3b4a1258
     status:
       code: 200
       message: OK
@@ -3040,10 +3399,10 @@ interactions:
       ParameterSetName:
       - -g -n --gateway-name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/9a82a634-84b8-40f1-9ca2-c08945319115?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/27840081-7308-48b5-99f7-03d04b556e3e?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3055,7 +3414,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 06:02:19 GMT
+      - Fri, 22 Jan 2021 03:14:00 GMT
       expires:
       - '-1'
       pragma:
@@ -3072,7 +3431,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 10a306f3-366c-4319-a0e2-e1db6931d16b
+      - 060697b1-2145-4ed3-907a-8ba573c3868a
     status:
       code: 200
       message: OK
@@ -3090,10 +3449,60 @@ interactions:
       ParameterSetName:
       - -g -n --gateway-name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/9a82a634-84b8-40f1-9ca2-c08945319115?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/27840081-7308-48b5-99f7-03d04b556e3e?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 22 Jan 2021 03:14:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 51c40079-d8a9-4c3e-a299-234cba00ef9f
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vpn-gateway connection delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --gateway-name
+      User-Agent:
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/27840081-7308-48b5-99f7-03d04b556e3e?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -3105,7 +3514,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 06:02:40 GMT
+      - Fri, 22 Jan 2021 03:15:01 GMT
       expires:
       - '-1'
       pragma:
@@ -3122,7 +3531,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 043d65ab-236a-46ae-b63f-dd39d7c7b659
+      - 0a5f4506-1c94-4638-a34f-ea3191cb5d42
     status:
       code: 200
       message: OK
@@ -3140,17 +3549,17 @@ interactions:
       ParameterSetName:
       - -g -n --gateway-name
       User-Agent:
-      - python/3.7.4 (Linux-4.15.0-123-generic-x86_64-with-debian-buster-sid) msrest/0.6.18
-        msrest_azure/0.6.3 azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.19 msrest_azure/0.6.4
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"error\": {\r\n    \"code\": \"NotFound\",\r\n    \"message\"\
-        : \"Resource /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection\
-        \ not found.\",\r\n    \"details\": []\r\n  }\r\n}"
+      string: "{\r\n  \"error\": {\r\n    \"code\": \"NotFound\",\r\n    \"message\":
+        \"Resource /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_vwan_vpn_gateway_connection000001/providers/Microsoft.Network/vpnGateways/test_s2s_vpn_gateway/vpnConnections/test_s2s_vpn_gateway_connection
+        not found.\",\r\n    \"details\": []\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -3159,7 +3568,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 25 Nov 2020 06:02:41 GMT
+      - Fri, 22 Jan 2021 03:15:02 GMT
       expires:
       - '-1'
       pragma:
@@ -3172,7 +3581,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 7346e533-2902-4095-aa50-fb96fc6092c1
+      - af45997b-73f3-49dd-a95c-fa2987cb97fa
     status:
       code: 404
       message: Not Found

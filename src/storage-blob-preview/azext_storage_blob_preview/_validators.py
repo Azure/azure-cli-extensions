@@ -35,12 +35,11 @@ def _query_account_key(cli_ctx, account_name):
     t_storage_account_keys = get_sdk(
         cli_ctx, ResourceType.MGMT_STORAGE, 'models.storage_account_keys#StorageAccountKeys')
 
-    scf.config.enable_http_logger = False
     logger.debug('Disable HTTP logging to avoid having storage keys in debug logs')
     if t_storage_account_keys:
-        return scf.storage_accounts.list_keys(rg, account_name).key1
+        return scf.storage_accounts.list_keys(rg, account_name, logging_enable=False).key1
     # of type: models.storage_account_list_keys_result#StorageAccountListKeysResult
-    return scf.storage_accounts.list_keys(rg, account_name).keys[0].value  # pylint: disable=no-member
+    return scf.storage_accounts.list_keys(rg, account_name, logging_enable=False).keys[0].value  # pylint: disable=no-member
 
 
 def _query_account_rg(cli_ctx, account_name):
@@ -372,7 +371,10 @@ def validate_source_url(cmd, namespace):  # pylint: disable=too-many-statements
 
 def validate_blob_type(namespace):
     if not namespace.blob_type:
-        namespace.blob_type = 'page' if namespace.file_path.endswith('.vhd') else 'block'
+        if namespace.file_path and namespace.file_path.endswith('.vhd'):
+            namespace.blob_type = 'page'
+        else:
+            namespace.blob_type = 'block'
 
 
 def validate_storage_data_plane_list(namespace):
@@ -382,7 +384,7 @@ def validate_storage_data_plane_list(namespace):
         namespace.num_results = int(namespace.num_results)
 
 
-def get_content_setting_validator(settings_class, update, guess_from_file=None):
+def get_content_setting_validator(settings_class, update, guess_from_file=None, process_md5=False):
     def _class_name(class_type):
         return class_type.__module__ + "." + class_type.__class__.__name__
 
@@ -439,6 +441,13 @@ def get_content_setting_validator(settings_class, update, guess_from_file=None):
         else:
             if guess_from_file:
                 new_props = guess_content_type(ns[guess_from_file], new_props, settings_class)
+
+        # In track2 SDK, the content_md5 type should be bytearray. And then it will serialize to a string for request.
+        # To keep consistent with track1 input and CLI will treat all parameter values as string. Here is to transform
+        # content_md5 value to bytearray. And track2 SDK will serialize it into the right value with str type in header.
+        if process_md5 and new_props.content_md5:
+            from .track2_util import _str_to_bytearray
+            new_props.content_md5 = _str_to_bytearray(new_props.content_md5)
 
         ns['content_settings'] = new_props
 
@@ -1042,3 +1051,11 @@ def validate_blob_arguments(namespace):
     if not namespace.blob_url and not all([namespace.blob_name, namespace.container_name]):
         raise RequiredArgumentMissingError(
             "Please specify --blob-url or combination of blob name, container name and storage account arguments.")
+
+
+def validate_upload_blob(namespace):
+    from azure.cli.core.azclierror import InvalidArgumentValueError
+    if namespace.file_path and namespace.data:
+        raise InvalidArgumentValueError("usage error: please only specify one of --file and --data to upload.")
+    if not namespace.file_path and not namespace.data:
+        raise InvalidArgumentValueError("usage error: please specify one of --file and --data to upload.")
