@@ -131,6 +131,24 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_custom_command_oauth('renew', 'renew_blob_lease')
         g.storage_command_oauth('release', 'release')
 
+    with self.command_group('storage blob service-properties delete-policy', command_type=blob_service_sdk,
+                            min_api='2019-02-02', resource_type=CUSTOM_DATA_STORAGE_BLOB,
+                            custom_command_type=get_custom_sdk('blob', cf_blob_service)) as g:
+        g.storage_command_oauth('show', 'get_service_properties',
+                                transform=lambda x: x.get('delete_retention_policy', x),
+                                exception_handler=show_exception_handler)
+        g.storage_custom_command_oauth('update', 'set_delete_policy')
+
+    with self.command_group('storage blob service-properties', command_type=blob_service_sdk,
+                            custom_command_type=get_custom_sdk('blob', cf_blob_service),
+                            min_api='2019-02-02', resource_type=CUSTOM_DATA_STORAGE_BLOB) as g:
+        from ._transformers import transform_blob_service_properties
+        g.storage_command_oauth(
+            'show', 'get_service_properties', exception_handler=show_exception_handler,
+            transform=transform_blob_service_properties)
+        g.storage_custom_command_oauth('update', 'set_service_properties',
+                                       transform=transform_blob_service_properties)
+
     # --auth-mode login need to verify
     with self.command_group('storage blob tag', command_type=blob_client_sdk,
                             custom_command_type=get_custom_sdk('blob', cf_blob_client),

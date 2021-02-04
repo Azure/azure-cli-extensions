@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.4.1
+++++++
+* `az storage blob service-properties`: Adopt new api version with track2 SDK
+
 0.4.0
 ++++++
 * Support blob url for blob related commands
