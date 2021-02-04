@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, ResourceGroupPreparer, StorageAccountPreparer,
-                               api_version_constraint)
+                               api_version_constraint, live_only)
 from azure_devtools.scenario_tests import AllowLargeResponse
 from .storage_test_util import StorageScenarioMixin
 from ...profiles import CUSTOM_MGMT_PREVIEW_STORAGE
@@ -288,3 +288,119 @@ class FileServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
         self.cmd(
             '{cmd} update --enable-smb-multichannel true -n {sa} -g {rg}').assert_with_checks(
             JMESPathCheck('protocolSettings.smb.multichannel.enabled', True))
+
+    @ResourceGroupPreparer()
+    @StorageAccountPreparer()
+    def test_logging_operations(self, resource_group, storage_account):
+        connection_string = self.cmd(
+            'storage account show-connection-string -g {} -n {} -otsv'.format(resource_group, storage_account)).output
+        account_info = self.get_account_info(resource_group, storage_account)
+
+        self.cmd('storage logging show --connection-string {}'.format(connection_string), checks=[
+            JMESPathCheck('blob.read', False),
+            JMESPathCheck('blob.retentionPolicy.enabled', False),
+            JMESPathCheck('adls.read', False),
+            JMESPathCheck('queue.read', False),
+            JMESPathCheck('table.read', False),
+        ])
+
+        self.cmd('storage logging update --services b --log r --retention 1 '
+                 '--connection-string {}'.format(connection_string))
+
+        self.cmd('storage logging show --connection-string {}'.format(connection_string), checks=[
+            JMESPathCheck('blob.read', True),
+            JMESPathCheck('blob.retentionPolicy.enabled', True),
+            JMESPathCheck('blob.retentionPolicy.days', 1)
+        ])
+
+        self.storage_cmd('storage logging update --services a --log rw --retention 3 ', account_info)
+
+        self.storage_cmd('storage logging show ', account_info).assert_with_checks([
+            JMESPathCheck('adls.read', True),
+            JMESPathCheck('adls.write', True),
+            JMESPathCheck('adls.delete', False),
+            JMESPathCheck('blob.retentionPolicy.enabled', True),
+            JMESPathCheck('blob.retentionPolicy.days', 3)
+        ])
+
+        self.cmd('storage logging off --connection-string {}'.format(connection_string))
+
+        self.cmd('storage logging show --connection-string {}'.format(connection_string), checks=[
+            JMESPathCheck('blob.delete', False),
+            JMESPathCheck('blob.write', False),
+            JMESPathCheck('blob.read', False),
+            JMESPathCheck('blob.retentionPolicy.enabled', False),
+            JMESPathCheck('blob.retentionPolicy.days', None),
+            JMESPathCheck('queue.delete', False),
+            JMESPathCheck('queue.write', False),
+            JMESPathCheck('queue.read', False),
+            JMESPathCheck('queue.retentionPolicy.enabled', False),
+            JMESPathCheck('queue.retentionPolicy.days', None),
+            JMESPathCheck('table.delete', False),
+            JMESPathCheck('table.write', False),
+            JMESPathCheck('table.read', False),
+            JMESPathCheck('table.retentionPolicy.enabled', False),
+            JMESPathCheck('table.retentionPolicy.days', None),
+            JMESPathCheck('adls.delete', False),
+            JMESPathCheck('adls.write', False),
+            JMESPathCheck('adls.read', False),
+            JMESPathCheck('adls.retentionPolicy.enabled', False),
+            JMESPathCheck('adls.retentionPolicy.days', None),
+        ])
+
+        # Table service
+        with self.assertRaisesRegexp(CLIError, "incorrect usage: for table service, the supported version for logging is `1.0`"):
+            self.cmd('storage logging update --services t --log r --retention 1 '
+                     '--version 2.0 --connection-string {}'.format(connection_string))
+
+        # Set version to 1.0
+        self.cmd('storage logging update --services t --log r --retention 1 --version 1.0 --connection-string {} '
+                 .format(connection_string))
+        import time
+        time.sleep(120)
+        self.cmd('storage logging show --connection-string {}'.format(connection_string), checks=[
+            JMESPathCheck('table.version', '1.0'),
+            JMESPathCheck('table.delete', False),
+            JMESPathCheck('table.write', False),
+            JMESPathCheck('table.read', True),
+            JMESPathCheck('table.retentionPolicy.enabled', True),
+            JMESPathCheck('table.retentionPolicy.days', 1)
+        ])
+
+        # Use default version
+        self.cmd('storage logging update --services t --log r --retention 1 --connection-string {}'.format(
+            connection_string))
+        import time
+        time.sleep(120)
+        self.cmd('storage logging show --connection-string {}'.format(connection_string), checks=[
+            JMESPathCheck('table.version', '1.0'),
+            JMESPathCheck('table.delete', False),
+            JMESPathCheck('table.write', False),
+            JMESPathCheck('table.read', True),
+            JMESPathCheck('table.retentionPolicy.enabled', True),
+            JMESPathCheck('table.retentionPolicy.days', 1)
+        ])
+
+
+    @live_only()
+    @ResourceGroupPreparer()
+    def test_logging_error_operations(self, resource_group):
+        # BlobStorage doesn't support logging for some services
+        blob_storage = self.create_random_name(prefix='blob', length=24)
+        self.cmd('storage account create -g {} -n {} --kind BlobStorage --access-tier hot --https-only'.format(
+            resource_group, blob_storage))
+
+        blob_connection_string = self.cmd(
+            'storage account show-connection-string -g {} -n {} -otsv'.format(resource_group, blob_storage)).output
+        with self.assertRaisesRegexp(CLIError, "Your storage account doesn't support logging"):
+            self.cmd('storage logging show --services q --connection-string {}'.format(blob_connection_string))
+
+        # PremiumStorage doesn't support logging for some services
+        premium_storage = self.create_random_name(prefix='premium', length=24)
+        self.cmd('storage account create -g {} -n {} --sku Premium_LRS --https-only'.format(
+            resource_group, premium_storage))
+
+        premium_connection_string = self.cmd(
+            'storage account show-connection-string -g {} -n {} -otsv'.format(resource_group, premium_storage)).output
+        with self.assertRaisesRegexp(CLIError, "Your storage account doesn't support logging"):
+            self.cmd('storage logging show --services q --connection-string {}'.format(premium_connection_string))

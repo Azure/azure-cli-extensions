@@ -5,12 +5,20 @@
 
 
 def get_logging(client, timeout=None):
+    from azure.core.exceptions import ServiceRequestError
+    from knack.util import CLIError
     results = {}
     for (name, service_client) in client.items():
-        if name == 'table':
-            results[name] = service_client.get_table_service_properties(timeout=timeout).__dict__['logging']
-        else:
-            results[name] = service_client.get_service_properties(timeout=timeout).get('analytics_logging', None)
+        try:
+            if name == 'table':
+                results[name] = service_client.get_table_service_properties(timeout=timeout).__dict__['logging']
+            else:
+                results[name] = service_client.get_service_properties(timeout=timeout).get('analytics_logging', None)
+        except ServiceRequestError as ex:
+            if ex.message and 'Failed to establish a new connection: [Errno 11001] getaddrinfo failed' in ex.message:
+                raise CLIError("Your storage account doesn't support logging for {} service. "
+                               "Please change value for --services in your commands.".format(name))
+            raise ex
     return results
 
 
