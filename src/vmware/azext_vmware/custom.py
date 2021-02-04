@@ -68,7 +68,7 @@ def privatecloud_update(cmd, client: AVSClient, resource_group_name, name, clust
 
 def privatecloud_delete(cmd, client: AVSClient, resource_group_name, name, yes=False):
     from knack.prompting import prompt_y_n
-    msg = 'This will delete private cloud. Are you sure?'
+    msg = 'This will delete the private cloud. Are you sure?'
     if not yes and not prompt_y_n(msg, default="n"):
         return
     return client.private_clouds.begin_delete(resource_group_name, name)
