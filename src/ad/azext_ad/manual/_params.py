@@ -8,16 +8,21 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
+from azext_ad.manual._validators import validate_pfx_certificate, validate_resource_forest_settings
+
 
 def load_arguments(self, _):
     from azure.cli.core.commands.parameters import file_type
     from argcomplete.completers import FilesCompleter
     for item in ['create', 'update']:
         with self.argument_context('ad ds {}'.format(item)) as c:
-            c.argument('pfx_certificate', options_list=['--pfx-cert'], type=file_type, completer=FilesCompleter(),
+            c.argument('pfx_certificate', options_list=['--pfx-cert'], type=file_type,
+                       completer=FilesCompleter(), validator=validate_pfx_certificate,
                        help='The certificate required to configure Secure LDAP. The parameter '
                             'passed here should be the file path to the certificate pfx file '
                             'or a base64encoded representation of the certificate pfx file.',
                        arg_group='Ldaps Settings')
-            c.argument('settings', type=file_type, completer=FilesCompleter(), help='List of settings for Resource Forest',
+            c.argument('settings', type=file_type,
+                       completer=FilesCompleter(), validator=validate_resource_forest_settings,
+                       help='List of settings for Resource Forest',
                        arg_group='Resource Forest Settings')
