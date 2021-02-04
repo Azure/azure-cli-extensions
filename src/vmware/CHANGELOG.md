@@ -3,6 +3,7 @@
 ## 2.0.0 (TBD)
 
 - prompt for legal terms in private-cloud create [#2932](https://github.com/Azure/azure-cli-extensions/pull/2932)
+- update to AVS 2021-01-01-preview API
 
 ## 1.0.0 (2020-11-02)
 
