@@ -1,0 +1,869 @@
+interactions:
+- request:
+    body: '{"location": "centralus", "properties": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure hyperv site create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '43'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --resource-group --site-name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/HyperVSites/hyperv-site?api-version=2020-01-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/HyperVSites/hyperv-site","name":"hyperv-site","type":"Microsoft.OffAzure/HyperVSites","etag":"\"2600a1a6-0000-0300-0000-60069e530000\"","location":"centralus","properties":{"masterSiteId":null,"servicePrincipalIdentityDetails":null,"agentDetails":{"id":"d2b00c6b-0f60-40e4-a2ac-982a0def48c4-agent","version":null,"lastHeartBeatUtc":null,"keyVaultUri":null,"keyVaultId":null},"serviceEndpoint":"https://prod.cus.discoverysrv.windowsazure.com/","applianceName":null,"discoverySolutionId":null,"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '703'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 Jan 2021 08:54:44 GMT
+      etag:
+      - '"2600a1a6-0000-0300-0000-60069e530000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure hyperv site show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --site-name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/HyperVSites/hyperv-site?api-version=2020-01-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/HyperVSites/hyperv-site","name":"hyperv-site","type":"Microsoft.OffAzure/HyperVSites","etag":"\"2600a1a6-0000-0300-0000-60069e530000\"","location":"centralus","properties":{"masterSiteId":null,"servicePrincipalIdentityDetails":null,"agentDetails":{"id":"d2b00c6b-0f60-40e4-a2ac-982a0def48c4-agent","version":null,"lastHeartBeatUtc":null,"keyVaultUri":null,"keyVaultId":null},"serviceEndpoint":"https://prod.cus.discoverysrv.windowsazure.com/","applianceName":null,"discoverySolutionId":null,"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '703'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 Jan 2021 08:54:46 GMT
+      etag:
+      - '"2600a1a6-0000-0300-0000-60069e530000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure hyperv cluster show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --site-name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/HyperVSites/hyperv-site/clusters/not-exist-cluster?api-version=2020-01-01
+  response:
+    body:
+      string: '{"error":{"code":"ClusterNotFound","message":"Hyper-V cluster name
+        ''not-exist-cluster'' cannot be found."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '106'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 Jan 2021 08:54:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure hyperv cluster list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --site-name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/HyperVSites/hyperv-site/clusters?api-version=2020-01-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 Jan 2021 08:54:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure hyperv host show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --host-name --resource-group --site-name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/HyperVSites/hyperv-site/hosts/not-exist-host?api-version=2020-01-01
+  response:
+    body:
+      string: '{"error":{"code":"HostNotFound","message":"Host name ''not-exist-host''
+        cannot be found."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '89'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 Jan 2021 08:54:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure hyperv host list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --site-name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/HyperVSites/hyperv-site/hosts?api-version=2020-01-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 Jan 2021 08:54:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure hyperv machine show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --machine-name --resource-group --site-name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/HyperVSites/hyperv-site/machines/not-exist-machine?api-version=2020-01-01
+  response:
+    body:
+      string: '{"error":{"code":"MachineNotFound","message":"Machine name ''not-exist-machine''
+        cannot be found."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '98'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 Jan 2021 08:54:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure hyperv machine list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --site-name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/HyperVSites/hyperv-site/machines?api-version=2020-01-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 Jan 2021 08:54:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure hyperv run-as-account show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --account-name --resource-group --site-name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/HyperVSites/hyperv-site/runAsAccounts/not-exist-account?api-version=2020-01-01
+  response:
+    body:
+      string: '{"error":{"code":"RunAsAccountNotFound","message":"Run as account name
+        ''not-exist-account'' cannot be found."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '110'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 Jan 2021 08:54:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure hyperv run-as-account list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --site-name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/HyperVSites/hyperv-site/runAsAccounts?api-version=2020-01-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 Jan 2021 08:54:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure hyperv site delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --resource-group --site-name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/HyperVSites/hyperv-site?api-version=2020-01-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 19 Jan 2021 08:55:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14996'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "centralus", "properties": {}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure vmware site create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '43'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --location --resource-group --site-name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/VMwareSites/vmware-site?api-version=2020-01-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/VMwareSites/vmware-site","name":"vmware-site","type":"Microsoft.OffAzure/VMwareSites","etag":"\"260047a7-0000-0300-0000-60069e6b0000\"","location":"centralus","properties":{"masterSiteId":null,"servicePrincipalIdentityDetails":null,"agentDetails":{"id":"1fd334e1-893f-4ce5-8335-9fe17ac3d407-agent","version":null,"lastHeartBeatUtc":null,"keyVaultUri":null,"keyVaultId":null},"serviceEndpoint":"https://prod.cus.discoverysrv.windowsazure.com/","applianceName":null,"discoverySolutionId":null,"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '703'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 Jan 2021 08:55:08 GMT
+      etag:
+      - '"260047a7-0000-0300-0000-60069e6b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure vmware site show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/VMwareSites/vmware-site?api-version=2020-01-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/VMwareSites/vmware-site","name":"vmware-site","type":"Microsoft.OffAzure/VMwareSites","etag":"\"260047a7-0000-0300-0000-60069e6b0000\"","location":"centralus","properties":{"masterSiteId":null,"servicePrincipalIdentityDetails":null,"agentDetails":{"id":"1fd334e1-893f-4ce5-8335-9fe17ac3d407-agent","version":null,"lastHeartBeatUtc":null,"keyVaultUri":null,"keyVaultId":null},"serviceEndpoint":"https://prod.cus.discoverysrv.windowsazure.com/","applianceName":null,"discoverySolutionId":null,"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '703'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 Jan 2021 08:55:10 GMT
+      etag:
+      - '"260047a7-0000-0300-0000-60069e6b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure vmware machine show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --site-name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/VMwareSites/vmware-site/machines/not-exist-machine?api-version=2020-01-01
+  response:
+    body:
+      string: '{"error":{"code":"MachineNotFound","message":"Machine name ''not-exist-machine''
+        cannot be found."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '98'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 Jan 2021 08:55:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure vmware machine list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --site-name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/VMwareSites/vmware-site/machines?api-version=2020-01-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 Jan 2021 08:55:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure vmware run-as-account show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --account-name --resource-group --site-name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/VMwareSites/vmware-site/runAsAccounts/not-exist-account?api-version=2020-01-01
+  response:
+    body:
+      string: '{"error":{"code":"RunAsAccountNotFound","message":"Run as account name
+        ''not-exist-account'' cannot be found."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '110'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 Jan 2021 08:55:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure vmware run-as-account list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --site-name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/VMwareSites/vmware-site/runAsAccounts?api-version=2020-01-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 Jan 2021 08:55:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure vmware vcenter show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --site-name --name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/VMwareSites/vmware-site/vCenters/not-exist-vcenter?api-version=2020-01-01
+  response:
+    body:
+      string: '{"error":{"code":"InvalidVCenterName","message":"VCenter name ''not-exist-vcenter''
+        is invalid."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '96'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 Jan 2021 08:55:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure vmware vcenter list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --site-name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/VMwareSites/vmware-site/vCenters?api-version=2020-01-01
+  response:
+    body:
+      string: '{"value":[],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '28'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 19 Jan 2021 08:55:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - offazure vmware site delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --resource-group --name
+      User-Agent:
+      - AZURECLI/2.17.1 azsdk-python-azuremigratev2/unknown Python/3.8.2 (Windows-10-10.0.18362-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OffAzure/VMwareSites/vmware-site?api-version=2020-01-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 19 Jan 2021 08:55:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+    status:
+      code: 200
+      message: OK
+version: 1
