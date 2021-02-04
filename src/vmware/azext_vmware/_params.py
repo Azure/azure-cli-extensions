@@ -32,6 +32,7 @@ def load_arguments(self, _):
         c.argument('internet', help='Connectivity to internet. Specify "Enabled" or "Disabled".')
         c.argument('vcenter_password', help='vCenter admin password.')
         c.argument('nsxt_password', help='NSX-T Manager password.')
+        c.argument('accept_eula', help='Accept the end-user license agreement without prompting.')
 
     with self.argument_context('vmware private-cloud show') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')

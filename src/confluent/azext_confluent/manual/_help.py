@@ -15,3 +15,27 @@ helps['confluent'] = """
     type: group
     short-summary: Manage confluent resources
 """
+
+helps['confluent organization show'] = """
+    type: command
+    short-summary: "Get the properties of a specific Organization resource."
+    examples:
+      - name: Show organization
+        text: |-
+               az confluent organization show --name "myOrganization" --resource-group "myResourceGroup"
+      - name: Show organization using IDs
+        text: |-
+               az confluent organization show --ids "/subscriptions/{SubID}/resourceGroups/{ResourceGroup}/providers/Microsoft.Confluent/organizations/{myOrganization}"
+"""
+
+helps['confluent organization delete'] = """
+    type: command
+    short-summary: "Delete Organization resource."
+    examples:
+      - name: Delete organization
+        text: |-
+               az confluent organization delete --name "myOrganization" --resource-group "myResourceGroup"
+      - name: Delete organization using IDs
+        text: |-
+               az confluent organization delete --ids "/subscriptions/{SubID}/resourceGroups/{ResourceGroup}/providers/Microsoft.Confluent/organizations/{myOrganization}"
+"""

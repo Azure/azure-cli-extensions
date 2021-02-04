@@ -1828,6 +1828,21 @@ providerhub resource-type-registration create:
     template_deployment_options:
       rule_exclusions:
       - option_length_too_long
+quantum execute:
+  parameters:
+    program_args:
+      rule_exclusions:
+        - no_positional_parameters
+quantum run:
+  parameters:
+    program_args:
+      rule_exclusions:
+        - no_positional_parameters
+quantum job submit:
+  parameters:
+    program_args:
+      rule_exclusions:
+        - no_positional_parameters
 repos import create:
   parameters:
     git_service_endpoint_id:
