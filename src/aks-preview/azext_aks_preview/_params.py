@@ -110,6 +110,7 @@ def load_arguments(self, _):
         c.argument('aks_custom_headers')
         c.argument('enable_private_cluster', action='store_true')
         c.argument('private_dns_zone')
+        c.argument('fqdn_subdomain')
         c.argument('enable_managed_identity', action='store_true')
         c.argument('assign_identity', type=str, validator=validate_assign_identity)
         c.argument('enable_sgxquotehelper', action='store_true')
