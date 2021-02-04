@@ -16,7 +16,7 @@ import azure.cli.core.telemetry as telemetry
 
 
 def handle_next(cmd):
-    init(autoreset=True) # turn on automatic color recovery for colorama
+    init(autoreset=True)  # turn on automatic color recovery for colorama
 
     if cmd.cli_ctx.config.getboolean('next', 'filter_type', fallback=False):
         request_type = _get_filter_option()
@@ -128,10 +128,10 @@ def _feed_arguments_from_sample(rec):
 
 
 def _give_recommend_commands(cmd, idx, rec):
-    index_str = "["+str(idx)+"] "
+    index_str = "[" + str(idx) + "] "
     command_item = "az " + rec['command']
     no_arguments = 'arguments' not in rec or not rec['arguments'] or \
-                    (len(rec['arguments']) == 1 and rec['arguments'][0] == '')
+                   (len(rec['arguments']) == 1 and rec['arguments'][0] == '')
     if no_arguments:
         _feed_arguments_from_sample(rec)
 
@@ -154,7 +154,7 @@ def _give_recommend_commands(cmd, idx, rec):
 
 
 def _give_recommend_scenarios(idx, rec):
-    index_str = "["+str(idx)+"] "
+    index_str = "[" + str(idx) + "] "
     num_notice = " ({} Commands)".format(len(rec['nextCommandSet']))
     print_styled_text([(Style.ACTION, index_str), (Style.PRIMARY, rec['scenario']), (Style.SECONDARY, num_notice)])
     if 'reason' in rec:
@@ -354,8 +354,8 @@ Please select the type of recommendation you need:
 4. scenario: Only the E2E scenarios related to current usage scenarios are recommended
 '''
     print(msg)
-    return get_int_option("What kind of recommendation do you want? " + Fore.LIGHTBLACK_EX + "(RETURN is to set all)"
-                          + Fore.RESET + ": ", 1, 4, 1)
+    return get_int_option("What kind of recommendation do you want? " + Fore.LIGHTBLACK_EX + "(RETURN is to set all)" +
+                          Fore.RESET + ": ", 1, 4, 1)
 
 
 def _show_details_for_e2e_scenario(cmd, rec):
