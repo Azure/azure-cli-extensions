@@ -90,7 +90,7 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app update') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
-                   help='If true, assign endpoint', default=False,
+                   help='If true, assign endpoint',
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint')])
         c.argument('is_public', arg_type=get_three_state_flag(),
                    deprecate_info=c.deprecate(expiration='2.2.0'), help='Something we no longer want to support.')
