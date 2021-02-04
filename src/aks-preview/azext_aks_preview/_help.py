@@ -288,7 +288,7 @@ helps['aks create'] = """
           short-summary: Disable SGX quote helper for confcom addon.
         - name: --auto-upgrade-channel
           type: string
-          short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch or none, none means disable autoupgrade.
+          short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch, node-image or none, none means disable autoupgrade.
         - name: --kubelet-config
           type: string
           short-summary: Kubelet configurations for agent nodes.
@@ -459,7 +459,7 @@ helps['aks update'] = """
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
         - name: --auto-upgrade-channel
           type: string
-          short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch or none, none means disable autoupgrade.
+          short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch, node-image or none, none means disable autoupgrade.
         - name: --enable-managed-identity
           type: bool
           short-summary: (PREVIEW) Update current cluster to managed identity to manage cluster resource group.
