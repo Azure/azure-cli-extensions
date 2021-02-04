@@ -1,5 +1,5 @@
 # Azure CLI timeseriesinsights Extension
-This is the extension for timeseriesinsights
+This is the extension for Azure Time Series Insights.
 
 ### How to use
 Install this extension using the below CLI command
