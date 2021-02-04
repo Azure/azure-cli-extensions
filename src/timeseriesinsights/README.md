@@ -19,9 +19,15 @@ az tsi environment gen1 create --name "env1" --location westus --data-retention-
 az tsi environment gen1 update --name "env1" --sku name="S1" capacity=2 --resource-group "rg1" --data-retention-time "P30D" --storage-limit-exceeded-behavior PurgeOldData
 ```
 
-##### Gen2 Create
+##### Create a storage account and use it to create Gen2 environment
 ```sh
-az tsi environment gen2 create --name "env2" --location westus --resource-group "rg1" --sku name="L1" capacity=1 --time-series-id-properties name=idName type=String --storage-configuration account-name=your-account-name  management-key=your-account-key
+rg={resource_group_name}
+storage={storage_account_name}
+
+az storage account create --resource-group $rg -n $storage --https-only
+key=$(az storage account keys list -g $rg -n $storage --query [0].value --output tsv)
+
+az tsi environment gen2 create --name "env2" --location westus --resource-group $rg --sku name="L1" capacity=1 --time-series-id-properties name=idName type=String --storage-configuration account-name=$storage  management-key=$key
 ```
 
 ##### Gen2 Update
