@@ -1,8 +1,8 @@
 # Azure CLI timeseriesinsights Extension
-This is the extension for timeseriesinsights
+This is the extension for Azure Time Series Insights.
 
 ### How to use
-Install this extension using the below CLI command
+Install this extension using the below CLI command:
 ```
 az extension add --name timeseriesinsights
 ```
@@ -67,7 +67,7 @@ az tsi event-source iothub create -g $rg --environment-name $env --name {eventso
 az tsi event-source iothub update -g "rg" --environment-name "env1" --name "eventsource" --timestamp-property-name timestampProp --shared-access-key "someSecretvalue" --tags test=tag
 ```
 ##### Show
-```
+```sh
 az tsi event-source show --environment-name "env1" --name "es1" --resource-group "rg1"
 ```
 ##### List
