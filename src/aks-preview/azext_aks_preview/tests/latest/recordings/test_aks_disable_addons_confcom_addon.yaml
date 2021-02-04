@@ -53,7 +53,7 @@ interactions:
       "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEvZOAiQi79CLB3LPrw6shgUuJAsmvPckoiDewIwdaFEFImMCn8UOc87QtruXAHLx6XQz3r6SH3STEobWw7I1aPVD1KuQBqUQwzqfL223UyA3BOm/mdpc77apIT1Pw4hDHtMwDwO01HMir/sRIcoavXphbcUh+H1bZ5WQQJwgS0jVptOhUjeuE9uiOVA+FzauAb91/QdE6zMfvq03bynVJja4Y81n2PlqlzMmIUUVUYnSoeFIYkUToZ07d0m76VY1ci91WrUFXKCv2iM5IPvyE2RTSlm7GKrR9fUJCa4YTqPNRNwGov5GpbeZqHQzvLnjRq3hl06WX5fG8ZXaU/Xbr"}]}},
       "servicePrincipalProfile": {"clientId": "00000000-0000-0000-0000-000000000001":
       {"ACCSGXDevicePlugin": {"enabled": true, "config": {"ACCSGXQuoteHelperEnabled":
-      "true"}}}, "enableRBAC": true, "enablePodSecurityPolicy": false, "networkProfile":
+      "false"}}}, "enableRBAC": true, "enablePodSecurityPolicy": false, "networkProfile":
       {"networkPlugin": "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16",
       "dnsServiceIP": "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType":
       "loadBalancer", "loadBalancerSku": "standard"}}, "identity": {"type": "SystemAssigned"}}'
@@ -100,7 +100,7 @@ interactions:
         \n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\": {\n    \"\
         clientId\": \"msi\"\n   },\n   \"addonProfiles\": {\n    \"ACCSGXDevicePlugin\"\
         : {\n     \"enabled\": true,\n     \"config\": {\n      \"ACCSGXQuoteHelperEnabled\"\
-        : \"true\"\n     }\n    },\n    \"KubeDashboard\": {\n     \"enabled\": true,\n\
+        : \"false\"\n     }\n    },\n    \"KubeDashboard\": {\n     \"enabled\": true,\n\
         \     \"config\": null\n    }\n   },\n   \"nodeResourceGroup\": \"MC_clitest000001_cliakstest000002_westus2\"\
         ,\n   \"enableRBAC\": true,\n   \"enablePodSecurityPolicy\": false,\n   \"\
         networkProfile\": {\n    \"networkPlugin\": \"kubenet\",\n    \"loadBalancerSku\"\
@@ -514,7 +514,7 @@ interactions:
         \n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\": {\n    \"\
         clientId\": \"msi\"\n   },\n   \"addonProfiles\": {\n    \"ACCSGXDevicePlugin\"\
         : {\n     \"enabled\": true,\n     \"config\": {\n      \"ACCSGXQuoteHelperEnabled\"\
-        : \"true\"\n     },\n     \"identity\": {\n      \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/accsgxdeviceplugin-cliakstest000002\"\
+        : \"false\"\n     },\n     \"identity\": {\n      \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/accsgxdeviceplugin-cliakstest000002\"\
         ,\n      \"clientId\": \"7dd7c5fd-9b6d-4d0e-a6fa-19e09e367c1f\",\n      \"\
         objectId\": \"32bac9f4-64a1-4437-8ec9-21e12083286d\"\n     }\n    },\n   \
         \ \"KubeDashboard\": {\n     \"enabled\": true,\n     \"config\": null,\n\
@@ -604,7 +604,7 @@ interactions:
         \n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\": {\n    \"\
         clientId\": \"msi\"\n   },\n   \"addonProfiles\": {\n    \"ACCSGXDevicePlugin\"\
         : {\n     \"enabled\": true,\n     \"config\": {\n      \"ACCSGXQuoteHelperEnabled\"\
-        : \"true\"\n     },\n     \"identity\": {\n      \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/accsgxdeviceplugin-cliakstest000002\"\
+        : \"false\"\n     },\n     \"identity\": {\n      \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/accsgxdeviceplugin-cliakstest000002\"\
         ,\n      \"clientId\": \"7dd7c5fd-9b6d-4d0e-a6fa-19e09e367c1f\",\n      \"\
         objectId\": \"32bac9f4-64a1-4437-8ec9-21e12083286d\"\n     }\n    },\n   \
         \ \"KubeDashboard\": {\n     \"enabled\": true,\n     \"config\": null,\n\

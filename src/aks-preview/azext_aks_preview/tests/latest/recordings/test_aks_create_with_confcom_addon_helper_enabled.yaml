@@ -11,7 +11,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --disable-sgxquotehelper
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --enable-sgxquotehelper
         -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
@@ -65,7 +65,7 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --disable-sgxquotehelper
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --enable-sgxquotehelper
         -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
@@ -157,7 +157,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --disable-sgxquotehelper
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --enable-sgxquotehelper
         -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
@@ -227,7 +227,7 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --disable-sgxquotehelper
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --enable-sgxquotehelper
         -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
@@ -292,7 +292,7 @@ interactions:
       "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6gDCrgHQG1LGmYJaFAb0Kr95dXofU7w7GrxmFvJJ+LL7A/Dzb4FCnUC+fDCW+f1hvwGLycBnpQBbetuD+TFWxoeEEzPQh7/ztyIEoCELG2cpzRNslXQiI3c+A/4tcLuNvglycQ4v9D6HDQ2PWRdecPUMWkqW2l9eac8soYV6WGOvfrdsv68Wn6s1TF9mEaHRM94h3CzTiFlCQz48gzuP7IWKhEq+4dtiv44L2eASCSz9UuscLq0yTgEc6JLivStJswtIWPUoiMVV+IMntr9PDxDwb52V7xvBhm+cOCmHP2lqKQJBo2Hake2gBZ0RZqDVmWFeOPL+fdCWEInwYAnsd"}]}},
       "servicePrincipalProfile": {"clientId": "00000000-0000-0000-0000-000000000001",
       "secret": "fake-secret"}, "addonProfiles": {"ACCSGXDevicePlugin":
-      {"enabled": true, "config": {"ACCSGXQuoteHelperEnabled": "false"}}}, "enableRBAC":
+      {"enabled": true, "config": {"ACCSGXQuoteHelperEnabled": "true"}}}, "enableRBAC":
       true, "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin":
       "kubenet", "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP":
       "10.0.0.10", "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer",
@@ -311,7 +311,7 @@ interactions:
       Content-Type:
       - application/json; charset=utf-8
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --disable-sgxquotehelper
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --enable-sgxquotehelper
         -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
@@ -341,7 +341,7 @@ interactions:
         \n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\": {\n    \"\
         clientId\": \"msi\"\n   },\n   \"addonProfiles\": {\n    \"ACCSGXDevicePlugin\"\
         : {\n     \"enabled\": true,\n     \"config\": {\n      \"ACCSGXQuoteHelperEnabled\"\
-        : \"false\"\n     }\n    },\n    \"KubeDashboard\": {\n     \"enabled\": true,\n\
+        : \"true\"\n     }\n    },\n    \"KubeDashboard\": {\n     \"enabled\": true,\n\
         \     \"config\": null\n    }\n   },\n   \"nodeResourceGroup\": \"MC_clitest000001_cliakstest000002_westus2\"\
         ,\n   \"enableRBAC\": true,\n   \"enablePodSecurityPolicy\": false,\n   \"\
         networkProfile\": {\n    \"networkPlugin\": \"kubenet\",\n    \"loadBalancerSku\"\
@@ -391,7 +391,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --disable-sgxquotehelper
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --enable-sgxquotehelper
         -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
@@ -440,7 +440,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --disable-sgxquotehelper
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --enable-sgxquotehelper
         -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
@@ -489,7 +489,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --disable-sgxquotehelper
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --enable-sgxquotehelper
         -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
@@ -538,7 +538,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --disable-sgxquotehelper
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --enable-sgxquotehelper
         -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
@@ -587,7 +587,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --disable-sgxquotehelper
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --enable-sgxquotehelper
         -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
@@ -636,7 +636,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --disable-sgxquotehelper
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --enable-sgxquotehelper
         -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
@@ -685,7 +685,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --disable-sgxquotehelper
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --enable-sgxquotehelper
         -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
@@ -735,7 +735,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --disable-sgxquotehelper
+      - --resource-group --name --enable-managed-identity --generate-ssh-keys -a --enable-sgxquotehelper
         -o
       User-Agent:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3

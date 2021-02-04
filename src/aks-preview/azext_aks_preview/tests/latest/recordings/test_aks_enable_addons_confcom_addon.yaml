@@ -604,7 +604,7 @@ interactions:
       {}, "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser", "ssh":
       {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEvZOAiQi79CLB3LPrw6shgUuJAsmvPckoiDewIwdaFEFImMCn8UOc87QtruXAHLx6XQz3r6SH3STEobWw7I1aPVD1KuQBqUQwzqfL223UyA3BOm/mdpc77apIT1Pw4hDHtMwDwO01HMir/sRIcoavXphbcUh+H1bZ5WQQJwgS0jVptOhUjeuE9uiOVA+FzauAb91/QdE6zMfvq03bynVJja4Y81n2PlqlzMmIUUVUYnSoeFIYkUToZ07d0m76VY1ci91WrUFXKCv2iM5IPvyE2RTSlm7GKrR9fUJCa4YTqPNRNwGov5GpbeZqHQzvLnjRq3hl06WX5fG8ZXaU/Xbr"}]}},
       "addonProfiles": {"KubeDashboard": {"enabled": true}, "ACCSGXDevicePlugin":
-      {"enabled": true, "config": {"ACCSGXQuoteHelperEnabled": "true"}}}, "nodeResourceGroup":
+      {"enabled": true, "config": {"ACCSGXQuoteHelperEnabled": "false"}}}, "nodeResourceGroup":
       "MC_clitest000001_cliakstest000002_westus2", "enableRBAC": true, "enablePodSecurityPolicy":
       false, "networkProfile": {"networkPlugin": "kubenet", "podCidr": "10.244.0.0/16",
       "serviceCidr": "10.0.0.0/16", "dnsServiceIP": "10.0.0.10", "dockerBridgeCidr":
@@ -657,7 +657,7 @@ interactions:
         \n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\": {\n    \"\
         clientId\": \"msi\"\n   },\n   \"addonProfiles\": {\n    \"ACCSGXDevicePlugin\"\
         : {\n     \"enabled\": true,\n     \"config\": {\n      \"ACCSGXQuoteHelperEnabled\"\
-        : \"true\"\n     }\n    },\n    \"KubeDashboard\": {\n     \"enabled\": true,\n\
+        : \"false\"\n     }\n    },\n    \"KubeDashboard\": {\n     \"enabled\": true,\n\
         \     \"config\": null\n    }\n   },\n   \"nodeResourceGroup\": \"MC_clitest000001_cliakstest000002_westus2\"\
         ,\n   \"enableRBAC\": true,\n   \"enablePodSecurityPolicy\": false,\n   \"\
         networkProfile\": {\n    \"networkPlugin\": \"kubenet\",\n    \"loadBalancerSku\"\
@@ -984,7 +984,7 @@ interactions:
         \n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\": {\n    \"\
         clientId\": \"msi\"\n   },\n   \"addonProfiles\": {\n    \"ACCSGXDevicePlugin\"\
         : {\n     \"enabled\": true,\n     \"config\": {\n      \"ACCSGXQuoteHelperEnabled\"\
-        : \"true\"\n     },\n     \"identity\": {\n      \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/accsgxdeviceplugin-cliakstest000002\"\
+        : \"false\"\n     },\n     \"identity\": {\n      \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_clitest000001_cliakstest000002_westus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/accsgxdeviceplugin-cliakstest000002\"\
         ,\n      \"clientId\": \"2bdb5b17-942f-4219-a225-887cfaf5f80b\",\n      \"\
         objectId\": \"a77d5888-8469-4415-ab56-488869ddd67c\"\n     }\n    },\n   \
         \ \"KubeDashboard\": {\n     \"enabled\": true,\n     \"config\": null,\n\
