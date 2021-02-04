@@ -2,7 +2,7 @@
 This is the extension for Azure Time Series Insights.
 
 ### How to use
-Install this extension using the below CLI command
+Install this extension using the below CLI command:
 ```
 az extension add --name timeseriesinsights
 ```
