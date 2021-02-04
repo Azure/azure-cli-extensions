@@ -5,9 +5,10 @@ Release History
 
 0.2.0
 ++++++
-* [BREAKING CHANGE] Deprecate ``az timeseriesinsights`` command group, add a command group ``az tsi``
-* ``az tsi environment`` support ``gen1 environment`` and ``gen2 environment``
-* Add command group `az tsi reference-data-set`
+* [BREAKING CHANGE] ``az timeseriesinsights`` is changed to ``az tsi``
+* [BREAKING CHANGE] ``az timeseriesinsights environment standard`` is changed to ``az tsi environment gen1``
+* [BREAKING CHANGE] ``az timeseriesinsights environment longterm`` is changed to ``az tsi environment gen2``
+* Add command group ``az tsi reference-data-set``
 
 0.1.3
 ++++++
