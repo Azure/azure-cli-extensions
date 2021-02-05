@@ -10,7 +10,7 @@ from ._client_factory import (cf_sa, cf_blob_data_gen_update,
                               cf_sa_blob_inventory, cf_mgmt_file_services, cf_share_client, cf_share_file_client,
                               cf_queue_service, cf_queue_client, multi_service_client_factory)
 from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_MGMT_PREVIEW_STORAGE,
-                       CUSTOM_DATA_STORAGE_FILESHARE, CUSTOM_DATA_STORAGE_QUEUE)
+                       CUSTOM_DATA_STORAGE_FILESHARE)
 
 
 def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements
@@ -219,26 +219,27 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_custom_command('upload-batch', 'storage_file_upload_batch',
                                  custom_command_type=get_custom_sdk('file', client_factory=cf_share_client))
 
+    from azure.cli.core.profiles import ResourceType
     # pylint: disable=line-too-long
     queue_service_sdk = CliCommandType(
-        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage_queue._queue_service_client#QueueServiceClient.{}',
-        client_factory=cf_queue_service, resource_type=CUSTOM_DATA_STORAGE_QUEUE)
+        operations_tmpl='azure.multiapi.storagev2.queue._queue_service_client#QueueServiceClient.{}',
+        client_factory=cf_queue_service, resource_type=ResourceType.DATA_STORAGE_QUEUE)
 
     queue_client_sdk = CliCommandType(
-        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage_queue._queue_client#QueueClient.{}',
-        client_factory=cf_queue_client, resource_type=CUSTOM_DATA_STORAGE_QUEUE)
+        operations_tmpl='azure.multiapi.storagev2.queue._queue_client#QueueClient.{}',
+        client_factory=cf_queue_client, resource_type=ResourceType.DATA_STORAGE_QUEUE)
 
     with self.command_group('storage queue', command_type=queue_service_sdk, is_preview=True,
                             custom_command_type=get_custom_sdk('queue', cf_queue_service,
-                                                               CUSTOM_DATA_STORAGE_QUEUE),
-                            resource_type=CUSTOM_DATA_STORAGE_QUEUE, min_api='2018-03-28') as g:
+                                                               ResourceType.DATA_STORAGE_QUEUE),
+                            resource_type=ResourceType.DATA_STORAGE_QUEUE, min_api='2018-03-28') as g:
         from ._transformers import transform_queue_stats_output
         g.storage_command_oauth('stats', 'get_service_stats', transform=transform_queue_stats_output)
 
     with self.command_group('storage queue', command_type=queue_client_sdk, is_preview=True,
                             custom_command_type=get_custom_sdk('queue', cf_queue_client,
-                                                               CUSTOM_DATA_STORAGE_QUEUE),
-                            resource_type=CUSTOM_DATA_STORAGE_QUEUE, min_api='2018-03-28') as g:
+                                                               ResourceType.DATA_STORAGE_QUEUE),
+                            resource_type=ResourceType.DATA_STORAGE_QUEUE, min_api='2018-03-28') as g:
         from ._format import transform_boolean_for_table
         from ._transformers import create_boolean_result_output_transformer
         g.storage_custom_command_oauth('exists', 'queue_exists',
@@ -257,8 +258,8 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
 
     with self.command_group('storage queue policy', command_type=queue_client_sdk, is_preview=True,
                             custom_command_type=get_custom_sdk('access_policy', cf_queue_client,
-                                                               CUSTOM_DATA_STORAGE_QUEUE),
-                            resource_type=CUSTOM_DATA_STORAGE_QUEUE, min_api='2018-03-28') as g:
+                                                               ResourceType.DATA_STORAGE_QUEUE),
+                            resource_type=ResourceType.DATA_STORAGE_QUEUE, min_api='2018-03-28') as g:
         from ._transformers import (transform_acl_list_output, transform_queue_policy_output,
                                     transform_queue_policy_json_output)
         g.storage_custom_command_oauth('create', 'create_acl_policy')
@@ -273,8 +274,8 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
 
     with self.command_group('storage message', command_type=queue_client_sdk, is_preview=True,
                             custom_command_type=get_custom_sdk('queue', cf_queue_client,
-                                                               CUSTOM_DATA_STORAGE_QUEUE),
-                            resource_type=CUSTOM_DATA_STORAGE_QUEUE, min_api='2018-03-28') as g:
+                                                               ResourceType.DATA_STORAGE_QUEUE),
+                            resource_type=ResourceType.DATA_STORAGE_QUEUE, min_api='2018-03-28') as g:
         from ._format import transform_message_show
         from ._transformers import (transform_message_list_output, transform_message_output)
         g.storage_command_oauth('put', 'send_message', transform=transform_message_output)

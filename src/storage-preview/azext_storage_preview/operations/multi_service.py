@@ -23,7 +23,7 @@ def get_logging(client, timeout=None):
 
 
 def set_logging(cmd, client, log, retention, version=None, timeout=None):
-    retention_policy = {'enabled': retention != 0, 'days':  retention if retention != 0 else None}
+    retention_policy = {'enabled': retention != 0, 'days': retention if retention != 0 else None}
     logging = {'delete': 'd' in log, 'read': 'r' in log, 'write': 'w' in log,
                'version': str(version) if version else u'1.0', 'retention_policy': retention_policy}
 

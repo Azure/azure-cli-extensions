@@ -381,7 +381,6 @@ class FileServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('table.retentionPolicy.days', 1)
         ])
 
-
     @live_only()
     @ResourceGroupPreparer()
     def test_logging_error_operations(self, resource_group):

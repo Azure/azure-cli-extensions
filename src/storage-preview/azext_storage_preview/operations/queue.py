@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 """Custom operations for storage queue commands"""
-from ..profiles import CUSTOM_DATA_STORAGE_QUEUE
+from azure.cli.core.profiles import ResourceType
 
 
 def queue_exists(cmd, client, **kwargs):
@@ -15,7 +15,7 @@ def queue_exists(cmd, client, **kwargs):
     except HttpResponseError as ex:
         from azure.cli.command_modules.storage.track2_util import _dont_fail_on_exist
         StorageErrorCode = cmd.get_models("_shared.models#StorageErrorCode",
-                                          resource_type=CUSTOM_DATA_STORAGE_QUEUE)
+                                          resource_type=ResourceType.DATA_STORAGE_QUEUE)
         return _dont_fail_on_exist(ex, StorageErrorCode.queue_not_found)
 
 
@@ -39,7 +39,7 @@ def create_queue(cmd, client, metadata=None, fail_on_exist=False, timeout=None, 
     except HttpResponseError as ex:
         from azure.cli.command_modules.storage.track2_util import _dont_fail_on_exist
         StorageErrorCode = cmd.get_models("_shared.models#StorageErrorCode",
-                                          resource_type=CUSTOM_DATA_STORAGE_QUEUE)
+                                          resource_type=ResourceType.DATA_STORAGE_QUEUE)
         if not fail_on_exist:
             return _dont_fail_on_exist(ex, StorageErrorCode.queue_already_exists)
         raise ex
@@ -53,7 +53,7 @@ def delete_queue(cmd, client, fail_not_exist=False, timeout=None, **kwargs):
     except HttpResponseError as ex:
         from azure.cli.command_modules.storage.track2_util import _dont_fail_on_exist
         StorageErrorCode = cmd.get_models("_shared.models#StorageErrorCode",
-                                          resource_type=CUSTOM_DATA_STORAGE_QUEUE)
+                                          resource_type=ResourceType.DATA_STORAGE_QUEUE)
         if not fail_not_exist:
             return _dont_fail_on_exist(ex, StorageErrorCode.queue_not_found)
         raise ex

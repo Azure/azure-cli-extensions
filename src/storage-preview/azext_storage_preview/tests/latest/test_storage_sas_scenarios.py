@@ -27,6 +27,15 @@ class StorageSASScenario(StorageScenarioMixin, LiveScenarioTest):
         self.cmd('storage queue exists -n {} --account-name {} --sas-token {}'.format(queue, storage_account, sas),
                  checks=JMESPathCheck('exists', True))
 
+        self.storage_cmd('storage queue policy create -n testqp -q {} --permissions r --expiry {}',
+                         account_info, queue, expiry)
+
+        sas2 = self.storage_cmd('storage queue generate-sas -n {} --policy-name testqp', account_info, queue).output
+        self.assertIn('sig', sas2, 'The sig segment is not in the sas {}'.format(sas2))
+
+        self.cmd('storage queue exists -n {} --account-name {} --sas-token {}'.format(queue, storage_account, sas2),
+                 checks=JMESPathCheck('exists', True))
+
 
 if __name__ == '__main__':
     import unittest
