@@ -49,7 +49,7 @@ class K8sconfigurationScenarioTest(ScenarioTest):
                  --ssh-private-key {ssh_private_key}
                  --ssh-known-hosts {ssh_known_hosts}
                  --enable-helm-operator
-                 --helm-operator-version 1.2.0
+                 --helm-operator-chart-version 1.2.0
                  --helm-operator-params \"--set git.ssh.secretName=gitops-privatekey-{operator_instance_name} --set tillerNamespace=kube-system\" ''',
                  checks=[
                      self.check('name', '{name}'),
@@ -110,7 +110,7 @@ class K8sconfigurationScenarioTest(ScenarioTest):
                  --https-user {https_user}
                  --https-key {https_key}
                  --enable-helm-operator
-                 --helm-operator-version 1.2.0
+                 --helm-operator-chart-version 1.2.0
                  --helm-operator-params \"--set tillerNamespace=kube-system\" ''',
                  checks=[
                      self.check('name', '{name}'),

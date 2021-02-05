@@ -34,9 +34,6 @@ def load_arguments(self, _):
         c.argument('repository_url',
                    options_list=['--repository-url', '-u'],
                    help='Url of the source control repository')
-        c.argument('enable_helm_operator',
-                   arg_type=get_three_state_flag(),
-                   help='Enable support for Helm chart deployments')
         c.argument('scope',
                    arg_type=get_enum_type(['namespace', 'cluster']),
                    help='''Specify scope of the operator to be 'namespace' or 'cluster' ''')
@@ -44,32 +41,48 @@ def load_arguments(self, _):
                    validator=validate_configuration_type,
                    arg_type=get_enum_type(['sourceControlConfiguration']),
                    help='Type of the configuration')
+        c.argument('enable_helm_operator',
+                   arg_group="Helm Operator",
+                   arg_type=get_three_state_flag(),
+                   options_list=['--enable-helm-operator, --enable-hop'],
+                   help='Enable support for Helm chart deployments')
         c.argument('helm_operator_params',
+                   arg_group="Helm Operator",
+                   options_list=['--helm-operator-params', '--hop-params'],
                    help='Chart values for the Helm Operator (if enabled)')
-        c.argument('helm_operator_version',
+        c.argument('helm_operator_chart_version',
+                   arg_group="Helm Operator",
+                   options_list=['--helm-operator-chart-version', '--hop-chart-version'],
                    help='Chart version of the Helm Operator (if enabled)')
         c.argument('operator_params',
+                   arg_group="Operator",
                    help='Parameters for the Operator')
-        c.argument('ssh_private_key',
-                   help='Specify Base64-encoded private ssh key for private repository sync')
-        c.argument('ssh_private_key_file',
-                   help='Specify filepath to private ssh key for private repository sync')
-        c.argument('https_user',
-                   help='Specify HTTPS username for private repository sync')
-        c.argument('https_key',
-                   help='Specify HTTPS token/password for private repository sync')
-        c.argument('ssh_known_hosts',
-                   help='Specify Base64-encoded known_hosts contents containing public SSH keys required to access private Git instances')
-        c.argument('ssh_known_hosts_file',
-                   help='Specify filepath to known_hosts contents containing public SSH keys required to access private Git instances')
         c.argument('operator_instance_name',
+                   arg_group="Operator",
                    help='Instance name of the Operator',
                    validator=validate_operator_instance_name)
         c.argument('operator_namespace',
+                   arg_group="Operator",
                    help='Namespace in which to install the Operator',
                    validator=validate_operator_namespace)
         c.argument('operator_type',
+                   arg_group="Operator",
                    help='''Type of the operator. Valid value is 'flux' ''')
-
-    with self.argument_context('k8sconfiguration list') as c:
-        c.argument('sourcecontrolconfiguration', sourcecontrolconfiguration_type, id_part=None)
+        c.argument('ssh_private_key',
+                   arg_group="Auth",
+                   help='Specify Base64-encoded private ssh key for private repository sync')
+        c.argument('ssh_private_key_file',
+                   arg_group="Auth",
+                   help='Specify filepath to private ssh key for private repository sync')
+        c.argument('https_user',
+                   arg_group="Auth",
+                   help='Specify HTTPS username for private repository sync')
+        c.argument('https_key',
+                   arg_group="Auth",
+                   help='Specify HTTPS token/password for private repository sync')
+        c.argument('ssh_known_hosts',
+                   arg_group="Auth",
+                   help='Specify Base64-encoded known_hosts contents containing public SSH keys required to access private Git instances')
+        c.argument('ssh_known_hosts_file',
+                   arg_group="Auth",
+                   help='Specify filepath to known_hosts contents containing public SSH keys required to access private Git instances')
