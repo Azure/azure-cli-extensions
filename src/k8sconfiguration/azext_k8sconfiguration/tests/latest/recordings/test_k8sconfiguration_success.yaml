@@ -13,20 +13,19 @@ interactions:
       ParameterSetName:
       - -g -c -n --cluster-type
       User-Agent:
-      - python/3.8.5 (Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.19
-        msrest_azure/0.6.4 azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python
-        AZURECLI/2.18.0
+      - python/3.9.0 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config10?api-version=2020-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config10?api-version=2021-03-01
   response:
     body:
       string: '{"error":{"code":"ResourceNotFound","message":"SourceControlConfiguration
         with name ''cli-test-config10'' not found."}}'
     headers:
       api-supported-versions:
-      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview
+      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview, 2021-03-01
       cache-control:
       - no-cache
       content-length:
@@ -34,7 +33,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 20 Jan 2021 23:50:07 GMT
+      - Fri, 05 Feb 2021 20:40:11 GMT
       expires:
       - '-1'
       pragma:
@@ -73,22 +72,21 @@ interactions:
       ParameterSetName:
       - -g -n -c -u --cluster-type --scope --operator-instance-name --operator-namespace
         --operator-params --git-readonly  --ssh-private-key --ssh-known-hosts --enable-helm-operator
-        --helm-operator-chart-version --helm-operator-params --set git.ssh.secretName
+        --helm-operator-version --helm-operator-params --set git.ssh.secretName
       User-Agent:
-      - python/3.8.5 (Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.19
-        msrest_azure/0.6.4 azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python
-        AZURECLI/2.18.0
+      - python/3.9.0 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config10?api-version=2020-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config10?api-version=2021-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config10","name":"cli-test-config10","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cli-test-config10-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00+00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":"Information"},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"1.2.0","chartValues":"--set
-        git.ssh.secretName=gitops-privatekey-cli-test-config10-opin --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cli-test-config10-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"Z2l0b3BzLWJpdGJ1Y2tldC10ZXN0LXNlcnZlci5lYXN0dXMuY2xvdWRhcHAuYXp1cmUuY29tIHNzaC1yc2EgQUFBQUIzTnphQzF5YzJFQUFBQURBUUFCQUFBQkFRQytNT0w3bjk2aGs3emVmMDNwak9vMGF3UENISkZ4NU04TjJ2L2tvODgvc202Y2VzOFljdnYyL0hoUlhRSFZHRUxqZjNuTXVGSVJPMEdMdTFabFNreGRUTUhGcXBxYzFjcUM2R3kveUJXRGM1SWFwWnJBMXFxeSsrZVdpelAzQXdMbWsrMUhXWGdtcHljZUtYNU9vd3VNT3cwd3RYRUdTcDhtVk0wV2VpUzEwWnZ5ZVVKK04zbkNvczMyWDhIeVpnc1pMUS9zSTB4NXN6ODQ2am5JZEFOckZsYU9MUTJ1ejRUa0M2ekNvd3lIdzlLWXJ5V2hJZDAraCt5SXQ5dUtqVHZsWFNpdm1ISjViZzdUWWlkbnFtbjI0UGE4WnFpbTE5UGszUjg0cW9qclVmYm1XT3VwUjdYNXZVVWZqYzhERFRxa3FnRmkxcWdVdE1mWGlMRXErZFVa","configurationProtectedSettings":{},"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2021-01-20T23:50:10.9901892+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2021-01-20T23:50:10.9901893+00:00"}}'
+        git.ssh.secretName=gitops-privatekey-cli-test-config10-opin --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cli-test-config10-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"Z2l0b3BzLWJpdGJ1Y2tldC10ZXN0LXNlcnZlci5lYXN0dXMuY2xvdWRhcHAuYXp1cmUuY29tIHNzaC1yc2EgQUFBQUIzTnphQzF5YzJFQUFBQURBUUFCQUFBQkFRQytNT0w3bjk2aGs3emVmMDNwak9vMGF3UENISkZ4NU04TjJ2L2tvODgvc202Y2VzOFljdnYyL0hoUlhRSFZHRUxqZjNuTXVGSVJPMEdMdTFabFNreGRUTUhGcXBxYzFjcUM2R3kveUJXRGM1SWFwWnJBMXFxeSsrZVdpelAzQXdMbWsrMUhXWGdtcHljZUtYNU9vd3VNT3cwd3RYRUdTcDhtVk0wV2VpUzEwWnZ5ZVVKK04zbkNvczMyWDhIeVpnc1pMUS9zSTB4NXN6ODQ2am5JZEFOckZsYU9MUTJ1ejRUa0M2ekNvd3lIdzlLWXJ5V2hJZDAraCt5SXQ5dUtqVHZsWFNpdm1ISjViZzdUWWlkbnFtbjI0UGE4WnFpbTE5UGszUjg0cW9qclVmYm1XT3VwUjdYNXZVVWZqYzhERFRxa3FnRmkxcWdVdE1mWGlMRXErZFVa","configurationProtectedSettings":{},"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2021-02-05T20:40:12.9123571+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2021-02-05T20:40:12.9123581+00:00"}}'
     headers:
       api-supported-versions:
-      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview
+      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview, 2021-03-01
       cache-control:
       - no-cache
       content-length:
@@ -96,7 +94,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 20 Jan 2021 23:50:10 GMT
+      - Fri, 05 Feb 2021 20:40:12 GMT
       expires:
       - '-1'
       location:
@@ -128,70 +126,19 @@ interactions:
       ParameterSetName:
       - -g -c -n --cluster-type
       User-Agent:
-      - python/3.8.5 (Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.19
-        msrest_azure/0.6.4 azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python
-        AZURECLI/2.18.0
+      - python/3.9.0 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config10?api-version=2020-10-01-preview
-  response:
-    body:
-      string: '{"error":{"code":"GatewayTimeout","message":"The gateway did not receive
-        a response from ''Microsoft.KubernetesConfiguration'' within the specified
-        time period."}}'
-    headers:
-      cache-control:
-      - no-cache
-      connection:
-      - close
-      content-length:
-      - '161'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 20 Jan 2021 23:50:33 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - service
-    status:
-      code: 504
-      message: Gateway Timeout
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - k8sconfiguration show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -c -n --cluster-type
-      User-Agent:
-      - python/3.8.5 (Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.19
-        msrest_azure/0.6.4 azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python
-        AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config10?api-version=2020-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config10?api-version=2021-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config10","name":"cli-test-config10","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cli-test-config10-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00+00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":"Information"},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"1.2.0","chartValues":"--set
-        git.ssh.secretName=gitops-privatekey-cli-test-config10-opin --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cli-test-config10-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"Z2l0b3BzLWJpdGJ1Y2tldC10ZXN0LXNlcnZlci5lYXN0dXMuY2xvdWRhcHAuYXp1cmUuY29tIHNzaC1yc2EgQUFBQUIzTnphQzF5YzJFQUFBQURBUUFCQUFBQkFRQytNT0w3bjk2aGs3emVmMDNwak9vMGF3UENISkZ4NU04TjJ2L2tvODgvc202Y2VzOFljdnYyL0hoUlhRSFZHRUxqZjNuTXVGSVJPMEdMdTFabFNreGRUTUhGcXBxYzFjcUM2R3kveUJXRGM1SWFwWnJBMXFxeSsrZVdpelAzQXdMbWsrMUhXWGdtcHljZUtYNU9vd3VNT3cwd3RYRUdTcDhtVk0wV2VpUzEwWnZ5ZVVKK04zbkNvczMyWDhIeVpnc1pMUS9zSTB4NXN6ODQ2am5JZEFOckZsYU9MUTJ1ejRUa0M2ekNvd3lIdzlLWXJ5V2hJZDAraCt5SXQ5dUtqVHZsWFNpdm1ISjViZzdUWWlkbnFtbjI0UGE4WnFpbTE5UGszUjg0cW9qclVmYm1XT3VwUjdYNXZVVWZqYzhERFRxa3FnRmkxcWdVdE1mWGlMRXErZFVa","configurationProtectedSettings":{},"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2021-01-20T23:50:10.9901892+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2021-01-20T23:50:10.9901893+00:00"}}'
+        git.ssh.secretName=gitops-privatekey-cli-test-config10-opin --set tillerNamespace=kube-system"},"repositoryUrl":"git://github.com/anubhav929/flux-get-started","operatorInstanceName":"cli-test-config10-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"Z2l0b3BzLWJpdGJ1Y2tldC10ZXN0LXNlcnZlci5lYXN0dXMuY2xvdWRhcHAuYXp1cmUuY29tIHNzaC1yc2EgQUFBQUIzTnphQzF5YzJFQUFBQURBUUFCQUFBQkFRQytNT0w3bjk2aGs3emVmMDNwak9vMGF3UENISkZ4NU04TjJ2L2tvODgvc202Y2VzOFljdnYyL0hoUlhRSFZHRUxqZjNuTXVGSVJPMEdMdTFabFNreGRUTUhGcXBxYzFjcUM2R3kveUJXRGM1SWFwWnJBMXFxeSsrZVdpelAzQXdMbWsrMUhXWGdtcHljZUtYNU9vd3VNT3cwd3RYRUdTcDhtVk0wV2VpUzEwWnZ5ZVVKK04zbkNvczMyWDhIeVpnc1pMUS9zSTB4NXN6ODQ2am5JZEFOckZsYU9MUTJ1ejRUa0M2ekNvd3lIdzlLWXJ5V2hJZDAraCt5SXQ5dUtqVHZsWFNpdm1ISjViZzdUWWlkbnFtbjI0UGE4WnFpbTE5UGszUjg0cW9qclVmYm1XT3VwUjdYNXZVVWZqYzhERFRxa3FnRmkxcWdVdE1mWGlMRXErZFVa","configurationProtectedSettings":{},"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2021-02-05T20:40:12.9123571+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2021-02-05T20:40:12.9123581+00:00"}}'
     headers:
       api-supported-versions:
-      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview
+      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview, 2021-03-01
       cache-control:
       - no-cache
       content-length:
@@ -199,7 +146,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 20 Jan 2021 23:50:35 GMT
+      - Fri, 05 Feb 2021 20:40:14 GMT
       expires:
       - '-1'
       pragma:
@@ -233,227 +180,18 @@ interactions:
       ParameterSetName:
       - -g -c -n --cluster-type -y
       User-Agent:
-      - python/3.8.5 (Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.19
-        msrest_azure/0.6.4 azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python
-        AZURECLI/2.18.0
+      - python/3.9.0 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config10?api-version=2020-10-01-preview
-  response:
-    body:
-      string: '{"error":{"code":"GatewayTimeout","message":"The gateway did not receive
-        a response from ''Microsoft.KubernetesConfiguration'' within the specified
-        time period."}}'
-    headers:
-      cache-control:
-      - no-cache
-      connection:
-      - close
-      content-length:
-      - '161'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 20 Jan 2021 23:50:58 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - service
-    status:
-      code: 504
-      message: Gateway Timeout
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - k8sconfiguration delete
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - -g -c -n --cluster-type -y
-      User-Agent:
-      - python/3.8.5 (Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.19
-        msrest_azure/0.6.4 azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python
-        AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config10?api-version=2020-10-01-preview
-  response:
-    body:
-      string: '{"error":{"code":"GatewayTimeout","message":"The gateway did not receive
-        a response from ''Microsoft.KubernetesConfiguration'' within the specified
-        time period."}}'
-    headers:
-      cache-control:
-      - no-cache
-      connection:
-      - close
-      content-length:
-      - '161'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 20 Jan 2021 23:51:19 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - service
-    status:
-      code: 504
-      message: Gateway Timeout
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - k8sconfiguration delete
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - -g -c -n --cluster-type -y
-      User-Agent:
-      - python/3.8.5 (Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.19
-        msrest_azure/0.6.4 azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python
-        AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config10?api-version=2020-10-01-preview
-  response:
-    body:
-      string: '{"error":{"code":"GatewayTimeout","message":"The gateway did not receive
-        a response from ''Microsoft.KubernetesConfiguration'' within the specified
-        time period."}}'
-    headers:
-      cache-control:
-      - no-cache
-      connection:
-      - close
-      content-length:
-      - '161'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 20 Jan 2021 23:51:41 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - service
-    status:
-      code: 504
-      message: Gateway Timeout
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - k8sconfiguration delete
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - -g -c -n --cluster-type -y
-      User-Agent:
-      - python/3.8.5 (Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.19
-        msrest_azure/0.6.4 azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python
-        AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config10?api-version=2020-10-01-preview
-  response:
-    body:
-      string: '{"error":{"code":"GatewayTimeout","message":"The gateway did not receive
-        a response from ''Microsoft.KubernetesConfiguration'' within the specified
-        time period."}}'
-    headers:
-      cache-control:
-      - no-cache
-      connection:
-      - close
-      content-length:
-      - '161'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 20 Jan 2021 23:52:04 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - service
-    status:
-      code: 504
-      message: Gateway Timeout
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - k8sconfiguration delete
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - -g -c -n --cluster-type -y
-      User-Agent:
-      - python/3.8.5 (Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.19
-        msrest_azure/0.6.4 azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python
-        AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config10?api-version=2020-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config10?api-version=2021-03-01
   response:
     body:
       string: '{"version":"1.1","content":null,"statusCode":200,"reasonPhrase":"OK","headers":[],"trailingHeaders":[],"requestMessage":null,"isSuccessStatusCode":true}'
     headers:
       api-supported-versions:
-      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview
+      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview, 2021-03-01
       cache-control:
       - no-cache
       content-length:
@@ -461,7 +199,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 20 Jan 2021 23:52:11 GMT
+      - Fri, 05 Feb 2021 20:40:14 GMT
       expires:
       - '-1'
       pragma:
@@ -495,120 +233,19 @@ interactions:
       ParameterSetName:
       - -g -c -n --cluster-type
       User-Agent:
-      - python/3.8.5 (Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.19
-        msrest_azure/0.6.4 azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python
-        AZURECLI/2.18.0
+      - python/3.9.0 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config11?api-version=2020-10-01-preview
-  response:
-    body:
-      string: '{"error":{"code":"GatewayTimeout","message":"The gateway did not receive
-        a response from ''Microsoft.KubernetesConfiguration'' within the specified
-        time period."}}'
-    headers:
-      cache-control:
-      - no-cache
-      connection:
-      - close
-      content-length:
-      - '161'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 20 Jan 2021 23:52:34 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - service
-    status:
-      code: 504
-      message: Gateway Timeout
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - k8sconfiguration show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -c -n --cluster-type
-      User-Agent:
-      - python/3.8.5 (Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.19
-        msrest_azure/0.6.4 azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python
-        AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config11?api-version=2020-10-01-preview
-  response:
-    body:
-      string: '{"error":{"code":"GatewayTimeout","message":"The gateway did not receive
-        a response from ''Microsoft.KubernetesConfiguration'' within the specified
-        time period."}}'
-    headers:
-      cache-control:
-      - no-cache
-      connection:
-      - close
-      content-length:
-      - '161'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 20 Jan 2021 23:52:55 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - service
-    status:
-      code: 504
-      message: Gateway Timeout
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - k8sconfiguration show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -c -n --cluster-type
-      User-Agent:
-      - python/3.8.5 (Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.19
-        msrest_azure/0.6.4 azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python
-        AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config11?api-version=2020-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config11?api-version=2021-03-01
   response:
     body:
       string: '{"error":{"code":"ResourceNotFound","message":"SourceControlConfiguration
         with name ''cli-test-config11'' not found."}}'
     headers:
       api-supported-versions:
-      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview
+      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview, 2021-03-01
       cache-control:
       - no-cache
       content-length:
@@ -616,7 +253,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 20 Jan 2021 23:52:57 GMT
+      - Fri, 05 Feb 2021 20:40:15 GMT
       expires:
       - '-1'
       pragma:
@@ -654,84 +291,21 @@ interactions:
       ParameterSetName:
       - -g -n -c -u --cluster-type --scope --operator-instance-name --operator-namespace
         --operator-params --git-readonly  --https-user --https-key --enable-helm-operator
-        --helm-operator-chart-version --helm-operator-params --set tillerNamespace
+        --helm-operator-version --helm-operator-params --set tillerNamespace
       User-Agent:
-      - python/3.8.5 (Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.19
-        msrest_azure/0.6.4 azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python
-        AZURECLI/2.18.0
+      - python/3.9.0 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config11?api-version=2020-10-01-preview
-  response:
-    body:
-      string: '{"error":{"code":"GatewayTimeout","message":"The gateway did not receive
-        a response from ''Microsoft.KubernetesConfiguration'' within the specified
-        time period."}}'
-    headers:
-      cache-control:
-      - no-cache
-      connection:
-      - close
-      content-length:
-      - '161'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 20 Jan 2021 23:53:20 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - service
-    status:
-      code: 504
-      message: Gateway Timeout
-- request:
-    body: '{"properties": {"repositoryUrl": "https://github.com/jonathan-innis/helm-operator-get-started-private.git",
-      "operatorNamespace": "cli-test-config11-opns", "operatorInstanceName": "cli-test-config11-opin",
-      "operatorType": "flux", "operatorParams": "--git-readonly ", "configurationProtectedSettings":
-      {"httpsUser": "ZmFrZS11c2VybmFtZQ==", "httpsKey": "ZmFrZXBhc3N3b3JkdGhhdGl3b3VsZHVzZWZvcmdpdGh1Yg=="},
-      "operatorScope": "namespace", "sshKnownHostsContents": "", "enableHelmOperator":
-      true, "helmOperatorProperties": {"chartVersion": "1.2.0", "chartValues": "--set
-      tillerNamespace=kube-system"}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - k8sconfiguration create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '595'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - -g -n -c -u --cluster-type --scope --operator-instance-name --operator-namespace
-        --operator-params --git-readonly  --https-user --https-key --enable-helm-operator
-        --helm-operator-chart-version --helm-operator-params --set tillerNamespace
-      User-Agent:
-      - python/3.8.5 (Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.19
-        msrest_azure/0.6.4 azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python
-        AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config11?api-version=2020-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config11?api-version=2021-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config11","name":"cli-test-config11","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cli-test-config11-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00+00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":"Information"},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"1.2.0","chartValues":"--set
-        tillerNamespace=kube-system"},"repositoryUrl":"https://github.com/jonathan-innis/helm-operator-get-started-private.git","operatorInstanceName":"cli-test-config11-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"","configurationProtectedSettings":{},"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2021-01-20T23:53:22.3717272+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2021-01-20T23:53:22.3717273+00:00"}}'
+        tillerNamespace=kube-system"},"repositoryUrl":"https://github.com/jonathan-innis/helm-operator-get-started-private.git","operatorInstanceName":"cli-test-config11-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"","configurationProtectedSettings":{},"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2021-02-05T20:40:17.0943032+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2021-02-05T20:40:17.0943042+00:00"}}'
     headers:
       api-supported-versions:
-      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview
+      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview, 2021-03-01
       cache-control:
       - no-cache
       content-length:
@@ -739,7 +313,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 20 Jan 2021 23:53:22 GMT
+      - Fri, 05 Feb 2021 20:40:17 GMT
       expires:
       - '-1'
       location:
@@ -771,70 +345,19 @@ interactions:
       ParameterSetName:
       - -g -c -n --cluster-type
       User-Agent:
-      - python/3.8.5 (Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.19
-        msrest_azure/0.6.4 azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python
-        AZURECLI/2.18.0
+      - python/3.9.0 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config11?api-version=2020-10-01-preview
-  response:
-    body:
-      string: '{"error":{"code":"GatewayTimeout","message":"The gateway did not receive
-        a response from ''Microsoft.KubernetesConfiguration'' within the specified
-        time period."}}'
-    headers:
-      cache-control:
-      - no-cache
-      connection:
-      - close
-      content-length:
-      - '161'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 20 Jan 2021 23:53:44 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - service
-    status:
-      code: 504
-      message: Gateway Timeout
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - k8sconfiguration show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -c -n --cluster-type
-      User-Agent:
-      - python/3.8.5 (Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.19
-        msrest_azure/0.6.4 azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python
-        AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config11?api-version=2020-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config11?api-version=2021-03-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config11","name":"cli-test-config11","type":"Microsoft.KubernetesConfiguration/sourceControlConfigurations","properties":{"operatorNamespace":"cli-test-config11-opns","provisioningState":"Succeeded","complianceStatus":{"complianceState":"Pending","lastConfigApplied":"0001-01-01T00:00:00+00:00","message":"{\"OperatorMessage\":null,\"ClusterState\":null}","messageLevel":"Information"},"enableHelmOperator":true,"helmOperatorProperties":{"chartVersion":"1.2.0","chartValues":"--set
-        tillerNamespace=kube-system"},"repositoryUrl":"https://github.com/jonathan-innis/helm-operator-get-started-private.git","operatorInstanceName":"cli-test-config11-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"","configurationProtectedSettings":{},"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2021-01-20T23:53:22.3717272+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2021-01-20T23:53:22.3717273+00:00"}}'
+        tillerNamespace=kube-system"},"repositoryUrl":"https://github.com/jonathan-innis/helm-operator-get-started-private.git","operatorInstanceName":"cli-test-config11-opin","operatorType":"Flux","operatorScope":"namespace","operatorParams":"--git-readonly","sshKnownHostsContents":"","configurationProtectedSettings":{},"repositoryPublicKey":""},"systemData":{"createdBy":null,"createdByType":null,"createdAt":"2021-02-05T20:40:17.0943032+00:00","lastModifiedBy":null,"lastModifiedByType":null,"lastModifiedAt":"2021-02-05T20:40:17.0943042+00:00"}}'
     headers:
       api-supported-versions:
-      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview
+      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview, 2021-03-01
       cache-control:
       - no-cache
       content-length:
@@ -842,7 +365,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 20 Jan 2021 23:53:45 GMT
+      - Fri, 05 Feb 2021 20:40:17 GMT
       expires:
       - '-1'
       pragma:
@@ -876,123 +399,18 @@ interactions:
       ParameterSetName:
       - -g -c -n --cluster-type -y
       User-Agent:
-      - python/3.8.5 (Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.19
-        msrest_azure/0.6.4 azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python
-        AZURECLI/2.18.0
+      - python/3.9.0 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python AZURECLI/2.18.0
       accept-language:
       - en-US
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config11?api-version=2020-10-01-preview
-  response:
-    body:
-      string: '{"error":{"code":"GatewayTimeout","message":"The gateway did not receive
-        a response from ''Microsoft.KubernetesConfiguration'' within the specified
-        time period."}}'
-    headers:
-      cache-control:
-      - no-cache
-      connection:
-      - close
-      content-length:
-      - '161'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 20 Jan 2021 23:54:09 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - service
-    status:
-      code: 504
-      message: Gateway Timeout
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - k8sconfiguration delete
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - -g -c -n --cluster-type -y
-      User-Agent:
-      - python/3.8.5 (Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.19
-        msrest_azure/0.6.4 azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python
-        AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config11?api-version=2020-10-01-preview
-  response:
-    body:
-      string: '{"error":{"code":"GatewayTimeout","message":"The gateway did not receive
-        a response from ''Microsoft.KubernetesConfiguration'' within the specified
-        time period."}}'
-    headers:
-      cache-control:
-      - no-cache
-      connection:
-      - close
-      content-length:
-      - '161'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 20 Jan 2021 23:54:29 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-failure-cause:
-      - service
-    status:
-      code: 504
-      message: Gateway Timeout
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - k8sconfiguration delete
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - -g -c -n --cluster-type -y
-      User-Agent:
-      - python/3.8.5 (Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.19
-        msrest_azure/0.6.4 azure-mgmt-kubernetesconfiguration/0.2.0 Azure-SDK-For-Python
-        AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config11?api-version=2020-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nanthirg0923/providers/Microsoft.Kubernetes/connectedClusters/nanthicluster0923/providers/Microsoft.KubernetesConfiguration/sourceControlConfigurations/cli-test-config11?api-version=2021-03-01
   response:
     body:
       string: '{"version":"1.1","content":null,"statusCode":200,"reasonPhrase":"OK","headers":[],"trailingHeaders":[],"requestMessage":null,"isSuccessStatusCode":true}'
     headers:
       api-supported-versions:
-      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview
+      - 2019-11-01-Preview, 2020-07-01-Preview, 2020-10-01-Preview, 2021-03-01
       cache-control:
       - no-cache
       content-length:
@@ -1000,7 +418,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 20 Jan 2021 23:54:31 GMT
+      - Fri, 05 Feb 2021 20:40:19 GMT
       expires:
       - '-1'
       pragma:

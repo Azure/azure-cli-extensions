@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0
+++++++++++++++++++
+* Support api-version 2021-03-01
+
 0.2.3
 ++++++++++++++++++
 * Add parameter regex validation, improve table formatting

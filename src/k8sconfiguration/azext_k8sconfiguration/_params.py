@@ -44,7 +44,7 @@ def load_arguments(self, _):
         c.argument('enable_helm_operator',
                    arg_group="Helm Operator",
                    arg_type=get_three_state_flag(),
-                   options_list=['--enable-helm-operator, --enable-hop'],
+                   options_list=['--enable-helm-operator', '--enable-hop'],
                    help='Enable support for Helm chart deployments')
         c.argument('helm_operator_params',
                    arg_group="Helm Operator",
