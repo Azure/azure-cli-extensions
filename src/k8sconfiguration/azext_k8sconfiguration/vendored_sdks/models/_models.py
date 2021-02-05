@@ -212,23 +212,35 @@ class ProxyResource(Resource):
 class ResourceProviderOperation(Model):
     """Supported operation of this resource provider.
 
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
     :param name: Operation name, in format of
      {provider}/{resource}/{operation}
     :type name: str
     :param display: Display metadata associated with the operation.
     :type display:
      ~azure.mgmt.kubernetesconfiguration.models.ResourceProviderOperationDisplay
+    :ivar is_data_action: The flag that indicates whether the operation
+     applies to data plane.
+    :vartype is_data_action: bool
     """
+
+    _validation = {
+        'is_data_action': {'readonly': True},
+    }
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
         'display': {'key': 'display', 'type': 'ResourceProviderOperationDisplay'},
+        'is_data_action': {'key': 'isDataAction', 'type': 'bool'},
     }
 
     def __init__(self, **kwargs):
         super(ResourceProviderOperation, self).__init__(**kwargs)
         self.name = kwargs.get('name', None)
         self.display = kwargs.get('display', None)
+        self.is_data_action = None
 
 
 class ResourceProviderOperationDisplay(Model):
