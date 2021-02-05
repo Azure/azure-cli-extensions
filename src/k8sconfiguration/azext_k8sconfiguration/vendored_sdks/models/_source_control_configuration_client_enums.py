@@ -46,3 +46,11 @@ class ProvisioningStateType(str, Enum):
     running = "Running"
     succeeded = "Succeeded"
     failed = "Failed"
+
+
+class CreatedByType(str, Enum):
+
+    user = "User"
+    application = "Application"
+    managed_identity = "ManagedIdentity"
+    key = "Key"
