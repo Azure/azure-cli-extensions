@@ -50,7 +50,7 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_11_01.models import (ContainerServiceLinuxProfile,
+from .vendored_sdks.azure_mgmt_preview_aks.v2020_12_01.models import (ContainerServiceLinuxProfile,
                                                                       ManagedClusterWindowsProfile,
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
@@ -900,6 +900,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                assign_identity=None,
                auto_upgrade_channel=None,
                enable_pod_identity=False,
+               enable_encryption_at_host=False,
                no_wait=False,
                yes=False):
     if not no_ssh_key:
@@ -945,6 +946,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         proximity_placement_group_id=ppg,
         availability_zones=node_zones,
         enable_node_public_ip=enable_node_public_ip,
+        enable_encryption_at_host=enable_encryption_at_host,
         max_pods=int(max_pods) if max_pods else None,
         type=vm_set_type
     )
@@ -2501,6 +2503,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       aks_custom_headers=None,
                       kubelet_config=None,
                       linux_os_config=None,
+                      enable_encryption_at_host=False,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -2547,6 +2550,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         node_taints=taints_array,
         scale_set_priority=priority,
         upgrade_settings=upgradeSettings,
+        enable_encryption_at_host=enable_encryption_at_host,
         mode=mode
     )
 
@@ -2756,8 +2760,13 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
 
     monitoring = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
     ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].enabled
-    need_post_creation_role_assignment = monitoring or ingress_appgw_addon_enabled
 
+    os_type = 'Linux'
+    enable_virtual_node = False
+    if CONST_VIRTUAL_NODE_ADDON_NAME + os_type in instance.addon_profiles:
+        enable_virtual_node = True
+
+    need_post_creation_role_assignment = monitoring or ingress_appgw_addon_enabled or enable_virtual_node
     if need_post_creation_role_assignment:
         # adding a wait here since we rely on the result for role assignment
         result = LongRunningOperation(cmd.cli_ctx)(client.create_or_update(resource_group_name, name, instance))
@@ -2774,6 +2783,14 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
             _add_monitoring_role_assignment(result, cluster_resource_id, cmd)
         if ingress_appgw_addon_enabled:
             _add_ingress_appgw_addon_role_assignment(result, cmd)
+        if enable_virtual_node:
+            # All agent pool will reside in the same vnet, we will grant vnet level Contributor role
+            # in later function, so using a random agent pool here is OK
+            random_agent_pool = result.agent_pool_profiles[0]
+            if random_agent_pool.vnet_subnet_id != "":
+                _add_virtual_node_role_assignment(cmd, result, random_agent_pool.vnet_subnet_id)
+            # Else, the cluster is not using custom VNet, the permission is already granted in AKS RP,
+            # we don't need to handle it in client side in this case.
 
     else:
         result = sdk_no_wait(no_wait, client.create_or_update,

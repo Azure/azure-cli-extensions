@@ -646,19 +646,22 @@ def update_fd_routing_rule(parent, instance, item_name, frontend_endpoints=None,
 def create_waf_policy(cmd, resource_group_name, policy_name,
                       disabled=False, mode=None, redirect_url=None,
                       custom_block_response_status_code=None,
-                      custom_block_response_body=None, tags=None):
+                      custom_block_response_body=None, tags=None,
+                      request_body_check=None, sku=None):
     client = cf_waf_policies(cmd.cli_ctx, None)
     from azext_front_door.vendored_sdks.models import (
-        WebApplicationFirewallPolicy, ManagedRuleSetList, PolicySettings, CustomRuleList)
+        WebApplicationFirewallPolicy, ManagedRuleSetList, PolicySettings, CustomRuleList, Sku, SkuName)
     policy = WebApplicationFirewallPolicy(
         location='global',
         tags=tags,
+        sku=Sku(name=sku if sku is not None else SkuName.classic_azure_front_door),
         policy_settings=PolicySettings(
             enabled_state='Enabled' if not disabled else 'Disabled',
             mode=mode,
             redirect_url=redirect_url,
             custom_block_response_status_code=custom_block_response_status_code,
-            custom_block_response_body=custom_block_response_body
+            custom_block_response_body=custom_block_response_body,
+            request_body_check=request_body_check,
         ),
         custom_rules=CustomRuleList(rules=[]),
         managed_rules=ManagedRuleSetList(rule_sets=[])
@@ -668,16 +671,21 @@ def create_waf_policy(cmd, resource_group_name, policy_name,
 
 def update_waf_policy(instance, tags=None, mode=None, redirect_url=None,
                       custom_block_response_status_code=None, custom_block_response_body=None,
-                      disabled=False):
+                      disabled=False, request_body_check=None, sku=None):
+    from azext_front_door.vendored_sdks.models import SkuName
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
 
+    with UpdateContext(instance.sku) as c:
+        c.update_param('name', sku, None)
+
     with UpdateContext(instance.policy_settings) as c:
-        c.update_param('enabled_state', 'Enabled' if not disabled else 'Disabled', 'Disabled')
-        c.update_param('mode', mode, False)
+        c.update_param('enabled_state', 'Enabled' if not disabled else 'Disabled', None)
+        c.update_param('mode', mode, None)
         c.update_param('redirect_url', redirect_url, None)
         c.update_param('custom_block_response_status_code', custom_block_response_status_code, None)
         c.update_param('custom_block_response_body', custom_block_response_body, None)
+        c.update_param('request_body_check', request_body_check, None)
     return instance
 
 
