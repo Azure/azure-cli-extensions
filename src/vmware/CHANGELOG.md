@@ -2,7 +2,12 @@
 
 ## 2.0.0 (TBD)
 
-- prompt for legal terms in private-cloud create [#2932](https://github.com/Azure/azure-cli-extensions/pull/2932)
+This version has **breaking changes** for scripts.
+
+- prompt for legal terms for `az vmware private-cloud create` [#2932](https://github.com/Azure/azure-cli-extensions/pull/2932)
+  - scripts will need to add `--accept-eula` to avoid being prompted
+- prompt to confirm for `az vmware private-cloud delete` [#2930](https://github.com/Azure/azure-cli-extensions/pull/2930)
+  - scripts will need to add `--yes` to avoid being prompted
 
 ## 1.0.0 (2020-11-02)
 
