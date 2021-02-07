@@ -19,9 +19,9 @@ def step_create(test, rg, rg_2, checks=None):
         checks = []
     test.cmd('az healthbot create '
              '--name "{myBot}" '
-             '--location "East US" '
+             '--location "eastus" '
              '--sku "F0" '
-             '--resource-group "{rg_2}"',
+             '--resource-group "{rg}"',
              checks=checks)
 
 
@@ -52,7 +52,7 @@ def step_show(test, rg, rg_2, checks=None):
         checks = []
     test.cmd('az healthbot show '
              '--name "{myBot}" '
-             '--resource-group "{rg_2}"',
+             '--resource-group "{rg}"',
              checks=checks)
 
 
@@ -64,7 +64,7 @@ def step_update(test, rg, rg_2, checks=None):
     test.cmd('az healthbot update '
              '--name "{myBot}" '
              '--sku "F0" '
-             '--resource-group "{rg_2}"',
+             '--resource-group "{rg}"',
              checks=checks)
 
 
@@ -75,5 +75,5 @@ def step_delete(test, rg, rg_2, checks=None):
         checks = []
     test.cmd('az healthbot delete -y '
              '--name "{myBot}" '
-             '--resource-group "{rg_2}"',
+             '--resource-group "{rg}"',
              checks=checks)
