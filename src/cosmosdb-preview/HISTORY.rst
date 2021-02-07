@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.0
+++++++
+* Create and manage Role Definitions and Role Assignments for enforcing data plane RBAC on Cosmos DB SQL accounts
+
 0.2.0
 ++++++
 * Utc is taken as the default timezone when the timezone is not specified in the restore timestamp
