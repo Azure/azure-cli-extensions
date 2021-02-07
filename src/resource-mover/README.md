@@ -141,13 +141,17 @@ az role assignment create \
 ### Add move-resources to the move-collection
 Before the commands, prepare two json files with resource settings. For vNet, the contents of the file are like
 ```
-'resourceType': 'Microsoft.Network/virtualNetworks',
-'targetResourceName': 'vnet-in-target-region'
+{
+    'resourceType': 'Microsoft.Network/virtualNetworks',
+    'targetResourceName': 'vnet-in-target-region'
+}
 ``` 
 For resource-group, the contents of the file are like
 ```
-'resourceType': 'resourceGroups',
-'targetResourceName': 'TargetRG'
+{
+    'resourceType': 'resourceGroups',
+    'targetResourceName': 'TargetRG'
+}
 ```
 Then set `$vnet_resource_settings={the path of vNet json file}`, and `$rg_resource_settings={the path of resource group json file}`
 ```
