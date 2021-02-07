@@ -75,12 +75,12 @@ def resource_mover_move_collection_bulk_remove(client,
                                                move_collection_name,
                                                validate_only=None,
                                                move_resources=None,
-                                               move_resource_input_type=None,
+                                               input_type=None,
                                                no_wait=False):
     body = {}
     body['validate_only'] = validate_only
     body['move_resources'] = move_resources
-    body['move_resource_input_type'] = move_resource_input_type
+    body['move_resource_input_type'] = input_type
     return sdk_no_wait(no_wait,
                        client.begin_bulk_remove,
                        resource_group_name=resource_group_name,
@@ -93,12 +93,12 @@ def resource_mover_move_collection_commit(client,
                                           move_collection_name,
                                           validate_only=None,
                                           move_resources=None,
-                                          move_resource_input_type=None,
+                                          input_type=None,
                                           no_wait=False):
     body = {}
     body['validate_only'] = validate_only
     body['move_resources'] = move_resources
-    body['move_resource_input_type'] = move_resource_input_type
+    body['move_resource_input_type'] = input_type
     return sdk_no_wait(no_wait,
                        client.begin_commit,
                        resource_group_name=resource_group_name,
@@ -111,12 +111,12 @@ def resource_mover_move_collection_discard(client,
                                            move_collection_name,
                                            validate_only=None,
                                            move_resources=None,
-                                           move_resource_input_type=None,
+                                           input_type=None,
                                            no_wait=False):
     body = {}
     body['validate_only'] = validate_only
     body['move_resources'] = move_resources
-    body['move_resource_input_type'] = move_resource_input_type
+    body['move_resource_input_type'] = input_type
     return sdk_no_wait(no_wait,
                        client.begin_discard,
                        resource_group_name=resource_group_name,
@@ -129,12 +129,12 @@ def resource_mover_move_collection_initiate_move(client,
                                                  move_collection_name,
                                                  validate_only=None,
                                                  move_resources=None,
-                                                 move_resource_input_type=None,
+                                                 input_type=None,
                                                  no_wait=False):
     body = {}
     body['validate_only'] = validate_only
     body['move_resources'] = move_resources
-    body['move_resource_input_type'] = move_resource_input_type
+    body['move_resource_input_type'] = input_type
     return sdk_no_wait(no_wait,
                        client.begin_initiate_move,
                        resource_group_name=resource_group_name,
@@ -161,12 +161,12 @@ def resource_mover_move_collection_prepare(client,
                                            move_collection_name,
                                            validate_only=None,
                                            move_resources=None,
-                                           move_resource_input_type=None,
+                                           input_type=None,
                                            no_wait=False):
     body = {}
     body['validate_only'] = validate_only
     body['move_resources'] = move_resources
-    body['move_resource_input_type'] = move_resource_input_type
+    body['move_resource_input_type'] = input_type
     return sdk_no_wait(no_wait,
                        client.begin_prepare,
                        resource_group_name=resource_group_name,

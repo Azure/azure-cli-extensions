@@ -64,13 +64,13 @@ def load_arguments(self, _):
 
     with self.argument_context('resource-mover move-collection bulk-remove') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('move_collection_name', options_list=['--name', '-n', '--move-collection-name'], type=str, help='',
-                   id_part='name')
+        c.argument('move_collection_name', options_list=['--name', '-n', '--move-collection-name'], type=str,
+                   help='Name of the move-collection.', id_part='name')
         c.argument('validate_only', arg_type=get_three_state_flag(), help='Indicate whether the '
                    'operation needs to only run pre-requisite.')
         c.argument('move_resources', nargs='+', help='The list of resource Id\'s, by default it accepts '
-                   'move-resource id\'s unless the input type is switched via --move-resource-input-type.')
-        c.argument('move_resource_input_type', arg_type=get_enum_type(['MoveResourceId', 'MoveResourceSourceId']),
+                   'move-resource id\'s unless the input type is switched via --input-type.')
+        c.argument('input_type', arg_type=get_enum_type(['MoveResourceId', 'MoveResourceSourceId']),
                    help='Define the input type of --move-resources.')
 
     with self.argument_context('resource-mover move-collection commit') as c:
@@ -80,8 +80,8 @@ def load_arguments(self, _):
         c.argument('validate_only', arg_type=get_three_state_flag(), help='Indicate whether the '
                    'operation needs to only run pre-requisite.')
         c.argument('move_resources', nargs='+', help='The list of resource Id\'s, by default it accepts '
-                   'move-resource id\'s unless the input type is switched via --move-resource-input-type.')
-        c.argument('move_resource_input_type', arg_type=get_enum_type(['MoveResourceId', 'MoveResourceSourceId']),
+                   'move-resource id\'s unless the input type is switched via --input-type.')
+        c.argument('input_type', arg_type=get_enum_type(['MoveResourceId', 'MoveResourceSourceId']),
                    help='Define the input type of --move-resources.')
 
     with self.argument_context('resource-mover move-collection discard') as c:
@@ -91,8 +91,8 @@ def load_arguments(self, _):
         c.argument('validate_only', arg_type=get_three_state_flag(), help='Indicate whether the '
                    'operation needs to only run pre-requisite.')
         c.argument('move_resources', nargs='+', help='The list of resource Id\'s, by default it accepts '
-                   'move-resource id\'s unless the input type is switched via --move-resource-input-type.')
-        c.argument('move_resource_input_type', arg_type=get_enum_type(['MoveResourceId', 'MoveResourceSourceId']),
+                   'move-resource id\'s unless the input type is switched via --input-type.')
+        c.argument('input_type', arg_type=get_enum_type(['MoveResourceId', 'MoveResourceSourceId']),
                    help='Define the input type of --move-resources.')
 
     with self.argument_context('resource-mover move-collection initiate-move') as c:
@@ -102,8 +102,8 @@ def load_arguments(self, _):
         c.argument('validate_only', arg_type=get_three_state_flag(), help='Indicate whether the '
                    'operation needs to only run pre-requisite.')
         c.argument('move_resources', nargs='+', help='The list of resource Id\'s, by default it accepts '
-                   'move-resource id\'s unless the input type is switched via --move-resource-input-type.')
-        c.argument('move_resource_input_type', arg_type=get_enum_type(['MoveResourceId', 'MoveResourceSourceId']),
+                   'move-resource id\'s unless the input type is switched via --input-type.')
+        c.argument('input_type', arg_type=get_enum_type(['MoveResourceId', 'MoveResourceSourceId']),
                    help='Define the input type of --move-resources.')
 
     with self.argument_context('resource-mover move-collection list-move-collection') as c:
@@ -122,8 +122,8 @@ def load_arguments(self, _):
         c.argument('validate_only', arg_type=get_three_state_flag(), help='Indicate whether the '
                    'operation needs to only run pre-requisite.')
         c.argument('move_resources', nargs='+', help='The list of resource Id\'s, by default it accepts '
-                   'move-resource id\'s unless the input type is switched via --move-resource-input-type.')
-        c.argument('move_resource_input_type', arg_type=get_enum_type(['MoveResourceId', 'MoveResourceSourceId']),
+                   'move-resource id\'s unless the input type is switched via --input-type.')
+        c.argument('input_type', arg_type=get_enum_type(['MoveResourceId', 'MoveResourceSourceId']),
                    help='Define the input type of --move-resources.')
 
     with self.argument_context('resource-mover move-collection resolve-dependency') as c:

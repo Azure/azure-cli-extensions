@@ -222,26 +222,25 @@ dependent resource.
     examples:
       - name: Add a vNet as a move-resource to the move-collection.
         text: |-
-               az resource-mover move-resource add --resource-group MyResourceGroup --move-collection-name
-               MyMoveCollection --name MoveResourceName --source-id "/subscriptions/subID/resourceGroups/myRG/providers/Microsoft.Network/virtualNetworks/MyVNet"
+               az resource-mover move-resource add --resource-group MyResourceGroup --move-collection-name MyMoveCollection --name MoveResourceName
+               --source-id "/subscriptions/subID/resourceGroups/myRG/providers/Microsoft.Network/virtualNetworks/MyVNet"
                --resource-settings '{
-                    "resourceType": "Microsoft.Network/virtualNetworks",
-                    "targetResourceName": "MyVNet-target"
-                }'
+                   "resourceType": "Microsoft.Network/virtualNetworks",
+                   "targetResourceName": "MyVNet-target"
+               }'
 
       - name: Add a VM as a move-resource to the move-collection.
         text: |-
-               az resource-mover move-resource add --resource-group MyResourceGroup --move-collection-name
-               MyMoveCollection --name MoveResourceName --source-id "/subscriptions/subID/resourceGroups/eastusRG/providers/Microsoft.Compute/virtualMachines/MyVM" --depends-on-overrides
-               id="/subscriptions/subID/resourceGroups/eastusRG/providers/Microsoft.Network/networkInterfaces/MyNIC"
-               target-id="/subscriptions/subID/resourceGroups/westusRG/providers/Microsoft.Network/networkInterfaces/MyNIC"
+               az resource-mover move-resource add --resource-group MyResourceGroup --move-collection-name MyMoveCollection --name MoveResourceName
+               --source-id "/subscriptions/subID/resourceGroups/eastusRG/providers/Microsoft.Compute/virtualMachines/MyVM"
+               --depends-on-overrides id="/subscriptions/subID/resourceGroups/eastusRG/providers/Microsoft.Network/networkInterfaces/MyNIC" target-id="/subscriptions/subID/resourceGroups/westusRG/providers/Microsoft.Network/networkInterfaces/MyNIC"
                --resource-settings '{
-                    "resourceType": "Microsoft.Compute/virtualMachines",
-                    "targetAvailabilitySetId": "/subscriptions/subID/resourceGroups/eastusRG/providers/Microsoft.Compute/availabilitySets/MyAVSet",
-                    "targetAvailabilityZone": "2",
-                    "targetResourceName": "MyVM-target",
-                    "targetVmSize": null
-                }'
+                   "resourceType": "Microsoft.Compute/virtualMachines",
+                   "targetAvailabilitySetId": "/subscriptions/subID/resourceGroups/eastusRG/providers/Microsoft.Compute/availabilitySets/MyAVSet",
+                   "targetAvailabilityZone": "2",
+                   "targetResourceName": "MyVM-target",
+                   "targetVmSize": null
+               }'
 """
 
 helps['resource-mover move-resource delete'] = """
