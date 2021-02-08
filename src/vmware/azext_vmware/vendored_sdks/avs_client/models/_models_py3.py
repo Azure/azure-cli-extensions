@@ -62,7 +62,7 @@ class Addon(Resource):
     :param addon_type: The type of private cloud addon. Possible values include: "SRM", "VR".
     :type addon_type: str or ~avs_client.models.AddonType
     :ivar provisioning_state: The state of the addon provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
+     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating".
     :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
     """
 
@@ -156,7 +156,7 @@ class AddonProperties(AddonSrmProperties):
     :param addon_type: The type of private cloud addon. Possible values include: "SRM", "VR".
     :type addon_type: str or ~avs_client.models.AddonType
     :ivar provisioning_state: The state of the addon provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
+     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating".
     :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
     """
 
@@ -192,7 +192,7 @@ class AddonUpdate(msrest.serialization.Model):
     :param addon_type: The type of private cloud addon. Possible values include: "SRM", "VR".
     :type addon_type: str or ~avs_client.models.AddonType
     :ivar provisioning_state: The state of the addon provisioning. Possible values include:
-     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
+     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating".
     :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
     """
 

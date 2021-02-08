@@ -31,6 +31,7 @@ class AddonProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)
     SUCCEEDED = "Succeeded"
     FAILED = "Failed"
     CANCELLED = "Cancelled"
+    BUILDING = "Building"
     DELETING = "Deleting"
     UPDATING = "Updating"
 

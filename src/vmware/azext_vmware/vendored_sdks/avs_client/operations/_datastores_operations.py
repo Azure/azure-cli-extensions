@@ -135,9 +135,9 @@ class DatastoresOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> "_models.Datastore"
-        """Get a datastore in a private cloud.
+        """Get a datastore in a private cloud cluster.
 
-        Get a datastore in a private cloud.
+        Get a datastore in a private cloud cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -201,6 +201,7 @@ class DatastoresOperations(object):
         private_cloud_name,  # type: str
         cluster_name,  # type: str
         datastore_name,  # type: str
+        datastore,  # type: "_models.Datastore"
         **kwargs  # type: Any
     ):
         # type: (...) -> "_models.Datastore"
@@ -210,6 +211,7 @@ class DatastoresOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2021-01-01-preview"
+        content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
         # Construct URL
@@ -229,9 +231,13 @@ class DatastoresOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        request = self._client.put(url, query_parameters, header_parameters)
+        body_content_kwargs = {}  # type: Dict[str, Any]
+        body_content = self._serialize.body(datastore, 'Datastore')
+        body_content_kwargs['content'] = body_content
+        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -257,12 +263,13 @@ class DatastoresOperations(object):
         private_cloud_name,  # type: str
         cluster_name,  # type: str
         datastore_name,  # type: str
+        datastore,  # type: "_models.Datastore"
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["_models.Datastore"]
-        """Create a datastore in a private cloud.
+        """Create a datastore in a private cloud cluster.
 
-        Create a datastore in a private cloud.
+        Create a datastore in a private cloud cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
@@ -272,6 +279,8 @@ class DatastoresOperations(object):
         :type cluster_name: str
         :param datastore_name: Name of the datastore in the private cloud cluster.
         :type datastore_name: str
+        :param datastore: A datastore in a private cloud cluster.
+        :type datastore: ~avs_client.models.Datastore
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: Pass in True if you'd like the ARMPolling polling method,
@@ -295,6 +304,7 @@ class DatastoresOperations(object):
                 private_cloud_name=private_cloud_name,
                 cluster_name=cluster_name,
                 datastore_name=datastore_name,
+                datastore=datastore,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
