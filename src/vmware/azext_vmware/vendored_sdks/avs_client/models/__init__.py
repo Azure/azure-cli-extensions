@@ -19,7 +19,7 @@ try:
     from ._models_py3 import CommonClusterProperties
     from ._models_py3 import Datastore
     from ._models_py3 import DatastoreList
-    from ._models_py3 import DiskPoolVolumeProperties
+    from ._models_py3 import DiskPoolVolume
     from ._models_py3 import Endpoints
     from ._models_py3 import ErrorAdditionalInfo
     from ._models_py3 import ErrorResponse
@@ -34,7 +34,7 @@ try:
     from ._models_py3 import ManagementCluster
     from ._models_py3 import MetricDimension
     from ._models_py3 import MetricSpecification
-    from ._models_py3 import NetAppVolumeProperties
+    from ._models_py3 import NetAppVolume
     from ._models_py3 import Operation
     from ._models_py3 import OperationDisplay
     from ._models_py3 import OperationList
@@ -87,7 +87,7 @@ except (SyntaxError, ImportError):
     from ._models import CommonClusterProperties  # type: ignore
     from ._models import Datastore  # type: ignore
     from ._models import DatastoreList  # type: ignore
-    from ._models import DiskPoolVolumeProperties  # type: ignore
+    from ._models import DiskPoolVolume  # type: ignore
     from ._models import Endpoints  # type: ignore
     from ._models import ErrorAdditionalInfo  # type: ignore
     from ._models import ErrorResponse  # type: ignore
@@ -102,7 +102,7 @@ except (SyntaxError, ImportError):
     from ._models import ManagementCluster  # type: ignore
     from ._models import MetricDimension  # type: ignore
     from ._models import MetricSpecification  # type: ignore
-    from ._models import NetAppVolumeProperties  # type: ignore
+    from ._models import NetAppVolume  # type: ignore
     from ._models import Operation  # type: ignore
     from ._models import OperationDisplay  # type: ignore
     from ._models import OperationList  # type: ignore
@@ -186,7 +186,7 @@ __all__ = [
     'CommonClusterProperties',
     'Datastore',
     'DatastoreList',
-    'DiskPoolVolumeProperties',
+    'DiskPoolVolume',
     'Endpoints',
     'ErrorAdditionalInfo',
     'ErrorResponse',
@@ -201,7 +201,7 @@ __all__ = [
     'ManagementCluster',
     'MetricDimension',
     'MetricSpecification',
-    'NetAppVolumeProperties',
+    'NetAppVolume',
     'Operation',
     'OperationDisplay',
     'OperationList',

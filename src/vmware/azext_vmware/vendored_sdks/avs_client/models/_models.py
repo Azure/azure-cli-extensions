@@ -482,11 +482,10 @@ class Datastore(Resource):
     :ivar provisioning_state: The state of the datastore provisioning. Possible values include:
      "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
     :vartype provisioning_state: str or ~avs_client.models.DatastoreProvisioningState
-    :param net_app_volume: Resource ID of the Azure NetApp Files volume.
-    :type net_app_volume: ~avs_client.models.NetAppVolumeProperties
-    :param disk_pool_volume: Resource ID of the iSCSI target from a Storage Pool and LUN to be
-     used.
-    :type disk_pool_volume: ~avs_client.models.DiskPoolVolumeProperties
+    :param net_app_volume: An Azure NetApp Files volume.
+    :type net_app_volume: ~avs_client.models.NetAppVolume
+    :param disk_pool_volume: An iSCSI volume.
+    :type disk_pool_volume: ~avs_client.models.DiskPoolVolume
     """
 
     _validation = {
@@ -501,8 +500,8 @@ class Datastore(Resource):
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'net_app_volume': {'key': 'properties.netAppVolume', 'type': 'NetAppVolumeProperties'},
-        'disk_pool_volume': {'key': 'properties.diskPoolVolume', 'type': 'DiskPoolVolumeProperties'},
+        'net_app_volume': {'key': 'properties.netAppVolume', 'type': 'NetAppVolume'},
+        'disk_pool_volume': {'key': 'properties.diskPoolVolume', 'type': 'DiskPoolVolume'},
     }
 
     def __init__(
@@ -545,8 +544,8 @@ class DatastoreList(msrest.serialization.Model):
         self.next_link = None
 
 
-class DiskPoolVolumeProperties(msrest.serialization.Model):
-    """A model which holds properties of an iSCSI volume of Microsoft.StoragePool provider.
+class DiskPoolVolume(msrest.serialization.Model):
+    """An iSCSI volume from Microsoft.StoragePool provider.
 
     :param endpoints: iSCSI provider target IP address list.
     :type endpoints: list[str]
@@ -563,7 +562,7 @@ class DiskPoolVolumeProperties(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        super(DiskPoolVolumeProperties, self).__init__(**kwargs)
+        super(DiskPoolVolume, self).__init__(**kwargs)
         self.endpoints = kwargs.get('endpoints', None)
         self.lun_name = kwargs.get('lun_name', None)
 
@@ -1143,8 +1142,8 @@ class MetricSpecification(msrest.serialization.Model):
         self.source_mdm_namespace = kwargs.get('source_mdm_namespace', None)
 
 
-class NetAppVolumeProperties(msrest.serialization.Model):
-    """A model which holds properties of an Azure NetApp Files volume of Microsoft.NetApp provider.
+class NetAppVolume(msrest.serialization.Model):
+    """An Azure NetApp Files volume from Microsoft.NetApp provider.
 
     :param nfs_provider_ip: IP address of the NFS provider.
     :type nfs_provider_ip: str
@@ -1161,7 +1160,7 @@ class NetAppVolumeProperties(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        super(NetAppVolumeProperties, self).__init__(**kwargs)
+        super(NetAppVolume, self).__init__(**kwargs)
         self.nfs_provider_ip = kwargs.get('nfs_provider_ip', None)
         self.nfs_file_path = kwargs.get('nfs_file_path', None)
 
