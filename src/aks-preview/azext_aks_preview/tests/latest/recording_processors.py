@@ -57,7 +57,7 @@ class KeyReplacer(RecordingProcessor):
                          ('"objectId":"{}"'.format(MOCK_GUID)).encode('utf-8'),
                          val, flags=re.IGNORECASE)
         if b'principalId' in val:
-            val = re.sub(b'"principalId":( ?)"([^"]+)"', 
+            val = re.sub(b'"principalId":( ?)"([^"]+)"',
                          ('"principalId":"{}"'.format(MOCK_GUID)).encode('utf-8'),
                          val, flags=re.IGNORECASE)
         return val
