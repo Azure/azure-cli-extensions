@@ -111,7 +111,7 @@ def load_arguments(self, _):
         c.argument('private_dns_zone')
         c.argument('enable_managed_identity', action='store_true')
         c.argument('assign_identity', type=str, validator=validate_assign_identity)
-        c.argument('disable_sgxquotehelper', action='store_true')
+        c.argument('enable_sgxquotehelper', action='store_true')
         c.argument('auto_upgrade_channel', arg_type=get_enum_type([CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL]))
         c.argument('kubelet_config', type=str)
         c.argument('linux_os_config', type=str)
@@ -211,7 +211,7 @@ def load_arguments(self, _):
     with self.argument_context('aks enable-addons') as c:
         c.argument('addons', options_list=['--addons', '-a'], validator=validate_addons)
         c.argument('subnet_name', options_list=['--subnet-name', '-s'])
-        c.argument('disable_sgxquotehelper', action='store_true')
+        c.argument('enable_sgxquotehelper', action='store_true')
         c.argument('osm_mesh_name', options_list=['--osm-mesh-name'])
         c.argument('appgw_name', options_list=['--appgw-name'], arg_group='Application Gateway')
         c.argument('appgw_subnet_prefix', options_list=['--appgw-subnet-prefix'], arg_group='Application Gateway', deprecate_info=c.deprecate(redirect='--appgw-subnet-cidr', hide=True))

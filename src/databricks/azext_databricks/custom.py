@@ -24,6 +24,7 @@ def create_databricks_workspace(cmd, client,
                                 tags=None,
                                 prepare_encryption=None,
                                 require_infrastructure_encryption=None,
+                                enable_no_public_ip=None,
                                 no_wait=False):
     body = {}
     body['tags'] = tags  # dictionary
@@ -37,6 +38,7 @@ def create_databricks_workspace(cmd, client,
     _set_parameter_value(parameters, 'custom_private_subnet_name', custom_private_subnet_name)  # str
     _set_parameter_value(parameters, 'prepare_encryption', prepare_encryption)
     _set_parameter_value(parameters, 'require_infrastructure_encryption', require_infrastructure_encryption)
+    _set_parameter_value(parameters, 'enable_no_public_ip', enable_no_public_ip)
     body['parameters'] = parameters
 
     return sdk_no_wait(no_wait, client.create_or_update,
