@@ -27,6 +27,28 @@ def create_ssh_keyfile(private_key_file):
     subprocess.call(command, shell=platform.system() == 'Windows')
 
 
+def get_ssh_cert_info(cert_file):
+    command = [_get_ssh_path("ssh-keygen"), "-L", "-f", cert_file]
+    logger.debug("Running ssh-keygen command %s", ' '.join(command))
+    return subprocess.check_output(command, shell=platform.system() == 'Windows').decode().splitlines()
+
+
+def get_ssh_cert_principals(cert_file):
+    info = get_ssh_cert_info(cert_file)
+    principals = []
+    in_principal = False
+    for line in info:
+        if ":" in line:
+            in_principal = False
+        if "Principals:" in line:
+            in_principal = True
+            continue
+        if in_principal:
+            principals.append(line.strip())
+
+    return principals
+
+
 def write_ssh_config(config_path, resource_group, vm_name, overwrite,
                      ip, username, cert_file, private_key_file):
     file_utils.make_dirs_for_file(config_path)
