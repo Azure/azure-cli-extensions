@@ -70,3 +70,13 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware hcx-enterprise-site') as c:
         c.argument('name', options_list=['--name', '-n'], help='The name of the HCX Enterprise Site.')
+
+    with self.argument_context('vmware datastore') as c:
+        c.argument('name', options_list=['--name', '-n'], help='The name of the datastore.')
+        c.argument('cluster', help='The name of the cluster.')
+
+    with self.argument_context('vmware datastore create') as c:
+        c.argument('nfs_provider_ip', help='IP address of the NFS provider.')
+        c.argument('nfs_file_path', help='File path through which the NFS volume is exposed by the provider.')
+        c.argument('endpoints', nargs='*', help='iSCSI provider target IP address list.')
+        c.argument('lun_name', help='Name of the LUN to be used.')

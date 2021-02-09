@@ -37,6 +37,11 @@ helps['vmware location'] = """
     short-summary: Commands to check availability by location.
 """
 
+helps['vmware datastore'] = """
+    type: group
+    short-summary: Commands to manage a datastore in a private cloud cluster.
+"""
+
 helps['vmware cluster create'] = """
     type: command
     short-summary: Create a cluster in a private cloud. The maximum number of clusters is 4.
@@ -150,4 +155,24 @@ helps['vmware location checkquotaavailability'] = """
 helps['vmware location checktrialavailability'] = """
     type: command
     short-summary: Return trial status for subscription by region.
+"""
+
+helps['vmware datastore create'] = """
+    type: command
+    short-summary: Create a datastore in a private cloud cluster.
+"""
+
+helps['vmware datastore show'] = """
+    type: command
+    short-summary: Show details of a datastore in a private cloud cluster.
+"""
+
+helps['vmware datastore list'] = """
+    type: command
+    short-summary: List datastores in a private cloud cluster.
+"""
+
+helps['vmware datastore delete'] = """
+    type: command
+    short-summary: Delete a datastore in a private cloud cluster.
 """
