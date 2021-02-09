@@ -21,9 +21,10 @@ from wheel.install import WHEEL_INFO_RE
 
 from util import get_ext_metadata, get_whl_from_url, get_index_data, verify_dependency
 
-# Some extensions are published through manually submitted PRs and the latest version may not be in the end of  
+# Some extensions are published through manually submitted PRs and the latest version may not be in the end of
 # the version list in index.json. Let's just test all versions for these extensions.
-EXTS_TEST_ALL_VERSIONS = set('azure-cli-ml', 'alias', 'azure_iot')
+EXTS_TEST_ALL_VERSIONS = {'azure-cli-ml', 'alias', 'azure_iot'}
+
 
 def get_sha256sum(a_file):
     sha256 = hashlib.sha256()
@@ -108,7 +109,7 @@ class TestIndex(unittest.TestCase):
 
     @unittest.skipUnless(os.getenv('CI'), 'Skipped as not running on CI')
     def test_checksums(self):
-        for exts in self.index['extensions'].values():
+        for ext_name, exts in self.index['extensions'].items():
             end = len(exts) - 1
             for index, item in enumerate(exts):
                 # only test the latest version
