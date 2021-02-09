@@ -106,7 +106,11 @@ class TestIndex(unittest.TestCase):
     @unittest.skipUnless(os.getenv('CI'), 'Skipped as not running on CI')
     def test_checksums(self):
         for exts in self.index['extensions'].values():
-            for item in exts:
+            end = len(exts) -1
+            for index, item in enumerate(exts):
+                # only test the latest version
+                if index < end:
+                    continue
                 ext_file = get_whl_from_url(item['downloadUrl'], item['filename'],
                                             self.whl_cache_dir, self.whl_cache)
                 computed_hash = get_sha256sum(ext_file)
@@ -133,7 +137,11 @@ class TestIndex(unittest.TestCase):
 
         extensions_dir = tempfile.mkdtemp()
         for ext_name, exts in self.index['extensions'].items():
-            for item in exts:
+            end = len(exts) -1
+            for index, item in enumerate(exts):
+                # only test the latest version
+                if index < end:
+                    continue
                 ext_dir = tempfile.mkdtemp(dir=extensions_dir)
                 ext_file = get_whl_from_url(item['downloadUrl'], item['filename'],
                                             self.whl_cache_dir, self.whl_cache)
