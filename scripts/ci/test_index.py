@@ -21,10 +21,6 @@ from wheel.install import WHEEL_INFO_RE
 
 from util import get_ext_metadata, get_whl_from_url, get_index_data, verify_dependency
 
-# Some extensions are published through manually submitted PRs and the latest version may not be in the end of
-# the version list in index.json. Let's just test all versions for these extensions.
-EXTS_TEST_ALL_VERSIONS = {'azure-cli-ml', 'alias', 'azure_iot'}
-
 
 def get_sha256sum(a_file):
     sha256 = hashlib.sha256()
@@ -110,18 +106,16 @@ class TestIndex(unittest.TestCase):
     @unittest.skipUnless(os.getenv('CI'), 'Skipped as not running on CI')
     def test_checksums(self):
         for ext_name, exts in self.index['extensions'].items():
-            end = len(exts) - 1
-            for index, item in enumerate(exts):
-                # only test the latest version
-                if index < end and ext_name not in EXTS_TEST_ALL_VERSIONS:
-                    continue
-                ext_file = get_whl_from_url(item['downloadUrl'], item['filename'],
-                                            self.whl_cache_dir, self.whl_cache)
-                computed_hash = get_sha256sum(ext_file)
-                self.assertEqual(computed_hash, item['sha256Digest'],
-                                 "Computed {} but found {} in index for {}".format(computed_hash,
-                                                                                   item['sha256Digest'],
-                                                                                   item['filename']))
+            # only test the latest version
+            item = max(exts, key=lambda ext: LooseVersion(ext['metadata']['version']))
+            ext_file = get_whl_from_url(item['downloadUrl'], item['filename'],
+                                        self.whl_cache_dir, self.whl_cache)
+            print(ext_file)
+            computed_hash = get_sha256sum(ext_file)
+            self.assertEqual(computed_hash, item['sha256Digest'],
+                             "Computed {} but found {} in index for {}".format(computed_hash,
+                                                                               item['sha256Digest'],
+                                                                               item['filename']))
 
     @unittest.skipUnless(os.getenv('CI'), 'Skipped as not running on CI')
     def test_metadata(self):
@@ -134,71 +128,68 @@ class TestIndex(unittest.TestCase):
             'log-analytics': '0.2.1'
         }
 
-        historical_extensios = {
+        historical_extensions = {
             'keyvault-preview': '0.1.3',
             'log-analytics': '0.2.1'
         }
 
         extensions_dir = tempfile.mkdtemp()
         for ext_name, exts in self.index['extensions'].items():
-            end = len(exts) - 1
-            for index, item in enumerate(exts):
-                # only test the latest version
-                if index < end and ext_name not in EXTS_TEST_ALL_VERSIONS:
-                    continue
-                ext_dir = tempfile.mkdtemp(dir=extensions_dir)
-                ext_file = get_whl_from_url(item['downloadUrl'], item['filename'],
-                                            self.whl_cache_dir, self.whl_cache)
+            # only test the latest version
+            item = max(exts, key=lambda ext: LooseVersion(ext['metadata']['version']))
+            ext_dir = tempfile.mkdtemp(dir=extensions_dir)
+            ext_file = get_whl_from_url(item['downloadUrl'], item['filename'],
+                                        self.whl_cache_dir, self.whl_cache)
 
-                print(ext_file)
+            print(ext_file)
 
-                ext_version = item['metadata']['version']
-                try:
-                    metadata = get_ext_metadata(ext_dir, ext_file, ext_name)    # check file exists
-                except ValueError as ex:
-                    if ext_name in skipable_extension_thresholds:
-                        threshold_version = skipable_extension_thresholds[ext_name]
+            ext_version = item['metadata']['version']
+            try:
+                metadata = get_ext_metadata(ext_dir, ext_file, ext_name)    # check file exists
+            except ValueError as ex:
+                if ext_name in skipable_extension_thresholds:
+                    threshold_version = skipable_extension_thresholds[ext_name]
 
-                        if LooseVersion(ext_version) <= LooseVersion(threshold_version):
-                            continue
-                        else:
-                            raise ex
+                    if LooseVersion(ext_version) <= LooseVersion(threshold_version):
+                        continue
                     else:
                         raise ex
+                else:
+                    raise ex
 
-                try:
-                    self.assertIn('azext.minCliCoreVersion', metadata)  # check key properties exists
-                except AssertionError as ex:
-                    if ext_name in historical_extensios:
-                        threshold_version = historical_extensios[ext_name]
+            try:
+                self.assertIn('azext.minCliCoreVersion', metadata)  # check key properties exists
+            except AssertionError as ex:
+                if ext_name in historical_extensions:
+                    threshold_version = historical_extensions[ext_name]
 
-                        if LooseVersion(ext_version) <= LooseVersion(threshold_version):
-                            continue
-                        else:
-                            raise ex
+                    if LooseVersion(ext_version) <= LooseVersion(threshold_version):
+                        continue
                     else:
                         raise ex
+                else:
+                    raise ex
 
-                # Due to https://github.com/pypa/wheel/issues/195 we prevent whls built with 0.31.0 or greater.
-                # 0.29.0, 0.30.0 are the two previous versions before that release.
-                supported_generators = ['bdist_wheel (0.29.0)', 'bdist_wheel (0.30.0)']
-                self.assertIn(metadata.get('generator'), supported_generators,
-                              "{}: 'generator' should be one of {}. "
-                              "Build the extension with a different version of the 'wheel' package "
-                              "(e.g. `pip install wheel==0.30.0`). "
-                              "This is due to https://github.com/pypa/wheel/issues/195".format(ext_name,
-                                                                                               supported_generators))
-                self.assertDictEqual(metadata, item['metadata'],
-                                     "Metadata for {} in index doesn't match the expected of: \n"
-                                     "{}".format(item['filename'], json.dumps(metadata, indent=2, sort_keys=True,
-                                                                              separators=(',', ': '))))
-                run_requires = metadata.get('run_requires')
-                if run_requires:
-                    deps = run_requires[0]['requires']
-                    self.assertTrue(
-                        all(verify_dependency(dep) for dep in deps),
-                        "Dependencies of {} use disallowed extension dependencies. "
-                        "Remove these dependencies: {}".format(item['filename'], deps))
+            # Due to https://github.com/pypa/wheel/issues/195 we prevent whls built with 0.31.0 or greater.
+            # 0.29.0, 0.30.0 are the two previous versions before that release.
+            supported_generators = ['bdist_wheel (0.29.0)', 'bdist_wheel (0.30.0)']
+            self.assertIn(metadata.get('generator'), supported_generators,
+                          "{}: 'generator' should be one of {}. "
+                          "Build the extension with a different version of the 'wheel' package "
+                          "(e.g. `pip install wheel==0.30.0`). "
+                          "This is due to https://github.com/pypa/wheel/issues/195".format(ext_name,
+                                                                                           supported_generators))
+            self.assertDictEqual(metadata, item['metadata'],
+                                 "Metadata for {} in index doesn't match the expected of: \n"
+                                 "{}".format(item['filename'], json.dumps(metadata, indent=2, sort_keys=True,
+                                                                          separators=(',', ': '))))
+            run_requires = metadata.get('run_requires')
+            if run_requires:
+                deps = run_requires[0]['requires']
+                self.assertTrue(
+                    all(verify_dependency(dep) for dep in deps),
+                    "Dependencies of {} use disallowed extension dependencies. "
+                    "Remove these dependencies: {}".format(item['filename'], deps))
         shutil.rmtree(extensions_dir)
 
 
