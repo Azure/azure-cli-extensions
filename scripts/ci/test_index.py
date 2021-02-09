@@ -105,7 +105,7 @@ class TestIndex(unittest.TestCase):
 
     @unittest.skipUnless(os.getenv('CI'), 'Skipped as not running on CI')
     def test_checksums(self):
-        for ext_name, exts in self.index['extensions'].items():
+        for exts in self.index['extensions'].values():
             # only test the latest version
             item = max(exts, key=lambda ext: LooseVersion(ext['metadata']['version']))
             ext_file = get_whl_from_url(item['downloadUrl'], item['filename'],
