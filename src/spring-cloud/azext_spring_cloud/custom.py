@@ -529,21 +529,21 @@ def app_get_build_log(cmd, client, resource_group, service, name, deployment=Non
     return stream_logs(client.deployments, resource_group, service, name, deployment)
 
 
-def app_tail_log(cmd, client, resource_group, service, name, instance=None, follow=False, lines=50, since=None, limit=2048):
+def app_tail_log(cmd, client, resource_group, service, name, deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048):
     if not instance:
-        deployment_name = client.apps.get(
-            resource_group, service, name).properties.active_deployment_name
-        if not deployment_name:
-            raise CLIError(
-                "No production deployment found for app '{}'".format(name))
-        deployment = client.deployments.get(
-            resource_group, service, name, deployment_name)
-        if not deployment.properties.instances:
+        if deployment is None:
+            deployment = client.apps.get(
+                resource_group, service, name).properties.active_deployment_name
+        if not deployment:
+            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
+        deployment_properties = client.deployments.get(
+            resource_group, service, name, deployment).properties
+        if not deployment_properties.instances:
             raise CLIError("No instances found for deployment '{0}' in app '{1}'".format(
-                deployment_name, name))
-        instances = deployment.properties.instances
+                deployment, name))
+        instances = deployment_properties.instances
         if len(instances) > 1:
-            logger.warning("Mulitple app instances found:")
+            logger.warning("Multiple app instances found:")
             for temp_instance in instances:
                 logger.warning("{}".format(temp_instance.name))
             logger.warning("Please use '-i/--instance' parameter to specify the instance name")

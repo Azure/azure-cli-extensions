@@ -70,6 +70,10 @@ def validate_create(cmd, namespace):
     else:
         logger.debug('The source VM\'s OS disk is not encrypted')
 
+    if namespace.enable_nested:
+        if is_linux:
+            raise CLIError('Nested VM is not supported for Linux VM')
+
     # Validate Auth Params
     # Prompt vm username
     if not namespace.repair_username:
