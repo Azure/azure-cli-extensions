@@ -16,7 +16,7 @@ import unittest
 import hashlib
 import shutil
 
-from distutils.version import LooseVersion
+from packaging import version
 from wheel.install import WHEEL_INFO_RE
 
 from util import get_ext_metadata, get_whl_from_url, get_index_data, verify_dependency
@@ -107,7 +107,7 @@ class TestIndex(unittest.TestCase):
     def test_checksums(self):
         for exts in self.index['extensions'].values():
             # only test the latest version
-            item = max(exts, key=lambda ext: LooseVersion(ext['metadata']['version']))
+            item = max(exts, key=lambda ext: version.parse(ext['metadata']['version']))
             ext_file = get_whl_from_url(item['downloadUrl'], item['filename'],
                                         self.whl_cache_dir, self.whl_cache)
             print(ext_file)
@@ -136,7 +136,7 @@ class TestIndex(unittest.TestCase):
         extensions_dir = tempfile.mkdtemp()
         for ext_name, exts in self.index['extensions'].items():
             # only test the latest version
-            item = max(exts, key=lambda ext: LooseVersion(ext['metadata']['version']))
+            item = max(exts, key=lambda ext: version.parse(ext['metadata']['version']))
             ext_dir = tempfile.mkdtemp(dir=extensions_dir)
             ext_file = get_whl_from_url(item['downloadUrl'], item['filename'],
                                         self.whl_cache_dir, self.whl_cache)
@@ -150,7 +150,7 @@ class TestIndex(unittest.TestCase):
                 if ext_name in skipable_extension_thresholds:
                     threshold_version = skipable_extension_thresholds[ext_name]
 
-                    if LooseVersion(ext_version) <= LooseVersion(threshold_version):
+                    if version.parse(ext_version) <= version.parse(threshold_version):
                         continue
                     else:
                         raise ex
@@ -163,7 +163,7 @@ class TestIndex(unittest.TestCase):
                 if ext_name in historical_extensions:
                     threshold_version = historical_extensions[ext_name]
 
-                    if LooseVersion(ext_version) <= LooseVersion(threshold_version):
+                    if version.parse(ext_version) <= version.parse(threshold_version):
                         continue
                     else:
                         raise ex
