@@ -53,5 +53,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_k8s-configuration': ['azext_metadata.json']},
+    package_data={'azext_k8s_configuration': ['azext_metadata.json']},
 )
