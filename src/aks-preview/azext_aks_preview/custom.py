@@ -894,7 +894,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_azure_rbac=False,
                aad_admin_group_object_ids=None,
                aci_subnet_name=None,
-               disable_sgxquotehelper=False,
+               enable_sgxquotehelper=False,
                kubelet_config=None,
                linux_os_config=None,
                assign_identity=None,
@@ -1107,7 +1107,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         appgw_id,
         appgw_subnet_id,
         appgw_watch_namespace,
-        disable_sgxquotehelper,
+        enable_sgxquotehelper,
         aci_subnet_name,
         vnet_subnet_id
     )
@@ -1957,7 +1957,7 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
                         appgw_id=None,
                         appgw_subnet_id=None,
                         appgw_watch_namespace=None,
-                        disable_sgxquotehelper=False,
+                        enable_sgxquotehelper=False,
                         aci_subnet_name=None,
                         vnet_subnet_id=None):
     if not addon_profiles:
@@ -2014,9 +2014,9 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
         addon_profiles[CONST_OPEN_SERVICE_MESH_ADDON_NAME] = addon_profile
         addons.remove('open-service-mesh')
     if 'confcom' in addons:
-        addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "true"})
-        if disable_sgxquotehelper:
-            addon_profile.config[CONST_ACC_SGX_QUOTE_HELPER_ENABLED] = "false"
+        addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "false"})
+        if enable_sgxquotehelper:
+            addon_profile.config[CONST_ACC_SGX_QUOTE_HELPER_ENABLED] = "true"
         addon_profiles[CONST_CONFCOM_ADDON_NAME] = addon_profile
         addons.remove('confcom')
     if 'virtual-node' in addons:
@@ -2747,13 +2747,13 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
 
 def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
                       subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None, appgw_subnet_id=None,
-                      appgw_watch_namespace=None, disable_sgxquotehelper=False, no_wait=False):
+                      appgw_watch_namespace=None, enable_sgxquotehelper=False, no_wait=False):
     instance = client.get(resource_group_name, name)
     subscription_id = get_subscription_id(cmd.cli_ctx)
     instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
                               workspace_resource_id=workspace_resource_id, subnet_name=subnet_name,
                               appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix, appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id, appgw_watch_namespace=appgw_watch_namespace,
-                              disable_sgxquotehelper=disable_sgxquotehelper, no_wait=no_wait)
+                              enable_sgxquotehelper=enable_sgxquotehelper, no_wait=no_wait)
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled:
         _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME])
@@ -2817,7 +2817,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    appgw_id=None,
                    appgw_subnet_id=None,
                    appgw_watch_namespace=None,
-                   disable_sgxquotehelper=False,
+                   enable_sgxquotehelper=False,
                    no_wait=False):  # pylint: disable=unused-argument
 
     # parse the comma-separated addons argument
@@ -2902,9 +2902,9 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                                    'To change confcom configuration, run '
                                    f'"az aks disable-addons -a confcom -n {name} -g {resource_group_name}" '
                                    'before enabling it again.')
-                addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "true"})
-                if disable_sgxquotehelper:
-                    addon_profile.config[CONST_ACC_SGX_QUOTE_HELPER_ENABLED] = "false"
+                addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "false"})
+                if enable_sgxquotehelper:
+                    addon_profile.config[CONST_ACC_SGX_QUOTE_HELPER_ENABLED] = "true"
             addon_profiles[addon] = addon_profile
         else:
             if addon not in addon_profiles:
