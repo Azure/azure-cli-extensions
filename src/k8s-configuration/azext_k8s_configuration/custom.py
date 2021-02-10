@@ -14,15 +14,15 @@ from paramiko.hostkeys import HostKeyEntry
 from paramiko.ssh_exception import SSHException
 from Crypto.PublicKey import RSA, ECC, DSA
 
-from azext_k8sconfiguration.vendored_sdks.models import SourceControlConfiguration
-from azext_k8sconfiguration.vendored_sdks.models import HelmOperatorProperties
-from azext_k8sconfiguration.vendored_sdks.models import ErrorResponseException
+from azext_k8s_configuration.vendored_sdks.models import SourceControlConfiguration
+from azext_k8s_configuration.vendored_sdks.models import HelmOperatorProperties
+from azext_k8s_configuration.vendored_sdks.models import ErrorResponseException
 from ._validators import validate_configuration_name
 
 logger = get_logger(__name__)
 
 
-def show_k8sconfiguration(client, resource_group_name, cluster_name, name, cluster_type):
+def show_k8s_configuration(client, resource_group_name, cluster_name, name, cluster_type):
     """Get an existing Kubernetes Source Control Configuration.
 
     """
@@ -55,12 +55,12 @@ def show_k8sconfiguration(client, resource_group_name, cluster_name, name, clust
 
 
 # pylint: disable=too-many-locals
-def create_k8sconfiguration(client, resource_group_name, cluster_name, name, repository_url, scope, cluster_type,
-                            operator_instance_name=None, operator_namespace='default',
-                            helm_operator_chart_version='1.2.0', operator_type='flux', operator_params='',
-                            ssh_private_key='', ssh_private_key_file='', https_user='', https_key='',
-                            ssh_known_hosts='', ssh_known_hosts_file='', enable_helm_operator=None,
-                            helm_operator_params=''):
+def create_k8s_configuration(client, resource_group_name, cluster_name, name, repository_url, scope, cluster_type,
+                             operator_instance_name=None, operator_namespace='default',
+                             helm_operator_chart_version='1.2.0', operator_type='flux', operator_params='',
+                             ssh_private_key='', ssh_private_key_file='', https_user='', https_key='',
+                             ssh_known_hosts='', ssh_known_hosts_file='', enable_helm_operator=None,
+                             helm_operator_params=''):
     """Create a new Kubernetes Source Control Configuration.
 
     """
@@ -117,10 +117,10 @@ def create_k8sconfiguration(client, resource_group_name, cluster_name, name, rep
     return __fix_compliance_state(config)
 
 
-def update_k8sconfiguration(client, resource_group_name, cluster_name, name, cluster_type,
-                            repository_url=None, operator_params=None, ssh_known_hosts='',
-                            ssh_known_hosts_file='', enable_helm_operator=None, helm_operator_chart_version=None,
-                            helm_operator_params=None):
+def update_k8s_configuration(client, resource_group_name, cluster_name, name, cluster_type,
+                             repository_url=None, operator_params=None, ssh_known_hosts='',
+                             ssh_known_hosts_file='', enable_helm_operator=None, helm_operator_chart_version=None,
+                             helm_operator_params=None):
     """Update an existing Kubernetes Source Control Configuration.
 
     """
@@ -180,12 +180,12 @@ def update_k8sconfiguration(client, resource_group_name, cluster_name, name, clu
     return __fix_compliance_state(config)
 
 
-def list_k8sconfiguration(client, resource_group_name, cluster_name, cluster_type):
+def list_k8s_configuration(client, resource_group_name, cluster_name, cluster_type):
     cluster_rp = __get_cluster_type(cluster_type)
     return client.list(resource_group_name, cluster_rp, cluster_type, cluster_name)
 
 
-def delete_k8sconfiguration(client, resource_group_name, cluster_name, name, cluster_type):
+def delete_k8s_configuration(client, resource_group_name, cluster_name, name, cluster_type):
     """Delete an existing Kubernetes Source Control Configuration.
 
     """

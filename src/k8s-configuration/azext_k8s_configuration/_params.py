@@ -19,7 +19,7 @@ from ._validators import validate_configuration_type, validate_operator_namespac
 def load_arguments(self, _):
     sourcecontrolconfiguration_type = CLIArgumentType(help='Name of the Kubernetes Configuration')
 
-    with self.argument_context('k8sconfiguration') as c:
+    with self.argument_context('k8s-configuration') as c:
         c.argument('tags', tags_type)
         c.argument('location',
                    validator=get_default_location_from_resource_group)

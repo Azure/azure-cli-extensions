@@ -41,17 +41,17 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='k8sconfiguration',
+    name='k8s-configuration',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools K8sconfiguration Extension',
+    description='Microsoft Azure Command-Line Tools K8s-configuration Extension',
     # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/k8sconfiguration',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/k8s-configuration',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_k8sconfiguration': ['azext_metadata.json']},
+    package_data={'azext_k8s-configuration': ['azext_metadata.json']},
 )

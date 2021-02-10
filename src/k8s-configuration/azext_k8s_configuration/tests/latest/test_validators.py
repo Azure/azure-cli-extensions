@@ -6,8 +6,8 @@
 import unittest
 import base64
 from azure.cli.core.azclierror import InvalidArgumentValueError, MutuallyExclusiveArgumentError
-from azext_k8sconfiguration.custom import validate_and_get_protected_settings, validate_url_with_params, validate_known_hosts
-import azext_k8sconfiguration._validators as validators
+from azext_k8s_configuration.custom import validate_and_get_protected_settings, validate_url_with_params, validate_known_hosts
+import azext_k8s_configuration._validators as validators
 from Crypto.PublicKey import RSA, ECC, DSA
 from paramiko.ed25519key import Ed25519Key
 

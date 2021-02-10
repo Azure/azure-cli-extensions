@@ -6,11 +6,11 @@
 from collections import OrderedDict
 
 
-def k8sconfiguration_list_table_format(results):
+def k8s_configuration_list_table_format(results):
     return [__get_table_row(result) for result in results]
 
 
-def k8sconfiguration_show_table_format(result):
+def k8s_configuration_show_table_format(result):
     return __get_table_row(result)
 
 

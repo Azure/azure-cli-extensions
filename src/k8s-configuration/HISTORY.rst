@@ -6,6 +6,7 @@ Release History
 1.0.0
 ++++++++++++++++++
 * Support api-version 2021-03-01
+* Migrate from k8sconfiguration to k8s-configuration
 
 0.2.3
 ++++++++++++++++++

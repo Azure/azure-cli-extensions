@@ -1,13 +1,13 @@
-Microsoft Azure CLI 'k8sconfiguration' Extension
+Microsoft Azure CLI 'k8s-configuration' Extension
 ==========================================
 
-This package is for the 'k8sconfiguration' extension.
-i.e. 'az k8sconfiguration'
+This package is for the 'k8s-configuration' extension.
+i.e. 'az k8s-configuration'
 
 ### How to use ###
 Install this extension using the below CLI command
 ```
-az extension add --name k8sconfiguration
+az extension add --name k8s-configuration
 ```
 
 ### Included Features
@@ -17,7 +17,7 @@ Kubernetes SourceControl Configuration: [more info](https://docs.microsoft.com/e
 
 ##### Create a KubernetesConfiguration
 ```
-az k8sconfiguration create \
+az k8s-configuration create \
     --resource-group groupName \
     --cluster-name clusterName \
     --cluster-type clusterType \
@@ -33,7 +33,7 @@ az k8sconfiguration create \
 
 ##### Get a KubernetesConfiguration
 ```
-az k8sconfiguration show \
+az k8s-configuration show \
     --resource-group groupName \
     --cluster-name clusterName \
     --cluster-type clusterType \
@@ -42,7 +42,7 @@ az k8sconfiguration show \
 
 ##### Delete a KubernetesConfiguration
 ```
-az k8sconfiguration delete \
+az k8s-configuration delete \
     --resource-group groupName \
     --cluster-name clusterName \
     --cluster-type clusterType \
@@ -51,7 +51,7 @@ az k8sconfiguration delete \
 
 ##### Update a KubernetesConfiguration
 ```
-az k8sconfiguration create \
+az k8s-configuration create \
     --resource-group groupName \
     --cluster-name clusterName \
     --cluster-type clusterType \
@@ -65,7 +65,7 @@ az k8sconfiguration create \
 
 ##### List all KubernetesConfigurations of a cluster
 ```
-az k8sconfiguration list \
+az k8s-configuration list \
     --resource-group groupName \
     --cluster-name clusterName \
     --cluster-type clusterType

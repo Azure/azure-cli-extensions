@@ -11,10 +11,10 @@ from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoun
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-class K8sconfigurationScenarioTest(ScenarioTest):
-    @ResourceGroupPreparer(name_prefix='cli_test_k8sconfiguration')
+class K8sConfigurationScenarioTest(ScenarioTest):
+    @ResourceGroupPreparer(name_prefix='cli_test_k8s_configuration')
     @record_only()
-    def test_k8sconfiguration_success(self):
+    def test_k8s_configuration_success(self):
 
         # --------------------------------------------------------------------
         #  SSH SCENARIO TEST
@@ -34,10 +34,10 @@ class K8sconfigurationScenarioTest(ScenarioTest):
 
         # Check that the configuration does not already exist
         with self.assertRaises(ResourceNotFoundError):
-            self.cmd('k8sconfiguration show -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type}')
+            self.cmd('k8s-configuration show -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type}')
 
         # Create a configuration
-        self.cmd(''' k8sconfiguration create -g {rg}
+        self.cmd(''' k8s-configuration create -g {rg}
                  -n {name}
                  -c {cluster_name}
                  -u {repo_url}
@@ -63,7 +63,7 @@ class K8sconfigurationScenarioTest(ScenarioTest):
                  ])
 
         # Get the configuration created
-        self.cmd('k8sconfiguration show -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type}',
+        self.cmd('k8s-configuration show -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type}',
                  checks=[
                      self.check('name', '{name}'),
                      self.check('resourceGroup', '{rg}'),
@@ -76,7 +76,7 @@ class K8sconfigurationScenarioTest(ScenarioTest):
                  ])
 
         # Delete the created configuration
-        self.cmd('k8sconfiguration delete -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type} -y')
+        self.cmd('k8s-configuration delete -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type} -y')
 
         # --------------------------------------------------------------------
         #  HTTPS SCENARIO TEST
@@ -96,9 +96,9 @@ class K8sconfigurationScenarioTest(ScenarioTest):
 
         # Check that the configuration does not already exist
         with self.assertRaises(ResourceNotFoundError):
-            self.cmd('k8sconfiguration show -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type}')
+            self.cmd('k8s-configuration show -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type}')
 
-        self.cmd(''' k8sconfiguration create -g {rg}
+        self.cmd(''' k8s-configuration create -g {rg}
                  -n {name}
                  -c {cluster_name}
                  -u {repo_url}
@@ -123,7 +123,7 @@ class K8sconfigurationScenarioTest(ScenarioTest):
                  ])
 
         # Get the configuration created
-        self.cmd('k8sconfiguration show -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type}',
+        self.cmd('k8s-configuration show -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type}',
                  checks=[
                      self.check('name', '{name}'),
                      self.check('resourceGroup', '{rg}'),
@@ -135,4 +135,4 @@ class K8sconfigurationScenarioTest(ScenarioTest):
                  ])
 
         # Delete the created configuration
-        self.cmd('k8sconfiguration delete -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type} -y')
+        self.cmd('k8s-configuration delete -g {rg} -c {cluster_name} -n {name} --cluster-type {cluster_type} -y')
