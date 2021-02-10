@@ -171,9 +171,9 @@ def hcxenterprisesite_delete(cmd, client: AVSClient, resource_group_name, privat
 def datastore_create(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name, nfs_provider_ip=None, nfs_file_path=None, endpoints=[], lun_name=None):
     from azext_vmware.vendored_sdks.avs_client.models import Datastore, NetAppVolume, DiskPoolVolume
     datastore = Datastore()
-    if nfs_provider_ip is not None and nfs_file_path is not None:
+    if nfs_provider_ip is not None or nfs_file_path is not None:
         datastore.net_app_volume = NetAppVolume(nfs_provider_ip=nfs_provider_ip, nfs_file_path=nfs_file_path)
-    if len(endpoints) > 0 and lun_name is not None:
+    if len(endpoints) > 0 or lun_name is not None:
         datastore.disk_pool_volume = DiskPoolVolume(endpoints=endpoints, lun_name=lun_name)
     return client.datastores.begin_create(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name, datastore=datastore)
 
