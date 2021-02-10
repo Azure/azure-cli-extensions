@@ -12,10 +12,8 @@ class NextCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_next._client_factory import cf_next
         next_custom = CliCommandType(
-            operations_tmpl='azext_next.custom#{}',
-            client_factory=cf_next)
+            operations_tmpl='azext_next.custom#{}')
         super(NextCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                  custom_command_type=next_custom)
 
