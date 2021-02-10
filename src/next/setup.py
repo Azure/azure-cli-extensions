@@ -32,29 +32,27 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = [
-    'setproctitle==1.2.2',
-    'mycli==1.22.2',
-    'pgcli==3.0.0'
-]
+# TODO: Add any additional SDK dependencies here
+DEPENDENCIES = []
 
-with open('README.rst', 'r', encoding='utf-8') as f:
+with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
 with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='rdbms-connect',
+    name='next',
     version=VERSION,
-    description='Support for testing connection to Azure Database for MySQL & PostgreSQL servers.',
+    description='Microsoft Azure Command-Line Tools Next Extension',
     # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/rdbms-connect',
+    # TODO: consider pointing directly to your source code instead of the generic repo
+    url='https://github.com/Azure/azure-cli-extensions',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_rdbms_connect': ['azext_metadata.json']},
+    package_data={'azext_next': ['azext_metadata.json']},
 )
