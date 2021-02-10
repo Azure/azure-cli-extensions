@@ -293,9 +293,9 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
     if https_proxy or http_proxy or no_proxy:
         cmd_helm_install.extend(["--set", "global.isProxyEnabled={}".format(True)])
     if enable_azure_rbac:
-        cmd_helm_upgrade.extend(["--set-file", "systemDefaultValues.guard.enabled={}".format(azure_rbac)])
-        cmd_helm_upgrade.extend(["--set-file", "systemDefaultValues.guard.clientId={}".format(guard_client_id)])
-        cmd_helm_upgrade.extend(["--set-file", "systemDefaultValues.guard.clientSecret={}".format(guard_client_secret)])
+        cmd_helm_install.extend(["--set", "systemDefaultValues.guard.enabled={}".format(enable_azure_rbac)])
+        cmd_helm_install.extend(["--set", "systemDefaultValues.guard.clientId={}".format(guard_client_id)])
+        cmd_helm_install.extend(["--set", "systemDefaultValues.guard.clientSecret={}".format(guard_client_secret)])
     if kube_config:
         cmd_helm_install.extend(["--kubeconfig", kube_config])
     if kube_context:

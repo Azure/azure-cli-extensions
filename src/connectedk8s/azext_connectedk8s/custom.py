@@ -27,6 +27,7 @@ import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 import azext_connectedk8s._validators as validate
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterAADProfile, ConnectedClusterIdentity
+from distutils.util import strtobool
 
 logger = get_logger(__name__)
 
@@ -733,7 +734,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     kubernetes_version = get_server_version(configuration)
 
     # Validate enable-azure-rbac
-    if azure_rbac:
+    if (azure_rbac is not None) and (bool(strtobool(azure_rbac))):
         validate.validate_enable_azure_rbac(kubernetes_version, guard_client_id, guard_client_secret)
     
     # Checking helm installation
@@ -820,10 +821,10 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     if proxy_cert:
         cmd_helm_upgrade.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
     if azure_rbac is not None:
-        cmd_helm_upgrade.extend(["--set-file", "systemDefaultValues.guard.enabled={}".format(azure_rbac)])
-        if azure_rbac:
-            cmd_helm_upgrade.extend(["--set-file", "systemDefaultValues.guard.clientId={}".format(guard_client_id)])
-            cmd_helm_upgrade.extend(["--set-file", "systemDefaultValues.guard.clientSecret={}".format(guard_client_secret)])
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.enabled={}".format(azure_rbac)])
+        if bool(strtobool(azure_rbac)):
+            cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.clientId={}".format(guard_client_id)])
+            cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.clientSecret={}".format(guard_client_secret)])
     if kube_config:
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:
