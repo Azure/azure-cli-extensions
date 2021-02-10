@@ -1,5 +1,30 @@
 Release History
 ===============
+2.1.2
+-----
+* Add optional '--deployment' to 'az spring-cloud app logs' command
+
+2.1.1
+-----
+* Remove preview parameter '--enable-java-agent' from 'az spring-cloud update'.
+* Fix warning message of '--disable-distributed-tracing'.
+
+2.1.0
+-----
+* Support Java In-Process Agent.
+
+2.0.1
+-----
+* Fix 'az spring-cloud app list' command issues.
+
+2.0.0
+-----
+* Switch api-version from 2019-05-01-preview to 2020-07-01
+
+1.2.0
+-----
+* Add support for sovereign cloud.
+
 1.1.1
 -----
 * Reimport the updated version of Python SDK.

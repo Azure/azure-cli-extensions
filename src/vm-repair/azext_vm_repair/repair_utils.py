@@ -16,7 +16,7 @@ from knack.prompting import prompt_y_n, NoTTYException
 
 from .encryption_types import Encryption
 
-from .exceptions import AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
+from .exceptions import AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV
 # pylint: disable=line-too-long, deprecated-method
 
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
@@ -172,33 +172,47 @@ def _clean_up_resources(resource_group_name, confirm):
         logger.error("Clean up failed.")
 
 
-def _fetch_compatible_sku(source_vm):
+def _fetch_compatible_sku(source_vm, hyperv):
 
     location = source_vm.location
     source_vm_sku = source_vm.hardware_profile.vm_size
 
     # First get the source_vm sku, if its available go with it
-    check_sku_command = 'az vm list-skus -s {sku} -l {loc} --query [].name -o tsv'.format(sku=source_vm_sku, loc=location)
+    if not (not source_vm_sku.endswith('v3') and hyperv):
+        check_sku_command = 'az vm list-skus -s {sku} -l {loc} --query [].name -o tsv'.format(sku=source_vm_sku, loc=location)
 
-    logger.info('Checking if source VM size is available...')
-    sku_check = _call_az_command(check_sku_command).strip('\n')
+        logger.info('Checking if source VM size is available...')
+        sku_check = _call_az_command(check_sku_command).strip('\n')
 
-    if sku_check:
-        logger.info('Source VM size \'%s\' is available. Using it to create repair VM.\n', source_vm_sku)
-        return source_vm_sku
+        if sku_check:
+            logger.info('Source VM size \'%s\' is available. Using it to create repair VM.\n', source_vm_sku)
+            return source_vm_sku
 
-    logger.info('Source VM size: \'%s\' is NOT available.\n', source_vm_sku)
+        logger.info('Source VM size: \'%s\' is NOT available.\n', source_vm_sku)
 
     # List available standard SKUs
     # TODO, premium IO only when needed
-    list_sku_command = 'az vm list-skus -s standard_d -l {loc} --query ' \
-                       '"[?capabilities[?name==\'vCPUs\' && to_number(value)>= to_number(\'2\')] && ' \
-                       'capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'8\')] && ' \
-                       'capabilities[?name==\'MemoryGB\' && to_number(value)>=to_number(\'8\')] && ' \
-                       'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'32\')] && ' \
-                       'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
-                       'capabilities[?name==\'PremiumIO\' && value==\'True\']].name" -o json'\
-                       .format(loc=location)
+    if not hyperv:
+        list_sku_command = 'az vm list-skus -s standard_d -l {loc} --query ' \
+            '"[?capabilities[?name==\'vCPUs\' && to_number(value)>= to_number(\'2\')] && ' \
+            'capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'16\')] && ' \
+            'capabilities[?name==\'MemoryGB\' && to_number(value)>=to_number(\'8\')] && ' \
+            'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'32\')] && ' \
+            'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
+            'capabilities[?name==\'PremiumIO\' && value==\'True\'] && ' \
+            'capabilities[?name==\'HyperVGenerations\']].name" -o json ' \
+            .format(loc=location)
+
+    else:
+        list_sku_command = 'az vm list-skus -s _v3 -l {loc} --query ' \
+            '"[?capabilities[?name==\'vCPUs\' && to_number(value)>= to_number(\'2\')] && ' \
+            'capabilities[?name==\'vCPUs\' && to_number(value)<= to_number(\'16\')] && ' \
+            'capabilities[?name==\'MemoryGB\' && to_number(value)>=to_number(\'8\')] && ' \
+            'capabilities[?name==\'MemoryGB\' && to_number(value)<=to_number(\'32\')] && ' \
+            'capabilities[?name==\'MaxDataDiskCount\' && to_number(value)>to_number(\'0\')] && ' \
+            'capabilities[?name==\'PremiumIO\' && value==\'True\'] && ' \
+            'capabilities[?name==\'HyperVGenerations\']].name" -o json ' \
+            .format(loc=location)
 
     logger.info('Fetching available VM sizes for repair VM...')
     sku_list = loads(_call_az_command(list_sku_command).strip('\n'))
@@ -254,6 +268,15 @@ def _fetch_encryption_settings(source_vm):
     return Encryption.SINGLE_WITH_KEK, key_vault, kekurl, secreturl
 
 
+def _check_hyperV_gen(source_vm):
+    disk_id = source_vm.storage_profile.os_disk.managed_disk.id
+    show_disk_command = 'az disk show --id {i} --query [hyperVgeneration] -o json' \
+                        .format(i=disk_id)
+    hyperVGen = loads(_call_az_command(show_disk_command))
+    if hyperVGen == 'V2':
+        raise SkuDoesNotSupportHyperV('Cannot support V2 HyperV generation. Please run command without --enabled-nested')
+
+
 def _secret_tag_check(resource_group_name, copy_disk_name, secreturl):
     DEFAULT_LINUXPASSPHRASE_FILENAME = 'LinuxPassPhraseFileName'
     show_disk_command = 'az disk show -g {g} -n {n} --query encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.secretUrl -o json' \
@@ -271,7 +294,18 @@ def _secret_tag_check(resource_group_name, copy_disk_name, secreturl):
         _call_az_command(set_tag_command)
 
 
-def _unlock_singlepass_encrypted_disk(source_vm, resource_group_name, repair_vm_name, repair_group_name, copy_disk_name, is_linux):
+def _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux):
+    logger.info('Unlocking attached copied disk...')
+    if is_linux:
+        return _unlock_mount_linux_encrypted_disk(repair_vm_name, repair_group_name)
+    return _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name)
+
+
+def _unlock_singlepass_encrypted_disk_fallback(source_vm, resource_group_name, repair_vm_name, repair_group_name, copy_disk_name, is_linux):
+    """
+    Fallback for unlocking disk when script fails. This will install the ADE extension to unlock the Data disk.
+    """
+
     # Installs the extension on repair VM and mounts the disk after unlocking.
     encryption_type, key_vault, kekurl, secreturl = _fetch_encryption_settings(source_vm)
     if is_linux:
@@ -296,7 +330,7 @@ def _unlock_singlepass_encrypted_disk(source_vm, resource_group_name, repair_vm_
             # Validating secret tag and setting original tag if it got changed
             _secret_tag_check(resource_group_name, copy_disk_name, secreturl)
             logger.debug("Manually unlocking and mounting disk for Linux VMs.")
-            _manually_unlock_mount_encrypted_disk(repair_vm_name, repair_group_name)
+            _unlock_mount_linux_encrypted_disk(repair_vm_name, repair_group_name)
     except AzCommandError as azCommandError:
         error_message = str(azCommandError)
         # Linux VM encryption extension bug where it fails and then continue to mount disk manually
@@ -304,15 +338,21 @@ def _unlock_singlepass_encrypted_disk(source_vm, resource_group_name, repair_vm_
             logger.debug("Expected bug for linux VMs. Ignoring error.")
             # Validating secret tag and setting original tag if it got changed
             _secret_tag_check(resource_group_name, copy_disk_name, secreturl)
-            _manually_unlock_mount_encrypted_disk(repair_vm_name, repair_group_name)
+            _unlock_mount_linux_encrypted_disk(repair_vm_name, repair_group_name)
         else:
             raise
 
 
-def _manually_unlock_mount_encrypted_disk(repair_vm_name, repair_group_name):
+def _unlock_mount_linux_encrypted_disk(repair_vm_name, repair_group_name):
     # Unlocks the disk using the phasephrase and mounts it on the repair VM.
-    LINUX_RUN_SCRIPT_NAME = 'mount-encrypted-disk.sh'
+    LINUX_RUN_SCRIPT_NAME = 'linux-mount-encrypted-disk.sh'
     return _invoke_run_command(LINUX_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, True)
+
+
+def _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name):
+    # Unlocks the disk using the phasephrase and mounts it on the repair VM.
+    WINDOWS_RUN_SCRIPT_NAME = 'win-mount-encrypted-disk.ps1'
+    return _invoke_run_command(WINDOWS_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, False)
 
 
 def _fetch_compatible_windows_os_urn(source_vm):

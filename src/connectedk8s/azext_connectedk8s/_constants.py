@@ -6,6 +6,14 @@
 
 # pylint: disable=line-too-long
 
+Distribution_Enum_Values = ["auto", "generic", "openshift", "rancher_rke", "kind", "k3s", "minikube", "gke", "eks", "aks", "aks_management", "aks_workload", "capz", "aks_engine", "tkg"]
+Infrastructure_Enum_Values = ["auto", "generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere", "windows_server"]
+
+Azure_PublicCloudName = 'AZUREPUBLICCLOUD'
+Azure_USGovCloudName = 'AZUREUSGOVERNMENTCLOUD'
+Azure_DogfoodCloudName = 'AZUREDOGFOOD'
+PublicCloud_OriginalName = 'AZURECLOUD'
+USGovCloud_OriginalName = 'AZUREUSGOVERNMENT'
 Dogfood_RMEndpoint = 'https://api-dogfood.resources.windows-int.net/'
 Helm_Environment_File_Fault_Type = 'helm-environment-file-error'
 Invalid_Location_Fault_Type = 'location-validation-error'
@@ -45,3 +53,15 @@ Cluster_Info_Not_Found_Type = 'Error while finding current cluster server detail
 Kubeconfig_Failed_To_Load_Fault_Type = "failed-to-load-kubeconfig-file"
 Proxy_Cert_Path_Does_Not_Exist_Fault_Type = 'proxy-cert-path-does-not-exist-error'
 Proxy_Cert_Path_Does_Not_Exist_Error = 'Proxy cert path {} does not exist. Please check the path provided'
+Get_Kubernetes_Infra_Fault_Type = 'kubernetes-get-infrastructure-error'
+No_Param_Error = 'No parmeters were specified with update command. Please run az connectedk8s update --help to check parameters available for update'
+EnableProxy_Conflict_Error = 'Conflict detected: --disable-proxy can not be set with --https-proxy, --http-proxy, --proxy-skip-range and --proxy-cert at the same time. Please run az connectedk8s update --help for more information about the parameters'
+Manual_Upgrade_Called_In_Auto_Update_Enabled = 'Manual Upgrade was called while in auto_Update enabled mode'
+Upgrade_Agent_Success = 'Agents for Connected Cluster {} have been upgraded successfully'
+Upgrade_Agent_Failure = 'Error while upgrading agents. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of timeout error. Error: {}'
+Release_Namespace_Not_Found = 'Error while getting azure-arc releasenamespace'
+Get_Helm_Values_Failed = 'Error while doing helm get values azure-arc'
+Helm_Existing_User_Supplied_Value_Get_Fault = 'Error while loading the user supplied helm values'
+Error_Flattening_User_Supplied_Value_Dict = 'Error while flattening the user supplied helm values dict'
+Upgrade_RG_Cluster_Name_Conflict = 'The provided cluster name and rg correspond to different cluster'
+Corresponding_CC_Resource_Deleted_Fault = 'CC resource corresponding to this cluster has been deleted by the customer'

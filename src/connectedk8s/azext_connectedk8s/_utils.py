@@ -7,6 +7,7 @@ import os
 import shutil
 import subprocess
 from subprocess import Popen, PIPE
+import time
 
 from knack.util import CLIError
 from knack.log import get_logger
@@ -18,6 +19,7 @@ from msrestazure.azure_exceptions import CloudError
 from kubernetes.client.rest import ApiException
 from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
+from kubernetes import client as kube_client
 
 
 logger = get_logger(__name__)
@@ -111,9 +113,9 @@ def add_helm_repo(kube_config, kube_context):
         raise CLIError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
 
-def get_helm_registry(cmd, location, dp_endpoint_dogfood=None, release_train_dogfood=None):
+def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release_train_dogfood=None):
     # Setting uri
-    get_chart_location_url = "https://{}.dp.kubernetesconfiguration.azure.com/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(location, 'azure-arc-k8sagents')
+    get_chart_location_url = "{}/{}/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(config_dp_endpoint, 'azure-arc-k8sagents')
     release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
     if dp_endpoint_dogfood:
         get_chart_location_url = "{}/azure-arc-k8sagents/GetLatestHelmPackagePath?api-version=2019-11-01-preview".format(dp_endpoint_dogfood)
@@ -197,3 +199,122 @@ def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error o
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
             raise CLIError(error_message + "\nError: " + str(ex))
+
+
+def validate_infrastructure_type(infra):
+    for s in consts.Infrastructure_Enum_Values[1:]:  # First value is "auto"
+        if s.lower() == infra.lower():
+            return s
+    return "generic"
+
+
+def get_values_file():
+    values_file_provided = False
+    values_file = os.getenv('HELMVALUESPATH')
+    if (values_file is not None) and (os.path.isfile(values_file)):
+        values_file_provided = True
+        logger.warning("Values files detected. Reading additional helm parameters from same.")
+        # trimming required for windows os
+        if (values_file.startswith("'") or values_file.startswith('"')):
+            values_file = values_file[1:]
+        if (values_file.endswith("'") or values_file.endswith('"')):
+            values_file = values_file[:-1]
+
+    return values_file_provided, values_file
+
+
+def ensure_namespace_cleanup(configuration):
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    timeout = time.time() + 180
+    while True:
+        if time.time() > timeout:
+            telemetry.set_user_fault()
+            logger.warning("Namespace 'azure-arc' still in terminating state. Please ensure that you delete the 'azure-arc' namespace before onboarding the cluster again.")
+            return
+        try:
+            api_response = api_instance.list_namespace(field_selector='metadata.name=azure-arc')
+            if not api_response.items:
+                return
+            time.sleep(5)
+        except Exception as e:  # pylint: disable=broad-except
+            logger.warning("Error while retrieving namespace information.")
+            kubernetes_exception_handler(e, consts.Get_Kubernetes_Namespace_Fault_Type, 'Unable to fetch kubernetes namespace',
+                                         raise_error=False)
+
+
+def delete_arc_agents(release_namespace, kube_config, kube_context, configuration):
+    cmd_helm_delete = ["helm", "delete", "azure-arc", "--namespace", release_namespace]
+    if kube_config:
+        cmd_helm_delete.extend(["--kubeconfig", kube_config])
+    if kube_context:
+        cmd_helm_delete.extend(["--kube-context", kube_context])
+    response_helm_delete = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
+    _, error_helm_delete = response_helm_delete.communicate()
+    if response_helm_delete.returncode != 0:
+        if 'forbidden' in error_helm_delete.decode("ascii") or 'Error: warning: Hook pre-delete' in error_helm_delete.decode("ascii") or 'Error: timed out waiting for the condition' in error_helm_delete.decode("ascii"):
+            telemetry.set_user_fault()
+        telemetry.set_exception(exception=error_helm_delete.decode("ascii"), fault_type=consts.Delete_HelmRelease_Fault_Type,
+                                summary='Unable to delete helm release')
+        raise CLIError("Error occured while cleaning up arc agents. " +
+                       "Helm release deletion failed: " + error_helm_delete.decode("ascii") +
+                       " Please run 'helm delete azure-arc' to ensure that the release is deleted.")
+    ensure_namespace_cleanup(configuration)
+
+
+def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
+                         location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
+                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade):
+    cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
+                        "--set", "global.subscriptionId={}".format(subscription_id),
+                        "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
+                        "--set", "global.kubernetesInfra={}".format(kubernetes_infra),
+                        "--set", "global.resourceGroupName={}".format(resource_group_name),
+                        "--set", "global.resourceName={}".format(cluster_name),
+                        "--set", "global.location={}".format(location),
+                        "--set", "global.tenantId={}".format(onboarding_tenant_id),
+                        "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
+                        "--set", "systemDefaultValues.spnOnboarding=false",
+                        "--set", "global.azureEnvironment={}".format(cloud_name),
+                        "--output", "json"]
+    # To set some other helm parameters through file
+    if values_file_provided:
+        cmd_helm_install.extend(["-f", values_file])
+    if disable_auto_upgrade:
+        cmd_helm_install.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}".format("false")])
+    if https_proxy:
+        cmd_helm_install.extend(["--set", "global.httpsProxy={}".format(https_proxy)])
+    if http_proxy:
+        cmd_helm_install.extend(["--set", "global.httpProxy={}".format(http_proxy)])
+    if no_proxy:
+        cmd_helm_install.extend(["--set", "global.noProxy={}".format(no_proxy)])
+    if proxy_cert:
+        cmd_helm_install.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
+    if https_proxy or http_proxy or no_proxy:
+        cmd_helm_install.extend(["--set", "global.isProxyEnabled={}".format(True)])
+    if kube_config:
+        cmd_helm_install.extend(["--kubeconfig", kube_config])
+    if kube_context:
+        cmd_helm_install.extend(["--kube-context", kube_context])
+    if not no_wait:
+        cmd_helm_install.extend(["--wait"])
+    response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
+    _, error_helm_install = response_helm_install.communicate()
+    if response_helm_install.returncode != 0:
+        if ('forbidden' in error_helm_install.decode("ascii") or 'timed out waiting for the condition' in error_helm_install.decode("ascii")):
+            telemetry.set_user_fault()
+        telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
+                                summary='Unable to install helm release')
+        logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state. A possible cause for pods stuck in pending state could be insufficient resources on the kubernetes cluster to onboard to arc.")
+        raise CLIError("Unable to install helm release: " + error_helm_install.decode("ascii"))
+
+
+def flatten(dd, separator='.', prefix=''):
+    try:
+        if isinstance(dd, dict):
+            return {prefix + separator + k if prefix else k: v for kk, vv in dd.items() for k, v in flatten(vv, separator, kk).items()}
+        else:
+            return {prefix: dd}
+    except Exception as e:
+        telemetry.set_exception(exception=e, fault_type=consts.Error_Flattening_User_Supplied_Value_Dict,
+                                summary='Error while flattening the user supplied helm values dict')
+        raise CLIError("Error while flattening the user supplied helm values dict")

@@ -78,7 +78,7 @@ class ArrowConfiguration(Model):
     All required parameters must be populated in order to send to Azure.
 
     :param schema: Required.
-    :type schema: list[~azure.storage.blob.models.ArrowField]
+    :type schema: list[~.models.ArrowField]
     """
 
     _validation = {
@@ -140,7 +140,7 @@ class BlobFlatListSegment(Model):
     All required parameters must be populated in order to send to Azure.
 
     :param blob_items: Required.
-    :type blob_items: list[~azure.storage.blob.models.BlobItemInternal]
+    :type blob_items: list[~.models.BlobItemInternal]
     """
 
     _validation = {
@@ -165,9 +165,9 @@ class BlobHierarchyListSegment(Model):
     All required parameters must be populated in order to send to Azure.
 
     :param blob_prefixes:
-    :type blob_prefixes: list[~azure.storage.blob.models.BlobPrefix]
+    :type blob_prefixes: list[~.models.BlobPrefix]
     :param blob_items: Required.
-    :type blob_items: list[~azure.storage.blob.models.BlobItemInternal]
+    :type blob_items: list[~.models.BlobItemInternal]
     """
 
     _validation = {
@@ -253,11 +253,11 @@ class BlobItemInternal(Model):
     :param is_current_version:
     :type is_current_version: bool
     :param properties: Required.
-    :type properties: ~azure.storage.blob.models.BlobPropertiesInternal
+    :type properties: ~.models.BlobPropertiesInternal
     :param metadata:
-    :type metadata: ~azure.storage.blob.models.BlobMetadata
+    :type metadata: ~.models.BlobMetadata
     :param blob_tags:
-    :type blob_tags: ~azure.storage.blob.models.BlobTags
+    :type blob_tags: ~.models.BlobTags
     :param object_replication_metadata:
     :type object_replication_metadata: dict[str, str]
     """
@@ -374,19 +374,19 @@ class BlobPropertiesInternal(Model):
     :type blob_sequence_number: long
     :param blob_type: Possible values include: 'BlockBlob', 'PageBlob',
      'AppendBlob'
-    :type blob_type: str or ~azure.storage.blob.models.BlobType
+    :type blob_type: str or ~.models.BlobType
     :param lease_status: Possible values include: 'locked', 'unlocked'
-    :type lease_status: str or ~azure.storage.blob.models.LeaseStatusType
+    :type lease_status: str or ~.models.LeaseStatusType
     :param lease_state: Possible values include: 'available', 'leased',
      'expired', 'breaking', 'broken'
-    :type lease_state: str or ~azure.storage.blob.models.LeaseStateType
+    :type lease_state: str or ~.models.LeaseStateType
     :param lease_duration: Possible values include: 'infinite', 'fixed'
-    :type lease_duration: str or ~azure.storage.blob.models.LeaseDurationType
+    :type lease_duration: str or ~.models.LeaseDurationType
     :param copy_id:
     :type copy_id: str
     :param copy_status: Possible values include: 'pending', 'success',
      'aborted', 'failed'
-    :type copy_status: str or ~azure.storage.blob.models.CopyStatusType
+    :type copy_status: str or ~.models.CopyStatusType
     :param copy_source:
     :type copy_source: str
     :param copy_progress:
@@ -407,12 +407,12 @@ class BlobPropertiesInternal(Model):
     :type remaining_retention_days: int
     :param access_tier: Possible values include: 'P4', 'P6', 'P10', 'P15',
      'P20', 'P30', 'P40', 'P50', 'P60', 'P70', 'P80', 'Hot', 'Cool', 'Archive'
-    :type access_tier: str or ~azure.storage.blob.models.AccessTier
+    :type access_tier: str or ~.models.AccessTier
     :param access_tier_inferred:
     :type access_tier_inferred: bool
     :param archive_status: Possible values include:
      'rehydrate-pending-to-hot', 'rehydrate-pending-to-cool'
-    :type archive_status: str or ~azure.storage.blob.models.ArchiveStatus
+    :type archive_status: str or ~.models.ArchiveStatus
     :param customer_provided_key_sha256:
     :type customer_provided_key_sha256: str
     :param encryption_scope: The name of the encryption scope under which the
@@ -428,7 +428,7 @@ class BlobPropertiesInternal(Model):
     :type is_sealed: bool
     :param rehydrate_priority: Possible values include: 'High', 'Standard'
     :type rehydrate_priority: str or
-     ~azure.storage.blob.models.RehydratePriority
+     ~.models.RehydratePriority
     :param last_accessed_on:
     :type last_accessed_on: datetime
     """
@@ -558,7 +558,7 @@ class BlobTags(Model):
     All required parameters must be populated in order to send to Azure.
 
     :param blob_tag_set: Required.
-    :type blob_tag_set: list[~azure.storage.blob.models.BlobTag]
+    :type blob_tag_set: list[~.models.BlobTag]
     """
 
     _validation = {
@@ -611,9 +611,9 @@ class BlockList(Model):
     """BlockList.
 
     :param committed_blocks:
-    :type committed_blocks: list[~azure.storage.blob.models.Block]
+    :type committed_blocks: list[~.models.Block]
     :param uncommitted_blocks:
-    :type uncommitted_blocks: list[~azure.storage.blob.models.Block]
+    :type uncommitted_blocks: list[~.models.Block]
     """
 
     _attribute_map = {
@@ -724,7 +724,7 @@ class ContainerItem(Model):
     :param version:
     :type version: str
     :param properties: Required.
-    :type properties: ~azure.storage.blob.models.ContainerProperties
+    :type properties: ~.models.ContainerProperties
     :param metadata:
     :type metadata: dict[str, str]
     """
@@ -764,14 +764,14 @@ class ContainerProperties(Model):
     :param etag: Required.
     :type etag: str
     :param lease_status: Possible values include: 'locked', 'unlocked'
-    :type lease_status: str or ~azure.storage.blob.models.LeaseStatusType
+    :type lease_status: str or ~.models.LeaseStatusType
     :param lease_state: Possible values include: 'available', 'leased',
      'expired', 'breaking', 'broken'
-    :type lease_state: str or ~azure.storage.blob.models.LeaseStateType
+    :type lease_state: str or ~.models.LeaseStateType
     :param lease_duration: Possible values include: 'infinite', 'fixed'
-    :type lease_duration: str or ~azure.storage.blob.models.LeaseDurationType
+    :type lease_duration: str or ~.models.LeaseDurationType
     :param public_access: Possible values include: 'container', 'blob'
-    :type public_access: str or ~azure.storage.blob.models.PublicAccessType
+    :type public_access: str or ~.models.PublicAccessType
     :param has_immutability_policy:
     :type has_immutability_policy: bool
     :param has_legal_hold:
@@ -898,7 +898,7 @@ class CpkInfo(Model):
      if the x-ms-encryption-key header is provided. Possible values include:
      'AES256'
     :type encryption_algorithm: str or
-     ~azure.storage.blob.models.EncryptionAlgorithmType
+     ~.models.EncryptionAlgorithmType
     """
 
     _attribute_map = {
@@ -943,7 +943,7 @@ class DataLakeStorageError(Model):
 
     :param data_lake_storage_error_details: The service error response object.
     :type data_lake_storage_error_details:
-     ~azure.storage.blob.models.DataLakeStorageErrorError
+     ~.models.DataLakeStorageErrorError
     """
 
     _attribute_map = {
@@ -1120,7 +1120,7 @@ class FilterBlobSegment(Model):
     :param where: Required.
     :type where: str
     :param blobs: Required.
-    :type blobs: list[~azure.storage.blob.models.FilterBlobItem]
+    :type blobs: list[~.models.FilterBlobItem]
     :param next_marker:
     :type next_marker: str
     """
@@ -1156,7 +1156,7 @@ class GeoReplication(Model):
 
     :param status: Required. The status of the secondary location. Possible
      values include: 'live', 'bootstrap', 'unavailable'
-    :type status: str or ~azure.storage.blob.models.GeoReplicationStatusType
+    :type status: str or ~.models.GeoReplicationStatusType
     :param last_sync_time: Required. A GMT date/time value, to the second. All
      primary writes preceding this value are guaranteed to be available for
      read operations at the secondary. Primary writes after this point in time
@@ -1273,7 +1273,7 @@ class ListBlobsFlatSegmentResponse(Model):
     :param max_results:
     :type max_results: int
     :param segment: Required.
-    :type segment: ~azure.storage.blob.models.BlobFlatListSegment
+    :type segment: ~.models.BlobFlatListSegment
     :param next_marker:
     :type next_marker: str
     """
@@ -1326,7 +1326,7 @@ class ListBlobsHierarchySegmentResponse(Model):
     :param delimiter:
     :type delimiter: str
     :param segment: Required.
-    :type segment: ~azure.storage.blob.models.BlobHierarchyListSegment
+    :type segment: ~.models.BlobHierarchyListSegment
     :param next_marker:
     :type next_marker: str
     """
@@ -1377,7 +1377,7 @@ class ListContainersSegmentResponse(Model):
     :param max_results:
     :type max_results: int
     :param container_items: Required.
-    :type container_items: list[~azure.storage.blob.models.ContainerItem]
+    :type container_items: list[~.models.ContainerItem]
     :param next_marker:
     :type next_marker: str
     """
@@ -1426,7 +1426,7 @@ class Logging(Model):
      logged.
     :type write: bool
     :param retention_policy: Required.
-    :type retention_policy: ~azure.storage.blob.models.RetentionPolicy
+    :type retention_policy: ~.models.RetentionPolicy
     """
 
     _validation = {
@@ -1471,7 +1471,7 @@ class Metrics(Model):
      statistics for called API operations.
     :type include_apis: bool
     :param retention_policy:
-    :type retention_policy: ~azure.storage.blob.models.RetentionPolicy
+    :type retention_policy: ~.models.RetentionPolicy
     """
 
     _validation = {
@@ -1538,9 +1538,9 @@ class PageList(Model):
     """the list of pages.
 
     :param page_range:
-    :type page_range: list[~azure.storage.blob.models.PageRange]
+    :type page_range: list[~.models.PageRange]
     :param clear_range:
-    :type clear_range: list[~azure.storage.blob.models.ClearRange]
+    :type clear_range: list[~.models.ClearRange]
     """
 
     _attribute_map = {
@@ -1590,15 +1590,15 @@ class QueryFormat(Model):
     """QueryFormat.
 
     :param type: Possible values include: 'delimited', 'json', 'arrow'
-    :type type: str or ~azure.storage.blob.models.QueryFormatType
+    :type type: str or ~.models.QueryFormatType
     :param delimited_text_configuration:
     :type delimited_text_configuration:
-     ~azure.storage.blob.models.DelimitedTextConfiguration
+     ~.models.DelimitedTextConfiguration
     :param json_text_configuration:
     :type json_text_configuration:
-     ~azure.storage.blob.models.JsonTextConfiguration
+     ~.models.JsonTextConfiguration
     :param arrow_configuration:
-    :type arrow_configuration: ~azure.storage.blob.models.ArrowConfiguration
+    :type arrow_configuration: ~.models.ArrowConfiguration
     """
 
     _attribute_map = {
@@ -1631,9 +1631,9 @@ class QueryRequest(Model):
     :param expression: Required. a query statement
     :type expression: str
     :param input_serialization:
-    :type input_serialization: ~azure.storage.blob.models.QuerySerialization
+    :type input_serialization: ~.models.QuerySerialization
     :param output_serialization:
-    :type output_serialization: ~azure.storage.blob.models.QuerySerialization
+    :type output_serialization: ~.models.QuerySerialization
     """
 
     _validation = {
@@ -1666,7 +1666,7 @@ class QuerySerialization(Model):
     All required parameters must be populated in order to send to Azure.
 
     :param format: Required.
-    :type format: ~azure.storage.blob.models.QueryFormat
+    :type format: ~.models.QueryFormat
     """
 
     _validation = {
@@ -1757,7 +1757,7 @@ class SignedIdentifier(Model):
     :param id: Required. a unique id
     :type id: str
     :param access_policy:
-    :type access_policy: ~azure.storage.blob.models.AccessPolicy
+    :type access_policy: ~.models.AccessPolicy
     """
 
     _validation = {
@@ -1894,21 +1894,21 @@ class StorageServiceProperties(Model):
     """Storage Service Properties.
 
     :param logging:
-    :type logging: ~azure.storage.blob.models.Logging
+    :type logging: ~.models.Logging
     :param hour_metrics:
-    :type hour_metrics: ~azure.storage.blob.models.Metrics
+    :type hour_metrics: ~.models.Metrics
     :param minute_metrics:
-    :type minute_metrics: ~azure.storage.blob.models.Metrics
+    :type minute_metrics: ~.models.Metrics
     :param cors: The set of CORS rules.
-    :type cors: list[~azure.storage.blob.models.CorsRule]
+    :type cors: list[~.models.CorsRule]
     :param default_service_version: The default version to use for requests to
      the Blob service if an incoming request's version is not specified.
      Possible values include version 2008-10-27 and all more recent versions
     :type default_service_version: str
     :param delete_retention_policy:
-    :type delete_retention_policy: ~azure.storage.blob.models.RetentionPolicy
+    :type delete_retention_policy: ~.models.RetentionPolicy
     :param static_website:
-    :type static_website: ~azure.storage.blob.models.StaticWebsite
+    :type static_website: ~.models.StaticWebsite
     """
 
     _attribute_map = {
@@ -1938,7 +1938,7 @@ class StorageServiceStats(Model):
     """Stats for the storage service.
 
     :param geo_replication:
-    :type geo_replication: ~azure.storage.blob.models.GeoReplication
+    :type geo_replication: ~.models.GeoReplication
     """
 
     _attribute_map = {
