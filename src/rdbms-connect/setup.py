@@ -33,6 +33,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
+    'setproctitle==1.2.2',
     'mycli==1.22.2',
     'pgcli==3.0.0'
 ]
