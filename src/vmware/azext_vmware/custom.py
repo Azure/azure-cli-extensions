@@ -186,5 +186,5 @@ def datastore_show(cmd, client: AVSClient, resource_group_name, private_cloud, c
     return client.datastores.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name)
 
 
-def datastore_delete(cmd, client: AVSClient, resource_group_name, private_cloud, name):
-    return client.datastores.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, hcx_enterprise_site_name=name)
+def datastore_delete(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name):
+    return client.datastores.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name)
