@@ -10,13 +10,13 @@ import json
 import tempfile
 import time
 from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
-from base64 import b64encode,b64decode
+from base64 import b64encode, b64decode
 import stat
 import platform
 import yaml
 import requests
 import urllib.request
-
+from psutil import process_iter, NoSuchProcess, AccessDenied, ZombieProcess
 from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
@@ -37,10 +37,9 @@ import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity
-from threading import Timer,Thread
+from threading import Timer, Thread
 import sys
 logger = get_logger(__name__)
-from psutil import process_iter,NoSuchProcess, AccessDenied, ZombieProcess
 # pylint:disable=unused-argument
 # pylint: disable=too-many-locals
 # pylint: disable=too-many-branches
@@ -600,14 +599,6 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
     load_kube_config(kube_config, kube_context)
     configuration = kube_client.Configuration()
 
-    # Check if the arc agents are being deleted using proxy kubeconfig
-    is_proxy_kubeconfig = check_proxy_kubeconfig(kube_config=kube_config, kube_context=kube_context)
-    if is_proxy_kubeconfig:
-        telemetry.set_user_fault()
-        telemetry.set_exception(exception="The arc agents shouldn't be deleted with cluster connect credentials.", fault_type=consts.Deleting_Arc_Agents_With_Proxy_Kubeconfig_Fault_Type,
-                                summary="The arc agents shouldn't be deleted with cluster connect credentials.")
-        raise CLIError("The kubeconfig in use corresponds to the one fetched from the Azure Arc enabled Kubernetes resource to access the Cluster Connect feature. Deletion using this will not be possible as deleting the Arc agents on cluster will disrupt this communication channel.")
-
     # Checking the connection to kubernetes cluster.
     # This check was added to avoid large timeouts when connecting to AAD Enabled
     # AKS clusters if the user had not logged in.
@@ -696,6 +687,7 @@ def update_connectedk8s(cmd, instance, tags=None):
     with cmd.update_context(instance) as c:
         c.set_param('tags', tags)
     return instance
+
 
 def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name):
     """Merge an unencrypted kubeconfig into the file at the specified path, or print it to
@@ -1015,90 +1007,93 @@ def _resolve_service_principal(client, identifier):  # Uses service principal gr
     error.status_code = 404  # Make sure CLI returns 3
     raise error
 
-CLIENT_PROXY_VERSION='0.1.0'
-API_SERVER_PORT=47011
-CLIENT_PROXY_PORT=47010
-CLIENTPROXY_CLIENT_ID='04b07795-8ddb-461a-bbee-02f9e1bf7b46'
-API_CALL_RETRIES=200
+
+CLIENT_PROXY_VERSION = '0.1.0'
+API_SERVER_PORT = 47011
+CLIENT_PROXY_PORT = 47010
+CLIENTPROXY_CLIENT_ID = '04b07795-8ddb-461a-bbee-02f9e1bf7b46'
+API_CALL_RETRIES = 200
+
+
 def client_side_proxy_wrapper(cmd,
-                      client,
-                      resource_group_name,
-                      cluster_name,
-                      token=None,
-                      path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
-                      overwrite_existing=False,
-                      context_name=None,
-                      api_server_port=API_SERVER_PORT,
-                      client_proxy_port=CLIENT_PROXY_PORT):
-    
-    cloud=send_cloud_telemetry(cmd)
-    args=[]
-    operating_system=platform.system()
+                              client,
+                              resource_group_name,
+                              cluster_name,
+                              token=None,
+                              path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
+                              overwrite_existing=False,
+                              context_name=None,
+                              api_server_port=API_SERVER_PORT,
+                              client_proxy_port=CLIENT_PROXY_PORT):
+ 
+    cloud = send_cloud_telemetry(cmd)
+    args = []
+    operating_system = platform.system()
 
-    ##Creating installation location, request uri and older version exe location depending on OS
-    if(operating_system=='Windows') :
-        install_location_string=f'.clientproxy\\arcProxy{operating_system}{CLIENT_PROXY_VERSION}.exe'
-        requestUri=f'https://clientproxy.azureedge.net/release20201218/arcProxy{operating_system}{CLIENT_PROXY_VERSION}.exe'
-        older_version_string=f'.clientproxy\\arcProxy{operating_system}*.exe'
-        creds_string=r'.azure\accessTokens.json'
-        proc_name=f'arcProxy{operating_system}{CLIENT_PROXY_VERSION}.exe'
-    
-    elif(operating_system=='Linux' or operating_system=='Darwin') :
-        install_location_string=f'.clientproxy/arcProxy{operating_system}{CLIENT_PROXY_VERSION}'
-        requestUri=f'https://clientproxy.azureedge.net/release20201218/arcProxy{operating_system}{CLIENT_PROXY_VERSION}'
-        older_version_string=f'.clientproxy/arcProxy{operating_system}*'
-        creds_string=r'.azure/accessTokens.json'
-        proc_name=f'arcProxy{operating_system}{CLIENT_PROXY_VERSION}'
+    # Creating installation location, request uri and older version exe location depending on OS
+    if(operating_system == 'Windows'):
+        install_location_string = f'.clientproxy\\arcProxy{operating_system}{CLIENT_PROXY_VERSION}.exe'
+        requestUri = f'https://clientproxy.azureedge.net/release20201218/arcProxy{operating_system}{CLIENT_PROXY_VERSION}.exe'
+        older_version_string = f'.clientproxy\\arcProxy{operating_system}*.exe'
+        creds_string = r'.azure\accessTokens.json'
+        proc_name = f'arcProxy{operating_system}{CLIENT_PROXY_VERSION}.exe'
+  
+    elif(operating_system == 'Linux' or operating_system == 'Darwin'):
+        install_location_string = f'.clientproxy/arcProxy{operating_system}{CLIENT_PROXY_VERSION}'
+        requestUri = f'https://clientproxy.azureedge.net/release20201218/arcProxy{operating_system}{CLIENT_PROXY_VERSION}'
+        older_version_string = f'.clientproxy/arcProxy{operating_system}*'
+        creds_string = r'.azure/accessTokens.json'
+        proc_name = f'arcProxy{operating_system}{CLIENT_PROXY_VERSION}'
 
-    else :
+    else:
         telemetry.set_exception(exception='Unsupported OS', fault_type=consts.Unsupported_Fault_Type,
-                            summary=f'{operating_system} is not supported yet')
+                                summary=f'{operating_system} is not supported yet')
         raise CLIError(f'The {operating_system} platform is not currently supported.')
-    
-    if(check_process(proc_name)) :
+
+    if(check_process(proc_name)):
         print('Another instance of proxy already running')
         return
-    
+
     install_location = os.path.expanduser(os.path.join('~', install_location_string))
     args.append(install_location)
-    install_dir=os.path.dirname(install_location)
+    install_dir = os.path.dirname(install_location)
 
-    ##If version specified by install location doesnt exist, then download the executable
-    if not os.path.isfile(install_location) :
-        
-        ##Downloading the executable
-        try :
-            response=urllib.request.urlopen(requestUri)
-        except Exception as e :
+    # If version specified by install location doesnt exist, then download the executable
+    if not os.path.isfile(install_location):
+
+        # Downloading the executable
+        try:
+            response = urllib.request.urlopen(requestUri)
+        except Exception as e:
             telemetry.set_exception(exception=e, fault_type=consts.Download_Exe_Fault_Type,
                                     summary='Unable to download clientproxy executable.')
             raise CLIError("Failed to download executable with client. Please check your internet connection." + str(e))
-        
-        responseContent=response.read()
+
+        responseContent = response.read()
         response.close()
 
-        ##Creating the .clientproxy folder if it doesnt exist
+        # Creating the .clientproxy folder if it doesnt exist
         if not os.path.exists(install_dir):
             try:
                 os.makedirs(install_dir)
             except Exception as e:
                 telemetry.set_user_fault()
                 telemetry.set_exception(exception=e, fault_type=consts.Create_Directory_Fault_Type,
-                                    summary='Unable to create installation directory')
+                                        summary='Unable to create installation directory')
                 raise CLIError("Failed to create installation directory." + str(e))
-        else :    
+        else:    
             older_version_string = os.path.expanduser(os.path.join('~', older_version_string))
-            older_version_files=glob(older_version_string)
-            
-            ##Removing older executables from the directory
+            older_version_files = glob(older_version_string)
+
+            # Removing older executables from the directory
             for f in older_version_files:
-                try :
+                try:
                     os.remove(f)
-                except :
+                except:
                     logger.warning("failed to delete older version files")
-        
-        try :
-            with open(install_location,'wb') as f :
+
+        try:
+            with open(install_location, 'wb') as f:
                 f.write(responseContent)
         except Exception as e:
             telemetry.set_user_fault()
@@ -1106,45 +1101,45 @@ def client_side_proxy_wrapper(cmd,
                                     summary='Unable to create proxy executable')
             raise CLIError("Failed to create proxy executable." + str(e))
 
-        os.chmod(install_location,os.stat(install_location).st_mode | stat.S_IXUSR)
+        os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
 
-    ##Creating config file to pass config to clientproxy
-    config_file_location=os.path.join(install_dir, 'config.yml')
+    # Creating config file to pass config to clientproxy
+    config_file_location = os.path.join(install_dir, 'config.yml')
 
-    if os.path.isfile(config_file_location) :
-        try :
+    if os.path.isfile(config_file_location):
+        try:
             os.remove(config_file_location)
-        except Exception as e :
+        except Exception as e:
             telemetry.set_user_fault()
             telemetry.set_exception(exception=e, fault_type=consts.Remove_Config_Fault_Type,
                                     summary='Unable to remove old config file')
             raise CLIError("Failed to remove old config." + str(e))
-    
-    #initializations
-    user_type='sat' 
-    creds=''
 
-    ##if service account token is not passed
+    # initializations
+    user_type = 'sat' 
+    creds = ''
+
+    # if service account token is not passed
     if token is None:
-        ##Identifying type of logged in entity
+        # Identifying type of logged in entity
         account = get_subscription_id(cmd.cli_ctx)
-        account=Profile().get_subscription(account)
-        user_type=account['user']['type']
+        account = Profile().get_subscription(account)
+        user_type = account['user']['type']
 
-        tenantId=_graph_client_factory(cmd.cli_ctx).config.tenant_id
+        tenantId = _graph_client_factory(cmd.cli_ctx).config.tenant_id
+
+        if user_type == 'user':
+            dict_file = {'server':{'httpPort':int(client_proxy_port),'httpsPort':int(api_server_port)},'identity':{'tenantID':tenantId,'clientID':CLIENTPROXY_CLIENT_ID}}
+        else:
+            dict_file = {'server':{'httpPort':int(client_proxy_port),'httpsPort':int(api_server_port)},'identity':{'tenantID':tenantId,'clientID':account['user']['name']}}
+
+
+        if cloud == 'DOGFOOD':
+            dict_file['cloud'] = 'AzureDogFood'
         
-        if user_type=='user':
-            dict_file={'server':{'httpPort':int(client_proxy_port),'httpsPort':int(api_server_port)},'identity':{'tenantID':tenantId,'clientID':CLIENTPROXY_CLIENT_ID}}
-        else :
-            dict_file={'server':{'httpPort':int(client_proxy_port),'httpsPort':int(api_server_port)},'identity':{'tenantID':tenantId,'clientID':account['user']['name']}}
-        
-        
-        if cloud=='DOGFOOD':
-            dict_file['cloud']='AzureDogFood'
-        
-        ##Fetching creds
-        creds_location=os.path.expanduser(os.path.join('~', creds_string))
-        try :
+        # Fetching creds
+        creds_location = os.path.expanduser(os.path.join('~', creds_string))
+        try:
             with open(creds_location) as f:
                 creds_list = json.load(f)
         except Exception as e:
@@ -1152,70 +1147,71 @@ def client_side_proxy_wrapper(cmd,
             telemetry.set_exception(exception=e, fault_type=consts.Load_Creds_Fault_Type,
                                     summary='Unable to load accessToken.json')
             raise CLIError("Failed to load credentials." + str(e))
-        
-        user_name=account['user']['name']
-        loop_flag=False
-        for i in range(len(creds_list)) :
-            if loop_flag :
+
+        user_name = account['user']['name']
+        loop_flag = False
+        for i in range(len(creds_list)):
+            if loop_flag:
                 break
-            creds_obj=creds_list[i]
-            for key in creds_obj :
-                if user_type=='user':
-                    if key=='refreshToken':
+            creds_obj = creds_list[i]
+            for key in creds_obj:
+                if user_type == 'user':
+                    if key == 'refreshToken':
                         creds=creds_obj[key]
-                    elif key=='userId':
+                    elif key == 'userId':
                         if creds_obj[key]==user_name:
                             loop_flag=True
-                else :
-                    if key=='accessToken':
+                else:
+                    if key == 'accessToken':
                         creds=creds_obj[key]
-                    elif key=='servicePrincipalId':
-                        if creds_obj[key]==user_name:
-                            loop_flag=True
-        
-        if creds=='':
+                    elif key == 'servicePrincipalId':
+                        if creds_obj[key] == user_name:
+                            loop_flag = True
+
+        if creds == '':
             telemetry.set_user_fault()
             telemetry.set_exception(exception=e, fault_type=consts.Creds_NotFound_Fault_Type,
                                     summary='Unable to find creds of user')
             raise CLIError("Credentials of user not found." + str(e))
-        
-        if user_type!='user':
-            dict_file['identity']['clientSecret']=creds
-        
-        try :
-            with open(config_file_location,'w') as f:
-                yaml.dump(dict_file,f,default_flow_style=False)
+
+        if user_type != 'user':
+            dict_file['identity']['clientSecret'] = creds
+
+        try:
+            with open(config_file_location, 'w') as f:
+                yaml.dump(dict_file, f, default_flow_style=False)
         except Exception as e:
             telemetry.set_user_fault()
             telemetry.set_exception(exception=e, fault_type=consts.Create_Config_Fault_Type,
                                     summary='Unable to create config file for proxy.')
             raise CLIError("Failed to create config for proxy." + str(e))
-        
+
         args.append("-c")
         args.append(config_file_location)
-    
-    debug_mode=False
-    if '--debug' in cmd.cli_ctx.data['safe_params'] :
+
+    debug_mode = False
+    if '--debug' in cmd.cli_ctx.data['safe_params']:
         args.append("-d")
-        debug_mode=True
+        debug_mode = True
 
-    client_side_proxy(cmd,client,resource_group_name,cluster_name,0,args,client_proxy_port,api_server_port,operating_system,creds,user_type,debug_mode,token=token,path=path,overwrite_existing=overwrite_existing,context_name=context_name)
-    
+    client_side_proxy(cmd, client, resource_group_name, cluster_name, 0, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, overwrite_existing=overwrite_existing, context_name=context_name)
+ 
 
-##Prepare data as needed by client proxy executable
+# Prepare data as needed by client proxy executable
 def prepare_clientproxy_data(response):
-    data={}
-    data['kubeconfigs']=[]
-    kubeconfig={}
-    kubeconfig['name']='Kubeconfig'
-    kubeconfig['value']=b64encode(response.kubeconfigs[0].value).decode("utf-8")
+    data = {}
+    data['kubeconfigs'] = []
+    kubeconfig = {}
+    kubeconfig['name'] = 'Kubeconfig'
+    kubeconfig['value'] = b64encode(response.kubeconfigs[0].value).decode("utf-8")
     data['kubeconfigs'].append(kubeconfig)
-    data['hybridConnectionConfig']={}
-    data['hybridConnectionConfig']['relay']=response.hybrid_connection_config.relay
-    data['hybridConnectionConfig']['hybridConnectionName']=response.hybrid_connection_config.hybrid_connection_name
-    data['hybridConnectionConfig']['token']=response.hybrid_connection_config.token
-    data['hybridConnectionConfig']['expirationTime']=response.hybrid_connection_config.expiration_time
+    data['hybridConnectionConfig'] = {}
+    data['hybridConnectionConfig']['relay'] = response.hybrid_connection_config.relay
+    data['hybridConnectionConfig']['hybridConnectionName'] = response.hybrid_connection_config.hybrid_connection_name
+    data['hybridConnectionConfig']['token'] = response.hybrid_connection_config.token
+    data['hybridConnectionConfig']['expirationTime'] = response.hybrid_connection_config.expiration_time
     return data
+
 
 def client_side_proxy(cmd,
                       client,
@@ -1237,85 +1233,85 @@ def client_side_proxy(cmd,
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
     if token is not None:
-        auth_method='Token'
+        auth_method = 'Token'
         telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': False})    
-    else :
-        auth_method='AAD'
+    else:
+        auth_method = 'AAD'
         telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': True})
-    
-    ##Fetching hybrid connection details from Userrp
-    try :
+
+    # Fetching hybrid connection details from Userrp
+    try:
         response=client.list_cluster_user_credentials(resource_group_name,cluster_name,auth_method,True)
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Get_Credentials_Failed_Fault_Type,
                                 summary='Unable to list cluster user credentials')
         raise CLIError("Failed to get credentials." + str(e))
-    
-    ##Starting the client proxy process, if this is the first time that this function is invoked
-    if flag==0 :
-        if debug_mode:
-            clientproxy_process = Thread(target=call,args=(args,))
-        else :
-            clientproxy_process = Thread(target=call,args=(args,),kwargs={'stderr':DEVNULL,'stdout':DEVNULL})
 
-        try :
+    # Starting the client proxy process, if this is the first time that this function is invoked
+    if flag == 0:
+        if debug_mode:
+            clientproxy_process = Thread(target=call, args=(args,))
+        else:
+            clientproxy_process = Thread(target=call, args=(args,), kwargs={'stderr':DEVNULL,'stdout':DEVNULL})
+
+        try:
             clientproxy_process.start()
             print(f'Proxy is listening on port {api_server_port}')
         except Exception as e:
             telemetry.set_exception(exception=e, fault_type=consts.Run_Clientproxy_Fault_Type,
-                                summary='Unable to run client proxy executable')
+                                    summary='Unable to run client proxy executable')
             raise CLIError("Failed to start proxy process." + str(e))
-        
-        if user_type=='user' :
-            identity_data={}
-            identity_data['refreshToken']=creds
-            identity_uri=f'https://localhost:{api_server_port}/identity/rt'
-            
-            ##Needed to prevent skip tls warning from printing to the console
-            original_stderr=sys.stderr
+
+        if user_type == 'user':
+            identity_data = {}
+            identity_data['refreshToken'] = creds
+            identity_uri = f'https://localhost:{api_server_port}/identity/rt'
+
+            # Needed to prevent skip tls warning from printing to the console
+            original_stderr = sys.stderr
             f = open(os.devnull, 'w')
             sys.stderr = f
 
-            make_api_call_with_retries(identity_uri,identity_data,False,consts.Post_RefreshToken_Fault_Type,
-            'Unable to post refresh token details to clientproxy',
-            "Failed to pass refresh token details to proxy.")
+            make_api_call_with_retries(identity_uri, identity_data, False, consts.Post_RefreshToken_Fault_Type,
+                                       'Unable to post refresh token details to clientproxy',
+                                       "Failed to pass refresh token details to proxy.")
             sys.stderr=original_stderr
 
-    data=prepare_clientproxy_data(response)
-    expiry=data['hybridConnectionConfig']['expirationTime']
+    data = prepare_clientproxy_data(response)
+    expiry = data['hybridConnectionConfig']['expirationTime']
 
-    if token is not None :
-        data['kubeconfigs'][0]['value']=insert_token_in_kubeconfig(data,token)
+    if token is not None:
+        data['kubeconfigs'][0]['value'] = insert_token_in_kubeconfig(data,token)
 
-    ##Starting a timer to refresh the credentials, 5 mins before expiry
-    fun_args=[cmd,client,resource_group_name,cluster_name,1,args,client_proxy_port,api_server_port,operating_system,creds,user_type,debug_mode,token,path,overwrite_existing,context_name]
-    refresh_thread=Timer(expiry-time.time()-300,client_side_proxy,args=fun_args)
+    # Starting a timer to refresh the credentials, 5 mins before expiry
+    fun_args = [cmd, client, resource_group_name, cluster_name, 1, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token, path, overwrite_existing, context_name]
+    refresh_thread = Timer(expiry-time.time()-300, client_side_proxy, args=fun_args)
     refresh_thread.setDaemon(True)
-    try :
+    try:
         refresh_thread.start()
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Run_RefreshThread_Fault_Type,
                                 summary='Unable to run refresh thread')
         raise CLIError("Failed to start thread for refreshing credentials." + str(e))
 
-    uri=f'http://localhost:{client_proxy_port}/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.Kubernetes/connectedClusters/{cluster_name}/register?api-version=2020-10-01'
-    
-    ##Posting hybrid connection details to proxy in order to get kubeconfig
-    response=make_api_call_with_retries(uri,data,False,consts.Post_Hybridconn_Fault_Type,
-    'Unable to post hybrid connection details to clientproxy',
-    "Failed to pass hybrid connection details to proxy.")
-    
-    ##Decoding kubeconfig into a string
-    try :
-        kubeconfig=json.loads(response.text)
+    uri = f'http://localhost:{client_proxy_port}/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.Kubernetes/connectedClusters/{cluster_name}/register?api-version=2020-10-01'
+
+    # Posting hybrid connection details to proxy in order to get kubeconfig
+    response = make_api_call_with_retries(uri, data, False, consts.Post_Hybridconn_Fault_Type,
+                                         'Unable to post hybrid connection details to clientproxy',
+                                         "Failed to pass hybrid connection details to proxy.")
+
+    # Decoding kubeconfig into a string
+    try:
+        kubeconfig = json.loads(response.text)
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Load_Kubeconfig_Fault_Type,
                                 summary='Unable to load Kubeconfig')
         raise CLIError("Failed to load kubeonfig." + str(e))
     
-    kubeconfig=kubeconfig['kubeconfigs'][0]['value']
-    kubeconfig=b64decode(kubeconfig).decode("utf-8")
-    
+    kubeconfig = kubeconfig['kubeconfigs'][0]['value']
+    kubeconfig = b64decode(kubeconfig).decode("utf-8")
+
     try:
         print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
 
@@ -1325,27 +1321,28 @@ def client_side_proxy(cmd,
         raise CLIError("Failed to merge kubeconfig." + str(e))
     
 
-def make_api_call_with_retries(uri,data,tls_verify,fault_type,summary,cli_error):
+def make_api_call_with_retries(uri, data, tls_verify, fault_type, summary, cli_error):
     for i in range(API_CALL_RETRIES):
-        try :
-            response=requests.post(uri,json=data,verify=tls_verify)
+        try:
+            response = requests.post(uri, json=data, verify=tls_verify)
             return  response
         except Exception as e:
-            if i!=API_CALL_RETRIES-1:
+            if i != API_CALL_RETRIES-1:
                 pass
             else :
-                telemetry.set_exception(exception=e,fault_type=fault_type,summary=summary)
+                telemetry.set_exception(exception=e, fault_type=fault_type, summary=summary)
                 raise CLIError(cli_error+str(e))
 
 
-def insert_token_in_kubeconfig(data,token) :
-    b64kubeconfig=data['kubeconfigs'][0]['value']
-    decoded_kubeconfig_str=b64decode(b64kubeconfig).decode("utf-8")
-    dict_yaml=yaml.safe_load(decoded_kubeconfig_str)
-    dict_yaml['users'][0]['user']['token']=token
-    kubeconfig=yaml.dump(dict_yaml).encode("utf-8")
-    b64kubeconfig=b64encode(kubeconfig).decode("utf-8")
+def insert_token_in_kubeconfig(data, token):
+    b64kubeconfig = data['kubeconfigs'][0]['value']
+    decoded_kubeconfig_str = b64decode(b64kubeconfig).decode("utf-8")
+    dict_yaml = yaml.safe_load(decoded_kubeconfig_str)
+    dict_yaml['users'][0]['user']['token'] = token
+    kubeconfig = yaml.dump(dict_yaml).encode("utf-8")
+    b64kubeconfig = b64encode(kubeconfig).decode("utf-8")
     return b64kubeconfig
+
 
 def check_process(processName):
     '''
