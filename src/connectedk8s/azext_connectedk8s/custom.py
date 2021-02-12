@@ -1025,7 +1025,7 @@ def client_side_proxy_wrapper(cmd,
                               context_name=None,
                               api_server_port=API_SERVER_PORT,
                               client_proxy_port=CLIENT_PROXY_PORT):
- 
+
     cloud = send_cloud_telemetry(cmd)
     args = []
     operating_system = platform.system()
@@ -1037,7 +1037,7 @@ def client_side_proxy_wrapper(cmd,
         older_version_string = f'.clientproxy\\arcProxy{operating_system}*.exe'
         creds_string = r'.azure\accessTokens.json'
         proc_name = f'arcProxy{operating_system}{CLIENT_PROXY_VERSION}.exe'
-  
+
     elif(operating_system == 'Linux' or operating_system == 'Darwin'):
         install_location_string = f'.clientproxy/arcProxy{operating_system}{CLIENT_PROXY_VERSION}'
         requestUri = f'https://clientproxy.azureedge.net/release20201218/arcProxy{operating_system}{CLIENT_PROXY_VERSION}'
@@ -1081,7 +1081,7 @@ def client_side_proxy_wrapper(cmd,
                 telemetry.set_exception(exception=e, fault_type=consts.Create_Directory_Fault_Type,
                                         summary='Unable to create installation directory')
                 raise CLIError("Failed to create installation directory." + str(e))
-        else:    
+        else:
             older_version_string = os.path.expanduser(os.path.join('~', older_version_string))
             older_version_files = glob(older_version_string)
 
@@ -1116,7 +1116,7 @@ def client_side_proxy_wrapper(cmd,
             raise CLIError("Failed to remove old config." + str(e))
 
     # initializations
-    user_type = 'sat' 
+    user_type = 'sat'
     creds = ''
 
     # if service account token is not passed
@@ -1129,14 +1129,13 @@ def client_side_proxy_wrapper(cmd,
         tenantId = _graph_client_factory(cmd.cli_ctx).config.tenant_id
 
         if user_type == 'user':
-            dict_file = {'server':{'httpPort':int(client_proxy_port),'httpsPort':int(api_server_port)},'identity':{'tenantID':tenantId,'clientID':CLIENTPROXY_CLIENT_ID}}
+            dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}, 'identity': {'tenantID': tenantId, 'clientID': CLIENTPROXY_CLIENT_ID}}
         else:
-            dict_file = {'server':{'httpPort':int(client_proxy_port),'httpsPort':int(api_server_port)},'identity':{'tenantID':tenantId,'clientID':account['user']['name']}}
-
+            dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}, 'identity': {'tenantID': tenantId, 'clientID': account['user']['name']}}
 
         if cloud == 'DOGFOOD':
             dict_file['cloud'] = 'AzureDogFood'
-        
+
         # Fetching creds
         creds_location = os.path.expanduser(os.path.join('~', creds_string))
         try:
@@ -1157,22 +1156,22 @@ def client_side_proxy_wrapper(cmd,
             for key in creds_obj:
                 if user_type == 'user':
                     if key == 'refreshToken':
-                        creds=creds_obj[key]
+                        creds = creds_obj[key]
                     elif key == 'userId':
-                        if creds_obj[key]==user_name:
-                            loop_flag=True
+                        if creds_obj[key] == user_name:
+                            loop_flag = True
                 else:
                     if key == 'accessToken':
-                        creds=creds_obj[key]
+                        creds = creds_obj[key]
                     elif key == 'servicePrincipalId':
                         if creds_obj[key] == user_name:
                             loop_flag = True
 
         if creds == '':
             telemetry.set_user_fault()
-            telemetry.set_exception(exception=e, fault_type=consts.Creds_NotFound_Fault_Type,
+            telemetry.set_exception(exception='Credentials of user not found.', fault_type=consts.Creds_NotFound_Fault_Type,
                                     summary='Unable to find creds of user')
-            raise CLIError("Credentials of user not found." + str(e))
+            raise CLIError("Credentials of user not found.")
 
         if user_type != 'user':
             dict_file['identity']['clientSecret'] = creds
@@ -1195,7 +1194,7 @@ def client_side_proxy_wrapper(cmd,
         debug_mode = True
 
     client_side_proxy(cmd, client, resource_group_name, cluster_name, 0, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, overwrite_existing=overwrite_existing, context_name=context_name)
- 
+
 
 # Prepare data as needed by client proxy executable
 def prepare_clientproxy_data(response):
@@ -1229,19 +1228,19 @@ def client_side_proxy(cmd,
                       path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
                       overwrite_existing=False,
                       context_name=None):
-    
+  
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
     if token is not None:
         auth_method = 'Token'
-        telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': False})    
+        telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': False})   
     else:
         auth_method = 'AAD'
         telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': True})
 
     # Fetching hybrid connection details from Userrp
     try:
-        response=client.list_cluster_user_credentials(resource_group_name,cluster_name,auth_method,True)
+        response = client.list_cluster_user_credentials(resource_group_name, cluster_name, auth_method, True)
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Get_Credentials_Failed_Fault_Type,
                                 summary='Unable to list cluster user credentials')
@@ -1252,7 +1251,7 @@ def client_side_proxy(cmd,
         if debug_mode:
             clientproxy_process = Thread(target=call, args=(args,))
         else:
-            clientproxy_process = Thread(target=call, args=(args,), kwargs={'stderr':DEVNULL,'stdout':DEVNULL})
+            clientproxy_process = Thread(target=call, args=(args,), kwargs={'stderr': DEVNULL, 'stdout': DEVNULL})
 
         try:
             clientproxy_process.start()
@@ -1275,17 +1274,17 @@ def client_side_proxy(cmd,
             make_api_call_with_retries(identity_uri, identity_data, False, consts.Post_RefreshToken_Fault_Type,
                                        'Unable to post refresh token details to clientproxy',
                                        "Failed to pass refresh token details to proxy.")
-            sys.stderr=original_stderr
+            sys.stderr = original_stderr
 
     data = prepare_clientproxy_data(response)
     expiry = data['hybridConnectionConfig']['expirationTime']
 
     if token is not None:
-        data['kubeconfigs'][0]['value'] = insert_token_in_kubeconfig(data,token)
+        data['kubeconfigs'][0]['value'] = insert_token_in_kubeconfig(data, token)
 
     # Starting a timer to refresh the credentials, 5 mins before expiry
     fun_args = [cmd, client, resource_group_name, cluster_name, 1, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token, path, overwrite_existing, context_name]
-    refresh_thread = Timer(expiry-time.time()-300, client_side_proxy, args=fun_args)
+    refresh_thread = Timer(expiry - time.time() - 300, client_side_proxy, args=fun_args)
     refresh_thread.setDaemon(True)
     try:
         refresh_thread.start()
@@ -1298,8 +1297,8 @@ def client_side_proxy(cmd,
 
     # Posting hybrid connection details to proxy in order to get kubeconfig
     response = make_api_call_with_retries(uri, data, False, consts.Post_Hybridconn_Fault_Type,
-                                         'Unable to post hybrid connection details to clientproxy',
-                                         "Failed to pass hybrid connection details to proxy.")
+                                          'Unable to post hybrid connection details to clientproxy',
+                                          "Failed to pass hybrid connection details to proxy.")
 
     # Decoding kubeconfig into a string
     try:
@@ -1308,7 +1307,7 @@ def client_side_proxy(cmd,
         telemetry.set_exception(exception=e, fault_type=consts.Load_Kubeconfig_Fault_Type,
                                 summary='Unable to load Kubeconfig')
         raise CLIError("Failed to load kubeonfig." + str(e))
-    
+ 
     kubeconfig = kubeconfig['kubeconfigs'][0]['value']
     kubeconfig = b64decode(kubeconfig).decode("utf-8")
 
@@ -1319,19 +1318,19 @@ def client_side_proxy(cmd,
         telemetry.set_exception(exception=e, fault_type=consts.Merge_Kubeconfig_Fault_Type,
                                 summary='Unable to merge kubeconfig.')
         raise CLIError("Failed to merge kubeconfig." + str(e))
-    
+
 
 def make_api_call_with_retries(uri, data, tls_verify, fault_type, summary, cli_error):
     for i in range(API_CALL_RETRIES):
         try:
             response = requests.post(uri, json=data, verify=tls_verify)
-            return  response
+            return response
         except Exception as e:
-            if i != API_CALL_RETRIES-1:
+            if i != API_CALL_RETRIES - 1:
                 pass
-            else :
+            else:
                 telemetry.set_exception(exception=e, fault_type=fault_type, summary=summary)
-                raise CLIError(cli_error+str(e))
+                raise CLIError(cli_error + str(e))
 
 
 def insert_token_in_kubeconfig(data, token):
@@ -1350,7 +1349,7 @@ def check_process(processName):
     '''
     for proc in process_iter():
         try:
-            if processName==proc.name():
+            if processName == proc.name():
                 return True
         except (NoSuchProcess, AccessDenied, ZombieProcess):
             pass

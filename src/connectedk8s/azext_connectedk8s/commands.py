@@ -30,5 +30,3 @@ def load_command_table(self, _):
 
     with self.command_group('connectedk8s', connectedk8s_sdk_prev, client_factory=cf_connected_cluster_prev_2021_04_01) as g:
         g.custom_command('proxy', 'client_side_proxy_wrapper', is_preview=True)
-
-
