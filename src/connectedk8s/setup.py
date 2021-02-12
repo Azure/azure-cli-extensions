@@ -17,7 +17,7 @@ except ImportError:
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
 
-VERSION = '0.2.9'
+VERSION = '0.3.5'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -53,6 +53,7 @@ setup(
     author_email='k8connect@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/connectedk8s',
     long_description=README + '\n\n' + HISTORY,
+    long_description_content_type="text/markdown",
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(),

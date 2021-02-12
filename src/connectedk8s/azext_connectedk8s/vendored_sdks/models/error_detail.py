@@ -12,8 +12,8 @@
 from msrest.serialization import Model
 
 
-class ErrorResponseError(Model):
-    """The error object.
+class ErrorDetail(Model):
+    """The error detail.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
@@ -25,11 +25,10 @@ class ErrorResponseError(Model):
     :ivar target: The error target.
     :vartype target: str
     :ivar details: The error details.
-    :vartype details:
-     list[~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ErrorResponse]
+    :vartype details: list[~azure.mgmt.hybridkubernetes.models.ErrorDetail]
     :ivar additional_info: The error additional info.
     :vartype additional_info:
-     list[~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ErrorAdditionalInfo]
+     list[~azure.mgmt.hybridkubernetes.models.ErrorAdditionalInfo]
     """
 
     _validation = {
@@ -44,12 +43,12 @@ class ErrorResponseError(Model):
         'code': {'key': 'code', 'type': 'str'},
         'message': {'key': 'message', 'type': 'str'},
         'target': {'key': 'target', 'type': 'str'},
-        'details': {'key': 'details', 'type': '[ErrorResponse]'},
+        'details': {'key': 'details', 'type': '[ErrorDetail]'},
         'additional_info': {'key': 'additionalInfo', 'type': '[ErrorAdditionalInfo]'},
     }
 
-    def __init__(self, **kwargs) -> None:
-        super(ErrorResponseError, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        super(ErrorDetail, self).__init__(**kwargs)
         self.code = None
         self.message = None
         self.target = None

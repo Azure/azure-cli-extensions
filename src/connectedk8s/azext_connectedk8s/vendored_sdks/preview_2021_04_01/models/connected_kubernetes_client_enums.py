@@ -51,3 +51,9 @@ class LastModifiedByType(str, Enum):
     application = "Application"
     managed_identity = "ManagedIdentity"
     key = "Key"
+
+
+class AuthenticationMethod(str, Enum):
+
+    token = "Token"
+    aad = "AAD"

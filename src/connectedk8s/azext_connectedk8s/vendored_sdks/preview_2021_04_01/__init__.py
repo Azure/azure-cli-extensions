@@ -9,19 +9,10 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from msrest.paging import Paged
+from .connected_kubernetes_client import ConnectedKubernetesClient
+from .version import VERSION
 
+__all__ = ['ConnectedKubernetesClient']
 
-class OperationPaged(Paged):
-    """
-    A paging container for iterating over a list of :class:`Operation <azure.mgmt.hybridkubernetes.models.Operation>` object
-    """
+__version__ = VERSION
 
-    _attribute_map = {
-        'next_link': {'key': 'nextLink', 'type': 'str'},
-        'current_page': {'key': 'value', 'type': '[Operation]'}
-    }
-
-    def __init__(self, *args, **kwargs):
-
-        super(OperationPaged, self).__init__(*args, **kwargs)

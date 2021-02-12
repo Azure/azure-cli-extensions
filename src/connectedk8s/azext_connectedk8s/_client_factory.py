@@ -17,6 +17,13 @@ def cf_connectedk8s(cli_ctx, *_):
 def cf_connected_cluster(cli_ctx, _):
     return cf_connectedk8s(cli_ctx).connected_cluster
 
+def cf_connectedk8s_prev_2021_04_01(cli_ctx, *_):
+    from azext_connectedk8s.vendored_sdks.preview_2021_04_01 import ConnectedKubernetesClient
+    return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient)
+
+
+def cf_connected_cluster_prev_2021_04_01(cli_ctx, _):
+    return cf_connectedk8s_prev_2021_04_01(cli_ctx).connected_cluster
 
 def cf_resource_groups(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
@@ -35,3 +42,7 @@ def _graph_client_factory(cli_ctx, **_):
                                        base_url=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
     configure_common_settings(cli_ctx, client)
     return client
+
+
+def get_graph_client_service_principals(cli_ctx, _):
+    return _graph_client_factory(cli_ctx).service_principals

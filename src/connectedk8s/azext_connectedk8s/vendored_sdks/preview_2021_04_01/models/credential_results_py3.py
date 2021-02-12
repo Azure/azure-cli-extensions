@@ -21,10 +21,10 @@ class CredentialResults(Model):
     :ivar hybrid_connection_config: Contains the REP (rendezvous endpoint) and
      “Sender” access token.
     :vartype hybrid_connection_config:
-     ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.HybridConnectionConfig
+     ~azure.mgmt.hybridkubernetes.models.HybridConnectionConfig
     :ivar kubeconfigs: Base64-encoded Kubernetes configuration file.
     :vartype kubeconfigs:
-     list[~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.CredentialResult]
+     list[~azure.mgmt.hybridkubernetes.models.CredentialResult]
     """
 
     _validation = {

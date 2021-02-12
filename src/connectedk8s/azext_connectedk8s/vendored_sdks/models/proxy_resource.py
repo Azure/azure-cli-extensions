@@ -9,19 +9,17 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .resource_py3 import Resource
+from .resource import Resource
 
 
-class TrackedResource(Resource):
-    """Tracked Resource.
+class ProxyResource(Resource):
+    """Proxy Resource.
 
-    The resource model definition for an Azure Resource Manager tracked top
-    level resource which has 'tags' and a 'location'.
+    The resource model definition for a Azure Resource Manager proxy resource.
+    It will not have tags and a location.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
-
-    All required parameters must be populated in order to send to Azure.
 
     :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
@@ -31,28 +29,19 @@ class TrackedResource(Resource):
     :ivar type: The type of the resource. E.g.
      "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
     :vartype type: str
-    :param tags: Resource tags.
-    :type tags: dict[str, str]
-    :param location: Required. The geo-location where the resource lives
-    :type location: str
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
-        'location': {'required': True},
     }
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'location': {'key': 'location', 'type': 'str'},
     }
 
-    def __init__(self, *, location: str, tags=None, **kwargs) -> None:
-        super(TrackedResource, self).__init__(**kwargs)
-        self.tags = tags
-        self.location = location
+    def __init__(self, **kwargs):
+        super(ProxyResource, self).__init__(**kwargs)

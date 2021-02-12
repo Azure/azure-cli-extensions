@@ -12,39 +12,29 @@
 from msrest.serialization import Model
 
 
-class Resource(Model):
-    """Resource.
-
-    Common fields that are returned in the response for all Azure Resource
-    Manager resources.
+class ErrorAdditionalInfo(Model):
+    """The resource management error additional info.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
-    :vartype id: str
-    :ivar name: The name of the resource
-    :vartype name: str
-    :ivar type: The type of the resource. E.g.
-     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
+    :ivar type: The additional info type.
     :vartype type: str
+    :ivar info: The additional info.
+    :vartype info: object
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
         'type': {'readonly': True},
+        'info': {'readonly': True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
+        'info': {'key': 'info', 'type': 'object'},
     }
 
     def __init__(self, **kwargs):
-        super(Resource, self).__init__(**kwargs)
-        self.id = None
-        self.name = None
+        super(ErrorAdditionalInfo, self).__init__(**kwargs)
         self.type = None
+        self.info = None

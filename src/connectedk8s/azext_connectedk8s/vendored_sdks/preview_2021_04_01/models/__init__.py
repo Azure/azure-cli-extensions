@@ -15,7 +15,11 @@ try:
     from .connected_cluster_identity_py3 import ConnectedClusterIdentity
     from .system_data_py3 import SystemData
     from .connected_cluster_py3 import ConnectedCluster
+    from .hybrid_connection_config_py3 import HybridConnectionConfig
+    from .credential_result_py3 import CredentialResult
+    from .credential_results_py3 import CredentialResults
     from .connected_cluster_patch_py3 import ConnectedClusterPatch
+    from .list_cluster_user_credentials_properties_py3 import ListClusterUserCredentialsProperties
     from .proxy_resource_py3 import ProxyResource
     from .azure_entity_resource_py3 import AzureEntityResource
     from .resource_py3 import Resource
@@ -29,7 +33,11 @@ except (SyntaxError, ImportError):
     from .connected_cluster_identity import ConnectedClusterIdentity
     from .system_data import SystemData
     from .connected_cluster import ConnectedCluster
+    from .hybrid_connection_config import HybridConnectionConfig
+    from .credential_result import CredentialResult
+    from .credential_results import CredentialResults
     from .connected_cluster_patch import ConnectedClusterPatch
+    from .list_cluster_user_credentials_properties import ListClusterUserCredentialsProperties
     from .proxy_resource import ProxyResource
     from .azure_entity_resource import AzureEntityResource
     from .resource import Resource
@@ -45,6 +53,7 @@ from .connected_kubernetes_client_enums import (
     ConnectivityStatus,
     CreatedByType,
     LastModifiedByType,
+    AuthenticationMethod,
 )
 
 __all__ = [
@@ -53,7 +62,11 @@ __all__ = [
     'ConnectedClusterIdentity',
     'SystemData',
     'ConnectedCluster',
+    'HybridConnectionConfig',
+    'CredentialResult',
+    'CredentialResults',
     'ConnectedClusterPatch',
+    'ListClusterUserCredentialsProperties',
     'ProxyResource',
     'AzureEntityResource',
     'Resource',
@@ -68,4 +81,5 @@ __all__ = [
     'ConnectivityStatus',
     'CreatedByType',
     'LastModifiedByType',
+    'AuthenticationMethod',
 ]

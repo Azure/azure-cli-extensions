@@ -9,20 +9,19 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from msrest.serialization import Model
+from msrest.paging import Paged
 
 
-class AuthenticationDetailsValue(Model):
-    """Authentication token value.
-
-    :param token: Authentication token.
-    :type token: str
+class ConnectedClusterPaged(Paged):
+    """
+    A paging container for iterating over a list of :class:`ConnectedCluster <azure.mgmt.hybridkubernetes.models.ConnectedCluster>` object
     """
 
     _attribute_map = {
-        'token': {'key': 'token', 'type': 'str'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'current_page': {'key': 'value', 'type': '[ConnectedCluster]'}
     }
 
-    def __init__(self, **kwargs):
-        super(AuthenticationDetailsValue, self).__init__(**kwargs)
-        self.token = kwargs.get('token', None)
+    def __init__(self, *args, **kwargs):
+
+        super(ConnectedClusterPaged, self).__init__(*args, **kwargs)
