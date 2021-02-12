@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.0
+++++++
+* `az connectedk8s connect`: Added support for enabling azure rbac 
+* `az connectedk8s update`: Added support for updating whether to use azure rbac 
 
 0.2.9
 ++++++
