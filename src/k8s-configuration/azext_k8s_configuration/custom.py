@@ -7,7 +7,7 @@ import base64
 import io
 from urllib.parse import urlparse
 from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError, \
-    RequiredArgumentMissingError, MutuallyExclusiveArgumentError
+    RequiredArgumentMissingError, MutuallyExclusiveArgumentError, CommandNotFoundError
 from knack.log import get_logger
 from paramiko.ed25519key import Ed25519Key
 from paramiko.hostkeys import HostKeyEntry
@@ -124,60 +124,67 @@ def update_k8s_configuration(client, resource_group_name, cluster_name, name, cl
     """Update an existing Kubernetes Source Control Configuration.
 
     """
-    # Determine ClusterRP
-    cluster_rp = __get_cluster_type(cluster_type)
 
-    source_control_configuration_name = name.strip()
+    # TODO: Remove this after we eventually get PATCH implemented for update and uncomment
+    raise CommandNotFoundError(
+        "\"k8s-configuration update\" currently is not available. "
+        "Use \"k8s-configuration create\" to update a previously created configuration."
+    )
 
-    config = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name,
-                        source_control_configuration_name)
-    update_yes = False
+    # # Determine ClusterRP
+    # cluster_rp = __get_cluster_type(cluster_type)
 
-    # Set input values, if they are supplied
-    if repository_url is not None:
-        config.repository_url = repository_url
-        update_yes = True
+    # source_control_configuration_name = name.strip()
 
-    if operator_params is not None:
-        config.operator_params = operator_params
-        update_yes = True
+    # config = client.get(resource_group_name, cluster_rp, cluster_type, cluster_name,
+    #                     source_control_configuration_name)
+    # update_yes = False
 
-    knownhost_data = get_data_from_key_or_file(ssh_known_hosts, ssh_known_hosts_file)
-    if knownhost_data:
-        validate_known_hosts(knownhost_data)
-        config.ssh_known_hosts_contents = knownhost_data
-        update_yes = True
+    # # Set input values, if they are supplied
+    # if repository_url is not None:
+    #     config.repository_url = repository_url
+    #     update_yes = True
 
-    if enable_helm_operator is not None:
-        config.enable_helm_operator = enable_helm_operator
-        update_yes = True
+    # if operator_params is not None:
+    #     config.operator_params = operator_params
+    #     update_yes = True
 
-    # Get the helm operator properties from the config and set them
-    if config.helm_operator_properties is None:
-        config.helm_operator_properties = HelmOperatorProperties()
-    if helm_operator_chart_version is not None:
-        config.helm_operator_properties.chart_version = helm_operator_chart_version.strip()
-        update_yes = True
-    if helm_operator_params is not None:
-        config.helm_operator_properties.chart_values = helm_operator_params.strip()
-        update_yes = True
+    # knownhost_data = get_data_from_key_or_file(ssh_known_hosts, ssh_known_hosts_file)
+    # if knownhost_data:
+    #     validate_known_hosts(knownhost_data)
+    #     config.ssh_known_hosts_contents = knownhost_data
+    #     update_yes = True
 
-    if update_yes is False:
-        raise RequiredArgumentMissingError(
-            'Invalid update. No values to update!',
-            'Verify that at least one changed parameter is provided in the update command')
+    # if enable_helm_operator is not None:
+    #     config.enable_helm_operator = enable_helm_operator
+    #     update_yes = True
 
-    # Flag which parameters have been set and validate these settings against the set repository url
-    known_hosts_contents_set = config.ssh_known_hosts_contents != ""
-    validate_url_with_params(config.repository_url,
-                             ssh_private_key_set=False,
-                             known_hosts_contents_set=known_hosts_contents_set,
-                             https_auth_set=False)
+    # # Get the helm operator properties from the config and set them
+    # if config.helm_operator_properties is None:
+    #     config.helm_operator_properties = HelmOperatorProperties()
+    # if helm_operator_chart_version is not None:
+    #     config.helm_operator_properties.chart_version = helm_operator_chart_version.strip()
+    #     update_yes = True
+    # if helm_operator_params is not None:
+    #     config.helm_operator_properties.chart_values = helm_operator_params.strip()
+    #     update_yes = True
 
-    config = client.create_or_update(resource_group_name, cluster_rp, cluster_type, cluster_name,
-                                     source_control_configuration_name, config)
+    # if update_yes is False:
+    #     raise RequiredArgumentMissingError(
+    #         'Invalid update. No values to update!',
+    #         'Verify that at least one changed parameter is provided in the update command')
 
-    return __fix_compliance_state(config)
+    # # Flag which parameters have been set and validate these settings against the set repository url
+    # known_hosts_contents_set = config.ssh_known_hosts_contents != ""
+    # validate_url_with_params(config.repository_url,
+    #                          ssh_private_key_set=False,
+    #                          known_hosts_contents_set=known_hosts_contents_set,
+    #                          https_auth_set=False)
+
+    # config = client.create_or_update(resource_group_name, cluster_rp, cluster_type, cluster_name,
+    #                                  source_control_configuration_name, config)
+
+    # return __fix_compliance_state(config)
 
 
 def list_k8s_configuration(client, resource_group_name, cluster_name, cluster_type):
