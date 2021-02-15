@@ -2,6 +2,17 @@
 
 Release History
 ===============
+0.5.0
++++++
+* Modify addon confcom behavior to only enable SGX device plugin by default.
+* Introducte argument '--enable-sgx-quotehelper'
+* Breaking Change: remove argument '--diable-sgx-quotehelper'.
+
+0.4.73
++++++
+* Update to use 2020-12-01 api-version
+* Add argument '--enable-encryption-at-host'
+
 0.4.72
 ++++++
 * Add --no-uptime-sla
