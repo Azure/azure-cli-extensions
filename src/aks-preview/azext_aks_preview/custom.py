@@ -66,7 +66,6 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_02_01.models import (ContainerS
                                                                       ManagedClusterIdentity,
                                                                       ManagedClusterAPIServerAccessProfile,
                                                                       ManagedClusterSKU,
-                                                                      ManagedClusterIdentityUserAssignedIdentitiesValue,
                                                                       ManagedClusterAutoUpgradeProfile,
                                                                       KubeletConfig,
                                                                       LinuxOSConfig,
@@ -75,6 +74,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_02_01.models import (ContainerS
                                                                       ManagedClusterPodIdentity,
                                                                       ManagedClusterPodIdentityException,
                                                                       UserAssignedIdentity)
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_02_01.models import Components1Umhcm8SchemasManagedclusteridentityPropertiesUserassignedidentitiesAdditionalproperties as ManagedClusterIdentityUserAssignedIdentitiesValue
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
