@@ -1228,12 +1228,12 @@ def client_side_proxy(cmd,
                       path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
                       overwrite_existing=False,
                       context_name=None):
-  
+
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
     if token is not None:
         auth_method = 'Token'
-        telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': False})   
+        telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': False})
     else:
         auth_method = 'AAD'
         telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': True})
@@ -1307,7 +1307,7 @@ def client_side_proxy(cmd,
         telemetry.set_exception(exception=e, fault_type=consts.Load_Kubeconfig_Fault_Type,
                                 summary='Unable to load Kubeconfig')
         raise CLIError("Failed to load kubeonfig." + str(e))
- 
+
     kubeconfig = kubeconfig['kubeconfigs'][0]['value']
     kubeconfig = b64decode(kubeconfig).decode("utf-8")
 
