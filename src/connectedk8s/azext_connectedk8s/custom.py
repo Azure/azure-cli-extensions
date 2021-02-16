@@ -1354,7 +1354,7 @@ def check_process(processName):
         except (NoSuchProcess, AccessDenied, ZombieProcess):
             pass
     return False
-  
+
 
 def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, arc_agent_version=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
