@@ -31,7 +31,7 @@ def handle_next(cmd):
         _handle_error_no_exception_found()
         return None
 
-    latest_commands = get_command_list(cmd)
+    latest_commands = get_command_list(cmd, 0)
     recommends = get_recommend_from_api(latest_commands, request_type,
                                         cmd.cli_ctx.config.getint('next', 'num_limit', fallback=5),
                                         error_info=processed_exception)
@@ -381,8 +381,10 @@ def send_feedback(request_type, option, latest_commands, processed_exception=Non
     feedback_data = [str(request_type), str(option)]
 
     if latest_commands:
-        latest_command = json.loads(latest_commands[-1])
-        feedback_data.append(latest_command['command'])
+        trigger_commands = json.loads(latest_commands[-1])['command']
+        if len(latest_commands) > 1:
+            trigger_commands = json.loads(latest_commands[-2])['command'] + "," + trigger_commands
+        feedback_data.append(trigger_commands)
     else:
         feedback_data.append(' ')
     if processed_exception and processed_exception != '':
@@ -390,12 +392,15 @@ def send_feedback(request_type, option, latest_commands, processed_exception=Non
     else:
         feedback_data.append(' ')
 
+    has_personalized_rec = False
     if recommends:
         source_list = set()
         rec_type_list = set()
         for item in recommends:
             source_list.add(str(item['source']))
             rec_type_list.add(str(item['type']))
+            if 'is_personalized' in item:
+                has_personalized_rec = True
         feedback_data.append(' '.join(source_list))
         feedback_data.append(' '.join(rec_type_list))
     else:
@@ -412,8 +417,15 @@ def send_feedback(request_type, option, latest_commands, processed_exception=Non
                 feedback_data.append(' '.join(rec["arguments"]))
             else:
                 feedback_data.append(' ')
+
+        if not has_personalized_rec:
+            feedback_data.extend([' '])
+        elif 'is_personalized' in rec:
+            feedback_data.extend(['1'])
+        else:
+            feedback_data.extend(['0'])
     else:
-        feedback_data.extend([' ', ' ', ' ', ' '])
+        feedback_data.extend([' ', ' ', ' ', ' ', ' '])
 
     telemetry.set_feedback("#".join(feedback_data))
 
