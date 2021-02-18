@@ -14,6 +14,7 @@ def get_recommend_from_api(command_list, type, top_num=5, error_info=None):  # p
     '''query next command from web api'''
     import requests
     url = "https://cli-recommendation.azurewebsites.net/api/RecommendationService"
+    url = "http://localhost:7071/api/RecommendationService"
 
     user_id = telemetry._get_user_azure_id()  # pylint: disable=protected-access
     hashed_user_id = hashlib.sha256(user_id.encode('utf-8')).hexdigest()
