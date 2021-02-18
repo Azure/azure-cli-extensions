@@ -20,13 +20,13 @@ class ConnectedCluster(TrackedResource):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
     :vartype id: str
     :ivar name: The name of the resource
     :vartype name: str
-    :ivar type: The type of the resource. Ex-
-     Microsoft.Compute/virtualMachines or Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g.
+     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
     :vartype type: str
     :param tags: Resource tags.
     :type tags: dict[str, str]
@@ -34,14 +34,11 @@ class ConnectedCluster(TrackedResource):
     :type location: str
     :param identity: Required. The identity of the connected cluster.
     :type identity:
-     ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ConnectedClusterIdentity
+     ~azure.mgmt.hybridkubernetes.models.ConnectedClusterIdentity
     :param agent_public_key_certificate: Required. Base64 encoded public
      certificate used by the agent to do the initial handshake to the backend
      services in Azure.
     :type agent_public_key_certificate: str
-    :param aad_profile: Required. AAD profile of the connected cluster.
-    :type aad_profile:
-     ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ConnectedClusterAADProfile
     :ivar kubernetes_version: The Kubernetes version of the connected cluster
      resource
     :vartype kubernetes_version: str
@@ -58,7 +55,7 @@ class ConnectedCluster(TrackedResource):
      resource. Possible values include: 'Succeeded', 'Failed', 'Canceled',
      'Provisioning', 'Updating', 'Deleting', 'Accepted'
     :type provisioning_state: str or
-     ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ProvisioningState
+     ~azure.mgmt.hybridkubernetes.models.ProvisioningState
     :param distribution: The Kubernetes distribution running on this connected
      cluster.
     :type distribution: str
@@ -73,11 +70,14 @@ class ConnectedCluster(TrackedResource):
     :ivar last_connectivity_time: Time representing the last instance when
      heart beat was received from the cluster
     :vartype last_connectivity_time: datetime
-    :param connectivity_status: Represents the connectivity status of the
+    :ivar connectivity_status: Represents the connectivity status of the
      connected cluster. Possible values include: 'Connecting', 'Connected',
      'Offline', 'Expired'
-    :type connectivity_status: str or
-     ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ConnectivityStatus
+    :vartype connectivity_status: str or
+     ~azure.mgmt.hybridkubernetes.models.ConnectivityStatus
+    :ivar system_data: Metadata pertaining to creation and last modification
+     of the resource
+    :vartype system_data: ~azure.mgmt.hybridkubernetes.models.SystemData
     """
 
     _validation = {
@@ -87,7 +87,6 @@ class ConnectedCluster(TrackedResource):
         'location': {'required': True},
         'identity': {'required': True},
         'agent_public_key_certificate': {'required': True},
-        'aad_profile': {'required': True},
         'kubernetes_version': {'readonly': True},
         'total_node_count': {'readonly': True},
         'total_core_count': {'readonly': True},
@@ -95,6 +94,8 @@ class ConnectedCluster(TrackedResource):
         'offering': {'readonly': True},
         'managed_identity_certificate_expiration_time': {'readonly': True},
         'last_connectivity_time': {'readonly': True},
+        'connectivity_status': {'readonly': True},
+        'system_data': {'readonly': True},
     }
 
     _attribute_map = {
@@ -105,7 +106,6 @@ class ConnectedCluster(TrackedResource):
         'location': {'key': 'location', 'type': 'str'},
         'identity': {'key': 'identity', 'type': 'ConnectedClusterIdentity'},
         'agent_public_key_certificate': {'key': 'properties.agentPublicKeyCertificate', 'type': 'str'},
-        'aad_profile': {'key': 'properties.aadProfile', 'type': 'ConnectedClusterAADProfile'},
         'kubernetes_version': {'key': 'properties.kubernetesVersion', 'type': 'str'},
         'total_node_count': {'key': 'properties.totalNodeCount', 'type': 'int'},
         'total_core_count': {'key': 'properties.totalCoreCount', 'type': 'int'},
@@ -117,13 +117,13 @@ class ConnectedCluster(TrackedResource):
         'managed_identity_certificate_expiration_time': {'key': 'properties.managedIdentityCertificateExpirationTime', 'type': 'iso-8601'},
         'last_connectivity_time': {'key': 'properties.lastConnectivityTime', 'type': 'iso-8601'},
         'connectivity_status': {'key': 'properties.connectivityStatus', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
     }
 
     def __init__(self, **kwargs):
         super(ConnectedCluster, self).__init__(**kwargs)
         self.identity = kwargs.get('identity', None)
         self.agent_public_key_certificate = kwargs.get('agent_public_key_certificate', None)
-        self.aad_profile = kwargs.get('aad_profile', None)
         self.kubernetes_version = None
         self.total_node_count = None
         self.total_core_count = None
@@ -134,4 +134,5 @@ class ConnectedCluster(TrackedResource):
         self.offering = None
         self.managed_identity_certificate_expiration_time = None
         self.last_connectivity_time = None
-        self.connectivity_status = kwargs.get('connectivity_status', None)
+        self.connectivity_status = None
+        self.system_data = None
