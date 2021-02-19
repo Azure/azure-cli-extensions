@@ -82,8 +82,17 @@ def get_whl_from_url(url, filename, tmp_dir, whl_cache=None):
     if url in whl_cache:
         return whl_cache[url]
     import requests
-    r = requests.get(url, stream=True)
-    assert r.status_code == 200, "Request to {} failed with {}".format(url, r.status_code)
+    TRIES = 3
+    for try_number in range(TRIES):
+        try:
+            r = requests.get(url, stream=True)
+            assert r.status_code == 200, "Request to {} failed with {}".format(url, r.status_code)
+            break
+        except (requests.exceptions.ConnectionError, requests.exceptions.HTTPError) as err:
+            import time
+            time.sleep(0.5)
+            continue
+
     ext_file = os.path.join(tmp_dir, filename)
     with open(ext_file, 'wb') as f:
         for chunk in r.iter_content(chunk_size=1024):
