@@ -1941,13 +1941,14 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
-def aks_runcommand(cmd, client, resource_group_name, name, command, context):
+def aks_runcommand(cmd, client, resource_group_name, name, command_string="", context=""):
     colorama.init()
-
+    print("🪐 command=" + command_string)
+    print("🪐 context=" + context)
     request_payload = RunCommandRequest()
-    request_payload.command = command
+    request_payload.command = command_string
 
-    return client.run_command(resource_group_name, name, request_payloads)
+    return client.run_command(resource_group_name, name, request_payload)
 
 def _upgrade_single_nodepool_image_version(no_wait, client, resource_group_name, cluster_name, nodepool_name):
     return sdk_no_wait(no_wait, client.upgrade_node_image_version, resource_group_name, cluster_name, nodepool_name)

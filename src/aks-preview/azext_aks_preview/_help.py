@@ -573,6 +573,18 @@ helps['aks kanalyze'] = """
     short-summary: Display diagnostic results for the Kubernetes cluster after kollect is done.
 """
 
+helps['aks command'] = """
+    type: command
+    short-summary: run a shell command (with kubectl, helm) on your aks cluster, support attaching files as well.
+    parameters:
+        - name: --command_string
+          type: string
+          short-summary: command or shell script you want run.
+        - name: --context
+          type: string
+          short-summary: files will be used by the command, use '.' to attach the current folder.
+"""
+
 helps['aks nodepool'] = """
     type: group
     short-summary: Commands to manage node pools in managed Kubernetes cluster.
