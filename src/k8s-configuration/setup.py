@@ -33,7 +33,7 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = ["pycryptodome~=3.9.8", "paramiko~=2.6.0", "cryptography>=2.3.1,<3.0.0"]
+DEPENDENCIES = ["pycryptodome~=3.9.8"]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
     README = f.read()
