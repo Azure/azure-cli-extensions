@@ -3,6 +3,14 @@
 Release History
 ===============
 
+0.3.7
+++++++
+* Pulled GA changes
+
+0.3.6
+++++++
+* Added az connectedk8s proxy
+
 0.3.5
 ++++++
 * Fixed Custom tenant id issue with validation
