@@ -164,6 +164,10 @@ def load_arguments(self, _):
     with self.argument_context('aks nodepool') as c:
         c.argument('cluster_name', type=str, help='The cluster name.')
 
+    with self.argument_context('aks command') as c:
+        c.argument('command', type=str, help='the command to run')
+        c.argument('context', type=str, hel[='attach any files the command may use, or use \'.\' to upload the current folder.'])
+
     for scope in ['aks nodepool add']:
         with self.argument_context(scope) as c:
             c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')

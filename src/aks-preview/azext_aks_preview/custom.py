@@ -74,7 +74,8 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2020_12_01.models import (ContainerS
                                                                       ManagedClusterPodIdentityProfile,
                                                                       ManagedClusterPodIdentity,
                                                                       ManagedClusterPodIdentityException,
-                                                                      UserAssignedIdentity)
+                                                                      UserAssignedIdentity,
+                                                                      RunCommandRequest)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -1940,6 +1941,13 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
+def aks_runcommand(cmd, client, resource_group_name, name, command, context):
+    colorama.init()
+
+    request_payload = RunCommandRequest()
+    request_payload.command = command
+
+    return client.run_command(resource_group_name, name, request_payloads)
 
 def _upgrade_single_nodepool_image_version(no_wait, client, resource_group_name, cluster_name, nodepool_name):
     return sdk_no_wait(no_wait, client.upgrade_node_image_version, resource_group_name, cluster_name, nodepool_name)

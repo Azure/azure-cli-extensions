@@ -57,6 +57,7 @@ def load_command_table(self, _):
         g.wait_command('wait')
         g.command('stop', 'stop', supports_no_wait=True)
         g.command('start', 'start', supports_no_wait=True)
+        g.custom_command('command', 'aks_runcommand', request_payload={ command="" })
 
     # AKS container service commands
     with self.command_group('aks', container_services_sdk, client_factory=cf_container_services) as g:
