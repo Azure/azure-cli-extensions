@@ -2806,6 +2806,59 @@ class ResourceReference(Model):
         self.id = kwargs.get('id', None)
 
 
+class RunCommandRequest(Model):
+    """run command request.
+
+    :param command: command to run.
+    :type command: str
+    :param context: base64 encoded zip file, contains files required by the
+     command
+    :type context: str
+    :param cluster_token: AuthToken issued for AKS AAD Server App.
+    :type cluster_token: str
+    """
+
+    _attribute_map = {
+        'command': {'key': 'command', 'type': 'str'},
+        'context': {'key': 'context', 'type': 'str'},
+        'cluster_token': {'key': 'clusterToken', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(RunCommandRequest, self).__init__(**kwargs)
+        self.command = kwargs.get('command', None)
+        self.context = kwargs.get('context', None)
+        self.cluster_token = kwargs.get('cluster_token', None)
+
+
+class RunCommandResult(Model):
+    """run command result.
+
+    :param exit_code: exit code of the command
+    :type exit_code: int
+    :param start_at: time when the command started.
+    :type start_at: datetime
+    :param finish_at: time when the command finished.
+    :type finish_at: datetime
+    :param logs: command output.
+    :type logs: str
+    """
+
+    _attribute_map = {
+        'exit_code': {'key': 'exitCode', 'type': 'int'},
+        'start_at': {'key': 'startAt', 'type': 'iso-8601'},
+        'finish_at': {'key': 'finishAt', 'type': 'iso-8601'},
+        'logs': {'key': 'logs', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(RunCommandResult, self).__init__(**kwargs)
+        self.exit_code = kwargs.get('exit_code', None)
+        self.start_at = kwargs.get('start_at', None)
+        self.finish_at = kwargs.get('finish_at', None)
+        self.logs = kwargs.get('logs', None)
+
+
 class SysctlConfig(Model):
     """Sysctl settings for Linux agent nodes.
 
