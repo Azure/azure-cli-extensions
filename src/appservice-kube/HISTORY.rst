@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.8
+++++++
+* Remove azure-cli-core dependency
+
 0.1.7
 ++++++
 * Update kube environments SDK
