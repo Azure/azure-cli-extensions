@@ -16,6 +16,8 @@ import platform
 import yaml
 import requests
 import urllib.request
+import signal
+from _thread import interrupt_main
 from psutil import process_iter, NoSuchProcess, AccessDenied, ZombieProcess
 from knack.util import CLIError
 from knack.log import get_logger
@@ -1029,7 +1031,7 @@ def client_side_proxy_wrapper(cmd,
     cloud = send_cloud_telemetry(cmd)
     args = []
     operating_system = platform.system()
-
+    signal.signal(signal.SIGINT, ctrlc_handler)
     # Creating installation location, request uri and older version exe location depending on OS
     if(operating_system == 'Windows'):
         install_location_string = f'.clientproxy\\arcProxy{operating_system}{CLIENT_PROXY_VERSION}.exe'
@@ -1051,8 +1053,7 @@ def client_side_proxy_wrapper(cmd,
         raise CLIError(f'The {operating_system} platform is not currently supported.')
 
     if(check_process(proc_name)):
-        print('Another instance of proxy already running')
-        return
+        raise CLIError('Another instance of proxy already running')
 
     install_location = os.path.expanduser(os.path.join('~', install_location_string))
     args.append(install_location)
@@ -1551,3 +1552,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
         raise CLIError(str.format(consts.Upgrade_Agent_Failure, error_helm_upgrade.decode("ascii")))
 
     return str.format(consts.Upgrade_Agent_Success, connected_cluster.name)
+
+
+def ctrlc_handler(sig, frame):
+    interrupt_main() 
