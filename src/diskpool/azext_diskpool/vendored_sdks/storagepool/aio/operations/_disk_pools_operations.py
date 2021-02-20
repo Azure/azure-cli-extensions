@@ -222,7 +222,7 @@ class DiskPoolsOperations:
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202]:
+        if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.Error, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -230,7 +230,7 @@ class DiskPoolsOperations:
         if response.status_code == 200:
             deserialized = self._deserialize('DiskPool', pipeline_response)
 
-        if response.status_code == 202:
+        if response.status_code == 201:
             deserialized = self._deserialize('DiskPool', pipeline_response)
 
         if cls:
@@ -246,13 +246,13 @@ class DiskPoolsOperations:
         disk_pool_create_payload: "models.DiskPoolCreate",
         **kwargs
     ) -> AsyncLROPoller["models.DiskPool"]:
-        """Create or Update Disk Pool.
+        """Create or Update Disk pool.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param disk_pool_name: The name of the Disk Pool.
+        :param disk_pool_name: The name of the Disk pool.
         :type disk_pool_name: str
-        :param disk_pool_create_payload: Request payload for Disk Pool create operation.
+        :param disk_pool_create_payload: Request payload for Disk pool create operation.
         :type disk_pool_create_payload: ~storage_pool_management.models.DiskPoolCreate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
@@ -375,13 +375,13 @@ class DiskPoolsOperations:
         disk_pool_update_payload: "models.DiskPoolUpdate",
         **kwargs
     ) -> AsyncLROPoller["models.DiskPool"]:
-        """Update a Disk Pool.
+        """Update a Disk pool.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param disk_pool_name: The name of the Disk Pool.
+        :param disk_pool_name: The name of the Disk pool.
         :type disk_pool_name: str
-        :param disk_pool_update_payload: Request payload for Disk Pool update operation.
+        :param disk_pool_update_payload: Request payload for Disk pool update operation.
         :type disk_pool_update_payload: ~storage_pool_management.models.DiskPoolUpdate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
@@ -490,11 +490,11 @@ class DiskPoolsOperations:
         disk_pool_name: str,
         **kwargs
     ) -> AsyncLROPoller[None]:
-        """Delete a Disk Pool.
+        """Delete a Disk pool.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param disk_pool_name: The name of the Disk Pool.
+        :param disk_pool_name: The name of the Disk pool.
         :type disk_pool_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
@@ -554,11 +554,11 @@ class DiskPoolsOperations:
         disk_pool_name: str,
         **kwargs
     ) -> "models.DiskPool":
-        """Get a Disk Pool.
+        """Get a Disk pool.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param disk_pool_name: The name of the Disk Pool.
+        :param disk_pool_name: The name of the Disk pool.
         :type disk_pool_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DiskPool, or the result of cls(response)

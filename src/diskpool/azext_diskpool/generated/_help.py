@@ -31,19 +31,19 @@ helps['disk-pool list'] = """
 
 helps['disk-pool show'] = """
     type: command
-    short-summary: "Get a Disk Pool."
+    short-summary: "Get a Disk pool."
     examples:
-      - name: Get Disk Pool
+      - name: Get Disk pool
         text: |-
                az disk-pool show --name "myDiskPool" --resource-group "myResourceGroup"
 """
 
 helps['disk-pool create'] = """
     type: command
-    short-summary: "Create Disk Pool."
+    short-summary: "Create Disk pool."
     parameters:
       - name: --disks
-        short-summary: "List of Azure Managed Disks to attach to a Disk Pool."
+        short-summary: "List of Azure Managed Disks to attach to a Disk pool. Can attach 8 disks at most."
         long-summary: |
             The order of this parameter is specific customized. Usage:  --disks id-value
 
@@ -51,22 +51,22 @@ helps['disk-pool create'] = """
 
             Multiple actions can be specified by using more than one --disks argument.
     examples:
-      - name: Create or Update Disk Pool
+      - name: Create or Update Disk pool
         text: |-
                az disk-pool create --location "westus" --availability-zones "1" --disks "/subscriptions/11111111-1111-1\
 111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_0" --disks \
 "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/v\
 m-name_DataDisk_1" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/prov\
-iders/Microsoft.Network/virtualNetworks/myvnet/subnets/mysubnet" --tags key="value" --name "myDiskPool" \
+iders/Microsoft.Network/virtualNetworks/myvnet/subnets/mysubnet" --tier "Basic" --tags key="value" --name "myDiskPool" \
 --resource-group "myResourceGroup"
 """
 
 helps['disk-pool update'] = """
     type: command
-    short-summary: "Update a Disk Pool."
+    short-summary: "Update a Disk pool."
     parameters:
       - name: --disks
-        short-summary: "List of Azure Managed Disks to attach to a Disk Pool."
+        short-summary: "List of Azure Managed Disks to attach to a Disk pool. Can attach 8 disks at most."
         long-summary: |
             The order of this parameter is specific customized. Usage:  --disks id-value
 
@@ -74,7 +74,7 @@ helps['disk-pool update'] = """
 
             Multiple actions can be specified by using more than one --disks argument.
     examples:
-      - name: Update Disk Pool
+      - name: Update Disk pool
         text: |-
                az disk-pool update --name "myDiskPool" --disks "/subscriptions/11111111-1111-1111-1111-111111111111/res\
 ourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_0" --disks \
@@ -84,9 +84,9 @@ m-name_DataDisk_1" --tags key="value" --resource-group "myResourceGroup"
 
 helps['disk-pool delete'] = """
     type: command
-    short-summary: "Delete a Disk Pool."
+    short-summary: "Delete a Disk pool."
     examples:
-      - name: Delete Disk Pool
+      - name: Delete Disk pool
         text: |-
                az disk-pool delete --name "myDiskPool" --resource-group "myResourceGroup"
 """
@@ -113,7 +113,7 @@ helps['disk-pool iscsi-target'] = """
 
 helps['disk-pool iscsi-target list'] = """
     type: command
-    short-summary: "Get iSCSI Targets in a Disk Pool."
+    short-summary: "Get iSCSI Targets in a Disk pool."
     examples:
       - name: List Disk Pools by Resource Group
         text: |-
@@ -122,9 +122,9 @@ helps['disk-pool iscsi-target list'] = """
 
 helps['disk-pool iscsi-target show'] = """
     type: command
-    short-summary: "Get an iSCSI Target."
+    short-summary: "Get an iSCSI target."
     examples:
-      - name: Get iSCSI Target
+      - name: Get iSCSI target
         text: |-
                az disk-pool iscsi-target show --disk-pool-name "myDiskPool" --name "myIscsiTarget" --resource-group \
 "myResourceGroup"
@@ -132,9 +132,9 @@ helps['disk-pool iscsi-target show'] = """
 
 helps['disk-pool iscsi-target create'] = """
     type: command
-    short-summary: "Create an iSCSI Target."
+    short-summary: "Create an iSCSI target."
     examples:
-      - name: Create or Update iSCSI Target
+      - name: Create or Update iSCSI target
         text: |-
                az disk-pool iscsi-target create --disk-pool-name "myDiskPool" --target-iqn \
 "iqn.2005-03.org.iscsi:server1" --tpgs "[{\\"acls\\":[{\\"credentials\\":{\\"password\\":\\"some_password\\",\\"usernam\
@@ -148,7 +148,7 @@ helps['disk-pool iscsi-target update'] = """
     type: command
     short-summary: "Update an iSCSI target."
     examples:
-      - name: Update iSCSI Target
+      - name: Update iSCSI target
         text: |-
                az disk-pool iscsi-target update --disk-pool-name "myDiskPool" --name "myIscsiTarget" --tpgs \
 "[{\\"acls\\":[{\\"credentials\\":{\\"password\\":\\"some_password\\",\\"username\\":\\"some_username\\"},\\"initiatorI\
@@ -159,9 +159,9 @@ icrosoft.Compute/disks/vm-name_DataDisk_1\\"}]}]" --resource-group "myResourceGr
 
 helps['disk-pool iscsi-target delete'] = """
     type: command
-    short-summary: "Delete an iSCSI Target."
+    short-summary: "Delete an iSCSI target."
     examples:
-      - name: Delete iSCSI Target
+      - name: Delete iSCSI target
         text: |-
                az disk-pool iscsi-target delete --disk-pool-name "myDiskPool" --name "myIscsiTarget" --resource-group \
 "myResourceGroup"

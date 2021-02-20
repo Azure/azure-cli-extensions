@@ -2,9 +2,10 @@
 
 Release History
 ===============
-0.2.0
+
+0.1.1
 ++++++
-* Refine the command interface
+* Add --tier support.
 
 0.1.0
 ++++++

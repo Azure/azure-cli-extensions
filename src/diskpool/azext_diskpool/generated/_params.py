@@ -12,6 +12,7 @@
 
 from azure.cli.core.commands.parameters import (
     tags_type,
+    get_enum_type,
     resource_group_name_type,
     get_location_type
 )
@@ -33,75 +34,77 @@ def load_arguments(self, _):
     with self.argument_context('disk-pool show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
-                   'the Disk Pool.', id_part='name')
+                   'the Disk pool.', id_part='name')
 
     with self.argument_context('disk-pool create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
-                   'the Disk Pool.')
+                   'the Disk pool.')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('availability_zones', nargs='+', help='Logical zone for Disk Pool resource; example: ["1"].')
+        c.argument('availability_zones', nargs='+', help='Logical zone for Disk pool resource; example: ["1"].')
         c.argument('disks', action=AddDiskPoolCreateDisks, nargs='+', help='List of Azure Managed Disks to attach to a '
-                   'Disk Pool.')
-        c.argument('subnet_id', type=str, help='Azure Resource ID of a Subnet for the Disk Pool.')
-        c.argument('additional_capabilities', nargs='+', help='List of additional capabilities for a Disk Pool.')
+                   'Disk pool. Can attach 8 disks at most.')
+        c.argument('subnet_id', type=str, help='Azure Resource ID of a Subnet for the Disk pool.')
+        c.argument('additional_capabilities', nargs='+', help='List of additional capabilities for a Disk pool.')
+        c.argument('tier', arg_type=get_enum_type(['Basic', 'Standard', 'Premium']), help='Determines the SKU of VM '
+                   'deployed for Disk pool')
 
     with self.argument_context('disk-pool update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
-                   'the Disk Pool.', id_part='name')
+                   'the Disk pool.', id_part='name')
         c.argument('tags', tags_type)
         c.argument('disks', action=AddDiskPoolUpdateDisks, nargs='+', help='List of Azure Managed Disks to attach to a '
-                   'Disk Pool.')
+                   'Disk pool. Can attach 8 disks at most.')
 
     with self.argument_context('disk-pool delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
-                   'the Disk Pool.', id_part='name')
+                   'the Disk pool.', id_part='name')
 
     with self.argument_context('disk-pool wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
-                   'the Disk Pool.', id_part='name')
+                   'the Disk pool.', id_part='name')
 
     with self.argument_context('disk-pool iscsi-target list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('disk_pool_name', type=str, help='The name of the Disk Pool.')
+        c.argument('disk_pool_name', type=str, help='The name of the Disk pool.')
 
     with self.argument_context('disk-pool iscsi-target show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('disk_pool_name', type=str, help='The name of the Disk Pool.', id_part='name')
+        c.argument('disk_pool_name', type=str, help='The name of the Disk pool.', id_part='name')
         c.argument('iscsi_target_name', options_list=['--name', '-n', '--iscsi-target-name'], type=str, help='The name '
                    'of the iSCSI target.', id_part='child_name_1')
 
     with self.argument_context('disk-pool iscsi-target create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('disk_pool_name', type=str, help='The name of the Disk Pool.')
+        c.argument('disk_pool_name', type=str, help='The name of the Disk pool.')
         c.argument('iscsi_target_name', options_list=['--name', '-n', '--iscsi-target-name'], type=str, help='The name '
                    'of the iSCSI target.')
-        c.argument('tpgs', type=validate_file_or_dict, help='List of iSCSI target portal groups. Expected value: '
-                   'json-string/@json-file.')
+        c.argument('tpgs', type=validate_file_or_dict, help='List of iSCSI target portal groups. Can have 1 portal '
+                   'group at most. Expected value: json-string/@json-file.')
         c.argument('target_iqn', type=str, help='iSCSI target IQN (iSCSI Qualified Name); example: '
                    '"iqn.2005-03.org.iscsi:server".')
 
     with self.argument_context('disk-pool iscsi-target update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('disk_pool_name', type=str, help='The name of the Disk Pool.', id_part='name')
+        c.argument('disk_pool_name', type=str, help='The name of the Disk pool.', id_part='name')
         c.argument('iscsi_target_name', options_list=['--name', '-n', '--iscsi-target-name'], type=str, help='The name '
                    'of the iSCSI target.', id_part='child_name_1')
-        c.argument('tpgs', type=validate_file_or_dict, help='List of iSCSI target portal groups. Expected value: '
-                   'json-string/@json-file.')
+        c.argument('tpgs', type=validate_file_or_dict, help='List of iSCSI target portal groups. Can have 1 portal '
+                   'group at most. Expected value: json-string/@json-file.')
 
     with self.argument_context('disk-pool iscsi-target delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('disk_pool_name', type=str, help='The name of the Disk Pool.', id_part='name')
+        c.argument('disk_pool_name', type=str, help='The name of the Disk pool.', id_part='name')
         c.argument('iscsi_target_name', options_list=['--name', '-n', '--iscsi-target-name'], type=str, help='The name '
                    'of the iSCSI target.', id_part='child_name_1')
 
     with self.argument_context('disk-pool iscsi-target wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('disk_pool_name', type=str, help='The name of the Disk Pool.', id_part='name')
+        c.argument('disk_pool_name', type=str, help='The name of the Disk pool.', id_part='name')
         c.argument('iscsi_target_name', options_list=['--name', '-n', '--iscsi-target-name'], type=str, help='The name '
                    'of the iSCSI target.', id_part='child_name_1')

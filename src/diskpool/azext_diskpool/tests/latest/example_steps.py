@@ -21,6 +21,7 @@ def step_create_required(test, rg, checks=None):
              '--availability-zones "{zone}" '
              '--subnet-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetw'
              'orks/{vn}/subnets/default" '
+             '--tier "Basic" '
              '--name "{myDiskPool}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -40,6 +41,7 @@ def step_create(test, rg, checks=None):
              '--disks "{myDisk1}" '
              '--disks "{myDisk2}" '
              '--subnet-id "{subnet}" '
+             '--tier "Basic" '
              '--tags "{tag}" '
              '--name "{myDiskPool}" '
              '--resource-group "{rg}"',

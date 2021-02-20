@@ -54,11 +54,11 @@ class IscsiTargetsOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> Iterable["models.IscsiTargetList"]
-        """Get iSCSI Targets in a Disk Pool.
+        """Get iSCSI Targets in a Disk pool.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param disk_pool_name: The name of the Disk Pool.
+        :param disk_pool_name: The name of the Disk pool.
         :type disk_pool_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either IscsiTargetList or the result of cls(response)
@@ -167,7 +167,7 @@ class IscsiTargetsOperations(object):
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 202]:
+        if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.Error, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
@@ -175,7 +175,7 @@ class IscsiTargetsOperations(object):
         if response.status_code == 200:
             deserialized = self._deserialize('IscsiTarget', pipeline_response)
 
-        if response.status_code == 202:
+        if response.status_code == 201:
             deserialized = self._deserialize('IscsiTarget', pipeline_response)
 
         if cls:
@@ -193,11 +193,11 @@ class IscsiTargetsOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["models.IscsiTarget"]
-        """Create or Update an iSCSI Target.
+        """Create or Update an iSCSI target.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param disk_pool_name: The name of the Disk Pool.
+        :param disk_pool_name: The name of the Disk pool.
         :type disk_pool_name: str
         :param iscsi_target_name: The name of the iSCSI target.
         :type iscsi_target_name: str
@@ -335,7 +335,7 @@ class IscsiTargetsOperations(object):
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param disk_pool_name: The name of the Disk Pool.
+        :param disk_pool_name: The name of the Disk pool.
         :type disk_pool_name: str
         :param iscsi_target_name: The name of the iSCSI target.
         :type iscsi_target_name: str
@@ -455,11 +455,11 @@ class IscsiTargetsOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller[None]
-        """Delete an iSCSI Target.
+        """Delete an iSCSI target.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param disk_pool_name: The name of the Disk Pool.
+        :param disk_pool_name: The name of the Disk pool.
         :type disk_pool_name: str
         :param iscsi_target_name: The name of the iSCSI target.
         :type iscsi_target_name: str
@@ -525,11 +525,11 @@ class IscsiTargetsOperations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.IscsiTarget"
-        """Get an iSCSI Target.
+        """Get an iSCSI target.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param disk_pool_name: The name of the Disk Pool.
+        :param disk_pool_name: The name of the Disk pool.
         :type disk_pool_name: str
         :param iscsi_target_name: The name of the iSCSI target.
         :type iscsi_target_name: str

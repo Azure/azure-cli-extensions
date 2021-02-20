@@ -56,19 +56,11 @@ def call_scenario(test, rg):
         test.check("name", "{myDiskPool}", case_sensitive=False),
         test.check("disks", None)
     ])
-    step_update(test, rg, checks=[
-        test.check("availabilityZones[0]", "{zone}", case_sensitive=False),
-        test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtua"
-                   "lNetworks/{vn}/subnets/default", case_sensitive=False),
-        test.check("name", "{myDiskPool}", case_sensitive=False),
-        test.check("tags.key", "value"),
-        test.check("disks[0].id", "{myDisk}")
-    ])
-    test.kwargs['myDiskPool'] = test.create_random_name(prefix='newpool', length=10),
     step_create(test, rg, checks=[
         test.check("availabilityZones[0]", "{zone}", case_sensitive=False),
         test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtua"
                    "lNetworks/{vn}/subnets/default", case_sensitive=False),
+        test.check("tier", "Basic", case_sensitive=False),
         test.check("name", "{myDiskPool}", case_sensitive=False),
         test.check("disks[0].id", "{myDisk1}"),
         test.check("disks[1].id", "{myDisk2}")
@@ -77,6 +69,7 @@ def call_scenario(test, rg):
         test.check("availabilityZones[0]", "{zone}", case_sensitive=False),
         test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtua"
                    "lNetworks/{vn}/subnets/default", case_sensitive=False),
+        test.check("tier", "Basic", case_sensitive=False),
         test.check("name", "{myDiskPool}", case_sensitive=False),
     ])
     step_list(test, rg, checks=[
@@ -91,6 +84,16 @@ def call_scenario(test, rg):
                    "lNetworks/{vn}/subnets/default", case_sensitive=False),
         test.check("name", "{myDiskPool}", case_sensitive=False),
     ])
+    step_update(test, rg, checks=[
+        test.check("availabilityZones[0]", "{zone}", case_sensitive=False),
+        test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtua"
+                   "lNetworks/{vn}/subnets/default", case_sensitive=False),
+        test.check("tier", "Basic", case_sensitive=False),
+        test.check("name", "{myDiskPool}", case_sensitive=False),
+        test.check("tags.key", "value"),
+        test.check("disks[0].id", "{myDisk}")
+    ])
+    test.kwargs['myDiskPool'] = test.create_random_name(prefix='newpool', length=10),
     step_iscsi_target_create(test, rg, checks=[
         test.check("targetIqn", "iqn.2005-03.org.iscsi:server1", case_sensitive=False),
         test.check("name", "{myIscsiTarget}", case_sensitive=False),
@@ -122,10 +125,10 @@ class DiskpoolScenarioTest(ScenarioTest):
         })
 
         self.kwargs.update({
-            'myDiskPool': self.create_random_name(prefix='myDiskPool'[:5], length=10),
-            'myIscsiTarget': self.create_random_name(prefix='myIscsiTarget'[:6], length=13),
             'myDisk': self.create_random_name(prefix='disk', length=10),
-            'zone': "3"
+            'zone': "3",
+            'myDiskPool': self.create_random_name(prefix='diskpool', length=10),
+            'myIscsiTarget': self.create_random_name(prefix='iscsi', length=10),
         })
 
     @ResourceGroupPreparer(name_prefix='clitestdiskpool_myResourceGroup'[:7], key='rg', parameter_name='rg')

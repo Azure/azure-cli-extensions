@@ -11,7 +11,7 @@ import msrest.serialization
 
 
 class Acl(msrest.serialization.Model):
-    """Access Control List (ACL) for an iSCSI Target Portal Group.
+    """Access Control List (ACL) for an iSCSI target portal group.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -54,7 +54,7 @@ class Acl(msrest.serialization.Model):
 
 
 class Attributes(msrest.serialization.Model):
-    """Attributes of a iSCSI Target Portal Group.
+    """Attributes of a iSCSI target portal group.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -85,7 +85,7 @@ class Attributes(msrest.serialization.Model):
 
 
 class Disk(msrest.serialization.Model):
-    """Azure Managed Disk to attach to the Disk Pool.
+    """Azure Managed Disk to attach to the Disk pool.
 
     All required parameters must be populated in order to send to Azure.
 
@@ -192,7 +192,7 @@ class TrackedResource(Resource):
 
 
 class DiskPool(TrackedResource):
-    """Response for Disk Pool request.
+    """Response for Disk pool request.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -216,17 +216,21 @@ class DiskPool(TrackedResource):
      include: "Invalid", "Succeeded", "Failed", "Canceled", "Pending", "Creating", "Updating",
      "Deleting".
     :vartype provisioning_state: str or ~storage_pool_management.models.ProvisioningStates
-    :param availability_zones: Required. Logical zone for Disk Pool resource; example: ["1"].
+    :param availability_zones: Required. Logical zone for Disk pool resource; example: ["1"].
     :type availability_zones: list[str]
-    :ivar status: Required. Operational status of the Disk Pool. Possible values include:
-     "Invalid", "Unknown", "Healthy", "Unhealthy".
-    :vartype status: str or ~storage_pool_management.models.OperationalStatus
-    :param disks: List of Azure Managed Disks to attach to a Disk Pool.
+    :param status: Required. Operational status of the Disk pool. Possible values include:
+     "Invalid", "Unknown", "Healthy", "Unhealthy", "Updating", "Running", "Stopped", "Stopped
+     (deallocated)".
+    :type status: str or ~storage_pool_management.models.OperationalStatus
+    :param disks: List of Azure Managed Disks to attach to a Disk pool. Can attach 8 disks at most.
     :type disks: list[~storage_pool_management.models.Disk]
-    :param subnet_id: Required. Azure Resource ID of a Subnet for the Disk Pool.
+    :param subnet_id: Required. Azure Resource ID of a Subnet for the Disk pool.
     :type subnet_id: str
-    :param additional_capabilities: List of additional capabilities for Disk Pool.
+    :param additional_capabilities: List of additional capabilities for Disk pool.
     :type additional_capabilities: list[str]
+    :param tier: Required. Determines the SKU of VM deployed for Disk pool. Possible values
+     include: "Basic", "Standard", "Premium".
+    :type tier: str or ~storage_pool_management.models.DiskPoolTier
     """
 
     _validation = {
@@ -237,8 +241,9 @@ class DiskPool(TrackedResource):
         'system_data': {'readonly': True},
         'provisioning_state': {'required': True, 'readonly': True},
         'availability_zones': {'required': True},
-        'status': {'required': True, 'readonly': True},
+        'status': {'required': True},
         'subnet_id': {'required': True},
+        'tier': {'required': True},
     }
 
     _attribute_map = {
@@ -254,6 +259,7 @@ class DiskPool(TrackedResource):
         'disks': {'key': 'properties.disks', 'type': '[Disk]'},
         'subnet_id': {'key': 'properties.subnetId', 'type': 'str'},
         'additional_capabilities': {'key': 'properties.additionalCapabilities', 'type': '[str]'},
+        'tier': {'key': 'properties.tier', 'type': 'str'},
     }
 
     def __init__(
@@ -264,19 +270,24 @@ class DiskPool(TrackedResource):
         self.system_data = None
         self.provisioning_state = None
         self.availability_zones = kwargs['availability_zones']
-        self.status = None
+        self.status = kwargs['status']
         self.disks = kwargs.get('disks', None)
         self.subnet_id = kwargs['subnet_id']
         self.additional_capabilities = kwargs.get('additional_capabilities', None)
+        self.tier = kwargs['tier']
 
 
-class DiskPoolCreate(TrackedResource):
-    """Request payload for create or update Disk Pool request.
+class DiskPoolCreate(msrest.serialization.Model):
+    """Request payload for create or update Disk pool request.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     All required parameters must be populated in order to send to Azure.
 
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param location: Required. The geo-location where the resource lives.
+    :type location: str
     :ivar id: Fully qualified resource Id for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
@@ -285,39 +296,40 @@ class DiskPoolCreate(TrackedResource):
     :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
      Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :param tags: A set of tags. Resource tags.
-    :type tags: dict[str, str]
-    :param location: Required. The geo-location where the resource lives.
-    :type location: str
-    :param availability_zones: Required. Logical zone for Disk Pool resource; example: ["1"].
+    :param availability_zones: Required. Logical zone for Disk pool resource; example: ["1"].
     :type availability_zones: list[str]
-    :param disks: List of Azure Managed Disks to attach to a Disk Pool.
+    :param disks: List of Azure Managed Disks to attach to a Disk pool. Can attach 8 disks at most.
     :type disks: list[~storage_pool_management.models.Disk]
-    :param subnet_id: Required. Azure Resource ID of a Subnet for the Disk Pool.
+    :param subnet_id: Required. Azure Resource ID of a Subnet for the Disk pool.
     :type subnet_id: str
-    :param additional_capabilities: List of additional capabilities for a Disk Pool.
+    :param additional_capabilities: List of additional capabilities for a Disk pool.
     :type additional_capabilities: list[str]
+    :param tier: Required. Determines the SKU of VM deployed for Disk pool. Possible values
+     include: "Basic", "Standard", "Premium".
+    :type tier: str or ~storage_pool_management.models.DiskPoolTier
     """
 
     _validation = {
+        'location': {'required': True},
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
-        'location': {'required': True},
         'availability_zones': {'required': True},
         'subnet_id': {'required': True},
+        'tier': {'required': True},
     }
 
     _attribute_map = {
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'location': {'key': 'location', 'type': 'str'},
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'location': {'key': 'location', 'type': 'str'},
         'availability_zones': {'key': 'properties.availabilityZones', 'type': '[str]'},
         'disks': {'key': 'properties.disks', 'type': '[Disk]'},
         'subnet_id': {'key': 'properties.subnetId', 'type': 'str'},
         'additional_capabilities': {'key': 'properties.additionalCapabilities', 'type': '[str]'},
+        'tier': {'key': 'properties.tier', 'type': 'str'},
     }
 
     def __init__(
@@ -325,10 +337,16 @@ class DiskPoolCreate(TrackedResource):
         **kwargs
     ):
         super(DiskPoolCreate, self).__init__(**kwargs)
+        self.tags = kwargs.get('tags', None)
+        self.location = kwargs['location']
+        self.id = None
+        self.name = None
+        self.type = None
         self.availability_zones = kwargs['availability_zones']
         self.disks = kwargs.get('disks', None)
         self.subnet_id = kwargs['subnet_id']
         self.additional_capabilities = kwargs.get('additional_capabilities', None)
+        self.tier = kwargs['tier']
 
 
 class DiskPoolListResult(msrest.serialization.Model):
@@ -338,7 +356,7 @@ class DiskPoolListResult(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param value: Required. An array of Disk Pool objects.
+    :param value: Required. An array of Disk pool objects.
     :type value: list[~storage_pool_management.models.DiskPool]
     :ivar next_link: URI to fetch the next section of the paginated response.
     :vartype next_link: str
@@ -364,11 +382,11 @@ class DiskPoolListResult(msrest.serialization.Model):
 
 
 class DiskPoolUpdate(msrest.serialization.Model):
-    """Request payload for Update Disk Pool request.
+    """Request payload for Update Disk pool request.
 
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
-    :param disks: List of Azure Managed Disks to attach to a Disk Pool.
+    :param disks: List of Azure Managed Disks to attach to a Disk pool. Can attach 8 disks at most.
     :type disks: list[~storage_pool_management.models.Disk]
     """
 
@@ -511,7 +529,7 @@ class IscsiLun(msrest.serialization.Model):
 
 
 class IscsiTarget(Resource):
-    """Response for iSCSI Target requests.
+    """Response for iSCSI target requests.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -529,10 +547,11 @@ class IscsiTarget(Resource):
      include: "Invalid", "Succeeded", "Failed", "Canceled", "Pending", "Creating", "Updating",
      "Deleting".
     :vartype provisioning_state: str or ~storage_pool_management.models.ProvisioningStates
-    :ivar status: Required. Operational status of the iSCSI Target. Possible values include:
-     "Invalid", "Unknown", "Healthy", "Unhealthy".
-    :vartype status: str or ~storage_pool_management.models.OperationalStatus
-    :param tpgs: Required. List of iSCSI target portal groups.
+    :param status: Required. Operational status of the iSCSI target. Possible values include:
+     "Invalid", "Unknown", "Healthy", "Unhealthy", "Updating", "Running", "Stopped", "Stopped
+     (deallocated)".
+    :type status: str or ~storage_pool_management.models.OperationalStatus
+    :param tpgs: Required. List of iSCSI target portal groups. Can have 1 portal group at most.
     :type tpgs: list[~storage_pool_management.models.TargetPortalGroup]
     :param target_iqn: Required. iSCSI target IQN (iSCSI Qualified Name); example:
      "iqn.2005-03.org.iscsi:server".
@@ -544,7 +563,7 @@ class IscsiTarget(Resource):
         'name': {'readonly': True},
         'type': {'readonly': True},
         'provisioning_state': {'required': True, 'readonly': True},
-        'status': {'required': True, 'readonly': True},
+        'status': {'required': True},
         'tpgs': {'required': True},
         'target_iqn': {'required': True},
     }
@@ -565,13 +584,13 @@ class IscsiTarget(Resource):
     ):
         super(IscsiTarget, self).__init__(**kwargs)
         self.provisioning_state = None
-        self.status = None
+        self.status = kwargs['status']
         self.tpgs = kwargs['tpgs']
         self.target_iqn = kwargs['target_iqn']
 
 
 class IscsiTargetCreate(Resource):
-    """Payload for iSCSI Target create or update requests.
+    """Payload for iSCSI target create or update requests.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -585,9 +604,9 @@ class IscsiTargetCreate(Resource):
     :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
      Microsoft.Storage/storageAccounts.
     :vartype type: str
-    :param tpgs: Required. List of iSCSI target portal groups.
+    :param tpgs: Required. List of iSCSI target portal groups. Can have 1 portal group at most.
     :type tpgs: list[~storage_pool_management.models.TargetPortalGroupCreate]
-    :param target_iqn: Required. iSCSI target IQN (iSCSI Qualified Name); example:
+    :param target_iqn: iSCSI target IQN (iSCSI Qualified Name); example:
      "iqn.2005-03.org.iscsi:server".
     :type target_iqn: str
     """
@@ -597,7 +616,6 @@ class IscsiTargetCreate(Resource):
         'name': {'readonly': True},
         'type': {'readonly': True},
         'tpgs': {'required': True},
-        'target_iqn': {'required': True},
     }
 
     _attribute_map = {
@@ -614,7 +632,7 @@ class IscsiTargetCreate(Resource):
     ):
         super(IscsiTargetCreate, self).__init__(**kwargs)
         self.tpgs = kwargs['tpgs']
-        self.target_iqn = kwargs['target_iqn']
+        self.target_iqn = kwargs.get('target_iqn', None)
 
 
 class IscsiTargetList(msrest.serialization.Model):
@@ -624,7 +642,7 @@ class IscsiTargetList(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param value: Required. An array of iSCSI targets in a Disk Pool.
+    :param value: Required. An array of iSCSI targets in a Disk pool.
     :type value: list[~storage_pool_management.models.IscsiTarget]
     :ivar next_link: URI to fetch the next section of the paginated response.
     :vartype next_link: str
@@ -650,11 +668,11 @@ class IscsiTargetList(msrest.serialization.Model):
 
 
 class IscsiTargetUpdate(msrest.serialization.Model):
-    """Payload for iSCSI Target update request.
+    """Payload for iSCSI target update request.
 
     All required parameters must be populated in order to send to Azure.
 
-    :param tpgs: Required. List of iSCSI target portal groups.
+    :param tpgs: Required. List of iSCSI target portal groups. Can have 1 portal group at most.
     :type tpgs: list[~storage_pool_management.models.TargetPortalGroupUpdate]
     """
 
@@ -868,31 +886,29 @@ class SystemMetadata(msrest.serialization.Model):
 class TargetPortalGroup(msrest.serialization.Model):
     """Response properties for iSCSI target portal group.
 
-    Variables are only populated by the server, and will be ignored when sending a request.
-
     All required parameters must be populated in order to send to Azure.
 
-    :param luns: Required. List of LUNs to be exposed through iSCSI Target Portal Group.
+    :param luns: Required. List of LUNs to be exposed through iSCSI target portal group.
     :type luns: list[~storage_pool_management.models.IscsiLun]
-    :param acls: Required. Access Control List (ACL) for an iSCSI Target Portal Group.
+    :param acls: Required. Access Control List (ACL) for an iSCSI target portal group.
     :type acls: list[~storage_pool_management.models.Acl]
-    :param attributes: Required. Attributes of an iSCSI Target Portal Group.
+    :param attributes: Required. Attributes of an iSCSI target portal group.
     :type attributes: ~storage_pool_management.models.Attributes
-    :ivar endpoints: Required. List of private IPv4 addresses to connect to the iSCSI Target.
-    :vartype endpoints: list[str]
-    :ivar tag: Required. The tag associated with the iSCSI Target Portal Group.
-    :vartype tag: int
-    :ivar port: Required. The port used by iSCSI Target Portal Group.
-    :vartype port: int
+    :param endpoints: Required. List of private IPv4 addresses to connect to the iSCSI target.
+    :type endpoints: list[str]
+    :param tag: Required. The tag associated with the iSCSI target portal group.
+    :type tag: int
+    :param port: Required. The port used by iSCSI target portal group.
+    :type port: int
     """
 
     _validation = {
         'luns': {'required': True},
         'acls': {'required': True},
         'attributes': {'required': True},
-        'endpoints': {'required': True, 'readonly': True},
-        'tag': {'required': True, 'readonly': True},
-        'port': {'required': True, 'readonly': True},
+        'endpoints': {'required': True},
+        'tag': {'required': True},
+        'port': {'required': True},
     }
 
     _attribute_map = {
@@ -912,21 +928,21 @@ class TargetPortalGroup(msrest.serialization.Model):
         self.luns = kwargs['luns']
         self.acls = kwargs['acls']
         self.attributes = kwargs['attributes']
-        self.endpoints = None
-        self.tag = None
-        self.port = None
+        self.endpoints = kwargs['endpoints']
+        self.tag = kwargs['tag']
+        self.port = kwargs['port']
 
 
 class TargetPortalGroupCreate(msrest.serialization.Model):
-    """Target Portal Group properties for create or update iSCSI target request.
+    """Target portal group properties for create or update iSCSI target request.
 
     All required parameters must be populated in order to send to Azure.
 
-    :param luns: Required. List of LUNs to be exposed through the iSCSI Target Portal Group.
+    :param luns: Required. List of LUNs to be exposed through the iSCSI target portal group.
     :type luns: list[~storage_pool_management.models.IscsiLun]
-    :param acls: Required. Access Control List (ACL) for an iSCSI Target Portal Group.
+    :param acls: Required. Access Control List (ACL) for an iSCSI target portal group.
     :type acls: list[~storage_pool_management.models.Acl]
-    :param attributes: Required. Attributes of an iSCSI Target Portal Group.
+    :param attributes: Required. Attributes of an iSCSI target portal group.
     :type attributes: ~storage_pool_management.models.Attributes
     """
 
@@ -953,11 +969,11 @@ class TargetPortalGroupCreate(msrest.serialization.Model):
 
 
 class TargetPortalGroupUpdate(msrest.serialization.Model):
-    """Target Portal Group properties for update iSCSI target request.
+    """Target portal group properties for update iSCSI target request.
 
-    :param luns: List of LUNs to be exposed through the iSCSI Target Portal Group.
+    :param luns: List of LUNs to be exposed through the iSCSI target portal group.
     :type luns: list[~storage_pool_management.models.IscsiLun]
-    :param acls: Access Control List (ACL) for an iSCSI Target Portal Group.
+    :param acls: Access Control List (ACL) for an iSCSI target portal group.
     :type acls: list[~storage_pool_management.models.Acl]
     """
 

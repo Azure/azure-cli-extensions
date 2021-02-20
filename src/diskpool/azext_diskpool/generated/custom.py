@@ -32,6 +32,7 @@ def disk_pool_create(client,
                      location,
                      availability_zones,
                      subnet_id,
+                     tier,
                      tags=None,
                      disks=None,
                      additional_capabilities=None,
@@ -43,6 +44,7 @@ def disk_pool_create(client,
     disk_pool_create_payload['disks'] = disks
     disk_pool_create_payload['subnet_id'] = subnet_id
     disk_pool_create_payload['additional_capabilities'] = additional_capabilities
+    disk_pool_create_payload['tier'] = tier
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
@@ -97,7 +99,7 @@ def disk_pool_iscsi_target_create(client,
                                   disk_pool_name,
                                   iscsi_target_name,
                                   tpgs,
-                                  target_iqn,
+                                  target_iqn=None,
                                   no_wait=False):
     iscsi_target_create_payload = {}
     iscsi_target_create_payload['tpgs'] = tpgs

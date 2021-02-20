@@ -60,6 +60,7 @@ except (SyntaxError, ImportError):
     from ._models import TrackedResource  # type: ignore
 
 from ._storage_pool_management_enums import (
+    DiskPoolTier,
     OperationalStatus,
     ProvisioningStates,
 )
@@ -90,6 +91,7 @@ __all__ = [
     'TargetPortalGroupCreate',
     'TargetPortalGroupUpdate',
     'TrackedResource',
+    'DiskPoolTier',
     'OperationalStatus',
     'ProvisioningStates',
 ]

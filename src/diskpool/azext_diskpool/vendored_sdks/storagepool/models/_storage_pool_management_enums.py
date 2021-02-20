@@ -26,17 +26,29 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
+class DiskPoolTier(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """SKU of the VM host part of the Disk pool deployment
+    """
+
+    BASIC = "Basic"
+    STANDARD = "Standard"
+    PREMIUM = "Premium"
+
 class OperationalStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Operational status of the Disk Pool.
+    """Operational status of the resource.
     """
 
     INVALID = "Invalid"
     UNKNOWN = "Unknown"
     HEALTHY = "Healthy"
     UNHEALTHY = "Unhealthy"
+    UPDATING = "Updating"
+    RUNNING = "Running"
+    STOPPED = "Stopped"
+    STOPPED_DEALLOCATED__ = "Stopped (deallocated)"
 
 class ProvisioningStates(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Provisioning state of the iSCSI Target.
+    """Provisioning state of the iSCSI target.
     """
 
     INVALID = "Invalid"
