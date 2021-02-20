@@ -70,7 +70,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25?api-version=2021-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25","name":"clitest-movecollection-25","type":"Microsoft.Migrate/moveCollections","etag":"\"5200ff75-0000-0200-0000-601d16390000\"","location":"eastus2","properties":{"sourceRegion":"eastus","targetRegion":"westus","provisioningState":"Succeeded","errors":null},"identity":{"principalId":"262660a4-1a35-40dc-94b5-9de57ea34b28","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"}}'
@@ -551,13 +551,13 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource?api-version=2021-01-01
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/82666347-9582-4f50-a3df-00ba1f0da25f?api-version=2019-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/82666347-9582-4f50-a3df-00ba1f0da25f?api-version=2021-01-01
       cache-control:
       - no-cache
       content-length:
@@ -596,7 +596,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/82666347-9582-4f50-a3df-00ba1f0da25f?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/82666347-9582-4f50-a3df-00ba1f0da25f?api-version=2021-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/82666347-9582-4f50-a3df-00ba1f0da25f","name":"82666347-9582-4f50-a3df-00ba1f0da25f","status":"Succeeded","startTime":"2/5/2021
@@ -642,7 +642,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource?api-version=2021-01-01
   response:
     body:
       string: '{"name":"vnet-as-move-resource","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource","type":null,"properties":{"provisioningState":"Succeeded","isResolveRequired":false,"sourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region","targetId":null,"existingTargetId":null,"resourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":null,"dnsServers":null,"subnets":null,"targetResourceName":"vnet-in-target-region"},"moveStatus":{"moveState":"PreparePending","jobStatus":null,"errors":{"properties":{"code":"DependencyComputationPending","message":"The
@@ -696,13 +696,13 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource?api-version=2021-01-01
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/6d08acf0-1c5b-4bc0-b74a-42fb9f96ed4e?api-version=2019-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/6d08acf0-1c5b-4bc0-b74a-42fb9f96ed4e?api-version=2021-01-01
       cache-control:
       - no-cache
       content-length:
@@ -741,7 +741,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/6d08acf0-1c5b-4bc0-b74a-42fb9f96ed4e?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/6d08acf0-1c5b-4bc0-b74a-42fb9f96ed4e?api-version=2021-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/6d08acf0-1c5b-4bc0-b74a-42fb9f96ed4e","name":"6d08acf0-1c5b-4bc0-b74a-42fb9f96ed4e","status":"Succeeded","startTime":"2/5/2021
@@ -787,7 +787,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource?api-version=2021-01-01
   response:
     body:
       string: '{"name":"rg-as-move-resource","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource","type":null,"properties":{"provisioningState":"Succeeded","isResolveRequired":false,"sourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg","targetId":null,"existingTargetId":null,"resourceSettings":{"resourceType":"resourceGroups","targetResourceName":"clitest_resourcemover_target_rg"},"moveStatus":{"moveState":"PreparePending","jobStatus":null,"errors":{"properties":{"code":"DependencyComputationPending","message":"The
@@ -835,7 +835,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/requiredFor?sourceId=%2Fsubscriptions%2F00000000-0000-0000-0000-000000000000%2FresourceGroups%2Fclitest_resourcemover_source_rg%2Fproviders%2FMicrosoft.Network%2FvirtualNetworks%2Fvnet-in-source-region&api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/requiredFor?sourceId=%2Fsubscriptions%2F00000000-0000-0000-0000-000000000000%2FresourceGroups%2Fclitest_resourcemover_source_rg%2Fproviders%2FMicrosoft.Network%2FvirtualNetworks%2Fvnet-in-source-region&api-version=2021-01-01
   response:
     body:
       string: '{"sourceIds":[]}'
@@ -880,7 +880,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/unresolvedDependencies?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/unresolvedDependencies?api-version=2021-01-01
   response:
     body:
       string: '{"value":[],"totalCount":0,"nextLink":null,"summaryCollection":{"fieldName":null,"summary":[]}}'
@@ -927,13 +927,13 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/resolveDependencies?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/resolveDependencies?api-version=2021-01-01
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/415c7e27-4f60-4ab2-a239-64f8f1df63b6?api-version=2019-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/415c7e27-4f60-4ab2-a239-64f8f1df63b6?api-version=2021-01-01
       cache-control:
       - no-cache
       content-length:
@@ -972,7 +972,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/415c7e27-4f60-4ab2-a239-64f8f1df63b6?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/415c7e27-4f60-4ab2-a239-64f8f1df63b6?api-version=2021-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/415c7e27-4f60-4ab2-a239-64f8f1df63b6","name":"415c7e27-4f60-4ab2-a239-64f8f1df63b6","status":"Succeeded","startTime":"2/5/2021
@@ -1018,7 +1018,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources?api-version=2021-01-01
   response:
     body:
       string: '{"value":[{"name":"vnet-as-move-resource","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource","type":null,"properties":{"provisioningState":"Succeeded","isResolveRequired":false,"sourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region","targetId":null,"existingTargetId":null,"resourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":null,"dnsServers":null,"subnets":null,"targetResourceName":"vnet-in-target-region"},"moveStatus":{"moveState":"PreparePending","jobStatus":null,"errors":null},"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_resourcemover_source_rg","resolutionStatus":"Resolved","resolutionType":"Automatic","manualResolution":null,"automaticResolution":{"moveResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource"},"dependencyType":"RequiredForMove","isOptional":"False"}],"dependsOnOverrides":[],"errors":null,"sourceResourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":["10.0.0.0/16"],"dnsServers":[],"subnets":[],"targetResourceName":"vnet-in-source-region"}}},{"name":"rg-as-move-resource","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource","type":null,"properties":{"provisioningState":"Succeeded","isResolveRequired":false,"sourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg","targetId":null,"existingTargetId":null,"resourceSettings":{"resourceType":"resourceGroups","targetResourceName":"clitest_resourcemover_target_rg"},"moveStatus":{"moveState":"PreparePending","jobStatus":null,"errors":null},"dependsOn":[],"dependsOnOverrides":[],"errors":null,"sourceResourceSettings":{"resourceType":"resourceGroups","targetResourceName":"clitest_resourcemover_source_rg"}}}],"nextLink":null,"totalCount":2,"summaryCollection":null}'
@@ -1063,7 +1063,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource?api-version=2021-01-01
   response:
     body:
       string: '{"name":"vnet-as-move-resource","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource","type":null,"properties":{"provisioningState":"Succeeded","isResolveRequired":false,"sourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region","targetId":null,"existingTargetId":null,"resourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":null,"dnsServers":null,"subnets":null,"targetResourceName":"vnet-in-target-region"},"moveStatus":{"moveState":"PreparePending","jobStatus":null,"errors":null},"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_resourcemover_source_rg","resolutionStatus":"Resolved","resolutionType":"Automatic","manualResolution":null,"automaticResolution":{"moveResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource"},"dependencyType":"RequiredForMove","isOptional":"False"}],"dependsOnOverrides":[],"errors":null,"sourceResourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":["10.0.0.0/16"],"dnsServers":[],"subnets":[],"targetResourceName":"vnet-in-source-region"}}}'
@@ -1108,7 +1108,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource?api-version=2021-01-01
   response:
     body:
       string: '{"name":"rg-as-move-resource","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource","type":null,"properties":{"provisioningState":"Succeeded","isResolveRequired":false,"sourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg","targetId":null,"existingTargetId":null,"resourceSettings":{"resourceType":"resourceGroups","targetResourceName":"clitest_resourcemover_target_rg"},"moveStatus":{"moveState":"PreparePending","jobStatus":null,"errors":null},"dependsOn":[],"dependsOnOverrides":[],"errors":null,"sourceResourceSettings":{"resourceType":"resourceGroups","targetResourceName":"clitest_resourcemover_source_rg"}}}'
@@ -1158,13 +1158,13 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/prepare?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/prepare?api-version=2021-01-01
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/1733a0a0-f551-48a2-bfc5-f22d7cf837b0?api-version=2019-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/1733a0a0-f551-48a2-bfc5-f22d7cf837b0?api-version=2021-01-01
       cache-control:
       - no-cache
       content-length:
@@ -1203,7 +1203,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/1733a0a0-f551-48a2-bfc5-f22d7cf837b0?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/1733a0a0-f551-48a2-bfc5-f22d7cf837b0?api-version=2021-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/1733a0a0-f551-48a2-bfc5-f22d7cf837b0","name":"1733a0a0-f551-48a2-bfc5-f22d7cf837b0","status":"Succeeded","startTime":"2/5/2021
@@ -1249,7 +1249,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource?api-version=2021-01-01
   response:
     body:
       string: '{"name":"vnet-as-move-resource","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource","type":null,"properties":{"provisioningState":"Succeeded","isResolveRequired":false,"sourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region","targetId":null,"existingTargetId":null,"resourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":null,"dnsServers":null,"subnets":null,"targetResourceName":"vnet-in-target-region"},"moveStatus":{"moveState":"MovePending","jobStatus":null,"errors":null},"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_resourcemover_source_rg","resolutionStatus":"Resolved","resolutionType":"Automatic","manualResolution":null,"automaticResolution":{"moveResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource"},"dependencyType":"RequiredForMove","isOptional":"False"}],"dependsOnOverrides":[],"errors":null,"sourceResourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":["10.0.0.0/16"],"dnsServers":[],"subnets":[],"targetResourceName":"vnet-in-source-region"}}}'
@@ -1294,7 +1294,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource?api-version=2021-01-01
   response:
     body:
       string: '{"name":"rg-as-move-resource","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource","type":null,"properties":{"provisioningState":"Succeeded","isResolveRequired":false,"sourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg","targetId":null,"existingTargetId":null,"resourceSettings":{"resourceType":"resourceGroups","targetResourceName":"clitest_resourcemover_target_rg"},"moveStatus":{"moveState":"MovePending","jobStatus":null,"errors":null},"dependsOn":[],"dependsOnOverrides":[],"errors":null,"sourceResourceSettings":{"resourceType":"resourceGroups","targetResourceName":"clitest_resourcemover_source_rg"}}}'
@@ -1344,13 +1344,13 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/initiateMove?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/initiateMove?api-version=2021-01-01
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2019-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2021-01-01
       cache-control:
       - no-cache
       content-length:
@@ -1389,14 +1389,14 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2021-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19","name":"32b3024f-1438-40de-a056-c1383fa59f19","status":"Running","startTime":"2/5/2021
         9:57:55 AM","endTime":null,"error":null,"properties":{}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2019-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2021-01-01
       cache-control:
       - no-cache
       content-length:
@@ -1437,14 +1437,14 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2021-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19","name":"32b3024f-1438-40de-a056-c1383fa59f19","status":"Running","startTime":"2/5/2021
         9:57:55 AM","endTime":null,"error":null,"properties":{}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2019-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2021-01-01
       cache-control:
       - no-cache
       content-length:
@@ -1485,14 +1485,14 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2021-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19","name":"32b3024f-1438-40de-a056-c1383fa59f19","status":"Running","startTime":"2/5/2021
         9:57:55 AM","endTime":null,"error":null,"properties":{}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2019-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2021-01-01
       cache-control:
       - no-cache
       content-length:
@@ -1533,14 +1533,14 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2021-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19","name":"32b3024f-1438-40de-a056-c1383fa59f19","status":"Running","startTime":"2/5/2021
         9:57:55 AM","endTime":null,"error":null,"properties":{}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2019-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2021-01-01
       cache-control:
       - no-cache
       content-length:
@@ -1581,14 +1581,14 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2021-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19","name":"32b3024f-1438-40de-a056-c1383fa59f19","status":"Running","startTime":"2/5/2021
         9:57:55 AM","endTime":null,"error":null,"properties":{}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2019-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2021-01-01
       cache-control:
       - no-cache
       content-length:
@@ -1629,14 +1629,14 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2021-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19","name":"32b3024f-1438-40de-a056-c1383fa59f19","status":"Running","startTime":"2/5/2021
         9:57:55 AM","endTime":null,"error":null,"properties":{}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2019-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2021-01-01
       cache-control:
       - no-cache
       content-length:
@@ -1677,14 +1677,14 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2021-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19","name":"32b3024f-1438-40de-a056-c1383fa59f19","status":"Running","startTime":"2/5/2021
         9:57:55 AM","endTime":null,"error":null,"properties":{}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2019-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2021-01-01
       cache-control:
       - no-cache
       content-length:
@@ -1725,14 +1725,14 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2021-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19","name":"32b3024f-1438-40de-a056-c1383fa59f19","status":"Running","startTime":"2/5/2021
         9:57:55 AM","endTime":null,"error":null,"properties":{}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2019-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2021-01-01
       cache-control:
       - no-cache
       content-length:
@@ -1773,7 +1773,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19?api-version=2021-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/32b3024f-1438-40de-a056-c1383fa59f19","name":"32b3024f-1438-40de-a056-c1383fa59f19","status":"Succeeded","startTime":"2/5/2021
@@ -1819,7 +1819,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource?api-version=2021-01-01
   response:
     body:
       string: '{"name":"vnet-as-move-resource","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource","type":null,"properties":{"provisioningState":"Succeeded","isResolveRequired":false,"sourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region","targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_target_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-target-region","existingTargetId":null,"resourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":null,"dnsServers":null,"subnets":null,"targetResourceName":"vnet-in-target-region"},"moveStatus":{"moveState":"CommitPending","jobStatus":null,"errors":null},"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_resourcemover_source_rg","resolutionStatus":"Resolved","resolutionType":"Automatic","manualResolution":null,"automaticResolution":{"moveResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource"},"dependencyType":"RequiredForMove","isOptional":"False"}],"dependsOnOverrides":[],"errors":null,"sourceResourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":["10.0.0.0/16"],"dnsServers":[],"subnets":[],"targetResourceName":"vnet-in-source-region"}}}'
@@ -1864,7 +1864,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource?api-version=2021-01-01
   response:
     body:
       string: '{"name":"rg-as-move-resource","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource","type":null,"properties":{"provisioningState":"Succeeded","isResolveRequired":false,"sourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg","targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_target_rg","existingTargetId":null,"resourceSettings":{"resourceType":"resourceGroups","targetResourceName":"clitest_resourcemover_target_rg"},"moveStatus":{"moveState":"CommitPending","jobStatus":null,"errors":null},"dependsOn":[],"dependsOnOverrides":[],"errors":null,"sourceResourceSettings":{"resourceType":"resourceGroups","targetResourceName":"clitest_resourcemover_source_rg"}}}'
@@ -1914,13 +1914,13 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/commit?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/commit?api-version=2021-01-01
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/3136c04a-1c26-470e-b6b9-ec3189142d23?api-version=2019-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/3136c04a-1c26-470e-b6b9-ec3189142d23?api-version=2021-01-01
       cache-control:
       - no-cache
       content-length:
@@ -1959,7 +1959,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/3136c04a-1c26-470e-b6b9-ec3189142d23?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/3136c04a-1c26-470e-b6b9-ec3189142d23?api-version=2021-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/3136c04a-1c26-470e-b6b9-ec3189142d23","name":"3136c04a-1c26-470e-b6b9-ec3189142d23","status":"Succeeded","startTime":"2/5/2021
@@ -2005,7 +2005,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource?api-version=2021-01-01
   response:
     body:
       string: '{"name":"vnet-as-move-resource","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource","type":null,"properties":{"provisioningState":"Succeeded","isResolveRequired":false,"sourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region","targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_target_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-target-region","existingTargetId":null,"resourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":null,"dnsServers":null,"subnets":null,"targetResourceName":"vnet-in-target-region"},"moveStatus":{"moveState":"DeleteSourcePending","jobStatus":null,"errors":null},"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_resourcemover_source_rg","resolutionStatus":"Resolved","resolutionType":"Automatic","manualResolution":null,"automaticResolution":{"moveResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource"},"dependencyType":"RequiredForMove","isOptional":"False"}],"dependsOnOverrides":[],"errors":null,"sourceResourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":["10.0.0.0/16"],"dnsServers":[],"subnets":[],"targetResourceName":"vnet-in-source-region"}}}'
@@ -2050,7 +2050,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource?api-version=2021-01-01
   response:
     body:
       string: '{"name":"rg-as-move-resource","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource","type":null,"properties":{"provisioningState":"Succeeded","isResolveRequired":false,"sourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg","targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_target_rg","existingTargetId":null,"resourceSettings":{"resourceType":"resourceGroups","targetResourceName":"clitest_resourcemover_target_rg"},"moveStatus":{"moveState":"DeleteSourcePending","jobStatus":null,"errors":null},"dependsOn":[],"dependsOnOverrides":[],"errors":null,"sourceResourceSettings":{"resourceType":"resourceGroups","targetResourceName":"clitest_resourcemover_source_rg"}}}'
@@ -2365,7 +2365,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource?api-version=2021-01-01
   response:
     body:
       string: '{"name":"vnet-as-move-resource","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/vnet-as-move-resource","type":null,"properties":{"provisioningState":"Succeeded","isResolveRequired":false,"sourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-source-region","targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_target_rg/providers/Microsoft.Network/virtualNetworks/vnet-in-target-region","existingTargetId":null,"resourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":null,"dnsServers":null,"subnets":null,"targetResourceName":"vnet-in-target-region"},"moveStatus":{"moveState":"ResourceMoveCompleted","jobStatus":null,"errors":null},"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest_resourcemover_source_rg","resolutionStatus":"Resolved","resolutionType":"Automatic","manualResolution":null,"automaticResolution":{"moveResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource"},"dependencyType":"RequiredForMove","isOptional":"False"}],"dependsOnOverrides":[],"errors":null,"sourceResourceSettings":{"resourceType":"Microsoft.Network/virtualNetworks","enableDdosProtection":null,"addressSpace":["10.0.0.0/16"],"dnsServers":[],"subnets":[],"targetResourceName":"vnet-in-source-region"}}}'
@@ -2410,7 +2410,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource?api-version=2021-01-01
   response:
     body:
       string: '{"name":"rg-as-move-resource","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/moveResources/rg-as-move-resource","type":null,"properties":{"provisioningState":"Succeeded","isResolveRequired":false,"sourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_source_rg","targetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_target_rg","existingTargetId":null,"resourceSettings":{"resourceType":"resourceGroups","targetResourceName":"clitest_resourcemover_target_rg"},"moveStatus":{"moveState":"ResourceMoveCompleted","jobStatus":null,"errors":null},"dependsOn":[],"dependsOnOverrides":[],"errors":null,"sourceResourceSettings":{"resourceType":"resourceGroups","targetResourceName":"clitest_resourcemover_source_rg"}}}'
@@ -2564,13 +2564,13 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/bulkRemove?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/bulkRemove?api-version=2021-01-01
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/51295db9-2771-45ec-aea0-c04701330588?api-version=2019-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/51295db9-2771-45ec-aea0-c04701330588?api-version=2021-01-01
       cache-control:
       - no-cache
       content-length:
@@ -2609,7 +2609,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/51295db9-2771-45ec-aea0-c04701330588?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/51295db9-2771-45ec-aea0-c04701330588?api-version=2021-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/51295db9-2771-45ec-aea0-c04701330588","name":"51295db9-2771-45ec-aea0-c04701330588","status":"Succeeded","startTime":"2/5/2021
@@ -2657,13 +2657,13 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25?api-version=2021-01-01
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Migrate/locations/eastus2/rmsOperationResults/aab45ac3-fedc-4d38-bc95-732a3eac16ea?api-version=2019-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Migrate/locations/eastus2/rmsOperationResults/aab45ac3-fedc-4d38-bc95-732a3eac16ea?api-version=2021-01-01
       cache-control:
       - no-cache
       content-length:
@@ -2673,7 +2673,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Migrate/locations/eastus2/rmsOperationResults/aab45ac3-fedc-4d38-bc95-732a3eac16ea?api-version=2019-10-01-preview&operationResultResponseType=Location
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Migrate/locations/eastus2/rmsOperationResults/aab45ac3-fedc-4d38-bc95-732a3eac16ea?api-version=2021-01-01&operationResultResponseType=Location
       pragma:
       - no-cache
       strict-transport-security:
@@ -2702,7 +2702,7 @@ interactions:
       - AZURECLI/2.18.0 azsdk-python-mgmt-resourcemover/0.1.0-preview Python/3.8.2
         (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Migrate/locations/eastus2/rmsOperationResults/aab45ac3-fedc-4d38-bc95-732a3eac16ea?api-version=2019-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Migrate/locations/eastus2/rmsOperationResults/aab45ac3-fedc-4d38-bc95-732a3eac16ea?api-version=2021-01-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_resourcemover_collection_rg/providers/Microsoft.Migrate/moveCollections/clitest-movecollection-25/operations/aab45ac3-fedc-4d38-bc95-732a3eac16ea","name":null,"status":"Succeeded","startTime":null,"endTime":null,"error":null,"properties":null}'

@@ -26,7 +26,6 @@
 |[az resource-mover move-collection commit](#MoveCollectionsCommit)|Commit|[Parameters](#ParametersMoveCollectionsCommit)|[Example](#ExamplesMoveCollectionsCommit)|
 |[az resource-mover move-collection discard](#MoveCollectionsDiscard)|Discard|[Parameters](#ParametersMoveCollectionsDiscard)|[Example](#ExamplesMoveCollectionsDiscard)|
 |[az resource-mover move-collection initiate-move](#MoveCollectionsInitiateMove)|InitiateMove|[Parameters](#ParametersMoveCollectionsInitiateMove)|[Example](#ExamplesMoveCollectionsInitiateMove)|
-|[az resource-mover move-collection list-move-collection](#MoveCollectionsListMoveCollectionsByResourceGroup)|ListMoveCollectionsByResourceGroup|[Parameters](#ParametersMoveCollectionsListMoveCollectionsByResourceGroup)|[Example](#ExamplesMoveCollectionsListMoveCollectionsByResourceGroup)|
 |[az resource-mover move-collection list-required-for](#MoveCollectionsListRequiredFor)|ListRequiredFor|[Parameters](#ParametersMoveCollectionsListRequiredFor)|[Example](#ExamplesMoveCollectionsListRequiredFor)|
 |[az resource-mover move-collection prepare](#MoveCollectionsPrepare)|Prepare|[Parameters](#ParametersMoveCollectionsPrepare)|[Example](#ExamplesMoveCollectionsPrepare)|
 |[az resource-mover move-collection resolve-dependency](#MoveCollectionsResolveDependencies)|ResolveDependencies|[Parameters](#ParametersMoveCollectionsResolveDependencies)|[Example](#ExamplesMoveCollectionsResolveDependencies)|
@@ -181,17 +180,6 @@ rosoft.Migrate/MoveCollections/movecollection1/MoveResources/moveresource1" --va
 |**--validate-only**|boolean|Gets or sets a value indicating whether the operation needs to only run pre-requisite.|validate_only|validateOnly|
 |**--move-resources**|array|Gets or sets the list of resource Id's, by default it accepts move resource id's unless the input type is switched via moveResourceInputType property.|move_resources|moveResources|
 |**--move-resource-input-type**|choice|Defines the move resource input type.|move_resource_input_type|moveResourceInputType|
-
-#### <a name="MoveCollectionsListMoveCollectionsByResourceGroup">Command `az resource-mover move-collection list-move-collection`</a>
-
-##### <a name="ExamplesMoveCollectionsListMoveCollectionsByResourceGroup">Example</a>
-```
-az resource-mover move-collection list-move-collection --resource-group "rg1"
-```
-##### <a name="ParametersMoveCollectionsListMoveCollectionsByResourceGroup">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The Resource Group Name.|resource_group_name|resourceGroupName|
 
 #### <a name="MoveCollectionsListRequiredFor">Command `az resource-mover move-collection list-required-for`</a>
 

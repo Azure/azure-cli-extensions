@@ -207,7 +207,7 @@ MyMoveResource --resource-group MyResourceGroup
 
 helps['resource-mover move-resource add'] = """
     type: command
-    short-summary: "Add a move-resource to the move-collection."
+    short-summary: "Create or update a move-resource to the move-collection."
     parameters:
       - name: --depends-on-overrides
         short-summary: "The move-resource dependencies overrides."

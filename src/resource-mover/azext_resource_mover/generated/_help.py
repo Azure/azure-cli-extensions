@@ -137,15 +137,6 @@ operation with validateOnly property set to true."
 --name "movecollection1" --resource-group "rg1"
 """
 
-helps['resource-mover move-collection list-move-collection'] = """
-    type: command
-    short-summary: "Get all the Move Collections in the resource group."
-    examples:
-      - name: MoveCollections_ListMoveCollectionsByResourceGroup
-        text: |-
-               az resource-mover move-collection list-move-collection --resource-group "rg1"
-"""
-
 helps['resource-mover move-collection list-required-for'] = """
     type: command
     short-summary: "List of the move resources for which an arm resource is required for."

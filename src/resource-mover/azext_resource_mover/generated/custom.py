@@ -138,11 +138,6 @@ def resource_mover_move_collection_initiate_move(client,
                        body=body)
 
 
-def resource_mover_move_collection_list_move_collection(client,
-                                                        resource_group_name):
-    return client.list_move_collections_by_resource_group(resource_group_name=resource_group_name)
-
-
 def resource_mover_move_collection_list_required_for(client,
                                                      resource_group_name,
                                                      move_collection_name,

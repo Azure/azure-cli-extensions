@@ -106,9 +106,6 @@ def load_arguments(self, _):
         c.argument('input_type', arg_type=get_enum_type(['MoveResourceId', 'MoveResourceSourceId']),
                    help='Define the input type of --move-resources.')
 
-    with self.argument_context('resource-mover move-collection list-move-collection') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-
     with self.argument_context('resource-mover move-collection list-arm-required') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('move_collection_name', options_list=['--name', '-n', '--move-collection-name'], type=str,
