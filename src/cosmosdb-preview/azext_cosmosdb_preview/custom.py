@@ -5,7 +5,7 @@
 
 from knack.util import CLIError
 from knack.log import get_logger
-from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import DefaultErrorResponseException
+from msrestazure.azure_exceptions import CloudError
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ConsistencyPolicy,
@@ -451,7 +451,7 @@ def cli_cosmosdb_sql_role_definition_exists(client,
     """Checks if an Azure Cosmos DB Sql Role Definition exists"""
     try:
         client.get_sql_role_definition(role_definition_id, resource_group_name, account_name)
-    except DefaultErrorResponseException as ex:
+    except CloudError as ex:
         return _handle_exists_exception(ex.response)
 
     return True
@@ -499,7 +499,7 @@ def cli_cosmosdb_sql_role_assignment_exists(client,
     """Checks if an Azure Cosmos DB Sql Role Assignment exists"""
     try:
         client.get_sql_role_assignment(role_assignment_id, resource_group_name, account_name)
-    except DefaultErrorResponseException as ex:
+    except CloudError as ex:
         return _handle_exists_exception(ex.response)
 
     return True

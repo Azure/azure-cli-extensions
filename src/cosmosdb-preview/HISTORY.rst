@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.4.0
+++++++
+* Fix error propagation for failures in case of data plane RBAC and Restore related requests.
+
 0.3.0
 ++++++
 * Create and manage Role Definitions and Role Assignments for enforcing data plane RBAC on Cosmos DB SQL accounts
