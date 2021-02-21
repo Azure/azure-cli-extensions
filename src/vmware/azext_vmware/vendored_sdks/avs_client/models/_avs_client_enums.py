@@ -24,6 +24,24 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
+class AddonProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The state of the addon provisioning
+    """
+
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    CANCELLED = "Cancelled"
+    BUILDING = "Building"
+    DELETING = "Deleting"
+    UPDATING = "Updating"
+
+class AddonType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of private cloud addon
+    """
+
+    SRM = "SRM"
+    VR = "VR"
+
 class ClusterProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The state of the cluster provisioning
     """
@@ -34,6 +52,39 @@ class ClusterProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enu
     DELETING = "Deleting"
     UPDATING = "Updating"
 
+class DatastoreProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The state of the datastore provisioning
+    """
+
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    CANCELLED = "Cancelled"
+    DELETING = "Deleting"
+    UPDATING = "Updating"
+
+class DhcpTypeEnum(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Type of DHCP: SERVER or RELAY.
+    """
+
+    SERVER_RELAY = "SERVER, RELAY"
+
+class DnsServiceLogLevelEnum(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """DNS Service log level.
+    """
+
+    DEBUG = "DEBUG"
+    INFO = "INFO"
+    WARNING = "WARNING"
+    ERROR = "ERROR"
+    FATAL = "FATAL"
+
+class DnsServiceStatusEnum(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """DNS Service status.
+    """
+
+    SUCCESS = "SUCCESS"
+    FAILURE = "FAILURE"
+
 class ExpressRouteAuthorizationProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The state of the  ExpressRoute Circuit Authorization provisioning
     """
@@ -41,6 +92,22 @@ class ExpressRouteAuthorizationProvisioningState(with_metaclass(_CaseInsensitive
     SUCCEEDED = "Succeeded"
     FAILED = "Failed"
     UPDATING = "Updating"
+
+class GlobalReachConnectionProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The state of the  ExpressRoute Circuit Authorization provisioning
+    """
+
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    UPDATING = "Updating"
+
+class GlobalReachConnectionStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The connection status of the global reach connection
+    """
+
+    CONNECTED = "Connected"
+    CONNECTING = "Connecting"
+    DISCONNECTED = "Disconnected"
 
 class HcxEnterpriseSiteStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The status of the HCX Enterprise Site
@@ -57,6 +124,18 @@ class InternetEnum(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     ENABLED = "Enabled"
     DISABLED = "Disabled"
+
+class PortMirroringDirectionEnum(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Direction of port mirroring profile.
+    """
+
+    INGRESS_EGRESS_BIDIRECTIONAL = "INGRESS, EGRESS, BIDIRECTIONAL"
+
+class PortMirroringStatusEnum(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Port Mirroring Status.
+    """
+
+    SUCCESS_FAILURE = "SUCCESS, FAILURE"
 
 class PrivateCloudProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The provisioning state
@@ -77,6 +156,12 @@ class QuotaEnabled(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     ENABLED = "Enabled"
     DISABLED = "Disabled"
 
+class SegmentStatusEnum(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Segment status.
+    """
+
+    SUCCESS_FAILURE = "SUCCESS, FAILURE"
+
 class SslEnum(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Protect LDAP communication using SSL certificate (LDAPS)
     """
@@ -91,3 +176,75 @@ class TrialStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     TRIAL_AVAILABLE = "TrialAvailable"
     TRIAL_USED = "TrialUsed"
     TRIAL_DISABLED = "TrialDisabled"
+
+class VMGroupStatusEnum(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """VM Group status.
+    """
+
+    SUCCESS_FAILURE = "SUCCESS, FAILURE"
+
+class VMTypeEnum(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Virtual machine type.
+    """
+
+    REGULAR_EDGE_SERVICE = "REGULAR, EDGE, SERVICE"
+
+class WorkloadNetworkDhcpProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The provisioning state
+    """
+
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    BUILDING = "Building"
+    DELETING = "Deleting"
+    UPDATING = "Updating"
+
+class WorkloadNetworkDnsServiceProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The provisioning state
+    """
+
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    BUILDING = "Building"
+    DELETING = "Deleting"
+    UPDATING = "Updating"
+
+class WorkloadNetworkDnsZoneProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The provisioning state
+    """
+
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    BUILDING = "Building"
+    DELETING = "Deleting"
+    UPDATING = "Updating"
+
+class WorkloadNetworkPortMirroringProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The provisioning state
+    """
+
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    BUILDING = "Building"
+    DELETING = "Deleting"
+    UPDATING = "Updating"
+
+class WorkloadNetworkSegmentProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The provisioning state
+    """
+
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    BUILDING = "Building"
+    DELETING = "Deleting"
+    UPDATING = "Updating"
+
+class WorkloadNetworkVMGroupProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The provisioning state
+    """
+
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    BUILDING = "Building"
+    DELETING = "Deleting"
+    UPDATING = "Updating"

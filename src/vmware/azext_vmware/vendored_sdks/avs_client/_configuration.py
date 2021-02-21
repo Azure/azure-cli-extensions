@@ -45,7 +45,7 @@ class AVSClientConfiguration(Configuration):
 
         self.credential = credential
         self.subscription_id = subscription_id
-        self.api_version = "2020-03-20"
+        self.api_version = "2021-01-01-preview"
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
         kwargs.setdefault('sdk_moniker', 'avsclient/{}'.format(VERSION))
         self._configure(**kwargs)

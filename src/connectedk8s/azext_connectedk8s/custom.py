@@ -26,7 +26,7 @@ from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 
-from .vendored_sdks.models import ConnectedCluster, ConnectedClusterAADProfile, ConnectedClusterIdentity
+from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity
 
 
 logger = get_logger(__name__)
@@ -480,11 +480,6 @@ def get_kubernetes_infra(configuration):  # Heuristic
 
 def generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra):
     # Create connected cluster resource object
-    aad_profile = ConnectedClusterAADProfile(
-        tenant_id="",
-        client_app_id="",
-        server_app_id=""
-    )
     identity = ConnectedClusterIdentity(
         type="SystemAssigned"
     )
@@ -494,7 +489,6 @@ def generate_request_payload(configuration, location, public_key, tags, kubernet
         location=location,
         identity=identity,
         agent_public_key_certificate=public_key,
-        aad_profile=aad_profile,
         tags=tags,
         distribution=kubernetes_distro,
         infrastructure=kubernetes_infra

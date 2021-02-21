@@ -131,6 +131,51 @@
                 "sha256Digest": "aba36f7a6f109d2bd1b1624ebcfdfd07a97e9a0b05b051d0af7d2ddb4d2f3c89"
             }
         ],
+        "acrtransfer": [
+            {
+                "downloadUrl": "https://azcliprod.blob.core.windows.net/cli-extensions/acrtransfer-1.0.0-py3-none-any.whl",
+                "filename": "acrtransfer-1.0.0-py3-none-any.whl",
+                "metadata": {
+                    "azext.isPreview": true,
+                    "azext.minCliCoreVersion": "2.0.67",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.6",
+                        "Programming Language :: Python :: 3.7",
+                        "Programming Language :: Python :: 3.8",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "KraterDev@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/master/src/acrtransfer"
+                            }
+                        }
+                    },
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "acrtransfer",
+                    "summary": "Microsoft Azure Command-Line Tools Acrtransfer Extension",
+                    "version": "1.0.0"
+                },
+                "sha256Digest": "8fadff19781b34ab246a15a5c222fd6af53ea93f7778fbf933d1ccd082f3e362"
+            }
+        ],
         "ad": [
             {
                 "downloadUrl": "https://azcliprod.blob.core.windows.net/cli-extensions/ad-0.1.0-py3-none-any.whl",
@@ -219,6 +264,50 @@
                     "version": "0.1.1"
                 },
                 "sha256Digest": "4ac7b8a4a89eda68d9d1a07cc5edd9b1a2b88421e2aa9a9e5b86a241f127775f"
+            },
+            {
+                "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/aem-0.2.0-py2.py3-none-any.whl",
+                "filename": "aem-0.2.0-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.minCliCoreVersion": "2.0.30",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 2",
+                        "Programming Language :: Python :: 2.7",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.4",
+                        "Programming Language :: Python :: 3.5",
+                        "Programming Language :: Python :: 3.6",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "yugangw@microsoft.com",
+                                    "name": "Yugang Wang",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions"
+                            }
+                        }
+                    },
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "aem",
+                    "summary": "Manage Azure Enhanced Monitoring Extensions for SAP",
+                    "version": "0.2.0"
+                },
+                "sha256Digest": "3ae49bb9f6b07cdaae840079c95e3d30c7e8bc27ba68d542e8e122cf4c14ce00"
             }
         ],
         "ai-examples": [
@@ -3222,8 +3311,8 @@
         ],
         "azure-cli-ml": [
             {
-                "downloadUrl": "https://azurecliext.blob.core.windows.net/release/azure_cli_ml-1.21.0-py3-none-any.whl",
-                "filename": "azure_cli_ml-1.21.0-py3-none-any.whl",
+                "downloadUrl": "https://azurecliext.blob.core.windows.net/release/azure_cli_ml-1.22.0.1-py3-none-any.whl",
+                "filename": "azure_cli_ml-1.22.0.1-py3-none-any.whl",
                 "metadata": {
                     "azext.minCliCoreVersion": "2.3.1",
                     "classifiers": [
@@ -3264,7 +3353,8 @@
                         {
                             "requires": [
                                 "adal (>=1.2.1)",
-                                "azureml-cli-common (~=1.21.0)",
+                                "azureml-cli-common (~=1.22.0)",
+                                "cryptography (<=3.3.2)",
                                 "docker (>=3.7.2)",
                                 "msrest (>=0.6.6)",
                                 "pyyaml (>=5.1.0)",
@@ -3283,9 +3373,9 @@
                             ]
                         }
                     ],
-                    "version": "1.21.0"
+                    "version": "1.22.0.1"
                 },
-                "sha256Digest": "17870574ca68962e33aedf6da2407bd26c8efd25d20a149eb820b89d3c50b7de"
+                "sha256Digest": "168f2610bd2668f321707161dafec1aca861a0d22b7be05595cabf069138081b"
             },
             {
                 "downloadUrl": "https://azurecliext.blob.core.windows.net/release/azure_cli_ml-1.5.0-py2.py3-none-any.whl",
@@ -10322,6 +10412,51 @@
                 "sha256Digest": "d581bfefe3eb7fbceeed12c192ebdf5993fcf04ede7267d053aa416596bd0b53"
             }
         ],
+        "next": [
+            {
+                "downloadUrl": "https://azcliprod.blob.core.windows.net/cli-extensions/next-0.1.0-py2.py3-none-any.whl",
+                "filename": "next-0.1.0-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.isExperimental": true,
+                    "azext.minCliCoreVersion": "2.19.0",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.6",
+                        "Programming Language :: Python :: 3.7",
+                        "Programming Language :: Python :: 3.8",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions"
+                            }
+                        }
+                    },
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "next",
+                    "summary": "Microsoft Azure Command-Line Tools Next Extension",
+                    "version": "0.1.0"
+                },
+                "sha256Digest": "038d673501dd3b3c04314d0f69f01cfdd52e6ca3f44820a45d20dc3dd58317dd"
+            }
+        ],
         "notification-hub": [
             {
                 "downloadUrl": "https://azurecliprod.blob.core.windows.net/cli-extensions/notification_hub-0.1.0-py2.py3-none-any.whl",
@@ -10838,6 +10973,61 @@
                     "version": "0.1.0"
                 },
                 "sha256Digest": "ac71362fb4834e02f26644403b4aac166def6488474e4f201ce3243b12b2424f"
+            }
+        ],
+        "rdbms-connect": [
+            {
+                "downloadUrl": "https://azcliprod.blob.core.windows.net/cli-extensions/rdbms_connect-0.1.0-py2.py3-none-any.whl",
+                "filename": "rdbms_connect-0.1.0-py2.py3-none-any.whl",
+                "metadata": {
+                    "azext.isPreview": true,
+                    "azext.minCliCoreVersion": "2.19.0",
+                    "classifiers": [
+                        "Development Status :: 4 - Beta",
+                        "Intended Audience :: Developers",
+                        "Intended Audience :: System Administrators",
+                        "Programming Language :: Python",
+                        "Programming Language :: Python :: 3",
+                        "Programming Language :: Python :: 3.6",
+                        "Programming Language :: Python :: 3.7",
+                        "Programming Language :: Python :: 3.8",
+                        "License :: OSI Approved :: MIT License"
+                    ],
+                    "extensions": {
+                        "python.details": {
+                            "contacts": [
+                                {
+                                    "email": "azpycli@microsoft.com",
+                                    "name": "Microsoft Corporation",
+                                    "role": "author"
+                                }
+                            ],
+                            "document_names": {
+                                "description": "DESCRIPTION.rst"
+                            },
+                            "project_urls": {
+                                "Home": "https://github.com/Azure/azure-cli-extensions/tree/master/src/rdbms-connect"
+                            }
+                        }
+                    },
+                    "extras": [],
+                    "generator": "bdist_wheel (0.30.0)",
+                    "license": "MIT",
+                    "metadata_version": "2.0",
+                    "name": "rdbms-connect",
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "mycli (==1.22.2)",
+                                "pgcli (==3.0.0)",
+                                "setproctitle (==1.2.2)"
+                            ]
+                        }
+                    ],
+                    "summary": "Support for testing connection to Azure Database for MySQL & PostgreSQL servers.",
+                    "version": "0.1.0"
+                },
+                "sha256Digest": "fd80779e01d5afa74da88dda0339b9068e5ca3390d2dea78b034002c62b713b4"
             }
         ],
         "resource-graph": [
