@@ -18,6 +18,7 @@ from ._util import (
 
 ROUTE_TABLE_DEPRECATION_INFO = 'network vhub route-table'
 
+
 # pylint: disable=too-many-locals, too-many-statements
 def load_command_table(self, _):
 
