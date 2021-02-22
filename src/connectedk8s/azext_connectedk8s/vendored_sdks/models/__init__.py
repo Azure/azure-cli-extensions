@@ -13,35 +13,29 @@ try:
     from .operation_display_py3 import OperationDisplay
     from .operation_py3 import Operation
     from .connected_cluster_identity_py3 import ConnectedClusterIdentity
-    from .connected_cluster_aad_profile_py3 import ConnectedClusterAADProfile
+    from .system_data_py3 import SystemData
     from .connected_cluster_py3 import ConnectedCluster
-    from .hybrid_connection_config_py3 import HybridConnectionConfig
-    from .credential_result_py3 import CredentialResult
-    from .credential_results_py3 import CredentialResults
-    from .authentication_details_value_py3 import AuthenticationDetailsValue
-    from .authentication_details_py3 import AuthenticationDetails
     from .connected_cluster_patch_py3 import ConnectedClusterPatch
+    from .proxy_resource_py3 import ProxyResource
+    from .azure_entity_resource_py3 import AzureEntityResource
     from .resource_py3 import Resource
     from .tracked_resource_py3 import TrackedResource
     from .error_additional_info_py3 import ErrorAdditionalInfo
-    from .error_response_error_py3 import ErrorResponseError
+    from .error_detail_py3 import ErrorDetail
     from .error_response_py3 import ErrorResponse, ErrorResponseException
 except (SyntaxError, ImportError):
     from .operation_display import OperationDisplay
     from .operation import Operation
     from .connected_cluster_identity import ConnectedClusterIdentity
-    from .connected_cluster_aad_profile import ConnectedClusterAADProfile
+    from .system_data import SystemData
     from .connected_cluster import ConnectedCluster
-    from .hybrid_connection_config import HybridConnectionConfig
-    from .credential_result import CredentialResult
-    from .credential_results import CredentialResults
-    from .authentication_details_value import AuthenticationDetailsValue
-    from .authentication_details import AuthenticationDetails
     from .connected_cluster_patch import ConnectedClusterPatch
+    from .proxy_resource import ProxyResource
+    from .azure_entity_resource import AzureEntityResource
     from .resource import Resource
     from .tracked_resource import TrackedResource
     from .error_additional_info import ErrorAdditionalInfo
-    from .error_response_error import ErrorResponseError
+    from .error_detail import ErrorDetail
     from .error_response import ErrorResponse, ErrorResponseException
 from .connected_cluster_paged import ConnectedClusterPaged
 from .operation_paged import OperationPaged
@@ -49,30 +43,29 @@ from .connected_kubernetes_client_enums import (
     ResourceIdentityType,
     ProvisioningState,
     ConnectivityStatus,
-    AuthenticationMethod,
+    CreatedByType,
+    LastModifiedByType,
 )
 
 __all__ = [
     'OperationDisplay',
     'Operation',
     'ConnectedClusterIdentity',
-    'ConnectedClusterAADProfile',
+    'SystemData',
     'ConnectedCluster',
-    'HybridConnectionConfig',
-    'CredentialResult',
-    'CredentialResults',
-    'AuthenticationDetailsValue',
-    'AuthenticationDetails',
     'ConnectedClusterPatch',
+    'ProxyResource',
+    'AzureEntityResource',
     'Resource',
     'TrackedResource',
     'ErrorAdditionalInfo',
-    'ErrorResponseError',
+    'ErrorDetail',
     'ErrorResponse', 'ErrorResponseException',
     'ConnectedClusterPaged',
     'OperationPaged',
     'ResourceIdentityType',
     'ProvisioningState',
     'ConnectivityStatus',
-    'AuthenticationMethod',
+    'CreatedByType',
+    'LastModifiedByType',
 ]

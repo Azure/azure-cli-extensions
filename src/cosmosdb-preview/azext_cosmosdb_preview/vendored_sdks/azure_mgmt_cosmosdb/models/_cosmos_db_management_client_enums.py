@@ -178,7 +178,6 @@ class ApiType(str, Enum):
     cassandra = "Cassandra"
     table = "Table"
     sql = "Sql"
-    etcd = "Etcd"
     gremlin_v2 = "GremlinV2"
 
 
@@ -186,3 +185,11 @@ class RoleDefinitionType(str, Enum):
 
     built_in_role = "BuiltInRole"
     custom_role = "CustomRole"
+
+
+class OperationType(str, Enum):
+
+    create = "Create"
+    replace = "Replace"
+    delete = "Delete"
+    system_operation = "SystemOperation"

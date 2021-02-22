@@ -18,7 +18,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-10-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westeurope","tags":{"product":"azurecli","cause":"automation","date":"2020-11-17T11:49:40Z"},"properties":{"provisioningState":"Succeeded"}}'
@@ -63,7 +63,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-10-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westeurope","tags":{"product":"azurecli","cause":"automation","date":"2020-11-17T11:49:40Z"},"properties":{"provisioningState":"Succeeded"}}'
@@ -108,7 +108,7 @@ interactions:
       accept-language:
       - en-US
     method: HEAD
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/DefaultResourceGroup-WEU?api-version=2020-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/DefaultResourceGroup-WEU?api-version=2020-10-01
   response:
     body:
       string: ''
@@ -157,7 +157,7 @@ interactions:
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/DefaultResourceGroup-WEU?api-version=2020-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/DefaultResourceGroup-WEU?api-version=2020-10-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DefaultResourceGroup-WEU","name":"DefaultResourceGroup-WEU","type":"Microsoft.Resources/resourceGroups","location":"westeurope","properties":{"provisioningState":"Succeeded"}}'
@@ -424,13 +424,13 @@ interactions:
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/defaultresourcegroup-weu/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2020-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/defaultresourcegroup-weu/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2020-10-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/defaultresourcegroup-weu/providers/Microsoft.Resources/deployments/aks-monitoring-1605613822659","name":"aks-monitoring-1605613822659","type":"Microsoft.Resources/deployments","properties":{"templateHash":"13112976782773545168","parameters":{"workspaceResourceId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/defaultresourcegroup-weu/providers/microsoft.operationalinsights/workspaces/defaultworkspace-8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8-weu"},"workspaceRegion":{"type":"String","value":"westeurope"},"solutionDeploymentName":{"type":"String","value":"ContainerInsights-1605613822659"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2020-11-17T11:50:28.4791752Z","duration":"PT1.5878262S","correlationId":"62d01916-5fd9-4be3-ae95-7dd273cc4716","providers":[{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[]}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/defaultresourcegroup-weu/providers/Microsoft.Resources/deployments/aks-monitoring-1605613822659/operationStatuses/08585959930585862600?api-version=2020-06-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/defaultresourcegroup-weu/providers/Microsoft.Resources/deployments/aks-monitoring-1605613822659/operationStatuses/08585959930585862600?api-version=2020-10-01
       cache-control:
       - no-cache
       content-length:
@@ -504,7 +504,7 @@ interactions:
         ,\n     \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\"\
         : \"1.17.13\",\n     \"enableNodePublicIP\": false,\n     \"nodeLabels\":\
         \ {},\n     \"mode\": \"System\",\n     \"osType\": \"Linux\",\n     \"nodeImageVersion\"\
-        : \"AKSUbuntu-1604-2020.10.28\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
+        : \"AKSUbuntu-1804-2021.01.06\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
         \  \"adminUsername\": \"azureuser\",\n    \"ssh\": {\n     \"publicKeys\"\
         : [\n      {\n       \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDSlNNOwMw6aHvdkhUaMmfkjt19xPFa162alrqWaTFan0f864FGHVcSvXUvRBLeRj+x2RMlqr1TR6y73x07vqbaVApfssn52ROE3eKoX2cmez+EMaM19n2BzQLhr1lR/LkixeCM03/hYb3j16uaYeZ+zY060RdnVmPWVhslRRXmst+8cD3EXUkxdzmUa+J03nLyO8nqfCTKUltePz0FQ4IymD8ewa+sWgUlRKBwgoUBh35BFRAGq//OXuHFw6sowEIxwb5KSar4c2SHcewbSbuVFpWR7uhpYLXPJoISeASejQ4nfg+DlIbIf6mNwnLcqrHy6bwmwYeS36TUMHoxbCa7\"\
         \n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\": {\n    \"\
@@ -564,7 +564,7 @@ interactions:
       - python/3.6.9 (Linux-5.0.0-1035-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.11
         msrest_azure/0.6.3 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/defaultresourcegroup-weu/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585959930585862600?api-version=2020-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/defaultresourcegroup-weu/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585959930585862600?api-version=2020-10-01
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -607,7 +607,7 @@ interactions:
       - python/3.6.9 (Linux-5.0.0-1035-azure-x86_64-with-Ubuntu-18.04-bionic) msrest/0.6.11
         msrest_azure/0.6.3 azure-mgmt-resource/10.2.0 Azure-SDK-For-Python AZURECLI/2.15.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/defaultresourcegroup-weu/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2020-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/defaultresourcegroup-weu/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2020-10-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/defaultresourcegroup-weu/providers/Microsoft.Resources/deployments/aks-monitoring-1605613822659","name":"aks-monitoring-1605613822659","type":"Microsoft.Resources/deployments","properties":{"templateHash":"13112976782773545168","parameters":{"workspaceResourceId":{"type":"String","value":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/defaultresourcegroup-weu/providers/microsoft.operationalinsights/workspaces/defaultworkspace-8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8-weu"},"workspaceRegion":{"type":"String","value":"westeurope"},"solutionDeploymentName":{"type":"String","value":"ContainerInsights-1605613822659"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2020-11-17T11:50:38.8726163Z","duration":"PT11.9812673S","correlationId":"62d01916-5fd9-4be3-ae95-7dd273cc4716","providers":[{"namespace":"Microsoft.Resources","resourceTypes":[{"resourceType":"deployments","locations":[null]}]}],"dependencies":[],"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/defaultresourcegroup-weu/providers/Microsoft.OperationsManagement/solutions/ContainerInsights(defaultworkspace-8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8-weu)"}]}}'
@@ -1011,7 +1011,7 @@ interactions:
         ,\n     \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\"\
         : \"1.17.13\",\n     \"enableNodePublicIP\": false,\n     \"nodeLabels\":\
         \ {},\n     \"mode\": \"System\",\n     \"osType\": \"Linux\",\n     \"nodeImageVersion\"\
-        : \"AKSUbuntu-1604-2020.10.28\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
+        : \"AKSUbuntu-1804-2021.01.06\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
         \  \"adminUsername\": \"azureuser\",\n    \"ssh\": {\n     \"publicKeys\"\
         : [\n      {\n       \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDSlNNOwMw6aHvdkhUaMmfkjt19xPFa162alrqWaTFan0f864FGHVcSvXUvRBLeRj+x2RMlqr1TR6y73x07vqbaVApfssn52ROE3eKoX2cmez+EMaM19n2BzQLhr1lR/LkixeCM03/hYb3j16uaYeZ+zY060RdnVmPWVhslRRXmst+8cD3EXUkxdzmUa+J03nLyO8nqfCTKUltePz0FQ4IymD8ewa+sWgUlRKBwgoUBh35BFRAGq//OXuHFw6sowEIxwb5KSar4c2SHcewbSbuVFpWR7uhpYLXPJoISeASejQ4nfg+DlIbIf6mNwnLcqrHy6bwmwYeS36TUMHoxbCa7\"\
         \n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\": {\n    \"\
@@ -1261,7 +1261,7 @@ interactions:
         ,\n     \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\"\
         : \"1.17.13\",\n     \"enableNodePublicIP\": false,\n     \"nodeLabels\":\
         \ {},\n     \"mode\": \"System\",\n     \"osType\": \"Linux\",\n     \"nodeImageVersion\"\
-        : \"AKSUbuntu-1604-2020.10.28\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
+        : \"AKSUbuntu-1804-2021.01.06\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
         \  \"adminUsername\": \"azureuser\",\n    \"ssh\": {\n     \"publicKeys\"\
         : [\n      {\n       \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDSlNNOwMw6aHvdkhUaMmfkjt19xPFa162alrqWaTFan0f864FGHVcSvXUvRBLeRj+x2RMlqr1TR6y73x07vqbaVApfssn52ROE3eKoX2cmez+EMaM19n2BzQLhr1lR/LkixeCM03/hYb3j16uaYeZ+zY060RdnVmPWVhslRRXmst+8cD3EXUkxdzmUa+J03nLyO8nqfCTKUltePz0FQ4IymD8ewa+sWgUlRKBwgoUBh35BFRAGq//OXuHFw6sowEIxwb5KSar4c2SHcewbSbuVFpWR7uhpYLXPJoISeASejQ4nfg+DlIbIf6mNwnLcqrHy6bwmwYeS36TUMHoxbCa7\"\
         \n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\": {\n    \"\
@@ -1362,7 +1362,7 @@ interactions:
         ,\n     \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\"\
         : \"1.17.13\",\n     \"enableNodePublicIP\": false,\n     \"nodeLabels\":\
         \ {},\n     \"mode\": \"System\",\n     \"osType\": \"Linux\",\n     \"nodeImageVersion\"\
-        : \"AKSUbuntu-1604-2020.10.28\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
+        : \"AKSUbuntu-1804-2021.01.06\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
         \  \"adminUsername\": \"azureuser\",\n    \"ssh\": {\n     \"publicKeys\"\
         : [\n      {\n       \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDSlNNOwMw6aHvdkhUaMmfkjt19xPFa162alrqWaTFan0f864FGHVcSvXUvRBLeRj+x2RMlqr1TR6y73x07vqbaVApfssn52ROE3eKoX2cmez+EMaM19n2BzQLhr1lR/LkixeCM03/hYb3j16uaYeZ+zY060RdnVmPWVhslRRXmst+8cD3EXUkxdzmUa+J03nLyO8nqfCTKUltePz0FQ4IymD8ewa+sWgUlRKBwgoUBh35BFRAGq//OXuHFw6sowEIxwb5KSar4c2SHcewbSbuVFpWR7uhpYLXPJoISeASejQ4nfg+DlIbIf6mNwnLcqrHy6bwmwYeS36TUMHoxbCa7\"\
         \n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\": {\n    \"\
@@ -1742,7 +1742,7 @@ interactions:
         ,\n     \"powerState\": {\n      \"code\": \"Running\"\n     },\n     \"orchestratorVersion\"\
         : \"1.17.13\",\n     \"enableNodePublicIP\": false,\n     \"nodeLabels\":\
         \ {},\n     \"mode\": \"System\",\n     \"osType\": \"Linux\",\n     \"nodeImageVersion\"\
-        : \"AKSUbuntu-1604-2020.10.28\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
+        : \"AKSUbuntu-1804-2021.01.06\"\n    }\n   ],\n   \"linuxProfile\": {\n  \
         \  \"adminUsername\": \"azureuser\",\n    \"ssh\": {\n     \"publicKeys\"\
         : [\n      {\n       \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDSlNNOwMw6aHvdkhUaMmfkjt19xPFa162alrqWaTFan0f864FGHVcSvXUvRBLeRj+x2RMlqr1TR6y73x07vqbaVApfssn52ROE3eKoX2cmez+EMaM19n2BzQLhr1lR/LkixeCM03/hYb3j16uaYeZ+zY060RdnVmPWVhslRRXmst+8cD3EXUkxdzmUa+J03nLyO8nqfCTKUltePz0FQ4IymD8ewa+sWgUlRKBwgoUBh35BFRAGq//OXuHFw6sowEIxwb5KSar4c2SHcewbSbuVFpWR7uhpYLXPJoISeASejQ4nfg+DlIbIf6mNwnLcqrHy6bwmwYeS36TUMHoxbCa7\"\
         \n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\": {\n    \"\

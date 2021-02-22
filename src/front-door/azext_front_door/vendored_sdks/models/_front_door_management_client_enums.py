@@ -278,6 +278,12 @@ class PolicyMode(str, Enum):
     detection = "Detection"
 
 
+class PolicyRequestBodyCheck(str, Enum):
+
+    disabled = "Disabled"
+    enabled = "Enabled"
+
+
 class CustomRuleEnabledState(str, Enum):
 
     disabled = "Disabled"
@@ -337,12 +343,20 @@ class ActionType(str, Enum):
     redirect = "Redirect"
 
 
+class ManagedRuleSetActionType(str, Enum):
+
+    block = "Block"
+    log = "Log"
+    redirect = "Redirect"
+
+
 class ManagedRuleExclusionMatchVariable(str, Enum):
 
     request_header_names = "RequestHeaderNames"
     request_cookie_names = "RequestCookieNames"
     query_string_arg_names = "QueryStringArgNames"
     request_body_post_arg_names = "RequestBodyPostArgNames"
+    request_body_json_arg_names = "RequestBodyJsonArgNames"
 
 
 class ManagedRuleExclusionSelectorMatchOperator(str, Enum):
@@ -368,6 +382,13 @@ class PolicyResourceState(str, Enum):
     disabling = "Disabling"
     disabled = "Disabled"
     deleting = "Deleting"
+
+
+class SkuName(str, Enum):
+
+    classic_azure_front_door = "Classic_AzureFrontDoor"
+    standard_azure_front_door = "Standard_AzureFrontDoor"
+    premium_azure_front_door = "Premium_AzureFrontDoor"
 
 
 class LatencyScorecardAggregationInterval(str, Enum):

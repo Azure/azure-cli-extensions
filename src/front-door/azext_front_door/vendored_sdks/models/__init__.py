@@ -72,6 +72,8 @@ try:
     from ._models_py3 import RulesEngineMatchCondition
     from ._models_py3 import RulesEngineRule
     from ._models_py3 import RulesEngineUpdateParameters
+    from ._models_py3 import SecurityPolicyLink
+    from ._models_py3 import Sku
     from ._models_py3 import SubResource
     from ._models_py3 import TagsObject
     from ._models_py3 import Timeseries
@@ -142,6 +144,8 @@ except (SyntaxError, ImportError):
     from ._models import RulesEngineMatchCondition
     from ._models import RulesEngineRule
     from ._models import RulesEngineUpdateParameters
+    from ._models import SecurityPolicyLink
+    from ._models import Sku
     from ._models import SubResource
     from ._models import TagsObject
     from ._models import Timeseries
@@ -193,16 +197,19 @@ from ._front_door_management_client_enums import (
     Availability,
     PolicyEnabledState,
     PolicyMode,
+    PolicyRequestBodyCheck,
     CustomRuleEnabledState,
     RuleType,
     MatchVariable,
     Operator,
     TransformType,
     ActionType,
+    ManagedRuleSetActionType,
     ManagedRuleExclusionMatchVariable,
     ManagedRuleExclusionSelectorMatchOperator,
     ManagedRuleEnabledState,
     PolicyResourceState,
+    SkuName,
     LatencyScorecardAggregationInterval,
     TimeseriesAggregationInterval,
 )
@@ -270,6 +277,8 @@ __all__ = [
     'RulesEngineMatchCondition',
     'RulesEngineRule',
     'RulesEngineUpdateParameters',
+    'SecurityPolicyLink',
+    'Sku',
     'SubResource',
     'TagsObject',
     'Timeseries',
@@ -320,16 +329,19 @@ __all__ = [
     'Availability',
     'PolicyEnabledState',
     'PolicyMode',
+    'PolicyRequestBodyCheck',
     'CustomRuleEnabledState',
     'RuleType',
     'MatchVariable',
     'Operator',
     'TransformType',
     'ActionType',
+    'ManagedRuleSetActionType',
     'ManagedRuleExclusionMatchVariable',
     'ManagedRuleExclusionSelectorMatchOperator',
     'ManagedRuleEnabledState',
     'PolicyResourceState',
+    'SkuName',
     'LatencyScorecardAggregationInterval',
     'TimeseriesAggregationInterval',
 ]
