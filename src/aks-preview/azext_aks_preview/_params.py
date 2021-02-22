@@ -126,6 +126,7 @@ def load_arguments(self, _):
         c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
         c.argument('aci_subnet_name', type=str)
         c.argument('enable_encryption_at_host', arg_type=get_three_state_flag(), help='Enable EncryptionAtHost.')
+        c.argument('enable_secret_rotation', action='store_true')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('aks update') as c:
@@ -153,6 +154,8 @@ def load_arguments(self, _):
         c.argument('assign_identity', type=str, validator=validate_assign_identity)
         c.argument('enable_pod_identity', action='store_true')
         c.argument('disable_pod_identity', action='store_true')
+        c.argument('enable_secret_rotation', action='store_true')
+        c.argument('disable_secret_rotation', action='store_true')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('aks scale') as c:
@@ -236,6 +239,7 @@ def load_arguments(self, _):
         c.argument('appgw_id', options_list=['--appgw-id'], arg_group='Application Gateway')
         c.argument('appgw_subnet_id', options_list=['--appgw-subnet-id'], arg_group='Application Gateway')
         c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
+        c.argument('enable_secret_rotation', action='store_true')
 
     with self.argument_context('aks get-credentials') as c:
         c.argument('admin', options_list=['--admin', '-a'], default=False)
