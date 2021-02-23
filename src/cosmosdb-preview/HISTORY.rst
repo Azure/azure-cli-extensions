@@ -6,6 +6,7 @@ Release History
 0.4.0
 ++++++
 * Fix error propagation for failures in case of data plane RBAC and Restore related requests.
+* Allow customer to specify associated Role Definition using name when creating or updating Role Assignments.
 
 0.3.0
 ++++++
