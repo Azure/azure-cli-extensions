@@ -18,6 +18,8 @@ try:
     from ._models_py3 import AutoUpgradePolicyResource
     from ._models_py3 import AzureEntityResource
     from ._models_py3 import BackupPolicy
+    from ._models_py3 import BackupResource
+    from ._models_py3 import BackupResourceProperties
     from ._models_py3 import Capability
     from ._models_py3 import CassandraKeyspaceCreateUpdateParameters
     from ._models_py3 import CassandraKeyspaceGetPropertiesOptions
@@ -31,7 +33,12 @@ try:
     from ._models_py3 import CassandraTableGetPropertiesResource
     from ._models_py3 import CassandraTableGetResults
     from ._models_py3 import CassandraTableResource
+    from ._models_py3 import Certificate
     from ._models_py3 import ClusterKey
+    from ._models_py3 import ClusterNodeStatus
+    from ._models_py3 import ClusterNodeStatusNodesItem
+    from ._models_py3 import ClusterResource
+    from ._models_py3 import ClusterResourceProperties
     from ._models_py3 import Column
     from ._models_py3 import CompositePath
     from ._models_py3 import ConflictResolutionPolicy
@@ -50,6 +57,8 @@ try:
     from ._models_py3 import DatabaseAccountRegenerateKeyParameters
     from ._models_py3 import DatabaseAccountUpdateParameters
     from ._models_py3 import DatabaseRestoreResource
+    from ._models_py3 import DataCenterResource
+    from ._models_py3 import DataCenterResourceProperties
     from ._models_py3 import DefaultRequestDatabaseAccountCreateUpdateProperties
     from ._models_py3 import ErrorResponse, ErrorResponseException
     from ._models_py3 import ExcludedPath
@@ -125,6 +134,7 @@ try:
     from ._models_py3 import RestorableSqlDatabasePropertiesResourceDatabase
     from ._models_py3 import RestoreParameters
     from ._models_py3 import RestoreReqeustDatabaseAccountCreateUpdateProperties
+    from ._models_py3 import SeedNode
     from ._models_py3 import SpatialSpec
     from ._models_py3 import SqlContainerCreateUpdateParameters
     from ._models_py3 import SqlContainerGetPropertiesOptions
@@ -177,6 +187,8 @@ except (SyntaxError, ImportError):
     from ._models import AutoUpgradePolicyResource
     from ._models import AzureEntityResource
     from ._models import BackupPolicy
+    from ._models import BackupResource
+    from ._models import BackupResourceProperties
     from ._models import Capability
     from ._models import CassandraKeyspaceCreateUpdateParameters
     from ._models import CassandraKeyspaceGetPropertiesOptions
@@ -190,7 +202,12 @@ except (SyntaxError, ImportError):
     from ._models import CassandraTableGetPropertiesResource
     from ._models import CassandraTableGetResults
     from ._models import CassandraTableResource
+    from ._models import Certificate
     from ._models import ClusterKey
+    from ._models import ClusterNodeStatus
+    from ._models import ClusterNodeStatusNodesItem
+    from ._models import ClusterResource
+    from ._models import ClusterResourceProperties
     from ._models import Column
     from ._models import CompositePath
     from ._models import ConflictResolutionPolicy
@@ -209,6 +226,8 @@ except (SyntaxError, ImportError):
     from ._models import DatabaseAccountRegenerateKeyParameters
     from ._models import DatabaseAccountUpdateParameters
     from ._models import DatabaseRestoreResource
+    from ._models import DataCenterResource
+    from ._models import DataCenterResourceProperties
     from ._models import DefaultRequestDatabaseAccountCreateUpdateProperties
     from ._models import ErrorResponse, ErrorResponseException
     from ._models import ExcludedPath
@@ -284,6 +303,7 @@ except (SyntaxError, ImportError):
     from ._models import RestorableSqlDatabasePropertiesResourceDatabase
     from ._models import RestoreParameters
     from ._models import RestoreReqeustDatabaseAccountCreateUpdateProperties
+    from ._models import SeedNode
     from ._models import SpatialSpec
     from ._models import SqlContainerCreateUpdateParameters
     from ._models import SqlContainerGetPropertiesOptions
@@ -327,10 +347,13 @@ except (SyntaxError, ImportError):
     from ._models import UniqueKeyPolicy
     from ._models import Usage
     from ._models import VirtualNetworkRule
+from ._paged_models import BackupResourcePaged
 from ._paged_models import CassandraKeyspaceGetResultsPaged
 from ._paged_models import CassandraTableGetResultsPaged
+from ._paged_models import ClusterResourcePaged
 from ._paged_models import DatabaseAccountGetResultsPaged
 from ._paged_models import DatabaseRestoreResourcePaged
+from ._paged_models import DataCenterResourcePaged
 from ._paged_models import GremlinDatabaseGetResultsPaged
 from ._paged_models import GremlinGraphGetResultsPaged
 from ._paged_models import MetricDefinitionPaged
@@ -367,6 +390,7 @@ from ._cosmos_db_management_client_enums import (
     ServerVersion,
     CreateMode,
     RestoreMode,
+    NetworkAclBypass,
     CreatedByType,
     IndexingMode,
     DataType,
@@ -385,6 +409,10 @@ from ._cosmos_db_management_client_enums import (
     ApiType,
     RoleDefinitionType,
     OperationType,
+    ManagedCassandraProvisioningState,
+    AuthenticationMethod,
+    NodeStatus,
+    NodeState,
 )
 
 __all__ = [
@@ -396,6 +424,8 @@ __all__ = [
     'AutoUpgradePolicyResource',
     'AzureEntityResource',
     'BackupPolicy',
+    'BackupResource',
+    'BackupResourceProperties',
     'Capability',
     'CassandraKeyspaceCreateUpdateParameters',
     'CassandraKeyspaceGetPropertiesOptions',
@@ -409,7 +439,12 @@ __all__ = [
     'CassandraTableGetPropertiesResource',
     'CassandraTableGetResults',
     'CassandraTableResource',
+    'Certificate',
     'ClusterKey',
+    'ClusterNodeStatus',
+    'ClusterNodeStatusNodesItem',
+    'ClusterResource',
+    'ClusterResourceProperties',
     'Column',
     'CompositePath',
     'ConflictResolutionPolicy',
@@ -428,6 +463,8 @@ __all__ = [
     'DatabaseAccountRegenerateKeyParameters',
     'DatabaseAccountUpdateParameters',
     'DatabaseRestoreResource',
+    'DataCenterResource',
+    'DataCenterResourceProperties',
     'DefaultRequestDatabaseAccountCreateUpdateProperties',
     'ErrorResponse', 'ErrorResponseException',
     'ExcludedPath',
@@ -503,6 +540,7 @@ __all__ = [
     'RestorableSqlDatabasePropertiesResourceDatabase',
     'RestoreParameters',
     'RestoreReqeustDatabaseAccountCreateUpdateProperties',
+    'SeedNode',
     'SpatialSpec',
     'SqlContainerCreateUpdateParameters',
     'SqlContainerGetPropertiesOptions',
@@ -577,6 +615,9 @@ __all__ = [
     'RestorableMongodbCollectionGetResultPaged',
     'PrivateLinkResourcePaged',
     'PrivateEndpointConnectionPaged',
+    'ClusterResourcePaged',
+    'BackupResourcePaged',
+    'DataCenterResourcePaged',
     'DatabaseAccountKind',
     'DatabaseAccountOfferType',
     'DefaultConsistencyLevel',
@@ -585,6 +626,7 @@ __all__ = [
     'ServerVersion',
     'CreateMode',
     'RestoreMode',
+    'NetworkAclBypass',
     'CreatedByType',
     'IndexingMode',
     'DataType',
@@ -603,4 +645,8 @@ __all__ = [
     'ApiType',
     'RoleDefinitionType',
     'OperationType',
+    'ManagedCassandraProvisioningState',
+    'AuthenticationMethod',
+    'NodeStatus',
+    'NodeState',
 ]
