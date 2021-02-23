@@ -5,7 +5,7 @@
 
 from knack.util import CLIError
 from knack.log import get_logger
-from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import DefaultErrorResponseException
+from msrestazure.azure_exceptions import CloudError
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ConsistencyPolicy,
@@ -451,7 +451,7 @@ def cli_cosmosdb_sql_role_definition_exists(client,
     """Checks if an Azure Cosmos DB Sql Role Definition exists"""
     try:
         client.get_sql_role_definition(role_definition_id, resource_group_name, account_name)
-    except DefaultErrorResponseException as ex:
+    except CloudError as ex:
         return _handle_exists_exception(ex.response)
 
     return True
@@ -460,11 +460,15 @@ def cli_cosmosdb_sql_role_definition_exists(client,
 def cli_cosmosdb_sql_role_assignment_create(client,
                                             resource_group_name,
                                             account_name,
-                                            role_definition_id,
                                             scope,
                                             principal_id,
-                                            role_assignment_id=None):
+                                            role_assignment_id=None,
+                                            role_definition_name=None,
+                                            role_definition_id=None):
     """Creates an Azure Cosmos DB Sql Role Assignment"""
+    if role_definition_id is None:
+        role_definition_id = get_associated_role_definition_id(client, resource_group_name, account_name, role_definition_name)
+
     sql_role_assignment_create_update_parameters = SqlRoleAssignmentCreateUpdateParameters(
         role_definition_id=role_definition_id,
         scope=scope,
@@ -476,13 +480,17 @@ def cli_cosmosdb_sql_role_assignment_create(client,
 def cli_cosmosdb_sql_role_assignment_update(client,
                                             resource_group_name,
                                             account_name,
-                                            role_definition_id,
-                                            role_assignment_id):
+                                            role_assignment_id,
+                                            role_definition_name=None,
+                                            role_definition_id=None):
     """Updates an Azure Cosmos DB Sql Role Assignment"""
     logger.debug('reading Sql Role Assignment')
     role_assignment = client.get_sql_role_assignment(role_assignment_id, resource_group_name, account_name)
 
     logger.debug('replacing Sql Role Assignment')
+
+    if role_definition_id is None:
+        role_definition_id = get_associated_role_definition_id(client, resource_group_name, account_name, role_definition_name)
 
     sql_role_assignment_create_update_parameters = SqlRoleAssignmentCreateUpdateParameters(
         role_definition_id=role_definition_id,
@@ -499,10 +507,26 @@ def cli_cosmosdb_sql_role_assignment_exists(client,
     """Checks if an Azure Cosmos DB Sql Role Assignment exists"""
     try:
         client.get_sql_role_assignment(role_assignment_id, resource_group_name, account_name)
-    except DefaultErrorResponseException as ex:
+    except CloudError as ex:
         return _handle_exists_exception(ex.response)
 
     return True
+
+
+def get_associated_role_definition_id(client,
+                                      resource_group_name,
+                                      account_name,
+                                      role_definition_name=None):
+    if role_definition_name is None:
+        raise CLIError('Atleast one out of the Role Definition ID or Name is required.')
+
+    logger.debug('reading Sql Role Definition')
+    role_definitions = client.list_sql_role_definitions(resource_group_name, account_name)
+    matching_role_definition = next((role_definition for role_definition in role_definitions if role_definition.role_name.lower() == role_definition_name.lower()), None)
+    if matching_role_definition is None:
+        raise CLIError('No Role Definition found with name [{}].'.format(role_definition_name))
+
+    return matching_role_definition.id
 
 
 def _gen_guid():

@@ -1,4 +1,4 @@
-## AutoRust Code Generation
+## AutoRest Code Generation
 [AutoRest for Python](https://github.com/Azure/autorest.python) was used to generate the code in `azext_vmware\vendored_sdks` using:
 ``` powershell
 rm ..\azure-cli-extensions\src\vmware\azext_vmware\vendored_sdks -Recurse
