@@ -29,7 +29,7 @@
 |[az disk-pool iscsi-target list](#IscsiTargetsListByDiskPool)|ListByDiskPool|[Parameters](#ParametersIscsiTargetsListByDiskPool)|[Example](#ExamplesIscsiTargetsListByDiskPool)|
 |[az disk-pool iscsi-target show](#IscsiTargetsGet)|Get|[Parameters](#ParametersIscsiTargetsGet)|[Example](#ExamplesIscsiTargetsGet)|
 |[az disk-pool iscsi-target create](#IscsiTargetsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersIscsiTargetsCreateOrUpdate#Create)|[Example](#ExamplesIscsiTargetsCreateOrUpdate#Create)|
-|[az disk-pool iscsi-target update](#IscsiTargetsUpdate)|Update|[Parameters](#ParametersIscsiTargetsUpdate)|[Example](#ExamplesIscsiTargetsUpdate)|
+|[az disk-pool iscsi-target update](#IscsiTargetsCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersIscsiTargetsCreateOrUpdate#Update)|Not Found|
 |[az disk-pool iscsi-target delete](#IscsiTargetsDelete)|Delete|[Parameters](#ParametersIscsiTargetsDelete)|[Example](#ExamplesIscsiTargetsDelete)|
 
 
@@ -66,48 +66,53 @@ az disk-pool show --name "myDiskPool" --resource-group "myResourceGroup"
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--disk-pool-name**|string|The name of the Disk pool.|disk_pool_name|diskPoolName|
+|**--disk-pool-name**|string|The name of the Disk Pool.|disk_pool_name|diskPoolName|
 
 #### <a name="DiskPoolsCreateOrUpdate#Create">Command `az disk-pool create`</a>
 
 ##### <a name="ExamplesDiskPoolsCreateOrUpdate#Create">Example</a>
 ```
-az disk-pool create --location "westus" --availability-zones "1" --disks "/subscriptions/11111111-1111-1111-1111-111111\
-111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_0" --disks \
+az disk-pool create --name "myDiskPool" --location "westus" --availability-zones "1" --disks \
 "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/v\
-m-name_DataDisk_1" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/prov\
-iders/Microsoft.Network/virtualNetworks/myvnet/subnets/mysubnet" --tier "Basic" --tags key="value" --name "myDiskPool" \
---resource-group "myResourceGroup"
+m-name_DataDisk_0" --disks "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/provider\
+s/Microsoft.Compute/disks/vm-name_DataDisk_1" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resource\
+Groups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myvnet/subnets/mysubnet" --sku name="Standard_ABC" \
+--tags key="value" --resource-group "myResourceGroup"
 ```
 ##### <a name="ParametersDiskPoolsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--disk-pool-name**|string|The name of the Disk pool.|disk_pool_name|diskPoolName|
-|**--location**|string|The geo-location where the resource lives.|location|location|
-|**--availability-zones**|array|Logical zone for Disk pool resource; example: ["1"].|availability_zones|availabilityZones|
-|**--subnet-id**|string|Azure Resource ID of a Subnet for the Disk pool.|subnet_id|subnetId|
-|**--tier**|choice|Determines the SKU of VM deployed for Disk pool|tier|tier|
+|**--disk-pool-name**|string|The name of the Disk Pool.|disk_pool_name|diskPoolName|
+|**--location**|string|The geo-location where the resource lives|location|location|
+|**--availability-zones**|array|Logical zone for DiskPool resource.|availability_zones|availabilityZones|
 |**--tags**|dictionary|Resource tags.|tags|tags|
-|**--disks**|array|List of Azure Managed Disks to attach to a Disk pool. Can attach 8 disks at most.|disks|disks|
-|**--additional-capabilities**|array|List of additional capabilities for a Disk pool.|additional_capabilities|additionalCapabilities|
+|**--sku**|object|Sku description.|sku|sku|
+|**--disks**|array|List of Azure managed disks to attach to a DiskPool|disks|disks|
+|**--subnet-id**|string|Azure resource id of the subnet for the DiskPool|subnet_id|subnetId|
 
 #### <a name="DiskPoolsUpdate">Command `az disk-pool update`</a>
 
 ##### <a name="ExamplesDiskPoolsUpdate">Example</a>
 ```
-az disk-pool update --name "myDiskPool" --disks "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myR\
-esourceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_0" --disks "/subscriptions/11111111-1111-1111-1111-1111\
-11111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_1" --tags key="value" \
+az disk-pool update --name "myDiskPool" --location "westus" --availability-zones "1" --disks \
+"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/v\
+m-name_DataDisk_0" --disks "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/provider\
+s/Microsoft.Compute/disks/vm-name_DataDisk_1" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resource\
+Groups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myvnet/subnets/mysubnet" --tags key="value" \
 --resource-group "myResourceGroup"
 ```
 ##### <a name="ParametersDiskPoolsUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--disk-pool-name**|string|The name of the Disk pool.|disk_pool_name|diskPoolName|
+|**--disk-pool-name**|string|The name of the Disk Pool.|disk_pool_name|diskPoolName|
+|**--location**|string|The geo-location where the resource lives|location|location|
+|**--availability-zones**|array|Logical zone for DiskPool resource.|availability_zones|availabilityZones|
 |**--tags**|dictionary|Resource tags.|tags|tags|
-|**--disks**|array|List of Azure Managed Disks to attach to a Disk pool. Can attach 8 disks at most.|disks|disks|
+|**--sku**|object|Sku description.|sku|sku|
+|**--disks**|array|List of Azure managed disks to attach to a DiskPool|disks|disks|
+|**--subnet-id**|string|Azure resource id of the subnet for the DiskPool|subnet_id|subnetId|
 
 #### <a name="DiskPoolsDelete">Command `az disk-pool delete`</a>
 
@@ -119,7 +124,7 @@ az disk-pool delete --name "myDiskPool" --resource-group "myResourceGroup"
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--disk-pool-name**|string|The name of the Disk pool.|disk_pool_name|diskPoolName|
+|**--disk-pool-name**|string|The name of the Disk Pool.|disk_pool_name|diskPoolName|
 
 ### group `az disk-pool iscsi-target`
 #### <a name="IscsiTargetsListByDiskPool">Command `az disk-pool iscsi-target list`</a>
@@ -132,7 +137,7 @@ az disk-pool iscsi-target list --disk-pool-name "myDiskPool" --resource-group "m
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--disk-pool-name**|string|The name of the Disk pool.|disk_pool_name|diskPoolName|
+|**--disk-pool-name**|string|The name of the Disk Pool.|disk_pool_name|diskPoolName|
 
 #### <a name="IscsiTargetsGet">Command `az disk-pool iscsi-target show`</a>
 
@@ -144,46 +149,39 @@ az disk-pool iscsi-target show --disk-pool-name "myDiskPool" --name "myIscsiTarg
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--disk-pool-name**|string|The name of the Disk pool.|disk_pool_name|diskPoolName|
+|**--disk-pool-name**|string|The name of the Disk Pool.|disk_pool_name|diskPoolName|
 |**--iscsi-target-name**|string|The name of the iSCSI target.|iscsi_target_name|iscsiTargetName|
 
 #### <a name="IscsiTargetsCreateOrUpdate#Create">Command `az disk-pool iscsi-target create`</a>
 
 ##### <a name="ExamplesIscsiTargetsCreateOrUpdate#Create">Example</a>
 ```
-az disk-pool iscsi-target create --disk-pool-name "myDiskPool" --target-iqn "iqn.2005-03.org.iscsi:server1" --tpgs \
-"[{\\"acls\\":[{\\"credentials\\":{\\"password\\":\\"some_password\\",\\"username\\":\\"some_username\\"},\\"initiatorI\
-qn\\":\\"iqn.2005-03.org.iscsi:client\\",\\"mappedLuns\\":[\\"lun0\\"]}],\\"attributes\\":{\\"authentication\\":true,\\\
-"prodModeWriteProtect\\":false},\\"luns\\":[{\\"name\\":\\"lun0\\",\\"managedDiskAzureResourceId\\":\\"/subscriptions/1\
-1111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_1\
-\\"}]}]" --name "myIscsiTarget" --resource-group "myResourceGroup"
+az disk-pool iscsi-target create --disk-pool-name "myDiskPool" --name "myIscsiTarget" --target-iqn \
+"iqn.2005-03.org.iscsi:server1" --tpgs "[{\\"acls\\":[{\\"credentials\\":{\\"password\\":\\"some_pa$$word\\",\\"usernam\
+e\\":\\"some_username\\"},\\"initiatorIqn\\":\\"iqn.2005-03.org.iscsi:client\\",\\"mappedLuns\\":[\\"lun0\\"]}],\\"attr\
+ibutes\\":{\\"authentication\\":true,\\"prodModeWriteProtect\\":false},\\"luns\\":[{\\"name\\":\\"lun0\\",\\"managedDis\
+kAzureResourceId\\":\\"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/Mic\
+rosoft.Compute/disks/vm-name_DataDisk_1\\"}]}]" --resource-group "myResourceGroup"
 ```
 ##### <a name="ParametersIscsiTargetsCreateOrUpdate#Create">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--disk-pool-name**|string|The name of the Disk pool.|disk_pool_name|diskPoolName|
+|**--disk-pool-name**|string|The name of the Disk Pool.|disk_pool_name|diskPoolName|
 |**--iscsi-target-name**|string|The name of the iSCSI target.|iscsi_target_name|iscsiTargetName|
-|**--tpgs**|array|List of iSCSI target portal groups. Can have 1 portal group at most.|tpgs|tpgs|
-|**--target-iqn**|string|iSCSI target IQN (iSCSI Qualified Name); example: "iqn.2005-03.org.iscsi:server".|target_iqn|targetIqn|
+|**--tpgs**|array|list of iSCSI target portal groups|tpgs|tpgs|
+|**--target-iqn**|string|iSCSI target iqn (iSCSI Qualified Name); example: iqn.2005-03.org.iscsi:server|target_iqn|targetIqn|
 
-#### <a name="IscsiTargetsUpdate">Command `az disk-pool iscsi-target update`</a>
+#### <a name="IscsiTargetsCreateOrUpdate#Update">Command `az disk-pool iscsi-target update`</a>
 
-##### <a name="ExamplesIscsiTargetsUpdate">Example</a>
-```
-az disk-pool iscsi-target update --disk-pool-name "myDiskPool" --name "myIscsiTarget" --tpgs \
-"[{\\"acls\\":[{\\"credentials\\":{\\"password\\":\\"some_password\\",\\"username\\":\\"some_username\\"},\\"initiatorI\
-qn\\":\\"iqn.2005-03.org.iscsi:client\\",\\"mappedLuns\\":[\\"lun0\\"]}],\\"luns\\":[{\\"name\\":\\"lun0\\",\\"managedD\
-iskAzureResourceId\\":\\"/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResourceGroup/providers/M\
-icrosoft.Compute/disks/vm-name_DataDisk_1\\"}]}]" --resource-group "myResourceGroup"
-```
-##### <a name="ParametersIscsiTargetsUpdate">Parameters</a> 
+##### <a name="ParametersIscsiTargetsCreateOrUpdate#Update">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--disk-pool-name**|string|The name of the Disk pool.|disk_pool_name|diskPoolName|
+|**--disk-pool-name**|string|The name of the Disk Pool.|disk_pool_name|diskPoolName|
 |**--iscsi-target-name**|string|The name of the iSCSI target.|iscsi_target_name|iscsiTargetName|
-|**--tpgs**|array|List of iSCSI target portal groups. Can have 1 portal group at most.|tpgs|tpgs|
+|**--tpgs**|array|list of iSCSI target portal groups|tpgs|tpgs|
+|**--target-iqn**|string|iSCSI target iqn (iSCSI Qualified Name); example: iqn.2005-03.org.iscsi:server|target_iqn|targetIqn|
 
 #### <a name="IscsiTargetsDelete">Command `az disk-pool iscsi-target delete`</a>
 
@@ -196,5 +194,5 @@ az disk-pool iscsi-target delete --disk-pool-name "myDiskPool" --name "myIscsiTa
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--disk-pool-name**|string|The name of the Disk pool.|disk_pool_name|diskPoolName|
+|**--disk-pool-name**|string|The name of the Disk Pool.|disk_pool_name|diskPoolName|
 |**--iscsi-target-name**|string|The name of the iSCSI target.|iscsi_target_name|iscsiTargetName|

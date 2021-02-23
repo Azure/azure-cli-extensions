@@ -26,29 +26,17 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
-class DiskPoolTier(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """SKU of the VM host part of the Disk pool deployment
-    """
-
-    BASIC = "Basic"
-    STANDARD = "Standard"
-    PREMIUM = "Premium"
-
 class OperationalStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Operational status of the resource.
+    """Operational status of the Disk pool
     """
 
     INVALID = "Invalid"
     UNKNOWN = "Unknown"
     HEALTHY = "Healthy"
     UNHEALTHY = "Unhealthy"
-    UPDATING = "Updating"
-    RUNNING = "Running"
-    STOPPED = "Stopped"
-    STOPPED_DEALLOCATED__ = "Stopped (deallocated)"
 
 class ProvisioningStates(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Provisioning state of the iSCSI target.
+    """State of provisioning of the iSCSI target
     """
 
     INVALID = "Invalid"
@@ -59,3 +47,13 @@ class ProvisioningStates(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     CREATING = "Creating"
     UPDATING = "Updating"
     DELETING = "Deleting"
+
+class SkuTier(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """This field is required to be implemented by the Resource Provider if the service has more than
+    one tier, but is not required on a PUT.
+    """
+
+    FREE = "Free"
+    BASIC = "Basic"
+    STANDARD = "Standard"
+    PREMIUM = "Premium"

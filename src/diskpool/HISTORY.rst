@@ -3,9 +3,9 @@
 Release History
 ===============
 
-0.1.1
+0.2.2
 ++++++
-* Add --tier support.
+* Minor fix
 
 0.1.0
 ++++++

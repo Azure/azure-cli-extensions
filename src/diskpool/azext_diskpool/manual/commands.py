@@ -19,6 +19,6 @@ def load_command_table(self, _):
         operations_tmpl='azext_diskpool.vendored_sdks.storagepool.operations._disk_pools_operations#DiskPoolsOperations'
         '.{}',
         client_factory=cf_disk_pool)
-    with self.command_group('disk-pool', diskpool_disk_pool, client_factory=cf_disk_pool) as g:
+    with self.command_group('disk-pool', diskpool_disk_pool, client_factory=cf_disk_pool, is_preview=True) as g:
         from ._transformers import transform_disk_pool_list_output
         g.custom_command('list', 'disk_pool_list', table_transformer=transform_disk_pool_list_output)

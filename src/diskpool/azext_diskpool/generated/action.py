@@ -14,33 +14,44 @@ from collections import defaultdict
 from knack.util import CLIError
 
 
-class AddDiskPoolCreateDisks(argparse._AppendAction):
+class AddSku(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        for item in action:
-            super(AddDiskPoolCreateDisks, self).__call__(parser, namespace, item, option_string)
+        namespace.sku = action
 
-    def get_action(self, values, option_string=None):
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
-            value_chunk_list = [values[x:x+1] for x in range(0, len(values), 1)]
-            value_list = []
-            for chunk in value_chunk_list:
-                id, = chunk
-                value_list.append(
-                    {
-                        'id': id
-                    }
-                )
-            return value_list
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} NAME METRIC OPERATION VALUE'.format(option_string))
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'name':
+                d['name'] = v[0]
+            elif kl == 'tier':
+                d['tier'] = v[0]
+            elif kl == 'size':
+                d['size'] = v[0]
+            elif kl == 'family':
+                d['family'] = v[0]
+            elif kl == 'capacity':
+                d['capacity'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter sku. All possible keys are: name, tier, '
+                               'size, family, capacity'.format(k))
+        return d
 
 
-class AddDiskPoolUpdateDisks(argparse._AppendAction):
+class AddDisks(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         for item in action:
-            super(AddDiskPoolUpdateDisks, self).__call__(parser, namespace, item, option_string)
+            super(AddDisks, self).__call__(parser, namespace, item, option_string)
 
     def get_action(self, values, option_string=None):
         try:

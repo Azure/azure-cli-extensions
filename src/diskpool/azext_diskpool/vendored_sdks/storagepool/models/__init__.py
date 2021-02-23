@@ -11,58 +11,48 @@ try:
     from ._models_py3 import Attributes
     from ._models_py3 import Disk
     from ._models_py3 import DiskPool
-    from ._models_py3 import DiskPoolCreate
     from ._models_py3 import DiskPoolListResult
-    from ._models_py3 import DiskPoolUpdate
     from ._models_py3 import Error
     from ._models_py3 import ErrorAdditionalInfo
     from ._models_py3 import ErrorResponse
     from ._models_py3 import IscsiLun
     from ._models_py3 import IscsiTarget
-    from ._models_py3 import IscsiTargetCreate
     from ._models_py3 import IscsiTargetList
-    from ._models_py3 import IscsiTargetUpdate
     from ._models_py3 import ProxyResource
     from ._models_py3 import Resource
+    from ._models_py3 import Sku
     from ._models_py3 import StoragePoolOperationDisplay
     from ._models_py3 import StoragePoolOperationListResult
     from ._models_py3 import StoragePoolRpOperation
     from ._models_py3 import SystemMetadata
     from ._models_py3 import TargetPortalGroup
-    from ._models_py3 import TargetPortalGroupCreate
-    from ._models_py3 import TargetPortalGroupUpdate
     from ._models_py3 import TrackedResource
 except (SyntaxError, ImportError):
     from ._models import Acl  # type: ignore
     from ._models import Attributes  # type: ignore
     from ._models import Disk  # type: ignore
     from ._models import DiskPool  # type: ignore
-    from ._models import DiskPoolCreate  # type: ignore
     from ._models import DiskPoolListResult  # type: ignore
-    from ._models import DiskPoolUpdate  # type: ignore
     from ._models import Error  # type: ignore
     from ._models import ErrorAdditionalInfo  # type: ignore
     from ._models import ErrorResponse  # type: ignore
     from ._models import IscsiLun  # type: ignore
     from ._models import IscsiTarget  # type: ignore
-    from ._models import IscsiTargetCreate  # type: ignore
     from ._models import IscsiTargetList  # type: ignore
-    from ._models import IscsiTargetUpdate  # type: ignore
     from ._models import ProxyResource  # type: ignore
     from ._models import Resource  # type: ignore
+    from ._models import Sku  # type: ignore
     from ._models import StoragePoolOperationDisplay  # type: ignore
     from ._models import StoragePoolOperationListResult  # type: ignore
     from ._models import StoragePoolRpOperation  # type: ignore
     from ._models import SystemMetadata  # type: ignore
     from ._models import TargetPortalGroup  # type: ignore
-    from ._models import TargetPortalGroupCreate  # type: ignore
-    from ._models import TargetPortalGroupUpdate  # type: ignore
     from ._models import TrackedResource  # type: ignore
 
 from ._storage_pool_management_enums import (
-    DiskPoolTier,
     OperationalStatus,
     ProvisioningStates,
+    SkuTier,
 )
 
 __all__ = [
@@ -70,28 +60,23 @@ __all__ = [
     'Attributes',
     'Disk',
     'DiskPool',
-    'DiskPoolCreate',
     'DiskPoolListResult',
-    'DiskPoolUpdate',
     'Error',
     'ErrorAdditionalInfo',
     'ErrorResponse',
     'IscsiLun',
     'IscsiTarget',
-    'IscsiTargetCreate',
     'IscsiTargetList',
-    'IscsiTargetUpdate',
     'ProxyResource',
     'Resource',
+    'Sku',
     'StoragePoolOperationDisplay',
     'StoragePoolOperationListResult',
     'StoragePoolRpOperation',
     'SystemMetadata',
     'TargetPortalGroup',
-    'TargetPortalGroupCreate',
-    'TargetPortalGroupUpdate',
     'TrackedResource',
-    'DiskPoolTier',
     'OperationalStatus',
     'ProvisioningStates',
+    'SkuTier',
 ]
