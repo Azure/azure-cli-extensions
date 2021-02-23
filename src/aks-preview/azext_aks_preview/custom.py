@@ -894,7 +894,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_azure_rbac=False,
                aad_admin_group_object_ids=None,
                aci_subnet_name=None,
-               disable_sgxquotehelper=False,
+               enable_sgxquotehelper=False,
                kubelet_config=None,
                linux_os_config=None,
                assign_identity=None,
@@ -1107,7 +1107,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         appgw_id,
         appgw_subnet_id,
         appgw_watch_namespace,
-        disable_sgxquotehelper,
+        enable_sgxquotehelper,
         aci_subnet_name,
         vnet_subnet_id
     )
@@ -1957,7 +1957,7 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
                         appgw_id=None,
                         appgw_subnet_id=None,
                         appgw_watch_namespace=None,
-                        disable_sgxquotehelper=False,
+                        enable_sgxquotehelper=False,
                         aci_subnet_name=None,
                         vnet_subnet_id=None):
     if not addon_profiles:
@@ -2014,9 +2014,9 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
         addon_profiles[CONST_OPEN_SERVICE_MESH_ADDON_NAME] = addon_profile
         addons.remove('open-service-mesh')
     if 'confcom' in addons:
-        addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "true"})
-        if disable_sgxquotehelper:
-            addon_profile.config[CONST_ACC_SGX_QUOTE_HELPER_ENABLED] = "false"
+        addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "false"})
+        if enable_sgxquotehelper:
+            addon_profile.config[CONST_ACC_SGX_QUOTE_HELPER_ENABLED] = "true"
         addon_profiles[CONST_CONFCOM_ADDON_NAME] = addon_profile
         addons.remove('confcom')
     if 'virtual-node' in addons:
@@ -2063,14 +2063,25 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
         "westcentralus": "EUS",
         "westeurope": "WEU",
         "westus": "WUS",
-        "westus2": "WUS2"
+        "westus2": "WUS2",
+        "brazilsouth": "CQ",
+        "brazilsoutheast": "BRSE",
+        "norwayeast": "NOE",
+        "southafricanorth": "JNB",
+        "northcentralus": "NCUS",
+        "uaenorth": "DXB",
+        "germanywestcentral": "DEWC",
+        "ukwest": "WUK",
+        "switzerlandnorth": "CHN",
+        "switzerlandwest": "CHW",
+        "uaecentral": "AUH"
     }
     AzureCloudRegionToOmsRegionMap = {
         "australiacentral": "australiacentral",
         "australiacentral2": "australiacentral",
         "australiaeast": "australiaeast",
         "australiasoutheast": "australiasoutheast",
-        "brazilsouth": "southcentralus",
+        "brazilsouth": "brazilsouth",
         "canadacentral": "canadacentral",
         "canadaeast": "canadacentral",
         "centralus": "centralus",
@@ -2084,20 +2095,30 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
         "japanwest": "japaneast",
         "koreacentral": "koreacentral",
         "koreasouth": "koreacentral",
-        "northcentralus": "eastus",
+        "northcentralus": "northcentralus",
         "northeurope": "northeurope",
-        "southafricanorth": "westeurope",
-        "southafricawest": "westeurope",
+        "southafricanorth": "southafricanorth",
+        "southafricawest": "southafricanorth",
         "southcentralus": "southcentralus",
         "southeastasia": "southeastasia",
         "southindia": "centralindia",
         "uksouth": "uksouth",
-        "ukwest": "uksouth",
+        "ukwest": "ukwest",
         "westcentralus": "eastus",
         "westeurope": "westeurope",
         "westindia": "centralindia",
         "westus": "westus",
-        "westus2": "westus2"
+        "westus2": "westus2",
+        "norwayeast": "norwayeast",
+        "norwaywest": "norwayeast",
+        "switzerlandnorth": "switzerlandnorth",
+        "switzerlandwest": "switzerlandwest",
+        "uaenorth": "uaenorth",
+        "germanywestcentral": "germanywestcentral",
+        "germanynorth": "germanywestcentral",
+        "uaecentral": "uaecentral",
+        "eastus2euap": "eastus2euap",
+        "brazilsoutheast": "brazilsoutheast"
     }
 
     # mapping for azure china cloud
@@ -2117,10 +2138,13 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
 
     # mapping for azure us governmner cloud
     AzureFairfaxLocationToOmsRegionCodeMap = {
-        "usgovvirginia": "USGV"
+        "usgovvirginia": "USGV",
+        "usgovarizona": "PHX"
     }
     AzureFairfaxRegionToOmsRegionMap = {
-        "usgovvirginia": "usgovvirginia"
+        "usgovvirginia": "usgovvirginia",
+        "usgovtexas": "usgovvirginia",
+        "usgovarizona": "usgovarizona"
     }
 
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group_name)
@@ -2747,21 +2771,26 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
 
 def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
                       subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None, appgw_subnet_id=None,
-                      appgw_watch_namespace=None, disable_sgxquotehelper=False, no_wait=False):
+                      appgw_watch_namespace=None, enable_sgxquotehelper=False, no_wait=False):
     instance = client.get(resource_group_name, name)
     subscription_id = get_subscription_id(cmd.cli_ctx)
     instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
                               workspace_resource_id=workspace_resource_id, subnet_name=subnet_name,
                               appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix, appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id, appgw_watch_namespace=appgw_watch_namespace,
-                              disable_sgxquotehelper=disable_sgxquotehelper, no_wait=no_wait)
+                              enable_sgxquotehelper=enable_sgxquotehelper, no_wait=no_wait)
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled:
         _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME])
 
     monitoring = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
     ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].enabled
-    need_post_creation_role_assignment = monitoring or ingress_appgw_addon_enabled
 
+    os_type = 'Linux'
+    enable_virtual_node = False
+    if CONST_VIRTUAL_NODE_ADDON_NAME + os_type in instance.addon_profiles:
+        enable_virtual_node = True
+
+    need_post_creation_role_assignment = monitoring or ingress_appgw_addon_enabled or enable_virtual_node
     if need_post_creation_role_assignment:
         # adding a wait here since we rely on the result for role assignment
         result = LongRunningOperation(cmd.cli_ctx)(client.create_or_update(resource_group_name, name, instance))
@@ -2778,6 +2807,14 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
             _add_monitoring_role_assignment(result, cluster_resource_id, cmd)
         if ingress_appgw_addon_enabled:
             _add_ingress_appgw_addon_role_assignment(result, cmd)
+        if enable_virtual_node:
+            # All agent pool will reside in the same vnet, we will grant vnet level Contributor role
+            # in later function, so using a random agent pool here is OK
+            random_agent_pool = result.agent_pool_profiles[0]
+            if random_agent_pool.vnet_subnet_id != "":
+                _add_virtual_node_role_assignment(cmd, result, random_agent_pool.vnet_subnet_id)
+            # Else, the cluster is not using custom VNet, the permission is already granted in AKS RP,
+            # we don't need to handle it in client side in this case.
 
     else:
         result = sdk_no_wait(no_wait, client.create_or_update,
@@ -2804,7 +2841,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    appgw_id=None,
                    appgw_subnet_id=None,
                    appgw_watch_namespace=None,
-                   disable_sgxquotehelper=False,
+                   enable_sgxquotehelper=False,
                    no_wait=False):  # pylint: disable=unused-argument
 
     # parse the comma-separated addons argument
@@ -2889,9 +2926,9 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                                    'To change confcom configuration, run '
                                    f'"az aks disable-addons -a confcom -n {name} -g {resource_group_name}" '
                                    'before enabling it again.')
-                addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "true"})
-                if disable_sgxquotehelper:
-                    addon_profile.config[CONST_ACC_SGX_QUOTE_HELPER_ENABLED] = "false"
+                addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "false"})
+                if enable_sgxquotehelper:
+                    addon_profile.config[CONST_ACC_SGX_QUOTE_HELPER_ENABLED] = "true"
             addon_profiles[addon] = addon_profile
         else:
             if addon not in addon_profiles:
