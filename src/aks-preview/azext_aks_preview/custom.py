@@ -1956,8 +1956,7 @@ def aks_runcommand(cmd, client, resource_group_name, name, command_string="", co
 
     commandResultFuture = client.run_command(resource_group_name, name, request_payload, long_running_operation_timeout=5)
     commandResult = commandResultFuture.result(300)
-    print(commandResult)
-    print(f"command started at {commandResult.started_at}, finished at {commandResult.finished_at}, with exitcode={commandResult.exit_code}")
+    print(f"{colorama.Fore.BLUE}command started at {commandResult.started_at}, finished at {commandResult.finished_at}, with exitcode={commandResult.exit_code}{colorama.Style.RESET_ALL}")
     print(commandResult.logs)
 
 def _get_command_context(command_files):
