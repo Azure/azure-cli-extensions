@@ -577,10 +577,10 @@ helps['aks command'] = """
     type: command
     short-summary: run a shell command (with kubectl, helm) on your aks cluster, support attaching files as well.
     parameters:
-        - name: --command_string
+        - name: --command -c
           type: string
           short-summary: command or shell script you want run.
-        - name: --context
+        - name: --file -f
           type: string
           short-summary: files will be used by the command, use '.' to attach the current folder.
 """

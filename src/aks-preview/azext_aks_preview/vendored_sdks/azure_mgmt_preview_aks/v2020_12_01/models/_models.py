@@ -2836,26 +2836,26 @@ class RunCommandResult(Model):
 
     :param exit_code: exit code of the command
     :type exit_code: int
-    :param start_at: time when the command started.
-    :type start_at: datetime
-    :param finish_at: time when the command finished.
-    :type finish_at: datetime
+    :param started_at: time when the command started.
+    :type started_at: datetime
+    :param finished_at: time when the command finished.
+    :type finished_at: datetime
     :param logs: command output.
     :type logs: str
     """
 
     _attribute_map = {
         'exit_code': {'key': 'exitCode', 'type': 'int'},
-        'start_at': {'key': 'startAt', 'type': 'iso-8601'},
-        'finish_at': {'key': 'finishAt', 'type': 'iso-8601'},
+        'started_at': {'key': 'startedAt', 'type': 'iso-8601'},
+        'finished_at': {'key': 'finishedAt', 'type': 'iso-8601'},
         'logs': {'key': 'logs', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
         super(RunCommandResult, self).__init__(**kwargs)
         self.exit_code = kwargs.get('exit_code', None)
-        self.start_at = kwargs.get('start_at', None)
-        self.finish_at = kwargs.get('finish_at', None)
+        self.started_at = kwargs.get('started_at', None)
+        self.finished_at = kwargs.get('finished_at', None)
         self.logs = kwargs.get('logs', None)
 
 

@@ -9,6 +9,7 @@ from __future__ import print_function
 import binascii
 import datetime
 import errno
+import io
 import json
 import os
 import os.path
@@ -24,6 +25,7 @@ import time
 import uuid
 import base64
 import webbrowser
+import zipfile
 from distutils.version import StrictVersion
 from math import isnan
 from six.moves.urllib.request import urlopen  # pylint: disable=import-error
@@ -1941,14 +1943,33 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
-def aks_runcommand(cmd, client, resource_group_name, name, command_string="", context=""):
+def aks_runcommand(cmd, client, resource_group_name, name, command_string="", command_files=None):
     colorama.init()
-    print("🪐 command=" + command_string)
-    print("🪐 context=" + context)
+
+    if len(command_string) == 0:
+        raise CLIError('Command cannot be empty.')
+   
     request_payload = RunCommandRequest()
     request_payload.command = command_string
+    request_payload.context = _get_command_context(command_files)
 
-    return client.run_command(resource_group_name, name, request_payload)
+
+    commandResultFuture = client.run_command(resource_group_name, name, request_payload, long_running_operation_timeout=5)
+    commandResult = commandResultFuture.result(300)
+    print(commandResult)
+    print(f"command started at {commandResult.started_at}, finished at {commandResult.finished_at}, with exitcode={commandResult.exit_code}")
+    print(commandResult.logs)
+
+def _get_command_context(command_files):
+    zipStream = io.BytesIO()
+    zipFile = zipfile.ZipFile(zipStream, "w")
+    for file in command_files:
+        # test file exists
+        # check if file is '.'
+        zipFile.write(file)
+    zipFile.close()
+
+    return str(base64.encodebytes(zipStream.getbuffer()), "utf-8")
 
 def _upgrade_single_nodepool_image_version(no_wait, client, resource_group_name, cluster_name, nodepool_name):
     return sdk_no_wait(no_wait, client.upgrade_node_image_version, resource_group_name, cluster_name, nodepool_name)
