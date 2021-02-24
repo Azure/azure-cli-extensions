@@ -37,7 +37,7 @@ class CassandraClusterOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2020-06-01-preview"
+        self.api_version = "2021-03-01-preview"
 
         self.config = config
 

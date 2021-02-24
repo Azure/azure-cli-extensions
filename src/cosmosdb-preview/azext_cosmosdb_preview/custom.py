@@ -484,7 +484,7 @@ def cli_cosmosdb_sql_role_assignment_create(client,
 def cli_cosmosdb_sql_role_assignment_update(client,
                                             resource_group_name,
                                             account_name,
-                                            role_assignment_id=None,
+                                            role_assignment_id,
                                             role_definition_name=None,
                                             role_definition_id=None):
     """Updates an Azure Cosmos DB Sql Role Assignment"""
@@ -512,9 +512,10 @@ def cli_cosmosdb_sql_role_assignment_exists(client,
     try:
         client.get_sql_role_assignment(role_assignment_id, resource_group_name, account_name)
     except CloudError as ex:
-        return _handle_exists_exception(ex.response)       
+        return _handle_exists_exception(ex.response)
 
     return True
+
 
 def get_associated_role_definition_id(client,
                                       resource_group_name,
