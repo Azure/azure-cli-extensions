@@ -119,6 +119,7 @@ try:
     from ._models_py3 import PrivateLinkServiceConnectionStateProperty
     from ._models_py3 import ProxyResource
     from ._models_py3 import RegionForOnlineOffline
+    from ._models_py3 import RepairPostBody
     from ._models_py3 import Resource
     from ._models_py3 import RestorableDatabaseAccountGetResult
     from ._models_py3 import RestorableLocationResource
@@ -288,6 +289,7 @@ except (SyntaxError, ImportError):
     from ._models import PrivateLinkServiceConnectionStateProperty
     from ._models import ProxyResource
     from ._models import RegionForOnlineOffline
+    from ._models import RepairPostBody
     from ._models import Resource
     from ._models import RestorableDatabaseAccountGetResult
     from ._models import RestorableLocationResource
@@ -525,6 +527,7 @@ __all__ = [
     'PrivateLinkServiceConnectionStateProperty',
     'ProxyResource',
     'RegionForOnlineOffline',
+    'RepairPostBody',
     'Resource',
     'RestorableDatabaseAccountGetResult',
     'RestorableLocationResource',

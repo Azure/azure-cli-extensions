@@ -139,55 +139,56 @@ def load_arguments(self, _):
         c.argument('account_name', account_name_type, id_part=None)
         c.argument('role_assignment_id', options_list=['--role-assignment-id', '-i'], validator=validate_role_assignment_id, help="Optional for Create. Unique ID for the Role Assignment. If not provided, a new GUID will be used.")
         c.argument('role_definition_id', options_list=['--role-definition-id', '-d'], validator=validate_fully_qualified_role_definition_id, help="Unique ID of the Role Definition that this Role Assignment refers to.")
+        c.argument('role_definition_name', options_list=['--role-definition-name', '-n'], help="Unique Name of the Role Definition that this Role Assignment refers to. Eg. 'Contoso Reader Role'.")
         c.argument('scope', validator=validate_scope, options_list=['--scope', '-s'], help="Data plane resource path at which this Role Assignment is being granted.")
         c.argument('principal_id', options_list=['--principal-id', '-p'], help="AAD Object ID of the principal to which this Role Assignment is being granted.")
 
     # Managed Cassandra Cluster
-    with self.argument_context('cassandra-mi cluster create') as c:
-        c.argument('location', options_list=['--location', '-l'], help="Location", required=True)
+    with self.argument_context('cassandra-managed-instance cluster create') as c:
+        c.argument('location', options_list=['--location', '-l'], help="Azure Location of the Cluster", required=True)
         c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
-        c.argument('delegated_management_subnet_id', options_list=['--delegated-management-subnet-id', '-s'], help="Delegated SubnetId", required=True)
+        c.argument('delegated_management_subnet_id', options_list=['--delegated-management-subnet-id', '-s'], help="The subnet we will inject the Network Interface of the component which orchestrates the cassandra cluster. This is also where customers can access the prometheus endpoint", required=True)
 
     # Managed Cassandra Cluster
-    with self.argument_context('cassandra-mi cluster update') as c:
-        c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
-
-    # Managed Cassandra Cluster
-    with self.argument_context('cassandra-mi cluster node status') as c:
+    with self.argument_context('cassandra-managed-instance cluster update') as c:
         c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
 
     # Managed Cassandra Cluster
-    with self.argument_context('cassandra-mi cluster show') as c:
+    with self.argument_context('cassandra-managed-instance cluster node-status') as c:
         c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
 
     # Managed Cassandra Cluster
-    with self.argument_context('cassandra-mi cluster delete') as c:
+    with self.argument_context('cassandra-managed-instance cluster show') as c:
+        c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
+
+    # Managed Cassandra Cluster
+    with self.argument_context('cassandra-managed-instance cluster delete') as c:
         c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
 
     # Managed Cassandra Datacenter
-    with self.argument_context('cassandra-mi datacenter create') as c:        
+    with self.argument_context('cassandra-managed-instance datacenter create') as c:        
         c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
         c.argument('data_center_name', options_list=['--data-center-name', '-d'], help="Datacenter Name", required=True)
-        c.argument('data_center_location', options_list=['--data-center-location', '-l'], help="Datacenter Location", required=True)
-        c.argument('delegated_subnet_id', options_list=['--delegated-subnet-id', '-s'], help="Delegated SubnetId", required=True)
+        c.argument('data_center_location', options_list=['--data-center-location', '-l'], help="Azure Location of the Datacenter", required=True)
+        c.argument('delegated_subnet_id', options_list=['--delegated-subnet-id', '-s'], help="The subnet we will inject the Network Interfaces of the data vms", required=True)
         c.argument('node_count', options_list=['--node-count', '-n'], help="Node Count", required=True)
 
     # Managed Cassandra Datacenter
-    with self.argument_context('cassandra-mi datacenter update') as c:        
+    with self.argument_context('cassandra-managed-instance datacenter update') as c:        
         c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
         c.argument('data_center_name', options_list=['--data-center-name', '-d'], help="Datacenter Name", required=True)
-        c.argument('node_count', options_list=['--node-count', '-n'], help="Node Count", required=True)
+        c.argument('node_count', options_list=['--node-count', '-n'], help="Node Count")
 
     # Managed Cassandra Datacenter
-    with self.argument_context('cassandra-mi datacenter list') as c:
+    with self.argument_context('cassandra-managed-instance datacenter list') as c:
         c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
 
     # Managed Cassandra Datacenter
-    with self.argument_context('cassandra-mi datacenter show') as c:
+    with self.argument_context('cassandra-managed-instance datacenter show') as c:
         c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
         c.argument('data_center_name', options_list=['--data-center-name', '-d'], help="Datacenter Name", required=True)
 
     # Managed Cassandra Datacenter
-    with self.argument_context('cassandra-mi datacenter delete') as c:
+    with self.argument_context('cassandra-managed-instance datacenter delete') as c:
         c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
         c.argument('data_center_name', options_list=['--data-center-name', '-d'], help="Datacenter Name", required=True)

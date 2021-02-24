@@ -21,7 +21,6 @@ from azext_cosmosdb_preview._client_factory import (
 )
 
 
-
 def load_command_table(self, _):
     cosmosdb_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#DatabaseAccountsOperations.{}',
@@ -112,16 +111,15 @@ def load_command_table(self, _):
         g.show_command('show', 'get_sql_role_assignment')
         g.command('delete', 'delete_sql_role_assignment', confirmation=True)
 
-    with self.command_group('cassandra-mi cluster', cosmosdb_managed_cassandra_cluster_sdk, client_factory=cf_cassandra_cluster, is_preview=True) as g:
+    with self.command_group('cassandra-managed-instance cluster', cosmosdb_managed_cassandra_cluster_sdk, client_factory=cf_cassandra_cluster, is_preview=True) as g:
         g.custom_command('create', 'cli_cosmosdb_managed_cassandra_cluster_create')
         g.custom_command('update', 'cli_cosmosdb_managed_cassandra_cluster_update')
-        g.command('node status', 'fetch_node_status')
-        g.command('list-by-subscription', 'list_by_subscription')
-        g.command('list-by-resourcegroup', 'list_by_resource_group')
+        g.command('node-status', 'fetch_node_status')
+        g.custom_command('list', 'cli_cosmosdb_managed_cassandra_cluster_list')
         g.show_command('show', 'get')
         g.command('delete', 'delete', confirmation=True)
 
-    with self.command_group('cassandra-mi datacenter', cosmosdb_managed_cassandra_datacenter_sdk, client_factory=cf_cassandra_data_center, is_preview=True) as g:
+    with self.command_group('cassandra-managed-instance datacenter', cosmosdb_managed_cassandra_datacenter_sdk, client_factory=cf_cassandra_data_center, is_preview=True) as g:
         g.custom_command('create', 'cli_cosmosdb_managed_cassandra_datacenter_create')
         g.custom_command('update', 'cli_cosmosdb_managed_cassandra_datacenter_update')
         g.command('list', 'list_data_centers_method')

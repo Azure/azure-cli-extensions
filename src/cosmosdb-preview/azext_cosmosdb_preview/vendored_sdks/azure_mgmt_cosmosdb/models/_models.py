@@ -4448,6 +4448,34 @@ class RegionForOnlineOffline(Model):
         self.region = kwargs.get('region', None)
 
 
+class RepairPostBody(Model):
+    """Specification of the keyspaces and tables to run repair on.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param keyspace: Required. The name of the keyspace that repair should be
+     run on.
+    :type keyspace: str
+    :param tables: List of tables in the keyspace to repair. If omitted,
+     repair all tables in the keyspace.
+    :type tables: list[str]
+    """
+
+    _validation = {
+        'keyspace': {'required': True},
+    }
+
+    _attribute_map = {
+        'keyspace': {'key': 'keyspace', 'type': 'str'},
+        'tables': {'key': 'tables', 'type': '[str]'},
+    }
+
+    def __init__(self, **kwargs):
+        super(RepairPostBody, self).__init__(**kwargs)
+        self.keyspace = kwargs.get('keyspace', None)
+        self.tables = kwargs.get('tables', None)
+
+
 class RestorableDatabaseAccountGetResult(Model):
     """A Azure Cosmos DB restorable database account.
 
