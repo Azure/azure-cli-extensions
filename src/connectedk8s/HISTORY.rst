@@ -7,40 +7,6 @@ Release History
 ++++++
 * Adding enable/disable features support
 
-0.3.7
-++++++
-* Pulled GA changes
-
-0.3.6
-++++++
-* Added az connectedk8s proxy
-
-0.3.5
-++++++
-* Fixed Custom tenant id issue with validation
-
-0.3.4
-++++++
-* Synced with Azure cli-extensions repo
- 
-0.3.3
-++++++
-* Fixed Custom tenant Id passability
-
-0.3.2
-++++++
-* Fixed aad server/client app id validation
-* Added descriptive error messages
-* Added block for delete connected cluster using cluster connect credentials
-
-0.3.1
-++++++
-* Fixed dependency version in setup file
-
-0.3.0
-++++++
-* `az connectedk8s connect`: Added support for connect proxy
-* `az connectedk8s get-credentials`: Added support for list cluster user credentials for both AAD and non-AAD connected clusters
 0.2.9
 ++++++
 * `az connectedk8s connect`: Added support for disabling auto upgrade of agents
