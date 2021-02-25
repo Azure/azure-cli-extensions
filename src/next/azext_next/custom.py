@@ -46,7 +46,7 @@ def handle_next(cmd):
     print()
     _give_recommends(cmd, recommends)
 
-    option = get_int_option("Please select your option " + Fore.LIGHTBLACK_EX + "(If none, please input 0)" +
+    option = get_int_option("Please select your option " + Fore.LIGHTBLACK_EX + "(if none, enter 0)" +
                             Fore.RESET + ": ", 0, len(recommends), -1)
     if option == 0:
         send_feedback(request_type, 0, command_history, processed_exception, recommends)

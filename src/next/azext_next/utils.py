@@ -32,7 +32,7 @@ def get_int_option(option_description, min_option, max_option, default_option):
     print(Fore.LIGHTBLUE_EX + ' ? ' + Fore.RESET + option_description, end='')
     option = read_int(default_option)
     while option < min_option or option > max_option:
-        print("The range of options is {}-{}, please input again: ".format(min_option, max_option), end='')
+        print("Please enter a valid option ({}-{}): ".format(min_option, max_option), end='')
         option = read_int(default_option)
     return option
 
