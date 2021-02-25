@@ -48,7 +48,7 @@ def cf_sql_resources(cli_ctx, _):
 
 def cf_cassandra_cluster(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).cassandra_cluster
-    
+
 
 def cf_cassandra_data_center(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).cassandra_data_center

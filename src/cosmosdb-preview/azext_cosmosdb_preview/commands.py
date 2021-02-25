@@ -61,7 +61,7 @@ def load_command_table(self, _):
     cosmosdb_managed_cassandra_cluster_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#CassandraClusterOperations.{}',
         client_factory=cf_cassandra_cluster)
-    
+
     cosmosdb_managed_cassandra_datacenter_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#CassandraDataCenterOperations.{}',
         client_factory=cf_cassandra_data_center)

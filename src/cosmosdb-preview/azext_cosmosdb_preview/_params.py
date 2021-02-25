@@ -145,18 +145,18 @@ def load_arguments(self, _):
 
     # Managed Cassandra Cluster
     for scope in [
-        'managed-cassandra cluster create', 
-        'managed-cassandra cluster update', 
-        'managed-cassandra cluster show', 
-        'managed-cassandra cluster delete',
-        'managed-cassandra cluster node-status']:        
+            'managed-cassandra cluster create',
+            'managed-cassandra cluster update',
+            'managed-cassandra cluster show',
+            'managed-cassandra cluster delete',
+            'managed-cassandra cluster node-status']:
         with self.argument_context(scope) as c:
             c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
 
     # Managed Cassandra Cluster
     for scope in [
-        'managed-cassandra cluster create', 
-        'managed-cassandra cluster update']:        
+            'managed-cassandra cluster create',
+            'managed-cassandra cluster update']:
         with self.argument_context(scope) as c:
             c.argument('tags', arg_type=tags_type)
             c.argument('external_gossip_certificates', options_list=['--external-gossip-certificates', '-e'], help="A list of certificates that the managed cassandra data center's should accept.")
@@ -181,21 +181,21 @@ def load_arguments(self, _):
 
     # Managed Cassandra Datacenter
     for scope in [
-        'managed-cassandra datacenter create', 
-        'managed-cassandra datacenter update', 
-        'managed-cassandra datacenter show', 
-        'managed-cassandra datacenter delete']:        
+            'managed-cassandra datacenter create',
+            'managed-cassandra datacenter update',
+            'managed-cassandra datacenter show',
+            'managed-cassandra datacenter delete']:
         with self.argument_context(scope) as c:
             c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
             c.argument('data_center_name', options_list=['--data-center-name', '-d'], help="Datacenter Name", required=True)
 
     # Managed Cassandra Datacenter
     for scope in [
-        'managed-cassandra datacenter create', 
-        'managed-cassandra datacenter update']:        
+            'managed-cassandra datacenter create',
+            'managed-cassandra datacenter update']:
         with self.argument_context(scope) as c:
             c.argument('node_count', options_list=['--node-count', '-n'], help="The number of Cassandra virtual machines in this data center.")
-            c.argument('base64_encoded_cassandra_yaml_fragment', options_list=['--base64-encoded-cassandra-yaml-fragment', '-b'], help ="This is a Base64 encoded yaml file that is a subset of cassandra.yaml.  Supported fields will be honored and others will be ignored.")
+            c.argument('base64_encoded_cassandra_yaml_fragment', options_list=['--base64-encoded-cassandra-yaml-fragment', '-b'], help="This is a Base64 encoded yaml file that is a subset of cassandra.yaml.  Supported fields will be honored and others will be ignored.")
             c.argument('data_center_location', options_list=['--data-center-location', '-l'], help="The region where the virtual machine for this data center will be located.")
             c.argument('delegated_subnet_id', options_list=['--delegated-subnet-id', '-s'], help="The resource id of a subnet where ip addresses of the Cassandra virtual machines will be allocated. This must be in the same region as data_center_location.")
 

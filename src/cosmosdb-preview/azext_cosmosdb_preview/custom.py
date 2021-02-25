@@ -23,7 +23,6 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     SqlRoleDefinitionCreateUpdateParameters,
     ClusterResource,
     ClusterResourceProperties,
-    DataCenterResource,
     DataCenterResourceProperties
 )
 
@@ -532,23 +531,24 @@ def get_associated_role_definition_id(client,
 
     return matching_role_definition.id
 
+
 def cli_cosmosdb_managed_cassandra_cluster_create(client,
-                                            resource_group_name,
-                                            cluster_name,
-                                            location,                                            
-                                            delegated_management_subnet_id,
-                                            tags = None,
-                                            identity = None,
-                                            cluster_name_override= None,
-                                            initial_cassandra_admin_password= None,
-                                            client_certificates = None,
-                                            external_gossip_certificates = None,
-                                            external_seed_nodes = None,
-                                            restore_from_backup_id = None,
-                                            cassandra_version = None,
-                                            authentication_method = None,
-                                            hours_between_backups = None,
-                                            repair_enabled = None):
+                                                  resource_group_name,
+                                                  cluster_name,
+                                                  location,
+                                                  delegated_management_subnet_id,
+                                                  tags=None,
+                                                  identity=None,
+                                                  cluster_name_override=None,
+                                                  initial_cassandra_admin_password=None,
+                                                  client_certificates=None,
+                                                  external_gossip_certificates=None,
+                                                  external_seed_nodes=None,
+                                                  restore_from_backup_id=None,
+                                                  cassandra_version=None,
+                                                  authentication_method=None,
+                                                  hours_between_backups=None,
+                                                  repair_enabled=None):
 
     """Creates an Azure Managed Cassandra Cluster"""
 
@@ -569,85 +569,86 @@ def cli_cosmosdb_managed_cassandra_cluster_create(client,
         location=location,
         tags=tags,
         identity=identity,
-        properties = cluster_properties)
+        properties=cluster_properties)
 
     return client.create_update(resource_group_name, cluster_name, cluster_resource_create_update_parameters)
 
+
 def cli_cosmosdb_managed_cassandra_cluster_update(client,
-                                            resource_group_name,
-                                            cluster_name,
-                                            tags = None,
-                                            identity = None,
-                                            delegated_management_subnet_id = None,
-                                            cluster_name_override= None,
-                                            initial_cassandra_admin_password= None,
-                                            client_certificates = None,
-                                            external_gossip_certificates = None,
-                                            external_seed_nodes = None,
-                                            restore_from_backup_id = None,
-                                            cassandra_version = None,
-                                            authentication_method = None,
-                                            hours_between_backups = None,
-                                            repair_enabled = None):
+                                                  resource_group_name,
+                                                  cluster_name,
+                                                  tags=None,
+                                                  identity=None,
+                                                  delegated_management_subnet_id=None,
+                                                  cluster_name_override=None,
+                                                  initial_cassandra_admin_password=None,
+                                                  client_certificates=None,
+                                                  external_gossip_certificates=None,
+                                                  external_seed_nodes=None,
+                                                  restore_from_backup_id=None,
+                                                  cassandra_version=None,
+                                                  authentication_method=None,
+                                                  hours_between_backups=None,
+                                                  repair_enabled=None):
 
     """Updates an Azure Managed Cassandra Cluster"""
 
-    cluster_resource = client.get(resource_group_name, cluster_name);
-   
-    if cluster_name_override is None: 
+    cluster_resource = client.get(resource_group_name, cluster_name)
+
+    if cluster_name_override is None:
         cluster_name_override = cluster_resource.properties.cluster_name_override
 
-    if initial_cassandra_admin_password is None: 
+    if initial_cassandra_admin_password is None:
         initial_cassandra_admin_password = cluster_resource.properties.initial_cassandra_admin_password
-    
-    if client_certificates is None: 
+
+    if client_certificates is None:
         client_certificates = cluster_resource.properties.client_certificates
-    
-    if delegated_management_subnet_id is None: 
+
+    if delegated_management_subnet_id is None:
         delegated_management_subnet_id = cluster_resource.properties.delegated_management_subnet_id
-    
-    if external_gossip_certificates is not None: 
+
+    if external_gossip_certificates is not None:
         external_gossip_certificates = cluster_resource.properties.external_gossip_certificates
-    
-    if external_seed_nodes is None: 
+
+    if external_seed_nodes is None:
         external_seed_nodes = cluster_resource.properties.external_seed_nodes
 
-    if restore_from_backup_id is None: 
+    if restore_from_backup_id is None:
         restore_from_backup_id = cluster_resource.properties.restore_from_backup_id
 
-    if cassandra_version is None: 
+    if cassandra_version is None:
         cassandra_version = cluster_resource.properties.cassandra_version
 
-    if authentication_method is None: 
+    if authentication_method is None:
         authentication_method = cluster_resource.properties.authentication_method
 
-    if hours_between_backups is None: 
+    if hours_between_backups is None:
         hours_between_backups = cluster_resource.properties.hours_between_backups
 
-    if repair_enabled is None: 
+    if repair_enabled is None:
         repair_enabled = cluster_resource.properties.repair_enabled
 
-    if tags is None: 
+    if tags is None:
         tags = cluster_resource.tags
 
-    if identity is None: 
+    if identity is None:
         identity = cluster_resource.identity
 
     cluster_properties = ClusterResourceProperties(
-        provisioning_state = cluster_resource.properties.provisioning_state,
-        restore_from_backup_id = restore_from_backup_id,
-        delegated_management_subnet_id = delegated_management_subnet_id,
-        cassandra_version = cassandra_version,
-        cluster_name_override = cluster_name_override,
-        authentication_method = authentication_method,
-        initial_cassandra_admin_password = initial_cassandra_admin_password,
-        hours_between_backups = hours_between_backups,
-        repair_enabled = repair_enabled,
-        client_certificates = client_certificates,
-        external_gossip_certificates = external_gossip_certificates,
-        gossip_certificates = cluster_resource.properties.gossip_certificates,
-        external_seed_nodes = cluster_resource.properties.external_seed_nodes,
-        seed_nodes = cluster_resource.properties.seed_nodes
+        provisioning_state=cluster_resource.properties.provisioning_state,
+        restore_from_backup_id=restore_from_backup_id,
+        delegated_management_subnet_id=delegated_management_subnet_id,
+        cassandra_version=cassandra_version,
+        cluster_name_override=cluster_name_override,
+        authentication_method=authentication_method,
+        initial_cassandra_admin_password=initial_cassandra_admin_password,
+        hours_between_backups=hours_between_backups,
+        repair_enabled=repair_enabled,
+        client_certificates=client_certificates,
+        external_gossip_certificates=external_gossip_certificates,
+        gossip_certificates=cluster_resource.properties.gossip_certificates,
+        external_seed_nodes=cluster_resource.properties.external_seed_nodes,
+        seed_nodes=cluster_resource.properties.seed_nodes
     )
 
     cluster_resource_create_update_parameters = ClusterResource(
@@ -658,34 +659,35 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
 
     return client.create_update(resource_group_name, cluster_name, cluster_resource_create_update_parameters)
 
+
 def cli_cosmosdb_managed_cassandra_cluster_list(client,
-                                            resource_group_name = None):
+                                                resource_group_name=None):
 
     """List Azure Managed Cassandra Clusters by resource group and subscription."""
 
     if resource_group_name is None:
         return client.list_by_subscription()
-    else:
-        return client.list_by_resource_group(resource_group_name)
+
+    return client.list_by_resource_group(resource_group_name)
+
 
 def cli_cosmosdb_managed_cassandra_fetch_node_status(client,
-                                            resource_group_name,
-                                            cluster_name,
-                                            ):
+                                                     resource_group_name,
+                                                     cluster_name):
 
     """Get Azure Managed Cassandra Cluster Node Status"""
 
     return client.fetch_node_status(resource_group_name, cluster_name)
 
+
 def cli_cosmosdb_managed_cassandra_datacenter_create(client,
-                                            resource_group_name,
-                                            cluster_name,
-                                            data_center_name,
-                                            data_center_location,                                            
-                                            delegated_subnet_id,
-                                            node_count,
-                                            base64_encoded_cassandra_yaml_fragment= None
-                                            ):
+                                                     resource_group_name,
+                                                     cluster_name,
+                                                     data_center_name,
+                                                     data_center_location,
+                                                     delegated_subnet_id,
+                                                     node_count,
+                                                     base64_encoded_cassandra_yaml_fragment=None):
 
     """Creates an Azure Managed Cassandra Datacenter"""
 
@@ -698,33 +700,30 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
 
     return client.create_update(resource_group_name, cluster_name, data_center_name, data_center_properties)
 
-def cli_cosmosdb_managed_cassandra_datacenter_update(client,
-                                            resource_group_name,
-                                            cluster_name,
-                                            data_center_name,
-                                            data_center_location = None,                                            
-                                            delegated_subnet_id = None,
-                                            node_count = None,
-                                            base64_encoded_cassandra_yaml_fragment= None
-                                            ):
+
+def cli_cosmosdb_managed_cassandra_datacenter_update(client, resource_group_name,
+                                                     cluster_name,
+                                                     data_center_name,
+                                                     node_count=None,
+                                                     base64_encoded_cassandra_yaml_fragment=None):
 
     """Updates an Azure Managed Cassandra Datacenter"""
 
-    data_center_resource = client.get(resource_group_name, cluster_name, data_center_name);
+    data_center_resource = client.get(resource_group_name, cluster_name, data_center_name)
 
     if node_count is None:
         node_count = data_center_resource.properties.node_count
 
     if base64_encoded_cassandra_yaml_fragment is None:
-        base64_encoded_cassandra_yaml_fragment = data_center_resource.properties.base64_encoded_cassandra_yaml_fragment   
-    
+        base64_encoded_cassandra_yaml_fragment = data_center_resource.properties.base64_encoded_cassandra_yaml_fragment
+
     data_center_properties = DataCenterResourceProperties(
-        data_center_location = data_center_resource.properties.data_center_location,
-        delegated_subnet_id =  data_center_resource.properties.delegated_subnet_id,
-        node_count = node_count,
-        seed_nodes =  data_center_resource.properties.seed_nodes,
-        base64_encoded_cassandra_yaml_fragment = base64_encoded_cassandra_yaml_fragment)
- 
+        data_center_location=data_center_resource.properties.data_center_location,
+        delegated_subnet_id=data_center_resource.properties.delegated_subnet_id,
+        node_count=node_count,
+        seed_nodes=data_center_resource.properties.seed_nodes,
+        base64_encoded_cassandra_yaml_fragment=base64_encoded_cassandra_yaml_fragment)
+
     return client.create_update(resource_group_name, cluster_name, data_center_name, data_center_properties)
 
 
