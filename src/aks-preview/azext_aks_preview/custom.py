@@ -1951,7 +1951,9 @@ def aks_runcommand(cmd, client, resource_group_name, name, command_string="", co
    
     request_payload = RunCommandRequest()
     request_payload.command = command_string
-    request_payload.context = _get_command_context(command_files)
+
+    if command_files != None:
+        request_payload.context = _get_command_context(command_files)
 
 
     commandResultFuture = client.run_command(resource_group_name, name, request_payload, long_running_operation_timeout=5)
