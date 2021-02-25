@@ -13,48 +13,26 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-class Cosmosdb_previewScenarioTest(ScenarioTest):
+class ManagedCassandraScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_managed_cassandra')
     def test_managed_cassandra_cluster_without_datacenters(self, resource_group):
 
         self.kwargs.update({
-            'c': self.create_random_name(prefix='cli', length=10)
-        })
-
-        #Create Cluster
-        self.cmd('az cassandra-mi cluster create -c {c} -l westus2 -g {rg} -s /subscriptions/94d9b402-77b4-4049-b4c1-947bc6b7729b/resourceGroups/tekommin-vnet/providers/Microsoft.Network/virtualNetworks/projectnovatest-vnet/subnets/nova-subnet')
-        cluster = self.cmd('az cassandra-mi cluster show -c {c} -g {rg}').get_output_in_json()
-        assert cluster['properties']['provisioningState'] == 'Succeeded'
-
-        #Delete Cluster
-        self.cmd('az cassandra-mi cluster delete -c {c} -g {rg} --yes')
-        clusters = self.cmd('az cassandra-mi cluster list -g {rg}').get_output_in_json()
-        assert len(clusters) == 0
-
-
-    @ResourceGroupPreparer(name_prefix='cli_managed_cassandra')
-    def test_managed_cassandra_cluster_with_one_datacenter(self, resource_group):
-
-        self.kwargs.update({
             'c': self.create_random_name(prefix='cli', length=10),
-            'd': self.create_random_name(prefix='cli-dc', length=10)
+            'subnet_id': self.create_subnet(resource_group)            
         })
 
         #Create Cluster
-        self.cmd('az cassandra-mi cluster create -c {c} -l westus2 -g {rg} -s /subscriptions/94d9b402-77b4-4049-b4c1-947bc6b7729b/resourceGroups/tekommin-vnet/providers/Microsoft.Network/virtualNetworks/projectnovatest-vnet/subnets/nova-subnet')
-        cluster = self.cmd('az cassandra-mi cluster show -c {c} -g {rg}').get_output_in_json()
+        self.cmd('az managed-cassandra cluster create -c {c} -l eastus2 -g {rg} -s {subnet_id}')
+        cluster = self.cmd('az managed-cassandra cluster show -c {c} -g {rg}').get_output_in_json()
         assert cluster['properties']['provisioningState'] == 'Succeeded'
 
-        #Create Datacenter
-        self.cmd('az cassandra-mi datacenter create -c {c} -d {d} -l westus2 -g {rg} -n 3 -s /subscriptions/94d9b402-77b4-4049-b4c1-947bc6b7729b/resourceGroups/tekommin-vnet/providers/Microsoft.Network/virtualNetworks/projectnovatest-vnet/subnets/nova-subnet')
-        datacenter = self.cmd('az cassandra-mi datacenter show -c {c} -d {d} -g {rg}').get_output_in_json()
-        assert datacenter['properties']['provisioningState'] == 'Succeeded'
-
         #Delete Cluster
-        self.cmd('az cassandra-mi cluster delete -c {c} -g {rg} --yes')
-        clusters = self.cmd('az cassandra-mi cluster list -g {rg}').get_output_in_json()
-        assert len(clusters) == 0
+        try:             
+            self.cmd('az managed-cassandra cluster delete -c {c} -g {rg} --yes')
+        except Exception as e:
+            print(e)
 
     @ResourceGroupPreparer(name_prefix='cli_managed_cassandra')
     def test_managed_cassandra_verify_lists(self, resource_group):
@@ -62,30 +40,31 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         self.kwargs.update({
             'c': self.create_random_name(prefix='cli', length=10),
             'c1': self.create_random_name(prefix='cli', length=10),
-            'd': self.create_random_name(prefix='cli-dc', length=10)
+            'd': self.create_random_name(prefix='cli-dc', length=10),
+            'subnet_id': self.create_subnet(resource_group)    
         })
 
         #Create Cluster
-        self.cmd('az cassandra-mi cluster create -c {c} -l westus2 -g {rg} -s /subscriptions/94d9b402-77b4-4049-b4c1-947bc6b7729b/resourceGroups/tekommin-vnet/providers/Microsoft.Network/virtualNetworks/projectnovatest-vnet/subnets/nova-subnet')
-        cluster = self.cmd('az cassandra-mi cluster show -c {c} -g {rg}').get_output_in_json()
+        self.cmd('az managed-cassandra cluster create -c {c} -l eastus2 -g {rg} -s {subnet_id}')
+        cluster = self.cmd('az managed-cassandra cluster show -c {c} -g {rg}').get_output_in_json()
         assert cluster['properties']['provisioningState'] == 'Succeeded'
 
         #Create Cluster
-        self.cmd('az cassandra-mi cluster create -c {c1} -l westus2 -g {rg} -s /subscriptions/94d9b402-77b4-4049-b4c1-947bc6b7729b/resourceGroups/tekommin-vnet/providers/Microsoft.Network/virtualNetworks/projectnovatest-vnet/subnets/nova-subnet')
-        cluster1 = self.cmd('az cassandra-mi cluster show -c {c1} -g {rg}').get_output_in_json()
+        self.cmd('az managed-cassandra cluster create -c {c1} -l eastus2 -g {rg} -s {subnet_id}')
+        cluster1 = self.cmd('az managed-cassandra cluster show -c {c1} -g {rg}').get_output_in_json()
         assert cluster1['properties']['provisioningState'] == 'Succeeded'
 
         #Create Datacenter
-        self.cmd('az cassandra-mi datacenter create -c {c} -d {d} -l westus2 -g {rg} -n 3 -s /subscriptions/94d9b402-77b4-4049-b4c1-947bc6b7729b/resourceGroups/tekommin-vnet/providers/Microsoft.Network/virtualNetworks/projectnovatest-vnet/subnets/nova-subnet')
-        datacenter = self.cmd('az cassandra-mi datacenter show -c {c} -d {d} -g {rg}').get_output_in_json()
+        self.cmd('az managed-cassandra datacenter create -c {c} -d {d} -l eastus2 -g {rg} -n 3 -s {subnet_id}')
+        datacenter = self.cmd('az managed-cassandra datacenter show -c {c} -d {d} -g {rg}').get_output_in_json()
         assert datacenter['properties']['provisioningState'] == 'Succeeded'
 
         #List Datacenters in Cluster
-        datacenters = self.cmd('az cassandra-mi datacenter list -c {c} -g {rg}').get_output_in_json()
+        datacenters = self.cmd('az managed-cassandra datacenter list -c {c} -g {rg}').get_output_in_json()
         assert len(datacenters) == 1
 
         #List Clusters in ResourceGroup
-        clusters = self.cmd('az cassandra-mi cluster list -g {rg}').get_output_in_json()
+        clusters = self.cmd('az managed-cassandra cluster list -g {rg}').get_output_in_json()
         assert len(clusters) == 2
 
         #List Clusters in Subscription
@@ -93,11 +72,41 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
         #assert len(clusters_sub) == 2
 
         #Delete Cluster
-        self.cmd('az cassandra-mi cluster delete -c {c} -g {rg} --yes')
-        clusters = self.cmd('az cassandra-mi cluster list -g {rg}').get_output_in_json()
-        assert len(clusters) == 1
+        try:             
+            self.cmd('az managed-cassandra cluster delete -c {c} -g {rg} --yes')
+        except Exception as e:
+            print(e)
 
         #Delete Cluster
-        self.cmd('az cassandra-mi cluster delete -c {c1} -g {rg} --yes')
-        clusters1 = self.cmd('az cassandra-mi cluster list -g {rg}').get_output_in_json()
-        assert len(clusters1) == 0
+        try:             
+            self.cmd('az managed-cassandra cluster delete -c {c1} -g {rg} --yes')
+        except Exception as e:
+            print(e)
+    
+    def create_subnet(self, resource_group):
+
+        self.kwargs.update({
+            'vnet': self.create_random_name(prefix='cli', length=10),
+            'subnet': self.create_random_name(prefix='cli', length=10), 
+            'rg': resource_group            
+        })
+        
+        #Create vnet
+        self.cmd('az network vnet create -g {rg} -l eastus2 -n {vnet} --subnet-name {subnet}')
+
+        # Discover the vnet id
+        vnet_resource = self.cmd('az network vnet show -g {rg} -n {vnet}').get_output_in_json()
+        vnet_id = vnet_resource['id']
+        
+        self.kwargs.update({
+            'vnet_id': vnet_id,         
+        })
+
+        #Role Assignment.
+        vnet_resource = self.cmd('az role assignment create --assignee e5007d2c-4b13-4a74-9b6a-605d99f03501 --role 4d97b98b-1d4f-4787-a291-c67834d212e7 --scope {vnet_id}')
+
+        #Get Delegated subnet id.
+        subnet_resource = self.cmd('az network vnet subnet show -g {rg} --vnet-name {vnet} --name {subnet}').get_output_in_json()
+        subnet_id = subnet_resource['id']
+
+        return subnet_id     
