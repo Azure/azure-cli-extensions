@@ -47,6 +47,7 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_
 from azure.cli.core.keys import is_valid_ssh_rsa_public_key
 from azure.cli.core.util import get_file_json, in_cloud_console, shell_safe_json_parse, truncate_text, sdk_no_wait
 from azure.cli.core.commands import LongRunningOperation
+from azure.cli.core._profile import Profile
 from azure.graphrbac.models import (ApplicationCreateParameters,
                                     PasswordCredential,
                                     KeyCredential,
@@ -1951,10 +1952,11 @@ def aks_runcommand(cmd, client, resource_group_name, name, command_string="", co
    
     request_payload = RunCommandRequest()
     request_payload.command = command_string
+    
+    # request_payload.cluster_token = _get_aad_token(cmd.cli_ctx, "6dae42f8-4368-4678-94ff-3960e28e3630")
 
     if command_files != None:
         request_payload.context = _get_command_context(command_files)
-
 
     commandResultFuture = client.run_command(resource_group_name, name, request_payload, long_running_operation_timeout=5)
     commandResult = commandResultFuture.result(300)
@@ -1971,6 +1973,20 @@ def _get_command_context(command_files):
     zipFile.close()
 
     return str(base64.encodebytes(zipStream.getbuffer()), "utf-8")
+
+def _get_dataplane_aad_token(cli_ctx, serverAppId):
+    # this function is mostly copied from keyvault cli
+    import adal
+    try:
+        return Profile(cli_ctx=cli_ctx).get_raw_token(serverAppId)[0][2].get('accessToken')
+    except adal.AdalError as err:
+        # pylint: disable=no-member
+        if (hasattr(err, 'error_response') and
+                ('error_description' in err.error_response) and
+                ('AADSTS70008:' in err.error_response['error_description'])):
+            raise CLIError(
+                "Credentials have expired due to inactivity. Please run 'az login'")
+        raise CLIError(err)
 
 def _upgrade_single_nodepool_image_version(no_wait, client, resource_group_name, cluster_name, nodepool_name):
     return sdk_no_wait(no_wait, client.upgrade_node_image_version, resource_group_name, cluster_name, nodepool_name)
