@@ -11,6 +11,7 @@
 # pylint: disable=too-many-locals
 
 from azure.cli.core.commands import CliCommandType
+from ._exception_handler import resource_dependency_handler
 
 
 def load_command_table(self, _):
@@ -27,12 +28,17 @@ def load_command_table(self, _):
         g.custom_command('create', 'resource_mover_move_collection_create')
         g.custom_command('update', 'resource_mover_move_collection_update')
         g.custom_command('delete', 'resource_mover_move_collection_delete', supports_no_wait=True, confirmation=True)
-        g.custom_command('bulk-remove', 'resource_mover_move_collection_bulk_remove', supports_no_wait=True)
-        g.custom_command('commit', 'resource_mover_move_collection_commit', supports_no_wait=True)
-        g.custom_command('discard', 'resource_mover_move_collection_discard', supports_no_wait=True)
-        g.custom_command('initiate-move', 'resource_mover_move_collection_initiate_move', supports_no_wait=True)
+        g.custom_command('bulk-remove', 'resource_mover_move_collection_bulk_remove', supports_no_wait=True,
+                         exception_handler=resource_dependency_handler)
+        g.custom_command('commit', 'resource_mover_move_collection_commit', supports_no_wait=True,
+                         exception_handler=resource_dependency_handler)
+        g.custom_command('discard', 'resource_mover_move_collection_discard', supports_no_wait=True,
+                         exception_handler=resource_dependency_handler)
+        g.custom_command('initiate-move', 'resource_mover_move_collection_initiate_move', supports_no_wait=True,
+                         exception_handler=resource_dependency_handler)
         g.custom_command('list-required-for', 'resource_mover_move_collection_list_required_for')
-        g.custom_command('prepare', 'resource_mover_move_collection_prepare', supports_no_wait=True)
+        g.custom_command('prepare', 'resource_mover_move_collection_prepare', supports_no_wait=True,
+                         exception_handler=resource_dependency_handler)
         g.custom_command('resolve-dependency', 'resource_mover_move_collection_resolve_dependency',
                          supports_no_wait=True)
         g.custom_wait_command('wait', 'resource_mover_move_collection_show')
