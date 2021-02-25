@@ -114,7 +114,7 @@ def load_command_table(self, _):
     with self.command_group('cassandra-managed-instance cluster', cosmosdb_managed_cassandra_cluster_sdk, client_factory=cf_cassandra_cluster, is_preview=True) as g:
         g.custom_command('create', 'cli_cosmosdb_managed_cassandra_cluster_create')
         g.custom_command('update', 'cli_cosmosdb_managed_cassandra_cluster_update')
-        g.command('node-status', 'fetch_node_status')
+        g.custom_command('node-status', 'cli_cosmosdb_managed_cassandra_fetch_node_status')
         g.custom_command('list', 'cli_cosmosdb_managed_cassandra_cluster_list')
         g.show_command('show', 'get')
         g.command('delete', 'delete', confirmation=True)

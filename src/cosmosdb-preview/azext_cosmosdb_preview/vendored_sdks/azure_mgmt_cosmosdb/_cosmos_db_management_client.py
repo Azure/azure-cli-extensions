@@ -47,7 +47,7 @@ from . import models
 
 
 class CosmosDBManagementClient(SDKClient):
-    """CosmosDBManagementClient
+    """Azure Cosmos DB Database Service Resource Provider REST API
 
     :ivar config: Configuration for client.
     :vartype config: CosmosDBManagementClientConfiguration

@@ -668,6 +668,15 @@ def cli_cosmosdb_managed_cassandra_cluster_list(client,
     else:
         return client.list_by_resource_group(resource_group_name)
 
+def cli_cosmosdb_managed_cassandra_fetch_node_status(client,
+                                            resource_group_name,
+                                            cluster_name,
+                                            ):
+
+    """Get Azure Managed Cassandra Cluster Node Status"""
+
+    return client.fetch_node_status(resource_group_name, cluster_name)
+
 def cli_cosmosdb_managed_cassandra_datacenter_create(client,
                                             resource_group_name,
                                             cluster_name,

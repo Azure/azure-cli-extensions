@@ -16,7 +16,6 @@ try:
     from ._models_py3 import AutoscaleSettings
     from ._models_py3 import AutoscaleSettingsResource
     from ._models_py3 import AutoUpgradePolicyResource
-    from ._models_py3 import AzureEntityResource
     from ._models_py3 import BackupPolicy
     from ._models_py3 import BackupResource
     from ._models_py3 import BackupResourceProperties
@@ -40,6 +39,7 @@ try:
     from ._models_py3 import ClusterResource
     from ._models_py3 import ClusterResourceProperties
     from ._models_py3 import Column
+    from ._models_py3 import Components1jq1t4ischemasmanagedserviceidentitypropertiesuserassignedidentitiesadditionalproperties
     from ._models_py3 import CompositePath
     from ._models_py3 import ConflictResolutionPolicy
     from ._models_py3 import ConsistencyPolicy
@@ -81,7 +81,6 @@ try:
     from ._models_py3 import IpAddressOrRange
     from ._models_py3 import Location
     from ._models_py3 import ManagedServiceIdentity
-    from ._models_py3 import ManagedServiceIdentityUserAssignedIdentitiesValue
     from ._models_py3 import Metric
     from ._models_py3 import MetricAvailability
     from ._models_py3 import MetricDefinition
@@ -174,7 +173,6 @@ try:
     from ._models_py3 import ThroughputSettingsGetResults
     from ._models_py3 import ThroughputSettingsResource
     from ._models_py3 import ThroughputSettingsUpdateParameters
-    from ._models_py3 import TrackedResource
     from ._models_py3 import UniqueKey
     from ._models_py3 import UniqueKeyPolicy
     from ._models_py3 import Usage
@@ -186,7 +184,6 @@ except (SyntaxError, ImportError):
     from ._models import AutoscaleSettings
     from ._models import AutoscaleSettingsResource
     from ._models import AutoUpgradePolicyResource
-    from ._models import AzureEntityResource
     from ._models import BackupPolicy
     from ._models import BackupResource
     from ._models import BackupResourceProperties
@@ -210,6 +207,7 @@ except (SyntaxError, ImportError):
     from ._models import ClusterResource
     from ._models import ClusterResourceProperties
     from ._models import Column
+    from ._models import Components1jq1t4ischemasmanagedserviceidentitypropertiesuserassignedidentitiesadditionalproperties
     from ._models import CompositePath
     from ._models import ConflictResolutionPolicy
     from ._models import ConsistencyPolicy
@@ -251,7 +249,6 @@ except (SyntaxError, ImportError):
     from ._models import IpAddressOrRange
     from ._models import Location
     from ._models import ManagedServiceIdentity
-    from ._models import ManagedServiceIdentityUserAssignedIdentitiesValue
     from ._models import Metric
     from ._models import MetricAvailability
     from ._models import MetricDefinition
@@ -344,7 +341,6 @@ except (SyntaxError, ImportError):
     from ._models import ThroughputSettingsGetResults
     from ._models import ThroughputSettingsResource
     from ._models import ThroughputSettingsUpdateParameters
-    from ._models import TrackedResource
     from ._models import UniqueKey
     from ._models import UniqueKeyPolicy
     from ._models import Usage
@@ -407,6 +403,7 @@ from ._cosmos_db_management_client_enums import (
     KeyKind,
     UnitType,
     PrimaryAggregationType,
+    BackupType,
     BackupStorageRedundancy,
     ApiType,
     RoleDefinitionType,
@@ -424,7 +421,6 @@ __all__ = [
     'AutoscaleSettings',
     'AutoscaleSettingsResource',
     'AutoUpgradePolicyResource',
-    'AzureEntityResource',
     'BackupPolicy',
     'BackupResource',
     'BackupResourceProperties',
@@ -448,6 +444,7 @@ __all__ = [
     'ClusterResource',
     'ClusterResourceProperties',
     'Column',
+    'Components1jq1t4ischemasmanagedserviceidentitypropertiesuserassignedidentitiesadditionalproperties',
     'CompositePath',
     'ConflictResolutionPolicy',
     'ConsistencyPolicy',
@@ -489,7 +486,6 @@ __all__ = [
     'IpAddressOrRange',
     'Location',
     'ManagedServiceIdentity',
-    'ManagedServiceIdentityUserAssignedIdentitiesValue',
     'Metric',
     'MetricAvailability',
     'MetricDefinition',
@@ -582,7 +578,6 @@ __all__ = [
     'ThroughputSettingsGetResults',
     'ThroughputSettingsResource',
     'ThroughputSettingsUpdateParameters',
-    'TrackedResource',
     'UniqueKey',
     'UniqueKeyPolicy',
     'Usage',
@@ -644,6 +639,7 @@ __all__ = [
     'KeyKind',
     'UnitType',
     'PrimaryAggregationType',
+    'BackupType',
     'BackupStorageRedundancy',
     'ApiType',
     'RoleDefinitionType',

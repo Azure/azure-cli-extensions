@@ -287,3 +287,38 @@ examples:
         --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
         --role-definition-id updated-role-definition-id
 """
+
+helps['cassandra-managed-instance cluster'] = """
+type: group
+short-summary: Azure Managed Cassandra Cluster.
+"""
+
+helps['cassandra-managed-instance cluster create'] = """
+type: command
+short-summary: Create a Managed Cassandra Cluster.
+examples:
+  - name: Create a Managed Cassandra Cluster in a given Subscription and ResourceGroup. Either a cassandra admin password or external seed needs are required.
+    text: |
+      az cassandra-managed-instance cluster create --cluster-name MyCluster --resource-group MyResourceGroup \\
+        --location westus2 \\
+        --delegated-management-subnet-id /subscriptions/94d9b402-77b4-4049-b4c1-947bc6b7729b/resourceGroups/My-vnet/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/test-subnet \\
+        --initial-cassandra-admin-password password
+"""
+
+helps['cassandra-managed-instance datacenter'] = """
+type: group
+short-summary: Azure Managed Cassandra DataCenter.
+"""
+
+helps['cassandra-managed-instance datacenter create'] = """
+type: command
+short-summary: Create a Datacenter in an Azure Managed Cassandra Cluster.
+examples:
+  - name: Create a Managed Cassandra Datacenter in a Cassandra Cluster.
+    text: |
+      az cassandra-managed-instance datacenter create --cluster-name MyCluster --data-center-name MyDataCenter \\
+        --resource-group MyResourceGroup \\
+        --data-center-location westus2 \\
+        --delegated-subnet-id /subscriptions/94d9b402-77b4-4049-b4c1-947bc6b7729b/resourceGroups/My-vnet/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/test-subnet \\
+        --node-count 3
+"""

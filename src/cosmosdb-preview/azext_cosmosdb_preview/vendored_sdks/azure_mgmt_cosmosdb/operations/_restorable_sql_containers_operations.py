@@ -25,7 +25,7 @@ class RestorableSqlContainersOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The API version to use for this operation. Constant value: "2021-03-01-preview".
+    :ivar api_version: The API version to use for the request. Constant value: "2021-03-01-preview".
     """
 
     models = models
@@ -79,7 +79,7 @@ class RestorableSqlContainersOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
                 if restorable_sql_database_rid is not None:
                     query_parameters['restorableSqlDatabaseRid'] = self._serialize.query("restorable_sql_database_rid", restorable_sql_database_rid, 'str')
 

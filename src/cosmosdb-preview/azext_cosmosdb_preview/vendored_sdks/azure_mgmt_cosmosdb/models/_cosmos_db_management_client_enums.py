@@ -179,6 +179,12 @@ class PrimaryAggregationType(str, Enum):
     last = "Last"
 
 
+class BackupType(str, Enum):
+
+    periodic = "Periodic"
+    continuous = "Continuous"
+
+
 class BackupStorageRedundancy(str, Enum):
 
     geo = "Geo"
