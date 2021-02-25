@@ -11,6 +11,7 @@
 
 import uuid
 from msrest.pipeline import ClientRawResponse
+from msrestazure.azure_exceptions import CloudError
 
 from .. import models
 
@@ -40,8 +41,12 @@ class RestorableMongodbDatabasesOperations(object):
 
     def list(
             self, location, instance_id, custom_headers=None, raw=False, **operation_config):
-        """Lists all the restorable Azure Cosmos DB MongoDB databases available
-        under the restorable account.
+        """Show the event feed of all mutations done on all the Azure Cosmos DB
+        MongoDB databases under the restorable account.  This helps in scenario
+        where database was accidentally deleted to get the deletion time.  This
+        API requires
+        'Microsoft.DocumentDB/locations/restorableDatabaseAccounts/*/read'
+        permission.
 
         :param location: Cosmos DB region, with spaces between words and each
          word capitalized.
@@ -58,8 +63,7 @@ class RestorableMongodbDatabasesOperations(object):
          RestorableMongodbDatabaseGetResult
         :rtype:
          ~azure.mgmt.cosmosdb.models.RestorableMongodbDatabaseGetResultPaged[~azure.mgmt.cosmosdb.models.RestorableMongodbDatabaseGetResult]
-        :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.cosmosdb.models.DefaultErrorResponseException>`
+        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
             if not next_link:
@@ -100,7 +104,9 @@ class RestorableMongodbDatabasesOperations(object):
             response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
-                raise models.DefaultErrorResponseException(self._deserialize, response)
+                exp = CloudError(response)
+                exp.request_id = response.headers.get('x-ms-request-id')
+                raise exp
 
             return response
 

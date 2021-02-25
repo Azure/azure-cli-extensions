@@ -229,7 +229,14 @@ helps['cosmosdb sql role assignment create'] = """
 type: command
 short-summary: Create a SQL role assignment under an Azure Cosmos DB account.
 examples:
-  - name: Create a SQL role assignment under an Azure Cosmos DB account.
+  - name: Create a SQL role assignment under an Azure Cosmos DB account using Role Definition Name.
+    text: |
+      az cosmosdb sql role assignment create --account-name MyAccount --resource-group MyResourceGroup \\
+        --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
+        --role-definition-name "My Read Only Role" \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
+  - name: Create a SQL role assignment under an Azure Cosmos DB account using Role Definition ID.
     text: |
       az cosmosdb sql role assignment create --account-name MyAccount --resource-group MyResourceGroup \\
         --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\

@@ -11,6 +11,7 @@
 
 import uuid
 from msrest.pipeline import ClientRawResponse
+from msrestazure.azure_exceptions import CloudError
 
 from .. import models
 
@@ -40,8 +41,12 @@ class RestorableMongodbResourcesOperations(object):
 
     def list(
             self, location, instance_id, restore_location=None, restore_timestamp_in_utc=None, custom_headers=None, raw=False, **operation_config):
-        """Lists all the restorable Azure Cosmos DB MongoDB resources available
-        for a specific database account at a given time and location.
+        """Return a list of database and collection combo that exist on the
+        account at the given timestamp and location. This helps in scenarios to
+        validate what resources exist at given timestamp and location. This API
+        requires
+        'Microsoft.DocumentDB/locations/restorableDatabaseAccounts/*/read'
+        permission.
 
         :param location: Cosmos DB region, with spaces between words and each
          word capitalized.
@@ -63,8 +68,7 @@ class RestorableMongodbResourcesOperations(object):
         :return: An iterator like instance of DatabaseRestoreResource
         :rtype:
          ~azure.mgmt.cosmosdb.models.DatabaseRestoreResourcePaged[~azure.mgmt.cosmosdb.models.DatabaseRestoreResource]
-        :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.cosmosdb.models.DefaultErrorResponseException>`
+        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
             if not next_link:
@@ -109,7 +113,9 @@ class RestorableMongodbResourcesOperations(object):
             response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
-                raise models.DefaultErrorResponseException(self._deserialize, response)
+                exp = CloudError(response)
+                exp.request_id = response.headers.get('x-ms-request-id')
+                raise exp
 
             return response
 

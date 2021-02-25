@@ -50,7 +50,6 @@ try:
     from ._models_py3 import DatabaseAccountRegenerateKeyParameters
     from ._models_py3 import DatabaseAccountUpdateParameters
     from ._models_py3 import DatabaseRestoreResource
-    from ._models_py3 import DefaultErrorResponse, DefaultErrorResponseException
     from ._models_py3 import DefaultRequestDatabaseAccountCreateUpdateProperties
     from ._models_py3 import ErrorResponse, ErrorResponseException
     from ._models_py3 import ExcludedPath
@@ -210,7 +209,6 @@ except (SyntaxError, ImportError):
     from ._models import DatabaseAccountRegenerateKeyParameters
     from ._models import DatabaseAccountUpdateParameters
     from ._models import DatabaseRestoreResource
-    from ._models import DefaultErrorResponse, DefaultErrorResponseException
     from ._models import DefaultRequestDatabaseAccountCreateUpdateProperties
     from ._models import ErrorResponse, ErrorResponseException
     from ._models import ExcludedPath
@@ -383,6 +381,7 @@ from ._cosmos_db_management_client_enums import (
     KeyKind,
     UnitType,
     PrimaryAggregationType,
+    BackupStorageRedundancy,
     ApiType,
     RoleDefinitionType,
     OperationType,
@@ -429,7 +428,6 @@ __all__ = [
     'DatabaseAccountRegenerateKeyParameters',
     'DatabaseAccountUpdateParameters',
     'DatabaseRestoreResource',
-    'DefaultErrorResponse', 'DefaultErrorResponseException',
     'DefaultRequestDatabaseAccountCreateUpdateProperties',
     'ErrorResponse', 'ErrorResponseException',
     'ExcludedPath',
@@ -601,6 +599,7 @@ __all__ = [
     'KeyKind',
     'UnitType',
     'PrimaryAggregationType',
+    'BackupStorageRedundancy',
     'ApiType',
     'RoleDefinitionType',
     'OperationType',

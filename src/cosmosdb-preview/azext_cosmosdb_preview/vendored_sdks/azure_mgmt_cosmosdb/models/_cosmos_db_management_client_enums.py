@@ -171,6 +171,13 @@ class PrimaryAggregationType(str, Enum):
     last = "Last"
 
 
+class BackupStorageRedundancy(str, Enum):
+
+    geo = "Geo"
+    local = "Local"
+    zone = "Zone"
+
+
 class ApiType(str, Enum):
 
     mongo_db = "MongoDB"
