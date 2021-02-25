@@ -50,9 +50,16 @@ logger = get_logger(__name__)
 
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
-                        kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto', disable_auto_upgrade=False):
+                        kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto', disable_auto_upgrade=False, enable_features=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
+
+    # if enable_features is None:
+    #     print("NOne")
+    # else:
+    #     print(type(enable_features))
+    #     print(enable_features)
+    # raise CLIError("exit")
 
     # Setting subscription id
     subscription_id = get_subscription_id(cmd.cli_ctx)

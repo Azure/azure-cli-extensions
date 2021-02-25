@@ -8,6 +8,7 @@
 
 Distribution_Enum_Values = ["auto", "generic", "openshift", "rancher_rke", "kind", "k3s", "minikube", "gke", "eks", "aks", "aks_management", "aks_workload", "capz", "aks_engine", "tkg"]
 Infrastructure_Enum_Values = ["auto", "generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere", "windows_server"]
+Feature_Values = ["cluster-connect", "cluster-extensions", "aad-rbac", "custom-locations"]
 
 Azure_PublicCloudName = 'AZUREPUBLICCLOUD'
 Azure_USGovCloudName = 'AZUREUSGOVERNMENTCLOUD'

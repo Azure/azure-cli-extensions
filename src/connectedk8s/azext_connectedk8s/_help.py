@@ -84,6 +84,6 @@ helps['connectedk8s proxy'] = """
   type: command
   short-summary: Get access to a connected kubernetes cluster.
   examples:
-  - name: name: Get access to a connected kubernetes cluster.
+  - name: Get access to a connected kubernetes cluster.
     text: az connectedk8s proxy -n clusterName -g resourceGroupName
 """

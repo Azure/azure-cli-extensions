@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.1
+++++++
+* Adding enable/disable features support
+
 0.3.7
 ++++++
 * Pulled GA changes
