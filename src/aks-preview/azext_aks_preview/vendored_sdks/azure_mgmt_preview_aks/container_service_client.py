@@ -171,6 +171,19 @@ class ContainerServiceClient(MultiApiClientMixin, SDKClient):
         raise NotImplementedError("APIVersion {} is not available".format(api_version))
 
     @property
+    def maintenance_configurations(self):
+        """Instance depends on the API version:
+
+           * 2020-12-01: :class:`MaintenanceConfigurationsOperations<azure.mgmt.containerservice.v2020_12_01.operations.MaintenanceConfigurationsOperations>`
+        """
+        api_version = self._get_api_version('maintenance_configurations')
+        if api_version == '2020-12-01':
+            from .v2020_12_01.operations import MaintenanceConfigurationsOperations as OperationClass
+        else:
+            raise NotImplementedError("APIVersion {} is not available".format(api_version))
+        return OperationClass(self._client, self.config, Serializer(self._models_dict(api_version)), Deserializer(self._models_dict(api_version)))
+
+    @property
     def agent_pools(self):
         """Instance depends on the API version:
 

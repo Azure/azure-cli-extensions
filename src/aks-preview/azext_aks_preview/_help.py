@@ -573,6 +573,43 @@ helps['aks kanalyze'] = """
     short-summary: Display diagnostic results for the Kubernetes cluster after kollect is done.
 """
 
+helps['aks maintenanceconfig'] = """
+    type: group
+    short-summary: Commands to manage maintenance configurations in managed Kubernetes cluster.
+"""
+
+helps['aks maintenanceconfig show'] = """
+    type: command
+    short-summary: show the details of a maintenance configuration in managed Kubernetes cluster.
+"""
+
+helps['aks maintenanceconfig delete'] = """
+    type: command
+    short-summary: Delete a maintenance configuration in managed Kubernetes cluster.
+"""
+
+helps['aks maintenanceconfig list'] = """
+    type: command
+    short-summary: List maintenance configurations in managed Kubernetes cluster.
+"""
+
+helps['aks maintenanceconfig add'] = """
+    type: command
+    short-summary: Add a maintenance configuration in managed Kubernetes cluster.
+    parameters:
+        - name: --time-in-week
+          type: string
+          short-summary: The allowed maintenance time in week
+        - name: --not-allowed-time
+          type: string
+          short-summary: The time spans not allowd for maintenance.
+    examples:
+        - name: Create a maintenance configuration in an existing AKS cluster.
+          text: az aks maintenanceconfig add -g MyResourceGroup -n default --cluster-name MyManagedCluster 
+                --time-in-week [{"day": "Friday","hourSlots": [1,2]}]
+                --not-allowed-time [{"start": "2020-11-26T03:00:00Z", "end": "2020-11-30T12:00:00Z"}]
+"""
+
 helps['aks nodepool'] = """
     type: group
     short-summary: Commands to manage node pools in managed Kubernetes cluster.
