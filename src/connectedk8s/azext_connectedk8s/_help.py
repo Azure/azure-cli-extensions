@@ -36,9 +36,9 @@ helps['connectedk8s update'] = """
     - name: Update proxy values for the agents
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName  --proxy-cert /path/to/crt --proxy-https https://proxy-url --proxy-http http://proxy-url --proxy-skip-range excludedIP,excludedCIDR,exampleCIDRfollowed,10.0.0.0/24
     - name: Disable proxy settings for agents
-      text: az connectedk8s update --disable-proxy
+      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --disable-proxy
     - name: Disable auto-upgrade of agents
-      text: az connectedk8s update --auto-upgrade false
+      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --auto-upgrade false
 """
 
 helps['connectedk8s upgrade'] = """
@@ -48,7 +48,7 @@ helps['connectedk8s upgrade'] = """
     - name: Upgrade the agents to the latest version
       text: az connectedk8s upgrade -g resourceGroupName -n connectedClusterName
     - name: Upgrade the agents to a specific version
-      text: az connectedk8s upgrade -g resourceGroupName -n connectedClusterName --agent-version 0.2.28
+      text: az connectedk8s upgrade -g resourceGroupName -n connectedClusterName --agent-version 0.2.62
 """
 
 helps['connectedk8s list'] = """
