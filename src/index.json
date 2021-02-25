@@ -10329,7 +10329,30 @@
                         "Programming Language :: Python :: 3.7",
                         "Programming Language :: Python :: 3.8",
                         "License :: OSI Approved :: MIT License"
-                    ]
+                    ],
+                    "run_requires": [
+                        {
+                            "requires": [
+                                "pyyaml (>=5.1.0)",
+                                "azure-identity",
+                                "msrest (>=0.6.18)",
+                                "azure-core (<2.0.0,>=1.8.0)",
+                                "azure-mgmt-core (<2.0.0,>=1.2.0)",
+                                "marshmallow (<4.0.0,>=3.5)",
+                                "tqdm",
+                                "azure-storage-blob (<=12.5.0,>12.0.0b4)",
+                                "pydash (<=4.9.0)",
+                                "azure-storage-file-share (==12.3.0)",
+                                "pathspec (==0.8.*)",
+                                "cryptography (<=3.3.2)"
+                            ]
+                        }
+                    ],
+                    "License": "MIT",
+                    "name": "ml",
+                    "summary": "Microsoft Azure Command-Line Tools AzureMachineLearningWorkspaces Extension",
+                    "version": "0.0.42"
+                    
                 },
                 "sha256Digest": "5414969613cd95f85da515dad2ef83471fb3307fb6d0ca0886121c922193585f"
             }
