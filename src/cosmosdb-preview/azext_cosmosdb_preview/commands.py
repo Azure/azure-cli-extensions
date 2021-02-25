@@ -111,7 +111,7 @@ def load_command_table(self, _):
         g.show_command('show', 'get_sql_role_assignment')
         g.command('delete', 'delete_sql_role_assignment', confirmation=True)
 
-    with self.command_group('cassandra-managed-instance cluster', cosmosdb_managed_cassandra_cluster_sdk, client_factory=cf_cassandra_cluster, is_preview=True) as g:
+    with self.command_group('managed-cassandra cluster', cosmosdb_managed_cassandra_cluster_sdk, client_factory=cf_cassandra_cluster, is_preview=True) as g:
         g.custom_command('create', 'cli_cosmosdb_managed_cassandra_cluster_create')
         g.custom_command('update', 'cli_cosmosdb_managed_cassandra_cluster_update')
         g.custom_command('node-status', 'cli_cosmosdb_managed_cassandra_fetch_node_status')
@@ -119,7 +119,7 @@ def load_command_table(self, _):
         g.show_command('show', 'get')
         g.command('delete', 'delete', confirmation=True)
 
-    with self.command_group('cassandra-managed-instance datacenter', cosmosdb_managed_cassandra_datacenter_sdk, client_factory=cf_cassandra_data_center, is_preview=True) as g:
+    with self.command_group('managed-cassandra datacenter', cosmosdb_managed_cassandra_datacenter_sdk, client_factory=cf_cassandra_data_center, is_preview=True) as g:
         g.custom_command('create', 'cli_cosmosdb_managed_cassandra_datacenter_create')
         g.custom_command('update', 'cli_cosmosdb_managed_cassandra_datacenter_update')
         g.command('list', 'list_data_centers_method')

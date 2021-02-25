@@ -145,23 +145,23 @@ def load_arguments(self, _):
 
     # Managed Cassandra Cluster
     for scope in [
-        'cassandra-managed-instance cluster create', 
-        'cassandra-managed-instance cluster update', 
-        'cassandra-managed-instance cluster show', 
-        'cassandra-managed-instance cluster delete',
-        'cassandra-managed-instance cluster node-status']:        
+        'managed-cassandra cluster create', 
+        'managed-cassandra cluster update', 
+        'managed-cassandra cluster show', 
+        'managed-cassandra cluster delete',
+        'managed-cassandra cluster node-status']:        
         with self.argument_context(scope) as c:
             c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
 
     # Managed Cassandra Cluster
     for scope in [
-        'cassandra-managed-instance cluster create', 
-        'cassandra-managed-instance cluster update']:        
+        'managed-cassandra cluster create', 
+        'managed-cassandra cluster update']:        
         with self.argument_context(scope) as c:
             c.argument('tags', arg_type=tags_type)
             c.argument('external_gossip_certificates', options_list=['--external-gossip-certificates', '-e'], help="A list of certificates that the managed cassandra data center's should accept.")
             c.argument('initial_cassandra_admin_password', options_list=['--initial-cassandra-admin-password', '-i'], help="The intial password to be configured when a cluster is created for authentication_method Cassandra. If none is specified, the password will be cassandra.")
-            c.argument('delegated_management_subnet_id', options_list=['--delegated-management-subnet-id', '-s'], help="The resource if of a subnet where the ip address of the cassandra management server will be allocated. This subnet must have connectivity to the delegated_subnet_id subnet of each data center.")
+            c.argument('delegated_management_subnet_id', options_list=['--delegated-management-subnet-id', '-s'], help="The resource id of a subnet where the ip address of the cassandra management server will be allocated. This subnet must have connectivity to the delegated_subnet_id subnet of each data center.")
             c.argument('cassandra_version', help="The version of Cassandra chosen.")
             c.argument('restore_from_backup_id', help="The resource id of a backup. If provided on create, the backup will be used to prepopulate the cluster. The cluster data center count and node counts must match the backup.")
             c.argument('cluster_name_override', help="If a cluster must have a name that is not a valid azure resource name, this field can be specified to choose the Cassandra cluster name. Otherwise, the resource name will be used as the cluster name.")
@@ -175,24 +175,24 @@ def load_arguments(self, _):
             c.argument('identity', help="Identity used to authenticate.")
 
     # Managed Cassandra Cluster
-    with self.argument_context('cassandra-managed-instance cluster create') as c:
+    with self.argument_context('managed-cassandra cluster create') as c:
         c.argument('location', options_list=['--location', '-l'], help="Azure Location of the Cluster", required=True)
-        c.argument('delegated_management_subnet_id', options_list=['--delegated-management-subnet-id', '-s'], help="The subnet we will inject the Network Interface of the component which orchestrates the cassandra cluster. This is also where customers can access the prometheus endpoint", required=True)
+        c.argument('delegated_management_subnet_id', options_list=['--delegated-management-subnet-id', '-s'], help="The resource id of a subnet where the ip address of the cassandra management server will be allocated. This subnet must have connectivity to the delegated_subnet_id subnet of each data center.", required=True)
 
     # Managed Cassandra Datacenter
     for scope in [
-        'cassandra-managed-instance datacenter create', 
-        'cassandra-managed-instance datacenter update', 
-        'cassandra-managed-instance datacenter show', 
-        'cassandra-managed-instance datacenter delete']:        
+        'managed-cassandra datacenter create', 
+        'managed-cassandra datacenter update', 
+        'managed-cassandra datacenter show', 
+        'managed-cassandra datacenter delete']:        
         with self.argument_context(scope) as c:
             c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
             c.argument('data_center_name', options_list=['--data-center-name', '-d'], help="Datacenter Name", required=True)
 
     # Managed Cassandra Datacenter
     for scope in [
-        'cassandra-managed-instance datacenter create', 
-        'cassandra-managed-instance datacenter update']:        
+        'managed-cassandra datacenter create', 
+        'managed-cassandra datacenter update']:        
         with self.argument_context(scope) as c:
             c.argument('node_count', options_list=['--node-count', '-n'], help="The number of Cassandra virtual machines in this data center.")
             c.argument('base64_encoded_cassandra_yaml_fragment', options_list=['--base64-encoded-cassandra-yaml-fragment', '-b'], help ="This is a Base64 encoded yaml file that is a subset of cassandra.yaml.  Supported fields will be honored and others will be ignored.")
@@ -200,11 +200,11 @@ def load_arguments(self, _):
             c.argument('delegated_subnet_id', options_list=['--delegated-subnet-id', '-s'], help="The resource id of a subnet where ip addresses of the Cassandra virtual machines will be allocated. This must be in the same region as data_center_location.")
 
     # Managed Cassandra Datacenter
-    with self.argument_context('cassandra-managed-instance datacenter create') as c:
+    with self.argument_context('managed-cassandra datacenter create') as c:
         c.argument('data_center_location', options_list=['--data-center-location', '-l'], help="Azure Location of the Datacenter", required=True)
         c.argument('delegated_subnet_id', options_list=['--delegated-subnet-id', '-s'], help="The resource id of a subnet where ip addresses of the Cassandra virtual machines will be allocated. This must be in the same region as data_center_location.", required=True)
         c.argument('node_count', options_list=['--node-count', '-n'], help="The number of Cassandra virtual machines in this data center.", required=True)
 
     # Managed Cassandra Datacenter
-    with self.argument_context('cassandra-managed-instance datacenter list') as c:
+    with self.argument_context('managed-cassandra datacenter list') as c:
         c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
