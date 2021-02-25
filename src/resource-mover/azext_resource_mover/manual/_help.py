@@ -229,7 +229,7 @@ dependent resource.
                    "targetResourceName": "MyVNet-target"
                }'
 
-        - name: Add a vNet as a move-resource to the move-collection.
+      - name: Add a vNet as a move-resource to the move-collection.
         text: |-
                az resource-mover move-resource add --resource-group MyResourceGroup --move-collection-name MyMoveCollection --name MoveResourceName
                --source-id "/subscriptions/subID/resourceGroups/myRG/providers/Microsoft.Network/virtualNetworks/MyVNet"
