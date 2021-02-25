@@ -54,13 +54,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
-    # if enable_features is None:
-    #     print("NOne")
-    # else:
-    #     print(type(enable_features))
-    #     print(enable_features)
-    # raise CLIError("exit")
-
     # Setting subscription id
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
@@ -262,28 +255,6 @@ def send_cloud_telemetry(cmd):
     elif cloud_name == consts.USGovCloud_OriginalName:
         cloud_name = consts.Azure_USGovCloudName
     return cloud_name
-
-
-def get_extension_operator_flag(values_file, values_file_provided):
-    if not values_file_provided:
-        return True
-
-    with open(values_file, 'r') as f:
-        try:
-            env_dict = yaml.safe_load(f)
-        except Exception as e:
-            telemetry.set_user_fault()
-            telemetry.set_exception(exception=e, fault_type=consts.Helm_Environment_File_Fault_Type,
-                                    summary='Problem loading the helm environment file')
-            raise CLIError("Problem loading the helm environment file: " + str(e))
-        if 'systemDefaultValues' not in env_dict:
-            return True
-        if 'extensionoperator' not in env_dict['systemDefaultValues']:
-            return True
-        if 'enabled' not in env_dict['systemDefaultValues']['extensionoperator']:
-            return True
-
-    return env_dict['systemDefaultValues']['extensionoperator']['enabled']
 
 
 def validate_env_file_dogfood(values_file, values_file_provided):
@@ -577,6 +548,7 @@ def check_aks_cluster(kube_config, kube_context):
         if cluster.safe_get('name') == cluster_name:
             server_address = cluster.safe_get('cluster').get('server')
             break
+
     if server_address.find(".azmk8s.io:") == -1:
         return False
     else:
@@ -679,7 +651,7 @@ def create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
     try:
         return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name,
                            cluster_name=cluster_name, connected_cluster=cc)
-    except Exception as e:
+    except CloudError as e:
         utils.arm_exception_handler(e, consts.Create_ConnectedCluster_Fault_Type, 'Unable to create connected cluster resource')
 
 
@@ -696,27 +668,6 @@ def update_connectedk8s(cmd, instance, tags=None):
     with cmd.update_context(instance) as c:
         c.set_param('tags', tags)
     return instance
-
-
-def load_kubernetes_configuration(filename):
-    try:
-        with open(filename) as stream:
-            return yaml.safe_load(stream)
-    except (IOError, OSError) as ex:
-        if getattr(ex, 'errno', 0) == errno.ENOENT:
-            telemetry.set_user_fault()
-            telemetry.set_exception(exception=ex, fault_type=consts.Kubeconfig_Failed_To_Load_Fault_Type,
-                                    summary='{} does not exist'.format(filename))
-            raise CLIError('{} does not exist'.format(filename))
-    except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
-        telemetry.set_exception(exception=ex, fault_type=consts.Kubeconfig_Failed_To_Load_Fault_Type,
-                                summary='Error parsing {} ({})'.format(filename, str(ex)))
-        raise CLIError('Error parsing {} ({})'.format(filename, str(ex)))
-
-
-def get_release_train():
-    return os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
-
 
 # pylint:disable=unused-argument
 # pylint: disable=too-many-locals
@@ -1075,6 +1026,22 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
         raise CLIError(str.format(consts.Upgrade_Agent_Failure, error_helm_upgrade.decode("ascii")))
 
     return str.format(consts.Upgrade_Agent_Success, connected_cluster.name)
+
+
+def load_kubernetes_configuration(filename):
+    try:
+        with open(filename) as stream:
+            return yaml.safe_load(stream)
+    except (IOError, OSError) as ex:
+        if getattr(ex, 'errno', 0) == errno.ENOENT:
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception=ex, fault_type=consts.Kubeconfig_Failed_To_Load_Fault_Type,
+                                    summary='{} does not exist'.format(filename))
+            raise CLIError('{} does not exist'.format(filename))
+    except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
+        telemetry.set_exception(exception=ex, fault_type=consts.Kubeconfig_Failed_To_Load_Fault_Type,
+                                summary='Error parsing {} ({})'.format(filename, str(ex)))
+        raise CLIError('Error parsing {} ({})'.format(filename, str(ex)))
 
 
 def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name):
@@ -1562,4 +1529,4 @@ def check_process(processName):
 
 
 def ctrlc_handler(sig, frame):
-    interrupt_main() 
+    interrupt_main()
