@@ -29,9 +29,10 @@ class ConnectedClusterIdentity(Model):
     :param type: Required. The type of identity used for the connected
      cluster. The type 'SystemAssigned, includes a system created identity. The
      type 'None' means no identity is assigned to the connected cluster.
-     Possible values include: 'None', 'SystemAssigned'
+     Possible values include: 'None', 'SystemAssigned'. Default value:
+     "SystemAssigned" .
     :type type: str or
-     ~azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ResourceIdentityType
+     ~azure.mgmt.hybridkubernetes.models.ResourceIdentityType
     """
 
     _validation = {
@@ -46,7 +47,7 @@ class ConnectedClusterIdentity(Model):
         'type': {'key': 'type', 'type': 'ResourceIdentityType'},
     }
 
-    def __init__(self, *, type, **kwargs) -> None:
+    def __init__(self, *, type="SystemAssigned", **kwargs) -> None:
         super(ConnectedClusterIdentity, self).__init__(**kwargs)
         self.principal_id = None
         self.tenant_id = None

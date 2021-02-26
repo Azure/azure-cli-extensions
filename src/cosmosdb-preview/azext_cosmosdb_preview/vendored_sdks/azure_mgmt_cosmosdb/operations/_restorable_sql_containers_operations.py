@@ -11,6 +11,7 @@
 
 import uuid
 from msrest.pipeline import ClientRawResponse
+from msrestazure.azure_exceptions import CloudError
 
 from .. import models
 
@@ -24,7 +25,7 @@ class RestorableSqlContainersOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The API version to use for this operation. Constant value: "2020-06-01-preview".
+    :ivar api_version: The API version to use for the request. Constant value: "2021-03-01-preview".
     """
 
     models = models
@@ -34,14 +35,17 @@ class RestorableSqlContainersOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2020-06-01-preview"
+        self.api_version = "2021-03-01-preview"
 
         self.config = config
 
     def list(
             self, location, instance_id, restorable_sql_database_rid=None, custom_headers=None, raw=False, **operation_config):
-        """Lists all the restorable Azure Cosmos DB SQL containers available for a
-        specific database.
+        """Show the event feed of all mutations done on all the Azure Cosmos DB
+        SQL containers under a specific database.  This helps in scenario where
+        container was accidentally deleted.  This API requires
+        'Microsoft.DocumentDB/locations/restorableDatabaseAccounts/*/read'
+        permission.
 
         :param location: Cosmos DB region, with spaces between words and each
          word capitalized.
@@ -49,8 +53,8 @@ class RestorableSqlContainersOperations(object):
         :param instance_id: The instanceId GUID of a restorable database
          account.
         :type instance_id: str
-        :param restorable_sql_database_rid: The resource id of the restorable
-         SQL database.
+        :param restorable_sql_database_rid: The resource ID of the SQL
+         database.
         :type restorable_sql_database_rid: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -60,8 +64,7 @@ class RestorableSqlContainersOperations(object):
         :return: An iterator like instance of RestorableSqlContainerGetResult
         :rtype:
          ~azure.mgmt.cosmosdb.models.RestorableSqlContainerGetResultPaged[~azure.mgmt.cosmosdb.models.RestorableSqlContainerGetResult]
-        :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.cosmosdb.models.DefaultErrorResponseException>`
+        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
             if not next_link:
@@ -76,7 +79,7 @@ class RestorableSqlContainersOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
                 if restorable_sql_database_rid is not None:
                     query_parameters['restorableSqlDatabaseRid'] = self._serialize.query("restorable_sql_database_rid", restorable_sql_database_rid, 'str')
 
@@ -104,7 +107,9 @@ class RestorableSqlContainersOperations(object):
             response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
-                raise models.DefaultErrorResponseException(self._deserialize, response)
+                exp = CloudError(response)
+                exp.request_id = response.headers.get('x-ms-request-id')
+                raise exp
 
             return response
 

@@ -41,11 +41,13 @@ from .operations import RestorableMongodbCollectionsOperations
 from .operations import RestorableMongodbResourcesOperations
 from .operations import PrivateLinkResourcesOperations
 from .operations import PrivateEndpointConnectionsOperations
+from .operations import CassandraClusterOperations
+from .operations import CassandraDataCenterOperations
 from . import models
 
 
 class CosmosDBManagementClient(SDKClient):
-    """CosmosDBManagementClient
+    """Azure Cosmos DB Database Service Resource Provider REST API
 
     :ivar config: Configuration for client.
     :vartype config: CosmosDBManagementClientConfiguration
@@ -106,6 +108,10 @@ class CosmosDBManagementClient(SDKClient):
     :vartype private_link_resources: azure.mgmt.cosmosdb.operations.PrivateLinkResourcesOperations
     :ivar private_endpoint_connections: PrivateEndpointConnections operations
     :vartype private_endpoint_connections: azure.mgmt.cosmosdb.operations.PrivateEndpointConnectionsOperations
+    :ivar cassandra_cluster: CassandraCluster operations
+    :vartype cassandra_cluster: azure.mgmt.cosmosdb.operations.CassandraClusterOperations
+    :ivar cassandra_data_center: CassandraDataCenter operations
+    :vartype cassandra_data_center: azure.mgmt.cosmosdb.operations.CassandraDataCenterOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -122,6 +128,7 @@ class CosmosDBManagementClient(SDKClient):
         super(CosmosDBManagementClient, self).__init__(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
+        self.api_version = '2021-03-01-preview'
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
@@ -180,4 +187,8 @@ class CosmosDBManagementClient(SDKClient):
         self.private_link_resources = PrivateLinkResourcesOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.private_endpoint_connections = PrivateEndpointConnectionsOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.cassandra_cluster = CassandraClusterOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.cassandra_data_center = CassandraDataCenterOperations(
             self._client, self.config, self._serialize, self._deserialize)

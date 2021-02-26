@@ -46,3 +46,9 @@ def load_command_table(self, _):
     with self.command_group('vmware location', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('checkquotaavailability', 'check_quota_availability')
         g.custom_command('checktrialavailability', 'check_trial_availability')
+
+    with self.command_group('vmware datastore', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'datastore_create')
+        g.custom_command('list', 'datastore_list')
+        g.custom_show_command('show', 'datastore_show')
+        g.custom_command('delete', 'datastore_delete')
