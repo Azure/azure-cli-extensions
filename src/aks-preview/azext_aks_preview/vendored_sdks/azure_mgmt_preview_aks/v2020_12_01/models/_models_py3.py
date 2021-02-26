@@ -2834,6 +2834,10 @@ class RunCommandRequest(Model):
 class RunCommandResult(Model):
     """run command result.
 
+    :param id: command id.
+    :type id: str
+    :param provisioning_state: provisioning State
+    :type provisioning_state: str
     :param exit_code: exit code of the command
     :type exit_code: int
     :param started_at: time when the command started.
@@ -2845,14 +2849,18 @@ class RunCommandResult(Model):
     """
 
     _attribute_map = {
-        'exit_code': {'key': 'exitCode', 'type': 'int'},
-        'started_at': {'key': 'startedAt', 'type': 'iso-8601'},
-        'finished_at': {'key': 'finishedAt', 'type': 'iso-8601'},
-        'logs': {'key': 'logs', 'type': 'str'},
+        'id': {'key': 'id', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'exit_code': {'key': 'properties.exitCode', 'type': 'int'},
+        'started_at': {'key': 'properties.startedAt', 'type': 'iso-8601'},
+        'finished_at': {'key': 'properties.finishedAt', 'type': 'iso-8601'},
+        'logs': {'key': 'properties.logs', 'type': 'str'},
     }
 
-    def __init__(self, *, exit_code: int=None, started_at=None, finished_at=None, logs: str=None, **kwargs) -> None:
+    def __init__(self, *, id: str=None, provisioning_state: str=None, exit_code: int=None, started_at=None, finished_at=None, logs: str=None, **kwargs) -> None:
         super(RunCommandResult, self).__init__(**kwargs)
+        self.id = id
+        self.provisioning_state = provisioning_state
         self.exit_code = exit_code
         self.started_at = started_at
         self.finished_at = finished_at
