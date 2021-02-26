@@ -50,7 +50,7 @@ logger = get_logger(__name__)
 
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
-                        kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto', disable_auto_upgrade=False, enable_features=None):
+                        kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto', disable_auto_upgrade=False, features_to_enable=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -238,10 +238,14 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Create connected cluster resource
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
 
+    # Checking which extra features to enable on this cluster
+    enable_cluster_connect, enable_extensions, enable_aad_rbac, enable_cl = utils.check_features_required(features_to_enable)
+
     # Install azure-arc agents
     utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                                location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
-                               kube_context, no_wait, values_file_provided, values_file, azure_cloud, disable_auto_upgrade)
+                               kube_context, no_wait, values_file_provided, values_file, azure_cloud, disable_auto_upgrade,
+                               enable_cluster_connect, enable_extensions, enable_aad_rbac, enable_cl)
 
     return put_cc_response
 

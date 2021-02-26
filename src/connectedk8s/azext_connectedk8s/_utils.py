@@ -263,7 +263,8 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, configuratio
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
-                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade):
+                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade,
+                         enable_cluster_connect, enable_extensions, enable_aad_rbac, enable_cl):
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
@@ -279,6 +280,12 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
     # To set some other helm parameters through file
     if values_file_provided:
         cmd_helm_install.extend(["-f", values_file])
+    if enable_cluster_connect:
+        cmd_helm_install.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=true"])
+    if enable_extensions:
+        cmd_helm_install.extend(["--set", "systemDefaultValues.extensionoperator.enabled=true"])
+    if enable_aad_rbac:
+        cmd_helm_install.extend(["--set", "systemDefaultValues.guard.enabled=true"])
     if disable_auto_upgrade:
         cmd_helm_install.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}".format("false")])
     if https_proxy:
@@ -318,3 +325,18 @@ def flatten(dd, separator='.', prefix=''):
         telemetry.set_exception(exception=e, fault_type=consts.Error_Flattening_User_Supplied_Value_Dict,
                                 summary='Error while flattening the user supplied helm values dict')
         raise CLIError("Error while flattening the user supplied helm values dict")
+
+
+def check_features_required(features_to_enable):
+    enable_cluster_connect, enable_extensions, enable_aad_rbac, enable_cl = False, False, False, False
+    for feature in features_to_enable:
+        if feature == "cluster-connect":
+            enable_cluster_connect = True
+        elif feature == "cluster-extensions":
+            enable_extensions = True
+        elif feature == "aad-rbac":
+            enable_aad_rbac = True
+        elif feature == "custom-locations":
+            enable_cl = True
+
+    return enable_cluster_connect, enable_extensions, enable_aad_rbac, enable_cl
