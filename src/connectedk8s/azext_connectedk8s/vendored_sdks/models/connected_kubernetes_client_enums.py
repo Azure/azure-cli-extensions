@@ -37,6 +37,17 @@ class ConnectivityStatus(str, Enum):
     expired = "Expired"
 
 
-class AuthenticationMethod(str, Enum):
+class CreatedByType(str, Enum):
 
-    token = "Token"
+    user = "User"
+    application = "Application"
+    managed_identity = "ManagedIdentity"
+    key = "Key"
+
+
+class LastModifiedByType(str, Enum):
+
+    user = "User"
+    application = "Application"
+    managed_identity = "ManagedIdentity"
+    key = "Key"

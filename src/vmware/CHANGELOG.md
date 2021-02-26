@@ -1,6 +1,9 @@
 # Release History
 
-## 2.0.0 (TBD)
+## 2.0.1 (2021-02)
+- Update the minimum az cli version to 2.11.0 [#3045](https://github.com/Azure/azure-cli-extensions/issues/3045)
+
+## 2.0.0 (2021-02)
 
 This version has **breaking changes** for scripts.
 - prompt for legal terms for `az vmware private-cloud create` [#2932](https://github.com/Azure/azure-cli-extensions/pull/2932)
@@ -10,6 +13,20 @@ This version has **breaking changes** for scripts.
 
 Other changes:
 - update to AVS 2021-01-01-preview API [#2976](https://github.com/Azure/azure-cli-extensions/pull/2976)
+- add az vmware datastore command group [#2998](https://github.com/Azure/azure-cli-extensions/pull/2998)
+
+```
+az vmware datastore --help
+
+Group
+    az vmware datastore : Commands to manage a datastore in a private cloud cluster.
+
+Commands:
+    create : Create a datastore in a private cloud cluster.
+    delete : Delete a datastore in a private cloud cluster.
+    list   : List datastores in a private cloud cluster.
+    show   : Show details of a datastore in a private cloud cluster.
+```
 
 ## 1.0.0 (2020-11-02)
 
