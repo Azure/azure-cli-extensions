@@ -45,6 +45,18 @@ def transform_jobs(results):
     return [transform_job(job) for job in sorted(results, key=creation, reverse=True)]
 
 
+def transform_offerings(offerings):
+    def one(offering):
+        return OrderedDict([
+            ('Id', offering['id']),
+            ('Publisher ID', offering['properties']['managedApplication']['publisherId']),
+            ('Offer ID', offering['properties']['managedApplication']['offerId']),
+            ('SKUs', ', '.join([s['id'] for s in offering['properties']['skus']]))
+        ])
+
+    return [one(offering) for offering in offerings]
+
+
 def transform_output(results):
     def one(key, value):
         repeat = round(20 * value)
@@ -106,3 +118,6 @@ def load_command_table(self, _):
     with self.command_group('quantum', job_ops, is_preview=True) as q:
         q.command('run', 'run', validator=validate_workspace_and_target_info, table_transformer=transform_output)
         q.command('execute', 'run', validator=validate_workspace_and_target_info, table_transformer=transform_output)
+
+    with self.command_group('quantum offerings', workspace_ops) as o:
+        o.command('list', 'list_offerings', table_transformer=transform_offerings)

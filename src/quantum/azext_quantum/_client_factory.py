@@ -31,11 +31,7 @@ def _get_data_credentials(cli_ctx, subscription_id=None):
     return creds
 
 
-def cf_quantum(cli_ctx, subscription_id=None, resource_group_name=None, workspace_name=None, location=None):
-    from .vendored_sdks.azure_quantum import QuantumClient
-    creds = _get_data_credentials(cli_ctx, subscription_id)
-    return QuantumClient(creds, subscription_id, resource_group_name, workspace_name, base_url=base_url(location))
-
+# Control Plane clients
 
 def cf_quantum_mgmt(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -45,6 +41,18 @@ def cf_quantum_mgmt(cli_ctx, *_):
 
 def cf_workspaces(cli_ctx, *_):
     return cf_quantum_mgmt(cli_ctx).workspaces
+
+
+def cf_offerings(cli_ctx, *_):
+    return cf_quantum_mgmt(cli_ctx).offerings
+
+
+# Data Plane clients
+
+def cf_quantum(cli_ctx, subscription_id=None, resource_group_name=None, workspace_name=None, location=None):
+    from .vendored_sdks.azure_quantum import QuantumClient
+    creds = _get_data_credentials(cli_ctx, subscription_id)
+    return QuantumClient(creds, subscription_id, resource_group_name, workspace_name, base_url=base_url(location))
 
 
 def cf_providers(cli_ctx, subscription_id=None, resource_group_name=None, workspace_name=None, location=None):

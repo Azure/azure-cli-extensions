@@ -83,6 +83,19 @@ helps['quantum job wait'] = """
                 -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table
 """
 
+helps['quantum offerings'] = """
+    type: group
+    short-summary: Manage provider offerings for Azure Quantum.
+"""
+
+helps['quantum offerings list'] = """
+    type: command
+    short-summary: Get the list of all provider offerings available on the given location.
+    examples:
+      - name: List offerings available in an Azure location.
+        text: |-
+            az quantum offerings list -l MyLocation
+"""
 
 helps['quantum target'] = """
     type: group
