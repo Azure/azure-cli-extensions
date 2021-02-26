@@ -17,7 +17,8 @@ from knack.util import CLIError
 from .vendored_sdks.appplatform.v2020_07_01 import models
 from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
 from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
-from .vendored_sdks.appplatform.v2020_11_01_preview import AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
+from .vendored_sdks.appplatform.v2020_11_01_preview import AppPlatformManagementClient as \
+    AppPlatformManagementClient_20201101preview
 from knack.log import get_logger
 from .azure_storage_file import FileService
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -136,18 +137,6 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
         if trace_properties is not None:
             sdk_no_wait(no_wait, client.monitoring_settings.update_put,
                         resource_group_name=resource_group, service_name=name, properties=trace_properties)
-
-    # update service tags
-    if tags is not None:
-        updated_resource.tags = tags
-        update_service_tags = True
-
-    if update_service_tags is False and update_service_sku is False:
-        return resource
-
-    updated_resource.properties = updated_resource_properties
-    return sdk_no_wait(no_wait, client.services.update,
-                       resource_group_name=resource_group, service_name=name, resource=updated_resource)
 
     # update service tags
     if tags is not None:
@@ -307,19 +296,21 @@ def app_update(cmd, client, resource_group, service, name,
                main_entry=None,
                env=None,
                enable_persistent_storage=None,
-               https_only=None):
+               https_only=None,
+               enable_end_to_end_tls=None):
     _check_active_deployment_exist(client, resource_group, service, name)
     resource = client.services.get(resource_group, service)
     location = resource.location
 
-    properties = models.AppResourceProperties(public=is_public, https_only=https_only)
+    properties = models_20201101preview.AppResourceProperties(public=is_public, https_only=https_only,
+                                                              enable_end_to_end_tls=enable_end_to_end_tls)
     if enable_persistent_storage is True:
         properties.persistent_disk = models.PersistentDisk(
             size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
     if enable_persistent_storage is False:
         properties.persistent_disk = models.PersistentDisk(size_in_gb=0)
 
-    app_resource = models.AppResource()
+    app_resource = models_20201101preview.AppResource()
     app_resource.properties = properties
     app_resource.location = location
 
@@ -1383,7 +1374,8 @@ def certificate_remove(cmd, client, resource_group, service, name):
 
 def domain_bind(cmd, client, resource_group, service, app,
                 domain_name,
-                certificate=None):
+                certificate=None,
+                enable_end_to_end_tls=None):
     _check_active_deployment_exist(client, resource_group, service, app)
     properties = models.CustomDomainProperties()
     if certificate is not None:
@@ -1392,7 +1384,27 @@ def domain_bind(cmd, client, resource_group, service, app,
             thumbprint=certificate_response.properties.thumbprint,
             cert_name=certificate
         )
+    if enable_end_to_end_tls is not None:
+        _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls)
+
     return client.custom_domains.create_or_update(resource_group, service, app, domain_name, properties)
+
+
+def _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls):
+    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20201101preview)
+    resource = client.services.get(resource_group, service)
+    location = resource.location
+
+    properties = models_20201101preview.AppResourceProperties(enable_end_to_end_tls=enable_end_to_end_tls)
+    app_resource = models_20201101preview.AppResource()
+    app_resource.properties = properties
+    app_resource.location = location
+
+    logger.warning("Set end to end tls for app '{}'".format(app))
+    poller = AppPlatformManagementClient_20201101preview.apps.update(
+        resource_group, service, app, app_resource)
+    while poller.done() is False:
+        sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
 
 def domain_show(cmd, client, resource_group, service, app, domain_name):
@@ -1407,7 +1419,8 @@ def domain_list(cmd, client, resource_group, service, app):
 
 def domain_update(cmd, client, resource_group, service, app,
                   domain_name,
-                  certificate=None):
+                  certificate=None,
+                  enable_end_to_end_tls=None):
     _check_active_deployment_exist(client, resource_group, service, app)
     properties = models.CustomDomainProperties()
     if certificate is not None:
@@ -1416,6 +1429,9 @@ def domain_update(cmd, client, resource_group, service, app,
             thumbprint=certificate_response.properties.thumbprint,
             cert_name=certificate
         )
+    if enable_end_to_end_tls is not None:
+        _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls)
+
     return client.custom_domains.create_or_update(resource_group, service, app, domain_name, properties)
 
 

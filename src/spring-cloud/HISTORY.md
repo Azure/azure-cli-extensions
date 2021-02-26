@@ -1,5 +1,9 @@
 Release History
 ===============
+2.1.3
+-----
+* Support End-to-end TLS.
+
 2.1.2
 -----
 * Add optional '--deployment' to 'az spring-cloud app logs' command
