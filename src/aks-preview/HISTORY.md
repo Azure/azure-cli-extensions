@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.5.2
++++++
+* Add `--enable-pod-identity-with-kubenet` for enabling AAD Pod Identity in Kubenet cluster
+
 0.5.1
 +++++
 * Update to use 2021-02-01 api-version
