@@ -298,6 +298,9 @@ helps['aks create'] = """
         - name: --enable-pod-identity
           type: bool
           short-summary: (PREVIEW) Enable pod identity addon.
+        - name: --enable-pod-identity-with-kubenet
+          type: bool
+          short-summary: (PREVIEW) Enable pod identity addon for cluster using Kubnet network plugin.
         - name: --aci-subnet-name
           type: string
           short-summary: The name of a subnet in an existing VNet into which to deploy the virtual nodes.
@@ -469,6 +472,9 @@ helps['aks update'] = """
         - name: --enable-pod-identity
           type: bool
           short-summary: (PREVIEW) Enable Pod Identity addon for cluster.
+        - name: --enable-pod-identity-with-kubenet
+          type: bool
+          short-summary: (PREVIEW) Enable pod identity addon for cluster using Kubnet network plugin.
         - name: --disable-pod-identity
           type: bool
           short-summary: (PREVIEW) Disable Pod Identity addon for cluster.
