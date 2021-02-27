@@ -6,7 +6,7 @@
 # pylint: disable=line-too-long,redefined-builtin
 
 from knack.util import CLIError
-from .._client_factory import  cf_offerings
+from .._client_factory import cf_offerings
 import time
 
 
