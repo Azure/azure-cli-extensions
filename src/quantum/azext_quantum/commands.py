@@ -48,10 +48,10 @@ def transform_jobs(results):
 def transform_offerings(offerings):
     def one(offering):
         return OrderedDict([
-            ('Id', offering['id']),
+            ('Provider Id', offering['id']),
+            ('SKUs', ', '.join([s['id'] for s in offering['properties']['skus']])),
             ('Publisher ID', offering['properties']['managedApplication']['publisherId']),
-            ('Offer ID', offering['properties']['managedApplication']['offerId']),
-            ('SKUs', ', '.join([s['id'] for s in offering['properties']['skus']]))
+            ('Offer ID', offering['properties']['managedApplication']['offerId'])
         ])
 
     return [one(offering) for offering in offerings]
@@ -92,6 +92,7 @@ def load_command_table(self, _):
     workspace_ops = CliCommandType(operations_tmpl='azext_quantum.operations.workspace#{}')
     job_ops = CliCommandType(operations_tmpl='azext_quantum.operations.job#{}')
     target_ops = CliCommandType(operations_tmpl='azext_quantum.operations.target#{}')
+    offerings_ops = CliCommandType(operations_tmpl='azext_quantum.operations.offerings#{}')
 
     with self.command_group('quantum workspace', workspace_ops) as w:
         w.command('create', 'create')
@@ -119,5 +120,5 @@ def load_command_table(self, _):
         q.command('run', 'run', validator=validate_workspace_and_target_info, table_transformer=transform_output)
         q.command('execute', 'run', validator=validate_workspace_and_target_info, table_transformer=transform_output)
 
-    with self.command_group('quantum offerings', workspace_ops) as o:
+    with self.command_group('quantum offerings', offerings_ops) as o:
         o.command('list', 'list_offerings', table_transformer=transform_offerings)

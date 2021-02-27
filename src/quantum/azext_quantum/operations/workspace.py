@@ -7,7 +7,7 @@
 
 from knack.util import CLIError
 
-from .._client_factory import cf_workspaces, cf_quotas, cf_offerings
+from .._client_factory import cf_workspaces, cf_quotas
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
 from ..vendored_sdks.azure_mgmt_quantum.models import Provider
@@ -203,13 +203,3 @@ def clear(cmd):
     info = WorkspaceInfo(cmd)
     info.clear()
     info.save(cmd)
-
-
-def list_offerings(cmd, location=None):
-    """
-    Get the list of all provider offerings available on the given location.
-    """
-    if (not location):
-        raise CLIError("A location is required to list offerings available.")
-    client = cf_offerings(cmd.cli_ctx)
-    return client.list(location_name=location)
