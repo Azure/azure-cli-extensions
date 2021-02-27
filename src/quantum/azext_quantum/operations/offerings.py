@@ -6,8 +6,17 @@
 # pylint: disable=line-too-long,redefined-builtin
 
 from knack.util import CLIError
-from .._client_factory import cf_offerings
+from .._client_factory import cf_offerings, cf_vm_image_term
 import time
+
+PUBLISHER_NOT_AVAILABLE = "N/A"
+OFFER_NOT_AVAILABLE = "N/A"
+
+
+def _show_info(msg):
+    import colorama
+    colorama.init()
+    print(f"\033[1m{colorama.Fore.GREEN}{msg}{colorama.Style.RESET_ALL}")
 
 
 def _get_publisher_and_offer_from_provider_id(providers, provider_id):
@@ -19,6 +28,15 @@ def _get_publisher_and_offer_from_provider_id(providers, provider_id):
             publisher_id = p.properties.managed_application.publisher_id
             break
     return (publisher_id, offer_id)
+
+
+def _valid_publisher_and_offer(provider, publisher, offer):
+    if (offer is None or publisher is None):
+        raise CLIError(f"Provider '{provider}' not found.")
+    if (offer == OFFER_NOT_AVAILABLE or publisher == PUBLISHER_NOT_AVAILABLE):
+        _show_info(f"No terms exist for provider '{provider}'.")
+        return False
+    return True
 
 
 def list_offerings(cmd, location=None):
@@ -37,10 +55,9 @@ def show_terms(cmd, provider_id=None, sku=None, location=None):
     """
     client = cf_offerings(cmd.cli_ctx)
     (publisher_id, offer_id) = _get_publisher_and_offer_from_provider_id(client.list(location_name=location), provider_id)
-    if (offer_id is None or publisher_id is None):
-        raise CLIError("Provider not found")
-    print(f"az vm image terms show -p {publisher_id} -f {offer_id} --plan {sku}")
-    return None
+    if not _valid_publisher_and_offer(provider_id, publisher_id, offer_id):
+        return None
+    return cf_vm_image_term(cmd.cli_ctx).get(publisher_id, offer_id, sku)
 
 
 def accept_terms(cmd, provider_id=None, sku=None, location=None):
@@ -49,7 +66,9 @@ def accept_terms(cmd, provider_id=None, sku=None, location=None):
     """
     client = cf_offerings(cmd.cli_ctx)
     (publisher_id, offer_id) = _get_publisher_and_offer_from_provider_id(client.list(location_name=location), provider_id)
-    if (offer_id is None or publisher_id is None):
-        raise CLIError("Provider not found")
-    print(f"az vm image terms accept -p {publisher_id} -f {offer_id} --plan {sku}")
-    return None
+    if not _valid_publisher_and_offer(provider_id, publisher_id, offer_id):
+        return None
+    terms_client = cf_vm_image_term(cmd.cli_ctx)
+    terms = terms_client.get(publisher_id, offer_id, sku)
+    terms.accepted = True
+    return terms_client.create(publisher_id, offer_id, sku, terms)

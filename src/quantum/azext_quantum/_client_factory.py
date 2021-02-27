@@ -65,3 +65,12 @@ def cf_jobs(cli_ctx, subscription_id=None, resource_group_name=None, workspace_n
 
 def cf_quotas(cli_ctx, subscription_id=None, resource_group_name=None, workspace_name=None, location=None):
     return cf_quantum(cli_ctx, subscription_id, resource_group_name, workspace_name, location).quotas
+
+
+# Helper clients
+
+def cf_vm_image_term(cli_ctx):
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from azure.mgmt.marketplaceordering import MarketplaceOrderingAgreements
+    market_place_client = get_mgmt_service_client(cli_ctx, MarketplaceOrderingAgreements)
+    return market_place_client.marketplace_agreements

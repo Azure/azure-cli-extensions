@@ -74,5 +74,3 @@ def validate_provider_and_sku_info(cmd, namespace):
         raise ValueError("Missing sku argument")
     if not location:
         raise ValueError("Missing location argument")
-
-
