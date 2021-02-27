@@ -18,8 +18,6 @@ def _get_publisher_and_offer_from_provider_id(providers, provider_id):
             offer_id = p.properties.managed_application.offer_id
             publisher_id = p.properties.managed_application.publisher_id
             break
-    if (offer_id == None or publisher_id == None):
-        raise CLIError("Provider not found")
     return (publisher_id, offer_id)
 
 
@@ -39,6 +37,8 @@ def show_terms(cmd, provider_id=None, sku=None, location=None):
     """
     client = cf_offerings(cmd.cli_ctx)
     (publisher_id, offer_id) = _get_publisher_and_offer_from_provider_id(client.list(location_name=location), provider_id)
+    if (offer_id is None or publisher_id is None):
+        raise CLIError("Provider not found")
     print(f"az vm image terms show -p {publisher_id} -f {offer_id} --plan {sku}")
     return None
 
@@ -49,5 +49,7 @@ def accept_terms(cmd, provider_id=None, sku=None, location=None):
     """
     client = cf_offerings(cmd.cli_ctx)
     (publisher_id, offer_id) = _get_publisher_and_offer_from_provider_id(client.list(location_name=location), provider_id)
+    if (offer_id is None or publisher_id is None):
+        raise CLIError("Provider not found")
     print(f"az vm image terms accept -p {publisher_id} -f {offer_id} --plan {sku}")
     return None
