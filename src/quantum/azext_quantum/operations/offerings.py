@@ -18,3 +18,17 @@ def list_offerings(cmd, location=None):
         raise CLIError("A location is required to list offerings available.")
     client = cf_offerings(cmd.cli_ctx)
     return client.list(location_name=location)
+
+
+def show_terms(cmd, provider_id=None, sku=None, location=None):
+    """
+    Show the terms of a provider and SKU combination including license URL and acceptance status.
+    """
+    return None
+
+
+def accept_terms(cmd, provider_id=None, sku=None, location=None):
+    """
+    Accept the terms of a provider and SKU combination to enable it for workspace creation.
+    """
+    return None

@@ -7,7 +7,7 @@
 
 from collections import OrderedDict
 from azure.cli.core.commands import CliCommandType
-from ._validators import validate_workspace_info, validate_target_info, validate_workspace_and_target_info, validate_workspace_info_no_location
+from ._validators import validate_workspace_info, validate_target_info, validate_workspace_and_target_info, validate_workspace_info_no_location, validate_provider_and_sku_info
 
 
 def transform_targets(providers):
@@ -122,3 +122,5 @@ def load_command_table(self, _):
 
     with self.command_group('quantum offerings', offerings_ops) as o:
         o.command('list', 'list_offerings', table_transformer=transform_offerings)
+        o.command('accept-terms', 'accept_terms', validator=validate_provider_and_sku_info)
+        o.command('show-terms', 'show_terms', validator=validate_provider_and_sku_info)
