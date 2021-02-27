@@ -24,6 +24,18 @@ def show_terms(cmd, provider_id=None, sku=None, location=None):
     """
     Show the terms of a provider and SKU combination including license URL and acceptance status.
     """
+    client = cf_offerings(cmd.cli_ctx)
+    providers = client.list(location_name=location)
+    offer_id = None
+    publisher_id = None
+    for p in providers:
+        if (p.id == provider_id):
+            offer_id = p.properties.managed_application.offer_id
+            publisher_id = p.properties.managed_application.publisher_id
+            break
+    if (offer_id == None or publisher_id == None):
+        raise CLIError("Provider / SKU combination not found")
+    print(f"az vm image terms show -p {publisher_id} -f {offer_id} --plan {sku}")
     return None
 
 
@@ -31,4 +43,16 @@ def accept_terms(cmd, provider_id=None, sku=None, location=None):
     """
     Accept the terms of a provider and SKU combination to enable it for workspace creation.
     """
+    client = cf_offerings(cmd.cli_ctx)
+    providers = client.list(location_name=location)
+    offer_id = None
+    publisher_id = None
+    for p in providers:
+        if (p.id == provider_id):
+            offer_id = p.properties.managed_application.offer_id
+            publisher_id = p.properties.managed_application.publisher_id
+            break
+    if (offer_id == None or publisher_id == None):
+        raise CLIError("Provider / SKU combination not found")
+    print(f"az vm image terms accept -p {publisher_id} -f {offer_id} --plan {sku}")
     return None
