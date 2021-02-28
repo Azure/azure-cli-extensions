@@ -1944,32 +1944,51 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
-def aks_runcommand(cmd, client, resource_group_name, name, command_string="", command_files=None):
+def aks_runcommand(cmd, client, resource_group_name, name, command_string="", command_files=[]):
     colorama.init()
+
+    mc = client.get(resource_group_name, name)
 
     if len(command_string) == 0:
         raise CLIError('Command cannot be empty.')
    
     request_payload = RunCommandRequest()
     request_payload.command = command_string
-    
-    # request_payload.cluster_token = _get_aad_token(cmd.cli_ctx, "6dae42f8-4368-4678-94ff-3960e28e3630")
+    request_payload.context = _get_command_context(command_files)
+    if mc.aad_profile != None and mc.aad_profile.managed :
+       request_payload.cluster_token = _get_dataplane_aad_token(cmd.cli_ctx, "6dae42f8-4368-4678-94ff-3960e28e3630") 
 
-    if command_files != None:
-        request_payload.context = _get_command_context(command_files)
-
-    commandResultFuture = client.run_command(resource_group_name, name, request_payload, long_running_operation_timeout=5)
+    commandResultFuture = client.run_command(resource_group_name, name, request_payload, long_running_operation_timeout=5, retry_total=0)
     commandResult = commandResultFuture.result(300)
     print(f"{colorama.Fore.BLUE}command started at {commandResult.started_at}, finished at {commandResult.finished_at}, with exitcode={commandResult.exit_code}{colorama.Style.RESET_ALL}")
     print(commandResult.logs)
 
 def _get_command_context(command_files):
+    if len(command_files) == 0:
+        return ""
+
+    filesToAttach = {}
+    if len(command_files) == 1 and command_files[0]==".":
+        # current folder
+        cwd = os.getcwd()
+        for filefolder, dirs, files in os.walk(cwd):
+            for file in files:
+                # retain folder structure
+                rel = os.path.relpath(filefolder, cwd)
+                filesToAttach[os.path.join(filefolder, file)] = os.path.join(rel, file)
+    else:
+        for file in command_files:
+            if file == ".":
+                raise CLIError(". is used to attach current folder, not expecting other attachements.")
+            if os.path.isfile(file):
+                # for individual attached file, flatten them to same folder
+                filesToAttach[file]=os.path.basename(file)
+
     zipStream = io.BytesIO()
     zipFile = zipfile.ZipFile(zipStream, "w")
-    for file in command_files:
-        # test file exists
-        # check if file is '.'
-        zipFile.write(file)
+    for i, (k, v) in enumerate(filesToAttach.items()):
+        zipFile.write(k, v)
+    zipFile.printdir()
     zipFile.close()
 
     return str(base64.encodebytes(zipStream.getbuffer()), "utf-8")
