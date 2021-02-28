@@ -110,7 +110,7 @@ def _add_quantum_providers(cmd, workspace, providers):
         (publisher, offer) = _get_publisher_and_offer_from_provider_id(providers_in_region, provider_id)
         if (offer is None or publisher is None):
             raise CLIError(f"Provider '{provider_id}' not found in region {workspace.location}.")
-        providers_selected.append({'provider_id':provider_id, 'sku':sku, 'offer_id':offer, 'publisher_id':publisher})
+        providers_selected.append({'provider_id': provider_id, 'sku': sku, 'offer_id': offer, 'publisher_id': publisher})
     _show_tip(f"Workspace creation has been requested with the following providers:\n{providers_selected}")
     # Now that the providers have been requested, add each of them into the workspace
     for provider in providers_selected:
@@ -119,7 +119,7 @@ def _add_quantum_providers(cmd, workspace, providers):
             continue
         if _provider_terms_need_acceptance(cmd, provider):
             raise CLIError(f"Terms for Provider '{provider['provider_id']}' and SKU '{provider['sku']}' have not been accepted.\n"
-                            "Please use command 'az quantum offerings accept-terms' to accept them.")
+                "Use command 'az quantum offerings accept-terms' to accept them.")
         p = Provider()
         p.provider_id = provider['provider_id']
         p.provider_sku = provider['sku']
@@ -167,7 +167,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
     if (provider_sku_list is None):
         _show_tip(f"Workspace {info.name} will be created with the Basic SKU of the Microsoft QIO optimization provider.\n"
-                   "Please go to the Azure portal https://portal.azure.com/ to configure additional providers.")
+            "Please go to the Azure portal https://portal.azure.com/ to configure additional providers.")
     else:
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
     poller = client.create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
