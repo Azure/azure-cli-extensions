@@ -119,7 +119,7 @@ def _add_quantum_providers(cmd, workspace, providers):
             continue
         if _provider_terms_need_acceptance(cmd, provider):
             raise CLIError(f"Terms for Provider '{provider['provider_id']}' and SKU '{provider['sku']}' have not been accepted.\n"
-                            "Use command 'az quantum offerings accept-terms' to accept them.")
+                           "Use command 'az quantum offerings accept-terms' to accept them.")
         p = Provider()
         p.provider_id = provider['provider_id']
         p.provider_sku = provider['sku']
