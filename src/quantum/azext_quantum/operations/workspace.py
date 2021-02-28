@@ -119,7 +119,7 @@ def _add_quantum_providers(cmd, workspace, providers):
             continue
         if _provider_terms_need_acceptance(cmd, provider):
             raise CLIError(f"Terms for Provider '{provider['provider_id']}' and SKU '{provider['sku']}' have not been accepted.\n"
-                "Use command 'az quantum offerings accept-terms' to accept them.")
+                            "Use command 'az quantum offerings accept-terms' to accept them.")
         p = Provider()
         p.provider_id = provider['provider_id']
         p.provider_sku = provider['sku']
@@ -167,7 +167,7 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
     if (provider_sku_list is None):
         _show_tip(f"Workspace {info.name} will be created with the Basic SKU of the Microsoft QIO optimization provider.\n"
-            "Please go to the Azure portal https://portal.azure.com/ to configure additional providers.")
+                  "Please go to the Azure portal https://portal.azure.com/ to configure additional providers.")
     else:
         _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
     poller = client.create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
