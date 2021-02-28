@@ -97,6 +97,24 @@ helps['quantum offerings list'] = """
             az quantum offerings list -l MyLocation
 """
 
+helps['quantum offerings show-terms'] = """
+    type: command
+    short-summary: Show the terms of a provider and SKU combination including license URL and acceptance status.
+    examples:
+      - name: Use a Provider Id and SKU from `az quantum offerings list` to review the terms.
+        text: |-
+            az quantum offerings show-terms -p MyProviderId -k MySKU -l MyLocation
+"""
+
+helps['quantum offerings accept-terms'] = """
+    type: command
+    short-summary: Accept the terms of a provider and SKU combination to enable it for workspace creation.
+    examples:
+      - name: Once terms have been reviewed, accept the invoking this command.
+        text: |-
+            az quantum offerings accept-terms -p MyProviderId -k MySKU -l MyLocation
+"""
+
 helps['quantum target'] = """
     type: group
     short-summary: Manage targets for Azure Quantum workspaces.
