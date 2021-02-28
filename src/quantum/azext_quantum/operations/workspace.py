@@ -7,11 +7,11 @@
 
 from knack.util import CLIError
 
-from .._client_factory import cf_workspaces, cf_quotas, cf_offerings
+from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, cf_vm_image_term
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
 from ..vendored_sdks.azure_mgmt_quantum.models import Provider
-from .offerings import _get_publisher_and_offer_from_provider_id
+from .offerings import _get_publisher_and_offer_from_provider_id, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 from msrestazure.azure_exceptions import CloudError
 
 import time
@@ -89,9 +89,17 @@ def _get_basic_quantum_workspace(location, info, storage_account):
     return qw
 
 
+def _provider_terms_need_acceptance(cmd, provider):
+    if (provider['offer_id'] == OFFER_NOT_AVAILABLE or provider['publisher_id'] == PUBLISHER_NOT_AVAILABLE):
+        # No need to accept terms
+        return False
+    else:
+        return not cf_vm_image_term(cmd.cli_ctx).get(provider['publisher_id'], provider['offer_id'], provider['sku']).accepted
+
+
 def _add_quantum_providers(cmd, workspace, providers):
-    print(f"Provider list is: '{providers}'")
-    providers_in_region = cf_offerings(cmd.cli_ctx).list(location_name=workspace.location)
+    providers_in_region_paged = cf_offerings(cmd.cli_ctx).list(location_name=workspace.location)
+    providers_in_region = [item for item in providers_in_region_paged]
     providers_selected = []
     for pair in providers.split(','):
         es = [e.strip() for e in pair.split('/')]
@@ -109,6 +117,9 @@ def _add_quantum_providers(cmd, workspace, providers):
         if (provider['provider_id'].lower() == DEFAULT_WORKSPACE_PROVIDER_ID.lower() and provider['sku'].lower() == DEFAULT_WORKSPACE_PROVIDER_SKU.lower()):
             # We can skip the default provider since it will be added always.)
             continue
+        if _provider_terms_need_acceptance(cmd, provider):
+            raise CLIError(f"Terms for Provider '{provider['provider_id']}' and SKU '{provider['sku']}' have not been accepted.\n"
+                            "Please use command 'az quantum offerings accept-terms' to accept them.")
         p = Provider()
         p.provider_id = provider['provider_id']
         p.provider_sku = provider['sku']
