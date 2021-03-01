@@ -37,6 +37,11 @@ helps['vmware location'] = """
     short-summary: Commands to check availability by location.
 """
 
+helps['vmware datastore'] = """
+    type: group
+    short-summary: Commands to manage a datastore in a private cloud cluster.
+"""
+
 helps['vmware cluster create'] = """
     type: command
     short-summary: Create a cluster in a private cloud. The maximum number of clusters is 4.
@@ -150,4 +155,40 @@ helps['vmware location checkquotaavailability'] = """
 helps['vmware location checktrialavailability'] = """
     type: command
     short-summary: Return trial status for subscription by region.
+"""
+
+helps['vmware datastore create'] = """
+    type: command
+    short-summary: Create a datastore in a private cloud cluster.
+    examples:
+    - name: Create a new Microsoft.StoragePool provided disk pool based iSCSI datastore.
+      text: az vmware datastore create --name iSCSIDatastore1 --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud --endpoints 10.10.0.1:3260 --lun-name lun0
+    - name: Create a new Microsoft.StoragePool provided disk pool based iSCSI datastore with multiple endpoints.
+      text: az vmware datastore create --name iSCSIDatastore1 --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud --endpoints 10.10.0.1:3260 10.10.0.2:3260 --lun-name lun0
+    - name: Create a new Microsoft.NetApp provided NetApp volume based NFSv3 datastore.
+      text: az vmware datastore create --name ANFDatastore1 --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud --nfs-file-path ANFVol1FilePath --nfs-provider-ip 10.10.0.1
+"""
+
+helps['vmware datastore show'] = """
+    type: command
+    short-summary: Show details of a datastore in a private cloud cluster.
+    examples:
+    - name: Show the details of an iSCSI or NFS based datastore.
+      text: az vmware datastore show --name MyCloudSANDatastore1 --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud
+"""
+
+helps['vmware datastore list'] = """
+    type: command
+    short-summary: List datastores in a private cloud cluster.
+    examples:
+    - name: List all iSCSI or NFS based datastores under Cluster-1.
+      text: az vmware datastore list --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud
+"""
+
+helps['vmware datastore delete'] = """
+    type: command
+    short-summary: Delete a datastore in a private cloud cluster.
+    examples:
+    - name: Delete an iSCSI or NFS based datastore.
+      text: az vmware datastore delete --name MyCloudSANDatastore1 --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud
 """

@@ -55,6 +55,11 @@ def connect_to_server_helper(server_type, endpoint, default_db_name, server_name
 
         # if interactive mode indicated, use pgcli to connect
         try:
+            # setup environment path variable for pgcli and mycli
+            from azure.cli.core.extension import EXTENSIONS_DIR
+            extension_path = os.path.join(EXTENSIONS_DIR, 'rdbms-connect', 'bin')
+            os.environ["PATH"] += os.pathsep + extension_path
+
             if server_type == "postgres":
                 cmd = "pgcli -h {0} -u {1} -W {2}".format(host, administrator_login, database_name)
             else:
