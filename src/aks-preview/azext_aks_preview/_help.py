@@ -253,6 +253,9 @@ helps['aks create'] = """
         - name: --enable-node-public-ip
           type: bool
           short-summary: Enable VMSS node public IP.
+        - name: --node-public-ip-prefix-id
+          type: string
+          short-summary: Public IP prefix ID used to assign public IPs to VMSS nodes.
         - name: --enable-managed-identity
           type: bool
           short-summary: Using managed identity to manage cluster resource group. Default value is true, you can explicitly specify "--client-id" and "--secret" to disable managed identity.
@@ -658,6 +661,9 @@ helps['aks nodepool add'] = """
         - name: --enable-node-public-ip
           type: bool
           short-summary: Enable VMSS node public IP.
+        - name: --node-public-ip-prefix-id
+          type: string
+          short-summary: Public IP prefix ID used to assign public IPs to VMSS nodes.
         - name: --labels
           type: string
           short-summary: The node labels for the node pool. You can't change the node labels through CLI after the node pool is created. See https://aka.ms/node-labels for syntax of labels.

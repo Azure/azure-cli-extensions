@@ -2,9 +2,14 @@
 
 Release History
 ===============
-0.5.2
+
+0.5.3
 +++++
 * Add `--enable-pod-identity-with-kubenet` for enabling AAD Pod Identity in Kubenet cluster
+
+0.5.2
++++++
+* Add support for node public IP prefix ID '--node-public-ip-prefix-id'
 
 0.5.1
 +++++
