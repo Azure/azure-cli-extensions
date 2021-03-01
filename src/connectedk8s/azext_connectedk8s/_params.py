@@ -34,8 +34,8 @@ def load_arguments(self, _):
         c.argument('infrastructure', options_list=['--infrastructure'], help='The infrastructure on which the Kubernetes cluster represented by this connected cluster will be running on.', arg_type=get_enum_type(Infrastructure_Enum_Values))
         c.argument('disable_auto_upgrade', options_list=['--disable-auto-upgrade'], action='store_true', help='Flag to disable auto upgrade of arc agents.')
         c.argument('features_to_enable', features_types, options_list=['--enable-features'], help='Space-separated list of features you want to enable.')
-        c.argument('aad_authorization_client_id', options_list=['--aad-authorization-client-id'], help='AAD authorization client ID for enabling AAD RBAC')
-        c.argument('aad_authorization_client_secret', options_list=['--aad-authorization-client-secret'], help='AAD authorization client secret for enabling AAD RBAC')
+        c.argument('aad_authz_client_id', options_list=['--aad-authz-client-id'], help='AAD authorization client ID for enabling AAD RBAC')
+        c.argument('aad_authz_client_secret', options_list=['--aad-authz-client-secret'], help='AAD authorization client secret for enabling AAD RBAC')
 
     with self.argument_context('connectedk8s update') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
@@ -60,8 +60,8 @@ def load_arguments(self, _):
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
         c.argument('features_to_enable', features_types, options_list=['--enable-features'], help='Space-separated list of features you want to enable.')
         c.argument('features_to_disable', features_types, options_list=['--disable-features'], help='Space-separated list of features you want to disable.')
-        c.argument('aad_authorization_client_id', options_list=['--aad-authorization-client-id'], help='AAD authorization client ID for enabling AAD RBAC')
-        c.argument('aad_authorization_client_secret', options_list=['--aad-authorization-client-secret'], help='AAD authorization client secret for enabling AAD RBAC')
+        c.argument('aad_authz_client_id', options_list=['--aad-authz-client-id'], help='AAD authorization client ID for enabling AAD RBAC')
+        c.argument('aad_authz_client_secret', options_list=['--aad-authz-client-secret'], help='AAD authorization client secret for enabling AAD RBAC')
 
     with self.argument_context('connectedk8s list') as c:
         pass
