@@ -249,7 +249,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                     summary='Both aad authorization client id and client secret is required to enable AAD RBAC feature')
             raise CLIError("Please provide both aad authorization client id and client secret to enable AAD RBAC feature")
 
-
     # Install azure-arc agents
     utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                                location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
@@ -1042,7 +1041,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
 
 
 def toggle_features(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None,
-                    features_to_enable=None, features_to_disable= None, aad_authorization_client_id="", aad_authorization_client_secret=""):
+                    features_to_enable=None, features_to_disable=None, aad_authorization_client_id="", aad_authorization_client_secret=""):
     pass
 
 
