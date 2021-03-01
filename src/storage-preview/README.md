@@ -337,7 +337,7 @@ az storage fs service-properties update \
 ##### Enable delete retention
 ```
 az storage fs file upload \
-    -s "C:\Users\zuh\Desktop\test.txt" \
+    -s ".\test.txt" \
     -p test \
     -f filesystemcetk2triyptlaa \
     --connection-string $con
@@ -358,6 +358,7 @@ az storage fs list-deleted-path \
 ##### Undelete deleted path
 ```
 az storage fs undelete-path \
+    -f filesystemcetk2triyptlaa \
     -f filesystemcetk2triyptlaa \
     --deleted-path-name test \
     --deleted-path-version 132549163 \
