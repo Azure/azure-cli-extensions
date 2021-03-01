@@ -2,10 +2,13 @@
 
 Release History
 ===============
+0.5.0
+++++++
+* az storage blob upload: Support larger size of block blob, increasing from 4.75 TiB to 190.7 TiB (50,000 blocks, each block from 100MB to 4000MB)
+
 0.4.1
 ++++++
 * `az storage blob service-properties`: Adopt new api version with track2 SDK
-* az storage blob upload: Support larger size of block blob, increasing from 4.75 TiB to 190.7 TiB (50,000 blocks, each block from 100MB to 4000MB)
 
 0.4.0
 ++++++
