@@ -2,11 +2,11 @@
 
 Release History
 ===============
-0.4.2
+0.5.0
 ++++++
 * `az storage blob upload`: Refine help message
 * Remove `az storage account management-policy` because it is supported in main azure cli
-* Upgrade api version to 2021-01-01 for mgmt storage
+* Upgrade api version to 2021-01-01 for `az storage account blob-service-properties`
 
 0.4.1
 ++++++
