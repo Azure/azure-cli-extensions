@@ -1401,7 +1401,7 @@ def _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls
     app_resource.location = location
 
     logger.warning("Set end to end tls for app '{}'".format(app))
-    poller = AppPlatformManagementClient_20201101preview.apps.update(
+    poller = client.apps.update(
         resource_group, service, app, app_resource)
     while poller.done() is False:
         sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
