@@ -22,7 +22,7 @@ def load_arguments(self, _):
     tag_type = CLIArgumentType(help='Show only quantum workspaces that have associated the specified tag.')
     skip_role_assignment_type = CLIArgumentType(help='Skips the role assignment step for the quantum workspace in the storage account.')
     provider_id_type = CLIArgumentType(options_list=['--provider-id', '-p'], help='Identifier of an Azure Quantum provider.')
-    sku_type = CLIArgumentType(options_list=['--sku', '-k'], help='Identifies a plan or SKU offered by an Azure Quantum provider.')
+    sku_type = CLIArgumentType(options_list=['--sku', '-k'], help='Identify a plan or SKU offered by an Azure Quantum provider.')
 
     with self.argument_context('quantum workspace') as c:
         c.argument('workspace_name', workspace_name_type)
