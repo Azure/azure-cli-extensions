@@ -55,6 +55,7 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2020_12_01.models import (ContainerS
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
                                                                       ContainerServiceSshConfiguration,
+                                                                      MaintenanceConfiguration,
                                                                       TimeInWeek,
                                                                       TimeSpan,
                                                                       ContainerServiceSshPublicKey,
@@ -107,6 +108,7 @@ from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
 from ._consts import ADDONS
+from .maintenanceconfiguration import aks_maintenanceconfiguration_update_internal
 logger = get_logger(__name__)
 
 
@@ -848,40 +850,36 @@ def aks_maintenanceconfiguration_add(cmd, # pylint: disable=too-many-locals,too-
     resource_group_name,
     resource_name,
     config_name,
-    time_in_week,
-    not_allowed_time
+    config_file,
+    weekday,
+    start_hour
 ):
-    return aks_maintenanceconfiguration_update(cmd, client, resource_group_name, resource_name, config_name, time_in_week, not_allowed_time)
+    configs = client.list_by_managed_cluster(resource_group_name, resource_name)
+    for config in configs:
+        if config.name == config_name:
+            raise CLIError("Maintenance configuration '{}' already exists, please try a different name, "
+                           "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(config_name))
+    return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, resource_name, config_name, config_file, weekday, start_hour)
 
 def aks_maintenanceconfiguration_update(cmd, # pylint: disable=too-many-locals,too-many-statements,too-many-branches)
     client,
     resource_group_name,
     resource_name,
     config_name,
-    time_in_week,
-    not_allowed_time
-):
-    logger.warning('resource_group_name: %s, resource_name: %s, config_name: %s ', resource_group_name, resource_name, config_name)
-    logger.warning('time in week: %s, not_allowed_time: %s ', time_in_week, not_allowed_time)
-    week_schedule = []
-    if time_in_week != None:
-        week_schedule_dict = json.loads(time_in_week)
-        for item in week_schedule_dict:
-            w = TimeInWeek(**item)
-            logger.warning('day: %s, time slots: %s ', w.day, w.hour_slots)
-            week_schedule.append(w)
-    not_allowed = []
-    if not_allowed_time != None:
-        not_allowed_dict = json.loads(not_allowed_time) 
-        for item in not_allowed_dict:
-            t = TimeSpan(**item)
-            logger.warning('start: %s, end: %s ', t.start, t.end)
-            not_allowed.append(t)
+    config_file,
+    weekday,
+    start_hour):
+    configs = client.list_by_managed_cluster(resource_group_name, resource_name)
+    found = False
+    for config in configs:
+        if config.name == config_name:
+            found = True
+            break
+    if found == False:
+        raise CLIError("Maintenance configuration '{}' doesn't exist."
+                           "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(config_name))
 
-    logger.warning("week_schedule len: %d", len(week_schedule))
-    #logger.warning('time in week: %s, not_allowed_time: %s ', json.dumps(week_schedule, indent=2), json.dumps(not_allowed, indent=2))
-    return client.create_or_update(resource_group_name=resource_group_name, resource_name=resource_name, config_name=config_name, time_in_week=week_schedule, not_allowed_time=not_allowed)
-
+    return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, resource_name, config_name, config_file, weekday, start_hour)
 
 def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
                client,
@@ -3387,6 +3385,31 @@ def _get_kubelet_config(file_path):
     config_object.fail_swap_on = kubelet_config.get("failSwapOn", None)
 
     return config_object
+
+def _get_maintenance_config(file_path):
+    maintenance_config = get_file_json(file_path)
+    logger.warning(maintenance_config)
+    if not isinstance(maintenance_config, dict):
+        raise CLIError("Error reading maintenance configuration at {}.".format(file_path))
+    time_in_week = maintenance_config["timeInWeek"]
+    not_allowed_time = maintenance_config["notAllowedTime"]
+    week_schedule = []
+    if time_in_week != None:
+        for item in time_in_week:
+            w = TimeInWeek(**item)
+            logger.warning(w)
+            logger.warning('day: %s, time slots: %s ', w.day, w.hour_slots)
+            week_schedule.append(w)
+    not_allowed = []
+    if not_allowed_time != None:
+        for item in not_allowed_time:
+            t = TimeSpan(**item)
+            logger.warning('start: %s, end: %s ', t.start, t.end)
+            not_allowed.append(t)
+    result = MaintenanceConfiguration
+    result.time_in_week = week_schedule
+    result.not_allowed_time = not_allowed
+    return result
 
 
 def _get_linux_os_config(file_path):

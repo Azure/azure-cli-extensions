@@ -597,17 +597,54 @@ helps['aks maintenanceconfig add'] = """
     type: command
     short-summary: Add a maintenance configuration in managed Kubernetes cluster.
     parameters:
-        - name: --time-in-week
+        - name: --weekday
           type: string
-          short-summary: The allowed maintenance time in week
-        - name: --not-allowed-time
+          short-summary: A day in week on which maintenance is allowed. E.g. Monday
+        - name: --start-hour
           type: string
-          short-summary: The time spans not allowd for maintenance.
+          short-summary: The start time of 1 hour window which maintenance is allowd. E.g. 1 means it's allowd between 1:00 am and 2:00 am
+        - name: --config-file
+          type: string
+          short-summary: the maintenance configuration json file. 
     examples:
-        - name: Create a maintenance configuration in an existing AKS cluster.
-          text: az aks maintenanceconfig add -g MyResourceGroup -n default --cluster-name MyManagedCluster 
-                --time-in-week [{"day": "Friday","hourSlots": [1,2]}]
-                --not-allowed-time [{"start": "2020-11-26T03:00:00Z", "end": "2020-11-30T12:00:00Z"}]
+        - name: Create a maintenance configuration with --weekday and --start-hour.
+          text: az aks maintenanceconfiguration update -g xiazhan-mtc-stg -n test1 --config-name default --weekday Monday  --start-hour 1
+                The maintenance is allowed on Monday 1:00am to 2:00am
+        - name: Create a maintenance configuration with --weekday.The maintenance is allowd on any time of that day.
+          text: az aks maintenanceconfiguration update -g xiazhan-mtc-stg -n test1 --config-name default --weekday Monday
+                The maintenance is allowed on Monday.
+        - name: Create a maintenance configuration with maintenance configuration json file
+          text: az aks maintenanceconfiguration update -g xiazhan-mtc-stg -n test1 --config-name default --config-file ./test.json
+                The content of json file looks below. It means the maintenance is allowed on UTC time Tuesday 1:00am - 3:00 am and Wednesday 1:00am - 2:00am, 6:00am-7:00am
+                No maintenance is allowed from 2020-11-26T03:00:00Z to 2020-11-30T12:00:00Z and from 2020-12-26T03:00:00Z to 2020-12-26T12:00:00Z even if they are allowed in the above weekly setting
+                {
+                      "timeInWeek": [
+                        {
+                          "day": "Tuesday",
+                          "hour_slots": [
+                            1,
+                            2
+                          ]
+                        },
+                                {
+                          "day": "Wednesday",
+                          "hour_slots": [
+                            1,
+                            6
+                          ]
+                        }
+                      ],
+                      "notAllowedTime": [
+                        {
+                          "start": "2020-11-26T03:00:00Z",
+                          "end": "2020-11-30T12:00:00Z"
+                        },
+                        {
+                          "start": "2020-12-26T03:00:00Z",
+                          "end": "2020-12-26T12:00:00Z"
+                        }
+                      ]
+              }
 """
 
 helps['aks nodepool'] = """

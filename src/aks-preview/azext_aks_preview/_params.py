@@ -167,8 +167,9 @@ def load_arguments(self, _):
     for scope in ['aks maintenanceconfiguration add', 'aks maintenanceconfiguration update']:
         with self.argument_context(scope) as c:
             c.argument('config_name', type=str, options_list=['--config-name'], help='The config name.')
-            c.argument('time_in_week', type=str, options_list=['--time-in-week'], help='Weekly schedule', required=False)
-            c.argument('not_allowed_time', type=str, options_list=['--not-allowed-time'], help='Not allowed time', required=False)
+            c.argument('config_file', type=str, options_list=['--config-file'], help='The config file.', required=False)
+            c.argument('weekday', type=str, options_list=['--weekday'], help='weekday on which maintenance can happen', required=False)
+            c.argument('start_hour', type=int, options_list=['--start-hour'], help='maintenance start hour on the weekday', required=False)
     
     for scope in ['aks maintenanceconfiguration show', 'aks maintenanceconfiguration delete']:
         with self.argument_context(scope) as c:
