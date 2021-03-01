@@ -34,7 +34,8 @@ def _valid_publisher_and_offer(provider, publisher, offer):
     if (offer is None or publisher is None):
         raise CLIError(f"Provider '{provider}' not found.")
     if (offer == OFFER_NOT_AVAILABLE or publisher == PUBLISHER_NOT_AVAILABLE):
-        _show_info(f"No terms exist for provider '{provider}'.")
+        # We show this information to the user to prevent a confusion when term commands take no effect.
+        _show_info(f"No terms require to be accepted for provider '{provider}'.")
         return False
     return True
 
@@ -53,6 +54,7 @@ def show_terms(cmd, provider_id=None, sku=None, location=None):
     """
     Show the terms of a provider and SKU combination including license URL and acceptance status.
     """
+    # This command is a wrapper for `az vm image terms show`, but it takes care of finding the Publisher and Offer on behalf of the user.
     client = cf_offerings(cmd.cli_ctx)
     (publisher_id, offer_id) = _get_publisher_and_offer_from_provider_id(client.list(location_name=location), provider_id)
     if not _valid_publisher_and_offer(provider_id, publisher_id, offer_id):
@@ -64,6 +66,7 @@ def accept_terms(cmd, provider_id=None, sku=None, location=None):
     """
     Accept the terms of a provider and SKU combination to enable it for workspace creation.
     """
+    # This command is a wrapper for `az vm image terms accept`, but it takes care of finding the Publisher and Offer on behalf of the user.
     client = cf_offerings(cmd.cli_ctx)
     (publisher_id, offer_id) = _get_publisher_and_offer_from_provider_id(client.list(location_name=location), provider_id)
     if not _valid_publisher_and_offer(provider_id, publisher_id, offer_id):
