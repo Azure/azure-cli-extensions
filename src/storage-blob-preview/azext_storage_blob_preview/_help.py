@@ -147,7 +147,7 @@ examples:
 helps['storage blob upload'] = """
 type: command
 short-summary: Upload a file to a storage blob.
-long-summary: Creates a new blob from a file path, or updates the content of an existing blob with automatic chunking and progress notifications.
+long-summary: Create a new blob from a file path, or updates the content of an existing blob with automatic chunking and progress notifications.
 parameters:
   - name: --type -t
     short-summary: Default to 'page' for *.vhd files, or 'block' otherwise.
