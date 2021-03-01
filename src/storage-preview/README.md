@@ -334,7 +334,7 @@ az storage fs service-properties update \
     --delete-retention-period 5 \
     --connection-string myconnectionstring
 ```
-##### Enable delete retention
+##### Upload file to file system
 ```
 az storage fs file upload \
     -s ".\test.txt" \
