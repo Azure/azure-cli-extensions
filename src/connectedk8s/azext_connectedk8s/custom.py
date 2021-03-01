@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import errno
+from logging import exception
 import os
 import shutil
 import json
@@ -50,7 +51,8 @@ logger = get_logger(__name__)
 
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
-                        kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto', disable_auto_upgrade=False, features_to_enable=None):
+                        kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
+                        disable_auto_upgrade=False, features_to_enable=None, aad_authorization_client_id="", aad_authorization_client_secret=""):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -240,6 +242,13 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Checking which extra features to enable on this cluster
     enable_cluster_connect, enable_extensions, enable_aad_rbac, enable_cl = utils.check_features_required(features_to_enable)
+    if enable_aad_rbac:
+        if aad_authorization_client_id == "" or aad_authorization_client_secret == "":
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception='Client ID or secret not provided for AAD RBAC', fault_type=consts.Client_Details_Not_Provided_For_AAD_RBAC_Fault,
+                                    summary='Both aad authorization client id and client secret is required to enable AAD RBAC feature')
+            raise CLIError("Please provide both aad authorization client id and client secret to enable AAD RBAC feature")
+
 
     # Install azure-arc agents
     utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
@@ -1030,6 +1039,11 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
         raise CLIError(str.format(consts.Upgrade_Agent_Failure, error_helm_upgrade.decode("ascii")))
 
     return str.format(consts.Upgrade_Agent_Success, connected_cluster.name)
+
+
+def toggle_features(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None,
+                    features_to_enable=None, features_to_disable= None, aad_authorization_client_id="", aad_authorization_client_secret=""):
+    pass
 
 
 def load_kubernetes_configuration(filename):

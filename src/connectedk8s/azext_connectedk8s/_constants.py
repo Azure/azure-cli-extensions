@@ -100,3 +100,5 @@ Helm_Existing_User_Supplied_Value_Get_Fault = 'Error while loading the user supp
 Error_Flattening_User_Supplied_Value_Dict = 'Error while flattening the user supplied helm values dict'
 Upgrade_RG_Cluster_Name_Conflict = 'The provided cluster name and rg correspond to different cluster'
 Corresponding_CC_Resource_Deleted_Fault = 'CC resource corresponding to this cluster has been deleted by the customer'
+
+Client_Details_Not_Provided_For_AAD_RBAC_Fault = 'Client ID or secret not provided for AAD RBAC'

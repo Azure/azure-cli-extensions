@@ -87,3 +87,11 @@ helps['connectedk8s proxy'] = """
   - name: Get access to a connected kubernetes cluster.
     text: az connectedk8s proxy -n clusterName -g resourceGroupName
 """
+
+helps['connectedk8s toggle'] = """
+  type: command
+  short-summary: Toggle the selective features on the connected cluster.
+  examples:
+  - name: Toggle the Cluster-Connect feature to disable.
+    text: az connectedk8s toggle -n clusterName -g resourceGroupName --disable-features cluster-connect
+"""
