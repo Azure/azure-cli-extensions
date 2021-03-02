@@ -15,9 +15,10 @@ def load_command_table(self, _):
         operations_tmpl='azext_k8sconfiguration.vendored_sdks.operations#SourceControlConfigurationsOperations.{}',
         client_factory=cf_k8sconfiguration)
 
-    with self.command_group('k8sconfiguration', k8sconfiguration_sdk, client_factory=cf_k8sconfiguration_operation,
-                            is_preview=True) \
-            as g:
+    with self.command_group('k8sconfiguration', k8sconfiguration_sdk,
+                            client_factory=cf_k8sconfiguration_operation,
+                            is_preview=True,
+                            deprecate_info=self.deprecate(redirect='k8s-configuration', hide=True)) as g:
         g.custom_command('create', 'create_k8sconfiguration')
         g.custom_command('update', 'update_k8sconfiguration')
         g.custom_command('delete', 'delete_k8sconfiguration', confirmation=True)
