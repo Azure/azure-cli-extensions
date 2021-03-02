@@ -976,8 +976,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
-    # add live_only for role assignment GUID
-    @live_only()
     @AllowLargeResponse()
     @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_fqdn_subdomain(self, resource_group, resource_group_location):
@@ -1019,8 +1017,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
         # assign
-        assign_idendity = 'role assignment create --assignee-object-id={identity_id} --role "Private DNS Zone Contributor" --scope={zone_id} --assignee-principal-type ServicePrincipal'
-        assignment = self.cmd(assign_idendity).get_output_in_json()
+        import mock
+        with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
+            assignment = self.cmd('role assignment create --assignee-object-id={identity_id} --role "Private DNS Zone Contributor" --scope={zone_id} --assignee-principal-type ServicePrincipal').get_output_in_json()
         assert assignment["roleDefinitionId"] is not None
 
         # create
