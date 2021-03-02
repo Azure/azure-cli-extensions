@@ -611,7 +611,7 @@ helps['aks maintenanceconfig add'] = """
           short-summary: The start time of 1 hour window which maintenance is allowd. E.g. 1 means it's allowd between 1:00 am and 2:00 am
         - name: --config-file
           type: string
-          short-summary: the maintenance configuration json file. 
+          short-summary: the maintenance configuration json file.
     examples:
         - name: Create a maintenance configuration with --weekday and --start-hour.
           text: az aks maintenanceconfiguration update -g xiazhan-mtc-stg -n test1 --config-name default --weekday Monday  --start-hour 1 The maintenance is allowed on Monday 1:00am to 2:00am
