@@ -1,5 +1,8 @@
 # Release History
 
+## 2.0.1 (2021-02)
+- Update the minimum az cli version to 2.11.0 [#3045](https://github.com/Azure/azure-cli-extensions/issues/3045)
+
 ## 2.0.0 (2021-02)
 
 This version has **breaking changes** for scripts.

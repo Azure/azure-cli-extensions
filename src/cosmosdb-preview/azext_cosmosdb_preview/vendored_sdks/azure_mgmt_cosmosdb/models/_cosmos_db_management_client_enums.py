@@ -180,7 +180,7 @@ class PrimaryAggregationType(str, Enum):
 
 
 class BackupPolicyType(str, Enum):
-
+    
     periodic = "Periodic"
     continuous = "Continuous"
 

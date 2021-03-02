@@ -39,6 +39,8 @@ from ._cassandra_clusters_operations import CassandraClustersOperations
 from ._cassandra_data_centers_operations import CassandraDataCentersOperations
 from ._private_link_resources_operations import PrivateLinkResourcesOperations
 from ._private_endpoint_connections_operations import PrivateEndpointConnectionsOperations
+from ._cassandra_cluster_operations import CassandraClusterOperations
+from ._cassandra_data_center_operations import CassandraDataCenterOperations
 
 __all__ = [
     'DatabaseAccountsOperations',
@@ -71,4 +73,6 @@ __all__ = [
     'CassandraDataCentersOperations',
     'PrivateLinkResourcesOperations',
     'PrivateEndpointConnectionsOperations',
+    'CassandraClusterOperations',
+    'CassandraDataCenterOperations',
 ]

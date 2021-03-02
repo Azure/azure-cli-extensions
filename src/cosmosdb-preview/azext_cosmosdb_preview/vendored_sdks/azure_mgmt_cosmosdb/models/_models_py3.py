@@ -182,6 +182,35 @@ class AutoUpgradePolicyResource(Model):
         self.throughput_policy = throughput_policy
 
 
+class BackupPolicy(Model):
+    """The object representing the policy for taking backups on an account.
+
+    You probably want to use the sub-classes and not this class directly. Known
+    sub-classes are: PeriodicModeBackupPolicy, ContinuousModeBackupPolicy
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param type: Required. Constant filled by server.
+    :type type: str
+    """
+
+    _validation = {
+        'type': {'required': True},
+    }
+
+    _attribute_map = {
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    _subtype_map = {
+        'type': {'Periodic': 'PeriodicModeBackupPolicy', 'Continuous': 'ContinuousModeBackupPolicy'}
+    }
+
+    def __init__(self, **kwargs) -> None:
+        super(BackupPolicy, self).__init__(**kwargs)
+        self.type = None
+
+
 class Resource(Model):
     """Resource.
 
@@ -220,11 +249,11 @@ class Resource(Model):
         self.type = None
 
 
-class AzureEntityResource(Resource):
-    """Entity Resource.
+class ProxyResource(Resource):
+    """Proxy Resource.
 
-    The resource model definition for an Azure Resource Manager resource with
-    an etag.
+    The resource model definition for a Azure Resource Manager proxy resource.
+    It will not have tags and a location.
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
@@ -237,56 +266,75 @@ class AzureEntityResource(Resource):
     :ivar type: The type of the resource. E.g.
      "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
     :vartype type: str
-    :ivar etag: Resource Etag.
-    :vartype etag: str
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
         'type': {'readonly': True},
-        'etag': {'readonly': True},
     }
 
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'etag': {'key': 'etag', 'type': 'str'},
     }
 
     def __init__(self, **kwargs) -> None:
-        super(AzureEntityResource, self).__init__(**kwargs)
-        self.etag = None
+        super(ProxyResource, self).__init__(**kwargs)
 
 
-class BackupPolicy(Model):
-    """The object representing the policy for taking backups on an account.
+class BackupResource(ProxyResource):
+    """A restorable backup of a Cassandra cluster.
 
-    You probably want to use the sub-classes and not this class directly. Known
-    sub-classes are: PeriodicModeBackupPolicy, ContinuousModeBackupPolicy
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
 
-    All required parameters must be populated in order to send to Azure.
-
-    :param type: Required. Constant filled by server.
-    :type type: str
+    :ivar id: Fully qualified resource ID for the resource. Ex -
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
+    :vartype id: str
+    :ivar name: The name of the resource
+    :vartype name: str
+    :ivar type: The type of the resource. E.g.
+     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
+    :vartype type: str
+    :param properties:
+    :type properties: ~azure.mgmt.cosmosdb.models.BackupResourceProperties
     """
 
     _validation = {
-        'type': {'required': True},
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
     }
 
     _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
+        'properties': {'key': 'properties', 'type': 'BackupResourceProperties'},
     }
 
-    _subtype_map = {
-        'type': {'Periodic': 'PeriodicModeBackupPolicy', 'Continuous': 'ContinuousModeBackupPolicy'}
+    def __init__(self, *, properties=None, **kwargs) -> None:
+        super(BackupResource, self).__init__(**kwargs)
+        self.properties = properties
+
+
+class BackupResourceProperties(Model):
+    """BackupResourceProperties.
+
+    :param timestamp: The time this backup was taken, formatted like
+     2021-01-21T17:35:21
+    :type timestamp: datetime
+    """
+
+    _attribute_map = {
+        'timestamp': {'key': 'timestamp', 'type': 'iso-8601'},
     }
 
-    def __init__(self, **kwargs) -> None:
-        super(BackupPolicy, self).__init__(**kwargs)
-        self.type = None
+    def __init__(self, *, timestamp=None, **kwargs) -> None:
+        super(BackupResourceProperties, self).__init__(**kwargs)
+        self.timestamp = timestamp
 
 
 class ProxyResource(Resource):
@@ -1179,6 +1227,34 @@ class Column(Model):
         super(Column, self).__init__(**kwargs)
         self.name = name
         self.type = type
+
+
+class Components1jq1t4ischemasmanagedserviceidentitypropertiesuserassignedidentitiesadditionalproperties(Model):
+    """Components1jq1t4ischemasmanagedserviceidentitypropertiesuserassignedidentitiesadditionalproperties.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar principal_id: The principal id of user assigned identity.
+    :vartype principal_id: str
+    :ivar client_id: The client id of user assigned identity.
+    :vartype client_id: str
+    """
+
+    _validation = {
+        'principal_id': {'readonly': True},
+        'client_id': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'principal_id': {'key': 'principalId', 'type': 'str'},
+        'client_id': {'key': 'clientId', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs) -> None:
+        super(Components1jq1t4ischemasmanagedserviceidentitypropertiesuserassignedidentitiesadditionalproperties, self).__init__(**kwargs)
+        self.principal_id = None
+        self.client_id = None
 
 
 class CompositePath(Model):
@@ -3053,7 +3129,7 @@ class ManagedServiceIdentity(Model):
      resource ids in the form:
      '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
     :type user_assigned_identities: dict[str,
-     ~azure.mgmt.cosmosdb.models.ManagedServiceIdentityUserAssignedIdentitiesValue]
+     ~azure.mgmt.cosmosdb.models.Components1jq1t4ischemasmanagedserviceidentitypropertiesuserassignedidentitiesadditionalproperties]
     """
 
     _validation = {
@@ -3065,7 +3141,7 @@ class ManagedServiceIdentity(Model):
         'principal_id': {'key': 'principalId', 'type': 'str'},
         'tenant_id': {'key': 'tenantId', 'type': 'str'},
         'type': {'key': 'type', 'type': 'ResourceIdentityType'},
-        'user_assigned_identities': {'key': 'userAssignedIdentities', 'type': '{ManagedServiceIdentityUserAssignedIdentitiesValue}'},
+        'user_assigned_identities': {'key': 'userAssignedIdentities', 'type': '{Components1jq1t4ischemasmanagedserviceidentitypropertiesuserassignedidentitiesadditionalproperties}'},
     }
 
     def __init__(self, *, type=None, user_assigned_identities=None, **kwargs) -> None:
@@ -3074,34 +3150,6 @@ class ManagedServiceIdentity(Model):
         self.tenant_id = None
         self.type = type
         self.user_assigned_identities = user_assigned_identities
-
-
-class ManagedServiceIdentityUserAssignedIdentitiesValue(Model):
-    """ManagedServiceIdentityUserAssignedIdentitiesValue.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    :ivar principal_id: The principal id of user assigned identity.
-    :vartype principal_id: str
-    :ivar client_id: The client id of user assigned identity.
-    :vartype client_id: str
-    """
-
-    _validation = {
-        'principal_id': {'readonly': True},
-        'client_id': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'principal_id': {'key': 'principalId', 'type': 'str'},
-        'client_id': {'key': 'clientId', 'type': 'str'},
-    }
-
-    def __init__(self, **kwargs) -> None:
-        super(ManagedServiceIdentityUserAssignedIdentitiesValue, self).__init__(**kwargs)
-        self.principal_id = None
-        self.client_id = None
 
 
 class Metric(Model):
@@ -6820,52 +6868,6 @@ class ThroughputSettingsUpdateParameters(ARMResourceProperties):
     def __init__(self, *, resource, location: str=None, tags=None, identity=None, **kwargs) -> None:
         super(ThroughputSettingsUpdateParameters, self).__init__(location=location, tags=tags, identity=identity, **kwargs)
         self.resource = resource
-
-
-class TrackedResource(Resource):
-    """Tracked Resource.
-
-    The resource model definition for an Azure Resource Manager tracked top
-    level resource which has 'tags' and a 'location'.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
-    :vartype id: str
-    :ivar name: The name of the resource
-    :vartype name: str
-    :ivar type: The type of the resource. E.g.
-     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
-    :vartype type: str
-    :param tags: Resource tags.
-    :type tags: dict[str, str]
-    :param location: Required. The geo-location where the resource lives
-    :type location: str
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'location': {'required': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'location': {'key': 'location', 'type': 'str'},
-    }
-
-    def __init__(self, *, location: str, tags=None, **kwargs) -> None:
-        super(TrackedResource, self).__init__(**kwargs)
-        self.tags = tags
-        self.location = location
 
 
 class UniqueKey(Model):

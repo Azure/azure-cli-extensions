@@ -59,3 +59,18 @@ def validate_workspace_and_target_info(cmd, namespace):
     """
     validate_workspace_info(cmd, namespace)
     validate_target_info(cmd, namespace)
+
+
+def validate_provider_and_sku_info(cmd, namespace):
+    """
+    Makes sure all parameters for quantum offering operations are present.
+    """
+    provider_id = getattr(namespace, 'provider_id', None)
+    sku = getattr(namespace, 'sku', None)
+    location = getattr(namespace, 'location', None)
+    if not provider_id:
+        raise ValueError("Missing provider id argument")
+    if not sku:
+        raise ValueError("Missing sku argument")
+    if not location:
+        raise ValueError("Missing location argument")
