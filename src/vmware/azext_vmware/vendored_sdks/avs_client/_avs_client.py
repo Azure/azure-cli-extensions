@@ -20,8 +20,12 @@ from .operations import Operations
 from .operations import LocationsOperations
 from .operations import PrivateCloudsOperations
 from .operations import ClustersOperations
+from .operations import DatastoresOperations
 from .operations import HcxEnterpriseSitesOperations
 from .operations import AuthorizationsOperations
+from .operations import GlobalReachConnectionsOperations
+from .operations import WorkloadNetworksOperations
+from .operations import AddonsOperations
 from . import models
 
 
@@ -36,10 +40,18 @@ class AVSClient(object):
     :vartype private_clouds: avs_client.operations.PrivateCloudsOperations
     :ivar clusters: ClustersOperations operations
     :vartype clusters: avs_client.operations.ClustersOperations
+    :ivar datastores: DatastoresOperations operations
+    :vartype datastores: avs_client.operations.DatastoresOperations
     :ivar hcx_enterprise_sites: HcxEnterpriseSitesOperations operations
     :vartype hcx_enterprise_sites: avs_client.operations.HcxEnterpriseSitesOperations
     :ivar authorizations: AuthorizationsOperations operations
     :vartype authorizations: avs_client.operations.AuthorizationsOperations
+    :ivar global_reach_connections: GlobalReachConnectionsOperations operations
+    :vartype global_reach_connections: avs_client.operations.GlobalReachConnectionsOperations
+    :ivar workload_networks: WorkloadNetworksOperations operations
+    :vartype workload_networks: avs_client.operations.WorkloadNetworksOperations
+    :ivar addons: AddonsOperations operations
+    :vartype addons: avs_client.operations.AddonsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription.
@@ -74,9 +86,17 @@ class AVSClient(object):
             self._client, self._config, self._serialize, self._deserialize)
         self.clusters = ClustersOperations(
             self._client, self._config, self._serialize, self._deserialize)
+        self.datastores = DatastoresOperations(
+            self._client, self._config, self._serialize, self._deserialize)
         self.hcx_enterprise_sites = HcxEnterpriseSitesOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.authorizations = AuthorizationsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.global_reach_connections = GlobalReachConnectionsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.workload_networks = WorkloadNetworksOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.addons = AddonsOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):
