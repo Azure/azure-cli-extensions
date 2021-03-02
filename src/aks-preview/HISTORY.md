@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.5.1
++++++
+* Add operations of maintenance configuration
+
 0.5.0
 +++++
 * Modify addon confcom behavior to only enable SGX device plugin by default.
