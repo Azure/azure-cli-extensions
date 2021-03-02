@@ -105,6 +105,7 @@ from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
 from ._consts import ADDONS
+from ._consts import CONST_PRIVATE_DNS_ZONE_SYSTEM, CONST_PRIVATE_DNS_ZONE_NONE
 logger = get_logger(__name__)
 
 
@@ -883,6 +884,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_private_cluster=False,
                private_dns_zone=None,
                enable_managed_identity=True,
+               fqdn_subdomain=None,
                api_server_authorized_ip_ranges=None,
                aks_custom_headers=None,
                appgw_name=None,
@@ -914,7 +916,10 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             raise CLIError('Provided ssh key ({}) is invalid or non-existent'.format(shortened_key))
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
-    if not dns_name_prefix:
+
+    if dns_name_prefix and fqdn_subdomain:
+        raise CLIError('--dns-name-prefix and --fqdn-subdomain cannot be used at same time')
+    if not dns_name_prefix and not fqdn_subdomain:
         dns_name_prefix = _get_default_dns_prefix(name, resource_group_name, subscription_id)
 
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group_name)
@@ -1002,7 +1007,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         principal_obj = _ensure_aks_service_principal(cmd.cli_ctx,
                                                       service_principal=service_principal, client_secret=client_secret,
                                                       subscription_id=subscription_id, dns_name_prefix=dns_name_prefix,
-                                                      location=location, name=name)
+                                                      fqdn_subdomain=fqdn_subdomain, location=location, name=name)
         service_principal_profile = ManagedClusterServicePrincipalProfile(
             client_id=principal_obj.get("service_principal"),
             secret=principal_obj.get("client_secret"))
@@ -1217,6 +1222,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     if node_resource_group:
         mc.node_resource_group = node_resource_group
 
+    use_custom_private_dns_zone = False
     if enable_private_cluster:
         if load_balancer_sku.lower() != "standard":
             raise CLIError("Please use standard load balancer for private cluster")
@@ -1228,6 +1234,17 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         if not enable_private_cluster:
             raise CLIError("Invalid private dns zone for public cluster. It should always be empty for public cluster")
         mc.api_server_access_profile.private_dns_zone = private_dns_zone
+        from msrestazure.tools import is_valid_resource_id
+        if private_dns_zone.lower() != CONST_PRIVATE_DNS_ZONE_SYSTEM and private_dns_zone.lower() != CONST_PRIVATE_DNS_ZONE_NONE:
+            if is_valid_resource_id(private_dns_zone):
+                use_custom_private_dns_zone = True
+            else:
+                raise CLIError(private_dns_zone + " is not a valid Azure resource ID.")
+
+    if fqdn_subdomain:
+        if not use_custom_private_dns_zone:
+            raise CLIError("--fqdn-subdomain should only be used for private cluster with custom private dns zone")
+        mc.fqdn_subdomain = fqdn_subdomain
 
     if uptime_sla:
         mc.sku = ManagedClusterSKU(
@@ -2328,6 +2345,7 @@ def _ensure_aks_service_principal(cli_ctx,
                                   client_secret=None,
                                   subscription_id=None,
                                   dns_name_prefix=None,
+                                  fqdn_subdomain=None,
                                   location=None,
                                   name=None):
     file_name_aks = 'aksServicePrincipal.json'
@@ -2344,7 +2362,10 @@ def _ensure_aks_service_principal(cli_ctx,
             if not client_secret:
                 client_secret = _create_client_secret()
             salt = binascii.b2a_hex(os.urandom(3)).decode('utf-8')
-            url = 'http://{}.{}.{}.cloudapp.azure.com'.format(salt, dns_name_prefix, location)
+            if dns_name_prefix:
+                url = 'http://{}.{}.{}.cloudapp.azure.com'.format(salt, dns_name_prefix, location)
+            else:
+                url = 'http://{}.{}.{}.cloudapp.azure.com'.format(salt, fqdn_subdomain, location)
 
             service_principal = _build_service_principal(rbac_client, cli_ctx, name, url, client_secret)
             if not service_principal:
