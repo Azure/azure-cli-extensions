@@ -128,14 +128,3 @@ def load_command_table(self, _):
         g.command('list', 'list')
         g.show_command('show', 'get')
         g.command('delete', 'delete', confirmation=True, supports_no_wait=True)
-
-# Secret valuetable output formatting
-def transform_secretvalue(result):
-    return OrderedDict([('Version', result['name']),
-                        ('ResourceGroup', result.get('resourceGroup')),
-                        ('Location', result.get('location')),
-                        ('ProvisioningState', result.get('provisioningState'))])
-
-
-def transform_secretvalue_list(result):
-    return [transform_secretvalue(secret) for secret in result]
