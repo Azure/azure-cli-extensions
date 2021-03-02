@@ -125,19 +125,19 @@ class ScheduledQueryCondtionTest(unittest.TestCase):
 
         ns = self._build_namespace()
         self.call_condition(ns, 'avg "% Processor Time" from "Perf | where ObjectName == \\\"Processor\\\"" > 70 resource id resourceId')
-        self.check_condition(ns, 'Average', 'Perf | where ObjectName == \\\"Processor\\\"', 'GreaterThan', '70', '% Processor Time', 'resourceId')
+        self.check_condition(ns, 'Average', 'Perf | where ObjectName == \"Processor\"', 'GreaterThan', '70', '% Processor Time', 'resourceId')
 
         ns = self._build_namespace()
         self.call_condition(ns, 'count "diagnostics | where Category == \\\"A\\\"| where SubscriptionId contains \\\"111\\\" | summarize count() by bin(TimeGenerated, 1m)" > 1')
-        self.check_condition(ns, 'Count', 'diagnostics | where Category == \\\"A\\\"| where SubscriptionId contains \\\"111\\\" | summarize count() by bin(TimeGenerated, 1m)', 'GreaterThan', '1')
+        self.check_condition(ns, 'Count', 'diagnostics | where Category == \"A\"| where SubscriptionId contains \"111\" | summarize count() by bin(TimeGenerated, 1m)', 'GreaterThan', '1')
 
         ns = self._build_namespace()
         self.call_condition(ns, 'count "diagnostics | where Time > ago(3h) | where Category == \\\"manager\\\" | where not (log_s hasprefix \\\"I11\\\") | where log_s contains \\\"Code=1\\\" | summarize count(log_s) by bin(TimeGenerated, 1m)" > 10')
-        self.check_condition(ns, 'Count', 'diagnostics | where Time > ago(3h) | where Category == \\\"manager\\\" | where not (log_s hasprefix \\\"I11\\\") | where log_s contains \\\"Code=1\\\" | summarize count(log_s) by bin(TimeGenerated, 1m)', 'GreaterThan', '10')
+        self.check_condition(ns, 'Count', 'diagnostics | where Time > ago(3h) | where Category == \"manager\" | where not (log_s hasprefix \"I11\") | where log_s contains \"Code=1\" | summarize count(log_s) by bin(TimeGenerated, 1m)', 'GreaterThan', '10')
 
         ns = self._build_namespace()
         self.call_condition(ns, 'avg "% Processor Time" from "Perf | where ObjectName == \\\"Processor\\\" and C>=D && E<<F" > 70 resource id resourceId where ApiName includes GetBlob or PutBlob and DpiName excludes CCC at least 1.1 violations out of 10.1 aggregated points')
-        self.check_condition(ns, 'Average', 'Perf | where ObjectName == \\\"Processor\\\" and C>=D && E<<F', 'GreaterThan', '70', '% Processor Time', 'resourceId')
+        self.check_condition(ns, 'Average', 'Perf | where ObjectName == \"Processor\" and C>=D && E<<F', 'GreaterThan', '70', '% Processor Time', 'resourceId')
         self.check_dimension(ns, 0, 'ApiName', 'Include', ['GetBlob', 'PutBlob'])
         self.check_dimension(ns, 1, 'DpiName', 'Exclude', ['CCC'])
         self.check_falling_period(ns, 1, 10)
