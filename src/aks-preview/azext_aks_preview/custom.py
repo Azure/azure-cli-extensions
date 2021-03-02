@@ -979,6 +979,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                assign_identity=None,
                auto_upgrade_channel=None,
                enable_pod_identity=False,
+               enable_pod_identity_with_kubenet=False,
                enable_encryption_at_host=False,
                no_wait=False,
                yes=False):
@@ -1264,6 +1265,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         if not enable_managed_identity:
             raise CLIError('--enable-pod-identity can only be specified when --enable-managed-identity is specified')
         pod_identity_profile = ManagedClusterPodIdentityProfile(enabled=True)
+        _ensure_pod_identity_kubenet_consent(network_profile, pod_identity_profile, enable_pod_identity_with_kubenet)
 
     enable_rbac = True
     if disable_rbac:
@@ -1390,6 +1392,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_managed_identity=False,
                assign_identity=None,
                enable_pod_identity=False,
+               enable_pod_identity_with_kubenet=False,
                disable_pod_identity=False,
                yes=False,
                tags=None):
@@ -1637,7 +1640,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             )
 
     if enable_pod_identity:
-        _update_addon_pod_identity(instance, enable=True)
+        _update_addon_pod_identity(instance, enable=True, allow_kubenet_consent=enable_pod_identity_with_kubenet)
 
     if disable_pod_identity:
         _update_addon_pod_identity(instance, enable=False)
@@ -3478,22 +3481,40 @@ def _ensure_pod_identity_addon_is_enabled(instance):
                        'To enable, run "az aks update --enable-pod-identity')
 
 
-def _update_addon_pod_identity(instance, enable, pod_identities=None, pod_identity_exceptions=None):
+def _ensure_pod_identity_kubenet_consent(network_profile, pod_identity_profile, customer_consent):
+    if not network_profile or not network_profile.network_plugin:
+        # invalid data
+        return
+    if network_profile.network_plugin.lower() != 'kubenet':
+        # not kubenet, no need to check
+        return
+
+    if customer_consent is None:
+        # no set this time, read from previous value
+        customer_consent = bool(pod_identity_profile.allow_network_plugin_kubenet)
+
+    if not customer_consent:
+        raise CLIError('--enable-pod-identity-with-kubenet is required for enabling pod identity addon when using Kubenet network plugin')
+    pod_identity_profile.allow_network_plugin_kubenet = True
+
+
+def _update_addon_pod_identity(instance, enable, pod_identities=None, pod_identity_exceptions=None, allow_kubenet_consent=None):
     if not enable:
-        # when disable, null out the profile
-        instance.pod_identity_profile = None
+        # when disable, remove previous saved value
+        instance.pod_identity_profile = ManagedClusterPodIdentityProfile(enabled=False)
         return
 
     if not instance.pod_identity_profile:
         # not set before
         instance.pod_identity_profile = ManagedClusterPodIdentityProfile(
-            enabled=True,
+            enabled=enable,
             user_assigned_identities=pod_identities,
             user_assigned_identity_exceptions=pod_identity_exceptions,
         )
-        return
 
-    instance.pod_identity_profile.enabled = True
+    _ensure_pod_identity_kubenet_consent(instance.network_profile, instance.pod_identity_profile, allow_kubenet_consent)
+
+    instance.pod_identity_profile.enabled = enable
     instance.pod_identity_profile.user_assigned_identities = pod_identities or []
     instance.pod_identity_profile.user_assigned_identity_exceptions = pod_identity_exceptions or []
 
