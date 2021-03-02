@@ -93,7 +93,7 @@ helps['spring-cloud app create'] = """
     - name: Create an app with the default configuration.
       text: az spring-cloud app create -n MyApp -s MyCluster -g MyResourceGroup
     - name: Create an public accessible app with 3 instances and 2 cpu cores and 3 GB of memory per instance.
-      text: az spring-cloud app create -n MyApp -s MyCluster -g MyResourceGroup --is-public true --cpu 2 --memory 3 --instance-count 3
+      text: az spring-cloud app create -n MyApp -s MyCluster -g MyResourceGroup --assign-endpoint true --cpu 2 --memory 3 --instance-count 3
 """
 
 helps['spring-cloud app update'] = """

@@ -16,7 +16,7 @@ def transform_targets(providers):
             ('Provider', provider),
             ('Target-id', target['id']),
             ('Current Availability', target['currentAvailability']),
-            ('Average Queue Time', target['averageQueueTime'])
+            ('Average Queue Time (seconds)', target['averageQueueTime'])
         ])
 
     return [
