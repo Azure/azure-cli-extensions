@@ -210,7 +210,7 @@ def regenerate_keys(cmd, client, resource_group, name, type):
 
 
 def app_create(cmd, client, resource_group, service, name,
-               is_public=None,
+               assign_endpoint=None,
                cpu=None,
                memory=None,
                instance_count=None,
@@ -226,7 +226,6 @@ def app_create(cmd, client, resource_group, service, name,
     properties = models.AppResourceProperties()
     properties.temporary_disk = models.TemporaryDisk(
         size_in_gb=5, mount_path="/tmp")
-
     resource = client.services.get(resource_group, service)
 
     _validate_instance_count(resource.sku.tier, instance_count)
@@ -267,7 +266,7 @@ def app_create(cmd, client, resource_group, service, name,
 
     logger.warning("[3/4] Setting default deployment to production")
     properties = models.AppResourceProperties(
-        active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=is_public)
+        active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=assign_endpoint)
 
     if enable_persistent_storage:
         properties.persistent_disk = models.PersistentDisk(
@@ -300,7 +299,7 @@ def _check_active_deployment_exist(client, resource_group, service, app):
 
 
 def app_update(cmd, client, resource_group, service, name,
-               is_public=None,
+               assign_endpoint=None,
                deployment=None,
                runtime_version=None,
                jvm_options=None,
@@ -312,7 +311,7 @@ def app_update(cmd, client, resource_group, service, name,
     resource = client.services.get(resource_group, service)
     location = resource.location
 
-    properties = models.AppResourceProperties(public=is_public, https_only=https_only)
+    properties = models.AppResourceProperties(public=assign_endpoint, https_only=https_only)
     if enable_persistent_storage is True:
         properties.persistent_disk = models.PersistentDisk(
             size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
