@@ -618,7 +618,8 @@ helps['aks maintenanceconfig add'] = """
         - name: Create a maintenance configuration with --weekday.The maintenance is allowd on any time of that day.
           text: az aks maintenanceconfiguration update -g xiazhan-mtc-stg -n test1 --config-name default --weekday Monday The maintenance is allowed on Monday.
         - name: Create a maintenance configuration with maintenance configuration json file
-          text: az aks maintenanceconfiguration update -g xiazhan-mtc-stg -n test1 --config-name default --config-file ./test.json
+          text: |
+            az aks maintenanceconfiguration update -g xiazhan-mtc-stg -n test1 --config-name default --config-file ./test.json
                 The content of json file looks below. It means the maintenance is allowed on UTC time Tuesday 1:00am - 3:00 am and Wednesday 1:00am - 2:00am, 6:00am-7:00am
                 No maintenance is allowed from 2020-11-26T03:00:00Z to 2020-11-30T12:00:00Z and from 2020-12-26T03:00:00Z to 2020-12-26T12:00:00Z even if they are allowed in the above weekly setting
                 {
