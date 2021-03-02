@@ -820,14 +820,16 @@ def _add_ingress_appgw_addon_role_assignment(result, cmd):
                                    'specified in %s addon. '
                                    'Are you an Owner on this subscription?', vnet_id, CONST_INGRESS_APPGW_ADDON_NAME)
 
-def aks_maintenanceconfiguration_list(cmd, # pylint: disable=too-many-locals,too-many-statements,too-many-branches
+
+def aks_maintenanceconfiguration_list(cmd,
     client,
     resource_group_name,
     resource_name
 ):
     return client.list_by_managed_cluster(resource_group_name, resource_name)
 
-def aks_maintenanceconfiguration_show(cmd, # pylint: disable=too-many-locals,too-many-statements,too-many-branches)
+
+def aks_maintenanceconfiguration_show(cmd,
     client,
     resource_group_name,
     resource_name,
@@ -836,7 +838,8 @@ def aks_maintenanceconfiguration_show(cmd, # pylint: disable=too-many-locals,too
     logger.warning('resource_group_name: %s, resource_name: %s, config_name: %s ', resource_group_name, resource_name, config_name)
     return client.get(resource_group_name, resource_name, config_name)
 
-def aks_maintenanceconfiguration_delete(cmd, # pylint: disable=too-many-locals,too-many-statements,too-many-branches)
+
+def aks_maintenanceconfiguration_delete(cmd,
     client,
     resource_group_name,
     resource_name,
@@ -845,7 +848,8 @@ def aks_maintenanceconfiguration_delete(cmd, # pylint: disable=too-many-locals,t
     logger.warning('resource_group_name: %s, resource_name: %s, config_name: %s ', resource_group_name, resource_name, config_name)
     return client.delete(resource_group_name, resource_name, config_name)
 
-def aks_maintenanceconfiguration_add(cmd, # pylint: disable=too-many-locals,too-many-statements,too-many-branches)
+
+def aks_maintenanceconfiguration_add(cmd,
     client,
     resource_group_name,
     resource_name,
@@ -861,7 +865,8 @@ def aks_maintenanceconfiguration_add(cmd, # pylint: disable=too-many-locals,too-
                            "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(config_name))
     return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, resource_name, config_name, config_file, weekday, start_hour)
 
-def aks_maintenanceconfiguration_update(cmd, # pylint: disable=too-many-locals,too-many-statements,too-many-branches)
+
+def aks_maintenanceconfiguration_update(cmd,
     client,
     resource_group_name,
     resource_name,
@@ -880,6 +885,7 @@ def aks_maintenanceconfiguration_update(cmd, # pylint: disable=too-many-locals,t
                            "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(config_name))
 
     return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, resource_name, config_name, config_file, weekday, start_hour)
+
 
 def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
                client,
@@ -3385,32 +3391,6 @@ def _get_kubelet_config(file_path):
     config_object.fail_swap_on = kubelet_config.get("failSwapOn", None)
 
     return config_object
-
-def _get_maintenance_config(file_path):
-    maintenance_config = get_file_json(file_path)
-    logger.warning(maintenance_config)
-    if not isinstance(maintenance_config, dict):
-        raise CLIError("Error reading maintenance configuration at {}.".format(file_path))
-    time_in_week = maintenance_config["timeInWeek"]
-    not_allowed_time = maintenance_config["notAllowedTime"]
-    week_schedule = []
-    if time_in_week != None:
-        for item in time_in_week:
-            w = TimeInWeek(**item)
-            logger.warning(w)
-            logger.warning('day: %s, time slots: %s ', w.day, w.hour_slots)
-            week_schedule.append(w)
-    not_allowed = []
-    if not_allowed_time != None:
-        for item in not_allowed_time:
-            t = TimeSpan(**item)
-            logger.warning('start: %s, end: %s ', t.start, t.end)
-            not_allowed.append(t)
-    result = MaintenanceConfiguration
-    result.time_in_week = week_schedule
-    result.not_allowed_time = not_allowed
-    return result
-
 
 def _get_linux_os_config(file_path):
     os_config = get_file_json(file_path)

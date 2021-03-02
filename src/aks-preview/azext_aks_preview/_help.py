@@ -626,7 +626,7 @@ helps['aks maintenanceconfig add'] = """
                             2
                           ]
                         },
-                                {
+                        {
                           "day": "Wednesday",
                           "hour_slots": [
                             1,
