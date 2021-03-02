@@ -552,6 +552,12 @@ def cli_cosmosdb_managed_cassandra_cluster_create(client,
 
     """Creates an Azure Managed Cassandra Cluster"""
 
+    if initial_cassandra_admin_password is None and external_gossip_certificates is None:
+        raise CLIError('Atleast one out of the Initial Cassandra Admin Password or External Gossip Certificates is required.')
+
+    if initial_cassandra_admin_password is not None and external_gossip_certificates is not None:
+        raise CLIError('Only one out of the Initial Cassandra Admin Password or External Gossip Certificates has to be specified.')
+
     cluster_properties = ClusterResourceProperties(
         delegated_management_subnet_id=delegated_management_subnet_id,
         cluster_name_override=cluster_name_override,

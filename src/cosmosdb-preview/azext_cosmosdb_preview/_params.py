@@ -17,7 +17,9 @@ from azext_cosmosdb_preview._validators import (
     validate_role_definition_id,
     validate_fully_qualified_role_definition_id,
     validate_role_assignment_id,
-    validate_scope)
+    validate_scope,
+    validate_certificates,
+    validate_seednodes)
 
 from azext_cosmosdb_preview.actions import (
     CreateLocation, CreateDatabaseRestoreResource, UtcDatetimeAction)
@@ -159,7 +161,7 @@ def load_arguments(self, _):
             'managed-cassandra cluster update']:
         with self.argument_context(scope) as c:
             c.argument('tags', arg_type=tags_type)
-            c.argument('external_gossip_certificates', options_list=['--external-gossip-certificates', '-e'], help="A list of certificates that the managed cassandra data center's should accept.")
+            c.argument('external_gossip_certificates', nargs='+', validator=validate_certificates, options_list=['--external-gossip-certificates', '-e'], help="A list of certificates that the managed cassandra data center's should accept.")
             c.argument('initial_cassandra_admin_password', options_list=['--initial-cassandra-admin-password', '-i'], help="The intial password to be configured when a cluster is created for authentication_method Cassandra. If none is specified, the password will be cassandra.")
             c.argument('delegated_management_subnet_id', options_list=['--delegated-management-subnet-id', '-s'], help="The resource id of a subnet where the ip address of the cassandra management server will be allocated. This subnet must have connectivity to the delegated_subnet_id subnet of each data center.")
             c.argument('cassandra_version', help="The version of Cassandra chosen.")
@@ -168,10 +170,9 @@ def load_arguments(self, _):
             c.argument('authentication_method', help="Authentication mode can be None or Cassandra. If None, no authentication will be required to connect to the Cassandra API. If Cassandra, then passwords will be used.")
             c.argument('hours_between_backups', help="The number of hours between backup attempts.")
             c.argument('repair_enabled', help="The number of hours between backup attempts.")
-            c.argument('hours_between_backups', help="Enables automatic repair.")
-            c.argument('client_certificates', help="If specified, enables client certificate authentiation to the Cassandra API.")
-            c.argument('gossip_certificates', help="A list of certificates that should be accepted by on-premise data centers.")
-            c.argument('external_seed_nodes', help=" A list of ip addresses of the seed nodes of on-premise data centers.")
+            c.argument('client_certificates', nargs='+', validator=validate_certificates, help="If specified, enables client certificate authentiation to the Cassandra API.")
+            c.argument('gossip_certificates', nargs='+', validator=validate_certificates, help="A list of certificates that should be accepted by on-premise data centers.")
+            c.argument('external_seed_nodes', nargs='+', validator=validate_seednodes, help="A list of ip addresses of the seed nodes of on-premise data centers.")
             c.argument('identity', help="Identity used to authenticate.")
 
     # Managed Cassandra Cluster

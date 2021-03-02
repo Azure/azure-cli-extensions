@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import ipaddress
 from knack.util import CLIError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.azclierror import InvalidArgumentValueError
@@ -168,6 +169,65 @@ def _parse_resource_path(resource,
         return resource
 
     return result['resource_id']
+
+
+def validate_certificates(ns):
+    """ Extracts multiple comma-separated certificates """
+    if ns.external_gossip_certificates is not None:
+        ns.external_gossip_certificates = get_certificates(ns.external_gossip_certificates)
+    if ns.client_certificates is not None:
+        ns.client_certificates = get_certificates(ns.client_certificates)
+    if ns.gossip_certificates is not None:
+        ns.gossip_certificates = get_certificates(ns.gossip_certificates)
+
+
+def get_certificates(ns):
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import Certificate
+    certificates = []
+    print(ns)
+    for item in ns:
+        for i in item.split(","):
+            certificate = get_certificate(i)
+            certificates.append(Certificate(pem=certificate))
+    return certificates
+
+
+def get_certificate(ns):
+    """ Extract certificate from file or from string """
+    from azure.cli.core.util import read_file_content
+    import os
+    print(ns)
+    certificate = ''
+    if ns is not None:
+        if os.path.exists(ns):
+            print("file exists")
+            certificate = read_file_content(ns)
+        else:
+            print("file doesnot exist")
+            certificate = ns
+        print(certificate)
+    else:
+        raise CLIError("""One of the value provided for the certificates is empty.
+    Please verify there aren't any spaces.""")
+    return certificate
+
+
+def validate_seednodes(ns):
+    """ Extracts multiple comma-separated ipaddresses """
+    from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SeedNode
+    if ns.external_seed_nodes is not None:
+        seed_nodes = []
+        print(ns.external_seed_nodes)
+        for item in ns.external_seed_nodes:
+            for i in item.split(","):
+                try:
+                    ipaddress.ip_address(i)
+                except:
+                    raise CLIError("""IP address provided is invalid.
+                Please verify if there are any spaces or other invalid characters.""")
+                seed_nodes.append(SeedNode(ip_address=i))
+        ns.external_seed_nodes = seed_nodes
+    print(ns.external_seed_nodes)
 
 
 def _gen_guid():
