@@ -57,7 +57,10 @@ class ScheduleQueryConditionValidator(ScheduleQueryConditionListener):
 
     # Exit a parse tree produced by MetricAlertConditionParser#threshold.
     def exitQuery(self, ctx):
-        self.parameters['query'] = ctx.getText().strip()
+        query = ctx.getText().strip()
+        query = query.replace("\\\"", "\"")
+        query = query.replace("\\\'", "\'")
+        self.parameters['query'] = query
 
     # Exit a parse tree produced by MetricAlertConditionParser#threshold.
     def exitResource_id(self, ctx):
