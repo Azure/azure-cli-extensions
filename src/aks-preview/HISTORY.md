@@ -6,6 +6,7 @@ Release History
 0.5.3
 +++++
 * Add `--enable-pod-identity-with-kubenet` for enabling AAD Pod Identity in Kubenet cluster
+* Add `--fqdn-subdomain parameter` to create private cluster with custom private dns zone scenario
 
 0.5.2
 +++++
