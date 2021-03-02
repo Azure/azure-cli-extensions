@@ -11,7 +11,7 @@ from knack.util import CLIError
 from knack.log import get_logger
 from azure.cli.core.util import get_file_json
 
-logger = get_logger(__name__)                                                                                                 
+logger = get_logger(__name__)
 
 
 def getMaintenanceConfiguration(config_file, weekday, start_hour):
@@ -34,16 +34,18 @@ def getMaintenanceConfiguration(config_file, weekday, start_hour):
     return _get_maintenance_config(config_file)
 
 
-def aks_maintenanceconfiguration_update_internal(cmd,
+def aks_maintenanceconfiguration_update_internal(
+    cmd,
     client,
     resource_group_name,
     resource_name,
     config_name,
     config_file,
     weekday,
-    start_hour):
+    start_hour
+):
     logger.info('resource_group_name: %s, resource_name: %s, config_name: %s, config_file: %s, weekday: %s, start_hour: %s ', resource_group_name, resource_name, config_name, config_file, weekday, start_hour)
-    
+
     config = getMaintenanceConfiguration(config_file, weekday, start_hour)
     return client.create_or_update(resource_group_name=resource_group_name, resource_name=resource_name, config_name=config_name, time_in_week=config.time_in_week, not_allowed_time=config.not_allowed_time)
 

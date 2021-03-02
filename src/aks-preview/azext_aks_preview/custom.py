@@ -821,7 +821,8 @@ def _add_ingress_appgw_addon_role_assignment(result, cmd):
                                    'Are you an Owner on this subscription?', vnet_id, CONST_INGRESS_APPGW_ADDON_NAME)
 
 
-def aks_maintenanceconfiguration_list(cmd,
+def aks_maintenanceconfiguration_list(
+    cmd,
     client,
     resource_group_name,
     resource_name
@@ -829,7 +830,8 @@ def aks_maintenanceconfiguration_list(cmd,
     return client.list_by_managed_cluster(resource_group_name, resource_name)
 
 
-def aks_maintenanceconfiguration_show(cmd,
+def aks_maintenanceconfiguration_show(
+    cmd,
     client,
     resource_group_name,
     resource_name,
@@ -839,7 +841,8 @@ def aks_maintenanceconfiguration_show(cmd,
     return client.get(resource_group_name, resource_name, config_name)
 
 
-def aks_maintenanceconfiguration_delete(cmd,
+def aks_maintenanceconfiguration_delete(
+    cmd,
     client,
     resource_group_name,
     resource_name,
@@ -849,7 +852,8 @@ def aks_maintenanceconfiguration_delete(cmd,
     return client.delete(resource_group_name, resource_name, config_name)
 
 
-def aks_maintenanceconfiguration_add(cmd,
+def aks_maintenanceconfiguration_add(
+    cmd,
     client,
     resource_group_name,
     resource_name,
@@ -866,23 +870,25 @@ def aks_maintenanceconfiguration_add(cmd,
     return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, resource_name, config_name, config_file, weekday, start_hour)
 
 
-def aks_maintenanceconfiguration_update(cmd,
+def aks_maintenanceconfiguration_update(
+    cmd,
     client,
     resource_group_name,
     resource_name,
     config_name,
     config_file,
     weekday,
-    start_hour):
+    start_hour
+):
     configs = client.list_by_managed_cluster(resource_group_name, resource_name)
     found = False
     for config in configs:
         if config.name == config_name:
             found = True
             break
-    if found == False:
+    if not found:
         raise CLIError("Maintenance configuration '{}' doesn't exist."
-                           "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(config_name))
+                       "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(config_name))
 
     return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, resource_name, config_name, config_file, weekday, start_hour)
 
@@ -3391,6 +3397,7 @@ def _get_kubelet_config(file_path):
     config_object.fail_swap_on = kubelet_config.get("failSwapOn", None)
 
     return config_object
+
 
 def _get_linux_os_config(file_path):
     os_config = get_file_json(file_path)
