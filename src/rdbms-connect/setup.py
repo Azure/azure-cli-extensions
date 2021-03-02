@@ -16,7 +16,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -33,6 +33,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
+    'setproctitle==1.2.2',
     'mycli==1.22.2',
     'pgcli==3.0.0'
 ]

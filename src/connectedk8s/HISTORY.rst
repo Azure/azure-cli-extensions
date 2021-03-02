@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0
+++++++
+* Moving to GA API version
+
 0.2.9
 ++++++
 * `az connectedk8s connect`: Added support for disabling auto upgrade of agents

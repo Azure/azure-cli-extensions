@@ -2,6 +2,20 @@
 
 Release History
 ===============
+0.5.2
++++++
+* Add support for node public IP prefix ID '--node-public-ip-prefix-id'
+
+0.5.1
++++++
+* Update to use 2021-02-01 api-version
+
+0.5.0
++++++
+* Modify addon confcom behavior to only enable SGX device plugin by default.
+* Introducte argument '--enable-sgx-quotehelper'
+* Breaking Change: remove argument '--diable-sgx-quotehelper'.
+
 0.4.73
 +++++
 * Update to use 2020-12-01 api-version
