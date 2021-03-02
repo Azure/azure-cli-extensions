@@ -579,27 +579,27 @@ helps['aks kanalyze'] = """
     short-summary: Display diagnostic results for the Kubernetes cluster after kollect is done.
 """
 
-helps['aks maintenanceconfig'] = """
+helps['aks maintenanceconfiguration'] = """
     type: group
     short-summary: Commands to manage maintenance configurations in managed Kubernetes cluster.
 """
 
-helps['aks maintenanceconfig show'] = """
+helps['aks maintenanceconfiguration show'] = """
     type: command
     short-summary: show the details of a maintenance configuration in managed Kubernetes cluster.
 """
 
-helps['aks maintenanceconfig delete'] = """
+helps['aks maintenanceconfiguration delete'] = """
     type: command
     short-summary: Delete a maintenance configuration in managed Kubernetes cluster.
 """
 
-helps['aks maintenanceconfig list'] = """
+helps['aks maintenanceconfiguration list'] = """
     type: command
     short-summary: List maintenance configurations in managed Kubernetes cluster.
 """
 
-helps['aks maintenanceconfig add'] = """
+helps['aks maintenanceconfiguration add'] = """
     type: command
     short-summary: Add a maintenance configuration in managed Kubernetes cluster.
     parameters:
@@ -614,9 +614,13 @@ helps['aks maintenanceconfig add'] = """
           short-summary: the maintenance configuration json file.
     examples:
         - name: Create a maintenance configuration with --weekday and --start-hour.
-          text: az aks maintenanceconfiguration update -g xiazhan-mtc-stg -n test1 --config-name default --weekday Monday  --start-hour 1 The maintenance is allowed on Monday 1:00am to 2:00am
+          text: |
+            az aks maintenanceconfiguration update -g xiazhan-mtc-stg -n test1 --config-name default --weekday Monday  --start-hour 1
+              The maintenance is allowed on Monday 1:00am to 2:00am
         - name: Create a maintenance configuration with --weekday.The maintenance is allowd on any time of that day.
-          text: az aks maintenanceconfiguration update -g xiazhan-mtc-stg -n test1 --config-name default --weekday Monday The maintenance is allowed on Monday.
+          text: |
+            az aks maintenanceconfiguration update -g xiazhan-mtc-stg -n test1 --config-name default --weekday Monday
+              The maintenance is allowed on Monday.
         - name: Create a maintenance configuration with maintenance configuration json file
           text: |
             az aks maintenanceconfiguration update -g xiazhan-mtc-stg -n test1 --config-name default --config-file ./test.json
