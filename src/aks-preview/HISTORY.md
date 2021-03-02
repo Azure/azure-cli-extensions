@@ -2,9 +2,17 @@
 
 Release History
 ===============
-0.5.1
+0.5.3
 +++++
 * Add operations of maintenance configuration
+
+0.5.2
++++++
+* Add support for node public IP prefix ID '--node-public-ip-prefix-id'
+
+0.5.1
++++++
+* Update to use 2021-02-01 api-version
 
 0.5.0
 +++++

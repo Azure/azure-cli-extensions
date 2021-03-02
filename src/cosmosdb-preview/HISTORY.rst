@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.0
+++++++
+* Create and Manage Azure Managed Cassandra Clusters and Cassandra Datacenters.
+
 0.4.0
 ++++++
 * Fix error propagation for failures in case of data plane RBAC and Restore related requests.
