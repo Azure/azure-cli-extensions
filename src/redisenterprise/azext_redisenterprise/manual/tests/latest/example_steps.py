@@ -32,6 +32,9 @@ def step_create(test, rg, checks=None):
                  '--client-protocol "Encrypted" '
                  '--clustering-policy "EnterpriseCluster" '
                  '--eviction-policy "NoEviction" '
+                 '--modules name="RedisBloom" '
+                 '--modules name="RedisTimeSeries" '
+                 '--modules name="RediSearch" '
                  '--port 10000 '
                  '--resource-group "{rg}"',
                  checks=checks)
