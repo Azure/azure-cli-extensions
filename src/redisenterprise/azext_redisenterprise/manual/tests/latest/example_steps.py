@@ -32,10 +32,6 @@ def step_create(test, rg, checks=None):
                  '--client-protocol "Encrypted" '
                  '--clustering-policy "EnterpriseCluster" '
                  '--eviction-policy "NoEviction" '
-                 '--modules name="RedisBloom" args="ERROR_RATE 0.00 INITIAL_SIZE 400" '
-                 '--modules name="RedisTimeSeries" args="RETENTION_POLICY 20" '
-                 '--modules name="RediSearch" '
-                 '--persistence aof-enabled=true aof-frequency="1s" '
                  '--port 10000 '
                  '--resource-group "{rg}"',
                  checks=checks)
@@ -70,7 +66,6 @@ def step_database_create(test, rg, checks=None):
              '--client-protocol "Plaintext" '
              '--clustering-policy "OSSCluster" '
              '--eviction-policy "AllKeysLRU" '
-             '--persistence rdb-enabled=true rdb-frequency="12h" '
              '--port 10000 '
              '--resource-group "{rg}"',
              checks=checks)

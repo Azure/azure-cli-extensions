@@ -29,7 +29,8 @@ def redisenterprise_list(cmd,
                          resource_group_name=None):
     if resource_group_name:
         clusters = client.list_by_resource_group(resource_group_name=resource_group_name)
-    clusters = client.list()
+    else:
+        clusters = client.list()
 
     result = []
     database_client = _get_database_client(cmd.cli_ctx)
@@ -118,11 +119,11 @@ def redisenterprise_create(cmd,
                            cluster_name=cluster_name,
                            parameters=cluster_parameters)
 
-    cluster = sdk_no_wait(no_wait,
-                          client.begin_create,
-                          resource_group_name=resource_group_name,
-                          cluster_name=cluster_name,
-                          parameters=cluster_parameters)
+    sdk_no_wait(no_wait,
+                client.begin_create,
+                resource_group_name=resource_group_name,
+                cluster_name=cluster_name,
+                parameters=cluster_parameters)
 
     # Create database
     database_parameters = {}
@@ -135,11 +136,11 @@ def redisenterprise_create(cmd,
     database_name = "default"
 
     database_client = _get_database_client(cmd.cli_ctx)
-    sdk_no_wait(no_wait,
-                database_client.begin_create,
-                resource_group_name=resource_group_name,
-                cluster_name=cluster_name,
-                database_name=database_name,
-                parameters=database_parameters)
+    database = sdk_no_wait(no_wait,
+                           database_client.begin_create,
+                           resource_group_name=resource_group_name,
+                           cluster_name=cluster_name,
+                           database_name=database_name,
+                           parameters=database_parameters)
 
-    return cluster
+    return database
