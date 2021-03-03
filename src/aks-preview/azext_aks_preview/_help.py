@@ -250,9 +250,15 @@ helps['aks create'] = """
           type: string
           short-summary: (PREVIEW) private dns zone mode for private cluster.
           long-summary: Allowed values are "system", "none" or your custom private dns zone resource id. If not set, defaults to type system. Requires --enable-private-cluster to be used.
+        - name: --fqdn-subdomain
+          type: string
+          short-summary: (Preview) Prefix for FQDN that is created for private cluster with custom private dns zone scenario.
         - name: --enable-node-public-ip
           type: bool
           short-summary: Enable VMSS node public IP.
+        - name: --node-public-ip-prefix-id
+          type: string
+          short-summary: Public IP prefix ID used to assign public IPs to VMSS nodes.
         - name: --enable-managed-identity
           type: bool
           short-summary: Using managed identity to manage cluster resource group. Default value is true, you can explicitly specify "--client-id" and "--secret" to disable managed identity.
@@ -288,7 +294,7 @@ helps['aks create'] = """
           short-summary: Enable SGX quote helper for confcom addon.
         - name: --auto-upgrade-channel
           type: string
-          short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch or none, none means disable autoupgrade.
+          short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch, node-image or none, none means disable autoupgrade.
         - name: --kubelet-config
           type: string
           short-summary: Kubelet configurations for agent nodes.
@@ -298,6 +304,9 @@ helps['aks create'] = """
         - name: --enable-pod-identity
           type: bool
           short-summary: (PREVIEW) Enable pod identity addon.
+        - name: --enable-pod-identity-with-kubenet
+          type: bool
+          short-summary: (PREVIEW) Enable pod identity addon for cluster using Kubnet network plugin.
         - name: --aci-subnet-name
           type: string
           short-summary: The name of a subnet in an existing VNet into which to deploy the virtual nodes.
@@ -459,7 +468,7 @@ helps['aks update'] = """
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
         - name: --auto-upgrade-channel
           type: string
-          short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch or none, none means disable autoupgrade.
+          short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch, node-image or none, none means disable autoupgrade.
         - name: --enable-managed-identity
           type: bool
           short-summary: (PREVIEW) Update current cluster to managed identity to manage cluster resource group.
@@ -469,6 +478,9 @@ helps['aks update'] = """
         - name: --enable-pod-identity
           type: bool
           short-summary: (PREVIEW) Enable Pod Identity addon for cluster.
+        - name: --enable-pod-identity-with-kubenet
+          type: bool
+          short-summary: (PREVIEW) Enable pod identity addon for cluster using Kubnet network plugin.
         - name: --disable-pod-identity
           type: bool
           short-summary: (PREVIEW) Disable Pod Identity addon for cluster.
@@ -573,6 +585,140 @@ helps['aks kanalyze'] = """
     short-summary: Display diagnostic results for the Kubernetes cluster after kollect is done.
 """
 
+helps['aks maintenanceconfiguration'] = """
+    type: group
+    short-summary: Commands to manage maintenance configurations in managed Kubernetes cluster.
+"""
+
+helps['aks maintenanceconfiguration show'] = """
+    type: command
+    short-summary: show the details of a maintenance configuration in managed Kubernetes cluster.
+"""
+
+helps['aks maintenanceconfiguration delete'] = """
+    type: command
+    short-summary: Delete a maintenance configuration in managed Kubernetes cluster.
+"""
+
+helps['aks maintenanceconfiguration list'] = """
+    type: command
+    short-summary: List maintenance configurations in managed Kubernetes cluster.
+"""
+
+helps['aks maintenanceconfiguration add'] = """
+    type: command
+    short-summary: Add a maintenance configuration in managed Kubernetes cluster.
+    parameters:
+        - name: --weekday
+          type: string
+          short-summary: A day in week on which maintenance is allowed. E.g. Monday
+        - name: --start-hour
+          type: string
+          short-summary: The start time of 1 hour window which maintenance is allowd. E.g. 1 means it's allowd between 1:00 am and 2:00 am
+        - name: --config-file
+          type: string
+          short-summary: the maintenance configuration json file.
+    examples:
+        - name: Add a maintenance configuration with --weekday and --start-hour.
+          text: |
+            az aks maintenanceconfiguration add -g xiazhan-mtc-stg --cluster-name test1 -n default --weekday Monday  --start-hour 1
+              The maintenance is allowed on Monday 1:00am to 2:00am
+        - name: Add a maintenance configuration with --weekday.The maintenance is allowd on any time of that day.
+          text: |
+            az aks maintenanceconfiguration add -g xiazhan-mtc-stg --cluster-name test1 -n default --weekday Monday
+              The maintenance is allowed on Monday.
+        - name: Add a maintenance configuration with maintenance configuration json file
+          text: |
+            az aks maintenanceconfiguration add -g xiazhan-mtc-stg --cluster-name test1 -n default --config-file ./test.json
+                The content of json file looks below. It means the maintenance is allowed on UTC time Tuesday 1:00am - 3:00 am and Wednesday 1:00am - 2:00am, 6:00am-7:00am
+                No maintenance is allowed from 2020-11-26T03:00:00Z to 2020-11-30T12:00:00Z and from 2020-12-26T03:00:00Z to 2020-12-26T12:00:00Z even if they are allowed in the above weekly setting
+                {
+                      "timeInWeek": [
+                        {
+                          "day": "Tuesday",
+                          "hour_slots": [
+                            1,
+                            2
+                          ]
+                        },
+                        {
+                          "day": "Wednesday",
+                          "hour_slots": [
+                            1,
+                            6
+                          ]
+                        }
+                      ],
+                      "notAllowedTime": [
+                        {
+                          "start": "2021-11-26T03:00:00Z",
+                          "end": "2021-11-30T12:00:00Z"
+                        },
+                        {
+                          "start": "2021-12-26T03:00:00Z",
+                          "end": "2021-12-26T12:00:00Z"
+                        }
+                      ]
+              }
+"""
+
+helps['aks maintenanceconfiguration update'] = """
+    type: command
+    short-summary: Update a maintenance configuration of a managed Kubernetes cluster.
+    parameters:
+        - name: --weekday
+          type: string
+          short-summary: A day in week on which maintenance is allowed. E.g. Monday
+        - name: --start-hour
+          type: string
+          short-summary: The start time of 1 hour window which maintenance is allowd. E.g. 1 means it's allowd between 1:00 am and 2:00 am
+        - name: --config-file
+          type: string
+          short-summary: the maintenance configuration json file.
+    examples:
+        - name: Update a maintenance configuration with --weekday and --start-hour.
+          text: |
+            az aks maintenanceconfiguration update -g xiazhan-mtc-stg --cluster-name test1 -n default --weekday Monday  --start-hour 1
+              The maintenance is allowed on Monday 1:00am to 2:00am
+        - name: Update a maintenance configuration with --weekday.The maintenance is allowd on any time of that day.
+          text: |
+            az aks maintenanceconfiguration update -g xiazhan-mtc-stg --cluster-name test1 -n default --weekday Monday
+              The maintenance is allowed on Monday.
+        - name: Update a maintenance configuration with maintenance configuration json file
+          text: |
+            az aks maintenanceconfiguration update -g xiazhan-mtc-stg --cluster-name test1 -n default --config-file ./test.json
+                The content of json file looks below. It means the maintenance is allowed on UTC time Tuesday 1:00am - 3:00 am and Wednesday 1:00am - 2:00am, 6:00am-7:00am
+                No maintenance is allowed from 2020-11-26T03:00:00Z to 2020-11-30T12:00:00Z and from 2020-12-26T03:00:00Z to 2020-12-26T12:00:00Z even if they are allowed in the above weekly setting
+                {
+                      "timeInWeek": [
+                        {
+                          "day": "Tuesday",
+                          "hour_slots": [
+                            1,
+                            2
+                          ]
+                        },
+                        {
+                          "day": "Wednesday",
+                          "hour_slots": [
+                            1,
+                            6
+                          ]
+                        }
+                      ],
+                      "notAllowedTime": [
+                        {
+                          "start": "2021-11-26T03:00:00Z",
+                          "end": "2021-11-30T12:00:00Z"
+                        },
+                        {
+                          "start": "2021-12-26T03:00:00Z",
+                          "end": "2021-12-26T12:00:00Z"
+                        }
+                      ]
+              }
+"""
+
 helps['aks nodepool'] = """
     type: group
     short-summary: Commands to manage node pools in managed Kubernetes cluster.
@@ -652,6 +798,9 @@ helps['aks nodepool add'] = """
         - name: --enable-node-public-ip
           type: bool
           short-summary: Enable VMSS node public IP.
+        - name: --node-public-ip-prefix-id
+          type: string
+          short-summary: Public IP prefix ID used to assign public IPs to VMSS nodes.
         - name: --labels
           type: string
           short-summary: The node labels for the node pool. You can't change the node labels through CLI after the node pool is created. See https://aka.ms/node-labels for syntax of labels.

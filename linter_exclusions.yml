@@ -37,6 +37,9 @@ aks create:
     enable_node_public_ip:
       rule_exclusions:
       - option_length_too_long
+    node_public_ip_prefix_id:
+      rule_exclusions:
+        - option_length_too_long
     enable_pod_security_policy:
       rule_exclusions:
       - option_length_too_long
@@ -76,6 +79,9 @@ aks create:
     enable_encryption_at_host:
       rule_exclusions:
       - option_length_too_long
+    enable_pod_identity_with_kubenet:
+      rule_exclusions:
+      - option_length_too_long
 aks enable-addons:
   parameters:
     appgw_watch_namespace:
@@ -89,6 +95,9 @@ aks nodepool add:
     enable_node_public_ip:
       rule_exclusions:
       - option_length_too_long
+    node_public_ip_prefix_id:
+      rule_exclusions:
+        - option_length_too_long
     enable_encryption_at_host:
       rule_exclusions:
       - option_length_too_long
@@ -125,6 +134,9 @@ aks update:
       rule_exclusions:
       - option_length_too_long
     enable_managed_identity:
+      rule_exclusions:
+      - option_length_too_long
+    enable_pod_identity_with_kubenet:
       rule_exclusions:
       - option_length_too_long
 attestation policy set:

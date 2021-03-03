@@ -29,7 +29,7 @@ from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, \
     CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE, \
     CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER, \
     CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL, \
-    CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL
+    CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NODE_IMAGE_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL
 
 
 def load_arguments(self, _):
@@ -99,7 +99,8 @@ def load_arguments(self, _):
         c.argument('enable_vmss', action='store_true', help='To be deprecated. Use vm_set_type instead.')
         c.argument('vm_set_type', type=str, validator=validate_vm_set_type)
         c.argument('node_zones', zones_type, options_list=['--node-zones', '--zones', '-z'], help='(--node-zones will be deprecated, use --zones) Space-separated list of availability zones where agent nodes will be placed.')
-        c.argument('enable_node_public_ip', action='store_true', is_preview=True)
+        c.argument('enable_node_public_ip', action='store_true')
+        c.argument('node_public_ip_prefix_id', type=str)
         c.argument('enable_pod_security_policy', action='store_true')
         c.argument('node_resource_group')
         c.argument('attach_acr', acr_arg_type)
@@ -109,10 +110,11 @@ def load_arguments(self, _):
         c.argument('aks_custom_headers')
         c.argument('enable_private_cluster', action='store_true')
         c.argument('private_dns_zone')
+        c.argument('fqdn_subdomain')
         c.argument('enable_managed_identity', action='store_true')
         c.argument('assign_identity', type=str, validator=validate_assign_identity)
         c.argument('enable_sgxquotehelper', action='store_true')
-        c.argument('auto_upgrade_channel', arg_type=get_enum_type([CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL]))
+        c.argument('auto_upgrade_channel', arg_type=get_enum_type([CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NODE_IMAGE_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL]))
         c.argument('kubelet_config', type=str)
         c.argument('linux_os_config', type=str)
         c.argument('enable_pod_identity', action='store_true')
@@ -146,7 +148,7 @@ def load_arguments(self, _):
         c.argument('attach_acr', acr_arg_type, validator=validate_acr)
         c.argument('detach_acr', acr_arg_type, validator=validate_acr)
         c.argument('aks_custom_headers')
-        c.argument('auto_upgrade_channel', arg_type=get_enum_type([CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL]))
+        c.argument('auto_upgrade_channel', arg_type=get_enum_type([CONST_RAPID_UPGRADE_CHANNEL, CONST_STABLE_UPGRADE_CHANNEL, CONST_PATCH_UPGRADE_CHANNEL, CONST_NODE_IMAGE_UPGRADE_CHANNEL, CONST_NONE_UPGRADE_CHANNEL]))
         c.argument('enable_managed_identity', action='store_true')
         c.argument('assign_identity', type=str, validator=validate_assign_identity)
         c.argument('enable_pod_identity', action='store_true')
@@ -161,6 +163,20 @@ def load_arguments(self, _):
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
+    with self.argument_context('aks maintenanceconfiguration') as c:
+        c.argument('cluster_name', type=str, help='The cluster name.')
+
+    for scope in ['aks maintenanceconfiguration add', 'aks maintenanceconfiguration update']:
+        with self.argument_context(scope) as c:
+            c.argument('config_name', type=str, options_list=['--name', '-n'], help='The config name.')
+            c.argument('config_file', type=str, options_list=['--config-file'], help='The config json file.', required=False)
+            c.argument('weekday', type=str, options_list=['--weekday'], help='weekday on which maintenance can happen. e.g. Monday', required=False)
+            c.argument('start_hour', type=int, options_list=['--start-hour'], help='maintenance start hour of 1 hour window on the weekday. e.g. 1 means 1:00am - 2:00am', required=False)
+
+    for scope in ['aks maintenanceconfiguration show', 'aks maintenanceconfiguration delete']:
+        with self.argument_context(scope) as c:
+            c.argument('config_name', type=str, options_list=['--name', '-n'], help='The config name.')
+
     with self.argument_context('aks nodepool') as c:
         c.argument('cluster_name', type=str, help='The cluster name.')
 
@@ -169,7 +185,8 @@ def load_arguments(self, _):
             c.argument('nodepool_name', type=str, options_list=['--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
             c.argument('tags', tags_type)
             c.argument('node_zones', zones_type, options_list=['--node-zones', '--zones', '-z'], help='(--node-zones will be deprecated) Space-separated list of availability zones where agent nodes will be placed.')
-            c.argument('enable_node_public_ip', action='store_true', is_preview=True)
+            c.argument('enable_node_public_ip', action='store_true')
+            c.argument('node_public_ip_prefix_id', type=str)
             c.argument('node_vm_size', options_list=['--node-vm-size', '-s'], completer=get_vm_size_completion_list)
             c.argument('max_pods', type=int, options_list=['--max-pods', '-m'])
             c.argument('os_type', type=str)

@@ -7,6 +7,8 @@ Release History
 2.1.2
 -----
 * Add optional '--deployment' to 'az spring-cloud app logs' command
+* Add a parameter '--assign-endpoint' into 'az spring-cloud app create' and 'az spring-cloud app update'
+* Deprecate the parameter '--is-public' in 'az spring-cloud app create' and 'az spring-cloud app update'
 
 2.1.1
 -----
