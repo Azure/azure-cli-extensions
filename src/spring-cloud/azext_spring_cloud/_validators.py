@@ -228,6 +228,7 @@ def validate_vnet(cmd, namespace):
         raise CLIError('--vnet and Azure Spring Cloud instance should be in the same location.')
     for subnet in vnet_obj.subnets:
         _validate_subnet(namespace, subnet)
+    _validate_route_table(namespace, vnet_obj)
 
     if namespace.reserved_cidr_range:
         _validate_cidr_range(namespace)
@@ -248,9 +249,6 @@ def _validate_subnet(namespace, subnet):
         limit = 28
     else:
         return
-    if subnet.route_table:
-        raise CLIError('--{} with existing route table is not supported. Please remove route table from the subnet,'
-                       ' or select another subnet.'.format(name))
     if subnet.ip_configurations:
         raise CLIError('--{} should not have connected device.'.format(name))
     address = ip_network(subnet.address_prefix, strict=False)
@@ -420,3 +418,21 @@ def _validate_resource_group_name(name, message_name):
     matchObj = match(r'^[-\w\._\(\)]+$', name)
     if matchObj is None:
         raise CLIError('--{0} must conform to the following pattern: \'^[-\\w\\._\\(\\)]+$\'.'.format(message_name))
+
+
+def _validate_route_table(namespace, vnet_obj):
+    app_route_table_id = ""
+    runtime_route_table_id = ""
+    for subnet in vnet_obj.subnets:
+        if subnet.id.lower() == namespace.app_subnet.lower() and subnet.route_table:
+            app_route_table_id = subnet.route_table.id
+        if subnet.id.lower() == namespace.service_runtime_subnet.lower() and subnet.route_table:
+            runtime_route_table_id = subnet.route_table.id
+
+    if app_route_table_id and runtime_route_table_id:
+        if app_route_table_id == runtime_route_table_id:
+            raise CLIError('--service-runtime-subnet and --app-subnet should associate with different route tables.')
+    if (app_route_table_id and not runtime_route_table_id) \
+            or (not app_route_table_id and runtime_route_table_id):
+        raise CLIError(
+            '--service-runtime-subnet and --app-subnet should both associate with different route tables or neither.')
