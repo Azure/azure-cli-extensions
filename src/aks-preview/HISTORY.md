@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.5.4
++++++
+* Add operations of maintenance configuration
+=======
 
 0.5.3
 +++++
