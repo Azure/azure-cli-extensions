@@ -429,10 +429,10 @@ def _validate_route_table(namespace, vnet_obj):
         if subnet.id.lower() == namespace.service_runtime_subnet.lower() and subnet.route_table:
             runtime_route_table_id = subnet.route_table.id
 
-    if app_route_table_id != "" and runtime_route_table_id != "":
+    if app_route_table_id and runtime_route_table_id:
         if app_route_table_id == runtime_route_table_id:
             raise CLIError('--service-runtime-subnet and --app-subnet should associate with different route tables.')
-    if app_route_table_id != "" and runtime_route_table_id == "" \
-            or app_route_table_id == "" and runtime_route_table_id != "":
+    if (app_route_table_id and not runtime_route_table_id) \
+            or (not app_route_table_id and runtime_route_table_id):
         raise CLIError(
             '--service-runtime-subnet and --app-subnet should both associate with different route tables or neither.')
