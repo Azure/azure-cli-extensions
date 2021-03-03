@@ -55,6 +55,9 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_02_01.models import (ContainerS
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
                                                                       ContainerServiceSshConfiguration,
+                                                                      MaintenanceConfiguration,
+                                                                      TimeInWeek,
+                                                                      TimeSpan,
                                                                       ContainerServiceSshPublicKey,
                                                                       ManagedCluster,
                                                                       ManagedClusterAADProfile,
@@ -105,6 +108,7 @@ from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
 from ._consts import ADDONS
+from .maintenanceconfiguration import aks_maintenanceconfiguration_update_internal
 from ._consts import CONST_PRIVATE_DNS_ZONE_SYSTEM, CONST_PRIVATE_DNS_ZONE_NONE
 logger = get_logger(__name__)
 
@@ -816,6 +820,78 @@ def _add_ingress_appgw_addon_role_assignment(result, cmd):
                     logger.warning('Could not create a role assignment for virtual network: %s '
                                    'specified in %s addon. '
                                    'Are you an Owner on this subscription?', vnet_id, CONST_INGRESS_APPGW_ADDON_NAME)
+
+
+def aks_maintenanceconfiguration_list(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name
+):
+    return client.list_by_managed_cluster(resource_group_name, cluster_name)
+
+
+def aks_maintenanceconfiguration_show(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    config_name
+):
+    logger.warning('resource_group_name: %s, cluster_name: %s, config_name: %s ', resource_group_name, cluster_name, config_name)
+    return client.get(resource_group_name, cluster_name, config_name)
+
+
+def aks_maintenanceconfiguration_delete(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    config_name
+):
+    logger.warning('resource_group_name: %s, cluster_name: %s, config_name: %s ', resource_group_name, cluster_name, config_name)
+    return client.delete(resource_group_name, cluster_name, config_name)
+
+
+def aks_maintenanceconfiguration_add(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    config_name,
+    config_file,
+    weekday,
+    start_hour
+):
+    configs = client.list_by_managed_cluster(resource_group_name, cluster_name)
+    for config in configs:
+        if config.name == config_name:
+            raise CLIError("Maintenance configuration '{}' already exists, please try a different name, "
+                           "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(config_name))
+    return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, cluster_name, config_name, config_file, weekday, start_hour)
+
+
+def aks_maintenanceconfiguration_update(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    config_name,
+    config_file,
+    weekday,
+    start_hour
+):
+    configs = client.list_by_managed_cluster(resource_group_name, cluster_name)
+    found = False
+    for config in configs:
+        if config.name == config_name:
+            found = True
+            break
+    if not found:
+        raise CLIError("Maintenance configuration '{}' doesn't exist."
+                       "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(config_name))
+
+    return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, cluster_name, config_name, config_file, weekday, start_hour)
 
 
 def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,too-many-branches

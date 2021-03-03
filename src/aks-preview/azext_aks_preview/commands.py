@@ -6,6 +6,7 @@
 from azure.cli.core.commands import CliCommandType
 
 from ._client_factory import cf_managed_clusters
+from ._client_factory import cf_maintenance_configurations
 from ._client_factory import cf_container_services
 from ._client_factory import cf_agent_pools
 from ._format import aks_show_table_format
@@ -37,6 +38,12 @@ def load_command_table(self, _):
         client_factory=cf_managed_clusters
     )
 
+    maintenance_configuration_sdk = CliCommandType(
+        operations_tmpl='azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks.'
+                        'operations._maintenance_configurations_operations#MaintenanceConfigurationsOperations.{}',
+        client_factory=cf_maintenance_configurations
+    )
+
     # AKS managed cluster commands
     with self.command_group('aks', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
         g.custom_command('kollect', 'aks_kollect')
@@ -61,6 +68,14 @@ def load_command_table(self, _):
     # AKS container service commands
     with self.command_group('aks', container_services_sdk, client_factory=cf_container_services) as g:
         g.custom_command('get-versions', 'aks_get_versions', table_transformer=aks_versions_table_format)
+
+    # AKS maintenance configuration commands
+    with self.command_group('aks maintenanceconfiguration', maintenance_configuration_sdk, client_factory=cf_maintenance_configurations) as g:
+        g.custom_command('list', 'aks_maintenanceconfiguration_list')
+        g.custom_show_command('show', 'aks_maintenanceconfiguration_show')
+        g.custom_command('add', 'aks_maintenanceconfiguration_add')
+        g.custom_command('update', 'aks_maintenanceconfiguration_update')
+        g.custom_command('delete', 'aks_maintenanceconfiguration_delete')
 
     # AKS agent pool commands
     with self.command_group('aks nodepool', agent_pools_sdk, client_factory=cf_agent_pools) as g:

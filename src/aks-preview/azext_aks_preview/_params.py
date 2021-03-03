@@ -163,6 +163,20 @@ def load_arguments(self, _):
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
+    with self.argument_context('aks maintenanceconfiguration') as c:
+        c.argument('cluster_name', type=str, help='The cluster name.')
+
+    for scope in ['aks maintenanceconfiguration add', 'aks maintenanceconfiguration update']:
+        with self.argument_context(scope) as c:
+            c.argument('config_name', type=str, options_list=['--name', '-n'], help='The config name.')
+            c.argument('config_file', type=str, options_list=['--config-file'], help='The config json file.', required=False)
+            c.argument('weekday', type=str, options_list=['--weekday'], help='weekday on which maintenance can happen. e.g. Monday', required=False)
+            c.argument('start_hour', type=int, options_list=['--start-hour'], help='maintenance start hour of 1 hour window on the weekday. e.g. 1 means 1:00am - 2:00am', required=False)
+
+    for scope in ['aks maintenanceconfiguration show', 'aks maintenanceconfiguration delete']:
+        with self.argument_context(scope) as c:
+            c.argument('config_name', type=str, options_list=['--name', '-n'], help='The config name.')
+
     with self.argument_context('aks nodepool') as c:
         c.argument('cluster_name', type=str, help='The cluster name.')
 
