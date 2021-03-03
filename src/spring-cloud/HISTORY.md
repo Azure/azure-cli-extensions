@@ -1,8 +1,12 @@
 Release History
 ===============
-2.1.3
+2.2.1
 -----
 * Support End-to-end TLS.
+
+2.2.0
+-----
+* Add bring your own route tables support
 
 2.1.2
 -----

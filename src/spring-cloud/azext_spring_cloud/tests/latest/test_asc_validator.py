@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import unittest
+import copy
 from argparse import Namespace
 from azure.cli.core.util import CLIError
 from ..._validators import (validate_vnet, validate_vnet_required_parameters, _validate_cidr_range,
@@ -30,11 +31,19 @@ def _get_test_cmd():
 
 def _mock_get_vnet(cmd, vnet_id):
     def _mock_get(id):
-        def _get_subnet(vnet_id, name, address_prefix=None, route_table=None, ip_configurations=None, location=None):
+        def _get_subnet(vnet_id, name, address_prefix=None, app_route_table_name=None, svc_route_table_name=None, ip_configurations=None, location=None):
             subnet = mock.MagicMock()
             subnet.id = '{0}/subnets/{1}'.format(vnet_id, name)
             subnet.name = name
+            route_table = None
+            if name == 'app' and app_route_table_name:
+                route_table = mock.MagicMock()
+                route_table.id = app_route_table_name
+            if name == 'svc' and svc_route_table_name:
+                route_table = mock.MagicMock()
+                route_table.id = svc_route_table_name
             subnet.route_table = route_table
+
             subnet.address_prefix = address_prefix
             subnet.ip_configurations = ip_configurations
             return subnet
@@ -58,11 +67,19 @@ def _mock_get_vnet(cmd, vnet_id):
             _get_mock_vnet(
                 "/subscriptions/22222222-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet",
                 'eastus',
-                route_table=mock.MagicMock(), address_prefix='10.0.0.0/24'),
+                app_route_table_name='app', svc_route_table_name='svc', address_prefix='10.0.0.0/24'),
             _get_mock_vnet(
                 "/subscriptions/33333333-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet",
                 'eastus',
                 address_prefix='10.0.0.0/24'),
+            _get_mock_vnet(
+                "/subscriptions/55555555-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet",
+                'eastus',
+                app_route_table_name='app', svc_route_table_name='app', address_prefix='10.0.0.0/24'),
+            _get_mock_vnet(
+                "/subscriptions/66666666-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet",
+                'eastus',
+                app_route_table_name='app', address_prefix='10.0.0.0/24'),
         ]
         for x in all_mocks:
             if x.id == id:
@@ -195,12 +212,27 @@ class TestValidateIPRanges(unittest.TestCase):
     @mock.patch('azext_spring_cloud._validators._get_graph_rbac_management_client',
                 _mock_get_graph_rbac_management_client)
     def test_subnet_with_route_table(self):
+        # bind with different route tables
         ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None, sku=None, location='eastus',
                        app_subnet='/subscriptions/22222222-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/app',
                        service_runtime_subnet='/subscriptions/22222222-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/svc')
+        validate_vnet(_get_test_cmd(), ns)
+
+        # bind with the same route table
+        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None, sku=None, location='eastus',
+                       app_subnet='/subscriptions/55555555-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/app',
+                       service_runtime_subnet='/subscriptions/55555555-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/svc')
         with self.assertRaises(CLIError) as context:
             validate_vnet(_get_test_cmd(), ns)
-        self.assertTrue('app-subnet with existing route table is not supported. Please remove route table from the subnet, or select another subnet.' in str(context.exception))
+        self.assertTrue('--service-runtime-subnet and --app-subnet should associate with different route tables.' in str(context.exception))
+
+        # one subnet bind route table while the other not
+        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None, sku=None, location='eastus',
+                       app_subnet='/subscriptions/66666666-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/app',
+                       service_runtime_subnet='/subscriptions/66666666-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/svc')
+        with self.assertRaises(CLIError) as context:
+            validate_vnet(_get_test_cmd(), ns)
+        self.assertTrue('--service-runtime-subnet and --app-subnet should both associate with different route tables or neither.' in str(context.exception))
 
     def test_subnets_same(self):
         ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None, sku=None, location='eastus',
