@@ -826,62 +826,62 @@ def aks_maintenanceconfiguration_list(
     cmd,
     client,
     resource_group_name,
-    resource_name
+    cluster_name
 ):
-    return client.list_by_managed_cluster(resource_group_name, resource_name)
+    return client.list_by_managed_cluster(resource_group_name, cluster_name)
 
 
 def aks_maintenanceconfiguration_show(
     cmd,
     client,
     resource_group_name,
-    resource_name,
+    cluster_name,
     config_name
 ):
-    logger.warning('resource_group_name: %s, resource_name: %s, config_name: %s ', resource_group_name, resource_name, config_name)
-    return client.get(resource_group_name, resource_name, config_name)
+    logger.warning('resource_group_name: %s, cluster_name: %s, config_name: %s ', resource_group_name, cluster_name, config_name)
+    return client.get(resource_group_name, cluster_name, config_name)
 
 
 def aks_maintenanceconfiguration_delete(
     cmd,
     client,
     resource_group_name,
-    resource_name,
+    cluster_name,
     config_name
 ):
-    logger.warning('resource_group_name: %s, resource_name: %s, config_name: %s ', resource_group_name, resource_name, config_name)
-    return client.delete(resource_group_name, resource_name, config_name)
+    logger.warning('resource_group_name: %s, cluster_name: %s, config_name: %s ', resource_group_name, cluster_name, config_name)
+    return client.delete(resource_group_name, cluster_name, config_name)
 
 
 def aks_maintenanceconfiguration_add(
     cmd,
     client,
     resource_group_name,
-    resource_name,
+    cluster_name,
     config_name,
     config_file,
     weekday,
     start_hour
 ):
-    configs = client.list_by_managed_cluster(resource_group_name, resource_name)
+    configs = client.list_by_managed_cluster(resource_group_name, cluster_name)
     for config in configs:
         if config.name == config_name:
             raise CLIError("Maintenance configuration '{}' already exists, please try a different name, "
                            "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(config_name))
-    return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, resource_name, config_name, config_file, weekday, start_hour)
+    return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, cluster_name, config_name, config_file, weekday, start_hour)
 
 
 def aks_maintenanceconfiguration_update(
     cmd,
     client,
     resource_group_name,
-    resource_name,
+    cluster_name,
     config_name,
     config_file,
     weekday,
     start_hour
 ):
-    configs = client.list_by_managed_cluster(resource_group_name, resource_name)
+    configs = client.list_by_managed_cluster(resource_group_name, cluster_name)
     found = False
     for config in configs:
         if config.name == config_name:
@@ -891,7 +891,7 @@ def aks_maintenanceconfiguration_update(
         raise CLIError("Maintenance configuration '{}' doesn't exist."
                        "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(config_name))
 
-    return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, resource_name, config_name, config_file, weekday, start_hour)
+    return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, cluster_name, config_name, config_file, weekday, start_hour)
 
 
 def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
