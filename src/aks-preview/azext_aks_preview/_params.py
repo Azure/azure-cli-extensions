@@ -168,43 +168,14 @@ def load_arguments(self, _):
 
     for scope in ['aks maintenanceconfiguration add', 'aks maintenanceconfiguration update']:
         with self.argument_context(scope) as c:
-            c.argument('config_name', type=str, options_list=['--config-name'], help='The config name.')
-            c.argument('config_file', type=str, options_list=['--config-file'], help='''The config json file. The json file example:
-                {
-                    "timeInWeek": [
-                        {
-                            "day": "Tuesday",
-                            "hour_slots": [
-                                1,
-                                2
-                            ]
-                        },
-                        {
-                            "day": "Wednesday",
-                            "hour_slots": [
-                                1,
-                                2
-                            ]
-                        }
-                    ],
-                    "notAllowedTime": [
-                        {
-                            "start": "2020-11-26T03:00:00Z",
-                            "end": "2020-11-30T12:00:00Z"
-                        },
-                        {
-                            "start": "2020-12-26T03:00:00Z",
-                            "end": "2020-12-26T12:00:00Z"
-                        }
-                    ]
-                }
-            ''', required=False)
+            c.argument('config_name', type=str, options_list=['--name', '-n'], help='The config name.')
+            c.argument('config_file', type=str, options_list=['--config-file'], help='The config json file.', required=False)
             c.argument('weekday', type=str, options_list=['--weekday'], help='weekday on which maintenance can happen. e.g. Monday', required=False)
             c.argument('start_hour', type=int, options_list=['--start-hour'], help='maintenance start hour of 1 hour window on the weekday. e.g. 1 means 1:00am - 2:00am', required=False)
 
     for scope in ['aks maintenanceconfiguration show', 'aks maintenanceconfiguration delete']:
         with self.argument_context(scope) as c:
-            c.argument('config_name', type=str, options_list=['--config-name'], help='The config name.')
+            c.argument('config_name', type=str, options_list=['--name', '-n'], help='The config name.')
 
     with self.argument_context('aks nodepool') as c:
         c.argument('cluster_name', type=str, help='The cluster name.')
