@@ -1988,7 +1988,7 @@ def _get_command_context(command_files):
     zipFile = zipfile.ZipFile(zipStream, "w")
     for i, (k, v) in enumerate(filesToAttach.items()):
         zipFile.write(k, v)
-    zipFile.printdir()
+    # zipFile.printdir() // use this to debug
     zipFile.close()
 
     return str(base64.encodebytes(zipStream.getbuffer()), "utf-8")
