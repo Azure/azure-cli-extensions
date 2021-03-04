@@ -43,7 +43,7 @@ helps['connectedk8s update'] = """
 
 helps['connectedk8s upgrade'] = """
     type: command
-    short-summary: Upgrade onboarded agents to the specific version or default to the latest version.
+    short-summary: Atomically upgrade onboarded agents to the specific version or default to the latest version.
     examples:
     - name: Upgrade the agents to the latest version
       text: az connectedk8s upgrade -g resourceGroupName -n connectedClusterName
