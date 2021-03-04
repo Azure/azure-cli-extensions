@@ -2,6 +2,35 @@
 
 Release History
 ===============
+0.5.4
++++++
+* Add operations of maintenance configuration
+=======
+
+0.5.3
++++++
+* Add `--enable-pod-identity-with-kubenet` for enabling AAD Pod Identity in Kubenet cluster
+* Add `--fqdn-subdomain parameter` to create private cluster with custom private dns zone scenario
+
+0.5.2
++++++
+* Add support for node public IP prefix ID '--node-public-ip-prefix-id'
+
+0.5.1
++++++
+* Update to use 2021-02-01 api-version
+
+0.5.0
++++++
+* Modify addon confcom behavior to only enable SGX device plugin by default.
+* Introducte argument '--enable-sgx-quotehelper'
+* Breaking Change: remove argument '--diable-sgx-quotehelper'.
+
+0.4.73
++++++
+* Update to use 2020-12-01 api-version
+* Add argument '--enable-encryption-at-host'
+
 0.4.72
 ++++++
 * Add --no-uptime-sla

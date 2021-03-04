@@ -93,7 +93,7 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
 
 
 def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
-                        disable_distributed_tracing=None, disable_app_insights=None, enable_java_agent=None,
+                        disable_distributed_tracing=None, disable_app_insights=None,
                         sku=None, tags=None, no_wait=False):
     updated_resource = models.ServiceResource()
     update_app_insights = False
@@ -210,7 +210,7 @@ def regenerate_keys(cmd, client, resource_group, name, type):
 
 
 def app_create(cmd, client, resource_group, service, name,
-               is_public=None,
+               assign_endpoint=None,
                cpu=None,
                memory=None,
                instance_count=None,
@@ -226,7 +226,6 @@ def app_create(cmd, client, resource_group, service, name,
     properties = models.AppResourceProperties()
     properties.temporary_disk = models.TemporaryDisk(
         size_in_gb=5, mount_path="/tmp")
-
     resource = client.services.get(resource_group, service)
 
     _validate_instance_count(resource.sku.tier, instance_count)
@@ -267,7 +266,7 @@ def app_create(cmd, client, resource_group, service, name,
 
     logger.warning("[3/4] Setting default deployment to production")
     properties = models.AppResourceProperties(
-        active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=is_public)
+        active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=assign_endpoint)
 
     if enable_persistent_storage:
         properties.persistent_disk = models.PersistentDisk(
@@ -300,7 +299,7 @@ def _check_active_deployment_exist(client, resource_group, service, app):
 
 
 def app_update(cmd, client, resource_group, service, name,
-               is_public=None,
+               assign_endpoint=None,
                deployment=None,
                runtime_version=None,
                jvm_options=None,
@@ -312,7 +311,7 @@ def app_update(cmd, client, resource_group, service, name,
     resource = client.services.get(resource_group, service)
     location = resource.location
 
-    properties = models.AppResourceProperties(public=is_public, https_only=https_only)
+    properties = models.AppResourceProperties(public=assign_endpoint, https_only=https_only)
     if enable_persistent_storage is True:
         properties.persistent_disk = models.PersistentDisk(
             size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
@@ -529,21 +528,21 @@ def app_get_build_log(cmd, client, resource_group, service, name, deployment=Non
     return stream_logs(client.deployments, resource_group, service, name, deployment)
 
 
-def app_tail_log(cmd, client, resource_group, service, name, instance=None, follow=False, lines=50, since=None, limit=2048):
+def app_tail_log(cmd, client, resource_group, service, name, deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048):
     if not instance:
-        deployment_name = client.apps.get(
-            resource_group, service, name).properties.active_deployment_name
-        if not deployment_name:
-            raise CLIError(
-                "No production deployment found for app '{}'".format(name))
-        deployment = client.deployments.get(
-            resource_group, service, name, deployment_name)
-        if not deployment.properties.instances:
+        if deployment is None:
+            deployment = client.apps.get(
+                resource_group, service, name).properties.active_deployment_name
+        if not deployment:
+            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
+        deployment_properties = client.deployments.get(
+            resource_group, service, name, deployment).properties
+        if not deployment_properties.instances:
             raise CLIError("No instances found for deployment '{0}' in app '{1}'".format(
-                deployment_name, name))
-        instances = deployment.properties.instances
+                deployment, name))
+        instances = deployment_properties.instances
         if len(instances) > 1:
-            logger.warning("Mulitple app instances found:")
+            logger.warning("Multiple app instances found:")
             for temp_instance in instances:
                 logger.warning("{}".format(temp_instance.name))
             logger.warning("Please use '-i/--instance' parameter to specify the instance name")

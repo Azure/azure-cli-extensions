@@ -11,6 +11,7 @@
 
 import uuid
 from msrest.pipeline import ClientRawResponse
+from msrestazure.azure_exceptions import CloudError
 
 from .. import models
 
@@ -24,7 +25,7 @@ class RestorableMongodbResourcesOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The API version to use for this operation. Constant value: "2020-06-01-preview".
+    :ivar api_version: The API version to use for the request. Constant value: "2021-03-01-preview".
     """
 
     models = models
@@ -34,14 +35,18 @@ class RestorableMongodbResourcesOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2020-06-01-preview"
+        self.api_version = "2021-03-01-preview"
 
         self.config = config
 
     def list(
             self, location, instance_id, restore_location=None, restore_timestamp_in_utc=None, custom_headers=None, raw=False, **operation_config):
-        """Lists all the restorable Azure Cosmos DB MongoDB resources available
-        for a specific database account at a given time and location.
+        """Return a list of database and collection combo that exist on the
+        account at the given timestamp and location. This helps in scenarios to
+        validate what resources exist at given timestamp and location. This API
+        requires
+        'Microsoft.DocumentDB/locations/restorableDatabaseAccounts/*/read'
+        permission.
 
         :param location: Cosmos DB region, with spaces between words and each
          word capitalized.
@@ -63,8 +68,7 @@ class RestorableMongodbResourcesOperations(object):
         :return: An iterator like instance of DatabaseRestoreResource
         :rtype:
          ~azure.mgmt.cosmosdb.models.DatabaseRestoreResourcePaged[~azure.mgmt.cosmosdb.models.DatabaseRestoreResource]
-        :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.cosmosdb.models.DefaultErrorResponseException>`
+        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
             if not next_link:
@@ -79,7 +83,7 @@ class RestorableMongodbResourcesOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
                 if restore_location is not None:
                     query_parameters['restoreLocation'] = self._serialize.query("restore_location", restore_location, 'str')
                 if restore_timestamp_in_utc is not None:
@@ -109,7 +113,9 @@ class RestorableMongodbResourcesOperations(object):
             response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
-                raise models.DefaultErrorResponseException(self._deserialize, response)
+                exp = CloudError(response)
+                exp.request_id = response.headers.get('x-ms-request-id')
+                raise exp
 
             return response
 

@@ -11,6 +11,7 @@
 
 import uuid
 from msrest.pipeline import ClientRawResponse
+from msrestazure.azure_exceptions import CloudError
 
 from .. import models
 
@@ -24,7 +25,7 @@ class RestorableMongodbDatabasesOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The API version to use for this operation. Constant value: "2020-06-01-preview".
+    :ivar api_version: The API version to use for the request. Constant value: "2021-03-01-preview".
     """
 
     models = models
@@ -34,14 +35,18 @@ class RestorableMongodbDatabasesOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2020-06-01-preview"
+        self.api_version = "2021-03-01-preview"
 
         self.config = config
 
     def list(
             self, location, instance_id, custom_headers=None, raw=False, **operation_config):
-        """Lists all the restorable Azure Cosmos DB MongoDB databases available
-        under the restorable account.
+        """Show the event feed of all mutations done on all the Azure Cosmos DB
+        MongoDB databases under the restorable account.  This helps in scenario
+        where database was accidentally deleted to get the deletion time.  This
+        API requires
+        'Microsoft.DocumentDB/locations/restorableDatabaseAccounts/*/read'
+        permission.
 
         :param location: Cosmos DB region, with spaces between words and each
          word capitalized.
@@ -58,8 +63,7 @@ class RestorableMongodbDatabasesOperations(object):
          RestorableMongodbDatabaseGetResult
         :rtype:
          ~azure.mgmt.cosmosdb.models.RestorableMongodbDatabaseGetResultPaged[~azure.mgmt.cosmosdb.models.RestorableMongodbDatabaseGetResult]
-        :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.cosmosdb.models.DefaultErrorResponseException>`
+        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
             if not next_link:
@@ -74,7 +78,7 @@ class RestorableMongodbDatabasesOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
             else:
                 url = next_link
@@ -100,7 +104,9 @@ class RestorableMongodbDatabasesOperations(object):
             response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
-                raise models.DefaultErrorResponseException(self._deserialize, response)
+                exp = CloudError(response)
+                exp.request_id = response.headers.get('x-ms-request-id')
+                raise exp
 
             return response
 
@@ -112,70 +118,3 @@ class RestorableMongodbDatabasesOperations(object):
 
         return deserialized
     list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/restorableDatabaseAccounts/{instanceId}/restorableMongodbDatabases'}
-
-    def get(
-            self, location, instance_id, restorable_mongodb_database_id, custom_headers=None, raw=False, **operation_config):
-        """Get the properties of a restorable MongoDB database.
-
-        :param location: Cosmos DB region, with spaces between words and each
-         word capitalized.
-        :type location: str
-        :param instance_id: The instanceId GUID of a restorable database
-         account.
-        :type instance_id: str
-        :param restorable_mongodb_database_id: The GUID of the restorable
-         MongoDB database.
-        :type restorable_mongodb_database_id: str
-        :param dict custom_headers: headers that will be added to the request
-        :param bool raw: returns the direct response alongside the
-         deserialized response
-        :param operation_config: :ref:`Operation configuration
-         overrides<msrest:optionsforoperations>`.
-        :return: RestorableMongodbDatabaseGetResult or ClientRawResponse if
-         raw=true
-        :rtype: ~azure.mgmt.cosmosdb.models.RestorableMongodbDatabaseGetResult
-         or ~msrest.pipeline.ClientRawResponse
-        :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.cosmosdb.models.DefaultErrorResponseException>`
-        """
-        # Construct URL
-        url = self.get.metadata['url']
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str', min_length=1),
-            'location': self._serialize.url("location", location, 'str'),
-            'instanceId': self._serialize.url("instance_id", instance_id, 'str'),
-            'restorableMongodbDatabaseId': self._serialize.url("restorable_mongodb_database_id", restorable_mongodb_database_id, 'str')
-        }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
-
-        # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
-        if self.config.generate_client_request_id:
-            header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
-        if custom_headers:
-            header_parameters.update(custom_headers)
-        if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
-
-        # Construct and send request
-        request = self._client.get(url, query_parameters, header_parameters)
-        response = self._client.send(request, stream=False, **operation_config)
-
-        if response.status_code not in [200]:
-            raise models.DefaultErrorResponseException(self._deserialize, response)
-
-        deserialized = None
-        if response.status_code == 200:
-            deserialized = self._deserialize('RestorableMongodbDatabaseGetResult', response)
-
-        if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
-
-        return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/restorableDatabaseAccounts/{instanceId}/restorableMongodbDatabases/{restorableMongodbDatabaseId}'}

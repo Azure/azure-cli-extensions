@@ -16,6 +16,8 @@ from ._util import (
     get_network_resource_property_entry
 )
 
+ROUTE_TABLE_DEPRECATION_INFO = 'network vhub route-table'
+
 
 # pylint: disable=too-many-locals, too-many-statements
 def load_command_table(self, _):
@@ -114,9 +116,10 @@ def load_command_table(self, _):
         g.command('delete', 'delete', supports_no_wait=True, confirmation=True)
         g.show_command('show')
         g.command('list', 'list')
+        g.generic_update_command('update', custom_func_name='update_hub_vnet_connection', setter_arg_name='hub_virtual_network_connection_parameters', supports_no_wait=True)
         g.wait_command('wait')
 
-    with self.command_group('network vhub route', network_vhub_sdk) as g:
+    with self.command_group('network vhub route', network_vhub_sdk, deprecate_info=self.deprecate(redirect=ROUTE_TABLE_DEPRECATION_INFO, hide=False)) as g:
         g.custom_command('add', 'add_hub_route', supports_no_wait=True)
         g.custom_command('list', 'list_hub_routes')
         g.custom_command('remove', 'remove_hub_route', supports_no_wait=True)
@@ -150,6 +153,8 @@ def load_command_table(self, _):
         g.command('list', 'list_by_vpn_gateway')
         g.show_command('show', 'get')
         g.command('delete', 'delete')
+        g.generic_update_command('update', custom_func_name='update_vpn_gateway_connection',
+                                 setter_arg_name='vpn_connection_parameters', supports_no_wait=True)
         g.wait_command('wait')
 
     with self.command_group('network vpn-gateway connection ipsec-policy', network_vpn_gateway_sdk) as g:

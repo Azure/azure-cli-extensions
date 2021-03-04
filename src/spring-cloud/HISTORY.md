@@ -1,5 +1,20 @@
 Release History
 ===============
+2.2.0
+-----
+* Add bring your own route tables support
+
+2.1.2
+-----
+* Add optional '--deployment' to 'az spring-cloud app logs' command
+* Add a parameter '--assign-endpoint' into 'az spring-cloud app create' and 'az spring-cloud app update'
+* Deprecate the parameter '--is-public' in 'az spring-cloud app create' and 'az spring-cloud app update'
+
+2.1.1
+-----
+* Remove preview parameter '--enable-java-agent' from 'az spring-cloud update'.
+* Fix warning message of '--disable-distributed-tracing'.
+
 2.1.0
 -----
 * Support Java In-Process Agent.

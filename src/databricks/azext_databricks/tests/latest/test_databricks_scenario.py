@@ -31,9 +31,11 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--name {workspace_name} '
                  '--location "eastus" '
-                 '--sku premium',
+                 '--sku premium '
+                 '--enable-no-public-ip',
                  checks=[self.check('name', '{workspace_name}'),
-                         self.check('sku.name', 'premium')])
+                         self.check('sku.name', 'premium'),
+                         self.check('parameters.enableNoPublicIp.value', True)])
 
         managed_resource_group_id = '/subscriptions/{}/resourceGroups/{}'.format(subscription_id, self.kwargs.get('managed_resource_group', ''))
         self.cmd('az databricks workspace create '
@@ -41,16 +43,20 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '--name {custom_workspace_name} '
                  '--location "westus" '
                  '--sku standard '
-                 '--managed-resource-group {managed_resource_group}',
+                 '--managed-resource-group {managed_resource_group} '
+                 '--tags env=dev',
                  checks=[self.check('name', '{custom_workspace_name}'),
-                         self.check('managedResourceGroupId', managed_resource_group_id)])
+                         self.check('managedResourceGroupId', managed_resource_group_id),
+                         self.check('tags.env', 'dev')])
 
         workspace = self.cmd('az databricks workspace update '
                              '--resource-group {rg} '
                              '--name {workspace_name} '
-                             '--tags type=test '
+                             '--tags type=test env=dev '
                              '--prepare-encryption',
                              checks=[self.check('tags.type', 'test'),
+                                     self.check('tags.env', 'dev'),
+                                     self.check('parameters.prepareEncryption.value', True),
                                      self.exists('storageAccountIdentity.principalId')]).get_output_in_json()
         principalId = workspace['storageAccountIdentity']['principalId']
 

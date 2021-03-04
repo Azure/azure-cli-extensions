@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=import-error,too-many-locals,too-many-statements
+# pylint: disable=import-error,too-many-locals,too-many-statements,too-many-nested-blocks
 import os
 from knack.util import CLIError
 from knack.log import get_logger
@@ -11,7 +11,7 @@ import psycopg2
 import pymysql
 
 logger = get_logger(__name__)
-DEFAULT_MYSQL_DB_NAME = 'flexibleserverdb'
+DEFAULT_MYSQL_DB_NAME = ''  # no default database required
 DEFAULT_PG_DB_NAME = 'postgres'
 
 
@@ -39,9 +39,10 @@ def connect_to_server_helper(server_type, endpoint, default_db_name, server_name
 
     # setup or validate passed in params:
     if database_name is None:
-        logger.warning("Connecting to %s database by default.",
-                       default_db_name)
         database_name = default_db_name
+        if database_name:  # in mysql scenario default db will be empty string
+            logger.warning("Connecting to %s database by default.",
+                           database_name)
 
     if administrator_login_password is None and interactive is None:
         raise CLIError("Please provide password (--admin-password / -p) or run in --interactive mode.")
@@ -55,6 +56,10 @@ def connect_to_server_helper(server_type, endpoint, default_db_name, server_name
 
         # if interactive mode indicated, use pgcli to connect
         try:
+            # setup environment path variable for pgcli and mycli
+            from azure.cli.core.extension import EXTENSIONS_DIR
+            set_environment_paths(EXTENSIONS_DIR)
+
             if server_type == "postgres":
                 cmd = "pgcli -h {0} -u {1} -W {2}".format(host, administrator_login, database_name)
             else:
@@ -92,13 +97,16 @@ def connect_to_server_helper(server_type, endpoint, default_db_name, server_name
                 cursor = connection.cursor()
                 cursor.execute(query_command)
                 logger.warning("Ran Database Query: '%s'", query_command)
-                logger.warning("Retrieving first 30 rows of query output.")
+                logger.warning("Retrieving first 30 rows of query output, if applicable.")
                 result = cursor.fetchmany(30)  # limit to 30 rows of output for now
-                row_headers = [x[0] for x in cursor.description]  # this will extract row headers
-                # format the result for a clean display
-                json_data = []
-                for rv in result:
-                    json_data.append(dict(zip(row_headers, rv)))
+
+                # only print out if rows were returned
+                if result:
+                    row_headers = [x[0] for x in cursor.description]  # this will extract row headers
+                    # format the result for a clean display
+                    json_data = []
+                    for rv in result:
+                        json_data.append(dict(zip(row_headers, rv)))
             except Exception as e:
                 raise CLIError("Unable to execute query '{0}': {1}".format(query_command, e))
             finally:
@@ -109,3 +117,22 @@ def connect_to_server_helper(server_type, endpoint, default_db_name, server_name
                     except Exception:  # pylint: disable=broad-except
                         logger.warning('Unable to close connection cursor.')
     return json_data
+
+
+def set_environment_paths(extension_directory):
+    extension_python_path = os.path.join(extension_directory, 'rdbms-connect')
+    extension_path = os.path.join(extension_python_path, 'bin')  # path to exe
+
+    # if path names are None then return empty string to allow concatenation
+    path_var = os.environ.get('PATH', '')
+    python_path_var = os.environ.get('PYTHONPATH', '')
+
+    if path_var:
+        os.environ["PATH"] += os.pathsep + extension_path
+    else:
+        os.environ['PATH'] = path_var
+
+    if python_path_var:
+        os.environ['PYTHONPATH'] += os.pathsep + extension_python_path
+    else:
+        os.environ['PYTHONPATH'] = extension_python_path
