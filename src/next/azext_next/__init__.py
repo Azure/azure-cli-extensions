@@ -34,14 +34,11 @@ class NextCommandsLoader(AzCommandsLoader):
     # but also recursively calls load_command_table() again, and fall into infinite nested call
     # So NextCommandsLoader is a singleton, and _has_reload_command_table is used to avoid infinite nested calls
     def load_command_table(self, args):
-        if self._has_reload_command_table:
-            return self.command_table
-
         # When executing "azdev linter --include-whl-extensions next" in CI, args is none, so judgment is added
         if args:
             from azure.cli.core.util import roughly_parse_command
             command = roughly_parse_command(args)
-            if command == 'next':
+            if command == 'next' and not self._has_reload_command_table:
                 self._has_reload_command_table = True
                 from unittest.mock import patch
                 with patch.dict("os.environ", {'AZURE_CORE_USE_COMMAND_INDEX': 'False'}):
