@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.3
+++++++
+* GA hpc-cache extension
+
 0.1.2
 ++++++
 * Fix #13003: The command `az hpc-cache update` is modified to update only tags.
