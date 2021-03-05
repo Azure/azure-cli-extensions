@@ -102,3 +102,8 @@ Upgrade_RG_Cluster_Name_Conflict = 'The provided cluster name and rg correspond 
 Corresponding_CC_Resource_Deleted_Fault = 'CC resource corresponding to this cluster has been deleted by the customer'
 
 Client_Details_Not_Provided_For_AAD_RBAC_Fault = 'Client ID or secret not provided for AAD RBAC'
+CLIENT_PROXY_VERSION = '0.2.3'
+API_SERVER_PORT = 47011
+CLIENT_PROXY_PORT = 47010
+CLIENTPROXY_CLIENT_ID = '04b07795-8ddb-461a-bbee-02f9e1bf7b46'
+API_CALL_RETRIES = 200
