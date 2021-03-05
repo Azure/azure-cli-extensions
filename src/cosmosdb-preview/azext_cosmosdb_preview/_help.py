@@ -229,7 +229,14 @@ helps['cosmosdb sql role assignment create'] = """
 type: command
 short-summary: Create a SQL role assignment under an Azure Cosmos DB account.
 examples:
-  - name: Create a SQL role assignment under an Azure Cosmos DB account.
+  - name: Create a SQL role assignment under an Azure Cosmos DB account using Role Definition Name.
+    text: |
+      az cosmosdb sql role assignment create --account-name MyAccount --resource-group MyResourceGroup \\
+        --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
+        --role-definition-name "My Read Only Role" \\
+        --scope "/dbs/mydb/colls/mycontainer" \\
+        --principal-id 6328f5f7-dbf7-4244-bba8-fbb9d8066506
+  - name: Create a SQL role assignment under an Azure Cosmos DB account using Role Definition ID.
     text: |
       az cosmosdb sql role assignment create --account-name MyAccount --resource-group MyResourceGroup \\
         --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
@@ -279,4 +286,121 @@ examples:
       az cosmosdb sql role assignment update --account-name MyAccount --resource-group MyResourceGroup \\
         --role-assignment-id cb8ed2d7-2371-4e3c-bd31-6cc1560e84f8 \\
         --role-definition-id updated-role-definition-id
+"""
+
+helps['managed-cassandra cluster'] = """
+type: group
+short-summary: Azure Managed Cassandra Cluster.
+"""
+
+helps['managed-cassandra cluster create'] = """
+type: command
+short-summary: Create a Managed Cassandra Cluster.
+examples:
+  - name: Create a Managed Cassandra Cluster in a given Subscription and ResourceGroup. Either a cassandra admin password or external seed needs are required.
+    text: |
+      az managed-cassandra cluster create --cluster-name MyCluster --resource-group MyResourceGroup \\
+        --location westus2 \\
+        --delegated-management-subnet-id /subscriptions/94d9b402-77b4-4049-b4c1-947bc6b7729b/resourceGroups/My-vnet/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/test-subnet \\
+        --initial-cassandra-admin-password password
+"""
+
+helps['managed-cassandra cluster delete'] = """
+type: command
+short-summary: Deletes a Managed Cassandra Cluster.
+examples:
+  - name: Deletes a Managed Cassandra Cluster in the given Subscription and ResourceGroup.
+    text: |
+      az managed-cassandra cluster delete --cluster-name MyCluster --resource-group MyResourceGroup \\
+"""
+
+helps['managed-cassandra cluster show'] = """
+type: command
+short-summary: Get a Managed Cassandra Cluster Resource.
+examples:
+  - name: Gets a Managed Cassandra Cluster Resource. ProvisioningState tells the state of this cluster. If the cluster doesnot exist a NotFound response is returned.
+    text: |
+      az managed-cassandra cluster show --cluster-name MyCluster --resource-group MyResourceGroup \\
+"""
+
+helps['managed-cassandra cluster list'] = """
+type: command
+short-summary: Used to list the Managed Cassandra Clusters in a ResourceGroup and Subscription. If the ResourceGroup is not specified all the clusters in this Subscription are returned.
+examples:
+  - name: List all Managed Cassandra Clusters in a given Subscription and ResourceGroup.
+    text: |
+      az managed-cassandra cluster list --resource-group MyResourceGroup \\
+  - name: List all Managed Cassandra Clusters in a given Subscription.
+    text: |
+      az managed-cassandra cluster list \\
+"""
+
+helps['managed-cassandra cluster node-status'] = """
+type: command
+short-summary: Gets Cassandra Cluster Node Status.
+examples:
+  - name: Cassandra Cluster contains datacenters which inturn contains nodes. This command gets the status of these nodes.
+    text: |
+      az managed-cassandra cluster node-status --cluster-name MyCluster --resource-group MyResourceGroup \\
+"""
+
+helps['managed-cassandra datacenter'] = """
+type: group
+short-summary: Azure Managed Cassandra DataCenter.
+"""
+
+helps['managed-cassandra datacenter create'] = """
+type: command
+short-summary: Create a Datacenter in an Azure Managed Cassandra Cluster.
+examples:
+  - name: Create a Managed Cassandra Datacenter in a Cassandra Cluster. Each datacenter should atleast have 3 nodes.
+    text: |
+      az managed-cassandra datacenter create --cluster-name MyCluster --data-center-name MyDataCenter \\
+        --resource-group MyResourceGroup \\
+        --data-center-location westus2 \\
+        --delegated-subnet-id /subscriptions/94d9b402-77b4-4049-b4c1-947bc6b7729b/resourceGroups/My-vnet/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/test-subnet \\
+        --node-count 3
+"""
+
+helps['managed-cassandra datacenter update'] = """
+type: command
+short-summary: Update a Datacenter in an Azure Managed Cassandra Cluster.
+examples:
+  - name: Scale the number of nodes in a datacenter. This is a scale up operation assuming that the create datacenter was done with 3 nodes. Each datacenter should atleast have 3 nodes.
+    text: |
+      az managed-cassandra datacenter update --cluster-name MyCluster --data-center-name MyDataCenter \\
+        --resource-group MyResourceGroup \\
+        --node-count 6
+  - name: Scale the number of nodes in a datacenter. This is a scale down operation assuming that the create datacenter was done with 3 node, followed by a scale up to 6 nodes. Each datacenter should atleast have 3 nodes.
+    text: |
+      az managed-cassandra datacenter update --cluster-name MyCluster --data-center-name MyDataCenter \\
+        --resource-group MyResourceGroup \\
+        --node-count 4
+"""
+
+helps['managed-cassandra datacenter delete'] = """
+type: command
+short-summary: Deletes a Managed Cassandra Datacenter.
+examples:
+  - name: Deletes a Managed Cassandra Datacenter in the given Cluster.
+    text: |
+      az managed-cassandra datacenter delete --data-center-name MyDataCenter --cluster-name MyCluster --resource-group MyResourceGroup \\
+"""
+
+helps['managed-cassandra datacenter show'] = """
+type: command
+short-summary: Get a Managed Cassandra DataCenter Resource.
+examples:
+  - name: Gets a Managed Cassandra Datacenter Resource. ProvisioningState tells the state of this datacenter. If the datacenter doesnot exist a NotFound response is returned.
+    text: |
+      az managed-cassandra datacenter show --data-center-name MyDataCenter --cluster-name MyCluster --resource-group MyResourceGroup \\
+"""
+
+helps['managed-cassandra datacenter list'] = """
+type: command
+short-summary: Used to list the Managed Cassandra Datacenters in a given Cluster.
+examples:
+  - name: List all Managed Cassandra DataCenters in a given Cluster.
+    text: |
+      az managed-cassandra datacenter list --cluster-name MyCluster --resource-group MyResourceGroup \\
 """

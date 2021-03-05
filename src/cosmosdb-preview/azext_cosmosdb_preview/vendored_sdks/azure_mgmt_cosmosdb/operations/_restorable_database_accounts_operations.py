@@ -11,6 +11,7 @@
 
 import uuid
 from msrest.pipeline import ClientRawResponse
+from msrestazure.azure_exceptions import CloudError
 
 from .. import models
 
@@ -24,7 +25,7 @@ class RestorableDatabaseAccountsOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The API version to use for this operation. Constant value: "2020-06-01-preview".
+    :ivar api_version: The API version to use for the request. Constant value: "2021-03-01-preview".
     """
 
     models = models
@@ -34,14 +35,16 @@ class RestorableDatabaseAccountsOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2020-06-01-preview"
+        self.api_version = "2021-03-01-preview"
 
         self.config = config
 
     def list_by_location(
             self, location, custom_headers=None, raw=False, **operation_config):
         """Lists all the restorable Azure Cosmos DB database accounts available
-        under the subscription and in a region.
+        under the subscription and in a region.  This call requires
+        'Microsoft.DocumentDB/locations/restorableDatabaseAccounts/read'
+        permission.
 
         :param location: Cosmos DB region, with spaces between words and each
          word capitalized.
@@ -55,8 +58,7 @@ class RestorableDatabaseAccountsOperations(object):
          RestorableDatabaseAccountGetResult
         :rtype:
          ~azure.mgmt.cosmosdb.models.RestorableDatabaseAccountGetResultPaged[~azure.mgmt.cosmosdb.models.RestorableDatabaseAccountGetResult]
-        :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.cosmosdb.models.DefaultErrorResponseException>`
+        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
             if not next_link:
@@ -70,7 +72,7 @@ class RestorableDatabaseAccountsOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
             else:
                 url = next_link
@@ -96,7 +98,9 @@ class RestorableDatabaseAccountsOperations(object):
             response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
-                raise models.DefaultErrorResponseException(self._deserialize, response)
+                exp = CloudError(response)
+                exp.request_id = response.headers.get('x-ms-request-id')
+                raise exp
 
             return response
 
@@ -112,7 +116,9 @@ class RestorableDatabaseAccountsOperations(object):
     def list(
             self, custom_headers=None, raw=False, **operation_config):
         """Lists all the restorable Azure Cosmos DB database accounts available
-        under the subscription.
+        under the subscription. This call requires
+        'Microsoft.DocumentDB/locations/restorableDatabaseAccounts/read'
+        permission.
 
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
@@ -123,8 +129,7 @@ class RestorableDatabaseAccountsOperations(object):
          RestorableDatabaseAccountGetResult
         :rtype:
          ~azure.mgmt.cosmosdb.models.RestorableDatabaseAccountGetResultPaged[~azure.mgmt.cosmosdb.models.RestorableDatabaseAccountGetResult]
-        :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.cosmosdb.models.DefaultErrorResponseException>`
+        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
             if not next_link:
@@ -137,7 +142,7 @@ class RestorableDatabaseAccountsOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
             else:
                 url = next_link
@@ -163,7 +168,9 @@ class RestorableDatabaseAccountsOperations(object):
             response = self._client.send(request, stream=False, **operation_config)
 
             if response.status_code not in [200]:
-                raise models.DefaultErrorResponseException(self._deserialize, response)
+                exp = CloudError(response)
+                exp.request_id = response.headers.get('x-ms-request-id')
+                raise exp
 
             return response
 
@@ -179,7 +186,9 @@ class RestorableDatabaseAccountsOperations(object):
     def get_by_location(
             self, location, instance_id, custom_headers=None, raw=False, **operation_config):
         """Retrieves the properties of an existing Azure Cosmos DB restorable
-        database account.
+        database account.  This call requires
+        'Microsoft.DocumentDB/locations/restorableDatabaseAccounts/read/*'
+        permission.
 
         :param location: Cosmos DB region, with spaces between words and each
          word capitalized.
@@ -196,8 +205,7 @@ class RestorableDatabaseAccountsOperations(object):
          raw=true
         :rtype: ~azure.mgmt.cosmosdb.models.RestorableDatabaseAccountGetResult
          or ~msrest.pipeline.ClientRawResponse
-        :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.cosmosdb.models.DefaultErrorResponseException>`
+        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
         url = self.get_by_location.metadata['url']
@@ -210,7 +218,7 @@ class RestorableDatabaseAccountsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -227,7 +235,9 @@ class RestorableDatabaseAccountsOperations(object):
         response = self._client.send(request, stream=False, **operation_config)
 
         if response.status_code not in [200]:
-            raise models.DefaultErrorResponseException(self._deserialize, response)
+            exp = CloudError(response)
+            exp.request_id = response.headers.get('x-ms-request-id')
+            raise exp
 
         deserialized = None
         if response.status_code == 200:

@@ -8,14 +8,22 @@ from ._operations import Operations
 from ._locations_operations import LocationsOperations
 from ._private_clouds_operations import PrivateCloudsOperations
 from ._clusters_operations import ClustersOperations
+from ._datastores_operations import DatastoresOperations
 from ._hcx_enterprise_sites_operations import HcxEnterpriseSitesOperations
 from ._authorizations_operations import AuthorizationsOperations
+from ._global_reach_connections_operations import GlobalReachConnectionsOperations
+from ._workload_networks_operations import WorkloadNetworksOperations
+from ._addons_operations import AddonsOperations
 
 __all__ = [
     'Operations',
     'LocationsOperations',
     'PrivateCloudsOperations',
     'ClustersOperations',
+    'DatastoresOperations',
     'HcxEnterpriseSitesOperations',
     'AuthorizationsOperations',
+    'GlobalReachConnectionsOperations',
+    'WorkloadNetworksOperations',
+    'AddonsOperations',
 ]
