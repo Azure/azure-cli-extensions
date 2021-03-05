@@ -7,10 +7,11 @@
 
 from knack.util import CLIError
 
-from .._client_factory import cf_workspaces, cf_quotas
+from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, cf_vm_image_term
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
 from ..vendored_sdks.azure_mgmt_quantum.models import Provider
+from .offerings import _get_publisher_and_offer_from_provider_id, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 from msrestazure.azure_exceptions import CloudError
 
 import time
@@ -18,6 +19,8 @@ import time
 DEFAULT_WORKSPACE_LOCATION = 'westus'
 POLLING_TIME_DURATION = 3
 MAX_RETRIES_ROLE_ASSIGNMENT = 10
+DEFAULT_WORKSPACE_PROVIDER_ID = 'Microsoft'
+DEFAULT_WORKSPACE_PROVIDER_SKU = 'Basic'
 
 
 class WorkspaceInfo(object):
@@ -76,14 +79,51 @@ def _get_basic_quantum_workspace(location, info, storage_account):
     # Use a default provider
     # Replace this with user specified providers as part of task 16184.
     prov = Provider()
-    prov.provider_id = "Microsoft"
-    prov.provider_sku = "Basic"
+    prov.provider_id = DEFAULT_WORKSPACE_PROVIDER_ID
+    prov.provider_sku = DEFAULT_WORKSPACE_PROVIDER_SKU
     qw.providers = [prov]
     # Allow the system to assign the workspace identity
     qw.identity = QuantumWorkspaceIdentity()
     qw.identity.type = "SystemAssigned"
     qw.storage_account = _get_storage_account_path(info, storage_account)
     return qw
+
+
+def _provider_terms_need_acceptance(cmd, provider):
+    if (provider['offer_id'] == OFFER_NOT_AVAILABLE or provider['publisher_id'] == PUBLISHER_NOT_AVAILABLE):
+        # No need to accept terms
+        return False
+    else:
+        return not cf_vm_image_term(cmd.cli_ctx).get(provider['publisher_id'], provider['offer_id'], provider['sku']).accepted
+
+
+def _add_quantum_providers(cmd, workspace, providers):
+    providers_in_region_paged = cf_offerings(cmd.cli_ctx).list(location_name=workspace.location)
+    providers_in_region = [item for item in providers_in_region_paged]
+    providers_selected = []
+    for pair in providers.split(','):
+        es = [e.strip() for e in pair.split('/')]
+        if (len(es) != 2):
+            raise CLIError(f"Invalid Provider/SKU specified: '{pair.strip()}'")
+        provider_id = es[0]
+        sku = es[1]
+        (publisher, offer) = _get_publisher_and_offer_from_provider_id(providers_in_region, provider_id)
+        if (offer is None or publisher is None):
+            raise CLIError(f"Provider '{provider_id}' not found in region {workspace.location}.")
+        providers_selected.append({'provider_id': provider_id, 'sku': sku, 'offer_id': offer, 'publisher_id': publisher})
+    _show_tip(f"Workspace creation has been requested with the following providers:\n{providers_selected}")
+    # Now that the providers have been requested, add each of them into the workspace
+    for provider in providers_selected:
+        if (provider['provider_id'].lower() == DEFAULT_WORKSPACE_PROVIDER_ID.lower() and provider['sku'].lower() == DEFAULT_WORKSPACE_PROVIDER_SKU.lower()):
+            # We can skip the default provider since it will be added always.)
+            continue
+        if _provider_terms_need_acceptance(cmd, provider):
+            raise CLIError(f"Terms for Provider '{provider['provider_id']}' and SKU '{provider['sku']}' have not been accepted.\n"
+                           "Use command 'az quantum offerings accept-terms' to accept them.")
+        p = Provider()
+        p.provider_id = provider['provider_id']
+        p.provider_sku = provider['sku']
+        workspace.providers.append(p)
 
 
 def _create_role_assignment(cmd, quantum_workspace):
@@ -110,7 +150,7 @@ def _create_role_assignment(cmd, quantum_workspace):
     return quantum_workspace
 
 
-def create(cmd, resource_group_name=None, workspace_name=None, location=None, storage_account=None, skip_role_assignment=False):
+def create(cmd, resource_group_name=None, workspace_name=None, location=None, storage_account=None, skip_role_assignment=False, provider_sku_list=None):
     """
     Create a new Azure Quantum workspace.
     """
@@ -124,9 +164,12 @@ def create(cmd, resource_group_name=None, workspace_name=None, location=None, st
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     if (not info.resource_group):
         raise CLIError("Please run 'az quantum workspace set' first to select a default resource group.")
-    _show_tip(f"Workspace {info.name} will be created with the Basic SKU of the Microsoft QIO optimization provider.\n"
-              "Please go to the Azure portal https://portal.azure.com/ to configure additional providers.")
     quantum_workspace = _get_basic_quantum_workspace(location, info, storage_account)
+    if (provider_sku_list is None):
+        _show_tip(f"Workspace {info.name} will be created with the Basic SKU of the Microsoft QIO optimization provider.\n"
+                  "Please go to the Azure portal https://portal.azure.com/ to configure additional providers.")
+    else:
+        _add_quantum_providers(cmd, quantum_workspace, provider_sku_list)
     poller = client.create_or_update(info.resource_group, info.name, quantum_workspace, polling=False)
     while not poller.done():
         time.sleep(POLLING_TIME_DURATION)
