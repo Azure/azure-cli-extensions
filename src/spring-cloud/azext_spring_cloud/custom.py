@@ -1413,8 +1413,7 @@ def _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls
     logger.warning("Set end to end tls for app '{}'".format(app))
     poller = client.apps.update(
         resource_group, service, app, app_resource)
-    while poller.done() is False:
-        sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
+    return poller.result()
 
 
 def domain_show(cmd, client, resource_group, service, app, domain_name):
