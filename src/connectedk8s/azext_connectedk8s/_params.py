@@ -33,9 +33,9 @@ def load_arguments(self, _):
         c.argument('distribution', options_list=['--distribution'], help='The Kubernetes distribution which will be running on this connected cluster.', arg_type=get_enum_type(Distribution_Enum_Values))
         c.argument('infrastructure', options_list=['--infrastructure'], help='The infrastructure on which the Kubernetes cluster represented by this connected cluster will be running on.', arg_type=get_enum_type(Infrastructure_Enum_Values))
         c.argument('disable_auto_upgrade', options_list=['--disable-auto-upgrade'], action='store_true', help='Flag to disable auto upgrade of arc agents.')
-        c.argument('features_to_enable', features_types, options_list=['--enable-features'], help='Space-separated list of features you want to enable.')
-        c.argument('aad_client_id', options_list=['--aad-client-id'], help='AAD authorization client ID for enabling AAD RBAC')
-        c.argument('aad_client_secret', options_list=['--aad-client-secret'], help='AAD authorization client secret for enabling AAD RBAC')
+        c.argument('enable_azure_rbac', options_list=['--enable-azure-rbac'], action='store_true', help='Flag to enable Azure RBAC for authorization.', is_preview=True)
+        c.argument('aad_client_id', options_list=['--aad-client-id'], help='AAD authorization client ID for enabling AAD RBAC. Specify when using enable-azure-rbac.', is_preview=True)
+        c.argument('aad_client_secret', options_list=['--aad-client-secret'], help='AAD authorization client secret for enabling AAD RBAC. Specify when using enable-azure-rbac.', is_preview=True)
 
     with self.argument_context('connectedk8s update') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
@@ -54,14 +54,21 @@ def load_arguments(self, _):
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
         c.argument('arc_agent_version', options_list=['--agent-version'], help='Version of agent to update the helm charts to.')
 
-    with self.argument_context('connectedk8s toggle') as c:
+    with self.argument_context('connectedk8s enable-features') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
-        c.argument('features_to_enable', features_types, options_list=['--enable-features'], help='Space-separated list of features you want to enable.')
-        c.argument('features_to_disable', features_types, options_list=['--disable-features'], help='Space-separated list of features you want to disable.')
-        c.argument('aad_client_id', options_list=['--aad-client-id'], help='AAD authorization client ID for enabling AAD RBAC')
-        c.argument('aad_client_secret', options_list=['--aad-client-secret'], help='AAD authorization client secret for enabling AAD RBAC')
+        c.argument('features', features_types, options_list=['--features'], help='Space-separated list of features you want to enable.')
+        c.argument('aad_client_id', options_list=['--aad-client-id'], help='AAD authorization client ID for enabling AAD RBAC. Specify when enabling azure-rbac.')
+        c.argument('aad_client_secret', options_list=['--aad-client-secret'], help='AAD authorization client secret for enabling AAD RBAC. Specify when enabling azure-rbac.')
+
+    with self.argument_context('connectedk8s disable-features') as c:
+        c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
+        c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
+        c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
+        c.argument('features', features_types, options_list=['--features'], help='Space-separated list of features you want to disable.')
+        c.argument('aad_client_id', options_list=['--aad-client-id'], help='AAD authorization client ID for enabling AAD RBAC. Specify when disabling azure-rbac.')
+        c.argument('aad_client_secret', options_list=['--aad-client-secret'], help='AAD authorization client secret for enabling AAD RBAC. Specify when disabling azure-rbac.')
 
     with self.argument_context('connectedk8s list') as c:
         pass

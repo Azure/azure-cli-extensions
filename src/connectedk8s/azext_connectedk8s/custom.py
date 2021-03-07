@@ -51,7 +51,7 @@ logger = get_logger(__name__)
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
-                        disable_auto_upgrade=False, features_to_enable=None, aad_client_id="", aad_client_secret=""):
+                        disable_auto_upgrade=False, enable_azure_rbac=False, aad_client_id=None, aad_client_secret=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -110,7 +110,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         telemetry.set_user_fault()
         telemetry.set_exception(fault_type=consts.Linux_Amd64_Node_Not_Exists,
                                 summary="Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'")
-        raise CLIError("Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux', for scheduling the arc agent pods onto. Learn more at {}.".format("LINK2"))
+        raise CLIError("Couldn't connect this Kubernetes cluster to Azure Arc as it doesn't have any nodes with OS 'linux' and architecture 'amd64'. Learn more at {}".format("https://aka.ms/ArcK8sSupportedOSArchitecture"))
 
     # Get kubernetes cluster info
     kubernetes_version = get_server_version(configuration)
@@ -119,9 +119,16 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         latest_kubernetes_version = utils.get_latest_kubernetes_version()
         latest_version_minor = latest_kubernetes_version.split('.')[1]
         if int(current_version_minor) < int(latest_version_minor) - 2:
-            logger.warning("The kubernetes version {} is out of our support window. Learn more at {}.".format(kubernetes_version, "LINK"))
+            logger.warning("The Kubernetes cluster you are trying to connect to Azure Arc is of version {}, which is out of Azure Arc's support window. Learn more at {}".format(kubernetes_version, "https://aka.ms/ArcK8sVersionSupportPolicy"))
     except Exception as e:
-        pass  # Since the error/warning in fetching either of the two values will be caught and displayed earlier
+        pass  # Since the warning in fetching either of the two values will be caught and displayed earlier
+
+    if enable_azure_rbac:
+        if (aad_client_id is None) or (aad_client_secret is None):
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception='Client ID or secret not provided for AAD RBAC', fault_type=consts.Client_Details_Not_Provided_For_AAD_RBAC_Fault,
+                                    summary='Both aad authorization client id and client secret is required to enable AAD RBAC feature')
+            raise CLIError("Please provide both aad authorization client id and client secret to enable AAD RBAC feature")
 
     if distribution == 'auto':
         kubernetes_distro = get_kubernetes_distro(configuration)  # (cluster heuristics)
@@ -255,20 +262,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Create connected cluster resource
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
 
-    # Checking which extra features to enable on this cluster
-    enable_cluster_connect, enable_extensions, enable_aad_rbac, enable_cl = utils.check_features_required(features_to_enable)
-    if enable_aad_rbac:
-        if aad_client_id == "" or aad_client_secret == "":
-            telemetry.set_user_fault()
-            telemetry.set_exception(exception='Client ID or secret not provided for AAD RBAC', fault_type=consts.Client_Details_Not_Provided_For_AAD_RBAC_Fault,
-                                    summary='Both aad authorization client id and client secret is required to enable AAD RBAC feature')
-            raise CLIError("Please provide both aad authorization client id and client secret to enable AAD RBAC feature")
-
     # Install azure-arc agents
     utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                                location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
                                kube_context, no_wait, values_file_provided, values_file, azure_cloud, disable_auto_upgrade,
-                               enable_cluster_connect, enable_extensions, enable_aad_rbac, enable_cl)
+                               enable_azure_rbac, aad_client_id, aad_client_secret)
 
     return put_cc_response
 
@@ -1071,9 +1069,248 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     return str.format(consts.Upgrade_Agent_Success, connected_cluster.name)
 
 
-def toggle_features(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None,
-                    features_to_enable=None, features_to_disable=None, aad_client_id="", aad_client_secret=""):
-    pass
+def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None,
+                    features=None, aad_client_id=None, aad_client_secret=None):
+    logger.warning("Ensure that you have the latest helm version installed before proceeding.")
+    logger.warning("This operation might take a while...\n")
+
+    # Send cloud information to telemetry
+    send_cloud_telemetry(cmd)
+
+    # Setting kubeconfig
+    kube_config = set_kube_config(kube_config)
+
+    # Checking whether optional extra values file has been provided.
+    values_file_provided, values_file = utils.get_values_file()
+
+    # Validate the helm environment file for Dogfood.
+    dp_endpoint_dogfood = None
+    release_train_dogfood = None
+    if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
+        dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
+
+    # Loading the kubeconfig file in kubernetes client configuration
+    load_kube_config(kube_config, kube_context)
+    configuration = kube_client.Configuration()
+
+    # Checking the connection to kubernetes cluster.
+    # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
+    # if the user had not logged in.
+    check_kube_connection(configuration)
+
+    # Get kubernetes cluster info for telemetry
+    kubernetes_version = get_server_version(configuration)
+
+    # Checking helm installation
+    check_helm_install(kube_config, kube_context)
+
+    # Check helm version
+    helm_version = check_helm_version(kube_config, kube_context)
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.HelmVersion': helm_version})
+
+    # Check for faulty pre-release helm versions
+    if "3.3.0-rc" in helm_version:
+        telemetry.set_user_fault()
+        raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
+
+    # Check whether Connected Cluster is present
+    if not connected_cluster_exists(client, resource_group_name, cluster_name):
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception='The connected cluster resource does not exist', fault_type=consts.Resource_Does_Not_Exist_Fault_Type,
+                                summary='Connected cluster resource does not exist')
+        raise CLIError("The connected cluster resource {} does not exist ".format(cluster_name) +
+                       "in the resource group {} ".format(resource_group_name) +
+                       "Please onboard the connected cluster using: az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>")
+
+    # Fetch Connected Cluster for agent version
+    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
+
+    if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
+        kubernetes_distro = connected_cluster.distribution
+    else:
+        kubernetes_distro = get_kubernetes_distro(configuration)
+
+    if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
+        kubernetes_infra = connected_cluster.infrastructure
+    else:
+        kubernetes_infra = get_kubernetes_infra(configuration)
+
+    kubernetes_properties = {
+        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
+        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
+        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
+    }
+    telemetry.add_extension_event('connectedk8s', kubernetes_properties)
+
+    enable_cluster_connect, enable_extensions, enable_azure_rbac, enable_cl = utils.check_features_to_update(features)
+    if enable_azure_rbac:
+        if (aad_client_id is None) or (aad_client_secret is None):
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception='Client ID or secret not provided for AAD RBAC', fault_type=consts.Client_Details_Not_Provided_For_AAD_RBAC_Fault,
+                                    summary='Both aad authorization client id and client secret is required to enable AAD RBAC feature')
+            raise CLIError("Please provide both aad authorization client id and client secret to enable AAD RBAC feature")
+
+    # Adding helm repo
+    if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
+        utils.add_helm_repo(kube_config, kube_context)
+
+    # Setting the config dataplane endpoint
+    config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
+
+    # Retrieving Helm chart OCI Artifact location
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+
+    reg_path_array = registry_path.split(':')
+    agent_version = reg_path_array[1]
+
+    # Set agent version in registry path
+    if connected_cluster.agent_version is not None:
+        agent_version = connected_cluster.agent_version
+        registry_path = reg_path_array[0] + ":" + agent_version
+
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': agent_version})
+
+    # Get Helm chart path
+    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
+
+    cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path,
+                        "--reuse-values",
+                        "--wait", "--output", "json"]
+    if values_file_provided:
+        cmd_helm_upgrade.extend(["-f", values_file])
+    if kube_config:
+        cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
+    if kube_context:
+        cmd_helm_upgrade.extend(["--kube-context", kube_context])
+    response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
+    _, error_helm_upgrade = response_helm_upgrade.communicate()
+    if response_helm_upgrade.returncode != 0:
+        if ('forbidden' in error_helm_upgrade.decode("ascii") or 'timed out waiting for the condition' in error_helm_upgrade.decode("ascii")):
+            telemetry.set_user_fault()
+        telemetry.set_exception(exception=error_helm_upgrade.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
+                                summary='Unable to install helm release')
+        raise CLIError(str.format(consts.Error_enabling_Features, error_helm_upgrade.decode("ascii")))
+
+    return str.format(consts.Successfully_Enabled_Features, features, connected_cluster.name)
+
+
+def disable_features(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None,
+                    features=None, aad_client_id=None, aad_client_secret=None):
+    logger.warning("Ensure that you have the latest helm version installed before proceeding.")
+    logger.warning("This operation might take a while...\n")
+
+    # Send cloud information to telemetry
+    send_cloud_telemetry(cmd)
+
+    # Setting kubeconfig
+    kube_config = set_kube_config(kube_config)
+
+    # Checking whether optional extra values file has been provided.
+    values_file_provided, values_file = utils.get_values_file()
+
+    # Validate the helm environment file for Dogfood.
+    dp_endpoint_dogfood = None
+    release_train_dogfood = None
+    if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
+        dp_endpoint_dogfood, release_train_dogfood = validate_env_file_dogfood(values_file, values_file_provided)
+
+    # Loading the kubeconfig file in kubernetes client configuration
+    load_kube_config(kube_config, kube_context)
+    configuration = kube_client.Configuration()
+
+    # Checking the connection to kubernetes cluster.
+    # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
+    # if the user had not logged in.
+    check_kube_connection(configuration)
+
+    # Get kubernetes cluster info for telemetry
+    kubernetes_version = get_server_version(configuration)
+
+    # Checking helm installation
+    check_helm_install(kube_config, kube_context)
+
+    # Check helm version
+    helm_version = check_helm_version(kube_config, kube_context)
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.HelmVersion': helm_version})
+
+    # Check for faulty pre-release helm versions
+    if "3.3.0-rc" in helm_version:
+        telemetry.set_user_fault()
+        raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
+
+    # Check whether Connected Cluster is present
+    if not connected_cluster_exists(client, resource_group_name, cluster_name):
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception='The connected cluster resource does not exist', fault_type=consts.Resource_Does_Not_Exist_Fault_Type,
+                                summary='Connected cluster resource does not exist')
+        raise CLIError("The connected cluster resource {} does not exist ".format(cluster_name) +
+                       "in the resource group {} ".format(resource_group_name) +
+                       "Please onboard the connected cluster using: az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>")
+
+    # Fetch Connected Cluster for agent version
+    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
+
+    if hasattr(connected_cluster, 'distribution') and (connected_cluster.distribution is not None):
+        kubernetes_distro = connected_cluster.distribution
+    else:
+        kubernetes_distro = get_kubernetes_distro(configuration)
+
+    if hasattr(connected_cluster, 'infrastructure') and (connected_cluster.infrastructure is not None):
+        kubernetes_infra = connected_cluster.infrastructure
+    else:
+        kubernetes_infra = get_kubernetes_infra(configuration)
+
+    kubernetes_properties = {
+        'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
+        'Context.Default.AzureCLI.KubernetesDistro': kubernetes_distro,
+        'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
+    }
+    telemetry.add_extension_event('connectedk8s', kubernetes_properties)
+
+    disable_cluster_connect, disable_extensions, disable_azure_rbac, disable_cl = utils.check_features_to_update(features)
+
+    # Adding helm repo
+    if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
+        utils.add_helm_repo(kube_config, kube_context)
+
+    # Setting the config dataplane endpoint
+    config_dp_endpoint = get_config_dp_endpoint(cmd, connected_cluster.location)
+
+    # Retrieving Helm chart OCI Artifact location
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else utils.get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood, release_train_dogfood)
+
+    reg_path_array = registry_path.split(':')
+    agent_version = reg_path_array[1]
+
+    # Set agent version in registry path
+    if connected_cluster.agent_version is not None:
+        agent_version = connected_cluster.agent_version
+        registry_path = reg_path_array[0] + ":" + agent_version
+
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.AgentVersion': agent_version})
+
+    # Get Helm chart path
+    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
+
+    cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path,
+                        "--reuse-values",
+                        "--wait", "--output", "json"]
+    if values_file_provided:
+        cmd_helm_upgrade.extend(["-f", values_file])
+    if kube_config:
+        cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
+    if kube_context:
+        cmd_helm_upgrade.extend(["--kube-context", kube_context])
+    response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
+    _, error_helm_upgrade = response_helm_upgrade.communicate()
+    if response_helm_upgrade.returncode != 0:
+        if ('forbidden' in error_helm_upgrade.decode("ascii") or 'timed out waiting for the condition' in error_helm_upgrade.decode("ascii")):
+            telemetry.set_user_fault()
+        telemetry.set_exception(exception=error_helm_upgrade.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
+                                summary='Unable to install helm release')
+        raise CLIError(str.format(consts.Error_disabling_Features, error_helm_upgrade.decode("ascii")))
+
+    return str.format(consts.Successfully_Disabled_Features, features, connected_cluster.name)
 
 
 def load_kubernetes_configuration(filename):

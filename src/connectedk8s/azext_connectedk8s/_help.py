@@ -88,10 +88,18 @@ helps['connectedk8s proxy'] = """
     text: az connectedk8s proxy -n clusterName -g resourceGroupName
 """
 
-helps['connectedk8s toggle'] = """
+helps['connectedk8s enable-features'] = """
   type: command
-  short-summary: Toggle the selective features on the connected cluster.
+  short-summary: Enables the selective features on the connected cluster.
   examples:
-  - name: Toggle the Cluster-Connect feature to disable.
-    text: az connectedk8s toggle -n clusterName -g resourceGroupName --disable-features cluster-connect
+  - name: Enables the Cluster-Connect feature.
+    text: az connectedk8s enable-features -n clusterName -g resourceGroupName --features cluster-connect
+"""
+
+helps['connectedk8s disable-features'] = """
+  type: command
+  short-summary: Disables the selective features on the connected cluster.
+  examples:
+  - name: Disables the azure-rbac feature.
+    text: az connectedk8s disable-features -n clusterName -g resourceGroupName --features azure-rbac
 """

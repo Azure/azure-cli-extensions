@@ -266,7 +266,7 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, configuratio
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
                          kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade,
-                         enable_cluster_connect, enable_extensions, enable_aad_rbac, enable_cl):
+                         enable_azure_rbac, aad_client_id, aad_client_secret):
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
@@ -282,12 +282,10 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
     # To set some other helm parameters through file
     if values_file_provided:
         cmd_helm_install.extend(["-f", values_file])
-    if enable_cluster_connect:
-        cmd_helm_install.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=true"])
-    if enable_extensions:
-        cmd_helm_install.extend(["--set", "systemDefaultValues.extensionoperator.enabled=true"])
-    if enable_aad_rbac:
+    if enable_azure_rbac:
         cmd_helm_install.extend(["--set", "systemDefaultValues.guard.enabled=true"])
+        cmd_helm_install.extend(["--set", "systemDefaultValues.guard.clientId={}".format(aad_client_id)])
+        cmd_helm_install.extend(["--set", "systemDefaultValues.guard.clientSecret={}".format(aad_client_secret)])
     if disable_auto_upgrade:
         cmd_helm_install.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}".format("false")])
     if https_proxy:
@@ -347,16 +345,16 @@ def get_latest_kubernetes_version():
     return None
 
 
-def check_features_required(features_to_enable):
-    enable_cluster_connect, enable_extensions, enable_aad_rbac, enable_cl = False, False, False, False
-    for feature in features_to_enable:
+def check_features_to_update(features_to_update):
+    update_cluster_connect, update_extensions, update_azure_rbac, update_cl = False, False, False, False
+    for feature in features_to_update:
         if feature == "cluster-connect":
-            enable_cluster_connect = True
+            update_cluster_connect = True
         elif feature == "cluster-extensions":
-            enable_extensions = True
-        elif feature == "aad-rbac":
-            enable_aad_rbac = True
+            update_extensions = True
+        elif feature == "azure-rbac":
+            update_azure_rbac = True
         elif feature == "custom-locations":
-            enable_cl = True
+            update_cl = True
 
-    return enable_cluster_connect, enable_extensions, enable_aad_rbac, enable_cl
+    return update_cluster_connect, update_extensions, update_azure_rbac, update_cl

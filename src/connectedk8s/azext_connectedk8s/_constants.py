@@ -8,7 +8,7 @@
 
 Distribution_Enum_Values = ["auto", "generic", "openshift", "rancher_rke", "kind", "k3s", "minikube", "gke", "eks", "aks", "aks_management", "aks_workload", "capz", "aks_engine", "tkg"]
 Infrastructure_Enum_Values = ["auto", "generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere", "windows_server"]
-Feature_Values = ["cluster-connect", "cluster-extensions", "aad-rbac", "custom-locations"]
+Feature_Values = ["cluster-connect", "cluster-extensions", "azure-rbac", "custom-locations"]
 
 Azure_PublicCloudName = 'AZUREPUBLICCLOUD'
 Azure_USGovCloudName = 'AZUREUSGOVERNMENTCLOUD'
@@ -105,6 +105,10 @@ Linux_Amd64_Node_Not_Exists = 'Kubernetes cluster doesnt have amd64/linux node'
 Kubernetes_Latest_Version_Fetch_Fault = 'Error while fetching the latest stable kubernetes release'
 
 Client_Details_Not_Provided_For_AAD_RBAC_Fault = 'Client ID or secret not provided for AAD RBAC'
+Successfully_Enabled_Features = 'Successsfully enabled features: {} for the Connected Cluster {}'
+Successfully_Disabled_Features = 'Successsfully disabled features: {} for the Connected Cluster {}'
+Error_enabling_Features = 'Error while updating agents for enabling features. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of timeout error. Error: {}'
+Error_disabling_Features = 'Error while updating agents for disabling features. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of timeout error. Error: {}'
 CLIENT_PROXY_VERSION = '0.2.3'
 API_SERVER_PORT = 47011
 CLIENT_PROXY_PORT = 47010
