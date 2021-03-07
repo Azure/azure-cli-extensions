@@ -100,5 +100,8 @@ Helm_Existing_User_Supplied_Value_Get_Fault = 'Error while loading the user supp
 Error_Flattening_User_Supplied_Value_Dict = 'Error while flattening the user supplied helm values dict'
 Upgrade_RG_Cluster_Name_Conflict = 'The provided cluster name and rg correspond to different cluster'
 Corresponding_CC_Resource_Deleted_Fault = 'CC resource corresponding to this cluster has been deleted by the customer'
+Kubernetes_Node_Type_Fetch_Fault = 'Error while trying to find a linux/amd64 node for scheduling pods'
+Linux_Amd64_Node_Not_Exists = 'Kubernetes cluster doesnt have amd64/linux node'
+Kubernetes_Latest_Version_Fetch_Fault = 'Error while fetching the latest stable kubernetes release'
 
 Client_Details_Not_Provided_For_AAD_RBAC_Fault = 'Client ID or secret not provided for AAD RBAC'

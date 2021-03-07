@@ -6,7 +6,6 @@
 import errno
 from logging import exception
 import os
-import shutil
 import json
 import tempfile
 import time
@@ -106,8 +105,24 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # if the user had not logged in.
     check_kube_connection(configuration)
 
+    required_node_exists = check_linux_amd64_node(configuration)
+    if not required_node_exists:
+        telemetry.set_user_fault()
+        telemetry.set_exception(fault_type=consts.Linux_Amd64_Node_Not_Exists,
+                                summary = "Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'")
+        raise CLIError("Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux', for scheduling the arc agent pods onto. Learn more at {}.".format("LINK2"))
+
     # Get kubernetes cluster info
     kubernetes_version = get_server_version(configuration)
+    current_version_minor = kubernetes_version.split('.')[1]
+    try:
+        latest_kubernetes_version = utils.get_latest_kubernetes_version()
+        latest_version_minor = latest_kubernetes_version.split('.')[1]
+        if int(current_version_minor) < int(latest_version_minor) - 2:
+            logger.warning("The kubernetes version {} is out of our support window. Learn more at {}.".format(kubernetes_version, "LINK"))
+    except Exception as e:
+        pass #Since the error/warning in fetching either of the two values will be caught and displayed earlier
+
     if distribution == 'auto':
         kubernetes_distro = get_kubernetes_distro(configuration)  # (cluster heuristics)
     else:
@@ -499,6 +514,22 @@ def get_kubernetes_infra(configuration):  # Heuristic
         utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Infra_Fault_Type, 'Unable to fetch kubernetes infrastructure',
                                            raise_error=False)
         return "generic"
+
+
+def check_linux_amd64_node(configuration):
+    api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+    try:
+        api_response = api_instance.list_node()
+        for item in api_response.items:
+            node_arch = item.metadata.labels.get("kubernetes.io/arch")
+            node_os = item.metadata.labels.get("kubernetes.io/os")
+            if node_arch == "amd64" and node_os == "linux":
+                return True
+    except Exception as e:  # pylint: disable=broad-except
+        logger.warning("Error occured while trying to find a linux/amd64 node.")
+        utils.kubernetes_exception_handler(e, consts.Kubernetes_Node_Type_Fetch_Fault, 'Unable to find a linux/amd64 node',
+                                           raise_error=False)
+    return False
 
 
 def generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra):

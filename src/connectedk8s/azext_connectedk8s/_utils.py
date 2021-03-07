@@ -8,6 +8,8 @@ import shutil
 import subprocess
 from subprocess import Popen, PIPE
 import time
+import requests
+import json
 
 from knack.util import CLIError
 from knack.log import get_logger
@@ -325,6 +327,26 @@ def flatten(dd, separator='.', prefix=''):
         telemetry.set_exception(exception=e, fault_type=consts.Error_Flattening_User_Supplied_Value_Dict,
                                 summary='Error while flattening the user supplied helm values dict')
         raise CLIError("Error while flattening the user supplied helm values dict")
+
+
+def get_latest_kubernetes_version():
+    url = "https://api.github.com/repos/kubernetes/kubernetes/releases/latest"
+
+    payload={}
+    headers = {
+    'Accept': 'application/vnd.github.v3+json'
+    }
+    try:
+        response = requests.request("GET", url, headers=headers, data=payload)
+        if response.ok:
+            latest_release = json.loads(response.text)
+            return latest_release["tag_name"]
+        else:
+            logger.warning("Couldn't fetch the latest kubernetes stable release information. Response status code: {}".format(response.status_code))
+    except Exception as e:
+        kubernetes_exception_handler(e, consts.Kubernetes_Latest_Version_Fetch_Fault, "Couldn't fetch latest kubernetes release info", error_message="Error while fetching the latest stable kubernetes release", raise_error=False)
+
+    return None
 
 
 def check_features_required(features_to_enable):
