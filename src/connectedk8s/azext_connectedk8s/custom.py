@@ -109,7 +109,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     if not required_node_exists:
         telemetry.set_user_fault()
         telemetry.set_exception(fault_type=consts.Linux_Amd64_Node_Not_Exists,
-                                summary = "Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'")
+                                summary="Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'")
         raise CLIError("Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux', for scheduling the arc agent pods onto. Learn more at {}.".format("LINK2"))
 
     # Get kubernetes cluster info
@@ -121,7 +121,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         if int(current_version_minor) < int(latest_version_minor) - 2:
             logger.warning("The kubernetes version {} is out of our support window. Learn more at {}.".format(kubernetes_version, "LINK"))
     except Exception as e:
-        pass #Since the error/warning in fetching either of the two values will be caught and displayed earlier
+        pass  # Since the error/warning in fetching either of the two values will be caught and displayed earlier
 
     if distribution == 'auto':
         kubernetes_distro = get_kubernetes_distro(configuration)  # (cluster heuristics)
