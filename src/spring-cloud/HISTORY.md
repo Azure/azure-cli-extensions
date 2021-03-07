@@ -1,5 +1,9 @@
 Release History
 ===============
+2.2.1
+-----
+* Fix exception in app service binding
+
 2.2.0
 -----
 * Add bring your own route tables support

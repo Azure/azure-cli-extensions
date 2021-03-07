@@ -2,10 +2,14 @@
 
 Release History
 ===============
+
+0.5.5
++++++
+* Add support for Azure KeyVault Secrets Provider as an AKS addon
+
 0.5.4
 +++++
 * Add operations of maintenance configuration
-=======
 
 0.5.3
 +++++
