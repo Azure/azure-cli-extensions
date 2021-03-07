@@ -105,3 +105,8 @@ Linux_Amd64_Node_Not_Exists = 'Kubernetes cluster doesnt have amd64/linux node'
 Kubernetes_Latest_Version_Fetch_Fault = 'Error while fetching the latest stable kubernetes release'
 
 Client_Details_Not_Provided_For_AAD_RBAC_Fault = 'Client ID or secret not provided for AAD RBAC'
+CLIENT_PROXY_VERSION = '0.2.3'
+API_SERVER_PORT = 47011
+CLIENT_PROXY_PORT = 47010
+CLIENTPROXY_CLIENT_ID = '04b07795-8ddb-461a-bbee-02f9e1bf7b46'
+API_CALL_RETRIES = 200

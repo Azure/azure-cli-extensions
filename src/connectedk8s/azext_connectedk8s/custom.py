@@ -1229,13 +1229,6 @@ def _resolve_service_principal(client, identifier):  # Uses service principal gr
     raise error
 
 
-CLIENT_PROXY_VERSION = '0.1.0'
-API_SERVER_PORT = 47011
-CLIENT_PROXY_PORT = 47010
-CLIENTPROXY_CLIENT_ID = '04b07795-8ddb-461a-bbee-02f9e1bf7b46'
-API_CALL_RETRIES = 200
-
-
 def client_side_proxy_wrapper(cmd,
                               client,
                               resource_group_name,
@@ -1244,8 +1237,8 @@ def client_side_proxy_wrapper(cmd,
                               path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
                               overwrite_existing=False,
                               context_name=None,
-                              api_server_port=API_SERVER_PORT,
-                              client_proxy_port=CLIENT_PROXY_PORT):
+                              api_server_port=consts.API_SERVER_PORT,
+                              client_proxy_port=consts.CLIENT_PROXY_PORT):
 
     cloud = send_cloud_telemetry(cmd)
     args = []
@@ -1253,18 +1246,18 @@ def client_side_proxy_wrapper(cmd,
     signal.signal(signal.SIGINT, ctrlc_handler)
     # Creating installation location, request uri and older version exe location depending on OS
     if(operating_system == 'Windows'):
-        install_location_string = f'.clientproxy\\arcProxy{operating_system}{CLIENT_PROXY_VERSION}.exe'
-        requestUri = f'https://clientproxy.azureedge.net/release20201218/arcProxy{operating_system}{CLIENT_PROXY_VERSION}.exe'
+        install_location_string = f'.clientproxy\\arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe'
+        requestUri = f'https://clientproxy.azureedge.net/release20201218/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe'
         older_version_string = f'.clientproxy\\arcProxy{operating_system}*.exe'
         creds_string = r'.azure\accessTokens.json'
-        proc_name = f'arcProxy{operating_system}{CLIENT_PROXY_VERSION}.exe'
+        proc_name = f'arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe'
 
     elif(operating_system == 'Linux' or operating_system == 'Darwin'):
-        install_location_string = f'.clientproxy/arcProxy{operating_system}{CLIENT_PROXY_VERSION}'
-        requestUri = f'https://clientproxy.azureedge.net/release20201218/arcProxy{operating_system}{CLIENT_PROXY_VERSION}'
+        install_location_string = f'.clientproxy/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}'
+        requestUri = f'https://clientproxy.azureedge.net/release20201218/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}'
         older_version_string = f'.clientproxy/arcProxy{operating_system}*'
         creds_string = r'.azure/accessTokens.json'
-        proc_name = f'arcProxy{operating_system}{CLIENT_PROXY_VERSION}'
+        proc_name = f'arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}'
 
     else:
         telemetry.set_exception(exception='Unsupported OS', fault_type=consts.Unsupported_Fault_Type,
@@ -1349,7 +1342,7 @@ def client_side_proxy_wrapper(cmd,
         tenantId = _graph_client_factory(cmd.cli_ctx).config.tenant_id
 
         if user_type == 'user':
-            dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}, 'identity': {'tenantID': tenantId, 'clientID': CLIENTPROXY_CLIENT_ID}}
+            dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}, 'identity': {'tenantID': tenantId, 'clientID': consts.CLIENTPROXY_CLIENT_ID}}
         else:
             dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}, 'identity': {'tenantID': tenantId, 'clientID': account['user']['name']}}
 
@@ -1541,12 +1534,12 @@ def client_side_proxy(cmd,
 
 
 def make_api_call_with_retries(uri, data, tls_verify, fault_type, summary, cli_error):
-    for i in range(API_CALL_RETRIES):
+    for i in range(consts.API_CALL_RETRIES):
         try:
             response = requests.post(uri, json=data, verify=tls_verify)
             return response
         except Exception as e:
-            if i != API_CALL_RETRIES - 1:
+            if i != consts.API_CALL_RETRIES - 1:
                 pass
             else:
                 telemetry.set_exception(exception=e, fault_type=fault_type, summary=summary)
