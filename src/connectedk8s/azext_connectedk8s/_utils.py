@@ -333,7 +333,7 @@ def get_latest_kubernetes_version():
     url = "https://api.github.com/repos/kubernetes/kubernetes/releases/latest"
 
     payload = {}
-    headers = { 'Accept': 'application/vnd.github.v3+json' }
+    headers = {'Accept': 'application/vnd.github.v3+json'}
     try:
         response = requests.request("GET", url, headers=headers, data=payload)
         if response.ok:
