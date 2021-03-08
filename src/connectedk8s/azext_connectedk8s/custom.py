@@ -1150,6 +1150,14 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
                                     summary='Both aad authorization client id and client secret is required to enable AAD RBAC feature')
             raise CLIError("Please provide both aad authorization client id and client secret to enable AAD RBAC feature")
 
+    # if enable_cl and not enable_cluster_connect:
+    #     telemetry.set_user_fault()
+    #     telemetry.set_exception(exception='Custom locations enabling with cluster connect disabled', fault_type=consts.Custom_Locations_Cluster_Connect_Enable_Conflict,
+    #                             summary='Custom locations feature can be enabled only with cluster connect enabled')
+    #     raise CLIError("custom-locations can only be enabled with cluster-connect feature enabled")
+    if enable_cl:
+        enable_cluster_connect = True
+
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
         utils.add_helm_repo(kube_config, kube_context)
@@ -1182,6 +1190,16 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:
         cmd_helm_upgrade.extend(["--kube-context", kube_context])
+    if enable_azure_rbac:
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.enabled=true"])
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.clientId={}".format(aad_client_id)])
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.clientSecret={}".format(aad_client_secret)])
+    if enable_cluster_connect:
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=true"])
+    if enable_extensions:
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.extensionoperator.enabled=true"])
+    # Add CL related params
+
     response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
     _, error_helm_upgrade = response_helm_upgrade.communicate()
     if response_helm_upgrade.returncode != 0:

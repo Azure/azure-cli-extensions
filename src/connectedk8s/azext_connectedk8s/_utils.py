@@ -278,7 +278,11 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
                         "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
                         "--set", "systemDefaultValues.spnOnboarding=false",
                         "--set", "global.azureEnvironment={}".format(cloud_name),
+                        "--set", "systemDefaultValues.extensionoperator.enabled=true",
+                        "--set", "systemDefaultValues.clusterconnect-agent.enabled=true",
                         "--output", "json"]
+    # Add custom-locations related params
+
     # To set some other helm parameters through file
     if values_file_provided:
         cmd_helm_install.extend(["-f", values_file])
