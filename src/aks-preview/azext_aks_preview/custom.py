@@ -2078,6 +2078,17 @@ def aks_runcommand(cmd, client, resource_group_name, name, command_string="", co
 
     commandResultFuture = client.run_command(resource_group_name, name, request_payload, long_running_operation_timeout=5, retry_total=0)
     commandResult = commandResultFuture.result(300)
+    _print_command_result(commandResult)
+
+def aks_command_result(cmd, client, resource_group_name, name, command_id=""):
+    if len(command_id) == 0:
+        raise CLIError('CommandID cannot be empty.')
+
+    commandResult = client.get_command_result(resource_group_name, name, command_id)
+    _print_command_result(commandResult)
+
+
+def _print_command_result(commandResult):
     print(f"{colorama.Fore.BLUE}command started at {commandResult.started_at}, finished at {commandResult.finished_at}, with exitcode={commandResult.exit_code}{colorama.Style.RESET_ALL}")
     print(commandResult.logs)
 

@@ -64,11 +64,14 @@ def load_command_table(self, _):
         g.wait_command('wait')
         g.command('stop', 'stop', supports_no_wait=True)
         g.command('start', 'start', supports_no_wait=True)
-        g.custom_command('command', 'aks_runcommand', supports_no_wait=False)
 
     # AKS container service commands
     with self.command_group('aks', container_services_sdk, client_factory=cf_container_services) as g:
         g.custom_command('get-versions', 'aks_get_versions', table_transformer=aks_versions_table_format)
+
+    with self.command_group('aks command', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
+        g.custom_command('invoke', 'aks_runcommand', supports_no_wait=True)
+        g.custom_command('result', 'aks_command_result', supports_no_wait=False)
 
     # AKS maintenance configuration commands
     with self.command_group('aks maintenanceconfiguration', maintenance_configuration_sdk, client_factory=cf_maintenance_configurations) as g:
