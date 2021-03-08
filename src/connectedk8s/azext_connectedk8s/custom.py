@@ -1069,6 +1069,69 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     return str.format(consts.Upgrade_Agent_Success, connected_cluster.name)
 
 
+def get_all_helm_values(client, cluster_name, resource_group_name, configuration, kube_config, kube_context):
+        # Check Release Existance
+    release_namespace = get_release_namespace(kube_config, kube_context)
+    if release_namespace:
+        # Loading config map
+        api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+        try:
+            configmap = api_instance.read_namespaced_config_map('azure-clusterconfig', 'azure-arc')
+        except Exception as e:  # pylint: disable=broad-except
+            utils.kubernetes_exception_handler(e, consts.Read_ConfigMap_Fault_Type, 'Unable to read ConfigMap',
+                                               error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
+                                               message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
+        configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
+        configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
+        if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
+            if not (configmap_rg_name.lower() == resource_group_name.lower() and
+                    configmap_cluster_name.lower() == cluster_name.lower()):
+                telemetry.set_user_fault()
+                telemetry.set_exception(exception='The provided cluster name and rg correspond to different cluster', fault_type=consts.Operate_RG_Cluster_Name_Conflict,
+                                        summary='The provided cluster name and resource group name do not correspond to the kubernetes cluster being operated on.')
+                raise CLIError("The provided cluster name and resource group name do not correspond to the kubernetes cluster you are operating on." +
+                               "Please use the cluster, with correct resource group and cluster name.")
+        else:
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception='The corresponding CC resource does not exist', fault_type=consts.Corresponding_CC_Resource_Deleted_Fault,
+                                    summary='CC resource corresponding to this cluster has been deleted by the customer')
+            raise CLIError("There exist no ConnectedCluster resource corresponding to this kubernetes Cluster." +
+                           "Please cleanup the helm release first using 'az connectedk8s delete -n <connected-cluster-name> -g <resource-group-name>' and re-onboard the cluster using " +
+                           "'az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>'")
+
+    else:
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception="The azure-arc release namespace couldn't be retrieved", fault_type=consts.Release_Namespace_Not_Found,
+                                summary="The azure-arc release namespace couldn't be retrieved, which implies that the kubernetes cluster has not been onboarded to azure-arc.")
+        raise CLIError("The azure-arc release namespace couldn't be retrieved, which implies that the kubernetes cluster has not been onboarded to azure-arc." +
+                       "Please run 'az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>' to onboard the cluster")
+
+    cmd_helm_values = ["helm", "get", "values", "--all", "azure-arc", "--namespace", release_namespace]
+    if kube_config:
+        cmd_helm_values.extend(["--kubeconfig", kube_config])
+    if kube_context:
+        cmd_helm_values.extend(["--kube-context", kube_context])
+
+    response_helm_values_get = Popen(cmd_helm_values, stdout=PIPE, stderr=PIPE)
+    output_helm_values, error_helm_get_values = response_helm_values_get.communicate()
+    if response_helm_values_get.returncode != 0:
+        if ('forbidden' in error_helm_get_values.decode("ascii") or 'timed out waiting for the condition' in error_helm_get_values.decode("ascii")):
+            telemetry.set_user_fault()
+        telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Get_Helm_Values_Failed,
+                                summary='Error while doing helm get values azure-arc')
+        raise CLIError("Error while getting the helm values in the azure-arc namespace: " + error_helm_get_values.decode("ascii"))
+
+    output_helm_values = output_helm_values.decode("ascii")
+
+    try:
+        existing_values = yaml.safe_load(output_helm_values)
+        return existing_values
+    except Exception as e:
+        telemetry.set_exception(exception=e, fault_type=consts.Helm_Existing_User_Supplied_Value_Get_Fault,
+                                summary='Problem loading the helm existing values')
+        raise CLIError("Problem loading the helm existing values: " + str(e))
+
+
 def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None,
                     features=None, aad_client_id=None, aad_client_secret=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
@@ -1076,6 +1139,9 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
+
+    if features is None:
+        raise CLIError(consts.No_Features_Param_Provided.format("enable-features", "enable-features"))
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
@@ -1142,7 +1208,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
-    enable_cluster_connect, enable_extensions, enable_azure_rbac, enable_cl = utils.check_features_to_update(features)
+    enable_cluster_connect, enable_azure_rbac, enable_cl = utils.check_features_to_update(features)
     if enable_azure_rbac:
         if (aad_client_id is None) or (aad_client_secret is None):
             telemetry.set_user_fault()
@@ -1155,8 +1221,9 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
     #     telemetry.set_exception(exception='Custom locations enabling with cluster connect disabled', fault_type=consts.Custom_Locations_Cluster_Connect_Enable_Conflict,
     #                             summary='Custom locations feature can be enabled only with cluster connect enabled')
     #     raise CLIError("custom-locations can only be enabled with cluster-connect feature enabled")
-    if enable_cl:
+    if enable_cl and not enable_cluster_connect:
         enable_cluster_connect = True
+        logger.warning("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too")
 
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
@@ -1196,8 +1263,6 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.clientSecret={}".format(aad_client_secret)])
     if enable_cluster_connect:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=true"])
-    if enable_extensions:
-        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.extensionoperator.enabled=true"])
     # Add CL related params
 
     response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
@@ -1213,7 +1278,12 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
 
 
 def disable_features(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None,
-                     features=None, aad_client_id=None, aad_client_secret=None):
+                     features=None, aad_client_id=None, aad_client_secret=None, yes=False):
+    if features is None:
+        raise CLIError(consts.No_Features_Param_Provided.format("disable-features", "disable-features"))
+    confirmation_message = "Are you sure you want to disable these features: {}".format(features)
+    utils.user_confirmation(confirmation_message, yes)
+
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -1285,7 +1355,16 @@ def disable_features(cmd, client, resource_group_name, cluster_name, kube_config
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
-    disable_cluster_connect, disable_extensions, disable_azure_rbac, disable_cl = utils.check_features_to_update(features)
+    disable_cluster_connect, disable_azure_rbac, disable_cl = utils.check_features_to_update(features)
+
+    # if disable_cluster_connect:
+    #     helm_values = get_all_helm_values(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
+    #     # helm_values_flattened = utils.flatten(helm_values)
+    #     if helm_values.get('systemDefaultValues').get('custom-locations').get('enabled') == True:
+    #         raise CLIError("not allowed")
+
+    if disable_cl:
+        logger.warning("Disabling 'custom-locations' feature is not suggested.")
 
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
@@ -1319,6 +1398,10 @@ def disable_features(cmd, client, resource_group_name, cluster_name, kube_config
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:
         cmd_helm_upgrade.extend(["--kube-context", kube_context])
+    if disable_azure_rbac:
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.enabled=false"])
+    if disable_cluster_connect:
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=false"])
     response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
     _, error_helm_upgrade = response_helm_upgrade.communicate()
     if response_helm_upgrade.returncode != 0:

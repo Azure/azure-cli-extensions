@@ -8,7 +8,7 @@
 
 Distribution_Enum_Values = ["auto", "generic", "openshift", "rancher_rke", "kind", "k3s", "minikube", "gke", "eks", "aks", "aks_management", "aks_workload", "capz", "aks_engine", "tkg"]
 Infrastructure_Enum_Values = ["auto", "generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere", "windows_server"]
-Feature_Values = ["cluster-connect", "cluster-extensions", "azure-rbac", "custom-locations"]
+Feature_Values = ["cluster-connect", "azure-rbac", "custom-locations"]
 
 Azure_PublicCloudName = 'AZUREPUBLICCLOUD'
 Azure_USGovCloudName = 'AZUREUSGOVERNMENTCLOUD'
@@ -103,7 +103,9 @@ Corresponding_CC_Resource_Deleted_Fault = 'CC resource corresponding to this clu
 Kubernetes_Node_Type_Fetch_Fault = 'Error while trying to find a linux/amd64 node for scheduling pods'
 Linux_Amd64_Node_Not_Exists = 'Kubernetes cluster doesnt have amd64/linux node'
 Kubernetes_Latest_Version_Fetch_Fault = 'Error while fetching the latest stable kubernetes release'
-Custom_Locations_Cluster_Connect_Enable_Conflict = 'Custom locations enabling with cluster connect disabled'
+Operate_RG_Cluster_Name_Conflict = 'The provided cluster name and rg correspond to different cluster being operated on'
+No_Features_Param_Provided = "No parmeters for feature update were specified with the command. Please run 'az connectedk8s {} --help' to check parameters available for {}"
+# Custom_Locations_Cluster_Connect_Enable_Conflict = 'Custom locations enabling with cluster connect disabled'
 
 Client_Details_Not_Provided_For_AAD_RBAC_Fault = 'Client ID or secret not provided for AAD RBAC'
 Successfully_Enabled_Features = 'Successsfully enabled features: {} for the Connected Cluster {}'

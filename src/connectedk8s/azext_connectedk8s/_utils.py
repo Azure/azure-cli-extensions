@@ -13,6 +13,7 @@ import json
 
 from knack.util import CLIError
 from knack.log import get_logger
+from knack.prompting import NoTTYException, prompt_y_n
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import send_raw_request
 from azure.cli.core import telemetry
@@ -286,10 +287,6 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
     # To set some other helm parameters through file
     if values_file_provided:
         cmd_helm_install.extend(["-f", values_file])
-    if enable_azure_rbac:
-        cmd_helm_install.extend(["--set", "systemDefaultValues.guard.enabled=true"])
-        cmd_helm_install.extend(["--set", "systemDefaultValues.guard.clientId={}".format(aad_client_id)])
-        cmd_helm_install.extend(["--set", "systemDefaultValues.guard.clientSecret={}".format(aad_client_secret)])
     if disable_auto_upgrade:
         cmd_helm_install.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}".format("false")])
     if https_proxy:
@@ -350,15 +347,24 @@ def get_latest_kubernetes_version():
 
 
 def check_features_to_update(features_to_update):
-    update_cluster_connect, update_extensions, update_azure_rbac, update_cl = False, False, False, False
+    update_cluster_connect, update_azure_rbac, update_cl = False, False, False
     for feature in features_to_update:
         if feature == "cluster-connect":
             update_cluster_connect = True
-        elif feature == "cluster-extensions":
-            update_extensions = True
         elif feature == "azure-rbac":
             update_azure_rbac = True
         elif feature == "custom-locations":
             update_cl = True
 
-    return update_cluster_connect, update_extensions, update_azure_rbac, update_cl
+    return update_cluster_connect, update_azure_rbac, update_cl
+
+
+def user_confirmation(message, yes=False):
+    if yes:
+        return
+    try:
+        if not prompt_y_n(message):
+            raise CLIError('Operation cancelled.')
+    except NoTTYException:
+        raise CLIError(
+            'Unable to prompt for confirmation as no tty available. Use --yes.')
