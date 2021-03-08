@@ -1,6 +1,6 @@
 Release History
 ===============
-2.2.2
+2.3.0
 -----
 * Support End-to-end TLS.
 
