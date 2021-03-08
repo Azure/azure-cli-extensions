@@ -123,13 +123,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     except Exception as e:
         pass  # Since the warning in fetching either of the two values will be caught and displayed earlier
 
-    if enable_azure_rbac:
-        if (aad_client_id is None) or (aad_client_secret is None):
-            telemetry.set_user_fault()
-            telemetry.set_exception(exception='Client ID or secret not provided for AAD RBAC', fault_type=consts.Client_Details_Not_Provided_For_AAD_RBAC_Fault,
-                                    summary='Both aad authorization client id and client secret is required to enable AAD RBAC feature')
-            raise CLIError("Please provide both aad authorization client id and client secret to enable AAD RBAC feature")
-
     if distribution == 'auto':
         kubernetes_distro = get_kubernetes_distro(configuration)  # (cluster heuristics)
     else:
@@ -265,8 +258,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Install azure-arc agents
     utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                                location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
-                               kube_context, no_wait, values_file_provided, values_file, azure_cloud, disable_auto_upgrade,
-                               enable_azure_rbac, aad_client_id, aad_client_secret)
+                               kube_context, no_wait, values_file_provided, values_file, azure_cloud, disable_auto_upgrade)
 
     return put_cc_response
 
@@ -1281,7 +1273,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, kube_config
                      features=None, aad_client_id=None, aad_client_secret=None, yes=False):
     if features is None:
         raise CLIError(consts.No_Features_Param_Provided.format("disable-features", "disable-features"))
-    confirmation_message = "Are you sure you want to disable these features: {}".format(features)
+    confirmation_message = "Disabling few of the features may adversely impact dependent resources. Learn more about this at https://aka.ms/ArcK8sDependentResources. \n" + "Are you sure you want to disable these features: {}".format(features)
     utils.user_confirmation(confirmation_message, yes)
 
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
