@@ -48,6 +48,7 @@ class ServerVersion(str, Enum):
 
     three_full_stop_two = "3.2"
     three_full_stop_six = "3.6"
+    four_full_stop_zero = "4.0"
 
 
 class CreateMode(str, Enum):
@@ -61,6 +62,12 @@ class RestoreMode(str, Enum):
     point_in_time = "PointInTime"
 
 
+class NetworkAclBypass(str, Enum):
+
+    none = "None"
+    azure_services = "AzureServices"
+
+
 class CreatedByType(str, Enum):
 
     user = "User"
@@ -71,9 +78,9 @@ class CreatedByType(str, Enum):
 
 class IndexingMode(str, Enum):
 
-    consistent = "Consistent"
-    lazy = "Lazy"
-    none = "None"
+    consistent = "consistent"
+    lazy = "lazy"
+    none = "none"
 
 
 class DataType(str, Enum):
@@ -95,8 +102,8 @@ class IndexKind(str, Enum):
 
 class CompositePathSortOrder(str, Enum):
 
-    ascending = "Ascending"
-    descending = "Descending"
+    ascending = "ascending"
+    descending = "descending"
 
 
 class SpatialType(str, Enum):
@@ -111,6 +118,7 @@ class PartitionKind(str, Enum):
 
     hash = "Hash"
     range = "Range"
+    multi_hash = "MultiHash"
 
 
 class ConflictResolutionMode(str, Enum):
@@ -171,6 +179,19 @@ class PrimaryAggregationType(str, Enum):
     last = "Last"
 
 
+class BackupType(str, Enum):
+
+    periodic = "Periodic"
+    continuous = "Continuous"
+
+
+class BackupStorageRedundancy(str, Enum):
+
+    geo = "Geo"
+    local = "Local"
+    zone = "Zone"
+
+
 class ApiType(str, Enum):
 
     mongo_db = "MongoDB"
@@ -193,3 +214,34 @@ class OperationType(str, Enum):
     replace = "Replace"
     delete = "Delete"
     system_operation = "SystemOperation"
+
+
+class ManagedCassandraProvisioningState(str, Enum):
+
+    creating = "Creating"
+    updating = "Updating"
+    deleting = "Deleting"
+    succeeded = "Succeeded"
+    failed = "Failed"
+    canceled = "Canceled"
+
+
+class AuthenticationMethod(str, Enum):
+
+    none = "None"
+    cassandra = "Cassandra"
+
+
+class NodeStatus(str, Enum):
+
+    up = "Up"
+    down = "Down"
+
+
+class NodeState(str, Enum):
+
+    normal = "Normal"
+    leaving = "Leaving"
+    joining = "Joining"
+    moving = "Moving"
+    stopped = "Stopped"

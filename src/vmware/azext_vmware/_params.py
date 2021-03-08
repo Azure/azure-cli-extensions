@@ -32,6 +32,7 @@ def load_arguments(self, _):
         c.argument('internet', help='Connectivity to internet. Specify "Enabled" or "Disabled".')
         c.argument('vcenter_password', help='vCenter admin password.')
         c.argument('nsxt_password', help='NSX-T Manager password.')
+        c.argument('accept_eula', help='Accept the end-user license agreement without prompting.')
 
     with self.argument_context('vmware private-cloud show') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
@@ -41,6 +42,7 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware private-cloud delete') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
+        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware authorization') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the authorization.')
@@ -68,3 +70,13 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware hcx-enterprise-site') as c:
         c.argument('name', options_list=['--name', '-n'], help='The name of the HCX Enterprise Site.')
+
+    with self.argument_context('vmware datastore') as c:
+        c.argument('name', options_list=['--name', '-n'], help='The name of the datastore.')
+        c.argument('cluster', help='The name of the cluster.')
+
+    with self.argument_context('vmware datastore create') as c:
+        c.argument('nfs_provider_ip', help='IP address of the NFS provider.')
+        c.argument('nfs_file_path', help='File path through which the NFS volume is exposed by the provider.')
+        c.argument('endpoints', nargs='*', help='iSCSI provider target IP address list.')
+        c.argument('lun_name', help='Name of the LUN to be used.')
