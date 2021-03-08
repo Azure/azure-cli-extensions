@@ -175,8 +175,6 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                                 .format(g=repair_group_name, name=repair_vm_name)
             ret_enable_nested = _call_az_command(run_hyperv_command)
             
-            #if stdout:
-                #raise ScriptReturnsError('Error in installing win-enable-nested-hyperv.ps1 Script')
             logger.debug("az vm repair run hyperv command returned: %s", ret_enable_nested)
 
             if str.find(ret_enable_nested, "SuccessRestartRequired") > -1:
