@@ -169,29 +169,29 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
         # invoke enable-NestedHyperV.ps1 again to attach Disk to Nested
         if enable_nested:
-            logger.info("Running hyperv")
+            logger.info("Running Script win-enable-nested-hyperv.ps1 to install HyperV")
+            
+            run_hyperv_command = "az vm repair run -g {g} -n {name} --run-id win-enable-nested-hyperv" \
+                                .format(g=repair_group_name, name=repair_vm_name)
+            ret_enable_nested = _call_az_command(run_hyperv_command)
+            
+            #if stdout:
+                #raise ScriptReturnsError('Error in installing win-enable-nested-hyperv.ps1 Script')
+            logger.debug("az vm repair run hyperv command returned: %s", ret_enable_nested)
 
-            stdout, stderr = _invoke_run_command("win-enable-nested-hyperv.ps1", repair_vm_name, repair_group_name, 0)
-            logger.debug("stderr: %s", stderr)
-            if stderr:
-                logger.debug(stderr)
-                raise ScriptReturnsError('error when running script')
-
-            logger.debug("stdout: %s", stdout)
-            if str.find(stdout, "SuccessRestartRequired") > -1:
+            if str.find(ret_enable_nested, "SuccessRestartRequired") > -1:
                 restart_cmd = 'az vm restart -g {rg} -n {vm}'.format(rg=repair_group_name, vm=repair_vm_name)
-                logger.info("restarting")
+                logger.info("Restarting Repair VM")
                 restart_ret = _call_az_command(restart_cmd)
-                logger.info(restart_ret)
+                logger.debug(restart_ret)
 
                 # invoking hyperv script again
-                logger.info("Running HyperV script again")
-                stdout, stderr = _invoke_run_command("win-enable-nested-hyperv.ps1", repair_vm_name, repair_group_name, 0)
-                if stderr:
-                    raise ScriptReturnsError('Error when running script')
+                logger.info("Running win-enable-nested-hyperv.ps1 again to create nested VM")
+                run_hyperv_command = "az vm repair run -g {g} -n {name} --run-id win-enable-nested-hyperv" \
+                                    .format(g=repair_group_name, name=repair_vm_name)
+                ret_enable_nested_again = _call_az_command(run_hyperv_command)
 
-                logger.debug("stderr: %s", stderr)
-                print(stdout)
+                logger.debug("stderr: %s", ret_enable_nested_again)
 
         created_resources = _list_resource_ids_in_rg(repair_group_name)
         command.set_status_success()
