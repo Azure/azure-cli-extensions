@@ -7,7 +7,8 @@ import json
 
 from azure.cli.core.azclierror import RecommendationError
 from knack import help_files
-from .utils import get_int_option, get_command_list, get_last_exception, get_title_case, get_yes_or_no_option
+from .utils import (get_int_option, get_command_list, get_last_exception, get_title_case, get_yes_or_no_option,
+                    get_latest_command)
 from .constants import RecommendType
 from colorama import Fore, init
 from .requests import get_recommend_from_api
@@ -23,36 +24,38 @@ def handle_next(cmd):
     else:
         request_type = RecommendType.All.value
 
+    # Upload all execution commands of local record for personalized analysis
+    command_history = get_command_list(cmd, 0)
+
     processed_exception = None
     if request_type == RecommendType.All or request_type == RecommendType.Solution:
-        processed_exception = get_last_exception(cmd)
+        processed_exception = get_last_exception(cmd, get_latest_command(command_history))
 
     if request_type == RecommendType.Solution and not processed_exception:
         _handle_error_no_exception_found()
         return None
 
-    latest_commands = get_command_list(cmd)
-    recommends = get_recommend_from_api(latest_commands, request_type,
+    recommends = get_recommend_from_api(command_history, request_type,
                                         cmd.cli_ctx.config.getint('next', 'num_limit', fallback=5),
                                         error_info=processed_exception)
     if not recommends:
-        send_feedback(request_type, -1, latest_commands, processed_exception)
+        send_feedback(request_type, -1, command_history, processed_exception)
         print("\nSorry, there is no recommendation in the next step.")
         return
 
     print()
     _give_recommends(cmd, recommends)
 
-    option = get_int_option("Please select your option " + Fore.LIGHTBLACK_EX + "(If none, please input 0)" +
+    option = get_int_option("Please select your option " + Fore.LIGHTBLACK_EX + "(if none, enter 0)" +
                             Fore.RESET + ": ", 0, len(recommends), -1)
     if option == 0:
-        send_feedback(request_type, 0, latest_commands, processed_exception, recommends)
+        send_feedback(request_type, 0, command_history, processed_exception, recommends)
         print('\nThank you for your feedback. If you have more feedback, please submit it by using "az feedback" \n')
         return
     print()
 
     rec = recommends[option - 1]
-    send_feedback(request_type, option, latest_commands, processed_exception, recommends, rec)
+    send_feedback(request_type, option, command_history, processed_exception, recommends, rec)
 
     if rec['type'] == RecommendType.Scenario:
         _show_details_for_e2e_scenario(cmd, rec)
@@ -73,7 +76,9 @@ def _handle_error_no_exception_found():
     '''You choose to solve the previous problems but no exception found'''
     error_msg = 'The error information is missing, ' \
                 'the solution is recommended only if only an exception occurs in the previous step.'
-    recommendation = 'You can set the recommendation type to 1 to get all available recommendations.'
+    recommendation = 'The recommendation for solution type need to turn on telemetry. ' \
+                     'If you haven not turned it on yet, ' \
+                     'please run "az config set core.collect_telemetry=True" and try again.'
     az_error = RecommendationError(error_msg, recommendation)
     az_error.print_error()
 
@@ -381,8 +386,10 @@ def send_feedback(request_type, option, latest_commands, processed_exception=Non
     feedback_data = [str(request_type), str(option)]
 
     if latest_commands:
-        latest_command = json.loads(latest_commands[-1])
-        feedback_data.append(latest_command['command'])
+        trigger_commands = json.loads(latest_commands[-1])['command']
+        if len(latest_commands) > 1:
+            trigger_commands = json.loads(latest_commands[-2])['command'] + "," + trigger_commands
+        feedback_data.append(trigger_commands)
     else:
         feedback_data.append(' ')
     if processed_exception and processed_exception != '':
@@ -390,12 +397,15 @@ def send_feedback(request_type, option, latest_commands, processed_exception=Non
     else:
         feedback_data.append(' ')
 
+    has_personalized_rec = False
     if recommends:
         source_list = set()
         rec_type_list = set()
         for item in recommends:
             source_list.add(str(item['source']))
             rec_type_list.add(str(item['type']))
+            if 'is_personalized' in item:
+                has_personalized_rec = True
         feedback_data.append(' '.join(source_list))
         feedback_data.append(' '.join(rec_type_list))
     else:
@@ -412,8 +422,15 @@ def send_feedback(request_type, option, latest_commands, processed_exception=Non
                 feedback_data.append(' '.join(rec["arguments"]))
             else:
                 feedback_data.append(' ')
+
+        if not has_personalized_rec:
+            feedback_data.extend([' '])
+        elif 'is_personalized' in rec:
+            feedback_data.extend(['1'])
+        else:
+            feedback_data.extend(['0'])
     else:
-        feedback_data.extend([' ', ' ', ' ', ' '])
+        feedback_data.extend([' ', ' ', ' ', ' ', ' '])
 
     telemetry.set_feedback("#".join(feedback_data))
 
