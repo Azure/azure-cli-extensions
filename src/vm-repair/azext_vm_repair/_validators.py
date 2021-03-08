@@ -72,7 +72,7 @@ def validate_create(cmd, namespace):
 
     if namespace.enable_nested:
         if is_linux:
-            raise CLIError('Nested Vm is not supported for linux vm')
+            raise CLIError('Nested VM is not supported for Linux VM')
 
     # Validate Auth Params
     # Prompt vm username
