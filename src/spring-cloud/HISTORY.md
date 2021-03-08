@@ -1,9 +1,12 @@
 Release History
 ===============
+2.2.2
+-----
+* Support End-to-end TLS.
+
 2.2.1
 -----
 * Fix exception in app service binding
-* Support End-to-end TLS.
 
 2.2.0
 -----
