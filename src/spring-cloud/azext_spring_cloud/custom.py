@@ -306,19 +306,21 @@ def app_update(cmd, client, resource_group, service, name,
                main_entry=None,
                env=None,
                enable_persistent_storage=None,
-               https_only=None):
+               https_only=None,
+               enable_end_to_end_tls=None):
     _check_active_deployment_exist(client, resource_group, service, name)
     resource = client.services.get(resource_group, service)
     location = resource.location
 
-    properties = models.AppResourceProperties(public=assign_endpoint, https_only=https_only)
+    properties = models_20201101preview.AppResourceProperties(public=assign_endpoint, https_only=https_only,
+                                                              enable_end_to_end_tls=enable_end_to_end_tls)
     if enable_persistent_storage is True:
         properties.persistent_disk = models.PersistentDisk(
             size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
     if enable_persistent_storage is False:
         properties.persistent_disk = models.PersistentDisk(size_in_gb=0)
 
-    app_resource = models.AppResource()
+    app_resource = models_20201101preview.AppResource()
     app_resource.properties = properties
     app_resource.location = location
 
@@ -1374,7 +1376,8 @@ def certificate_remove(cmd, client, resource_group, service, name):
 
 def domain_bind(cmd, client, resource_group, service, app,
                 domain_name,
-                certificate=None):
+                certificate=None,
+                enable_end_to_end_tls=None):
     _check_active_deployment_exist(client, resource_group, service, app)
     properties = models.CustomDomainProperties()
     if certificate is not None:
@@ -1383,7 +1386,26 @@ def domain_bind(cmd, client, resource_group, service, app,
             thumbprint=certificate_response.properties.thumbprint,
             cert_name=certificate
         )
+    if enable_end_to_end_tls is not None:
+        _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls)
+
     return client.custom_domains.create_or_update(resource_group, service, app, domain_name, properties)
+
+
+def _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls):
+    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20201101preview)
+    resource = client.services.get(resource_group, service)
+    location = resource.location
+
+    properties = models_20201101preview.AppResourceProperties(enable_end_to_end_tls=enable_end_to_end_tls)
+    app_resource = models_20201101preview.AppResource()
+    app_resource.properties = properties
+    app_resource.location = location
+
+    logger.warning("Set end to end tls for app '{}'".format(app))
+    poller = client.apps.update(
+        resource_group, service, app, app_resource)
+    return poller.result()
 
 
 def domain_show(cmd, client, resource_group, service, app, domain_name):
@@ -1398,7 +1420,8 @@ def domain_list(cmd, client, resource_group, service, app):
 
 def domain_update(cmd, client, resource_group, service, app,
                   domain_name,
-                  certificate=None):
+                  certificate=None,
+                  enable_end_to_end_tls=None):
     _check_active_deployment_exist(client, resource_group, service, app)
     properties = models.CustomDomainProperties()
     if certificate is not None:
@@ -1407,6 +1430,9 @@ def domain_update(cmd, client, resource_group, service, app,
             thumbprint=certificate_response.properties.thumbprint,
             cert_name=certificate
         )
+    if enable_end_to_end_tls is not None:
+        _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls)
+
     return client.custom_domains.create_or_update(resource_group, service, app, domain_name, properties)
 
 

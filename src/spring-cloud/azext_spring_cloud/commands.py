@@ -40,7 +40,7 @@ def load_command_table(self, _):
         g.custom_command('repo update', 'config_repo_update')
         g.custom_command('repo list', 'config_repo_list')
 
-    with self.command_group('spring-cloud app', client_factory=cf_spring_cloud) as g:
+    with self.command_group('spring-cloud app', client_factory=cf_spring_cloud_20201101preview) as g:
         g.custom_command('create', 'app_create')
         g.custom_command('update', 'app_update')
         g.custom_command('deploy', 'app_deploy', supports_no_wait=True)
