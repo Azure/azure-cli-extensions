@@ -2089,8 +2089,17 @@ def aks_command_result(cmd, client, resource_group_name, name, command_id=""):
 
 
 def _print_command_result(commandResult):
-    print(f"{colorama.Fore.BLUE}command started at {commandResult.started_at}, finished at {commandResult.finished_at}, with exitcode={commandResult.exit_code}{colorama.Style.RESET_ALL}")
-    print(commandResult.logs)
+    # succeed, print exitcode, and logs
+    if commandResult.provisioning_state == "Succeeded":
+        print(f"{colorama.Fore.GREEN}command started at {commandResult.started_at}, finished at {commandResult.finished_at}, with exitcode={commandResult.exit_code}{colorama.Style.RESET_ALL}")
+        print(commandResult.logs)
+        return
+    # failed, print reason in error
+    if commandResult.provisioning_state == "Failed":
+        print(f"{colorama.Fore.RED}command failed with reason: {commandResult.reason}{colorama.Style.RESET_ALL}")
+        return
+    # *-ing state
+    print(f"{colorama.Fore.BLUE}command is in : {commandResult.provisioning_state} state{colorama.Style.RESET_ALL}")
 
 def _get_command_context(command_files):
     if len(command_files) == 0:
