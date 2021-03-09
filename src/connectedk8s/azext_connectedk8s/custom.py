@@ -35,6 +35,7 @@ from Crypto.Util import asn1
 from azext_connectedk8s._client_factory import _graph_client_factory
 from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import _resource_client_factory
+from azext_connectedk8s._client_factory import _resource_providers_client
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 from glob import glob
@@ -1208,14 +1209,30 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
                                     summary='Both aad authorization client id and client secret is required to enable AAD RBAC feature')
             raise CLIError("Please provide both aad authorization client id and client secret to enable AAD RBAC feature")
 
-    # if enable_cl and not enable_cluster_connect:
-    #     telemetry.set_user_fault()
-    #     telemetry.set_exception(exception='Custom locations enabling with cluster connect disabled', fault_type=consts.Custom_Locations_Cluster_Connect_Enable_Conflict,
-    #                             summary='Custom locations feature can be enabled only with cluster connect enabled')
-    #     raise CLIError("custom-locations can only be enabled with cluster-connect feature enabled")
     if enable_cl and not enable_cluster_connect:
         enable_cluster_connect = True
         logger.warning("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too")
+
+    if enable_cl:
+        try:
+            rp_client = _resource_providers_client(cmd.cli_ctx)
+            cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
+            if cl_registration_state != "Registered" and cl_registration_state != "Registering":
+                try:
+                    logger.warning("Registering Custom Locations resource provider 'Microsoft.ExtendedLocation' ...")
+                    rp_client.register(consts.Custom_Locations_Provider_Namespace)  # Asynchronous registration
+                    # Add below if no wait wanted, give a timeout too
+                    # while True:
+                    #     time.sleep(10)
+                    #     cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
+                    #     if cl_registration_state.registration_state == 'Registered':
+                    #         break
+                except Exception as e:
+                    # Add error/exceptions
+                    pass
+        except Exception as ex:
+            # Add error/exceptions
+            pass
 
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
@@ -1273,6 +1290,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, kube_config
                      features=None, aad_client_id=None, aad_client_secret=None, yes=False):
     if features is None:
         raise CLIError(consts.No_Features_Param_Provided.format("disable-features", "disable-features"))
+    features = [ x.lower() for x in features ]
     confirmation_message = "Disabling few of the features may adversely impact dependent resources. Learn more about this at https://aka.ms/ArcK8sDependentResources. \n" + "Are you sure you want to disable these features: {}".format(features)
     utils.user_confirmation(confirmation_message, yes)
 

@@ -36,6 +36,11 @@ def _resource_client_factory(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id)
 
 
+def _resource_providers_client(cli_ctx):
+    from azure.mgmt.resource import ResourceManagementClient
+    return get_mgmt_service_client(cli_ctx, ResourceManagementClient).providers
+
+
 def _graph_client_factory(cli_ctx, **_):
     profile = Profile(cli_ctx=cli_ctx)
     cred, _, tenant_id = profile.get_login_credentials(

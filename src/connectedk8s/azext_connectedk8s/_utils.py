@@ -365,5 +365,4 @@ def user_confirmation(message, yes=False):
         if not prompt_y_n(message):
             raise CLIError('Operation cancelled.')
     except NoTTYException:
-        raise CLIError(
-            'Unable to prompt for confirmation as no tty available. Use --yes.')
+        raise CLIError('Unable to prompt for confirmation as no tty available. Use --yes.')
