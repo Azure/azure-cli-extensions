@@ -1273,7 +1273,9 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.clientSecret={}".format(aad_client_secret)])
     if enable_cluster_connect:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=true"])
-    # Add CL related params
+    if enable_cl:
+        # add custom locations related enabling
+        pass
 
     response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
     _, error_helm_upgrade = response_helm_upgrade.communicate()
@@ -1368,11 +1370,13 @@ def disable_features(cmd, client, resource_group_name, cluster_name, kube_config
 
     disable_cluster_connect, disable_azure_rbac, disable_cl = utils.check_features_to_update(features)
 
+    # Uncomment below custom locations related params are available
+
     # if disable_cluster_connect:
     #     helm_values = get_all_helm_values(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
     #     # helm_values_flattened = utils.flatten(helm_values)
-    #     if helm_values.get('systemDefaultValues').get('custom-locations').get('enabled') == True:
-    #         raise CLIError("not allowed")
+    #     if helm_values.get('systemDefaultValues').get('custom-locations').get('enabled') == True: # update this line
+    #         raise CLIError("Disabling cluster-connect feature is not allowed when custom-locations feature is enabled.")
 
     if disable_cl:
         logger.warning("Disabling 'custom-locations' feature is not suggested.")
@@ -1413,6 +1417,10 @@ def disable_features(cmd, client, resource_group_name, cluster_name, kube_config
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.enabled=false"])
     if disable_cluster_connect:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=false"])
+    if disable_cl:
+        # add custom locations related disabling
+        pass
+
     response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
     _, error_helm_upgrade = response_helm_upgrade.communicate()
     if response_helm_upgrade.returncode != 0:
