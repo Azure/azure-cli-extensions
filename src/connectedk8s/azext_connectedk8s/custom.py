@@ -1063,7 +1063,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
 
 
 def get_all_helm_values(client, cluster_name, resource_group_name, configuration, kube_config, kube_context):
-        # Check Release Existance
+    # Check Release Existance
     release_namespace = get_release_namespace(kube_config, kube_context)
     if release_namespace:
         # Loading config map
@@ -1135,6 +1135,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
 
     if features is None:
         raise CLIError(consts.No_Features_Param_Provided.format("enable-features", "enable-features"))
+    features = [x.lower() for x in features]
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
