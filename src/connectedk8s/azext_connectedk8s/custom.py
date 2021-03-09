@@ -1127,15 +1127,15 @@ def get_all_helm_values(client, cluster_name, resource_group_name, configuration
 
 def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None,
                     features=None, aad_client_id=None, aad_client_secret=None):
+    if features is None:
+        raise CLIError(consts.No_Features_Param_Provided.format("enable-features", "enable-features"))
+    features = [x.lower() for x in features]
+
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
-
-    if features is None:
-        raise CLIError(consts.No_Features_Param_Provided.format("enable-features", "enable-features"))
-    features = [x.lower() for x in features]
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)
