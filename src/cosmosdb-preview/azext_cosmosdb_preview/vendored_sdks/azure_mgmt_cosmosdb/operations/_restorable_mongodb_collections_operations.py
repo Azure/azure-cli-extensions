@@ -80,7 +80,7 @@ class RestorableMongodbCollectionsOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
                 if restorable_mongodb_database_rid is not None:
                     query_parameters['restorableMongodbDatabaseRid'] = self._serialize.query("restorable_mongodb_database_rid", restorable_mongodb_database_rid, 'str')
 

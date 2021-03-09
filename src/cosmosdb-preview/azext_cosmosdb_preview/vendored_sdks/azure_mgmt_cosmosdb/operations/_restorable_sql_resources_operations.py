@@ -83,7 +83,7 @@ class RestorableSqlResourcesOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
                 if restore_location is not None:
                     query_parameters['restoreLocation'] = self._serialize.query("restore_location", restore_location, 'str')
                 if restore_timestamp_in_utc is not None:

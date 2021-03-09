@@ -43,13 +43,11 @@ from .operations import CassandraClustersOperations
 from .operations import CassandraDataCentersOperations
 from .operations import PrivateLinkResourcesOperations
 from .operations import PrivateEndpointConnectionsOperations
-from .operations import CassandraClusterOperations
-from .operations import CassandraDataCenterOperations
 from . import models
 
 
 class CosmosDBManagementClient(SDKClient):
-    """Azure Cosmos DB Database Service Resource Provider REST API
+    """CosmosDBManagementClient
 
     :ivar config: Configuration for client.
     :vartype config: CosmosDBManagementClientConfiguration
@@ -114,10 +112,6 @@ class CosmosDBManagementClient(SDKClient):
     :vartype private_link_resources: azure.mgmt.cosmosdb.operations.PrivateLinkResourcesOperations
     :ivar private_endpoint_connections: PrivateEndpointConnections operations
     :vartype private_endpoint_connections: azure.mgmt.cosmosdb.operations.PrivateEndpointConnectionsOperations
-    :ivar cassandra_cluster: CassandraCluster operations
-    :vartype cassandra_cluster: azure.mgmt.cosmosdb.operations.CassandraClusterOperations
-    :ivar cassandra_data_center: CassandraDataCenter operations
-    :vartype cassandra_data_center: azure.mgmt.cosmosdb.operations.CassandraDataCenterOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -197,8 +191,4 @@ class CosmosDBManagementClient(SDKClient):
         self.private_link_resources = PrivateLinkResourcesOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.private_endpoint_connections = PrivateEndpointConnectionsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.cassandra_cluster = CassandraClusterOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.cassandra_data_center = CassandraDataCenterOperations(
             self._client, self.config, self._serialize, self._deserialize)

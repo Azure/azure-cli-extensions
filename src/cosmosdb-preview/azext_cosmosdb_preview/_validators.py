@@ -177,8 +177,6 @@ def validate_certificates(ns):
         ns.external_gossip_certificates = get_certificates(ns.external_gossip_certificates)
     if ns.client_certificates is not None:
         ns.client_certificates = get_certificates(ns.client_certificates)
-    if ns.gossip_certificates is not None:
-        ns.gossip_certificates = get_certificates(ns.gossip_certificates)
 
 
 def get_certificates(ns):
