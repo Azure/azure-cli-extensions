@@ -37,7 +37,6 @@ nfs3_usage_model_type = CLIArgumentType(
          'For more details about usage models, please refer to https://docs.microsoft.com/azure/hpc-cache/hpc-cache-add-storage?tabs=azure-cli#choose-a-usage-model')
 
 
-
 def load_arguments(self, _):
 
     with self.argument_context('hpc-cache create') as c:
