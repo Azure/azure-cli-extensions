@@ -14,7 +14,7 @@ from msrest.paging import Paged
 
 class ConnectedClusterPaged(Paged):
     """
-    A paging container for iterating over a list of :class:`ConnectedCluster <azure.mgmt.hybridkubernetes.v2020_01_01_preview.models.ConnectedCluster>` object
+    A paging container for iterating over a list of :class:`ConnectedCluster <azure.mgmt.hybridkubernetes.models.ConnectedCluster>` object
     """
 
     _attribute_map = {

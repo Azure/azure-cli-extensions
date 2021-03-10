@@ -15,9 +15,9 @@ interactions:
       ParameterSetName:
       - -n -g --query -o
       User-Agent:
-      - AZURECLI/2.17.0 azsdk-python-azure-mgmt-storage/16.0.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.20.0 azsdk-python-azure-mgmt-storage/17.0.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2019-06-01&$expand=kerb
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2021-01-01&$expand=kerb
   response:
     body:
       string: '{"keys":[{"keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
@@ -29,7 +29,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 29 Dec 2020 07:06:21 GMT
+      - Mon, 01 Mar 2021 03:40:51 GMT
       expires:
       - '-1'
       pragma:
@@ -57,9 +57,9 @@ interactions:
       Content-Length:
       - '0'
       User-Agent:
-      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.7; Windows 10) AZURECLI/2.17.0
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.7; Windows 10) AZURECLI/2.20.0
       x-ms-date:
-      - Tue, 29 Dec 2020 07:06:22 GMT
+      - Mon, 01 Mar 2021 03:40:51 GMT
       x-ms-version:
       - '2018-11-09'
     method: PUT
@@ -71,11 +71,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 29 Dec 2020 07:06:24 GMT
+      - Mon, 01 Mar 2021 03:40:53 GMT
       etag:
-      - '"0x8D8ABC8412ED8C3"'
+      - '"0x8D8DC63D170AA9F"'
       last-modified:
-      - Tue, 29 Dec 2020 07:06:24 GMT
+      - Mon, 01 Mar 2021 03:40:54 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
@@ -90,20 +90,24 @@ interactions:
       - '*/*'
       Accept-Encoding:
       - gzip, deflate
+      CommandName:
+      - storage blob upload
       Connection:
       - keep-alive
       Content-Length:
       - '0'
       If-None-Match:
       - '*'
+      ParameterSetName:
+      - -c -n -f -t --account-name --account-key
       User-Agent:
-      - azsdk-python-storage-blob/12.6.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.20.0 azsdk-python-storage-blob/12.6.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
       x-ms-blob-content-length:
       - '16384'
       x-ms-blob-type:
       - PageBlob
       x-ms-date:
-      - Tue, 29 Dec 2020 07:06:25 GMT
+      - Mon, 01 Mar 2021 03:40:54 GMT
       x-ms-version:
       - '2020-02-10'
     method: PUT
@@ -115,11 +119,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 29 Dec 2020 07:06:25 GMT
+      - Mon, 01 Mar 2021 03:40:54 GMT
       etag:
-      - '"0x8D8ABC841EB4C09"'
+      - '"0x8D8DC63D23363C8"'
       last-modified:
-      - Tue, 29 Dec 2020 07:06:26 GMT
+      - Mon, 01 Mar 2021 03:40:55 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-request-server-encrypted:
@@ -136,14 +140,18 @@ interactions:
       - '*/*'
       Accept-Encoding:
       - gzip, deflate
+      CommandName:
+      - storage blob snapshot
       Connection:
       - keep-alive
       Content-Length:
       - '0'
+      ParameterSetName:
+      - -c -n --account-name --account-key
       User-Agent:
-      - azsdk-python-storage-blob/12.6.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.20.0 azsdk-python-storage-blob/12.6.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
       x-ms-date:
-      - Tue, 29 Dec 2020 07:06:26 GMT
+      - Mon, 01 Mar 2021 03:40:56 GMT
       x-ms-version:
       - '2020-02-10'
     method: PUT
@@ -155,17 +163,17 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 29 Dec 2020 07:06:26 GMT
+      - Mon, 01 Mar 2021 03:40:56 GMT
       etag:
-      - '"0x8D8ABC841EB4C09"'
+      - '"0x8D8DC63D23363C8"'
       last-modified:
-      - Tue, 29 Dec 2020 07:06:26 GMT
+      - Mon, 01 Mar 2021 03:40:55 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-request-server-encrypted:
       - 'false'
       x-ms-snapshot:
-      - '2020-12-29T07:06:27.1951523Z'
+      - '2021-03-01T03:40:57.1249655Z'
       x-ms-version:
       - '2020-02-10'
     status:
@@ -187,9 +195,9 @@ interactions:
       ParameterSetName:
       - -n -g --query -o
       User-Agent:
-      - AZURECLI/2.17.0 azsdk-python-azure-mgmt-storage/16.0.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.20.0 azsdk-python-azure-mgmt-storage/17.0.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000003/listKeys?api-version=2019-06-01&$expand=kerb
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000003/listKeys?api-version=2021-01-01&$expand=kerb
   response:
     body:
       string: '{"keys":[{"keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
@@ -201,7 +209,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 29 Dec 2020 07:06:27 GMT
+      - Mon, 01 Mar 2021 03:40:57 GMT
       expires:
       - '-1'
       pragma:
@@ -217,7 +225,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '11997'
+      - '11999'
     status:
       code: 200
       message: OK
@@ -229,9 +237,9 @@ interactions:
       Content-Length:
       - '0'
       User-Agent:
-      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.7; Windows 10) AZURECLI/2.17.0
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.7; Windows 10) AZURECLI/2.20.0
       x-ms-date:
-      - Tue, 29 Dec 2020 07:06:28 GMT
+      - Mon, 01 Mar 2021 03:40:58 GMT
       x-ms-version:
       - '2018-11-09'
     method: PUT
@@ -243,11 +251,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 29 Dec 2020 07:06:28 GMT
+      - Mon, 01 Mar 2021 03:41:00 GMT
       etag:
-      - '"0x8D8ABC843C7D2AF"'
+      - '"0x8D8DC63D4F536DD"'
       last-modified:
-      - Tue, 29 Dec 2020 07:06:29 GMT
+      - Mon, 01 Mar 2021 03:41:00 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
@@ -265,11 +273,11 @@ interactions:
       If-Modified-Since:
       - Mon, 29 Jun 2020 06:32:00 GMT
       User-Agent:
-      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.7; Windows 10) AZURECLI/2.17.0
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.7.7; Windows 10) AZURECLI/2.20.0
       x-ms-copy-source:
-      - https://clitestelngdn3k7fcie6hll.blob.core.windows.net/contvxtoqsboszr4m3x5cjwx/src?se=2020-12-30T07%3A06%3A29Z&sp=r&spr=https&sv=2018-11-09&sr=b&sig=8hN0NGKFIw/96QxZGVQlTvsYqgsPAlUywpPvFHlUp5E%3D&snapshot=2020-12-29T07:06:27.1951523Z
+      - https://clitestx53alor3k3i2oxfyc.blob.core.windows.net/contiw5jqp7gmnpmfmwhs4y6/src?se=2021-03-02T03%3A41%3A00Z&sp=r&spr=https&sv=2018-11-09&sr=b&sig=sifj4y8sKWQno0daLJUtNS0aDtppuNj14NrH2PY%2BiRA%3D&snapshot=2021-03-01T03:40:57.1249655Z
       x-ms-date:
-      - Tue, 29 Dec 2020 07:06:29 GMT
+      - Mon, 01 Mar 2021 03:41:00 GMT
       x-ms-version:
       - '2018-11-09'
     method: PUT
@@ -281,15 +289,15 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 29 Dec 2020 07:06:30 GMT
+      - Mon, 01 Mar 2021 03:41:01 GMT
       etag:
-      - '"0x8D8ABC844973CD8"'
+      - '"0x8D8DC63D5A4B6A4"'
       last-modified:
-      - Tue, 29 Dec 2020 07:06:30 GMT
+      - Mon, 01 Mar 2021 03:41:01 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-copy-id:
-      - 8d93179e-32b9-4563-bac2-579e0913ad22
+      - b59ae0ef-2f2e-405f-9fce-08b3c1911856
       x-ms-copy-status:
       - pending
       x-ms-version:
