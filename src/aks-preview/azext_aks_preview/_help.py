@@ -595,6 +595,11 @@ helps['aks kanalyze'] = """
     short-summary: Display diagnostic results for the Kubernetes cluster after kollect is done.
 """
 
+helps['aks command'] = """
+    type: group
+    short-summary: see detail usage in 'az aks command invoke', 'az aks command result'.
+"""
+
 helps['aks command invoke'] = """
     type: command
     short-summary: run a shell command (with kubectl, helm) on your aks cluster, support attaching files as well.
