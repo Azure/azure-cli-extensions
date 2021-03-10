@@ -299,11 +299,11 @@ short-summary: Create a Managed Cassandra Cluster.
 examples:
   - name: Create a Managed Cassandra Cluster in a given Subscription and ResourceGroup. Either a cassandra admin password or external seed needs are required.
     text: |
-      az managed-cassandra cluster create
-      --resource-group MyResourceGroup
-      --cluster-name MyCluster
-      --location MyLocation
-      --initial-cassandra-admin-password password
+      az managed-cassandra cluster create \\
+      --resource-group MyResourceGroup \\
+      --cluster-name MyCluster \\
+      --location MyLocation \\
+      --initial-cassandra-admin-password password \\
       --delegated-management-subnet-id /subscriptions/94d9b402-77b4-4049-b4c1-947bc6b7729b/resourceGroups/My-vnet/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/test-subnet
 """
 
@@ -311,12 +311,12 @@ helps['managed-cassandra cluster update'] = """
 type: command
 short-summary: Update a Managed Cassandra Cluster.
 examples:
-  - name: Update a Managed Cassandra Cluster in a given Subscription and ResourceGroup.
+  - name: Update External Seed Nodes of a given cluster.
     text: |
-      az managed-cassandra cluster update
-      --resource-group MyResourceGroup
-      --cluster-name MyCluster
-      ----external-seed-nodes nodes
+      az managed-cassandra cluster update --resource-group MyResourceGroup --cluster-name MyCluster --external-seed-nodes 127.0.0.1,127.0.0.2
+  - name: Update External Gossip Certificates of a given cluster. Certs can be passed in as strings or the file locations.
+    text: |
+      az managed-cassandra cluster update --resource-group MyResourceGroup --cluster-name MyCluster --external-gossip-certificates C:/MyFolder/test.pem,---BeginCert-MLXCF-EndCert---
 """
 
 helps['managed-cassandra cluster delete'] = """
@@ -325,9 +325,7 @@ short-summary: Deletes a Managed Cassandra Cluster.
 examples:
   - name: Deletes a Managed Cassandra Cluster in the given Subscription and ResourceGroup.
     text: |
-      az managed-cassandra cluster delete
-      --resource-group MyResourceGroup
-      --cluster-name MyCluster
+      az managed-cassandra cluster delete --resource-group MyResourceGroup --cluster-name MyCluster
 """
 
 helps['managed-cassandra cluster show'] = """
@@ -336,9 +334,7 @@ short-summary: Get a Managed Cassandra Cluster Resource.
 examples:
   - name: Gets a Managed Cassandra Cluster Resource. ProvisioningState tells the state of this cluster. If the cluster doesnot exist a NotFound response is returned.
     text: |
-      az managed-cassandra cluster show
-      --resource-group MyResourceGroup
-      --cluster-name MyCluster
+      az managed-cassandra cluster show --resource-group MyResourceGroup --cluster-name MyCluster
 """
 
 helps['managed-cassandra cluster list'] = """
@@ -347,8 +343,7 @@ short-summary: List the Managed Cassandra Clusters in a ResourceGroup and Subscr
 examples:
   - name: List all Managed Cassandra Clusters in a given Subscription and ResourceGroup.
     text: |
-      az managed-cassandra cluster list
-      --resource-group MyResourceGroup
+      az managed-cassandra cluster list --resource-group MyResourceGroup
   - name: List all Managed Cassandra Clusters in a given Subscription.
     text: |
       az managed-cassandra cluster list
@@ -360,15 +355,10 @@ short-summary: Gets Status of all the nodes in all the datacenters in a given Cl
 examples:
   - name: This command gets the status of all the nodes in this cluster. By default a json is returned.
     text: |
-      az managed-cassandra cluster node-status
-      --resource-group MyResourceGroup
-      --cluster-name MyCluster
+      az managed-cassandra cluster node-status --resource-group MyResourceGroup --cluster-name MyCluster
   - name: This command gets the status of all the nodes in this cluster. When a table output is specified only one token is displayed. Use json output to get all the tokens.
     text: |
-      az managed-cassandra cluster node-status
-      --resource-group MyResourceGroup
-      --cluster-name MyCluster
-      --output table
+      az managed-cassandra cluster node-status --resource-group MyResourceGroup --cluster-name MyCluster --output table
 """
 
 helps['managed-cassandra datacenter'] = """
@@ -382,12 +372,12 @@ short-summary: Create a Datacenter in an Azure Managed Cassandra Cluster.
 examples:
   - name: Create a Managed Cassandra Datacenter in a Cassandra Cluster. Each datacenter should atleast have 3 nodes.
     text: |
-      az managed-cassandra datacenter create
-      --resource-group MyResourceGroup
-      --cluster-name MyCluster
-      --data-center-name MyDataCenter
-      --data-center-location westus2
-      --node-count 3
+      az managed-cassandra datacenter create \\
+      --resource-group MyResourceGroup \\
+      --cluster-name MyCluster \\
+      --data-center-name MyDataCenter \\
+      --data-center-location westus2 \\
+      --node-count 3 \\
       --delegated-subnet-id /subscriptions/94d9b402-77b4-4049-b4c1-947bc6b7729b/resourceGroups/My-vnet/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/test-subnet
 """
 
@@ -397,18 +387,10 @@ short-summary: Update a Datacenter in an Azure Managed Cassandra Cluster.
 examples:
   - name: Scale the number of nodes in a datacenter. This is a scale up operation assuming that the create datacenter was done with 3 nodes. Each datacenter should atleast have 3 nodes.
     text: |
-      az managed-cassandra datacenter update
-      --resource-group MyResourceGroup
-      --cluster-name MyCluster
-      --data-center-name MyDataCenter
-      --node-count 6
+      az managed-cassandra datacenter update --resource-group MyResourceGroup --cluster-name MyCluster --data-center-name MyDataCenter --node-count 6
   - name: Scale the number of nodes in a datacenter. This is a scale down operation assuming that the create datacenter was done with 3 nodes, followed by a scale up to 6 nodes. Each datacenter should atleast have 3 nodes.
     text: |
-      az managed-cassandra datacenter update
-      --resource-group MyResourceGroup
-      --cluster-name MyCluster
-      --data-center-name MyDataCenter
-      --node-count 4
+      az managed-cassandra datacenter update --resource-group MyResourceGroup --cluster-name MyCluster --data-center-name MyDataCenter --node-count 4
 """
 
 helps['managed-cassandra datacenter delete'] = """
@@ -417,17 +399,10 @@ short-summary: Deletes a Managed Cassandra Datacenter.
 examples:
   - name: Deletes a Managed Cassandra Datacenter in the given Cluster.
     text: |
-      az managed-cassandra datacenter delete
-      --resource-group MyResourceGroup
-      --cluster-name MyCluster
-      --data-center-name MyDataCenter
+      az managed-cassandra datacenter delete --resource-group MyResourceGroup --cluster-name MyCluster --data-center-name MyDataCenter
   - name: Deletes a Managed Cassandra Datacenter in the given Cluster without waiting for the long-running operation to finish.
     text: |
-      az managed-cassandra datacenter delete
-      --resource-group MyResourceGroup
-      --cluster-name MyCluster
-      --data-center-name MyDataCenter
-      --no-wait
+      az managed-cassandra datacenter delete --resource-group MyResourceGroup --cluster-name MyCluster --data-center-name MyDataCenter --no-wait
 """
 
 helps['managed-cassandra datacenter show'] = """
@@ -436,10 +411,7 @@ short-summary: Get a Managed Cassandra DataCenter Resource.
 examples:
   - name: Gets a Managed Cassandra Datacenter Resource. ProvisioningState tells the state of this datacenter. If the datacenter does not exist a NotFound response is returned.
     text: |
-      az managed-cassandra datacenter show
-      --resource-group MyResourceGroup
-      --cluster-name MyCluster
-      --data-center-name MyDataCenter
+      az managed-cassandra datacenter show --resource-group MyResourceGroup --cluster-name MyCluster --data-center-name MyDataCenter
 """
 
 helps['managed-cassandra datacenter list'] = """
@@ -448,7 +420,5 @@ short-summary: List the Managed Cassandra Datacenters in a given Cluster.
 examples:
   - name: List all Managed Cassandra DataCenters in a given Cluster.
     text: |
-      az managed-cassandra datacenter list
-      --resource-group MyResourceGroup
-      --cluster-name MyCluster
+      az managed-cassandra datacenter list --resource-group MyResourceGroup --cluster-name MyCluster
 """
