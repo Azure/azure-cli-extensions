@@ -120,7 +120,7 @@ stages:
           scriptType: pscore
           scriptLocation: inlineScript
           inlineScript: |
-            .\Test.ps1 -CI
+            .\Test.ps1 -Type Configuration -CI
           workingDirectory: $(K8S_EXTENSION_REPO_PATH)
         continueOnError: true
 
