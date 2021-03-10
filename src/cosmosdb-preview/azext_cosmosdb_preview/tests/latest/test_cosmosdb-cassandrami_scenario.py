@@ -65,18 +65,12 @@ class ManagedCassandraScenarioTest(ScenarioTest):
         assert len(clusters) == 1
 
         # List Clusters in Subscription
-        clusters_sub = self.cmd('az cassandra-mi cluster list-by-subscription').get_output_in_json()
-        assert len(clusters_sub) == 1
+        clusters_sub = self.cmd('az managed-cassandra cluster list').get_output_in_json()
+        assert len(clusters_sub) >= 1
 
         # Delete Cluster
         try:
             self.cmd('az managed-cassandra cluster delete -c {c} -g {rg} --yes')
-        except Exception as e:
-            print(e)
-
-        # Delete Cluster
-        try:
-            self.cmd('az managed-cassandra cluster delete -c {c1} -g {rg} --yes')
         except Exception as e:
             print(e)
 

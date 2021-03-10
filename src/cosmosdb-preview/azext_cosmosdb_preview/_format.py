@@ -14,14 +14,16 @@ def amc_node_status_table_format(result):
 
 
 def _amc_node_status_table_format(result):
-    result['tokens'] = [result['tokens'][0] + ",..."]
+    result['tokensDisplay'] = 'N/A'
+    if result['tokens'] is not None and result['tokens']:
+        result['tokensDisplay'] = result['tokens'][0] + ",..."
     parsed = compile_jmes("""{
         Datacenter:datacenter,
         Status:status,
         State:state,
         Address:address,
         Rack:rack,
-        Tokens: tokens[0]
+        Tokens:tokensDisplay,
         HostId: hostId,
         Load:load,
         Owns:owns
