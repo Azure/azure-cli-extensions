@@ -6,6 +6,7 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
+
 helps['storage blob copy start'] = """
 type: command
 short-summary: List blobs in a given container.
