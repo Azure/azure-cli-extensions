@@ -6,8 +6,7 @@
 from collections import OrderedDict
 # pylint: disable=import-error
 from jmespath import compile as compile_jmes, Options
-# pylint: disable=import-error
-from jmespath import functions
+
 
 def amc_node_status_table_format(result):
     """Format a managed cluster as summary results for display with "-o table"."""
@@ -29,4 +28,3 @@ def _amc_node_status_table_format(result):
     }""")
     # use ordered dicts so headers are predictable
     return parsed.search(result, Options(dict_cls=OrderedDict))
-    

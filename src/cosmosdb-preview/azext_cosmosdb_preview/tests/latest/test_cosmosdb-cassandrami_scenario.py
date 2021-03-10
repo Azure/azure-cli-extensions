@@ -20,11 +20,13 @@ class ManagedCassandraScenarioTest(ScenarioTest):
 
         self.kwargs.update({
             'c': self.create_random_name(prefix='cli', length=10),
-            'subnet_id': self.create_subnet(resource_group)
+            'subnet_id': self.create_subnet(resource_group),
+            'seed_nodes': '127.0.0.1,127.0.0.2',
+            'certs': './test.pem'
         })
 
         # Create Cluster
-        self.cmd('az managed-cassandra cluster create -c {c} -l eastus2 -g {rg} -s {subnet_id}')
+        self.cmd('az managed-cassandra cluster create -c {c} -l eastus2 -g {rg} -s {subnet_id} -e {certs} --external-seed-nodes {seed_nodes}')
         cluster = self.cmd('az managed-cassandra cluster show -c {c} -g {rg}').get_output_in_json()
         assert cluster['properties']['provisioningState'] == 'Succeeded'
 
@@ -45,14 +47,9 @@ class ManagedCassandraScenarioTest(ScenarioTest):
         })
 
         # Create Cluster
-        self.cmd('az managed-cassandra cluster create -c {c} -l eastus2 -g {rg} -s {subnet_id}')
+        self.cmd('az managed-cassandra cluster create -c {c} -l eastus2 -g {rg} -s {subnet_id} -i password')
         cluster = self.cmd('az managed-cassandra cluster show -c {c} -g {rg}').get_output_in_json()
         assert cluster['properties']['provisioningState'] == 'Succeeded'
-
-        # Create Cluster
-        self.cmd('az managed-cassandra cluster create -c {c1} -l eastus2 -g {rg} -s {subnet_id}')
-        cluster1 = self.cmd('az managed-cassandra cluster show -c {c1} -g {rg}').get_output_in_json()
-        assert cluster1['properties']['provisioningState'] == 'Succeeded'
 
         # Create Datacenter
         self.cmd('az managed-cassandra datacenter create -c {c} -d {d} -l eastus2 -g {rg} -n 3 -s {subnet_id}')
@@ -65,11 +62,11 @@ class ManagedCassandraScenarioTest(ScenarioTest):
 
         # List Clusters in ResourceGroup
         clusters = self.cmd('az managed-cassandra cluster list -g {rg}').get_output_in_json()
-        assert len(clusters) == 2
+        assert len(clusters) == 1
 
         # List Clusters in Subscription
-        # clusters_sub = self.cmd('az cassandra-mi cluster list-by-subscription').get_output_in_json()
-        # assert len(clusters_sub) == 2
+        clusters_sub = self.cmd('az cassandra-mi cluster list-by-subscription').get_output_in_json()
+        assert len(clusters_sub) == 1
 
         # Delete Cluster
         try:
@@ -110,3 +107,33 @@ class ManagedCassandraScenarioTest(ScenarioTest):
         subnet_id = subnet_resource['id']
 
         return subnet_id
+
+    def get_certs(self):
+
+        return """-----BEGIN CERTIFICATE-----
+MIICLDCCAdKgAwIBAgIBADAKBggqhkjOPQQDAjB9MQswCQYDVQQGEwJCRTEPMA0G
+A1UEChMGR251VExTMSUwIwYDVQQLExxHbnVUTFMgY2VydGlmaWNhdGUgYXV0aG9y
+aXR5MQ8wDQYDVQQIEwZMZXV2ZW4xJTAjBgNVBAMTHEdudVRMUyBjZXJ0aWZpY2F0
+ZSBhdXRob3JpdHkwHhcNMTEwNTIzMjAzODIxWhcNMTIxMjIyMDc0MTUxWjB9MQsw
+CQYDVQQGEwJCRTEPMA0GA1UEChMGR251VExTMSUwIwYDVQQLExxHbnVUTFMgY2Vy
+dGlmaWNhdGUgYXV0aG9yaXR5MQ8wDQYDVQQIEwZMZXV2ZW4xJTAjBgNVBAMTHEdu
+dVRMUyBjZXJ0aWZpY2F0ZSBhdXRob3JpdHkwWTATBgcqhkjOPQIBBggqhkjOPQMB
+BwNCAARS2I0jiuNn14Y2sSALCX3IybqiIJUvxUpj+oNfzngvj/Niyv2394BWnW4X
+uQ4RTEiywK87WRcWMGgJB5kX/t2no0MwQTAPBgNVHRMBAf8EBTADAQH/MA8GA1Ud
+DwEB/wQFAwMHBgAwHQYDVR0OBBYEFPC0gf6YEr+1KLlkQAPLzB9mTigDMAoGCCqG
+SM49BAMCA0gAMEUCIDGuwD1KPyG+hRf88MeyMQcqOFZD0TbVleF+UsAGQ4enAiEA
+l4wOuDwKQa+upc8GftXE2C//4mKANBC6It01gUaTIpo=
+-----END CERTIFICATE-----,-----BEGIN CERTIFICATE-----
+MIICLDCCAdKgAwIBAgIBADAKBggqhkjOPQQDAjB9MQswCQYDVQQGEwJCRTEPMA0G
+A1UEChMGR251VExTMSUwIwYDVQQLExxHbnVUTFMgY2VydGlmaWNhdGUgYXV0aG9y
+aXR5MQ8wDQYDVQQIEwZMZXV2ZW4xJTAjBgNVBAMTHEdudVRMUyBjZXJ0aWZpY2F0
+ZSBhdXRob3JpdHkwHhcNMTEwNTIzMjAzODIxWhcNMTIxMjIyMDc0MTUxWjB9MQsw
+CQYDVQQGEwJCRTEPMA0GA1UEChMGR251VExTMSUwIwYDVQQLExxHbnVUTFMgY2Vy
+dGlmaWNhdGUgYXV0aG9yaXR5MQ8wDQYDVQQIEwZMZXV2ZW4xJTAjBgNVBAMTHEdu
+dVRMUyBjZXJ0aWZpY2F0ZSBhdXRob3JpdHkwWTATBgcqhkjOPQIBBggqhkjOPQMB
+BwNCAARS2I0jiuNn14Y2sSALCX3IybqiIJUvxUpj+oNfzngvj/Niyv2394BWnW4X
+uQ4RTEiywK87WRcWMGgJB5kX/t2no0MwQTAPBgNVHRMBAf8EBTADAQH/MA8GA1Ud
+DwEB/wQFAwMHBgAwHQYDVR0OBBYEFPC0gf6YEr+1KLlkQAPLzB9mTigDMAoGCCqG
+SM49BAMCA0gAMEUCIDGuwD1KPyG+hRf88MeyMQcqOFZD0TbVleF+UsAGQ4enAiEA
+l4wOuDwKQa+upc8GftXE2C//4mKANBC6It01gUaTIpo=
+-----END CERTIFICATE-----"""

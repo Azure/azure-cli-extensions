@@ -171,41 +171,40 @@ def _parse_resource_path(resource,
     return result['resource_id']
 
 
-def validate_certificates(ns):
+def validate_gossip_certificates(ns):
     """ Extracts multiple comma-separated certificates """
     if ns.external_gossip_certificates is not None:
         ns.external_gossip_certificates = get_certificates(ns.external_gossip_certificates)
+
+
+def validate_client_certificates(ns):
+    """ Extracts multiple comma-separated certificates """
     if ns.client_certificates is not None:
         ns.client_certificates = get_certificates(ns.client_certificates)
 
 
-def get_certificates(ns):
+def get_certificates(input_certificates):
     from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import Certificate
     certificates = []
-    print(ns)
-    for item in ns:
+    for item in input_certificates:
         for i in item.split(","):
             certificate = get_certificate(i)
             certificates.append(Certificate(pem=certificate))
     return certificates
 
 
-def get_certificate(ns):
+def get_certificate(cert):
     """ Extract certificate from file or from string """
     from azure.cli.core.util import read_file_content
     import os
-    print(ns)
     certificate = ''
-    if ns is not None:
-        if os.path.exists(ns):
-            print("file exists")
-            certificate = read_file_content(ns)
+    if cert is not None:
+        if os.path.exists(cert):
+            certificate = read_file_content(cert)
         else:
-            print("file doesnot exist")
-            certificate = ns
-        print(certificate)
+            certificate = cert
     else:
-        raise CLIError("""One of the value provided for the certificates is empty.
+        raise InvalidArgumentValueError("""One of the value provided for the certificates is empty.
     Please verify there aren't any spaces.""")
     return certificate
 
@@ -215,17 +214,15 @@ def validate_seednodes(ns):
     from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import SeedNode
     if ns.external_seed_nodes is not None:
         seed_nodes = []
-        print(ns.external_seed_nodes)
         for item in ns.external_seed_nodes:
             for i in item.split(","):
                 try:
                     ipaddress.ip_address(i)
-                except:
-                    raise CLIError("""IP address provided is invalid.
+                except ValueError:
+                    raise InvalidArgumentValueError("""IP address provided is invalid.
                 Please verify if there are any spaces or other invalid characters.""")
                 seed_nodes.append(SeedNode(ip_address=i))
         ns.external_seed_nodes = seed_nodes
-    print(ns.external_seed_nodes)
 
 
 def _gen_guid():
