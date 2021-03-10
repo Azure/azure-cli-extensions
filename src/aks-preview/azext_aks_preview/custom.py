@@ -2062,26 +2062,28 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
 
     return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
 
-def aks_runcommand(cmd, client, resource_group_name, name, command_string="", command_files=[]):
+
+def aks_runcommand(cmd, client, resource_group_name, name, command_string="", command_files=None):
     colorama.init()
 
     mc = client.get(resource_group_name, name)
 
-    if len(command_string) == 0:
+    if not command_string:
         raise CLIError('Command cannot be empty.')
-   
+
     request_payload = RunCommandRequest()
     request_payload.command = command_string
     request_payload.context = _get_command_context(command_files)
-    if mc.aad_profile != None and mc.aad_profile.managed :
-       request_payload.cluster_token = _get_dataplane_aad_token(cmd.cli_ctx, "6dae42f8-4368-4678-94ff-3960e28e3630") 
+    if mc.aad_profile is not None and mc.aad_profile.managed:
+        request_payload.cluster_token = _get_dataplane_aad_token(cmd.cli_ctx, "6dae42f8-4368-4678-94ff-3960e28e3630")
 
     commandResultFuture = client.run_command(resource_group_name, name, request_payload, long_running_operation_timeout=5, retry_total=0)
     commandResult = commandResultFuture.result(300)
     _print_command_result(commandResult)
 
+
 def aks_command_result(cmd, client, resource_group_name, name, command_id=""):
-    if len(command_id) == 0:
+    if not command_id:
         raise CLIError('CommandID cannot be empty.')
 
     commandResult = client.get_command_result(resource_group_name, name, command_id)
@@ -2101,15 +2103,17 @@ def _print_command_result(commandResult):
     # *-ing state
     print(f"{colorama.Fore.BLUE}command is in : {commandResult.provisioning_state} state{colorama.Style.RESET_ALL}")
 
+
 def _get_command_context(command_files):
-    if len(command_files) == 0:
+    if not command_files:
         return ""
 
     filesToAttach = {}
-    if len(command_files) == 1 and command_files[0]==".":
+    # . means to attach current folder, cannot combine more files. (at least for now)
+    if len(command_files) == 1 and command_files[0] == ".":
         # current folder
         cwd = os.getcwd()
-        for filefolder, dirs, files in os.walk(cwd):
+        for filefolder, _, files in os.walk(cwd):
             for file in files:
                 # retain folder structure
                 rel = os.path.relpath(filefolder, cwd)
@@ -2120,16 +2124,17 @@ def _get_command_context(command_files):
                 raise CLIError(". is used to attach current folder, not expecting other attachements.")
             if os.path.isfile(file):
                 # for individual attached file, flatten them to same folder
-                filesToAttach[file]=os.path.basename(file)
+                filesToAttach[file] = os.path.basename(file)
 
     zipStream = io.BytesIO()
     zipFile = zipfile.ZipFile(zipStream, "w")
-    for i, (k, v) in enumerate(filesToAttach.items()):
-        zipFile.write(k, v)
+    for _, (osfile, zipEntry) in enumerate(filesToAttach.items()):
+        zipFile.write(osfile, zipEntry)
     # zipFile.printdir() // use this to debug
     zipFile.close()
 
     return str(base64.encodebytes(zipStream.getbuffer()), "utf-8")
+
 
 def _get_dataplane_aad_token(cli_ctx, serverAppId):
     # this function is mostly copied from keyvault cli
@@ -2144,6 +2149,7 @@ def _get_dataplane_aad_token(cli_ctx, serverAppId):
             raise CLIError(
                 "Credentials have expired due to inactivity. Please run 'az login'")
         raise CLIError(err)
+
 
 def _upgrade_single_nodepool_image_version(no_wait, client, resource_group_name, cluster_name, nodepool_name):
     return sdk_no_wait(no_wait, client.upgrade_node_image_version, resource_group_name, cluster_name, nodepool_name)
