@@ -123,7 +123,7 @@ class Cloud_serviceScenarioTest(ScenarioTest):
         })
 
         self.kwargs.update({
-            'myCloudService': '{cs-name}',
+            'myCloudService': 'cs1',
         })
 
 
