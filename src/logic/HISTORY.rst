@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.3
+++++++
+* Preview logic extension
+
 0.1.2
 ++++++
 * `logic workflow update`: --definition is not to be mandatory while updating

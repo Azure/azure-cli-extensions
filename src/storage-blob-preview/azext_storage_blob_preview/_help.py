@@ -6,6 +6,7 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
+
 helps['storage blob copy start'] = """
 type: command
 short-summary: List blobs in a given container.
@@ -147,16 +148,14 @@ examples:
 helps['storage blob upload'] = """
 type: command
 short-summary: Upload a file to a storage blob.
-long-summary: Creates a new blob from a file path, or updates the content of an existing blob with automatic chunking and progress notifications.
+long-summary: Create a new blob from a file path, or updates the content of an existing blob with automatic chunking and progress notifications.
 parameters:
   - name: --type -t
-    short-summary: Defaults to 'page' for *.vhd files, or 'block' otherwise.
+    short-summary: Default to 'page' for *.vhd files, or 'block' otherwise.
   - name: --maxsize-condition
     short-summary: The max length in bytes permitted for an append blob.
   - name: --validate-content
-    short-summary: Specifies that an MD5 hash shall be calculated for each chunk of the blob and verified by the service when the chunk has arrived.
-  - name: --tier
-    short-summary: A page blob tier value to set the blob to. The tier correlates to the size of the blob and number of allowed IOPS. This is only applicable to page blobs on premium storage accounts.
+    short-summary: Specify that an MD5 hash shall be calculated for each chunk of the blob and verified by the service when the chunk has arrived.
 examples:
   - name: Upload to a blob.
     text: az storage blob upload -f /path/to/file -c mycontainer -n MyBlob

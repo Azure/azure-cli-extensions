@@ -138,9 +138,20 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage account blob-service-properties update',
                                resource_type=CUSTOM_MGMT_STORAGE) as c:
+        from azure.cli.command_modules.storage._validators import get_api_version_type, \
+            validator_change_feed_retention_days
         c.argument('account_name', acct_name_type, id_part=None)
         c.argument('resource_group_name', required=False, validator=process_resource_group)
-        c.argument('enable_change_feed', arg_type=get_three_state_flag(), min_api='2019-04-01')
+        c.argument('enable_change_feed', arg_type=get_three_state_flag(), min_api='2019-04-01',
+                   arg_group='Change Feed Policy')
+        c.argument('change_feed_retention_days', is_preview=True,
+                   options_list=['--change-feed-retention-days', '--change-feed-days'],
+                   type=int, min_api='2019-06-01', arg_group='Change Feed Policy',
+                   validator=validator_change_feed_retention_days,
+                   help='Indicate the duration of changeFeed retention in days. '
+                        'Minimum value is 1 day and maximum value is 146000 days (400 years). '
+                        'A null value indicates an infinite retention of the change feed.'
+                        '(Use `--enable-change-feed` without `--change-feed-days` to indicate null)')
         c.argument('enable_container_delete_retention',
                    arg_type=get_three_state_flag(),
                    options_list=['--enable-container-delete-retention', '--container-retention'],
@@ -167,15 +178,10 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('enable_last_access_tracking', arg_type=get_three_state_flag(), min_api='2019-06-01',
                    options_list=['--enable-last-access-tracking', '-t'],
                    help='When set to true last access time based tracking policy is enabled.')
-
-    with self.argument_context('storage account management-policy create') as c:
-        c.argument('policy', type=file_type, completer=FilesCompleter(),
-                   help='The Storage Account ManagementPolicies Rules, in JSON format. See more details in: '
-                        'https://docs.microsoft.com/azure/storage/common/storage-lifecycle-managment-concepts.')
-        c.argument('account_name', help='The name of the storage account within the specified resource group.')
-
-    with self.argument_context('storage account management-policy update') as c:
-        c.argument('account_name', help='The name of the storage account within the specified resource group.')
+        c.argument('default_service_version', options_list=['--default-service-version', '-d'],
+                   type=get_api_version_type(), min_api='2018-07-01',
+                   help="Indicate the default version to use for requests to the Blob service if an incoming request's "
+                        "version is not specified.")
 
     with self.argument_context('storage blob') as c:
         c.argument('blob_name', options_list=('--name', '-n'), arg_type=blob_name_type)

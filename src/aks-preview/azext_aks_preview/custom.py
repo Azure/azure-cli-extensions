@@ -50,11 +50,14 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2020_12_01.models import (ContainerServiceLinuxProfile,
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_02_01.models import (ContainerServiceLinuxProfile,
                                                                       ManagedClusterWindowsProfile,
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
                                                                       ContainerServiceSshConfiguration,
+                                                                      MaintenanceConfiguration,
+                                                                      TimeInWeek,
+                                                                      TimeSpan,
                                                                       ContainerServiceSshPublicKey,
                                                                       ManagedCluster,
                                                                       ManagedClusterAADProfile,
@@ -104,7 +107,10 @@ from ._consts import CONST_INGRESS_APPGW_WATCH_NAMESPACE
 from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, CONST_SPOT_EVICTION_POLICY_DELETE
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
+from ._consts import CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED
 from ._consts import ADDONS
+from .maintenanceconfiguration import aks_maintenanceconfiguration_update_internal
+from ._consts import CONST_PRIVATE_DNS_ZONE_SYSTEM, CONST_PRIVATE_DNS_ZONE_NONE
 logger = get_logger(__name__)
 
 
@@ -817,6 +823,78 @@ def _add_ingress_appgw_addon_role_assignment(result, cmd):
                                    'Are you an Owner on this subscription?', vnet_id, CONST_INGRESS_APPGW_ADDON_NAME)
 
 
+def aks_maintenanceconfiguration_list(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name
+):
+    return client.list_by_managed_cluster(resource_group_name, cluster_name)
+
+
+def aks_maintenanceconfiguration_show(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    config_name
+):
+    logger.warning('resource_group_name: %s, cluster_name: %s, config_name: %s ', resource_group_name, cluster_name, config_name)
+    return client.get(resource_group_name, cluster_name, config_name)
+
+
+def aks_maintenanceconfiguration_delete(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    config_name
+):
+    logger.warning('resource_group_name: %s, cluster_name: %s, config_name: %s ', resource_group_name, cluster_name, config_name)
+    return client.delete(resource_group_name, cluster_name, config_name)
+
+
+def aks_maintenanceconfiguration_add(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    config_name,
+    config_file,
+    weekday,
+    start_hour
+):
+    configs = client.list_by_managed_cluster(resource_group_name, cluster_name)
+    for config in configs:
+        if config.name == config_name:
+            raise CLIError("Maintenance configuration '{}' already exists, please try a different name, "
+                           "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(config_name))
+    return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, cluster_name, config_name, config_file, weekday, start_hour)
+
+
+def aks_maintenanceconfiguration_update(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    config_name,
+    config_file,
+    weekday,
+    start_hour
+):
+    configs = client.list_by_managed_cluster(resource_group_name, cluster_name)
+    found = False
+    for config in configs:
+        if config.name == config_name:
+            found = True
+            break
+    if not found:
+        raise CLIError("Maintenance configuration '{}' doesn't exist."
+                       "use 'aks maintenanceconfiguration list' to get current list of maitenance configurations".format(config_name))
+
+    return aks_maintenanceconfiguration_update_internal(cmd, client, resource_group_name, cluster_name, config_name, config_file, weekday, start_hour)
+
+
 def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
                client,
                resource_group_name,
@@ -874,6 +952,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                tags=None,
                node_zones=None,
                enable_node_public_ip=False,
+               node_public_ip_prefix_id=None,
                generate_ssh_keys=False,  # pylint: disable=unused-argument
                enable_pod_security_policy=False,
                node_resource_group=None,
@@ -882,6 +961,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_private_cluster=False,
                private_dns_zone=None,
                enable_managed_identity=True,
+               fqdn_subdomain=None,
                api_server_authorized_ip_ranges=None,
                aks_custom_headers=None,
                appgw_name=None,
@@ -900,7 +980,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                assign_identity=None,
                auto_upgrade_channel=None,
                enable_pod_identity=False,
+               enable_pod_identity_with_kubenet=False,
                enable_encryption_at_host=False,
+               enable_secret_rotation=False,
                no_wait=False,
                yes=False):
     if not no_ssh_key:
@@ -912,7 +994,10 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             raise CLIError('Provided ssh key ({}) is invalid or non-existent'.format(shortened_key))
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
-    if not dns_name_prefix:
+
+    if dns_name_prefix and fqdn_subdomain:
+        raise CLIError('--dns-name-prefix and --fqdn-subdomain cannot be used at same time')
+    if not dns_name_prefix and not fqdn_subdomain:
         dns_name_prefix = _get_default_dns_prefix(name, resource_group_name, subscription_id)
 
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group_name)
@@ -946,6 +1031,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         proximity_placement_group_id=ppg,
         availability_zones=node_zones,
         enable_node_public_ip=enable_node_public_ip,
+        node_public_ip_prefix_id=node_public_ip_prefix_id,
         enable_encryption_at_host=enable_encryption_at_host,
         max_pods=int(max_pods) if max_pods else None,
         type=vm_set_type
@@ -999,7 +1085,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         principal_obj = _ensure_aks_service_principal(cmd.cli_ctx,
                                                       service_principal=service_principal, client_secret=client_secret,
                                                       subscription_id=subscription_id, dns_name_prefix=dns_name_prefix,
-                                                      location=location, name=name)
+                                                      fqdn_subdomain=fqdn_subdomain, location=location, name=name)
         service_principal_profile = ManagedClusterServicePrincipalProfile(
             client_id=principal_obj.get("service_principal"),
             secret=principal_obj.get("client_secret"))
@@ -1109,7 +1195,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         appgw_watch_namespace,
         enable_sgxquotehelper,
         aci_subnet_name,
-        vnet_subnet_id
+        vnet_subnet_id,
+        enable_secret_rotation
     )
     monitoring = False
     if CONST_MONITORING_ADDON_NAME in addon_profiles:
@@ -1181,6 +1268,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         if not enable_managed_identity:
             raise CLIError('--enable-pod-identity can only be specified when --enable-managed-identity is specified')
         pod_identity_profile = ManagedClusterPodIdentityProfile(enabled=True)
+        _ensure_pod_identity_kubenet_consent(network_profile, pod_identity_profile, enable_pod_identity_with_kubenet)
 
     enable_rbac = True
     if disable_rbac:
@@ -1213,6 +1301,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     if node_resource_group:
         mc.node_resource_group = node_resource_group
 
+    use_custom_private_dns_zone = False
     if enable_private_cluster:
         if load_balancer_sku.lower() != "standard":
             raise CLIError("Please use standard load balancer for private cluster")
@@ -1224,6 +1313,17 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         if not enable_private_cluster:
             raise CLIError("Invalid private dns zone for public cluster. It should always be empty for public cluster")
         mc.api_server_access_profile.private_dns_zone = private_dns_zone
+        from msrestazure.tools import is_valid_resource_id
+        if private_dns_zone.lower() != CONST_PRIVATE_DNS_ZONE_SYSTEM and private_dns_zone.lower() != CONST_PRIVATE_DNS_ZONE_NONE:
+            if is_valid_resource_id(private_dns_zone):
+                use_custom_private_dns_zone = True
+            else:
+                raise CLIError(private_dns_zone + " is not a valid Azure resource ID.")
+
+    if fqdn_subdomain:
+        if not use_custom_private_dns_zone:
+            raise CLIError("--fqdn-subdomain should only be used for private cluster with custom private dns zone")
+        mc.fqdn_subdomain = fqdn_subdomain
 
     if uptime_sla:
         mc.sku = ManagedClusterSKU(
@@ -1295,7 +1395,10 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_managed_identity=False,
                assign_identity=None,
                enable_pod_identity=False,
+               enable_pod_identity_with_kubenet=False,
                disable_pod_identity=False,
+               enable_secret_rotation=False,
+               disable_secret_rotation=False,
                yes=False,
                tags=None):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
@@ -1326,6 +1429,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not assign_identity and \
        not enable_pod_identity and \
        not disable_pod_identity and \
+       not enable_secret_rotation and \
+       not disable_secret_rotation and \
        not tags:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
@@ -1350,6 +1455,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--enable-pod-identity" or '
                        '"--disable-pod-identity" or '
                        '"--auto-upgrade-channel" or '
+                       '"--enable-secret-rotation" or '
+                       '"--disable-secret-rotation" or '
                        '"--tags"')
 
     instance = client.get(resource_group_name, name)
@@ -1542,10 +1649,21 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             )
 
     if enable_pod_identity:
-        _update_addon_pod_identity(instance, enable=True)
+        _update_addon_pod_identity(instance, enable=True, allow_kubenet_consent=enable_pod_identity_with_kubenet)
 
     if disable_pod_identity:
         _update_addon_pod_identity(instance, enable=False)
+
+    azure_keyvault_secrets_provider_addon_profile = instance.addon_profiles.get(CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, None)
+    if enable_secret_rotation:
+        if azure_keyvault_secrets_provider_addon_profile is None or not azure_keyvault_secrets_provider_addon_profile.enabled:
+            raise CLIError('--enable-secret-rotation can only be specified when azure-keyvault-secrets-provider is enabled')
+        azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
+
+    if disable_secret_rotation:
+        if azure_keyvault_secrets_provider_addon_profile is None or not azure_keyvault_secrets_provider_addon_profile.enabled:
+            raise CLIError('--disable-secret-rotation can only be specified when azure-keyvault-secrets-provider is enabled')
+        azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "false"
 
     if tags:
         instance.tags = tags
@@ -1959,7 +2077,8 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
                         appgw_watch_namespace=None,
                         enable_sgxquotehelper=False,
                         aci_subnet_name=None,
-                        vnet_subnet_id=None):
+                        vnet_subnet_id=None,
+                        enable_secret_rotation=False):
     if not addon_profiles:
         addon_profiles = {}
     addons = addons_str.split(',') if addons_str else []
@@ -2013,6 +2132,12 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
         addon_profile = ManagedClusterAddonProfile(enabled=True, config={})
         addon_profiles[CONST_OPEN_SERVICE_MESH_ADDON_NAME] = addon_profile
         addons.remove('open-service-mesh')
+    if 'azure-keyvault-secrets-provider' in addons:
+        addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"})
+        if enable_secret_rotation:
+            addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
+        addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME] = addon_profile
+        addons.remove('azure-keyvault-secrets-provider')
     if 'confcom' in addons:
         addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "false"})
         if enable_sgxquotehelper:
@@ -2323,6 +2448,7 @@ def _ensure_aks_service_principal(cli_ctx,
                                   client_secret=None,
                                   subscription_id=None,
                                   dns_name_prefix=None,
+                                  fqdn_subdomain=None,
                                   location=None,
                                   name=None):
     file_name_aks = 'aksServicePrincipal.json'
@@ -2339,7 +2465,10 @@ def _ensure_aks_service_principal(cli_ctx,
             if not client_secret:
                 client_secret = _create_client_secret()
             salt = binascii.b2a_hex(os.urandom(3)).decode('utf-8')
-            url = 'http://{}.{}.{}.cloudapp.azure.com'.format(salt, dns_name_prefix, location)
+            if dns_name_prefix:
+                url = 'http://{}.{}.{}.cloudapp.azure.com'.format(salt, dns_name_prefix, location)
+            else:
+                url = 'http://{}.{}.{}.cloudapp.azure.com'.format(salt, fqdn_subdomain, location)
 
             service_principal = _build_service_principal(rbac_client, cli_ctx, name, url, client_secret)
             if not service_principal:
@@ -2505,6 +2634,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       kubernetes_version=None,
                       node_zones=None,
                       enable_node_public_ip=False,
+                      node_public_ip_prefix_id=None,
                       node_vm_size=None,
                       node_osdisk_type=None,
                       node_osdisk_size=0,
@@ -2571,6 +2701,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         orchestrator_version=kubernetes_version,
         availability_zones=node_zones,
         enable_node_public_ip=enable_node_public_ip,
+        node_public_ip_prefix_id=node_public_ip_prefix_id,
         node_taints=taints_array,
         scale_set_priority=priority,
         upgrade_settings=upgradeSettings,
@@ -2771,13 +2902,13 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
 
 def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
                       subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None, appgw_subnet_id=None,
-                      appgw_watch_namespace=None, enable_sgxquotehelper=False, no_wait=False):
+                      appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, no_wait=False):
     instance = client.get(resource_group_name, name)
     subscription_id = get_subscription_id(cmd.cli_ctx)
     instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
                               workspace_resource_id=workspace_resource_id, subnet_name=subnet_name,
                               appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix, appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id, appgw_watch_namespace=appgw_watch_namespace,
-                              enable_sgxquotehelper=enable_sgxquotehelper, no_wait=no_wait)
+                              enable_sgxquotehelper=enable_sgxquotehelper, enable_secret_rotation=enable_secret_rotation, no_wait=no_wait)
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled:
         _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME])
@@ -2842,6 +2973,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    appgw_subnet_id=None,
                    appgw_watch_namespace=None,
                    enable_sgxquotehelper=False,
+                   enable_secret_rotation=False,
                    no_wait=False):  # pylint: disable=unused-argument
 
     # parse the comma-separated addons argument
@@ -2929,6 +3061,16 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                 addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_ACC_SGX_QUOTE_HELPER_ENABLED: "false"})
                 if enable_sgxquotehelper:
                     addon_profile.config[CONST_ACC_SGX_QUOTE_HELPER_ENABLED] = "true"
+            elif addon == CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME:
+                if addon_profile.enabled:
+                    raise CLIError('The azure-keyvault-secrets-provider addon is already enabled for this managed cluster.\n'
+                                   'To change azure-keyvault-secrets-provider configuration, run '
+                                   f'"az aks disable-addons -a azure-keyvault-secrets-provider -n {name} -g {resource_group_name}" '
+                                   'before enabling it again.')
+                addon_profile = ManagedClusterAddonProfile(enabled=True, config={CONST_SECRET_ROTATION_ENABLED: "false"})
+                if enable_secret_rotation:
+                    addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
+                addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME] = addon_profile
             addon_profiles[addon] = addon_profile
         else:
             if addon not in addon_profiles:
@@ -3377,22 +3519,40 @@ def _ensure_pod_identity_addon_is_enabled(instance):
                        'To enable, run "az aks update --enable-pod-identity')
 
 
-def _update_addon_pod_identity(instance, enable, pod_identities=None, pod_identity_exceptions=None):
+def _ensure_pod_identity_kubenet_consent(network_profile, pod_identity_profile, customer_consent):
+    if not network_profile or not network_profile.network_plugin:
+        # invalid data
+        return
+    if network_profile.network_plugin.lower() != 'kubenet':
+        # not kubenet, no need to check
+        return
+
+    if customer_consent is None:
+        # no set this time, read from previous value
+        customer_consent = bool(pod_identity_profile.allow_network_plugin_kubenet)
+
+    if not customer_consent:
+        raise CLIError('--enable-pod-identity-with-kubenet is required for enabling pod identity addon when using Kubenet network plugin')
+    pod_identity_profile.allow_network_plugin_kubenet = True
+
+
+def _update_addon_pod_identity(instance, enable, pod_identities=None, pod_identity_exceptions=None, allow_kubenet_consent=None):
     if not enable:
-        # when disable, null out the profile
-        instance.pod_identity_profile = None
+        # when disable, remove previous saved value
+        instance.pod_identity_profile = ManagedClusterPodIdentityProfile(enabled=False)
         return
 
     if not instance.pod_identity_profile:
         # not set before
         instance.pod_identity_profile = ManagedClusterPodIdentityProfile(
-            enabled=True,
+            enabled=enable,
             user_assigned_identities=pod_identities,
             user_assigned_identity_exceptions=pod_identity_exceptions,
         )
-        return
 
-    instance.pod_identity_profile.enabled = True
+    _ensure_pod_identity_kubenet_consent(instance.network_profile, instance.pod_identity_profile, allow_kubenet_consent)
+
+    instance.pod_identity_profile.enabled = enable
     instance.pod_identity_profile.user_assigned_identities = pod_identities or []
     instance.pod_identity_profile.user_assigned_identity_exceptions = pod_identity_exceptions or []
 
