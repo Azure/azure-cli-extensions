@@ -19,7 +19,6 @@ from azext_k8s_extension.vendored_sdks.models import ErrorResponseException
 
 from .partner_extensions.ContainerInsights import ContainerInsights
 from .partner_extensions.AzureDefender import AzureDefender
-from .partner_extensions.OpenServiceMesh import OpenServiceMesh
 from .partner_extensions.DefaultExtension import DefaultExtension
 
 from ._client_factory import cf_resources
@@ -32,7 +31,6 @@ def ExtensionFactory(extension_name):
     extension_map = {
         'microsoft.azuremonitor.containers': ContainerInsights,
         'microsoft.azuredefender.kubernetes': AzureDefender,
-        'microsoft.openservicemesh': OpenServiceMesh,
     }
 
     # Return the extension if we find it in the map, else return the default
