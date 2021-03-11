@@ -8,6 +8,7 @@
 
 from codecs import open
 from setuptools import setup, find_packages
+import azext_k8s_extension._consts as consts
 try:
     from azure_bdist_wheel import cmdclass
 except ImportError:
@@ -41,7 +42,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='k8s-extension',
+    name=consts.EXTENSION_NAME,
     version=VERSION,
     description='Microsoft Azure Command-Line Tools K8s-extension Extension',
     # TODO: Update author and email, if applicable

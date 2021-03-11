@@ -23,11 +23,12 @@ stages:
   variables:
     K8S_EXTENSION_REPO_PATH: $(Agent.BuildDirectory)/s/compute-HybridMgmt-K8sPartnerExtensionTest
     CLI_REPO_PATH: $(Agent.BuildDirectory)/s/azure-cli-extensions
-    EXTENSION_NAME: "k8s-extension"
-    EXTENSION_FILE_NAME: "k8s_extension"
     SUBSCRIPTION_ID: "15c06b1b-01d6-407b-bb21-740b8617dea3"
     RESOURCE_GROUP: "K8sPartnerExtensionTest"
     BASE_CLUSTER_NAME: "k8s-extension-cluster"
+
+    EXTENSION_NAME: "k8s-extension"
+    EXTENSION_FILE_NAME: "k8s_extension"
   jobs:
   - job: K8sExtensionTestSuite
     displayName: "Run the Test Suite"
@@ -36,7 +37,6 @@ stages:
     steps:
       - checkout: self
       - checkout: K8sPartnerExtensionTest
-
       - bash: |
           echo "Installing helm3"
           curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
@@ -55,6 +55,7 @@ stages:
           versionSpec: 3.6
       - bash: |
           set -ev
+          echo "Building extension ${EXTENSION_NAME}..."
 
           # prepare and activate virtualenv
           pip install virtualenv
@@ -71,12 +72,12 @@ stages:
           azdev extension build $(EXTENSION_NAME)
 
         workingDirectory: $(CLI_REPO_PATH)
-        displayName: "Setup and Build $(EXTENSION_NAME) with azdev"
+        displayName: "Setup and Build Extension with azdev"
       
       - bash: |
           K8S_EXTENSION_VERSION=$(ls ${EXTENSION_FILE_NAME}* | cut -d "-" -f2)
           echo "##vso[task.setvariable variable=K8S_EXTENSION_VERSION]$K8S_EXTENSION_VERSION"
-          cp * $(K8S_EXTENSION_REPO_PATH)/extensions
+          cp * $(K8S_EXTENSION_REPO_PATH)/bin
         workingDirectory: $(CLI_REPO_PATH)/dist
         displayName: "Copy the Built .whl to Extension Test Path"
 
@@ -142,6 +143,67 @@ stages:
             .\Cleanup.ps1 -CI
           workingDirectory: $(K8S_EXTENSION_REPO_PATH)
         condition: succeededOrFailed()
+
+- stage: BuildPublishExtension
+  dependsOn: []
+  displayName: "Build and Publish the Extension Artifact"
+  variables: 
+    CLI_REPO_PATH: $(Agent.BuildDirectory)/s
+    IS_PRIVATE_BRANCH: $[or(eq(variables['Build.SourceBranchName'], 'refs/heads/k8s-extension/private-preview'), eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/k8s-extension/private-preview'))]
+  jobs:
+  - job: BuildPublishExtension
+    displayName: "Build and Publish the Extension Artifact"
+    pool:
+      vmImage: 'ubuntu-16.04'
+    steps:
+    - bash: |
+        if [[ $IS_PRIVATE_BRANCH ]]; then
+          echo "Using the private preview of k8s-extension to build..."
+
+          cp $(CLI_REPO_PATH)/src/k8s-extension $(CLI_REPO_PATH)/src/k8s-extension-private -r
+          cp $(CLI_REPO_PATH)/src/k8s-extension-private/azext_k8s_extension/_consts_private.py $(CLI_REPO_PATH)/src/k8s-extension-private/azext_k8s_extension/_consts.py
+
+          EXTENSION_NAME="k8s-extension-private"
+          EXTENSION_FILE_NAME="k8s_extension_private"
+
+          echo "##vso[task.setvariable variable=EXTENSION_NAME]$EXTENSION_NAME"
+          echo "##vso[task.setvariable variable=EXTENSION_FILE_NAME]$EXTENSION_FILE_NAME"
+        else
+          echo "Using the public version of k8s-extension to build..."
+
+          EXTENSION_NAME="k8s-extension"
+          EXTENSION_FILE_NAME="k8s_extension"
+
+          echo "##vso[task.setvariable variable=EXTENSION_NAME]$EXTENSION_NAME"
+          echo "##vso[task.setvariable variable=EXTENSION_FILE_NAME]$EXTENSION_FILE_NAME"
+        fi
+      displayName: "Copy Files, Set Variables based on Private Branch"
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.6'
+      inputs:
+        versionSpec: 3.6
+    - bash: |
+        set -ev
+        echo "Building extension ${EXTENSION_NAME}..."
+
+        # prepare and activate virtualenv
+        pip install virtualenv
+        python3 -m venv env/
+        source env/bin/activate
+
+        # clone azure-cli
+        pip install azdev
+
+        ls $(CLI_REPO_PATH)
+
+        azdev --version
+        azdev setup -r $(CLI_REPO_PATH) -e $(EXTENSION_NAME)
+        azdev extension build $(EXTENSION_NAME)
+      workingDirectory: $(CLI_REPO_PATH)
+      displayName: "Setup and Build Extension with azdev"
+    - task: PublishBuildArtifacts@1
+      inputs: 
+        pathToPublish: $(CLI_REPO_PATH)/dist
       
 - stage: AzureCLIOfficial
   displayName: "Azure Official CLI Code Checks"

@@ -9,6 +9,7 @@ from azure.cli.core.commands.parameters import (
     tags_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
+import azext_k8s_extension._consts as consts
 
 from azext_k8s_extension.action import (
     AddConfigurationSettings,
@@ -17,7 +18,7 @@ from azext_k8s_extension.action import (
 
 
 def load_arguments(self, _):
-    with self.argument_context('k8s-extension') as c:
+    with self.argument_context(consts.EXTENSION_NAME) as c:
         c.argument('tags', tags_type)
         c.argument('location',
                    validator=get_default_location_from_resource_group)
