@@ -592,12 +592,13 @@ _re_user_assigned_identity_resource_id = re.compile(
 
 
 def _get_user_assigned_identity(cli_ctx, resource_id):
-    msi_client = get_msi_client(cli_ctx)
     resource_id = resource_id.lower()
     match = _re_user_assigned_identity_resource_id.search(resource_id)
     if match:
+        subscription_id = match.group(1)
         resource_group_name = match.group(2)
         identity_name = match.group(3)
+        msi_client = get_msi_client(cli_ctx, subscription_id)
         try:
             identity = msi_client.user_assigned_identities.get(resource_group_name=resource_group_name,
                                                                resource_name=identity_name)
