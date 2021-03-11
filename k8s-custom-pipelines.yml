@@ -143,10 +143,36 @@ stages:
         condition: succeededOrFailed()
 
   - job: BuildPublishExtension
-    displayName: "Build and Publish the Extension Artifact"
     pool:
       vmImage: 'ubuntu-16.04'
+    displayName: "Build and Publish the Extension Artifact"
+    variables: 
+      CLI_REPO_PATH: $(Agent.BuildDirectory)/s
+      EXTENSION_NAME: "k8s-configuration"
     steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.6'
+      inputs:
+        versionSpec: 3.6
+    - bash: |
+        set -ev
+        echo "Building extension ${EXTENSION_NAME}..."
+
+        # prepare and activate virtualenv
+        pip install virtualenv
+        python3 -m venv env/
+        source env/bin/activate
+
+        # clone azure-cli
+        pip install azdev
+
+        ls $(CLI_REPO_PATH)
+
+        azdev --version
+        azdev setup -r $(CLI_REPO_PATH) -e $(EXTENSION_NAME)
+        azdev extension build $(EXTENSION_NAME)
+      workingDirectory: $(CLI_REPO_PATH)
+      displayName: "Setup and Build Extension with azdev"
     - task: PublishBuildArtifacts@1
       inputs: 
         pathToPublish: $(CLI_REPO_PATH)/dist
