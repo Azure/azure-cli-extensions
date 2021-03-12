@@ -17,8 +17,8 @@ pr:
       - k8s-configuration
 
 stages:
-- stage: K8sConfigurationTestSuite
-  displayName: "K8s-Configuration Test Suite"
+- stage: BuildTestPublishExtension
+  displayName: "Build, Test, and Publish Extension"
   variables:
     K8S_EXTENSION_REPO_PATH: $(Agent.BuildDirectory)/s/compute-HybridMgmt-K8sPartnerExtensionTest
     CLI_REPO_PATH: $(Agent.BuildDirectory)/s/azure-cli-extensions
