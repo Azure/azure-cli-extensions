@@ -1744,18 +1744,20 @@ def client_side_proxy_wrapper(cmd,
 
         if user_type != 'user':
             dict_file['identity']['clientSecret'] = creds
+    else:
+        dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}}
+    
+    try:
+        with open(config_file_location, 'w') as f:
+            yaml.dump(dict_file, f, default_flow_style=False)
+    except Exception as e:
+        telemetry.set_user_fault()
+        telemetry.set_exception(exception=e, fault_type=consts.Create_Config_Fault_Type,
+                                summary='Unable to create config file for proxy.')
+        raise CLIError("Failed to create config for proxy." + str(e))
 
-        try:
-            with open(config_file_location, 'w') as f:
-                yaml.dump(dict_file, f, default_flow_style=False)
-        except Exception as e:
-            telemetry.set_user_fault()
-            telemetry.set_exception(exception=e, fault_type=consts.Create_Config_Fault_Type,
-                                    summary='Unable to create config file for proxy.')
-            raise CLIError("Failed to create config for proxy." + str(e))
-
-        args.append("-c")
-        args.append(config_file_location)
+    args.append("-c")
+    args.append(config_file_location)
 
     debug_mode = False
     if '--debug' in cmd.cli_ctx.data['safe_params']:
