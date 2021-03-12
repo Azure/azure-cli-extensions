@@ -15,10 +15,6 @@ except ImportError:
     from distutils import log as logger
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-# TODO: Confirm this is the right version number you want and it matches your
-# HISTORY.rst entry.
-VERSION = '0.1PP.14'
-
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
 CLASSIFIERS = [
@@ -43,7 +39,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 
 setup(
     name=consts.EXTENSION_NAME,
-    version=VERSION,
+    version=consts.VERSION,
     description='Microsoft Azure Command-Line Tools K8s-extension Extension',
     # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
