@@ -22,9 +22,9 @@ from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceUpdate
 from azext_k8s_extension.vendored_sdks.models import ScopeCluster
 from azext_k8s_extension.vendored_sdks.models import Scope
 
-from .PartnerExtensionModel import PartnerExtensionModel
+from azext_k8s_extension.partner_extensions.PartnerExtensionModel import PartnerExtensionModel
 
-from .._client_factory import (
+from azext_k8s_extension._client_factory import (
     cf_resources, cf_resource_groups, cf_log_analytics)
 
 logger = get_logger(__name__)

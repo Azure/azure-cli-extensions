@@ -17,9 +17,9 @@ from azext_k8s_extension.vendored_sdks.models import ConfigurationIdentity
 # from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceUpdate
 from azext_k8s_extension.vendored_sdks.models import ErrorResponseException
 
-from .partner_extensions.ContainerInsights import ContainerInsights
-from .partner_extensions.AzureDefender import AzureDefender
-from .partner_extensions.DefaultExtension import DefaultExtension
+from azext_k8s_extension.partner_extensions.ContainerInsights import ContainerInsights
+from azext_k8s_extension.partner_extensions.AzureDefender import AzureDefender
+from azext_k8s_extension.partner_extensions.DefaultExtension import DefaultExtension
 
 from ._client_factory import cf_resources
 

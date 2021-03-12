@@ -4,16 +4,20 @@
 # --------------------------------------------------------------------------------------------
 
 from abc import ABC, abstractmethod
+from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceForCreate
+from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceUpdate
 
 
 class PartnerExtensionModel(ABC):
     @abstractmethod
-    def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, extension_type,
-               scope, auto_upgrade_minor_version, release_train, version, target_namespace,
-               release_namespace, configuration_settings, configuration_protected_settings,
-               configuration_settings_file, configuration_protected_settings_file):
+    def Create(self, cmd, client, resource_group_name: str, cluster_name: str, name: str, cluster_type: str,
+               extension_type: str, scope: str, auto_upgrade_minor_version: bool, release_train: str, version: str,
+               target_namespace: str, release_namespace: str, configuration_settings: dict,
+               configuration_protected_settings: dict, configuration_settings_file: str,
+               configuration_protected_settings_file: str) -> ExtensionInstanceForCreate:
         pass
 
     @abstractmethod
-    def Update(self, extension, auto_upgrade_minor_version, release_train, version):
+    def Update(self, extension: ExtensionInstanceForCreate, auto_upgrade_minor_version: bool,
+               release_train: str, version: str) -> ExtensionInstanceUpdate:
         pass

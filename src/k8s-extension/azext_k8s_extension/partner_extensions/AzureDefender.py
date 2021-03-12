@@ -12,8 +12,8 @@ from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceUpdate
 from azext_k8s_extension.vendored_sdks.models import ScopeCluster
 from azext_k8s_extension.vendored_sdks.models import Scope
 
-from .PartnerExtensionModel import PartnerExtensionModel
-from .ContainerInsights import _get_container_insights_settings
+from azext_k8s_extension.partner_extensions.PartnerExtensionModel import PartnerExtensionModel
+from azext_k8s_extension.partner_extensions.ContainerInsights import _get_container_insights_settings
 
 logger = get_logger(__name__)
 
