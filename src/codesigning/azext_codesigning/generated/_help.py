@@ -32,7 +32,7 @@ subscription."
 
 helps['codesigning show'] = """
     type: command
-    short-summary: "Get Code Sign Account."
+    short-summary: "Get a Code Sign Account."
     examples:
       - name: Get Code Sign Account
         text: |-
@@ -41,12 +41,11 @@ helps['codesigning show'] = """
 
 helps['codesigning create'] = """
     type: command
-    short-summary: "Create Code Sign Account."
+    short-summary: "Create a Code Sign Account."
     examples:
       - name: Create Code Sign Account
         text: |-
-               az codesigning create --account-name "MyAccount" --location "eastus" --tags key1="value1" \
---resource-group "MyResourceGroup"
+               az codesigning create --account-name "MyAccount" --location "eastus" --resource-group "MyResourceGroup"
 """
 
 helps['codesigning update'] = """
@@ -55,7 +54,7 @@ helps['codesigning update'] = """
     examples:
       - name: Update Code Sign Account
         text: |-
-               az codesigning update --account-name "MyAccount" --tags key1="value1" --resource-group \
+               az codesigning update --tags key1="value1" --account-name "MyAccount" --resource-group \
 "MyResourceGroup"
 """
 
@@ -84,7 +83,7 @@ helps['codesigning certificate-profile list'] = """
 
 helps['codesigning certificate-profile show'] = """
     type: command
-    short-summary: "Get details of particular certificate profile."
+    short-summary: "Get details of a certificate profile."
     examples:
       - name: Get Certificate Profile
         text: |-
@@ -99,17 +98,24 @@ helps['codesigning certificate-profile create'] = """
       - name: Create Certificate Profile
         text: |-
                az codesigning certificate-profile create --account-name "MyAccount" --profile-name "profileA" \
+--common-name "Contoso" --profile-type "PublicTrust" --subject-alternative-name "Contoso Corporate Engineering" \
 --resource-group "MyResourceGroup"
 """
 
 helps['codesigning certificate-profile update'] = """
     type: command
-    short-summary: "Update certificate profile."
+    short-summary: "Update a certificate profile."
+    examples:
+      - name: Update Certificate Profile
+        text: |-
+               az codesigning certificate-profile update --common-name "Contoso" --profile-type "Test" \
+--subject-alternative-name "Contoso Corporate Engineering" --account-name "MyAccount" --profile-name "profileA" \
+--resource-group "MyResourceGroup"
 """
 
 helps['codesigning certificate-profile delete'] = """
     type: command
-    short-summary: "Delete certificate profile."
+    short-summary: "Delete a Certificate Profile."
     examples:
       - name: Delete Certificate Profile
         text: |-
@@ -125,4 +131,8 @@ helps['codesigning operation'] = """
 helps['codesigning operation show'] = """
     type: command
     short-summary: "Lists all of the available API operations for code signing resource."
+    examples:
+      - name: List Code Sign Account operations
+        text: |-
+               az codesigning operation show
 """

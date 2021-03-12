@@ -15,22 +15,22 @@ import msrest.serialization
 from ._code_signing_management_client_enums import *
 
 
-class CertificateProperties(msrest.serialization.Model):
-    """Certificate properties.
+class Certificate(msrest.serialization.Model):
+    """Properties of the certificate.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id:
+    :ivar id: Id of the certificate.
     :vartype id: str
-    :ivar subject_name:
+    :ivar subject_name: Subject name of the certificate.
     :vartype subject_name: str
-    :ivar subject_alternative_name:
+    :ivar subject_alternative_name: Subject alternative name of the certificate.
     :vartype subject_alternative_name: str
-    :ivar thumbprint:
+    :ivar thumbprint: Thumbprint of the certificate.
     :vartype thumbprint: str
-    :ivar created_date:
+    :ivar created_date: Certificate created date.
     :vartype created_date: str
-    :ivar expiry_date:
+    :ivar expiry_date: Certificate expiry date.
     :vartype expiry_date: str
     """
 
@@ -50,80 +50,6 @@ class CertificateProperties(msrest.serialization.Model):
         'thumbprint': {'key': 'thumbprint', 'type': 'str'},
         'created_date': {'key': 'createdDate', 'type': 'str'},
         'expiry_date': {'key': 'expiryDate', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(CertificateProperties, self).__init__(**kwargs)
-        self.id = None
-        self.subject_name = None
-        self.subject_alternative_name = None
-        self.thumbprint = None
-        self.created_date = None
-        self.expiry_date = None
-
-
-class Certificate(CertificateProperties):
-    """Certificate.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id:
-    :vartype id: str
-    :ivar subject_name:
-    :vartype subject_name: str
-    :ivar subject_alternative_name:
-    :vartype subject_alternative_name: str
-    :ivar thumbprint:
-    :vartype thumbprint: str
-    :ivar created_date:
-    :vartype created_date: str
-    :ivar expiry_date:
-    :vartype expiry_date: str
-    :ivar id_properties_id:
-    :vartype id_properties_id: str
-    :ivar subject_name_properties_subject_name:
-    :vartype subject_name_properties_subject_name: str
-    :ivar subject_alternative_name_properties_subject_alternative_name:
-    :vartype subject_alternative_name_properties_subject_alternative_name: str
-    :ivar thumbprint_properties_thumbprint:
-    :vartype thumbprint_properties_thumbprint: str
-    :ivar created_date_properties_created_date:
-    :vartype created_date_properties_created_date: str
-    :ivar expiry_date_properties_expiry_date:
-    :vartype expiry_date_properties_expiry_date: str
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'subject_name': {'readonly': True},
-        'subject_alternative_name': {'readonly': True},
-        'thumbprint': {'readonly': True},
-        'created_date': {'readonly': True},
-        'expiry_date': {'readonly': True},
-        'id_properties_id': {'readonly': True},
-        'subject_name_properties_subject_name': {'readonly': True},
-        'subject_alternative_name_properties_subject_alternative_name': {'readonly': True},
-        'thumbprint_properties_thumbprint': {'readonly': True},
-        'created_date_properties_created_date': {'readonly': True},
-        'expiry_date_properties_expiry_date': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'subject_name': {'key': 'subjectName', 'type': 'str'},
-        'subject_alternative_name': {'key': 'subjectAlternativeName', 'type': 'str'},
-        'thumbprint': {'key': 'thumbprint', 'type': 'str'},
-        'created_date': {'key': 'createdDate', 'type': 'str'},
-        'expiry_date': {'key': 'expiryDate', 'type': 'str'},
-        'id_properties_id': {'key': 'properties.id', 'type': 'str'},
-        'subject_name_properties_subject_name': {'key': 'properties.subjectName', 'type': 'str'},
-        'subject_alternative_name_properties_subject_alternative_name': {'key': 'properties.subjectAlternativeName', 'type': 'str'},
-        'thumbprint_properties_thumbprint': {'key': 'properties.thumbprint', 'type': 'str'},
-        'created_date_properties_created_date': {'key': 'properties.createdDate', 'type': 'str'},
-        'expiry_date_properties_expiry_date': {'key': 'properties.expiryDate', 'type': 'str'},
     }
 
     def __init__(
@@ -131,12 +57,12 @@ class Certificate(CertificateProperties):
         **kwargs
     ):
         super(Certificate, self).__init__(**kwargs)
-        self.id_properties_id = None
-        self.subject_name_properties_subject_name = None
-        self.subject_alternative_name_properties_subject_alternative_name = None
-        self.thumbprint_properties_thumbprint = None
-        self.created_date_properties_created_date = None
-        self.expiry_date_properties_expiry_date = None
+        self.id = None
+        self.subject_name = None
+        self.subject_alternative_name = None
+        self.thumbprint = None
+        self.created_date = None
+        self.expiry_date = None
 
 
 class Resource(msrest.serialization.Model):
@@ -191,17 +117,16 @@ class CertificateProfile(Resource):
     :vartype type: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
     :vartype system_data: ~azure.mgmt.codesigning.models.SystemData
-    :param profile_name:
-    :type profile_name: str
-    :param profile_type:  Possible values include: "Test", "Trial", "PrivateTrust", "PublicTrust".
+    :param profile_type: Profile type of the certificate. Possible values include: "Test", "Trial",
+     "PrivateTrust", "PublicTrust".
     :type profile_type: str or ~azure.mgmt.codesigning.models.ProfileType
-    :param rotation_policy:  Possible values include: "Monthly".
+    :param rotation_policy: Rotation policy of the certificate. Possible values include: "Monthly".
     :type rotation_policy: str or ~azure.mgmt.codesigning.models.RotationPolicy
-    :ivar authority:
-    :vartype authority: str
-    :param common_name:
+    :param common_name: Name of the certificate.
     :type common_name: str
-    :param subject_alternative_name:
+    :ivar authority: Certificate authority of the certificate.
+    :vartype authority: str
+    :param subject_alternative_name: Subject Alternative Name of the certificate.
     :type subject_alternative_name: str
     :ivar organization:
     :vartype organization: str
@@ -213,11 +138,11 @@ class CertificateProfile(Resource):
     :vartype state: str
     :ivar city:
     :vartype city: str
-    :param certificates:
-    :type certificates: ~azure.mgmt.codesigning.models.Certificate
-    :param provisioning_state: The current provisioning state. Possible values include:
+    :ivar certificates:
+    :vartype certificates: list[~azure.mgmt.codesigning.models.Certificate]
+    :ivar provisioning_state: Provisioning state of the vault. Possible values include:
      "Succeeded", "Failed", "Canceled", "Provisioning", "Updating", "Deleting", "Accepted".
-    :type provisioning_state: str or ~azure.mgmt.codesigning.models.ProvisioningState
+    :vartype provisioning_state: str or ~azure.mgmt.codesigning.models.ProvisioningState
     """
 
     _validation = {
@@ -231,6 +156,8 @@ class CertificateProfile(Resource):
         'country': {'readonly': True},
         'state': {'readonly': True},
         'city': {'readonly': True},
+        'certificates': {'readonly': True},
+        'provisioning_state': {'readonly': True},
     }
 
     _attribute_map = {
@@ -238,48 +165,43 @@ class CertificateProfile(Resource):
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'profile_name': {'key': 'properties.profileName', 'type': 'str'},
         'profile_type': {'key': 'properties.profileType', 'type': 'str'},
         'rotation_policy': {'key': 'properties.rotationPolicy', 'type': 'str'},
-        'authority': {'key': 'properties.authority', 'type': 'str'},
         'common_name': {'key': 'properties.commonName', 'type': 'str'},
+        'authority': {'key': 'properties.authority', 'type': 'str'},
         'subject_alternative_name': {'key': 'properties.subjectAlternativeName', 'type': 'str'},
         'organization': {'key': 'properties.organization', 'type': 'str'},
         'street_address': {'key': 'properties.streetAddress', 'type': 'str'},
         'country': {'key': 'properties.country', 'type': 'str'},
         'state': {'key': 'properties.state', 'type': 'str'},
         'city': {'key': 'properties.city', 'type': 'str'},
-        'certificates': {'key': 'properties.certificates', 'type': 'Certificate'},
+        'certificates': {'key': 'properties.certificates', 'type': '[Certificate]'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
     def __init__(
         self,
         *,
-        profile_name: Optional[str] = None,
         profile_type: Optional[Union[str, "ProfileType"]] = None,
         rotation_policy: Optional[Union[str, "RotationPolicy"]] = None,
         common_name: Optional[str] = None,
         subject_alternative_name: Optional[str] = None,
-        certificates: Optional["Certificate"] = None,
-        provisioning_state: Optional[Union[str, "ProvisioningState"]] = None,
         **kwargs
     ):
         super(CertificateProfile, self).__init__(**kwargs)
         self.system_data = None
-        self.profile_name = profile_name
         self.profile_type = profile_type
         self.rotation_policy = rotation_policy
-        self.authority = None
         self.common_name = common_name
+        self.authority = None
         self.subject_alternative_name = subject_alternative_name
         self.organization = None
         self.street_address = None
         self.country = None
         self.state = None
         self.city = None
-        self.certificates = certificates
-        self.provisioning_state = provisioning_state
+        self.certificates = None
+        self.provisioning_state = None
 
 
 class CertificateProfiles(msrest.serialization.Model):
@@ -377,16 +299,15 @@ class CodeSignAccount(TrackedResource):
     :type location: str
     :ivar system_data: Metadata pertaining to creation and last modification of the resource.
     :vartype system_data: ~azure.mgmt.codesigning.models.SystemData
-    :param account_name:
-    :type account_name: str
-    :param account_url:
-    :type account_url: str
-    :param verification_status: The vetting status of the code sign account. Possible values
-     include: "Completed", "InProgress", "NotCompleted".
-    :type verification_status: str or ~azure.mgmt.codesigning.models.VerificationStatus
-    :param provisioning_state: The current provisioning state. Possible values include:
+    :ivar account_uri: The URI of the code sign account for performing operations on certificate
+     profiles. This property is readonly.
+    :vartype account_uri: str
+    :ivar verification_status: Vetting status of the code sign account. Possible values include:
+     "Completed", "InProgress", "NotCompleted".
+    :vartype verification_status: str or ~azure.mgmt.codesigning.models.VerificationStatus
+    :ivar provisioning_state: Provisioning state of the vault. Possible values include:
      "Succeeded", "Failed", "Canceled", "Provisioning", "Updating", "Deleting", "Accepted".
-    :type provisioning_state: str or ~azure.mgmt.codesigning.models.ProvisioningState
+    :vartype provisioning_state: str or ~azure.mgmt.codesigning.models.ProvisioningState
     """
 
     _validation = {
@@ -395,6 +316,9 @@ class CodeSignAccount(TrackedResource):
         'type': {'readonly': True},
         'location': {'required': True},
         'system_data': {'readonly': True},
+        'account_uri': {'readonly': True},
+        'verification_status': {'readonly': True},
+        'provisioning_state': {'readonly': True},
     }
 
     _attribute_map = {
@@ -404,8 +328,7 @@ class CodeSignAccount(TrackedResource):
         'tags': {'key': 'tags', 'type': '{str}'},
         'location': {'key': 'location', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'account_name': {'key': 'properties.accountName', 'type': 'str'},
-        'account_url': {'key': 'properties.accountUrl', 'type': 'str'},
+        'account_uri': {'key': 'properties.accountUri', 'type': 'str'},
         'verification_status': {'key': 'properties.verificationStatus', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
@@ -415,18 +338,13 @@ class CodeSignAccount(TrackedResource):
         *,
         location: str,
         tags: Optional[Dict[str, str]] = None,
-        account_name: Optional[str] = None,
-        account_url: Optional[str] = None,
-        verification_status: Optional[Union[str, "VerificationStatus"]] = None,
-        provisioning_state: Optional[Union[str, "ProvisioningState"]] = None,
         **kwargs
     ):
         super(CodeSignAccount, self).__init__(tags=tags, location=location, **kwargs)
         self.system_data = None
-        self.account_name = account_name
-        self.account_url = account_url
-        self.verification_status = verification_status
-        self.provisioning_state = provisioning_state
+        self.account_uri = None
+        self.verification_status = None
+        self.provisioning_state = None
 
 
 class CodeSignAccountPatch(msrest.serialization.Model):
@@ -453,7 +371,7 @@ class CodeSignAccountPatch(msrest.serialization.Model):
 class CodeSignAccounts(msrest.serialization.Model):
     """The paginated list of code sign accounts.
 
-    :param value: The list of code sign accounts.
+    :param value: List of code sign accounts.
     :type value: list[~azure.mgmt.codesigning.models.CodeSignAccount]
     :param next_link: The link to fetch the next page of code sign account.
     :type next_link: str

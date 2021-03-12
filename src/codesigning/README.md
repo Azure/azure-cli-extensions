@@ -11,8 +11,7 @@ az extension add --name codesigning
 #### codesigning ####
 ##### Create #####
 ```
-az codesigning create --account-name "MyAccount" --location "eastus" --tags key1="value1" \
-    --resource-group "MyResourceGroup" 
+az codesigning create --account-name "MyAccount" --location "eastus" --resource-group "MyResourceGroup"
 ```
 ##### Show #####
 ```
@@ -24,7 +23,7 @@ az codesigning list --resource-group "MyResourceGroup"
 ```
 ##### Update #####
 ```
-az codesigning update --account-name "MyAccount" --tags key1="value1" --resource-group "MyResourceGroup"
+az codesigning update --tags key1="value1" --account-name "MyAccount" --resource-group "MyResourceGroup"
 ```
 ##### Delete #####
 ```
@@ -33,7 +32,8 @@ az codesigning delete --account-name "MyAccount" --resource-group "MyResourceGro
 #### codesigning certificate-profile ####
 ##### Create #####
 ```
-az codesigning certificate-profile create --account-name "MyAccount" --profile-name "profileA" \
+az codesigning certificate-profile create --account-name "MyAccount" --profile-name "profileA" --common-name "Contoso" \
+    --profile-type "PublicTrust" --subject-alternative-name "Contoso Corporate Engineering" \
     --resource-group "MyResourceGroup" 
 ```
 ##### Show #####
@@ -45,9 +45,19 @@ az codesigning certificate-profile show --account-name "MyAccount" --profile-nam
 ```
 az codesigning certificate-profile list --account-name "MyAccount" --resource-group "MyResourceGroup"
 ```
+##### Update #####
+```
+az codesigning certificate-profile update --common-name "Contoso" --profile-type "Test" \
+    --subject-alternative-name "Contoso Corporate Engineering" --account-name "MyAccount" --profile-name "profileA" \
+    --resource-group "MyResourceGroup" 
+```
 ##### Delete #####
 ```
 az codesigning certificate-profile delete --account-name "MyAccount" --profile-name "profileA" \
     --resource-group "MyResourceGroup" 
 ```
 #### codesigning operation ####
+##### Show #####
+```
+az codesigning operation show
+```

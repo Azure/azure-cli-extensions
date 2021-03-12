@@ -23,7 +23,7 @@ from .. import models
 
 
 class CodeSigningManagementClient(object):
-    """Code Sign Resource Provider Account and CertificateProfile management API.
+    """Code Sign Resource Provider Account and Certificate Profile management API.
 
     :ivar code_sign_account: CodeSignAccountOperations operations
     :vartype code_sign_account: azure.mgmt.codesigning.aio.operations.CodeSignAccountOperations
@@ -33,7 +33,7 @@ class CodeSigningManagementClient(object):
     :vartype operations: azure.mgmt.codesigning.aio.operations.Operations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
-    :param subscription_id: The ID of the subscription to which the CodeSign account is registered.
+    :param subscription_id: The ID of the target subscription.
     :type subscription_id: str
     :param str base_url: Service URL
     """

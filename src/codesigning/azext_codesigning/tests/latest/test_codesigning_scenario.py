@@ -19,6 +19,8 @@ from .example_steps import step_update
 from .example_steps import step_certificate_profile_create
 from .example_steps import step_certificate_profile_show
 from .example_steps import step_certificate_profile_list
+from .example_steps import step_certificate_profile_update
+from .example_steps import step_operation_show
 from .. import (
     try_manual,
     raise_if,
@@ -53,6 +55,10 @@ def call_scenario(test, rg):
     step_certificate_profile_create(test, rg, checks=[])
     step_certificate_profile_show(test, rg, checks=[])
     step_certificate_profile_list(test, rg, checks=[])
+    step_certificate_profile_update(test, rg, checks=[])
+    # STEP NOT FOUND: Delete a Certificate Profile
+    # STEP NOT FOUND: Delete a Code Sign Account
+    step_operation_show(test, rg, checks=[])
     cleanup_scenario(test, rg)
 
 

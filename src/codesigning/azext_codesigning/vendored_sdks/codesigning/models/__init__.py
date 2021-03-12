@@ -10,7 +10,6 @@ try:
     from ._models_py3 import Certificate
     from ._models_py3 import CertificateProfile
     from ._models_py3 import CertificateProfiles
-    from ._models_py3 import CertificateProperties
     from ._models_py3 import CodeSignAccount
     from ._models_py3 import CodeSignAccountPatch
     from ._models_py3 import CodeSignAccounts
@@ -28,7 +27,6 @@ except (SyntaxError, ImportError):
     from ._models import Certificate  # type: ignore
     from ._models import CertificateProfile  # type: ignore
     from ._models import CertificateProfiles  # type: ignore
-    from ._models import CertificateProperties  # type: ignore
     from ._models import CodeSignAccount  # type: ignore
     from ._models import CodeSignAccountPatch  # type: ignore
     from ._models import CodeSignAccounts  # type: ignore
@@ -55,7 +53,6 @@ __all__ = [
     'Certificate',
     'CertificateProfile',
     'CertificateProfiles',
-    'CertificateProperties',
     'CodeSignAccount',
     'CodeSignAccountPatch',
     'CodeSignAccounts',

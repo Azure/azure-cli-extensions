@@ -49,10 +49,9 @@ class CertificateProfileOperations:
     ) -> AsyncIterable["models.CertificateProfiles"]:
         """List certificate profiles within a code sign account.
 
-        :param resource_group_name: The name of the resource group under which Code Sign Account is
-         registered.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param account_name: Code Sign account name.
+        :param account_name: Code Signing account name.
         :type account_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either CertificateProfiles or the result of cls(response)
@@ -76,9 +75,9 @@ class CertificateProfileOperations:
                 # Construct URL
                 url = self.list_by_code_sign_account.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-                    'accountName': self._serialize.url("account_name", account_name, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+                    'accountName': self._serialize.url("account_name", account_name, 'str', pattern=r'^[a-zA-Z0-9-]{3,24}$'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -117,70 +116,6 @@ class CertificateProfileOperations:
         )
     list_by_code_sign_account.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSignAccounts/{accountName}/certificateProfiles'}  # type: ignore
 
-    async def get(
-        self,
-        resource_group_name: str,
-        account_name: str,
-        profile_name: str,
-        **kwargs
-    ) -> "models.CertificateProfile":
-        """Get details of particular certificate profile.
-
-        :param resource_group_name: The name of the resource group under which Code Sign Account is
-         registered.
-        :type resource_group_name: str
-        :param account_name: Code Sign account name.
-        :type account_name: str
-        :param profile_name: Certificate profile name.
-        :type profile_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: CertificateProfile, or the result of cls(response)
-        :rtype: ~azure.mgmt.codesigning.models.CertificateProfile
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.CertificateProfile"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-12-14-preview"
-        accept = "application/json"
-
-        # Construct URL
-        url = self.get.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'accountName': self._serialize.url("account_name", account_name, 'str'),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str'),
-        }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-        request = self._client.get(url, query_parameters, header_parameters)
-        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize('CertificateProfile', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSignAccounts/{accountName}/certificateProfiles/{profileName}'}  # type: ignore
-
     async def create(
         self,
         resource_group_name: str,
@@ -191,10 +126,9 @@ class CertificateProfileOperations:
     ) -> "models.CertificateProfile":
         """Create a certificate profile.
 
-        :param resource_group_name: The name of the resource group under which Code Sign Account is
-         registered.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param account_name: Code Sign account name.
+        :param account_name: Code Signing account name.
         :type account_name: str
         :param profile_name: Certificate profile name.
         :type profile_name: str
@@ -217,10 +151,10 @@ class CertificateProfileOperations:
         # Construct URL
         url = self.create.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'accountName': self._serialize.url("account_name", account_name, 'str'),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'accountName': self._serialize.url("account_name", account_name, 'str', pattern=r'^[a-zA-Z0-9-]{3,24}$'),
+            'profileName': self._serialize.url("profile_name", profile_name, 'str', pattern=r'^[a-zA-Z0-9-]{3,24}$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -264,12 +198,11 @@ class CertificateProfileOperations:
         certificate_profile: Optional["models.CertificateProfile"] = None,
         **kwargs
     ) -> "models.CertificateProfile":
-        """Update certificate profile.
+        """Update a certificate profile.
 
-        :param resource_group_name: The name of the resource group under which Code Sign Account is
-         registered.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param account_name: Code Sign account name.
+        :param account_name: Code Signing account name.
         :type account_name: str
         :param profile_name: Certificate profile name.
         :type profile_name: str
@@ -292,10 +225,10 @@ class CertificateProfileOperations:
         # Construct URL
         url = self.update.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'accountName': self._serialize.url("account_name", account_name, 'str'),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'accountName': self._serialize.url("account_name", account_name, 'str', pattern=r'^[a-zA-Z0-9-]{3,24}$'),
+            'profileName': self._serialize.url("profile_name", profile_name, 'str', pattern=r'^[a-zA-Z0-9-]{3,24}$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -331,6 +264,69 @@ class CertificateProfileOperations:
         return deserialized
     update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSignAccounts/{accountName}/certificateProfiles/{profileName}'}  # type: ignore
 
+    async def get(
+        self,
+        resource_group_name: str,
+        account_name: str,
+        profile_name: str,
+        **kwargs
+    ) -> "models.CertificateProfile":
+        """Get details of a certificate profile.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+        :type resource_group_name: str
+        :param account_name: Code Signing account name.
+        :type account_name: str
+        :param profile_name: Certificate profile name.
+        :type profile_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: CertificateProfile, or the result of cls(response)
+        :rtype: ~azure.mgmt.codesigning.models.CertificateProfile
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.CertificateProfile"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2020-12-14-preview"
+        accept = "application/json"
+
+        # Construct URL
+        url = self.get.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'accountName': self._serialize.url("account_name", account_name, 'str', pattern=r'^[a-zA-Z0-9-]{3,24}$'),
+            'profileName': self._serialize.url("profile_name", profile_name, 'str', pattern=r'^[a-zA-Z0-9-]{3,24}$'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.get(url, query_parameters, header_parameters)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('CertificateProfile', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSignAccounts/{accountName}/certificateProfiles/{profileName}'}  # type: ignore
+
     async def delete(
         self,
         resource_group_name: str,
@@ -338,12 +334,11 @@ class CertificateProfileOperations:
         profile_name: str,
         **kwargs
     ) -> None:
-        """Delete certificate profile.
+        """Delete a Certificate Profile.
 
-        :param resource_group_name: The name of the resource group under which Code Sign Account is
-         registered.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param account_name: Code Sign account name.
+        :param account_name: Code Signing account name.
         :type account_name: str
         :param profile_name: Certificate profile name.
         :type profile_name: str
@@ -363,10 +358,10 @@ class CertificateProfileOperations:
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'accountName': self._serialize.url("account_name", account_name, 'str'),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'accountName': self._serialize.url("account_name", account_name, 'str', pattern=r'^[a-zA-Z0-9-]{3,24}$'),
+            'profileName': self._serialize.url("profile_name", profile_name, 'str', pattern=r'^[a-zA-Z0-9-]{3,24}$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 

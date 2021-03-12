@@ -36,6 +36,8 @@ class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     KEY = "Key"
 
 class ProfileType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Profile type of the certificate
+    """
 
     TEST = "Test"
     TRIAL = "Trial"
@@ -43,7 +45,7 @@ class ProfileType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     PUBLIC_TRUST = "PublicTrust"
 
 class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The current provisioning state
+    """Provisioning state of the vault
     """
 
     SUCCEEDED = "Succeeded"
@@ -55,11 +57,13 @@ class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     ACCEPTED = "Accepted"
 
 class RotationPolicy(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Rotation policy of the certificate
+    """
 
     MONTHLY = "Monthly"
 
 class VerificationStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The vetting status of the code sign account
+    """Vetting status of the code sign account
     """
 
     COMPLETED = "Completed"

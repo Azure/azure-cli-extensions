@@ -28,18 +28,10 @@ def codesigning_create(client,
                        resource_group_name,
                        account_name,
                        tags=None,
-                       location=None,
-                       code_sign_account_properties_account_name=None,
-                       account_url=None,
-                       verification_status=None,
-                       provisioning_state=None):
+                       location=None):
     code_sign_account = {}
     code_sign_account['tags'] = tags
     code_sign_account['location'] = location
-    code_sign_account['account_name'] = code_sign_account_properties_account_name
-    code_sign_account['account_url'] = account_url
-    code_sign_account['verification_status'] = verification_status
-    code_sign_account['provisioning_state'] = provisioning_state
     return client.create(resource_group_name=resource_group_name,
                          account_name=account_name,
                          code_sign_account=code_sign_account)
@@ -83,18 +75,14 @@ def codesigning_certificate_profile_create(client,
                                            resource_group_name,
                                            account_name,
                                            profile_name,
-                                           certificate_profile_properties_profile_name=None,
                                            profile_type=None,
                                            common_name=None,
-                                           subject_alternative_name=None,
-                                           provisioning_state=None):
+                                           subject_alternative_name=None):
     certificate_profile = {}
-    certificate_profile['profile_name'] = certificate_profile_properties_profile_name
     certificate_profile['profile_type'] = profile_type
     certificate_profile['rotation_policy'] = "Monthly"
     certificate_profile['common_name'] = common_name
     certificate_profile['subject_alternative_name'] = subject_alternative_name
-    certificate_profile['provisioning_state'] = provisioning_state
     return client.create(resource_group_name=resource_group_name,
                          account_name=account_name,
                          profile_name=profile_name,
@@ -105,18 +93,14 @@ def codesigning_certificate_profile_update(client,
                                            resource_group_name,
                                            account_name,
                                            profile_name,
-                                           certificate_profile_properties_profile_name=None,
                                            profile_type=None,
                                            common_name=None,
-                                           subject_alternative_name=None,
-                                           provisioning_state=None):
+                                           subject_alternative_name=None):
     certificate_profile = {}
-    certificate_profile['profile_name'] = certificate_profile_properties_profile_name
     certificate_profile['profile_type'] = profile_type
     certificate_profile['rotation_policy'] = "Monthly"
     certificate_profile['common_name'] = common_name
     certificate_profile['subject_alternative_name'] = subject_alternative_name
-    certificate_profile['provisioning_state'] = provisioning_state
     return client.update(resource_group_name=resource_group_name,
                          account_name=account_name,
                          profile_name=profile_name,
