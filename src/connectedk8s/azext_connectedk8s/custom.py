@@ -122,7 +122,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         if int(current_version_minor) < int(latest_version_minor) - 2:
             logger.warning("The Kubernetes cluster you are trying to connect to Azure Arc is of version {}, which is out of Azure Arc's support window. Learn more at {}".format(kubernetes_version, "https://aka.ms/ArcK8sVersionSupportPolicy"))
     except Exception as e:
-        pass  # Since the warning in fetching either of the two values will be caught and displayed earlier
+        logger.warning("Please ensure that the version of your Kubernetes cluster is within the Azure Arc's support window. Learn more at {}".format(kubernetes_version, "https://aka.ms/ArcK8sVersionSupportPolicy"))
 
     if distribution == 'auto':
         kubernetes_distro = get_kubernetes_distro(configuration)  # (cluster heuristics)
@@ -1130,9 +1130,42 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
     if features is None:
         raise CLIError(consts.No_Features_Param_Provided.format("enable-features", "enable-features"))
     features = [x.lower() for x in features]
+    enable_cluster_connect, enable_azure_rbac, enable_cl = utils.check_features_to_update(features)
 
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
+
+    if enable_azure_rbac:
+        if (aad_client_id is None) or (aad_client_secret is None):
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception='Client ID or secret not provided for AAD RBAC', fault_type=consts.Client_Details_Not_Provided_For_AAD_RBAC_Fault,
+                                    summary='Both aad authorization client id and client secret is required to enable AAD RBAC feature')
+            raise CLIError("Please provide both aad authorization client id and client secret to enable AAD RBAC feature")
+
+    if enable_cl and not enable_cluster_connect:
+        enable_cluster_connect = True
+        logger.warning("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too")
+
+    if enable_cl:
+        try:
+            rp_client = _resource_providers_client(cmd.cli_ctx)
+            cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
+            if cl_registration_state != "Registered" and cl_registration_state != "Registering":
+                try:
+                    logger.warning("Registering Custom Locations resource provider 'Microsoft.ExtendedLocation' ...")
+                    rp_client.register(consts.Custom_Locations_Provider_Namespace)  # Asynchronous registration
+                    # Add below if wait wanted, give a timeout too
+                    # while True:
+                    #     time.sleep(10)
+                    #     cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
+                    #     if cl_registration_state.registration_state == 'Registered':
+                    #         break
+                except Exception as e:
+                    # Add error/exceptions
+                    pass
+        except Exception as ex:
+            # Add error/exceptions
+            pass
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
@@ -1201,39 +1234,6 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
         'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
-
-    enable_cluster_connect, enable_azure_rbac, enable_cl = utils.check_features_to_update(features)
-    if enable_azure_rbac:
-        if (aad_client_id is None) or (aad_client_secret is None):
-            telemetry.set_user_fault()
-            telemetry.set_exception(exception='Client ID or secret not provided for AAD RBAC', fault_type=consts.Client_Details_Not_Provided_For_AAD_RBAC_Fault,
-                                    summary='Both aad authorization client id and client secret is required to enable AAD RBAC feature')
-            raise CLIError("Please provide both aad authorization client id and client secret to enable AAD RBAC feature")
-
-    if enable_cl and not enable_cluster_connect:
-        enable_cluster_connect = True
-        logger.warning("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too")
-
-    if enable_cl:
-        try:
-            rp_client = _resource_providers_client(cmd.cli_ctx)
-            cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
-            if cl_registration_state != "Registered" and cl_registration_state != "Registering":
-                try:
-                    logger.warning("Registering Custom Locations resource provider 'Microsoft.ExtendedLocation' ...")
-                    rp_client.register(consts.Custom_Locations_Provider_Namespace)  # Asynchronous registration
-                    # Add below if wait wanted, give a timeout too
-                    # while True:
-                    #     time.sleep(10)
-                    #     cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
-                    #     if cl_registration_state.registration_state == 'Registered':
-                    #         break
-                except Exception as e:
-                    # Add error/exceptions
-                    pass
-        except Exception as ex:
-            # Add error/exceptions
-            pass
 
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
@@ -1296,6 +1296,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, kube_config
     features = [x.lower() for x in features]
     confirmation_message = "Disabling few of the features may adversely impact dependent resources. Learn more about this at https://aka.ms/ArcK8sDependentResources. \n" + "Are you sure you want to disable these features: {}".format(features)
     utils.user_confirmation(confirmation_message, yes)
+    disable_cluster_connect, disable_azure_rbac, disable_cl = utils.check_features_to_update(features)
 
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
@@ -1367,8 +1368,6 @@ def disable_features(cmd, client, resource_group_name, cluster_name, kube_config
         'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
-
-    disable_cluster_connect, disable_azure_rbac, disable_cl = utils.check_features_to_update(features)
 
     # Uncomment below custom locations related params are available
 
