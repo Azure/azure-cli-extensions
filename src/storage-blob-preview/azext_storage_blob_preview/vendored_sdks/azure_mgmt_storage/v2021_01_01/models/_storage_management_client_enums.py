@@ -268,6 +268,14 @@ class ManagementPolicyName(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     DEFAULT = "default"
 
+class MigrationState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """This property denotes the container level worm to version level worm migration state.
+    """
+
+    IN_PROGRESS = "InProgress"
+    COMPLETED = "Completed"
+    ABORT = "Abort"
+
 class MinimumTlsVersion(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Set the minimum TLS version to be permitted on requests to storage. The default interpretation
     is TLS 1.0 for this property.

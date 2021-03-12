@@ -293,6 +293,14 @@ class BlobContainer(AzureEntityResource):
      if ImmutabilityPolicy has been created for this container. The hasImmutabilityPolicy public
      property is set to false by SRP if ImmutabilityPolicy has not been created for this container.
     :vartype has_immutability_policy: bool
+    :param enabled: This is an immutable property, when set to true enables version level worm at
+     the container level.
+    :type enabled: bool
+    :ivar time_stamp: Returns the date and time the version level worm was enabled.
+    :vartype time_stamp: ~datetime.datetime
+    :ivar migration_state: This property denotes the container level worm to version level worm
+     migration state. Possible values include: "InProgress", "Completed", "Abort".
+    :vartype migration_state: str or ~azure.mgmt.storage.v2021_01_01.models.MigrationState
     """
 
     _validation = {
@@ -312,6 +320,8 @@ class BlobContainer(AzureEntityResource):
         'legal_hold': {'readonly': True},
         'has_legal_hold': {'readonly': True},
         'has_immutability_policy': {'readonly': True},
+        'time_stamp': {'readonly': True},
+        'migration_state': {'readonly': True},
     }
 
     _attribute_map = {
@@ -335,6 +345,9 @@ class BlobContainer(AzureEntityResource):
         'legal_hold': {'key': 'properties.legalHold', 'type': 'LegalHoldProperties'},
         'has_legal_hold': {'key': 'properties.hasLegalHold', 'type': 'bool'},
         'has_immutability_policy': {'key': 'properties.hasImmutabilityPolicy', 'type': 'bool'},
+        'enabled': {'key': 'properties.versionLevelWorm.enabled', 'type': 'bool'},
+        'time_stamp': {'key': 'properties.versionLevelWorm.timeStamp', 'type': 'iso-8601'},
+        'migration_state': {'key': 'properties.versionLevelWorm.migrationState', 'type': 'str'},
     }
 
     def __init__(
@@ -358,6 +371,9 @@ class BlobContainer(AzureEntityResource):
         self.legal_hold = None
         self.has_legal_hold = None
         self.has_immutability_policy = None
+        self.enabled = kwargs.get('enabled', None)
+        self.time_stamp = None
+        self.migration_state = None
 
 
 class BlobInventoryPolicy(Resource):
@@ -2482,6 +2498,14 @@ class ListContainerItem(AzureEntityResource):
      if ImmutabilityPolicy has been created for this container. The hasImmutabilityPolicy public
      property is set to false by SRP if ImmutabilityPolicy has not been created for this container.
     :vartype has_immutability_policy: bool
+    :param enabled: This is an immutable property, when set to true enables version level worm at
+     the container level.
+    :type enabled: bool
+    :ivar time_stamp: Returns the date and time the version level worm was enabled.
+    :vartype time_stamp: ~datetime.datetime
+    :ivar migration_state: This property denotes the container level worm to version level worm
+     migration state. Possible values include: "InProgress", "Completed", "Abort".
+    :vartype migration_state: str or ~azure.mgmt.storage.v2021_01_01.models.MigrationState
     """
 
     _validation = {
@@ -2501,6 +2525,8 @@ class ListContainerItem(AzureEntityResource):
         'legal_hold': {'readonly': True},
         'has_legal_hold': {'readonly': True},
         'has_immutability_policy': {'readonly': True},
+        'time_stamp': {'readonly': True},
+        'migration_state': {'readonly': True},
     }
 
     _attribute_map = {
@@ -2524,6 +2550,9 @@ class ListContainerItem(AzureEntityResource):
         'legal_hold': {'key': 'properties.legalHold', 'type': 'LegalHoldProperties'},
         'has_legal_hold': {'key': 'properties.hasLegalHold', 'type': 'bool'},
         'has_immutability_policy': {'key': 'properties.hasImmutabilityPolicy', 'type': 'bool'},
+        'enabled': {'key': 'properties.versionLevelWorm.enabled', 'type': 'bool'},
+        'time_stamp': {'key': 'properties.versionLevelWorm.timeStamp', 'type': 'iso-8601'},
+        'migration_state': {'key': 'properties.versionLevelWorm.migrationState', 'type': 'str'},
     }
 
     def __init__(
@@ -2547,6 +2576,9 @@ class ListContainerItem(AzureEntityResource):
         self.legal_hold = None
         self.has_legal_hold = None
         self.has_immutability_policy = None
+        self.enabled = kwargs.get('enabled', None)
+        self.time_stamp = None
+        self.migration_state = None
 
 
 class ListContainerItems(msrest.serialization.Model):
