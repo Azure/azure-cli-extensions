@@ -26,6 +26,7 @@ stages:
     SUBSCRIPTION_ID: "15c06b1b-01d6-407b-bb21-740b8617dea3"
     RESOURCE_GROUP: "K8sPartnerExtensionTest"
     BASE_CLUSTER_NAME: "k8s-extension-cluster"
+    IS_PRIVATE_BRANCH: $[or(eq(variables['Build.SourceBranch'], 'refs/heads/k8s-extension/private'), eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/k8s-extension/private'))]
 
     EXTENSION_NAME: "k8s-extension"
     EXTENSION_FILE_NAME: "k8s_extension"
@@ -116,7 +117,19 @@ stages:
           workingDirectory: $(K8S_EXTENSION_REPO_PATH)
       
       - task: AzureCLI@2
-        displayName: Run the Test Suite
+        displayName: Run the Test Suite Public Extensions Only
+        inputs:
+          azureSubscription: AzureResourceConnection
+          scriptType: pscore
+          scriptLocation: inlineScript
+          inlineScript: |
+            .\Test.ps1 -CI -Public
+          workingDirectory: $(K8S_EXTENSION_REPO_PATH)
+        continueOnError: true
+        condition: and(succeeded(), eq(variables['IS_PRIVATE_BRANCH'], 'False'))
+      
+      - task: AzureCLI@2
+        displayName: Run the Test Suite on Private + Public Extensions
         inputs:
           azureSubscription: AzureResourceConnection
           scriptType: pscore
@@ -125,6 +138,7 @@ stages:
             .\Test.ps1 -CI
           workingDirectory: $(K8S_EXTENSION_REPO_PATH)
         continueOnError: true
+        condition: and(succeeded(), eq(variables['IS_PRIVATE_BRANCH'], 'True'))
 
       - task: PublishTestResults@2
         inputs:
@@ -150,7 +164,6 @@ stages:
     displayName: "Build and Publish the Extension Artifact"
     variables: 
       CLI_REPO_PATH: $(Agent.BuildDirectory)/s
-      IS_PRIVATE_BRANCH: $[or(eq(variables['Build.SourceBranch'], 'refs/heads/k8s-extension/private'), eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/k8s-extension/private'))]
     steps:
     - bash: |
         echo "Using the private preview of k8s-extension to build..."
