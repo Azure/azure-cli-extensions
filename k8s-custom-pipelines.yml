@@ -9,13 +9,13 @@ trigger:
   batch: true
   branches:
     include:
-      - k8s-extension/public-preview
-      - k8s-extension/private-preview
+      - k8s-extension/public
+      - k8s-extension/private
 pr:
   branches:
     include:
-      - k8s-extension/public-preview
-      - k8s-extension/private-preview
+      - k8s-extension/public
+      - k8s-extension/private
 
 stages:
 - stage: BuildTestPublishExtension
@@ -150,7 +150,7 @@ stages:
     displayName: "Build and Publish the Extension Artifact"
     variables: 
       CLI_REPO_PATH: $(Agent.BuildDirectory)/s
-      IS_PRIVATE_BRANCH: $[or(eq(variables['Build.SourceBranch'], 'refs/heads/k8s-extension/private-preview'), eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/k8s-extension/private-preview'))]
+      IS_PRIVATE_BRANCH: $[or(eq(variables['Build.SourceBranch'], 'refs/heads/k8s-extension/private'), eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/k8s-extension/private'))]
     steps:
     - bash: |
         echo "Using the private preview of k8s-extension to build..."
