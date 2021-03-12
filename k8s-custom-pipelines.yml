@@ -18,8 +18,8 @@ pr:
       - k8s-extension/private-preview
 
 stages:
-- stage: K8sExtensionTestSuite
-  displayName: "K8s-Extension Test Suite"
+- stage: BuildTestPublishExtension
+  displayName: "Build, Test, and Publish Extension"
   variables:
     K8S_EXTENSION_REPO_PATH: $(Agent.BuildDirectory)/s/compute-HybridMgmt-K8sPartnerExtensionTest
     CLI_REPO_PATH: $(Agent.BuildDirectory)/s/azure-cli-extensions
@@ -144,40 +144,37 @@ stages:
           workingDirectory: $(K8S_EXTENSION_REPO_PATH)
         condition: succeededOrFailed()
 
-- stage: BuildPublishExtension
-  dependsOn: []
-  displayName: "Build and Publish the Extension Artifact"
-  variables: 
-    CLI_REPO_PATH: $(Agent.BuildDirectory)/s
-    IS_PRIVATE_BRANCH: $[or(eq(variables['Build.SourceBranchName'], 'refs/heads/k8s-extension/private-preview'), eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/k8s-extension/private-preview'))]
-  jobs:
   - job: BuildPublishExtension
-    displayName: "Build and Publish the Extension Artifact"
     pool:
       vmImage: 'ubuntu-16.04'
+    displayName: "Build and Publish the Extension Artifact"
+    variables: 
+      CLI_REPO_PATH: $(Agent.BuildDirectory)/s
+      IS_PRIVATE_BRANCH: $[or(and(eq(variables['Build.SourceBranchName'], 'refs/heads/k8s-extension/private-preview'), ne(variables['System.PullRequest.TargetBranch'], 'refs/heads/k8s-extension/public-preview')), eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/k8s-extension/private-preview'))]
     steps:
     - bash: |
-        if [[ $IS_PRIVATE_BRANCH ]]; then
-          echo "Using the private preview of k8s-extension to build..."
+        echo "Using the private preview of k8s-extension to build..."
 
-          cp $(CLI_REPO_PATH)/src/k8s-extension $(CLI_REPO_PATH)/src/k8s-extension-private -r
-          cp $(CLI_REPO_PATH)/src/k8s-extension-private/azext_k8s_extension/_consts_private.py $(CLI_REPO_PATH)/src/k8s-extension-private/azext_k8s_extension/_consts.py
+        cp $(CLI_REPO_PATH)/src/k8s-extension $(CLI_REPO_PATH)/src/k8s-extension-private -r
+        cp $(CLI_REPO_PATH)/src/k8s-extension-private/azext_k8s_extension/_consts_private.py $(CLI_REPO_PATH)/src/k8s-extension-private/azext_k8s_extension/_consts.py
 
-          EXTENSION_NAME="k8s-extension-private"
-          EXTENSION_FILE_NAME="k8s_extension_private"
+        EXTENSION_NAME="k8s-extension-private"
+        EXTENSION_FILE_NAME="k8s_extension_private"
 
-          echo "##vso[task.setvariable variable=EXTENSION_NAME]$EXTENSION_NAME"
-          echo "##vso[task.setvariable variable=EXTENSION_FILE_NAME]$EXTENSION_FILE_NAME"
-        else
-          echo "Using the public version of k8s-extension to build..."
+        echo "##vso[task.setvariable variable=EXTENSION_NAME]$EXTENSION_NAME"
+        echo "##vso[task.setvariable variable=EXTENSION_FILE_NAME]$EXTENSION_FILE_NAME"
+      condition: and(succeeded(), eq(variables['IS_PRIVATE_BRANCH'], 'True'))
+      displayName: "Copy Files, Set Variables for k8s-extension-private"
+    - bash: |
+        echo "Using the public version of k8s-extension to build..."
 
-          EXTENSION_NAME="k8s-extension"
-          EXTENSION_FILE_NAME="k8s_extension"
+        EXTENSION_NAME="k8s-extension"
+        EXTENSION_FILE_NAME="k8s_extension"
 
-          echo "##vso[task.setvariable variable=EXTENSION_NAME]$EXTENSION_NAME"
-          echo "##vso[task.setvariable variable=EXTENSION_FILE_NAME]$EXTENSION_FILE_NAME"
-        fi
-      displayName: "Copy Files, Set Variables based on Private Branch"
+        echo "##vso[task.setvariable variable=EXTENSION_NAME]$EXTENSION_NAME"
+        echo "##vso[task.setvariable variable=EXTENSION_FILE_NAME]$EXTENSION_FILE_NAME"
+      condition: and(succeeded(), eq(variables['IS_PRIVATE_BRANCH'], 'False'))
+      displayName: "Copy Files, Set Variables for k8s-extension"
     - task: UsePythonVersion@0
       displayName: 'Use Python 3.6'
       inputs:
