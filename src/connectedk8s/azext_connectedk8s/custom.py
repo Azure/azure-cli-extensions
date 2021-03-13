@@ -1746,7 +1746,7 @@ def client_side_proxy_wrapper(cmd,
             dict_file['identity']['clientSecret'] = creds
     else:
         dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}}
-    
+
     try:
         with open(config_file_location, 'w') as f:
             yaml.dump(dict_file, f, default_flow_style=False)
