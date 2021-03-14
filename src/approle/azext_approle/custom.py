@@ -82,8 +82,8 @@ def _get_managed_application(client, app_id: str):
 
     query = f"displayName eq '{app_id}'"
     if re.match(
-        "[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}",
-        app_id,
+            "[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}",
+            app_id,
     ):
         query = f"appId eq '{app_id}'"
 
@@ -108,8 +108,8 @@ def _get_service_principal(client, service_principal: str):
         "[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"
     )
     if re.match(
-        guid_pattern,
-        service_principal,
+            guid_pattern,
+            service_principal,
     ):
         query = f"objectId eq '{service_principal}'"
 
