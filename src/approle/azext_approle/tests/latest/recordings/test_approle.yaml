@@ -1,0 +1,59 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python/3.8.5 (Linux-4.19.104-microsoft-standard-x86_64-with-glibc2.29) msrest/0.6.21
+        msrest_azure/0.6.4 azure-graphrbac/0.60.0 Azure-SDK-For-Python
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://graph.windows.net/00000000-0000-0000-0000-000000000000/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%27test1%27%29%20or%20displayName%20eq%20%27test1%27&api-version=1.6
+  response:
+    body:
+      string: '{"odata.metadata":"https://graph.windows.net/00000000-0000-0000-0000-000000000000/$metadata#directoryObjects","value":[]}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - no-cache
+      content-length:
+      - '121'
+      content-type:
+      - application/json; odata=minimalmetadata; streaming=true; charset=utf-8
+      dataserviceversion:
+      - 3.0;
+      date:
+      - Sun, 14 Mar 2021 21:56:56 GMT
+      duration:
+      - '488755'
+      expires:
+      - '-1'
+      ocp-aad-diagnostics-server-name:
+      - 5RfrUZCObWHejB2Af0oU9eHVe+8kb4jux/9CHsIjs6I=
+      ocp-aad-session-key:
+      - vdfKWx6oARgcf1RT8x_jOwcP7mqPBGBZeUFGyWZjaSkXeHLXaLNQ8cdTj52Xd9-BCrjkpLxfnsXMW-xrc_kgZ2s1N1R9z2TS5AM_3BnPvL4Fr46o92k5dOFxoRcTH86X.KRWtLj7HIYuQg1My0O8QZKl5C1UrW7TCC2G0OLvCGEM
+      pragma:
+      - no-cache
+      request-id:
+      - 0cf75415-f99c-4aa6-92d2-05c25f506711
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-ms-dirapi-data-contract-version:
+      - '1.6'
+      x-ms-resource-unit:
+      - '1'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1
