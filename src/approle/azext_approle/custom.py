@@ -116,7 +116,7 @@ def _get_service_principal(client, service_principal: str):
     service_principals = list(client.service_principals.list(filter=query))
     if len(service_principals) > 1:
         raise CLIError(
-            "More than one service principal matched - try using obect id instead"
+            "More than one service principal matched - try using object id instead"
         )
 
     if not service_principals:
