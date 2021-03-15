@@ -33,9 +33,6 @@ def load_arguments(self, _):
         c.argument('distribution', options_list=['--distribution'], help='The Kubernetes distribution which will be running on this connected cluster.', arg_type=get_enum_type(Distribution_Enum_Values))
         c.argument('infrastructure', options_list=['--infrastructure'], help='The infrastructure on which the Kubernetes cluster represented by this connected cluster will be running on.', arg_type=get_enum_type(Infrastructure_Enum_Values))
         c.argument('disable_auto_upgrade', options_list=['--disable-auto-upgrade'], action='store_true', help='Flag to disable auto upgrade of arc agents.')
-        # c.argument('enable_azure_rbac', options_list=['--enable-azure-rbac'], action='store_true', help='Flag to enable Azure RBAC for authorization.', is_preview=True)
-        # c.argument('aad_client_id', options_list=['--aad-client-id'], help='AAD authorization client ID for enabling AAD RBAC. Specify when using enable-azure-rbac.', is_preview=True)
-        # c.argument('aad_client_secret', options_list=['--aad-client-secret'], help='AAD authorization client secret for enabling AAD RBAC. Specify when using enable-azure-rbac.', is_preview=True)
 
     with self.argument_context('connectedk8s update') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
