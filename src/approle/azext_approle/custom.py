@@ -7,7 +7,8 @@ import json
 from knack.util import CLIError
 from azure.graphrbac.models import Application, ServicePrincipal, AppRole
 
-def list_app_roles(cmd, app : str):
+
+def list_app_roles(cmd, app: str):
     client = _get_client(cmd.cli_ctx)
     app = _get_managed_application(client, app)
 
