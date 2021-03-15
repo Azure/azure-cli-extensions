@@ -13,6 +13,7 @@ from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 from base64 import b64encode, b64decode
 import stat
 import platform
+from azure.core.exceptions import ClientAuthenticationError
 import yaml
 import requests
 import urllib.request
@@ -1151,9 +1152,11 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
                 try:
                     logger.warning("Registering Custom Locations resource provider 'Microsoft.ExtendedLocation' ...")
                     rp_client.register(consts.Custom_Locations_Provider_Namespace)  # Asynchronous registration
-                    # Add below if wait wanted, give a timeout too
+                except ClientAuthenticationError as ex:
+                    #raise CLIERRor -> ask user to register
+                    pass
                 except Exception as e:
-                    # Add error/exceptions -> ask user to register
+                    # Add error/exceptions
                     pass
         except Exception as ex:
             # Add error/exceptions
@@ -1255,7 +1258,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
 
     if enable_cl:
-        # Wait until Custom Locations is Registered
+        # Wait until Custom Locations RP is Registered before invoking helm upgrade
         try:
             rp_client = _resource_providers_client(cmd.cli_ctx)
             cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
