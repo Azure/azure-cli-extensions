@@ -18,14 +18,6 @@ from azure_devtools.scenario_tests import AllowLargeResponse
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-# Env setup
-@try_manual
-def setup(test, rg):
-    test.kwargs.update({
-        'workspace': test.create_random_name('clitestws-', 16)
-    })
-    test.cmd('az monitor log-analytics workspace create -g {rg} -n {workspace}')
-
 # EXAMPLE: providers/Microsoft.OperationsManagement/solutions to create a OperationManagement solutions
 @try_manual
 def step__operationManagement_solutions_put(test, rg):
@@ -33,6 +25,7 @@ def step__operationManagement_solutions_put(test, rg):
              '--resource-group "{rg}" '
              '--solution-type SecurityInsights '
              '--workspace {workspace} ')
+
 
 # EXAMPLE: /Actions/get/Get all actions of alert rule.
 @try_manual
@@ -500,16 +493,9 @@ def step__incidents_delete_delete_an_incident_(test, rg):
              '--workspace-name {workspace}')
 
 
-# Env cleanup
-@try_manual
-def cleanup(test, rg):
-    pass
-
-
 # Testcase
 @try_manual
 def call_scenario(test, rg):
-    setup(test, rg)
     step__operationManagement_solutions_put(test, rg)
     step__alertrules_put(test, rg)
     step__alertrules_put2(test, rg)
@@ -550,7 +536,6 @@ def call_scenario(test, rg):
     step__incidentcomments_get(test, rg)
     step__incidentcomments_get2(test, rg)
     step__incidents_delete_delete_an_incident_(test, rg)
-    cleanup(test, rg)
 
 
 @try_manual
@@ -565,14 +550,16 @@ class SecurityInsightsScenarioTest(ScenarioTest):
         self.cmd('extension remove -n log-analytics-solution')
         super(SecurityInsightsScenarioTest, self).tearDown()
 
-
     @ResourceGroupPreparer(name_prefix='clitestsentinel_myRg'[:7], key='rg', parameter_name='rg')
     @AllowLargeResponse()
     def test_sentinel(self, rg):
 
         self.kwargs.update({
-            'subscription_id': self.get_subscription_id()
+            'subscription_id': self.get_subscription_id(),
+            'workspace': self.create_random_name('clitestws-', 16)
         })
+
+        self.cmd('az monitor log-analytics workspace create -g {rg} -n {workspace}')
 
         call_scenario(self, rg)
         calc_coverage(__file__)
