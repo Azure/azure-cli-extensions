@@ -9,7 +9,6 @@
 # --------------------------------------------------------------------------
 
 import os
-import time
 from azure.cli.testsdk import ScenarioTest
 from .. import try_manual, raise_if, calc_coverage
 from azure.cli.testsdk import ResourceGroupPreparer
@@ -27,7 +26,6 @@ def setup(test, rg):
     })
     test.cmd('az extension add -n log-analytics-solution ')
     test.cmd('az monitor log-analytics workspace create -g {rg} -n {workspace}')
-    # time.sleep(70)
 
 # EXAMPLE: providers/Microsoft.OperationsManagement/solutions to create a OperationManagement solutions
 @try_manual
@@ -553,7 +551,7 @@ def call_scenario(test, rg):
     step__incidentcomments_get(test, rg)
     step__incidentcomments_get2(test, rg)
     step__incidents_delete_delete_an_incident_(test, rg)
-    # cleanup(test, rg)
+    cleanup(test, rg)
 
 
 @try_manual
