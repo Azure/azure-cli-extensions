@@ -1153,7 +1153,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
                     logger.warning("Registering Custom Locations resource provider 'Microsoft.ExtendedLocation' ...")
                     rp_client.register(consts.Custom_Locations_Provider_Namespace)  # Asynchronous registration
                 except ClientAuthenticationError as ex:
-                    #raise CLIERRor -> ask user to register
+                    # raise CLIERRor -> ask user to register
                     pass
                 except Exception as e:
                     # Add error/exceptions -> also ask user only
@@ -1164,7 +1164,6 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
         if not enable_cluster_connect:
             enable_cluster_connect = True
             logger.warning("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too")
-
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
