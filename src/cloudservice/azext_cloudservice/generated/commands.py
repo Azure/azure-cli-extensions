@@ -23,23 +23,19 @@ def load_command_table(self, _):
         client_factory=cf_cloud_service_role_instance,
     )
     with self.command_group(
-        'cloud-service cloud-service-role-instance',
+        'cloud-service role-instance',
         cloud_service_cloud_service_role_instance,
         client_factory=cf_cloud_service_role_instance,
     ) as g:
-        g.custom_command('list', 'cloud_service_cloud_service_role_instance_list')
-        g.custom_show_command('show', 'cloud_service_cloud_service_role_instance_show')
-        g.custom_command(
-            'delete', 'cloud_service_cloud_service_role_instance_delete', supports_no_wait=True, confirmation=True
-        )
-        g.custom_command('rebuild', 'cloud_service_cloud_service_role_instance_rebuild', supports_no_wait=True)
-        g.custom_command('reimage', 'cloud_service_cloud_service_role_instance_reimage', supports_no_wait=True)
-        g.custom_command('restart', 'cloud_service_cloud_service_role_instance_restart', supports_no_wait=True)
-        g.custom_command('show-instance-view', 'cloud_service_cloud_service_role_instance_show_instance_view')
-        g.custom_command(
-            'show-remote-desktop-file', 'cloud_service_cloud_service_role_instance_show_remote_desktop_file'
-        )
-        g.custom_wait_command('wait', 'cloud_service_cloud_service_role_instance_show')
+        g.custom_command('list', 'cloud_service_role_instance_list')
+        g.custom_show_command('show', 'cloud_service_role_instance_show')
+        g.custom_command('delete', 'cloud_service_role_instance_delete', supports_no_wait=True, confirmation=True)
+        g.custom_command('rebuild', 'cloud_service_role_instance_rebuild', supports_no_wait=True)
+        g.custom_command('reimage', 'cloud_service_role_instance_reimage', supports_no_wait=True)
+        g.custom_command('restart', 'cloud_service_role_instance_restart', supports_no_wait=True)
+        g.custom_command('show-instance-view', 'cloud_service_role_instance_show_instance_view')
+        g.custom_command('show-remote-desktop-file', 'cloud_service_role_instance_show_remote_desktop_file')
+        g.custom_wait_command('wait', 'cloud_service_role_instance_show')
 
     from azext_cloudservice.generated._client_factory import cf_cloud_service_role
 
@@ -48,10 +44,10 @@ def load_command_table(self, _):
         client_factory=cf_cloud_service_role,
     )
     with self.command_group(
-        'cloud-service cloud-service-role', cloud_service_cloud_service_role, client_factory=cf_cloud_service_role
+        'cloud-service role', cloud_service_cloud_service_role, client_factory=cf_cloud_service_role
     ) as g:
-        g.custom_command('list', 'cloud_service_cloud_service_role_list')
-        g.custom_show_command('show', 'cloud_service_cloud_service_role_show')
+        g.custom_command('list', 'cloud_service_role_list')
+        g.custom_show_command('show', 'cloud_service_role_show')
 
     from azext_cloudservice.generated._client_factory import cf_cloud_service
 
@@ -84,10 +80,10 @@ def load_command_table(self, _):
         client_factory=cf_cloud_service_update_domain,
     )
     with self.command_group(
-        'cloud-service cloud-service-update-domain',
+        'cloud-service update-domain',
         cloud_service_cloud_service_update_domain,
         client_factory=cf_cloud_service_update_domain,
     ) as g:
-        g.custom_command('list-update-domain', 'cloud_service_cloud_service_update_domain_list_update_domain')
-        g.custom_command('show-update-domain', 'cloud_service_cloud_service_update_domain_show_update_domain')
-        g.custom_command('walk-update-domain', 'cloud_service_cloud_service_update_domain_walk_update_domain')
+        g.custom_command('list-update-domain', 'cloud_service_update_domain_list_update_domain')
+        g.custom_command('show-update-domain', 'cloud_service_update_domain_show_update_domain')
+        g.custom_command('walk-update-domain', 'cloud_service_update_domain_walk_update_domain')

@@ -9,10 +9,10 @@
 ### <a name="CommandGroups">Command groups in `az cloud-service` extension </a>
 |CLI Command Group|Group Swagger name|Commands|
 |---------|------------|--------|
-|az cloud-service cloud-service-role-instance|CloudServiceRoleInstances|[commands](#CommandsInCloudServiceRoleInstances)|
-|az cloud-service cloud-service-role|CloudServiceRoles|[commands](#CommandsInCloudServiceRoles)|
+|az cloud-service role-instance|CloudServiceRoleInstances|[commands](#CommandsInCloudServiceRoleInstances)|
+|az cloud-service role|CloudServiceRoles|[commands](#CommandsInCloudServiceRoles)|
 |az cloud-service|CloudServices|[commands](#CommandsInCloudServices)|
-|az cloud-service cloud-service-update-domain|CloudServicesUpdateDomain|[commands](#CommandsInCloudServicesUpdateDomain)|
+|az cloud-service update-domain|CloudServicesUpdateDomain|[commands](#CommandsInCloudServicesUpdateDomain)|
 
 ## COMMANDS
 ### <a name="CommandsInCloudServices">Commands in `az cloud-service` group</a>
@@ -32,30 +32,30 @@
 |[az cloud-service show-instance-view](#CloudServicesGetInstanceView)|GetInstanceView|[Parameters](#ParametersCloudServicesGetInstanceView)|Not Found|
 |[az cloud-service start](#CloudServicesStart)|Start|[Parameters](#ParametersCloudServicesStart)|Not Found|
 
-### <a name="CommandsInCloudServiceRoles">Commands in `az cloud-service cloud-service-role` group</a>
+### <a name="CommandsInCloudServiceRoles">Commands in `az cloud-service role` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
-|[az cloud-service cloud-service-role list](#CloudServiceRolesList)|List|[Parameters](#ParametersCloudServiceRolesList)|Not Found|
-|[az cloud-service cloud-service-role show](#CloudServiceRolesGet)|Get|[Parameters](#ParametersCloudServiceRolesGet)|Not Found|
+|[az cloud-service role list](#CloudServiceRolesList)|List|[Parameters](#ParametersCloudServiceRolesList)|Not Found|
+|[az cloud-service role show](#CloudServiceRolesGet)|Get|[Parameters](#ParametersCloudServiceRolesGet)|Not Found|
 
-### <a name="CommandsInCloudServiceRoleInstances">Commands in `az cloud-service cloud-service-role-instance` group</a>
+### <a name="CommandsInCloudServiceRoleInstances">Commands in `az cloud-service role-instance` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
-|[az cloud-service cloud-service-role-instance list](#CloudServiceRoleInstancesList)|List|[Parameters](#ParametersCloudServiceRoleInstancesList)|Not Found|
-|[az cloud-service cloud-service-role-instance show](#CloudServiceRoleInstancesGet)|Get|[Parameters](#ParametersCloudServiceRoleInstancesGet)|Not Found|
-|[az cloud-service cloud-service-role-instance delete](#CloudServiceRoleInstancesDelete)|Delete|[Parameters](#ParametersCloudServiceRoleInstancesDelete)|Not Found|
-|[az cloud-service cloud-service-role-instance rebuild](#CloudServiceRoleInstancesRebuild)|Rebuild|[Parameters](#ParametersCloudServiceRoleInstancesRebuild)|Not Found|
-|[az cloud-service cloud-service-role-instance reimage](#CloudServiceRoleInstancesReimage)|Reimage|[Parameters](#ParametersCloudServiceRoleInstancesReimage)|Not Found|
-|[az cloud-service cloud-service-role-instance restart](#CloudServiceRoleInstancesRestart)|Restart|[Parameters](#ParametersCloudServiceRoleInstancesRestart)|Not Found|
-|[az cloud-service cloud-service-role-instance show-instance-view](#CloudServiceRoleInstancesGetInstanceView)|GetInstanceView|[Parameters](#ParametersCloudServiceRoleInstancesGetInstanceView)|Not Found|
-|[az cloud-service cloud-service-role-instance show-remote-desktop-file](#CloudServiceRoleInstancesGetRemoteDesktopFile)|GetRemoteDesktopFile|[Parameters](#ParametersCloudServiceRoleInstancesGetRemoteDesktopFile)|Not Found|
+|[az cloud-service role-instance list](#CloudServiceRoleInstancesList)|List|[Parameters](#ParametersCloudServiceRoleInstancesList)|Not Found|
+|[az cloud-service role-instance show](#CloudServiceRoleInstancesGet)|Get|[Parameters](#ParametersCloudServiceRoleInstancesGet)|Not Found|
+|[az cloud-service role-instance delete](#CloudServiceRoleInstancesDelete)|Delete|[Parameters](#ParametersCloudServiceRoleInstancesDelete)|Not Found|
+|[az cloud-service role-instance rebuild](#CloudServiceRoleInstancesRebuild)|Rebuild|[Parameters](#ParametersCloudServiceRoleInstancesRebuild)|Not Found|
+|[az cloud-service role-instance reimage](#CloudServiceRoleInstancesReimage)|Reimage|[Parameters](#ParametersCloudServiceRoleInstancesReimage)|Not Found|
+|[az cloud-service role-instance restart](#CloudServiceRoleInstancesRestart)|Restart|[Parameters](#ParametersCloudServiceRoleInstancesRestart)|Not Found|
+|[az cloud-service role-instance show-instance-view](#CloudServiceRoleInstancesGetInstanceView)|GetInstanceView|[Parameters](#ParametersCloudServiceRoleInstancesGetInstanceView)|Not Found|
+|[az cloud-service role-instance show-remote-desktop-file](#CloudServiceRoleInstancesGetRemoteDesktopFile)|GetRemoteDesktopFile|[Parameters](#ParametersCloudServiceRoleInstancesGetRemoteDesktopFile)|Not Found|
 
-### <a name="CommandsInCloudServicesUpdateDomain">Commands in `az cloud-service cloud-service-update-domain` group</a>
+### <a name="CommandsInCloudServicesUpdateDomain">Commands in `az cloud-service update-domain` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
 |---------|------------|--------|-----------|
-|[az cloud-service cloud-service-update-domain list-update-domain](#CloudServicesUpdateDomainListUpdateDomains)|ListUpdateDomains|[Parameters](#ParametersCloudServicesUpdateDomainListUpdateDomains)|Not Found|
-|[az cloud-service cloud-service-update-domain show-update-domain](#CloudServicesUpdateDomainGetUpdateDomain)|GetUpdateDomain|[Parameters](#ParametersCloudServicesUpdateDomainGetUpdateDomain)|Not Found|
-|[az cloud-service cloud-service-update-domain walk-update-domain](#CloudServicesUpdateDomainWalkUpdateDomain)|WalkUpdateDomain|[Parameters](#ParametersCloudServicesUpdateDomainWalkUpdateDomain)|Not Found|
+|[az cloud-service update-domain list-update-domain](#CloudServicesUpdateDomainListUpdateDomains)|ListUpdateDomains|[Parameters](#ParametersCloudServicesUpdateDomainListUpdateDomains)|Not Found|
+|[az cloud-service update-domain show-update-domain](#CloudServicesUpdateDomainGetUpdateDomain)|GetUpdateDomain|[Parameters](#ParametersCloudServicesUpdateDomainGetUpdateDomain)|Not Found|
+|[az cloud-service update-domain walk-update-domain](#CloudServicesUpdateDomainWalkUpdateDomain)|WalkUpdateDomain|[Parameters](#ParametersCloudServicesUpdateDomainWalkUpdateDomain)|Not Found|
 
 
 ## COMMAND DETAILS
@@ -222,8 +222,8 @@ t.Network/publicIPAddresses/contosopublicip\\"}}}]}}]" --package-url "{PackageUr
 |**--resource-group-name**|string|Name of the resource group.|resource_group_name|resourceGroupName|
 |**--cloud-service-name**|string|Name of the cloud service.|cloud_service_name|cloudServiceName|
 
-### group `az cloud-service cloud-service-role`
-#### <a name="CloudServiceRolesList">Command `az cloud-service cloud-service-role list`</a>
+### group `az cloud-service role`
+#### <a name="CloudServiceRolesList">Command `az cloud-service role list`</a>
 
 ##### <a name="ParametersCloudServiceRolesList">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -231,7 +231,7 @@ t.Network/publicIPAddresses/contosopublicip\\"}}}]}}]" --package-url "{PackageUr
 |**--resource-group-name**|string||resource_group_name|resourceGroupName|
 |**--cloud-service-name**|string||cloud_service_name|cloudServiceName|
 
-#### <a name="CloudServiceRolesGet">Command `az cloud-service cloud-service-role show`</a>
+#### <a name="CloudServiceRolesGet">Command `az cloud-service role show`</a>
 
 ##### <a name="ParametersCloudServiceRolesGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -240,8 +240,8 @@ t.Network/publicIPAddresses/contosopublicip\\"}}}]}}]" --package-url "{PackageUr
 |**--resource-group-name**|string||resource_group_name|resourceGroupName|
 |**--cloud-service-name**|string||cloud_service_name|cloudServiceName|
 
-### group `az cloud-service cloud-service-role-instance`
-#### <a name="CloudServiceRoleInstancesList">Command `az cloud-service cloud-service-role-instance list`</a>
+### group `az cloud-service role-instance`
+#### <a name="CloudServiceRoleInstancesList">Command `az cloud-service role-instance list`</a>
 
 ##### <a name="ParametersCloudServiceRoleInstancesList">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -249,7 +249,7 @@ t.Network/publicIPAddresses/contosopublicip\\"}}}]}}]" --package-url "{PackageUr
 |**--resource-group-name**|string||resource_group_name|resourceGroupName|
 |**--cloud-service-name**|string||cloud_service_name|cloudServiceName|
 
-#### <a name="CloudServiceRoleInstancesGet">Command `az cloud-service cloud-service-role-instance show`</a>
+#### <a name="CloudServiceRoleInstancesGet">Command `az cloud-service role-instance show`</a>
 
 ##### <a name="ParametersCloudServiceRoleInstancesGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -258,7 +258,7 @@ t.Network/publicIPAddresses/contosopublicip\\"}}}]}}]" --package-url "{PackageUr
 |**--resource-group-name**|string||resource_group_name|resourceGroupName|
 |**--cloud-service-name**|string||cloud_service_name|cloudServiceName|
 
-#### <a name="CloudServiceRoleInstancesDelete">Command `az cloud-service cloud-service-role-instance delete`</a>
+#### <a name="CloudServiceRoleInstancesDelete">Command `az cloud-service role-instance delete`</a>
 
 ##### <a name="ParametersCloudServiceRoleInstancesDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -267,7 +267,7 @@ t.Network/publicIPAddresses/contosopublicip\\"}}}]}}]" --package-url "{PackageUr
 |**--resource-group-name**|string||resource_group_name|resourceGroupName|
 |**--cloud-service-name**|string||cloud_service_name|cloudServiceName|
 
-#### <a name="CloudServiceRoleInstancesRebuild">Command `az cloud-service cloud-service-role-instance rebuild`</a>
+#### <a name="CloudServiceRoleInstancesRebuild">Command `az cloud-service role-instance rebuild`</a>
 
 ##### <a name="ParametersCloudServiceRoleInstancesRebuild">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -276,7 +276,7 @@ t.Network/publicIPAddresses/contosopublicip\\"}}}]}}]" --package-url "{PackageUr
 |**--resource-group-name**|string||resource_group_name|resourceGroupName|
 |**--cloud-service-name**|string||cloud_service_name|cloudServiceName|
 
-#### <a name="CloudServiceRoleInstancesReimage">Command `az cloud-service cloud-service-role-instance reimage`</a>
+#### <a name="CloudServiceRoleInstancesReimage">Command `az cloud-service role-instance reimage`</a>
 
 ##### <a name="ParametersCloudServiceRoleInstancesReimage">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -285,7 +285,7 @@ t.Network/publicIPAddresses/contosopublicip\\"}}}]}}]" --package-url "{PackageUr
 |**--resource-group-name**|string||resource_group_name|resourceGroupName|
 |**--cloud-service-name**|string||cloud_service_name|cloudServiceName|
 
-#### <a name="CloudServiceRoleInstancesRestart">Command `az cloud-service cloud-service-role-instance restart`</a>
+#### <a name="CloudServiceRoleInstancesRestart">Command `az cloud-service role-instance restart`</a>
 
 ##### <a name="ParametersCloudServiceRoleInstancesRestart">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -294,7 +294,7 @@ t.Network/publicIPAddresses/contosopublicip\\"}}}]}}]" --package-url "{PackageUr
 |**--resource-group-name**|string||resource_group_name|resourceGroupName|
 |**--cloud-service-name**|string||cloud_service_name|cloudServiceName|
 
-#### <a name="CloudServiceRoleInstancesGetInstanceView">Command `az cloud-service cloud-service-role-instance show-instance-view`</a>
+#### <a name="CloudServiceRoleInstancesGetInstanceView">Command `az cloud-service role-instance show-instance-view`</a>
 
 ##### <a name="ParametersCloudServiceRoleInstancesGetInstanceView">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -303,7 +303,7 @@ t.Network/publicIPAddresses/contosopublicip\\"}}}]}}]" --package-url "{PackageUr
 |**--resource-group-name**|string||resource_group_name|resourceGroupName|
 |**--cloud-service-name**|string||cloud_service_name|cloudServiceName|
 
-#### <a name="CloudServiceRoleInstancesGetRemoteDesktopFile">Command `az cloud-service cloud-service-role-instance show-remote-desktop-file`</a>
+#### <a name="CloudServiceRoleInstancesGetRemoteDesktopFile">Command `az cloud-service role-instance show-remote-desktop-file`</a>
 
 ##### <a name="ParametersCloudServiceRoleInstancesGetRemoteDesktopFile">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -312,8 +312,8 @@ t.Network/publicIPAddresses/contosopublicip\\"}}}]}}]" --package-url "{PackageUr
 |**--resource-group-name**|string||resource_group_name|resourceGroupName|
 |**--cloud-service-name**|string||cloud_service_name|cloudServiceName|
 
-### group `az cloud-service cloud-service-update-domain`
-#### <a name="CloudServicesUpdateDomainListUpdateDomains">Command `az cloud-service cloud-service-update-domain list-update-domain`</a>
+### group `az cloud-service update-domain`
+#### <a name="CloudServicesUpdateDomainListUpdateDomains">Command `az cloud-service update-domain list-update-domain`</a>
 
 ##### <a name="ParametersCloudServicesUpdateDomainListUpdateDomains">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -321,7 +321,7 @@ t.Network/publicIPAddresses/contosopublicip\\"}}}]}}]" --package-url "{PackageUr
 |**--resource-group-name**|string|Name of the resource group.|resource_group_name|resourceGroupName|
 |**--cloud-service-name**|string|Name of the cloud service.|cloud_service_name|cloudServiceName|
 
-#### <a name="CloudServicesUpdateDomainGetUpdateDomain">Command `az cloud-service cloud-service-update-domain show-update-domain`</a>
+#### <a name="CloudServicesUpdateDomainGetUpdateDomain">Command `az cloud-service update-domain show-update-domain`</a>
 
 ##### <a name="ParametersCloudServicesUpdateDomainGetUpdateDomain">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -330,7 +330,7 @@ t.Network/publicIPAddresses/contosopublicip\\"}}}]}}]" --package-url "{PackageUr
 |**--cloud-service-name**|string|Name of the cloud service.|cloud_service_name|cloudServiceName|
 |**--update-domain**|integer|Specifies an integer value that identifies the update domain. Update domains are identified with a zero-based index: the first update domain has an ID of 0, the second has an ID of 1, and so on.|update_domain|updateDomain|
 
-#### <a name="CloudServicesUpdateDomainWalkUpdateDomain">Command `az cloud-service cloud-service-update-domain walk-update-domain`</a>
+#### <a name="CloudServicesUpdateDomainWalkUpdateDomain">Command `az cloud-service update-domain walk-update-domain`</a>
 
 ##### <a name="ParametersCloudServicesUpdateDomainWalkUpdateDomain">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|

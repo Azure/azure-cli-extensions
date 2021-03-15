@@ -25,55 +25,55 @@ from azure.cli.core.commands.validators import (
 
 def load_arguments(self, _):
 
-    with self.argument_context('cloud-service cloud-service-role-instance list') as c:
+    with self.argument_context('cloud-service role-instance list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cloud_service_name', type=str, help='')
 
-    with self.argument_context('cloud-service cloud-service-role-instance show') as c:
+    with self.argument_context('cloud-service role-instance show') as c:
         c.argument('role_instance_name', type=str, help='Name of the role instance.', id_part='child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cloud_service_name', type=str, help='', id_part='name')
 
-    with self.argument_context('cloud-service cloud-service-role-instance delete') as c:
+    with self.argument_context('cloud-service role-instance delete') as c:
         c.argument('role_instance_name', type=str, help='Name of the role instance.', id_part='child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cloud_service_name', type=str, help='', id_part='name')
 
-    with self.argument_context('cloud-service cloud-service-role-instance rebuild') as c:
+    with self.argument_context('cloud-service role-instance rebuild') as c:
         c.argument('role_instance_name', type=str, help='Name of the role instance.', id_part='child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cloud_service_name', type=str, help='', id_part='name')
 
-    with self.argument_context('cloud-service cloud-service-role-instance reimage') as c:
+    with self.argument_context('cloud-service role-instance reimage') as c:
         c.argument('role_instance_name', type=str, help='Name of the role instance.', id_part='child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cloud_service_name', type=str, help='', id_part='name')
 
-    with self.argument_context('cloud-service cloud-service-role-instance restart') as c:
+    with self.argument_context('cloud-service role-instance restart') as c:
         c.argument('role_instance_name', type=str, help='Name of the role instance.', id_part='child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cloud_service_name', type=str, help='', id_part='name')
 
-    with self.argument_context('cloud-service cloud-service-role-instance show-instance-view') as c:
+    with self.argument_context('cloud-service role-instance show-instance-view') as c:
         c.argument('role_instance_name', type=str, help='Name of the role instance.', id_part='child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cloud_service_name', type=str, help='', id_part='name')
 
-    with self.argument_context('cloud-service cloud-service-role-instance show-remote-desktop-file') as c:
+    with self.argument_context('cloud-service role-instance show-remote-desktop-file') as c:
         c.argument('role_instance_name', type=str, help='Name of the role instance.', id_part='child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cloud_service_name', type=str, help='', id_part='name')
 
-    with self.argument_context('cloud-service cloud-service-role-instance wait') as c:
+    with self.argument_context('cloud-service role-instance wait') as c:
         c.argument('role_instance_name', type=str, help='Name of the role instance.', id_part='child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cloud_service_name', type=str, help='', id_part='name')
 
-    with self.argument_context('cloud-service cloud-service-role list') as c:
+    with self.argument_context('cloud-service role list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cloud_service_name', type=str, help='')
 
-    with self.argument_context('cloud-service cloud-service-role show') as c:
+    with self.argument_context('cloud-service role show') as c:
         c.argument('role_name', type=str, help='Name of the role.', id_part='child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cloud_service_name', type=str, help='', id_part='name')
@@ -184,18 +184,18 @@ def load_arguments(self, _):
         c.argument('cloud_service_name', options_list=['--name', '-n', '--cloud-service-name'], type=str, help='Name '
                    'of the cloud service.', id_part='name')
 
-    with self.argument_context('cloud-service cloud-service-update-domain list-update-domain') as c:
+    with self.argument_context('cloud-service update-domain list-update-domain') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cloud_service_name', type=str, help='Name of the cloud service.')
 
-    with self.argument_context('cloud-service cloud-service-update-domain show-update-domain') as c:
+    with self.argument_context('cloud-service update-domain show-update-domain') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cloud_service_name', type=str, help='Name of the cloud service.', id_part='name')
         c.argument('update_domain', type=int, help='Specifies an integer value that identifies the update domain. '
                    'Update domains are identified with a zero-based index: the first update domain has an ID of 0, the '
                    'second has an ID of 1, and so on.', id_part='child_name_1')
 
-    with self.argument_context('cloud-service cloud-service-update-domain walk-update-domain') as c:
+    with self.argument_context('cloud-service update-domain walk-update-domain') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cloud_service_name', type=str, help='Name of the cloud service.', id_part='name')
         c.argument('update_domain', type=int, help='Specifies an integer value that identifies the update domain. '

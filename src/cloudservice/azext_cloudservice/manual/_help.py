@@ -12,78 +12,78 @@
 from knack.help_files import helps
 
 
-helps['cloud-service cloud-service-role-instance'] = """
+helps['cloud-service role-instance'] = """
     type: group
     short-summary: Manage cloud service role instance with cloud service
 """
 
-helps['cloud-service cloud-service-role-instance list'] = """
+helps['cloud-service role-instance list'] = """
     type: command
     short-summary: "Gets the list of all role instances in a cloud service."
 """
 
-helps['cloud-service cloud-service-role-instance show'] = """
+helps['cloud-service role-instance show'] = """
     type: command
     short-summary: "Get a role instance from a cloud service."
 """
 
-helps['cloud-service cloud-service-role-instance delete'] = """
+helps['cloud-service role-instance delete'] = """
     type: command
     short-summary: "Delete a role instance from a cloud service."
 """
 
-helps['cloud-service cloud-service-role-instance rebuild'] = """
+helps['cloud-service role-instance rebuild'] = """
     type: command
     short-summary: "The Rebuild Role Instance asynchronous operation reinstalls the operating system on instances of \
 web roles or worker roles and initializes the storage resources that are used by them. If you do not want to \
 initialize storage resources, you can use Reimage Role Instance."
 """
 
-helps['cloud-service cloud-service-role-instance reimage'] = """
+helps['cloud-service role-instance reimage'] = """
     type: command
     short-summary: "The Reimage Role Instance asynchronous operation reinstalls the operating system on instances of \
 web roles or worker roles."
 """
 
-helps['cloud-service cloud-service-role-instance restart'] = """
+helps['cloud-service role-instance restart'] = """
     type: command
     short-summary: "The Reboot Role Instance asynchronous operation requests a reboot of a role instance in the cloud \
 service."
 """
 
-helps['cloud-service cloud-service-role-instance show-instance-view'] = """
+helps['cloud-service role-instance show-instance-view'] = """
     type: command
     short-summary: "Retrieve information about the run-time state of a role instance in a cloud service."
 """
 
-helps['cloud-service cloud-service-role-instance show-remote-desktop-file'] = """
+helps['cloud-service role-instance show-remote-desktop-file'] = """
     type: command
     short-summary: "Get a remote desktop file for a role instance in a cloud service."
 """
 
-helps['cloud-service cloud-service-role-instance wait'] = """
+helps['cloud-service role-instance wait'] = """
     type: command
-    short-summary: Place the CLI in a waiting state until a condition of the cloud-service cloud-service-role-instance \
+    short-summary: Place the CLI in a waiting state until a condition of the cloud-service role-instance \
 is met.
     examples:
-      - name: Pause executing next line of CLI script until the cloud-service cloud-service-role-instance is \
+      - name: Pause executing next line of CLI script until the cloud-service role-instance is \
 successfully deleted.
-      - name: Pause executing next line of CLI script until the cloud-service cloud-service-role-instance is \
+      - name: Pause executing next line of CLI script until the cloud-service role-instance is \
 successfully created.
 """
 
-helps['cloud-service cloud-service-role'] = """
+helps['cloud-service role'] = """
     type: group
     short-summary: Manage cloud service role with cloud service
 """
 
-helps['cloud-service cloud-service-role list'] = """
+helps['cloud-service role list'] = """
     type: command
     short-summary: "Get a list of all roles in a cloud service. Use nextLink property in the response to get the next \
 page of roles. Do this till nextLink is null to fetch all the roles."
 """
 
-helps['cloud-service cloud-service-role show'] = """
+helps['cloud-service role show'] = """
     type: command
     short-summary: "Get a role from a cloud service."
 """
@@ -180,8 +180,8 @@ for the resources."
 
 helps['cloud-service rebuild'] = """
     type: command
-    short-summary: "Rebuild Role Instances reinstalls the operating system on instances of web roles or worker roles \
-and initializes the storage resources that are used by them. If you do not want to initialize storage resources, you \
+    short-summary: "Rebuild Role Instances. Reinstall the operating system on instances of web roles or worker roles \
+and initialize the storage resources that are used by them. If you do not want to initialize storage resources, you \
 can use Reimage Role Instances."
 """
 
@@ -211,27 +211,25 @@ helps['cloud-service wait'] = """
     short-summary: Place the CLI in a waiting state until a condition of the cloud-service is met.
     examples:
       - name: Pause executing next line of CLI script until the cloud-service is successfully created.
-      - name: Pause executing next line of CLI script until the cloud-service is successfully updated.
-      - name: Pause executing next line of CLI script until the cloud-service is successfully deleted.
 """
 
-helps['cloud-service cloud-service-update-domain'] = """
+helps['cloud-service update-domain'] = """
     type: group
     short-summary: Manage cloud service update domain with cloud service
 """
 
-helps['cloud-service cloud-service-update-domain list-update-domain'] = """
+helps['cloud-service update-domain list-update-domain'] = """
     type: command
     short-summary: "Get a list of all update domains in a cloud service."
 """
 
-helps['cloud-service cloud-service-update-domain show-update-domain'] = """
+helps['cloud-service update-domain show-update-domain'] = """
     type: command
     short-summary: "Get the specified update domain of a cloud service. Use nextLink property in the response to get \
 the next page of update domains. Do this till nextLink is null to fetch all the update domains."
 """
 
-helps['cloud-service cloud-service-update-domain walk-update-domain'] = """
+helps['cloud-service update-domain walk-update-domain'] = """
     type: command
     short-summary: "Update the role instances in the specified update domain."
 """

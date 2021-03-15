@@ -12,27 +12,27 @@
 from azure.cli.core.util import sdk_no_wait
 
 
-def cloud_service_cloud_service_role_instance_list(client,
-                                                   resource_group_name,
-                                                   cloud_service_name):
+def cloud_service_role_instance_list(client,
+                                     resource_group_name,
+                                     cloud_service_name):
     return client.list(resource_group_name=resource_group_name,
                        cloud_service_name=cloud_service_name)
 
 
-def cloud_service_cloud_service_role_instance_show(client,
-                                                   role_instance_name,
-                                                   resource_group_name,
-                                                   cloud_service_name):
+def cloud_service_role_instance_show(client,
+                                     role_instance_name,
+                                     resource_group_name,
+                                     cloud_service_name):
     return client.get(role_instance_name=role_instance_name,
                       resource_group_name=resource_group_name,
                       cloud_service_name=cloud_service_name)
 
 
-def cloud_service_cloud_service_role_instance_delete(client,
-                                                     role_instance_name,
-                                                     resource_group_name,
-                                                     cloud_service_name,
-                                                     no_wait=False):
+def cloud_service_role_instance_delete(client,
+                                       role_instance_name,
+                                       resource_group_name,
+                                       cloud_service_name,
+                                       no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
                        role_instance_name=role_instance_name,
@@ -40,11 +40,11 @@ def cloud_service_cloud_service_role_instance_delete(client,
                        cloud_service_name=cloud_service_name)
 
 
-def cloud_service_cloud_service_role_instance_rebuild(client,
-                                                      role_instance_name,
-                                                      resource_group_name,
-                                                      cloud_service_name,
-                                                      no_wait=False):
+def cloud_service_role_instance_rebuild(client,
+                                        role_instance_name,
+                                        resource_group_name,
+                                        cloud_service_name,
+                                        no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_rebuild,
                        role_instance_name=role_instance_name,
@@ -52,11 +52,11 @@ def cloud_service_cloud_service_role_instance_rebuild(client,
                        cloud_service_name=cloud_service_name)
 
 
-def cloud_service_cloud_service_role_instance_reimage(client,
-                                                      role_instance_name,
-                                                      resource_group_name,
-                                                      cloud_service_name,
-                                                      no_wait=False):
+def cloud_service_role_instance_reimage(client,
+                                        role_instance_name,
+                                        resource_group_name,
+                                        cloud_service_name,
+                                        no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_reimage,
                        role_instance_name=role_instance_name,
@@ -64,11 +64,11 @@ def cloud_service_cloud_service_role_instance_reimage(client,
                        cloud_service_name=cloud_service_name)
 
 
-def cloud_service_cloud_service_role_instance_restart(client,
-                                                      role_instance_name,
-                                                      resource_group_name,
-                                                      cloud_service_name,
-                                                      no_wait=False):
+def cloud_service_role_instance_restart(client,
+                                        role_instance_name,
+                                        resource_group_name,
+                                        cloud_service_name,
+                                        no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_restart,
                        role_instance_name=role_instance_name,
@@ -76,35 +76,35 @@ def cloud_service_cloud_service_role_instance_restart(client,
                        cloud_service_name=cloud_service_name)
 
 
-def cloud_service_cloud_service_role_instance_show_instance_view(client,
-                                                                 role_instance_name,
-                                                                 resource_group_name,
-                                                                 cloud_service_name):
+def cloud_service_role_instance_show_instance_view(client,
+                                                   role_instance_name,
+                                                   resource_group_name,
+                                                   cloud_service_name):
     return client.get_instance_view(role_instance_name=role_instance_name,
                                     resource_group_name=resource_group_name,
                                     cloud_service_name=cloud_service_name)
 
 
-def cloud_service_cloud_service_role_instance_show_remote_desktop_file(client,
-                                                                       role_instance_name,
-                                                                       resource_group_name,
-                                                                       cloud_service_name):
+def cloud_service_role_instance_show_remote_desktop_file(client,
+                                                         role_instance_name,
+                                                         resource_group_name,
+                                                         cloud_service_name):
     return client.get_remote_desktop_file(role_instance_name=role_instance_name,
                                           resource_group_name=resource_group_name,
                                           cloud_service_name=cloud_service_name)
 
 
-def cloud_service_cloud_service_role_list(client,
-                                          resource_group_name,
-                                          cloud_service_name):
+def cloud_service_role_list(client,
+                            resource_group_name,
+                            cloud_service_name):
     return client.list(resource_group_name=resource_group_name,
                        cloud_service_name=cloud_service_name)
 
 
-def cloud_service_cloud_service_role_show(client,
-                                          role_name,
-                                          resource_group_name,
-                                          cloud_service_name):
+def cloud_service_role_show(client,
+                            role_name,
+                            resource_group_name,
+                            cloud_service_name):
     return client.get(role_name=role_name,
                       resource_group_name=resource_group_name,
                       cloud_service_name=cloud_service_name)
@@ -275,26 +275,26 @@ def cloud_service_start(client,
                        cloud_service_name=cloud_service_name)
 
 
-def cloud_service_cloud_service_update_domain_list_update_domain(client,
-                                                                 resource_group_name,
-                                                                 cloud_service_name):
+def cloud_service_update_domain_list_update_domain(client,
+                                                   resource_group_name,
+                                                   cloud_service_name):
     return client.list_update_domains(resource_group_name=resource_group_name,
                                       cloud_service_name=cloud_service_name)
 
 
-def cloud_service_cloud_service_update_domain_show_update_domain(client,
-                                                                 resource_group_name,
-                                                                 cloud_service_name,
-                                                                 update_domain):
+def cloud_service_update_domain_show_update_domain(client,
+                                                   resource_group_name,
+                                                   cloud_service_name,
+                                                   update_domain):
     return client.get_update_domain(resource_group_name=resource_group_name,
                                     cloud_service_name=cloud_service_name,
                                     update_domain=update_domain)
 
 
-def cloud_service_cloud_service_update_domain_walk_update_domain(client,
-                                                                 resource_group_name,
-                                                                 cloud_service_name,
-                                                                 update_domain):
+def cloud_service_update_domain_walk_update_domain(client,
+                                                   resource_group_name,
+                                                   cloud_service_name,
+                                                   update_domain):
     parameters = {}
     return client.begin_walk_update_domain(resource_group_name=resource_group_name,
                                            cloud_service_name=cloud_service_name,

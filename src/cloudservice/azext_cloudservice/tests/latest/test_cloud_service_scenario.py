@@ -132,6 +132,7 @@ class Cloud_serviceScenarioTest(ScenarioTest):
         calc_coverage(__file__)
         raise_if()
 
+    @ResourceGroupPreparer(name_prefix='cli_test_cloud_service_')
     def test_cloud_service(self, rg):
         self.cmd('cloud-service show -g {rg} -n cs')
         self.cmd('cloud-service show-instance-view -g {rg} -n cs')
@@ -143,3 +144,25 @@ class Cloud_serviceScenarioTest(ScenarioTest):
         self.cmd('cloud-service start -g {rg} -n cs')
         self.cmd('cloud-service restart -g {rg} -n cs')
         self.cmd('cloud-service delete -g {rg} -n cs')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_cloud_service_role_')
+    def test_cloud_service_role(self, rg):
+        self.cmd('cloud-service role list')
+        self.cmd('cloud-service role show -g {rg} --cloud-service-name cs --role-name role')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_cloud_service_role_instance_')
+    def test_cloud_service_role_instance(self, rg):
+        self.cmd('cloud-service role-instance list')
+        self.cmd('cloud-service role-instance show -g {rg}')
+        self.cmd('cloud-service role-instance show-instance-view -g {rg}')
+        self.cmd('cloud-service role-instance show-remote-desktop-file')
+        self.cmd('cloud-service role-instance delete -g {rg}')
+        self.cmd('cloud-service role-instance rebuild -g {rg}')
+        self.cmd('cloud-service role-instance reimage -g {rg}')
+        self.cmd('cloud-service role-instance restart -g {rg}')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_cloud_service_update_domain_')
+    def test_cloud_service_update_domain(self, rg):
+        self.cmd('cloud-service update-domain list-update-domain')
+        self.cmd('cloud-service update-domain show-update-domain')
+        self.cmd('cloud-service update-domain walk-update-domain')
