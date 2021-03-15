@@ -560,7 +560,7 @@ class SecurityInsightsScenarioTest(ScenarioTest):
             'workspace': workspace
         })
 
-        self.cmd('az monitor log-analytics workspace create -g {rg} -n {workspace}')
+        self.cmd('monitor log-analytics workspace create -g {rg} -n {workspace}')
 
         call_scenario(self, rg, workspace)
         calc_coverage(__file__)
