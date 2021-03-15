@@ -9,6 +9,7 @@
 # --------------------------------------------------------------------------
 
 import os
+import time
 from azure.cli.testsdk import ScenarioTest
 from .. import try_manual, raise_if, calc_coverage
 from azure.cli.testsdk import ResourceGroupPreparer
@@ -22,10 +23,19 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 @try_manual
 def setup(test, rg):
     test.kwargs.update({
-        'workspace': test.create_random_name('cli-test-ws-', 24)
+        'workspace': test.create_random_name('clitestws-', 16)
     })
+    test.cmd('az extension add -n log-analytics-solution ')
     test.cmd('az monitor log-analytics workspace create -g {rg} -n {workspace}')
+    # time.sleep(70)
 
+# EXAMPLE: providers/Microsoft.OperationsManagement/solutions to create a OperationManagement solutions
+@try_manual
+def step__operationManagement_solutions_put(test, rg):
+    test.cmd('az monitor log-analytics solution create '
+             '--resource-group "{rg}" '
+             '--solution-type SecurityInsights '
+             '--workspace {workspace} ')
 
 # EXAMPLE: /Actions/get/Get all actions of alert rule.
 @try_manual
@@ -496,13 +506,14 @@ def step__incidents_delete_delete_an_incident_(test, rg):
 # Env cleanup
 @try_manual
 def cleanup(test, rg):
-    pass
+    test.cmd('az extension remove -n log-analytics-solution')
 
 
 # Testcase
 @try_manual
 def call_scenario(test, rg):
     setup(test, rg)
+    step__operationManagement_solutions_put(test, rg)
     step__alertrules_put(test, rg)
     step__alertrules_put2(test, rg)
     # step__alertrules_put3(test, rg)
@@ -542,7 +553,7 @@ def call_scenario(test, rg):
     step__incidentcomments_get(test, rg)
     step__incidentcomments_get2(test, rg)
     step__incidents_delete_delete_an_incident_(test, rg)
-    cleanup(test, rg)
+    # cleanup(test, rg)
 
 
 @try_manual
