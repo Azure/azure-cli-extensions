@@ -1291,7 +1291,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
 
 
 def disable_features(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None,
-                     features=None, aad_client_id=None, aad_client_secret=None, yes=False):
+                     features=None, yes=False):
     if features is None:
         raise CLIError(consts.No_Features_Param_Provided.format("disable-features", "disable-features"))
     features = [x.lower() for x in features]
