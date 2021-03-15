@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.0.1
+1.1.0
 ++++++
 * Adding enable/disable features support
 
