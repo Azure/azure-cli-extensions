@@ -1156,10 +1156,10 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
                     #raise CLIERRor -> ask user to register
                     pass
                 except Exception as e:
-                    # Add error/exceptions
+                    # Add error/exceptions -> also ask user only
                     pass
         except Exception as ex:
-            # Add error/exceptions
+            # Add error/exceptions -> user to register
             pass
         if not enable_cluster_connect:
             enable_cluster_connect = True
