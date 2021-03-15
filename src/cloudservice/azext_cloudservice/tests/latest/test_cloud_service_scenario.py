@@ -126,10 +126,20 @@ class Cloud_serviceScenarioTest(ScenarioTest):
             'myCloudService': 'cs1',
         })
 
-
     @ResourceGroupPreparer(name_prefix='clitestcloud_service_ConstosoRG'[:7], key='rg', parameter_name='rg')
     def test_cloud_service_Scenario(self, rg):
         call_scenario(self, rg)
         calc_coverage(__file__)
         raise_if()
 
+    def test_cloud_service(self, rg):
+        self.cmd('cloud-service show -g {rg} -n cs')
+        self.cmd('cloud-service show-instance-view -g {rg} -n cs')
+        self.cmd('cloud-service list -g {rg}')
+        self.cmd('cloud-service list-all')
+        self.cmd('cloud-service power-off -g {rg} -n cs')
+        self.cmd('cloud-service rebuild -g {rg} -n cs')
+        self.cmd('cloud-service reimage -g {rg} -n cs')
+        self.cmd('cloud-service start -g {rg} -n cs')
+        self.cmd('cloud-service restart -g {rg} -n cs')
+        self.cmd('cloud-service delete -g {rg} -n cs')
