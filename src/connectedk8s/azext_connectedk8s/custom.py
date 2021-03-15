@@ -1129,11 +1129,12 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
                     features=None, aad_client_id=None, aad_client_secret=None):
     if features is None:
         raise CLIError(consts.No_Features_Param_Provided.format("enable-features", "enable-features"))
-    features = [x.lower() for x in features]
-    enable_cluster_connect, enable_azure_rbac, enable_cl = utils.check_features_to_update(features)
 
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
+
+    features = [x.lower() for x in features]
+    enable_cluster_connect, enable_azure_rbac, enable_cl = utils.check_features_to_update(features)
 
     if enable_azure_rbac:
         if (aad_client_id is None) or (aad_client_secret is None):
@@ -1296,10 +1297,11 @@ def disable_features(cmd, client, resource_group_name, cluster_name, kube_config
     features = [x.lower() for x in features]
     confirmation_message = "Disabling few of the features may adversely impact dependent resources. Learn more about this at https://aka.ms/ArcK8sDependentResources. \n" + "Are you sure you want to disable these features: {}".format(features)
     utils.user_confirmation(confirmation_message, yes)
-    disable_cluster_connect, disable_azure_rbac, disable_cl = utils.check_features_to_update(features)
 
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
+
+    disable_cluster_connect, disable_azure_rbac, disable_cl = utils.check_features_to_update(features)
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
@@ -1374,11 +1376,11 @@ def disable_features(cmd, client, resource_group_name, cluster_name, kube_config
     # if disable_cluster_connect:
     #     helm_values = get_all_helm_values(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
     #     # helm_values_flattened = utils.flatten(helm_values)
-    #     if helm_values.get('systemDefaultValues').get('custom-locations').get('enabled') == True: # update this line
+    #     if helm_values.get('systemDefaultValues').get('customlocations').get('enabled') == True: # update this line
     #         raise CLIError("Disabling cluster-connect feature is not allowed when custom-locations feature is enabled.")
 
-    if disable_cl:
-        logger.warning("Disabling 'custom-locations' feature is not suggested.")
+    # if disable_cl:
+    #     logger.warning("Disabling 'custom-locations' feature is not suggested.")
 
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
