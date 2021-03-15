@@ -7,6 +7,7 @@
 
 def load_command_table(self, _):
 
+
     with self.command_group("approle", is_preview=True) as g:
         g.custom_command("list", "list_app_roles")
         g.custom_command("assignment list", "list_role_assignments")

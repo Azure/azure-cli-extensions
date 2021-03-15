@@ -5,6 +5,8 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, too-many-statements
 def load_arguments(self, _):
+
+    
     with self.argument_context("approle list") as c:
         c.argument(
             "app", options_list=["--app", "-a"], help="Application id or display name"
