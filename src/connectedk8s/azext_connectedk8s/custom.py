@@ -1143,10 +1143,6 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
                                     summary='Both aad authorization client id and client secret is required to enable AAD RBAC feature')
             raise CLIError("Please provide both aad authorization client id and client secret to enable AAD RBAC feature")
 
-    if enable_cl and not enable_cluster_connect:
-        enable_cluster_connect = True
-        logger.warning("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too")
-
     if enable_cl:
         try:
             rp_client = _resource_providers_client(cmd.cli_ctx)
@@ -1156,17 +1152,16 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
                     logger.warning("Registering Custom Locations resource provider 'Microsoft.ExtendedLocation' ...")
                     rp_client.register(consts.Custom_Locations_Provider_Namespace)  # Asynchronous registration
                     # Add below if wait wanted, give a timeout too
-                    # while True:
-                    #     time.sleep(10)
-                    #     cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
-                    #     if cl_registration_state.registration_state == 'Registered':
-                    #         break
                 except Exception as e:
-                    # Add error/exceptions
+                    # Add error/exceptions -> ask user to register
                     pass
         except Exception as ex:
             # Add error/exceptions
             pass
+        if not enable_cluster_connect:
+            enable_cluster_connect = True
+            logger.warning("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too")
+
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
@@ -1258,6 +1253,20 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
 
     # Get Helm chart path
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
+
+    if enable_cl:
+        # Wait until Custom Locations is Registered
+        try:
+            rp_client = _resource_providers_client(cmd.cli_ctx)
+            cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
+            while True:
+                cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
+                if cl_registration_state.registration_state == 'Registered':
+                    break
+                time.sleep(10)
+        except Exception as ex:
+            # add errors/exceptions
+            pass
 
     cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path,
                         "--reuse-values",
@@ -1377,7 +1386,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, kube_config
     #     helm_values = get_all_helm_values(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
     #     # helm_values_flattened = utils.flatten(helm_values)
     #     if helm_values.get('systemDefaultValues').get('customlocations').get('enabled') == True: # update this line
-    #         raise CLIError("Disabling cluster-connect feature is not allowed when custom-locations feature is enabled.")
+    #         raise CLIError("Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature is enabled.")
 
     # if disable_cl:
     #     logger.warning("Disabling 'custom-locations' feature is not suggested.")
