@@ -12,43 +12,48 @@ from datetime import datetime, timedelta
 from azure_devtools.scenario_tests import AllowLargeResponse
 
 
-@api_version_constraint(ResourceType.MGMT_STORAGE, min_api='2019-06-01')
 class BlobServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
-    @ResourceGroupPreparer()
-    def test_management_policy(self, resource_group):
-        import os
-        curr_dir = os.path.dirname(os.path.realpath(__file__))
-        policy_file = os.path.join(curr_dir, 'mgmt_policy.json').replace('\\', '\\\\')
+    @api_version_constraint(ResourceType.MGMT_STORAGE, min_api='2019-06-01')
+    @ResourceGroupPreparer(name_prefix='cli_storage_account_update_change_feed')
+    @StorageAccountPreparer(kind='StorageV2', name_prefix='clitest', location="eastus2euap")
+    def test_storage_account_update_change_feed(self, resource_group, storage_account):
+        self.kwargs.update({
+            'sa': storage_account,
+            'rg': resource_group,
+            'cmd': 'storage account blob-service-properties update'
+        })
 
-        storage_account = self.create_random_name(prefix='cli', length=24)
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        with self.assertRaises(InvalidArgumentValueError):
+            self.cmd('{cmd} --enable-change-feed false --change-feed-retention-days 14600 -n {sa} -g {rg}')
 
-        self.kwargs = {'rg': resource_group, 'sa': storage_account, 'policy': policy_file}
-        self.cmd('storage account create -g {rg} -n {sa} --kind StorageV2')
-        self.cmd('storage account management-policy create --account-name {sa} -g {rg} --policy @"{policy}"')
-        self.cmd('storage account management-policy update --account-name {sa} -g {rg}'
-                 ' --set "policy.rules[0].name=newname"')
-        self.cmd('storage account management-policy show --account-name {sa} -g {rg}',
-                 checks=JMESPathCheck('policy.rules[0].name', 'newname'))
-        self.cmd('storage account management-policy delete --account-name {sa} -g {rg}')
-        self.cmd('storage account management-policy show --account-name {sa} -g {rg}', expect_failure=True)
+        with self.assertRaises(InvalidArgumentValueError):
+            self.cmd('{cmd} --change-feed-retention-days 1 -n {sa} -g {rg}')
 
+        with self.assertRaises(InvalidArgumentValueError):
+            self.cmd('{cmd} --enable-change-feed true --change-feed-retention-days -1 -n {sa} -g {rg}')
 
-@api_version_constraint(ResourceType.MGMT_STORAGE, min_api='2019-04-01')
-class BlobServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
-    @ResourceGroupPreparer()
-    @StorageAccountPreparer(kind='StorageV2')
-    def test_storage_account_update_change_feed(self):
-        result = self.cmd('storage account blob-service-properties update --enable-change-feed true -n {sa} -g {rg}').get_output_in_json()
+        with self.assertRaises(InvalidArgumentValueError):
+            self.cmd('{cmd} --enable-change-feed true --change-feed-retention-days 0 -n {sa} -g {rg}')
+
+        with self.assertRaises(InvalidArgumentValueError):
+            self.cmd('{cmd} --enable-change-feed true --change-feed-retention-days 146001 -n {sa} -g {rg}')
+
+        result = self.cmd('{cmd} --enable-change-feed true --change-feed-retention-days 1 -n {sa} -g {rg}').get_output_in_json()
         self.assertEqual(result['changeFeed']['enabled'], True)
+        self.assertEqual(result['changeFeed']['retentionInDays'], 1)
 
-        result = self.cmd('storage account blob-service-properties update --enable-change-feed false -n {sa} -g {rg}').get_output_in_json()
+        result = self.cmd('{cmd} --enable-change-feed true --change-feed-retention-days 100 -n {sa} -g {rg}').get_output_in_json()
+        self.assertEqual(result['changeFeed']['enabled'], True)
+        self.assertEqual(result['changeFeed']['retentionInDays'], 100)
+
+        result = self.cmd('{cmd} --enable-change-feed true --change-feed-retention-days 14600 -n {sa} -g {rg}').get_output_in_json()
+        self.assertEqual(result['changeFeed']['enabled'], True)
+        self.assertEqual(result['changeFeed']['retentionInDays'], 14600)
+
+        result = self.cmd('{cmd} --enable-change-feed false -n {sa} -g {rg}').get_output_in_json()
         self.assertEqual(result['changeFeed']['enabled'], False)
-
-        result = self.cmd('storage account blob-service-properties update --enable-change-feed -n {sa} -g {rg}').get_output_in_json()
-        self.assertEqual(result['changeFeed']['enabled'], True)
-
-        result = self.cmd('storage account blob-service-properties show -n {sa} -g {rg}').get_output_in_json()
-        self.assertEqual(result['changeFeed']['enabled'], True)
+        self.assertEqual(result['changeFeed']['retentionInDays'], None)
 
     @ResourceGroupPreparer(name_prefix='cli_storage_account_update_delete_retention_policy')
     @StorageAccountPreparer(kind='StorageV2')
@@ -175,3 +180,19 @@ class BlobServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
 
         result = self.cmd('storage account blob-service-properties show -n {sa} -g {rg}').get_output_in_json()
         self.assertEqual(result['lastAccessTimeTrackingPolicy']['enable'], True)
+
+    @ResourceGroupPreparer()
+    @StorageAccountPreparer(kind="StorageV2")
+    def test_storage_account_default_service_properties(self):
+        from azure.cli.core.azclierror import InvalidArgumentValueError
+        self.cmd('storage account blob-service-properties show -n {sa} -g {rg}', checks=[
+            self.check('defaultServiceVersion', None)])
+
+        with self.assertRaisesRegexp(InvalidArgumentValueError, 'Valid example: 2008-10-27'):
+            self.cmd('storage account blob-service-properties update --default-service-version 2018 -n {sa} -g {rg}')
+
+        self.cmd('storage account blob-service-properties update --default-service-version 2018-11-09 -n {sa} -g {rg}',
+                 checks=[self.check('defaultServiceVersion', '2018-11-09')])
+
+        self.cmd('storage account blob-service-properties show -n {sa} -g {rg}',
+                 checks=[self.check('defaultServiceVersion', '2018-11-09')])

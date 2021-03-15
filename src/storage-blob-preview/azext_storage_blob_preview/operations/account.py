@@ -24,12 +24,17 @@ def update_management_policies(client, resource_group_name, account_name, parame
 
 
 # TODO: support updating other properties besides 'enable_change_feed,delete_retention_policy'
-def update_blob_service_properties(cmd, instance, enable_change_feed=None, enable_delete_retention=None,
-                                   delete_retention_days=None, enable_restore_policy=None, restore_days=None,
+def update_blob_service_properties(cmd, instance, enable_change_feed=None, change_feed_retention_days=None,
+                                   enable_delete_retention=None, delete_retention_days=None,
+                                   enable_restore_policy=None, restore_days=None,
                                    enable_versioning=None, enable_container_delete_retention=None,
-                                   container_delete_retention_days=None, enable_last_access_tracking=None):
+                                   container_delete_retention_days=None, enable_last_access_tracking=None,
+                                   default_service_version=None):
     if enable_change_feed is not None:
-        instance.change_feed = cmd.get_models('ChangeFeed')(enabled=enable_change_feed)
+        if enable_change_feed is False:
+            change_feed_retention_days = None
+        instance.change_feed = cmd.get_models('ChangeFeed')(
+            enabled=enable_change_feed, retention_in_days=change_feed_retention_days)
 
     if enable_container_delete_retention is not None:
         if enable_container_delete_retention is False:
@@ -56,5 +61,8 @@ def update_blob_service_properties(cmd, instance, enable_change_feed=None, enabl
     if enable_last_access_tracking is not None:
         LastAccessTimeTrackingPolicy = cmd.get_models('LastAccessTimeTrackingPolicy')
         instance.last_access_time_tracking_policy = LastAccessTimeTrackingPolicy(enable=enable_last_access_tracking)
+
+    if default_service_version is not None:
+        instance.default_service_version = default_service_version
 
     return instance
