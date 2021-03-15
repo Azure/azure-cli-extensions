@@ -14,6 +14,11 @@ helps[
     short-summary: Commands to manage app roles.
 """
 
+helps["approle list"] = """
+    type: command
+    short-summary: List app roles defined for application.
+"""
+
 helps[
     "approle assignment"
 ] = """

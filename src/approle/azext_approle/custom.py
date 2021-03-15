@@ -7,6 +7,12 @@ import json
 from knack.util import CLIError
 from azure.graphrbac.models import Application, ServicePrincipal, AppRole
 
+def list_app_roles(cmd, app : str):
+    client = _get_client(cmd.cli_ctx)
+    app = _get_managed_application(client, app)
+
+    return app.app_roles
+
 
 def list_role_assignments(cmd, service_principal: str):
     client = _get_client(cmd.cli_ctx)
@@ -41,11 +47,11 @@ def list_role_assignments(cmd, service_principal: str):
     return ras
 
 
-def add_role_assignment(cmd, service_principal: str, app_id: str, role: str):
+def add_role_assignment(cmd, service_principal: str, app: str, role: str):
     client = _get_client(cmd.cli_ctx)
     sp = _get_service_principal(client, service_principal)
 
-    app = _get_managed_application(client, app_id)
+    app = _get_managed_application(client, app)
 
     app_role: AppRole = None
     for r in app.app_roles:
@@ -77,15 +83,15 @@ def remove_role_assignment(cmd, service_principal: str, role_assignment_id: str)
     )
 
 
-def _get_managed_application(client, app_id: str):
+def _get_managed_application(client, app: str):
     import re
 
-    query = f"displayName eq '{app_id}'"
+    query = f"displayName eq '{app}'"
     if re.match(
             "[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}",
-            app_id,
+            app,
     ):
-        query = f"appId eq '{app_id}'"
+        query = f"appId eq '{app}'"
 
     apps = list(client.service_principals.list(filter=query))
 
@@ -95,7 +101,7 @@ def _get_managed_application(client, app_id: str):
         )
 
     if not apps:
-        raise CLIError("No application was found looking for " + app_id)
+        raise CLIError("No application was found looking for " + app)
     app: Application = apps[0]
     return app
 
