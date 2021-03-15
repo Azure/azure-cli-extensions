@@ -24,7 +24,6 @@ def setup(test, rg):
     test.kwargs.update({
         'workspace': test.create_random_name('clitestws-', 16)
     })
-    test.cmd('az extension add -n log-analytics-solution ')
     test.cmd('az monitor log-analytics workspace create -g {rg} -n {workspace}')
 
 # EXAMPLE: providers/Microsoft.OperationsManagement/solutions to create a OperationManagement solutions
@@ -504,7 +503,7 @@ def step__incidents_delete_delete_an_incident_(test, rg):
 # Env cleanup
 @try_manual
 def cleanup(test, rg):
-    test.cmd('az extension remove -n log-analytics-solution')
+    pass
 
 
 # Testcase
@@ -556,6 +555,16 @@ def call_scenario(test, rg):
 
 @try_manual
 class SecurityInsightsScenarioTest(ScenarioTest):
+
+    @AllowLargeResponse()
+    def setUp(self):
+        super(SecurityInsightsScenarioTest, self).setUp()
+        self.cmd('extension add -n log-analytics-solution')
+
+    def tearDown(self):
+        self.cmd('extension remove -n log-analytics-solution')
+        super(SecurityInsightsScenarioTest, self).tearDown()
+
 
     @ResourceGroupPreparer(name_prefix='clitestsentinel_myRg'[:7], key='rg', parameter_name='rg')
     @AllowLargeResponse()
