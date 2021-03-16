@@ -266,7 +266,7 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, configuratio
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
-                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade):
+                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade, enable_custom_locations, custom_locations_oid):
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
@@ -282,7 +282,9 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
                         "--set", "systemDefaultValues.clusterconnect-agent.enabled=true",
                         "--output", "json"]
     # Add custom-locations related params
-
+    if enable_custom_locations:
+        cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.enabled=true"])
+        cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.oid={}".format(custom_locations_oid)])
     # To set some other helm parameters through file
     if values_file_provided:
         cmd_helm_install.extend(["-f", values_file])
@@ -354,7 +356,10 @@ def check_features_to_update(features_to_update):
             update_azure_rbac = True
         elif feature == "custom-locations":
             update_cl = True
-
+    if not update_cl:
+        if update_cluster_connect:
+            logger.warning("Cluster connect feature cant be disabled unless custom locations feature is also disabled.")
+            update_cluster_connect=False
     return update_cluster_connect, update_azure_rbac, update_cl
 
 
