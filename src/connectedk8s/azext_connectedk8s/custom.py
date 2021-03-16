@@ -1151,7 +1151,8 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
         enable_cl,custom_locations_oid = check_cl_registration_and_get_oid(cmd)
         if not enable_cluster_connect and enable_cl:
             enable_cluster_connect = True
-            logger.warning("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too")
+            features.append("cluster-connect")
+            logger.warning("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too.")
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
@@ -1356,6 +1357,11 @@ def disable_features(cmd, client, resource_group_name, cluster_name, kube_config
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
+    if disable_cluster_connect:
+        helm_values = get_all_helm_values(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
+        if not disable_cl and helm_values.get('systemDefaultValues').get('customLocations').get('enabled') == True and helm_values.get('systemDefaultValues').get('customLocations').get('oid')!="":
+            raise CLIError("Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature is enabled.")
+    
     if disable_cl:
         logger.warning("Disabling 'custom-locations' feature is not suggested.")
 
@@ -1919,12 +1925,12 @@ def get_custom_locations_oid(cmd):
         if len(result)!=0:
             return result[0].object_id
         else:
-            logger.warning("Unable to fetch oid of custom locations app. Proceeding without enabling the feature.")
+            logger.warning("Unable to fetch oid of 'custom-locations' app. Proceeding without enabling the feature.")
             telemetry.set_exception(exception='Unable to fetch oid of custom locations app.', fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type,
                                     summary='Unable to fetch oid for custom locations app.')
             return ""
     except Exception as e:
-        logger.warning("Unable to fetch oid of custom locations app. Proceeding without enabling the feature. "+str(e))
+        logger.warning("Unable to fetch oid of 'custom-locations' app. Proceeding without enabling the feature. "+str(e))
         telemetry.set_exception(exception=e, fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type,
                                 summary='Unable to fetch oid for custom locations app.')
         return ""
@@ -1937,7 +1943,7 @@ def check_cl_registration_and_get_oid(cmd):
         cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
         if cl_registration_state != "Registered":
             enable_custom_locations=False
-            logger.warning("Registering Custom Locations requires resource provider 'Microsoft.ExtendedLocation' to be registered. Please register the provider and then enable with az connectedk8s enable-features.")
+            logger.warning("Enabling 'custom-locations' feature requires resource provider 'Microsoft.ExtendedLocation' to be registered. Please register the provider and then enable with az connectedk8s enable-features.")
         else:
             custom_locations_oid = get_custom_locations_oid(cmd)
             if custom_locations_oid=="":

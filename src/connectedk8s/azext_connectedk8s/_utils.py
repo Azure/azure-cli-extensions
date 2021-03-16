@@ -356,10 +356,6 @@ def check_features_to_update(features_to_update):
             update_azure_rbac = True
         elif feature == "custom-locations":
             update_cl = True
-    if not update_cl:
-        if update_cluster_connect:
-            logger.warning("Cluster connect feature cant be disabled unless custom locations feature is also disabled.")
-            update_cluster_connect=False
     return update_cluster_connect, update_azure_rbac, update_cl
 
 
