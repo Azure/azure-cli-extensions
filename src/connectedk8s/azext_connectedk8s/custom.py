@@ -1153,6 +1153,8 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
             enable_cluster_connect = True
             features.append("cluster-connect")
             logger.warning("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too.")
+        if not enable_cl:
+            features.remove("custom-locations")
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
@@ -1359,8 +1361,11 @@ def disable_features(cmd, client, resource_group_name, cluster_name, kube_config
 
     if disable_cluster_connect:
         helm_values = get_all_helm_values(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
-        if not disable_cl and helm_values.get('systemDefaultValues').get('customLocations').get('enabled') == True and helm_values.get('systemDefaultValues').get('customLocations').get('oid')!="":
-            raise CLIError("Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature is enabled.")
+        try:
+            if not disable_cl and helm_values.get('systemDefaultValues').get('customLocations').get('enabled') == True and helm_values.get('systemDefaultValues').get('customLocations').get('oid')!="":
+                raise CLIError("Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature is enabled.")
+        except Exception as e:
+            raise CLIError("Disabling 'custom-locations' is not allowed on older charts. "+str(e))
     
     if disable_cl:
         logger.warning("Disabling 'custom-locations' feature is not suggested.")
@@ -1588,14 +1593,14 @@ def client_side_proxy_wrapper(cmd,
     # Creating installation location, request uri and older version exe location depending on OS
     if(operating_system == 'Windows'):
         install_location_string = f'.clientproxy\\arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe'
-        requestUri = f'https://clientproxy.azureedge.net/release20201218/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe'
+        requestUri = f'https://k8sconnectcsp.blob.core.windows.net/release12-03-21/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe'
         older_version_string = f'.clientproxy\\arcProxy{operating_system}*.exe'
         creds_string = r'.azure\accessTokens.json'
         proc_name = f'arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe'
 
     elif(operating_system == 'Linux' or operating_system == 'Darwin'):
         install_location_string = f'.clientproxy/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}'
-        requestUri = f'https://clientproxy.azureedge.net/release20201218/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}'
+        requestUri = f'https://k8sconnectcsp.blob.core.windows.net/release12-03-21/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}'
         older_version_string = f'.clientproxy/arcProxy{operating_system}*'
         creds_string = r'.azure/accessTokens.json'
         proc_name = f'arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}'
