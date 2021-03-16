@@ -122,3 +122,7 @@ def cf_blob_sas(cli_ctx, kwargs):
 
     return t_blob_sas(account_name=kwargs.pop('account_name', None),
                       account_key=kwargs.pop('account_key', None))
+
+
+def cf_blob_container_mgmt(cli_ctx, _):
+    return storage_client_factory(cli_ctx).blob_containers

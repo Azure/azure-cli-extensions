@@ -19,9 +19,50 @@ from azure.cli.command_modules.storage.util import (create_blob_service_from_sto
                                                     check_precondition_success)
 from knack.log import get_logger
 from knack.util import CLIError
-from ..profiles import CUSTOM_DATA_STORAGE_BLOB
+from ..profiles import CUSTOM_DATA_STORAGE_BLOB, CUSTOM_MGMT_STORAGE
 
 logger = get_logger(__name__)
+
+
+def create_container_rm(cmd, client, container_name, resource_group_name, account_name,
+                        metadata=None, public_access=None, fail_on_exist=False,
+                        default_encryption_scope=None, deny_encryption_scope_override=None,
+                        enable_vlm=None):
+    if fail_on_exist and container_rm_exists(client, resource_group_name=resource_group_name,
+                                             account_name=account_name, container_name=container_name):
+        raise CLIError('The specified container already exists.')
+
+    if cmd.supported_api_version(min_api='2019-06-01', resource_type=CUSTOM_MGMT_STORAGE):
+        BlobContainer = cmd.get_models('BlobContainer', resource_type=CUSTOM_MGMT_STORAGE)
+        blob_container = BlobContainer(public_access=public_access,
+                                       default_encryption_scope=default_encryption_scope,
+                                       deny_encryption_scope_override=deny_encryption_scope_override,
+                                       metadata=metadata)
+        if enable_vlm is not None:
+            blob_container.enabled = enable_vlm
+        return client.create(resource_group_name=resource_group_name, account_name=account_name,
+                             container_name=container_name, blob_container=blob_container)
+    return client.create(resource_group_name=resource_group_name, account_name=account_name,
+                         container_name=container_name, public_access=public_access, metadata=metadata)
+
+
+def container_rm_exists(client, resource_group_name, account_name, container_name):
+    from azure.core.exceptions import HttpResponseError
+    try:
+        container = client.get(resource_group_name=resource_group_name,
+                               account_name=account_name, container_name=container_name)
+        return container is not None
+    except HttpResponseError as err:
+        if err.status_code == 404:
+            return False
+        raise err
+
+
+def list_container_rm(cmd, client, resource_group_name, account_name, include_deleted=None):
+    ListContainersInclude = cmd.get_models('ListContainersInclude', resource_type=CUSTOM_MGMT_STORAGE)
+    include = ListContainersInclude("deleted") if include_deleted is not None else None
+
+    return client.list(resource_group_name=resource_group_name, account_name=account_name, include=include)
 
 
 def delete_container(client, container_name, fail_not_exist=False, lease_id=None, if_modified_since=None,

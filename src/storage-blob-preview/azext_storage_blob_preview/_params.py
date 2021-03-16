@@ -12,7 +12,7 @@ from ._validators import (validate_metadata, get_permission_validator, get_permi
                           validate_blob_type, validate_included_datasets_v2, add_progress_callback,
                           validate_storage_data_plane_list, as_user_validator, blob_tier_validator,
                           validate_container_delete_retention_days, validate_delete_retention_days,
-                          process_resource_group)
+                          process_resource_group, parse_storage_account, validate_container_public_access)
 
 from .profiles import CUSTOM_DATA_STORAGE_BLOB, CUSTOM_MGMT_STORAGE
 
@@ -40,6 +40,10 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                resource_type=CUSTOM_DATA_STORAGE_BLOB)
     t_rehydrate_priority = self.get_sdk('_generated.models._azure_blob_storage_enums#RehydratePriority',
                                         resource_type=CUSTOM_DATA_STORAGE_BLOB)
+
+    storage_account_type = CLIArgumentType(options_list='--storage-account',
+                                           help='The name or ID of the storage account.',
+                                           validator=parse_storage_account, id_part='name')
 
     blob_name_type = CLIArgumentType(options_list=['--blob-name', '-b'], help='The blob name.',
                                      completer=get_storage_name_completion_list(t_base_blob_service, 'list_blobs',
@@ -527,3 +531,34 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help='Specify the version of the deleted container to restore.')
         c.argument('new_name', help='The new name for the deleted container to be restored to.')
         c.extra('timeout', timeout_type)
+
+    with self.argument_context('storage container-rm', resource_type=CUSTOM_MGMT_STORAGE) as c:
+        from .sdkutil import get_container_access_type_names
+        c.argument('container_name', container_name_type, options_list=('--name', '-n'), id_part='child_name_2')
+        c.argument('account_name', storage_account_type)
+        c.argument('resource_group_name', required=False)
+        c.argument('public_access', validator=validate_container_public_access,
+                   arg_type=get_enum_type(get_container_access_type_names()),
+                   help='Specify whether data in the container may be accessed publicly.')
+        c.ignore('filter', 'maxpagesize')
+
+    with self.argument_context('storage container-rm create', resource_type=CUSTOM_MGMT_STORAGE) as c:
+        c.argument('fail_on_exist', help='Throw an exception if the container already exists.')
+        c.argument('enable_vlm', arg_type=get_three_state_flag(), min_api='2021-01-01',
+                   help='An immutable property, when set to true enables version level worm at the container level.')
+
+    for item in ['create', 'update']:
+        with self.argument_context('storage container-rm {}'.format(item),
+                                   resource_type=CUSTOM_MGMT_STORAGE) as c:
+            c.argument('default_encryption_scope', options_list=['--default-encryption-scope', '-d'],
+                       arg_group='Encryption Policy', min_api='2019-06-01',
+                       help='Default the container to use specified encryption scope for all writes.')
+            c.argument('deny_encryption_scope_override',
+                       options_list=['--deny-encryption-scope-override', '--deny-override'],
+                       arg_type=get_three_state_flag(), arg_group='Encryption Policy', min_api='2019-06-01',
+                       help='Block override of encryption scope from the container default.')
+
+    with self.argument_context('storage container-rm list', resource_type=CUSTOM_MGMT_STORAGE) as c:
+        c.argument('account_name', storage_account_type, id_part=None)
+        c.argument('include_deleted', action='store_true',
+                   help='Include soft deleted containers when specified.')

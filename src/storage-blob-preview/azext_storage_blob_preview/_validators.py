@@ -1059,3 +1059,26 @@ def validate_upload_blob(namespace):
         raise InvalidArgumentValueError("usage error: please only specify one of --file and --data to upload.")
     if not namespace.file_path and not namespace.data:
         raise InvalidArgumentValueError("usage error: please specify one of --file and --data to upload.")
+
+
+def validate_container_public_access(cmd, namespace):
+    from .sdkutil import get_container_access_type
+    t_base_blob_svc = cmd.get_models('blob.baseblobservice#BaseBlobService')
+
+    if namespace.public_access:
+        namespace.public_access = get_container_access_type(cmd.cli_ctx, namespace.public_access.lower())
+
+        if hasattr(namespace, 'signed_identifiers'):
+            # must retrieve the existing ACL to simulate a patch operation because these calls
+            # are needlessly conflated
+            ns = vars(namespace)
+            validate_client_parameters(cmd, namespace)
+            account = ns.get('account_name')
+            key = ns.get('account_key')
+            cs = ns.get('connection_string')
+            sas = ns.get('sas_token')
+            # client = get_storage_data_service_client(cmd.cli_ctx, t_base_blob_svc, account, key, cs, sas)
+            # container = ns.get('container_name')
+            # lease_id = ns.get('lease_id')
+            # ns['signed_identifiers'] = client.get_container_acl(container, lease_id=lease_id)
+

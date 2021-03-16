@@ -8,7 +8,7 @@ from azure.cli.core.commands.arm import show_exception_handler
 from azure.cli.core.profiles import ResourceType
 
 from ._client_factory import cf_blob_client, cf_container_client, cf_blob_service, cf_blob_lease_client, \
-    cf_mgmt_blob_services, cf_sa
+    cf_mgmt_blob_services, cf_sa, cf_blob_container_mgmt
 from .profiles import CUSTOM_DATA_STORAGE_BLOB, CUSTOM_MGMT_STORAGE
 
 
@@ -148,3 +148,18 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                        table_transformer=transform_container_list)
         g.storage_command_oauth('restore', 'undelete_container', command_type=blob_service_sdk,
                                 min_api='2020-02-10', is_preview=True)
+
+    blob_container_mgmt_sdk = CliCommandType(
+        operations_tmpl='azext_storage_blob_preview.vendored_sdks.azure_mgmt_storage.operations#BlobContainersOperations.{}',
+        client_factory=cf_blob_container_mgmt,
+        resource_type=ResourceType.MGMT_STORAGE
+    )
+
+    with self.command_group('storage container-rm', command_type=blob_container_mgmt_sdk,
+                            custom_command_type=get_custom_sdk('blob', cf_blob_container_mgmt,
+                                                               resource_type=CUSTOM_MGMT_STORAGE),
+                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2018-02-01', is_preview=True) as g:
+        g.custom_command('create', 'create_container_rm')
+        g.command('enable-vlm', 'begin_version_level_worm')
+        g.custom_command('list', 'list_container_rm')
+        g.show_command('show', 'get')

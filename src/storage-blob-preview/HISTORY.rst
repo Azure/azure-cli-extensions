@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.5.1
+++++++
+* `az storage container-rm create`: Support Container Version Level Worm when creating container
+* `az storage container migrate`: Support change to Container Version Level Worm
+
 0.5.0
 ++++++
 * `az storage blob upload`: Refine help message
