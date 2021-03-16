@@ -1,4 +1,4 @@
-    # --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
@@ -39,11 +39,10 @@ class SecurityInsightsScenarioTest(ScenarioTest):
             'workspace': workspace,
             'rg': rg
         })
-    
-        #self.cmd('group create -n {rg}')
+
         self.cmd('monitor log-analytics workspace create -g {rg} -n {workspace} -l westus')
 
-        self.cmd('monitor log-analytics solution create '    
+        self.cmd('monitor log-analytics solution create '
                  '--resource-group "{rg}" '
                  '--solution-type SecurityInsights '
                  '--workspace {workspace} ')
@@ -122,7 +121,6 @@ class SecurityInsightsScenarioTest(ScenarioTest):
                      self.check('kind', 'Scheduled'),
                      self.check('name', '65360bb0-8986-4ade-a89d-af3cf44d28aa')
                  ])
-
 
         # EXAMPLE: /AlertRuleTemplates/get/Get all alert rule templates.
         self.cmd('sentinel alert-rule-template list '
@@ -235,7 +233,6 @@ class SecurityInsightsScenarioTest(ScenarioTest):
                      self.check('[0].message', 'Some message'),
                      self.check('[0].name', '4bb36b7b-26ff-4d1c-9cbe-0d8ab3da0014')
                  ])
-
 
         # EXAMPLE: /IncidentComments/get/Get an incident comment.
         self.cmd('sentinel incident-comment show '
