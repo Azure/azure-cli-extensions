@@ -30,24 +30,26 @@ class SecurityInsightsScenarioTest(ScenarioTest):
         self.cmd('extension remove -n log-analytics-solution')
         super(SecurityInsightsScenarioTest, self).tearDown()
 
-    @ResourceGroupPreparer(name_prefix='clitestsentinel_myRg'[:7], key='rg', parameter_name='rg')
+    @ResourceGroupPreparer(name_prefix='clitestsentinel_myRg'[:7], key='rg', parameter_name='rg', location='westus')
     @AllowLargeResponse()
     def test_sentinel(self, rg):
         workspace = self.create_random_name('clitestws-', 16)
         self.kwargs.update({
             'subscription_id': self.get_subscription_id(),
-            'workspace': workspace
+            'workspace': workspace,
+            'rg': rg
         })
+    
+        #self.cmd('group create -n {rg}')
+        self.cmd('monitor log-analytics workspace create -g {rg} -n {workspace} -l westus')
 
-        self.cmd('monitor log-analytics workspace create -g {rg} -n {workspace}')
-
-        self.cmd('az monitor log-analytics solution create '
+        self.cmd('monitor log-analytics solution create '    
                  '--resource-group "{rg}" '
                  '--solution-type SecurityInsights '
                  '--workspace {workspace} ')
 
         # EXAMPLE: /AlertRules/put/Creates or updates a Fusion alert rule.
-        self.cmd('az sentinel alert-rule create '
+        self.cmd('sentinel alert-rule create '
                  '--fusion-alert-rule etag="3d00c3ca-0000-0100-0000-5d42d5010000" alert-rule-template-name="f71aba3d-28fb-4'
                  '50b-b192-4e76a83015c8" enabled=true '
                  '--resource-group "{rg}" '
@@ -60,7 +62,7 @@ class SecurityInsightsScenarioTest(ScenarioTest):
                  ])
 
         # EXAMPLE: /AlertRules/put/Creates or updates a MicrosoftSecurityIncidentCreation rule.
-        self.cmd('az sentinel alert-rule create '
+        self.cmd('sentinel alert-rule create '
                  '--microsoft-security-incident-creation-alert-rule etag="260097e0-0000-0d00-0000-5d6fa88f0000" '
                  'product-filter="Microsoft Cloud App Security" display-name="testing displayname" enabled=true '
                  '--resource-group "{rg}" '
@@ -75,7 +77,7 @@ class SecurityInsightsScenarioTest(ScenarioTest):
                  ])
 
         # EXAMPLE: /AlertRules/get/Get a Fusion alert rule.
-        self.cmd('az sentinel alert-rule show '
+        self.cmd('sentinel alert-rule show '
                  '--resource-group "{rg}" '
                  '--rule-id "myFirstFusionRule" '
                  '--workspace-name {workspace}',
@@ -86,7 +88,7 @@ class SecurityInsightsScenarioTest(ScenarioTest):
                  ])
 
         # EXAMPLE: /AlertRules/get/Get a MicrosoftSecurityIncidentCreation rule.
-        self.cmd('az sentinel alert-rule show '
+        self.cmd('sentinel alert-rule show '
                  '--resource-group "{rg}" '
                  '--rule-id "microsoftSecurityIncidentCreationRuleExample" '
                  '--workspace-name {workspace}',
@@ -99,20 +101,20 @@ class SecurityInsightsScenarioTest(ScenarioTest):
                  ])
 
         # EXAMPLE: /AlertRules/get/Get all alert rules.
-        self.cmd('az sentinel alert-rule list '
+        self.cmd('sentinel alert-rule list '
                  '--resource-group "{rg}" '
                  '--workspace-name {workspace}',
                  checks=[
                      self.check('length(@)', 2)
                  ])
 
-        self.cmd('az sentinel alert-rule delete -y '
+        self.cmd('sentinel alert-rule delete -y '
                  '--resource-group "{rg}" '
                  '--rule-id "myFirstFusionRule" '
                  '--workspace-name {workspace}')
 
         # EXAMPLE: /AlertRuleTemplates/get/Get alert rule template by Id.
-        self.cmd('az sentinel alert-rule-template show '
+        self.cmd('sentinel alert-rule-template show '
                  '--alert-rule-template-id "65360bb0-8986-4ade-a89d-af3cf44d28aa" '
                  '--resource-group "{rg}" '
                  '--workspace-name {workspace}',
@@ -123,12 +125,12 @@ class SecurityInsightsScenarioTest(ScenarioTest):
 
 
         # EXAMPLE: /AlertRuleTemplates/get/Get all alert rule templates.
-        self.cmd('az sentinel alert-rule-template list '
+        self.cmd('sentinel alert-rule-template list '
                  '--resource-group "{rg}" '
                  '--workspace-name {workspace}')
 
         # EXAMPLE: /Bookmarks/put/Creates or updates a bookmark.
-        self.cmd('az sentinel bookmark create '
+        self.cmd('sentinel bookmark create '
                  '--etag "\\"0300bf09-0000-0000-0000-5c37296e0000\\"" '
                  '--created "2019-01-01T13:15:30Z" '
                  '--display-name "My bookmark" '
@@ -147,7 +149,7 @@ class SecurityInsightsScenarioTest(ScenarioTest):
                  ])
 
         # EXAMPLE: /Bookmarks/get/Get a bookmark.
-        self.cmd('az sentinel bookmark show '
+        self.cmd('sentinel bookmark show '
                  '--bookmark-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
                  '--resource-group "{rg}" '
                  '--workspace-name {workspace}',
@@ -157,7 +159,7 @@ class SecurityInsightsScenarioTest(ScenarioTest):
                  ])
 
         # EXAMPLE: /Bookmarks/get/Get all bookmarks.
-        self.cmd('az sentinel bookmark list '
+        self.cmd('sentinel bookmark list '
                  '--resource-group "{rg}" '
                  '--workspace-name {workspace}',
                  checks=[
@@ -167,13 +169,13 @@ class SecurityInsightsScenarioTest(ScenarioTest):
                  ])
 
         # EXAMPLE: /Bookmarks/delete/Delete a bookmark.
-        self.cmd('az sentinel bookmark delete -y '
+        self.cmd('sentinel bookmark delete -y '
                  '--bookmark-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
                  '--resource-group "{rg}" '
                  '--workspace-name {workspace}')
 
         # EXAMPLE: /Incidents/put/Creates or updates an incident.
-        self.cmd('az sentinel incident create '
+        self.cmd('sentinel incident create '
                  '--etag "\\"0300bf09-0000-0000-0000-5c37296e0000\\"" '
                  '--description "This is a demo incident" '
                  '--classification "FalsePositive" '
@@ -198,7 +200,7 @@ class SecurityInsightsScenarioTest(ScenarioTest):
                  ])
 
         # EXAMPLE: /Incidents/get/Get an incident.
-        self.cmd('az sentinel incident show '
+        self.cmd('sentinel incident show '
                  '--incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
                  '--resource-group "{rg}" '
                  '--workspace-name {workspace}',
@@ -212,7 +214,7 @@ class SecurityInsightsScenarioTest(ScenarioTest):
                  ])
 
         # EXAMPLE: /IncidentComments/put/Creates an incident comment.
-        self.cmd('az sentinel incident-comment create '
+        self.cmd('sentinel incident-comment create '
                  '--message "Some message" '
                  '--incident-comment-id "4bb36b7b-26ff-4d1c-9cbe-0d8ab3da0014" '
                  '--incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
@@ -224,7 +226,7 @@ class SecurityInsightsScenarioTest(ScenarioTest):
                  ])
 
         # EXAMPLE: /IncidentComments/get/Get all incident comments.
-        self.cmd('az sentinel incident-comment list '
+        self.cmd('sentinel incident-comment list '
                  '--incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
                  '--resource-group "{rg}" '
                  '--workspace-name {workspace}',
@@ -236,7 +238,7 @@ class SecurityInsightsScenarioTest(ScenarioTest):
 
 
         # EXAMPLE: /IncidentComments/get/Get an incident comment.
-        self.cmd('az sentinel incident-comment show '
+        self.cmd('sentinel incident-comment show '
                  '--incident-comment-id "4bb36b7b-26ff-4d1c-9cbe-0d8ab3da0014" '
                  '--incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
                  '--resource-group "{rg}" '
@@ -247,7 +249,7 @@ class SecurityInsightsScenarioTest(ScenarioTest):
                  ])
 
         # EXAMPLE: /Incidents/delete/Delete an incident.
-        self.cmd('az sentinel incident delete -y '
+        self.cmd('sentinel incident delete -y '
                  '--incident-id "73e01a99-5cd7-4139-a149-9f2736ff2ab5" '
                  '--resource-group "{rg}" '
                  '--workspace-name {workspace}')

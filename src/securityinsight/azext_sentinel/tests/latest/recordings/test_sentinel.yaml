@@ -23,15 +23,15 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 16 Mar 2021 06:11:03 GMT
+      - Tue, 16 Mar 2021 09:03:09 GMT
       expires:
-      - Tue, 16 Mar 2021 06:11:03 GMT
+      - Tue, 16 Mar 2021 09:03:09 GMT
       location:
       - https://azcliextensionsync.blob.core.windows.net/index1/index.json
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:9b037ab9-fa5a-4c09-81bd-41ffa859f01e
+      - appId=cid-v1:b47e5e27-bf85-45ba-a97c-0377ce0e5779
       server:
       - Kestrel
       strict-transport-security:
@@ -9742,7 +9742,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 16 Mar 2021 06:11:04 GMT
+      - Tue, 16 Mar 2021 09:03:10 GMT
       etag:
       - '0x8D8E8214593E3E7'
       last-modified:
@@ -10361,7 +10361,7 @@ interactions:
       content-type:
       - application/octet-stream
       date:
-      - Tue, 16 Mar 2021 06:11:07 GMT
+      - Tue, 16 Mar 2021 09:03:13 GMT
       etag:
       - '"0x8D82476C76F2963"'
       last-modified:
@@ -10384,7 +10384,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"location": "eastus", "properties": {"sku": {"name": "PerGB2018"}, "retentionInDays":
+    body: '{"location": "westus", "properties": {"sku": {"name": "PerGB2018"}, "retentionInDays":
       30, "workspaceCapping": {}}}'
     headers:
       Accept:
@@ -10400,7 +10400,7 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -n
+      - -g -n -l
       User-Agent:
       - AZURECLI/2.20.0 azsdk-python-mgmt-loganalytics/8.0.0 Python/3.8.0 (Windows-10-10.0.19041-SP0)
     method: PUT
@@ -10408,19 +10408,19 @@ interactions:
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"source\": \"Azure\",\r\n    \"customerId\":
-        \"3b19ee19-09ed-45cb-9c90-1e60cb41e68e\",\r\n    \"provisioningState\": \"Creating\",\r\n
+        \"d3e307fe-e47a-4372-91b9-fa12ebead80b\",\r\n    \"provisioningState\": \"Creating\",\r\n
         \   \"sku\": {\r\n      \"name\": \"pergb2018\",\r\n      \"maxCapacityReservationLevel\":
-        3000,\r\n      \"lastSkuUpdate\": \"Tue, 16 Mar 2021 06:11:25 GMT\"\r\n    },\r\n
+        3000,\r\n      \"lastSkuUpdate\": \"Tue, 16 Mar 2021 09:03:27 GMT\"\r\n    },\r\n
         \   \"retentionInDays\": 30,\r\n    \"features\": {\r\n      \"legacy\": 0,\r\n
         \     \"searchVersion\": 1,\r\n      \"enableLogAccessUsingOnlyResourcePermissions\":
         true\r\n    },\r\n    \"workspaceCapping\": {\r\n      \"dailyQuotaGb\": -1.0,\r\n
-        \     \"quotaNextResetTime\": \"Tue, 16 Mar 2021 09:00:00 GMT\",\r\n      \"dataIngestionStatus\":
+        \     \"quotaNextResetTime\": \"Wed, 17 Mar 2021 03:00:00 GMT\",\r\n      \"dataIngestionStatus\":
         \"RespectQuota\"\r\n    },\r\n    \"publicNetworkAccessForIngestion\": \"Enabled\",\r\n
         \   \"publicNetworkAccessForQuery\": \"Enabled\",\r\n    \"createdDate\":
-        \"Tue, 16 Mar 2021 06:11:25 GMT\",\r\n    \"modifiedDate\": \"Tue, 16 Mar
-        2021 06:11:25 GMT\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/microsoft.operationalinsights/workspaces/clitestws-000002\",\r\n
+        \"Tue, 16 Mar 2021 09:03:27 GMT\",\r\n    \"modifiedDate\": \"Tue, 16 Mar
+        2021 09:03:27 GMT\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/microsoft.operationalinsights/workspaces/clitestws-000002\",\r\n
         \ \"name\": \"clitestws-000002\",\r\n  \"type\": \"Microsoft.OperationalInsights/workspaces\",\r\n
-        \ \"location\": \"eastus\"\r\n}"
+        \ \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -10429,7 +10429,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 16 Mar 2021 06:11:26 GMT
+      - Tue, 16 Mar 2021 09:03:28 GMT
       pragma:
       - no-cache
       server:
@@ -10459,7 +10459,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n
+      - -g -n -l
       User-Agent:
       - AZURECLI/2.20.0 azsdk-python-mgmt-loganalytics/8.0.0 Python/3.8.0 (Windows-10-10.0.19041-SP0)
     method: GET
@@ -10467,19 +10467,19 @@ interactions:
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"source\": \"Azure\",\r\n    \"customerId\":
-        \"3b19ee19-09ed-45cb-9c90-1e60cb41e68e\",\r\n    \"provisioningState\": \"Succeeded\",\r\n
+        \"d3e307fe-e47a-4372-91b9-fa12ebead80b\",\r\n    \"provisioningState\": \"Succeeded\",\r\n
         \   \"sku\": {\r\n      \"name\": \"pergb2018\",\r\n      \"maxCapacityReservationLevel\":
-        3000,\r\n      \"lastSkuUpdate\": \"Tue, 16 Mar 2021 06:11:25 GMT\"\r\n    },\r\n
+        3000,\r\n      \"lastSkuUpdate\": \"Tue, 16 Mar 2021 09:03:27 GMT\"\r\n    },\r\n
         \   \"retentionInDays\": 30,\r\n    \"features\": {\r\n      \"legacy\": 0,\r\n
         \     \"searchVersion\": 1,\r\n      \"enableLogAccessUsingOnlyResourcePermissions\":
         true\r\n    },\r\n    \"workspaceCapping\": {\r\n      \"dailyQuotaGb\": -1.0,\r\n
-        \     \"quotaNextResetTime\": \"Tue, 16 Mar 2021 09:00:00 GMT\",\r\n      \"dataIngestionStatus\":
+        \     \"quotaNextResetTime\": \"Wed, 17 Mar 2021 03:00:00 GMT\",\r\n      \"dataIngestionStatus\":
         \"RespectQuota\"\r\n    },\r\n    \"publicNetworkAccessForIngestion\": \"Enabled\",\r\n
         \   \"publicNetworkAccessForQuery\": \"Enabled\",\r\n    \"createdDate\":
-        \"Tue, 16 Mar 2021 06:11:25 GMT\",\r\n    \"modifiedDate\": \"Tue, 16 Mar
-        2021 06:11:29 GMT\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/microsoft.operationalinsights/workspaces/clitestws-000002\",\r\n
+        \"Tue, 16 Mar 2021 09:03:27 GMT\",\r\n    \"modifiedDate\": \"Tue, 16 Mar
+        2021 09:03:29 GMT\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/microsoft.operationalinsights/workspaces/clitestws-000002\",\r\n
         \ \"name\": \"clitestws-000002\",\r\n  \"type\": \"Microsoft.OperationalInsights/workspaces\",\r\n
-        \ \"location\": \"eastus\"\r\n}"
+        \ \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -10488,7 +10488,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 16 Mar 2021 06:11:56 GMT
+      - Tue, 16 Mar 2021 09:03:58 GMT
       pragma:
       - no-cache
       server:
@@ -10528,19 +10528,19 @@ interactions:
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"source\": \"Azure\",\r\n    \"customerId\":
-        \"3b19ee19-09ed-45cb-9c90-1e60cb41e68e\",\r\n    \"provisioningState\": \"Succeeded\",\r\n
+        \"d3e307fe-e47a-4372-91b9-fa12ebead80b\",\r\n    \"provisioningState\": \"Succeeded\",\r\n
         \   \"sku\": {\r\n      \"name\": \"pergb2018\",\r\n      \"maxCapacityReservationLevel\":
-        3000,\r\n      \"lastSkuUpdate\": \"Tue, 16 Mar 2021 06:11:25 GMT\"\r\n    },\r\n
+        3000,\r\n      \"lastSkuUpdate\": \"Tue, 16 Mar 2021 09:03:27 GMT\"\r\n    },\r\n
         \   \"retentionInDays\": 30,\r\n    \"features\": {\r\n      \"legacy\": 0,\r\n
         \     \"searchVersion\": 1,\r\n      \"enableLogAccessUsingOnlyResourcePermissions\":
         true\r\n    },\r\n    \"workspaceCapping\": {\r\n      \"dailyQuotaGb\": -1.0,\r\n
-        \     \"quotaNextResetTime\": \"Tue, 16 Mar 2021 09:00:00 GMT\",\r\n      \"dataIngestionStatus\":
+        \     \"quotaNextResetTime\": \"Wed, 17 Mar 2021 03:00:00 GMT\",\r\n      \"dataIngestionStatus\":
         \"RespectQuota\"\r\n    },\r\n    \"publicNetworkAccessForIngestion\": \"Enabled\",\r\n
         \   \"publicNetworkAccessForQuery\": \"Enabled\",\r\n    \"createdDate\":
-        \"Tue, 16 Mar 2021 06:11:25 GMT\",\r\n    \"modifiedDate\": \"Tue, 16 Mar
-        2021 06:11:29 GMT\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/microsoft.operationalinsights/workspaces/clitestws-000002\",\r\n
+        \"Tue, 16 Mar 2021 09:03:27 GMT\",\r\n    \"modifiedDate\": \"Tue, 16 Mar
+        2021 09:03:29 GMT\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/microsoft.operationalinsights/workspaces/clitestws-000002\",\r\n
         \ \"name\": \"clitestws-000002\",\r\n  \"type\": \"Microsoft.OperationalInsights/workspaces\",\r\n
-        \ \"location\": \"eastus\"\r\n}"
+        \ \"location\": \"westus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -10549,7 +10549,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 16 Mar 2021 06:11:58 GMT
+      - Tue, 16 Mar 2021 09:04:01 GMT
       pragma:
       - no-cache
       server:
@@ -10570,7 +10570,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"location": "eastus", "plan": {"name": "SecurityInsights(clitestws-000002)",
+    body: '{"location": "westus", "plan": {"name": "SecurityInsights(clitestws-000002)",
       "publisher": "Microsoft", "promotionCode": "", "product": "OMSGallery/SecurityInsights"},
       "properties": {"workspaceResourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/microsoft.OperationalInsights/workspaces/clitestws-000002"}}'
     headers:
@@ -10606,7 +10606,7 @@ interactions:
         \   },\r\n    \"lastModifiedTime\": \"Mon, 01 Jan 0001 00:00:00 GMT\",\r\n
         \   \"containedResources\": []\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.OperationsManagement/solutions/SecurityInsights(clitestws-000002)\",\r\n
         \ \"name\": \"SecurityInsights(clitestws-000002)\",\r\n  \"type\": \"Microsoft.OperationsManagement/solutions\",\r\n
-        \ \"location\": \"East US\"\r\n}"
+        \ \"location\": \"West US\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -10617,7 +10617,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Mar 2021 06:12:05 GMT
+      - Tue, 16 Mar 2021 09:04:08 GMT
       expires:
       - '-1'
       pragma:
@@ -10664,7 +10664,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/alertRules/myFirstFusionRule?api-version=2020-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/alertRules/myFirstFusionRule","name":"myFirstFusionRule","etag":"\"0000da01-0000-0100-0000-60504c3a0000\"","type":"Microsoft.SecurityInsights/alertRules","kind":"Fusion","properties":{"displayName":"Advanced
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/alertRules/myFirstFusionRule","name":"myFirstFusionRule","etag":"\"00002c33-0000-0100-0000-6050748e0000\"","type":"Microsoft.SecurityInsights/alertRules","kind":"Fusion","properties":{"displayName":"Advanced
         Multistage Attack Detection","description":"Using Fusion technology based
         on machine learning, Azure Sentinel automatically detects multistage attacks
         by identifying combinations of anomalous behaviors and suspicious activities
@@ -10677,7 +10677,7 @@ interactions:
         Active Directory Identity Protection.\n- Microsoft Cloud App Security.\n-
         Microsoft Defender for Endpoint.\n- Azure Defender.\n- Palo Alto Networks.\n\nFor
         a full list and description of each scenario that is supported for these multistage
-        attacks, go to https://aka.ms/SentinelFusion.","alertRuleTemplateName":"f71aba3d-28fb-450b-b192-4e76a83015c8","tactics":["Collection","CommandAndControl","DefenseEvasion","Discovery","Execution","Exfiltration","Impact","InitialAccess","LateralMovement","Persistence","PrivilegeEscalation"],"severity":"High","enabled":true,"lastModifiedUtc":"2021-03-16T06:12:10.6031134Z"}}'
+        attacks, go to https://aka.ms/SentinelFusion.","alertRuleTemplateName":"f71aba3d-28fb-450b-b192-4e76a83015c8","tactics":["Collection","CommandAndControl","DefenseEvasion","Discovery","Execution","Exfiltration","Impact","InitialAccess","LateralMovement","Persistence","PrivilegeEscalation"],"severity":"High","enabled":true,"lastModifiedUtc":"2021-03-16T09:04:14.5466874Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -10686,7 +10686,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Mar 2021 06:12:10 GMT
+      - Tue, 16 Mar 2021 09:04:14 GMT
       expires:
       - '-1'
       pragma:
@@ -10728,9 +10728,9 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/alertRules/microsoftSecurityIncidentCreationRuleExample?api-version=2020-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/alertRules/microsoftSecurityIncidentCreationRuleExample","name":"microsoftSecurityIncidentCreationRuleExample","etag":"\"0000db01-0000-0100-0000-60504c3d0000\"","type":"Microsoft.SecurityInsights/alertRules","kind":"MicrosoftSecurityIncidentCreation","properties":{"productFilter":"Microsoft
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/alertRules/microsoftSecurityIncidentCreationRuleExample","name":"microsoftSecurityIncidentCreationRuleExample","etag":"\"00003233-0000-0100-0000-605074900000\"","type":"Microsoft.SecurityInsights/alertRules","kind":"MicrosoftSecurityIncidentCreation","properties":{"productFilter":"Microsoft
         Cloud App Security","severitiesFilter":null,"displayNamesFilter":null,"displayNamesExcludeFilter":null,"displayName":"testing
-        displayname","enabled":true,"description":null,"tactics":null,"alertRuleTemplateName":null,"lastModifiedUtc":"2021-03-16T06:12:13.2178342Z"}}'
+        displayname","enabled":true,"description":null,"tactics":null,"alertRuleTemplateName":null,"lastModifiedUtc":"2021-03-16T09:04:16.3379524Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -10739,7 +10739,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Mar 2021 06:12:13 GMT
+      - Tue, 16 Mar 2021 09:04:15 GMT
       expires:
       - '-1'
       pragma:
@@ -10751,7 +10751,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 201
       message: Created
@@ -10774,7 +10774,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/alertRules/myFirstFusionRule?api-version=2020-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/alertRules/myFirstFusionRule","name":"myFirstFusionRule","etag":"\"0000da01-0000-0100-0000-60504c3a0000\"","type":"Microsoft.SecurityInsights/alertRules","kind":"Fusion","properties":{"displayName":"Advanced
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/alertRules/myFirstFusionRule","name":"myFirstFusionRule","etag":"\"00002c33-0000-0100-0000-6050748e0000\"","type":"Microsoft.SecurityInsights/alertRules","kind":"Fusion","properties":{"displayName":"Advanced
         Multistage Attack Detection","description":"Using Fusion technology based
         on machine learning, Azure Sentinel automatically detects multistage attacks
         by identifying combinations of anomalous behaviors and suspicious activities
@@ -10787,7 +10787,7 @@ interactions:
         Active Directory Identity Protection.\n- Microsoft Cloud App Security.\n-
         Microsoft Defender for Endpoint.\n- Azure Defender.\n- Palo Alto Networks.\n\nFor
         a full list and description of each scenario that is supported for these multistage
-        attacks, go to https://aka.ms/SentinelFusion.","alertRuleTemplateName":"f71aba3d-28fb-450b-b192-4e76a83015c8","tactics":["Collection","CommandAndControl","DefenseEvasion","Discovery","Execution","Exfiltration","Impact","InitialAccess","LateralMovement","Persistence","PrivilegeEscalation"],"severity":"High","enabled":true,"lastModifiedUtc":"2021-03-16T06:12:10.6031134Z"}}'
+        attacks, go to https://aka.ms/SentinelFusion.","alertRuleTemplateName":"f71aba3d-28fb-450b-b192-4e76a83015c8","tactics":["Collection","CommandAndControl","DefenseEvasion","Discovery","Execution","Exfiltration","Impact","InitialAccess","LateralMovement","Persistence","PrivilegeEscalation"],"severity":"High","enabled":true,"lastModifiedUtc":"2021-03-16T09:04:14.5466874Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -10796,7 +10796,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Mar 2021 06:12:14 GMT
+      - Tue, 16 Mar 2021 09:04:17 GMT
       expires:
       - '-1'
       pragma:
@@ -10833,9 +10833,9 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/alertRules/microsoftSecurityIncidentCreationRuleExample?api-version=2020-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/alertRules/microsoftSecurityIncidentCreationRuleExample","name":"microsoftSecurityIncidentCreationRuleExample","etag":"\"0000db01-0000-0100-0000-60504c3d0000\"","type":"Microsoft.SecurityInsights/alertRules","kind":"MicrosoftSecurityIncidentCreation","properties":{"productFilter":"Microsoft
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/alertRules/microsoftSecurityIncidentCreationRuleExample","name":"microsoftSecurityIncidentCreationRuleExample","etag":"\"00003233-0000-0100-0000-605074900000\"","type":"Microsoft.SecurityInsights/alertRules","kind":"MicrosoftSecurityIncidentCreation","properties":{"productFilter":"Microsoft
         Cloud App Security","severitiesFilter":null,"displayNamesFilter":null,"displayNamesExcludeFilter":null,"displayName":"testing
-        displayname","enabled":true,"description":null,"tactics":null,"alertRuleTemplateName":null,"lastModifiedUtc":"2021-03-16T06:12:13.2178342Z"}}'
+        displayname","enabled":true,"description":null,"tactics":null,"alertRuleTemplateName":null,"lastModifiedUtc":"2021-03-16T09:04:16.3379524Z"}}'
     headers:
       cache-control:
       - no-cache
@@ -10844,7 +10844,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Mar 2021 06:12:16 GMT
+      - Tue, 16 Mar 2021 09:04:19 GMT
       expires:
       - '-1'
       pragma:
@@ -10881,7 +10881,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/alertRules?api-version=2020-01-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/alertRules/myFirstFusionRule","name":"myFirstFusionRule","etag":"\"0000da01-0000-0100-0000-60504c3a0000\"","type":"Microsoft.SecurityInsights/alertRules","kind":"Fusion","properties":{"displayName":"Advanced
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/alertRules/myFirstFusionRule","name":"myFirstFusionRule","etag":"\"00002c33-0000-0100-0000-6050748e0000\"","type":"Microsoft.SecurityInsights/alertRules","kind":"Fusion","properties":{"displayName":"Advanced
         Multistage Attack Detection","description":"Using Fusion technology based
         on machine learning, Azure Sentinel automatically detects multistage attacks
         by identifying combinations of anomalous behaviors and suspicious activities
@@ -10894,9 +10894,9 @@ interactions:
         Active Directory Identity Protection.\n- Microsoft Cloud App Security.\n-
         Microsoft Defender for Endpoint.\n- Azure Defender.\n- Palo Alto Networks.\n\nFor
         a full list and description of each scenario that is supported for these multistage
-        attacks, go to https://aka.ms/SentinelFusion.","alertRuleTemplateName":"f71aba3d-28fb-450b-b192-4e76a83015c8","tactics":["Collection","CommandAndControl","DefenseEvasion","Discovery","Execution","Exfiltration","Impact","InitialAccess","LateralMovement","Persistence","PrivilegeEscalation"],"severity":"High","enabled":true,"lastModifiedUtc":"2021-03-16T06:12:10.6031134Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/alertRules/microsoftSecurityIncidentCreationRuleExample","name":"microsoftSecurityIncidentCreationRuleExample","etag":"\"0000db01-0000-0100-0000-60504c3d0000\"","type":"Microsoft.SecurityInsights/alertRules","kind":"MicrosoftSecurityIncidentCreation","properties":{"productFilter":"Microsoft
+        attacks, go to https://aka.ms/SentinelFusion.","alertRuleTemplateName":"f71aba3d-28fb-450b-b192-4e76a83015c8","tactics":["Collection","CommandAndControl","DefenseEvasion","Discovery","Execution","Exfiltration","Impact","InitialAccess","LateralMovement","Persistence","PrivilegeEscalation"],"severity":"High","enabled":true,"lastModifiedUtc":"2021-03-16T09:04:14.5466874Z"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/alertRules/microsoftSecurityIncidentCreationRuleExample","name":"microsoftSecurityIncidentCreationRuleExample","etag":"\"00003233-0000-0100-0000-605074900000\"","type":"Microsoft.SecurityInsights/alertRules","kind":"MicrosoftSecurityIncidentCreation","properties":{"productFilter":"Microsoft
         Cloud App Security","severitiesFilter":null,"displayNamesFilter":null,"displayNamesExcludeFilter":null,"displayName":"testing
-        displayname","enabled":true,"description":null,"tactics":null,"alertRuleTemplateName":null,"lastModifiedUtc":"2021-03-16T06:12:13.2178342Z"}}]}'
+        displayname","enabled":true,"description":null,"tactics":null,"alertRuleTemplateName":null,"lastModifiedUtc":"2021-03-16T09:04:16.3379524Z"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -10905,7 +10905,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Mar 2021 06:12:18 GMT
+      - Tue, 16 Mar 2021 09:04:20 GMT
       expires:
       - '-1'
       pragma:
@@ -10953,7 +10953,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Mar 2021 06:12:19 GMT
+      - Tue, 16 Mar 2021 09:04:23 GMT
       expires:
       - '-1'
       pragma:
@@ -11015,7 +11015,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Mar 2021 06:12:20 GMT
+      - Tue, 16 Mar 2021 09:04:23 GMT
       expires:
       - '-1'
       pragma:
@@ -12555,18 +12555,7 @@ interactions:
         SyslogMessage, Computer, ProcessName, Url, HostIP\n| extend timestamp = Syslog_TimeGenerated,
         HostCustomEntity = Computer, IPCustomEntity = HostIP, URLCustomEntity = Url","queryFrequency":"PT1H","queryPeriod":"P14D","triggerOperator":"GreaterThan","triggerThreshold":0,"entityMappings":[{"entityType":"Host","fieldMappings":[{"identifier":"FullName","columnName":"HostCustomEntity"}]},{"entityType":"IP","fieldMappings":[{"identifier":"Address","columnName":"IPCustomEntity"}]},{"entityType":"URL","fieldMappings":[{"identifier":"Url","columnName":"URLCustomEntity"}]}],"displayName":"(Preview)
         TI map URL entity to Syslog data","description":"Identifies a match in Syslog
-        data from any URL IOC from TI","tactics":["Impact"],"lastUpdatedDateUTC":"2020-11-17T00:00:00Z","createdDateUTC":"2019-08-27T00:00:00Z","status":"Available","requiredDataConnectors":[{"connectorId":"Syslog","dataTypes":["Syslog"]},{"connectorId":"ThreatIntelligence","dataTypes":["ThreatIntelligenceIndicator"]},{"connectorId":"ThreatIntelligenceTaxii","dataTypes":["ThreatIntelligenceIndicator"]}],"alertRulesCreatedByTemplateCount":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/AlertRuleTemplates/0625fcce-6d52-491e-8c68-1d9b801d25b9","name":"0625fcce-6d52-491e-8c68-1d9b801d25b9","type":"Microsoft.SecurityInsights/AlertRuleTemplates","kind":"Scheduled","properties":{"severity":"Low","query":"Event\n|
-        where EventLog =~ \"Application\"\n| where Source startswith \"MSExchange\"\n|
-        where EventLevelName =~ \"error\"\n| where (RenderedDescription startswith
-        \"Watson report\" and RenderedDescription contains \"umworkerprocess\" and
-        RenderedDescription contains \"TextFormattingRunProperties\") or RenderedDescription
-        startswith \"An unhandled exception occurred in a UM worker process\" or RenderedDescription
-        startswith \"The Microsoft Exchange Unified Messaging service\"\n| where RenderedDescription
-        !contains \"System.OutOfMemoryException\"\n| extend timestamp = TimeGenerated,
-        HostCustomEntity = Computer","queryFrequency":"P1D","queryPeriod":"P1D","triggerOperator":"GreaterThan","triggerThreshold":0,"entityMappings":[{"entityType":"Host","fieldMappings":[{"identifier":"FullName","columnName":"HostCustomEntity"}]}],"displayName":"HAFNIUM
-        Suspicious UM Service Error.","description":"This query looks for errors that
-        may indicate that an attacker is attempting to exploit a vulnerability in
-        the service. \nReference: https://www.microsoft.com/security/blog/2021/03/02/hafnium-targeting-exchange-servers/","tactics":["InitialAccess"],"lastUpdatedDateUTC":"2021-03-02T00:00:00Z","createdDateUTC":"2021-03-02T00:00:00Z","status":"Available","alertRulesCreatedByTemplateCount":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/AlertRuleTemplates/26a3b261-b997-4374-94ea-6c37f67f4f39","name":"26a3b261-b997-4374-94ea-6c37f67f4f39","type":"Microsoft.SecurityInsights/AlertRuleTemplates","kind":"Scheduled","properties":{"severity":"High","query":"let
+        data from any URL IOC from TI","tactics":["Impact"],"lastUpdatedDateUTC":"2020-11-17T00:00:00Z","createdDateUTC":"2019-08-27T00:00:00Z","status":"Available","requiredDataConnectors":[{"connectorId":"Syslog","dataTypes":["Syslog"]},{"connectorId":"ThreatIntelligence","dataTypes":["ThreatIntelligenceIndicator"]},{"connectorId":"ThreatIntelligenceTaxii","dataTypes":["ThreatIntelligenceIndicator"]}],"alertRulesCreatedByTemplateCount":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/AlertRuleTemplates/26a3b261-b997-4374-94ea-6c37f67f4f39","name":"26a3b261-b997-4374-94ea-6c37f67f4f39","type":"Microsoft.SecurityInsights/AlertRuleTemplates","kind":"Scheduled","properties":{"severity":"High","query":"let
         timeframe = 1d;\nlet DomainNames = dynamic([\"asyspy256.ddns.net\",\"hotkillmail9sddcc.ddns.net\",\"rosaf112.ddns.net\",\"cvdfhjh1231.myftp.biz\",\"sz2016rose.ddns.net\",\"dffwescwer4325.myftp.biz\",\"cvdfhjh1231.ddns.net\"]);\nlet
         SHA1Hash = dynamic ([\"53a44c2396d15c3a03723fa5e5db54cafd527635\", \"9c5e496921e3bc882dc40694f1dcc3746a75db19\",
         \"aeb573accfd95758550cf30bf04f389a92922844\", \"79ef78a797403a4ed1a616c68e07fff868a8650a\",
@@ -12612,7 +12601,18 @@ interactions:
         and hash values for tools and malware used by GALLIUM. \n Matches domain name
         IOCs related to the GALLIUM activity group with CommonSecurityLog, DnsEvents,
         VMConnection and SecurityEvents dataTypes.\n References: https://www.microsoft.com/security/blog/2019/12/12/gallium-targeting-global-telecom/
-        ","tactics":["CommandAndControl","CredentialAccess"],"lastUpdatedDateUTC":"2020-11-17T00:00:00Z","createdDateUTC":"2019-12-06T00:00:00Z","status":"Available","requiredDataConnectors":[{"connectorId":"DNS","dataTypes":["DnsEvents"]},{"connectorId":"AzureMonitor(VMInsights)","dataTypes":["VMConnection"]},{"connectorId":"CiscoASA","dataTypes":["CommonSecurityLog"]},{"connectorId":"PaloAltoNetworks","dataTypes":["CommonSecurityLog"]},{"connectorId":"SecurityEvents","dataTypes":["SecurityEvent"]}],"alertRulesCreatedByTemplateCount":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/AlertRuleTemplates/2560515c-07d1-434e-87fb-ebe3af267760","name":"2560515c-07d1-434e-87fb-ebe3af267760","type":"Microsoft.SecurityInsights/AlertRuleTemplates","kind":"Scheduled","properties":{"severity":"Medium","query":"AuditLogs\n|
+        ","tactics":["CommandAndControl","CredentialAccess"],"lastUpdatedDateUTC":"2020-11-17T00:00:00Z","createdDateUTC":"2019-12-06T00:00:00Z","status":"Available","requiredDataConnectors":[{"connectorId":"DNS","dataTypes":["DnsEvents"]},{"connectorId":"AzureMonitor(VMInsights)","dataTypes":["VMConnection"]},{"connectorId":"CiscoASA","dataTypes":["CommonSecurityLog"]},{"connectorId":"PaloAltoNetworks","dataTypes":["CommonSecurityLog"]},{"connectorId":"SecurityEvents","dataTypes":["SecurityEvent"]}],"alertRulesCreatedByTemplateCount":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/AlertRuleTemplates/0625fcce-6d52-491e-8c68-1d9b801d25b9","name":"0625fcce-6d52-491e-8c68-1d9b801d25b9","type":"Microsoft.SecurityInsights/AlertRuleTemplates","kind":"Scheduled","properties":{"severity":"Low","query":"Event\n|
+        where EventLog =~ \"Application\"\n| where Source startswith \"MSExchange\"\n|
+        where EventLevelName =~ \"error\"\n| where (RenderedDescription startswith
+        \"Watson report\" and RenderedDescription contains \"umworkerprocess\" and
+        RenderedDescription contains \"TextFormattingRunProperties\") or RenderedDescription
+        startswith \"An unhandled exception occurred in a UM worker process\" or RenderedDescription
+        startswith \"The Microsoft Exchange Unified Messaging service\"\n| where RenderedDescription
+        !contains \"System.OutOfMemoryException\"\n| extend timestamp = TimeGenerated,
+        HostCustomEntity = Computer","queryFrequency":"P1D","queryPeriod":"P1D","triggerOperator":"GreaterThan","triggerThreshold":0,"entityMappings":[{"entityType":"Host","fieldMappings":[{"identifier":"FullName","columnName":"HostCustomEntity"}]}],"displayName":"HAFNIUM
+        Suspicious UM Service Error.","description":"This query looks for errors that
+        may indicate that an attacker is attempting to exploit a vulnerability in
+        the service. \nReference: https://www.microsoft.com/security/blog/2021/03/02/hafnium-targeting-exchange-servers/","tactics":["InitialAccess"],"lastUpdatedDateUTC":"2021-03-02T00:00:00Z","createdDateUTC":"2021-03-02T00:00:00Z","status":"Available","alertRulesCreatedByTemplateCount":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/AlertRuleTemplates/2560515c-07d1-434e-87fb-ebe3af267760","name":"2560515c-07d1-434e-87fb-ebe3af267760","type":"Microsoft.SecurityInsights/AlertRuleTemplates","kind":"Scheduled","properties":{"severity":"Medium","query":"AuditLogs\n|
         where Category =~ \"ApplicationManagement\"\n| where ActivityDisplayName has_any
         (\"Add delegated permission grant\",\"Add app role assignment to service principal\")\n|
         where Result =~ \"success\"\n| where tostring(InitiatedBy.user.userPrincipalName)
@@ -14277,29 +14277,7 @@ interactions:
         AccountCustomEntity = userPrincipalName, HostCustomEntity = TargetResourceDisplayName,
         URLCustomEntity = Url","queryFrequency":"PT1H","queryPeriod":"P14D","triggerOperator":"GreaterThan","triggerThreshold":0,"entityMappings":[{"entityType":"Account","fieldMappings":[{"identifier":"FullName","columnName":"AccountCustomEntity"}]},{"entityType":"Host","fieldMappings":[{"identifier":"FullName","columnName":"HostCustomEntity"}]},{"entityType":"URL","fieldMappings":[{"identifier":"Url","columnName":"URLCustomEntity"}]}],"displayName":"(Preview)
         TI map URL entity to AuditLogs","description":"Identifies a match in AuditLogs
-        from any URL IOC from TI","tactics":["Impact"],"lastUpdatedDateUTC":"2020-11-17T00:00:00Z","createdDateUTC":"2019-08-27T00:00:00Z","status":"Available","requiredDataConnectors":[{"connectorId":"AzureActiveDirectory","dataTypes":["AuditLogs"]},{"connectorId":"ThreatIntelligence","dataTypes":["ThreatIntelligenceIndicator"]},{"connectorId":"ThreatIntelligenceTaxii","dataTypes":["ThreatIntelligenceIndicator"]}],"alertRulesCreatedByTemplateCount":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/AlertRuleTemplates/4b93c5af-d20b-4236-b696-a28b8c51407f","name":"4b93c5af-d20b-4236-b696-a28b8c51407f","type":"Microsoft.SecurityInsights/AlertRuleTemplates","kind":"Scheduled","properties":{"severity":"Medium","query":"let
-        timeframe = 1d;\nlet spanoftime = 10m;\nlet threshold = 0;\nSecurityEvent
-        \n| where TimeGenerated > ago(2*timeframe) \n// A user account was created\n|
-        where EventID == 4720\n| where AccountType =~ \"User\"\n| project creationTime
-        = TimeGenerated, CreateEventID = EventID, CreateActivity = Activity, Computer,
-        TargetUserName, UserPrincipalName, \nAccountUsedToCreate = SubjectAccount,
-        SIDofAccountUsedToCreate = SubjectUserSid, TargetAccount = tolower(TargetAccount),
-        TargetSid\n| join kind= inner (\n  SecurityEvent\n  | where TimeGenerated
-        > ago(timeframe) \n  // A user account was deleted \n  | where EventID ==
-        4726\n| where AccountType == \"User\"\n| project deletionTime = TimeGenerated,
-        DeleteEventID = EventID, DeleteActivity = Activity, Computer, TargetUserName,
-        UserPrincipalName, \nAccountUsedToDelete = SubjectAccount, SIDofAccountUsedToDelete
-        = SubjectUserSid, TargetAccount = tolower(TargetAccount), TargetSid\n) on
-        Computer, TargetAccount\n| where deletionTime - creationTime < spanoftime\n|
-        extend TimeDelta = deletionTime - creationTime\n| where tolong(TimeDelta)
-        >= threshold\n| project TimeDelta, creationTime, CreateEventID, CreateActivity,
-        Computer, TargetAccount, TargetSid, UserPrincipalName, AccountUsedToCreate,
-        SIDofAccountUsedToCreate,\ndeletionTime, DeleteEventID, DeleteActivity, AccountUsedToDelete,
-        SIDofAccountUsedToDelete\n| extend timestamp = creationTime, AccountCustomEntity
-        = AccountUsedToCreate, HostCustomEntity = Computer","queryFrequency":"P1D","queryPeriod":"P1D","triggerOperator":"GreaterThan","triggerThreshold":0,"entityMappings":[{"entityType":"Account","fieldMappings":[{"identifier":"FullName","columnName":"AccountCustomEntity"},{"identifier":"Sid","columnName":"SIDofAccountUsedToCreate"}]},{"entityType":"Host","fieldMappings":[{"identifier":"FullName","columnName":"HostCustomEntity"}]}],"displayName":"User
-        account created and deleted within 10 mins","description":"Identifies when
-        a user account is created and then deleted within 10 minutes. This can be
-        an indication of compromise and\nan adversary attempting to hide in the noise.","tactics":["Persistence","PrivilegeEscalation"],"lastUpdatedDateUTC":"2021-01-16T00:00:00Z","createdDateUTC":"2019-02-14T00:00:00Z","status":"Available","requiredDataConnectors":[{"connectorId":"SecurityEvents","dataTypes":["SecurityEvent"]}],"alertRulesCreatedByTemplateCount":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/AlertRuleTemplates/23de46ea-c425-4a77-b456-511ae4855d69","name":"23de46ea-c425-4a77-b456-511ae4855d69","type":"Microsoft.SecurityInsights/AlertRuleTemplates","kind":"Scheduled","properties":{"severity":"Low","query":"let
+        from any URL IOC from TI","tactics":["Impact"],"lastUpdatedDateUTC":"2020-11-17T00:00:00Z","createdDateUTC":"2019-08-27T00:00:00Z","status":"Available","requiredDataConnectors":[{"connectorId":"AzureActiveDirectory","dataTypes":["AuditLogs"]},{"connectorId":"ThreatIntelligence","dataTypes":["ThreatIntelligenceIndicator"]},{"connectorId":"ThreatIntelligenceTaxii","dataTypes":["ThreatIntelligenceIndicator"]}],"alertRulesCreatedByTemplateCount":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/AlertRuleTemplates/23de46ea-c425-4a77-b456-511ae4855d69","name":"23de46ea-c425-4a77-b456-511ae4855d69","type":"Microsoft.SecurityInsights/AlertRuleTemplates","kind":"Scheduled","properties":{"severity":"Low","query":"let
         starttime = 14d;\nlet endtime = 1d;\n// The number of operations below which
         an IP address is considered an unusual source of role assignment operations\nlet
         alertOperationThreshold = 5;\nlet SensitiveOperationList = dynamic(\n[\"List
@@ -14321,7 +14299,29 @@ interactions:
         a few sensitive subscription-level events based on Azure Activity Logs. \n
         For example this monitors for the operation name ''Create or Update Snapshot''
         which is used for creating backups but could be misused by attackers \n to
-        dump hashes or extract sensitive information from the disk.","tactics":["CredentialAccess","Persistence"],"lastUpdatedDateUTC":"2020-11-17T00:00:00Z","createdDateUTC":"2019-08-24T00:00:00Z","status":"Available","requiredDataConnectors":[{"connectorId":"AzureActivity","dataTypes":["AzureActivity"]}],"alertRulesCreatedByTemplateCount":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/AlertRuleTemplates/f8dad4e9-3f19-4d70-ab7f-8f19ccd43a3e","name":"f8dad4e9-3f19-4d70-ab7f-8f19ccd43a3e","type":"Microsoft.SecurityInsights/AlertRuleTemplates","kind":"Scheduled","properties":{"severity":"Medium","query":"let
+        dump hashes or extract sensitive information from the disk.","tactics":["CredentialAccess","Persistence"],"lastUpdatedDateUTC":"2020-11-17T00:00:00Z","createdDateUTC":"2019-08-24T00:00:00Z","status":"Available","requiredDataConnectors":[{"connectorId":"AzureActivity","dataTypes":["AzureActivity"]}],"alertRulesCreatedByTemplateCount":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/AlertRuleTemplates/4b93c5af-d20b-4236-b696-a28b8c51407f","name":"4b93c5af-d20b-4236-b696-a28b8c51407f","type":"Microsoft.SecurityInsights/AlertRuleTemplates","kind":"Scheduled","properties":{"severity":"Medium","query":"let
+        timeframe = 1d;\nlet spanoftime = 10m;\nlet threshold = 0;\nSecurityEvent
+        \n| where TimeGenerated > ago(2*timeframe) \n// A user account was created\n|
+        where EventID == 4720\n| where AccountType =~ \"User\"\n| project creationTime
+        = TimeGenerated, CreateEventID = EventID, CreateActivity = Activity, Computer,
+        TargetUserName, UserPrincipalName, \nAccountUsedToCreate = SubjectAccount,
+        SIDofAccountUsedToCreate = SubjectUserSid, TargetAccount = tolower(TargetAccount),
+        TargetSid\n| join kind= inner (\n  SecurityEvent\n  | where TimeGenerated
+        > ago(timeframe) \n  // A user account was deleted \n  | where EventID ==
+        4726\n| where AccountType == \"User\"\n| project deletionTime = TimeGenerated,
+        DeleteEventID = EventID, DeleteActivity = Activity, Computer, TargetUserName,
+        UserPrincipalName, \nAccountUsedToDelete = SubjectAccount, SIDofAccountUsedToDelete
+        = SubjectUserSid, TargetAccount = tolower(TargetAccount), TargetSid\n) on
+        Computer, TargetAccount\n| where deletionTime - creationTime < spanoftime\n|
+        extend TimeDelta = deletionTime - creationTime\n| where tolong(TimeDelta)
+        >= threshold\n| project TimeDelta, creationTime, CreateEventID, CreateActivity,
+        Computer, TargetAccount, TargetSid, UserPrincipalName, AccountUsedToCreate,
+        SIDofAccountUsedToCreate,\ndeletionTime, DeleteEventID, DeleteActivity, AccountUsedToDelete,
+        SIDofAccountUsedToDelete\n| extend timestamp = creationTime, AccountCustomEntity
+        = AccountUsedToCreate, HostCustomEntity = Computer","queryFrequency":"P1D","queryPeriod":"P1D","triggerOperator":"GreaterThan","triggerThreshold":0,"entityMappings":[{"entityType":"Account","fieldMappings":[{"identifier":"FullName","columnName":"AccountCustomEntity"},{"identifier":"Sid","columnName":"SIDofAccountUsedToCreate"}]},{"entityType":"Host","fieldMappings":[{"identifier":"FullName","columnName":"HostCustomEntity"}]}],"displayName":"User
+        account created and deleted within 10 mins","description":"Identifies when
+        a user account is created and then deleted within 10 minutes. This can be
+        an indication of compromise and\nan adversary attempting to hide in the noise.","tactics":["Persistence","PrivilegeEscalation"],"lastUpdatedDateUTC":"2021-01-16T00:00:00Z","createdDateUTC":"2019-02-14T00:00:00Z","status":"Available","requiredDataConnectors":[{"connectorId":"SecurityEvents","dataTypes":["SecurityEvent"]}],"alertRulesCreatedByTemplateCount":0}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/AlertRuleTemplates/f8dad4e9-3f19-4d70-ab7f-8f19ccd43a3e","name":"f8dad4e9-3f19-4d70-ab7f-8f19ccd43a3e","type":"Microsoft.SecurityInsights/AlertRuleTemplates","kind":"Scheduled","properties":{"severity":"Medium","query":"let
         timeframe = ago(1h);\nlet threshold = 1;\nAzureDiagnostics\n    | where TimeGenerated
         >= timeframe\n    | where OperationName in (\"AzureFirewallApplicationRuleLog\",\"AzureFirewallNetworkRuleLog\")\n    |
         extend msg_s_replaced0 = replace(@\"\\s\\s\",@\" \",msg_s)\n    | extend msg_s_replaced1
@@ -16249,7 +16249,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Mar 2021 06:12:23 GMT
+      - Tue, 16 Mar 2021 09:04:27 GMT
       expires:
       - '-1'
       pragma:
@@ -16295,10 +16295,10 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/bookmarks/73e01a99-5cd7-4139-a149-9f2736ff2ab5?api-version=2020-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/Bookmarks/73e01a99-5cd7-4139-a149-9f2736ff2ab5","name":"73e01a99-5cd7-4139-a149-9f2736ff2ab5","etag":"\"0000c263-0000-0100-0000-60504c480000\"","type":"Microsoft.SecurityInsights/Bookmarks","properties":{"displayName":"My
-        bookmark","created":"2021-03-16T06:12:24.7610803+00:00","updated":"2021-03-16T06:12:24+00:00","createdBy":{"objectId":"ade81686-dde7-4bb0-9062-8f5250ff95eb","email":"yungez@microsoft.com","name":"Catherine
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/Bookmarks/73e01a99-5cd7-4139-a149-9f2736ff2ab5","name":"73e01a99-5cd7-4139-a149-9f2736ff2ab5","etag":"\"0500531e-0000-0100-0000-6050749d0000\"","type":"Microsoft.SecurityInsights/Bookmarks","properties":{"displayName":"My
+        bookmark","created":"2021-03-16T09:04:29.7955741+00:00","updated":"2021-03-16T09:04:29+00:00","createdBy":{"objectId":"ade81686-dde7-4bb0-9062-8f5250ff95eb","email":"yungez@microsoft.com","name":"Catherine
         Zhu"},"updatedBy":{"objectId":"ade81686-dde7-4bb0-9062-8f5250ff95eb","email":"yungez@microsoft.com","name":"Catherine
-        Zhu"},"eventTime":"2021-03-16T06:12:24.7610803+00:00","notes":"Found a suspicious
+        Zhu"},"eventTime":"2021-03-16T09:04:29.7955741+00:00","notes":"Found a suspicious
         activity","labels":["Tag2"],"query":"SecurityEvent | where TimeGenerated >
         ago(1d) and TimeGenerated < ago(2d)","queryResult":"Security Event query result","incidentInfo":{"incidentId":null,"title":null,"relationName":null,"severity":null}}}'
     headers:
@@ -16309,7 +16309,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Mar 2021 06:12:25 GMT
+      - Tue, 16 Mar 2021 09:04:30 GMT
       expires:
       - '-1'
       pragma:
@@ -16348,10 +16348,10 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/bookmarks/73e01a99-5cd7-4139-a149-9f2736ff2ab5?api-version=2020-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/Bookmarks/73e01a99-5cd7-4139-a149-9f2736ff2ab5","name":"73e01a99-5cd7-4139-a149-9f2736ff2ab5","etag":"\"0000c263-0000-0100-0000-60504c480000\"","type":"Microsoft.SecurityInsights/Bookmarks","properties":{"displayName":"My
-        bookmark","created":"2021-03-16T06:12:24.7610803+00:00","updated":"2021-03-16T06:12:24.7610803+00:00","createdBy":{"objectId":"ade81686-dde7-4bb0-9062-8f5250ff95eb","email":"yungez@microsoft.com","name":"Catherine
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/Bookmarks/73e01a99-5cd7-4139-a149-9f2736ff2ab5","name":"73e01a99-5cd7-4139-a149-9f2736ff2ab5","etag":"\"0500531e-0000-0100-0000-6050749d0000\"","type":"Microsoft.SecurityInsights/Bookmarks","properties":{"displayName":"My
+        bookmark","created":"2021-03-16T09:04:29.7955741+00:00","updated":"2021-03-16T09:04:29.7955741+00:00","createdBy":{"objectId":"ade81686-dde7-4bb0-9062-8f5250ff95eb","email":"yungez@microsoft.com","name":"Catherine
         Zhu"},"updatedBy":{"objectId":"ade81686-dde7-4bb0-9062-8f5250ff95eb","email":"yungez@microsoft.com","name":"Catherine
-        Zhu"},"eventTime":"2021-03-16T06:12:24.7610803+00:00","notes":"Found a suspicious
+        Zhu"},"eventTime":"2021-03-16T09:04:29.7955741+00:00","notes":"Found a suspicious
         activity","labels":["Tag2"],"query":"SecurityEvent | where TimeGenerated >
         ago(1d) and TimeGenerated < ago(2d)","queryResult":"Security Event query result","incidentInfo":{"incidentId":null,"title":null,"relationName":null,"severity":null}}}'
     headers:
@@ -16362,7 +16362,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Mar 2021 06:12:26 GMT
+      - Tue, 16 Mar 2021 09:04:31 GMT
       expires:
       - '-1'
       pragma:
@@ -16399,10 +16399,10 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/bookmarks?api-version=2020-01-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/Bookmarks/73e01a99-5cd7-4139-a149-9f2736ff2ab5","name":"73e01a99-5cd7-4139-a149-9f2736ff2ab5","etag":"\"0000c263-0000-0100-0000-60504c480000\"","type":"Microsoft.SecurityInsights/Bookmarks","properties":{"displayName":"My
-        bookmark","created":"2021-03-16T06:12:24.7610803+00:00","updated":"2021-03-16T06:12:24.7610803+00:00","createdBy":{"objectId":"ade81686-dde7-4bb0-9062-8f5250ff95eb","email":"yungez@microsoft.com","name":"Catherine
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/Bookmarks/73e01a99-5cd7-4139-a149-9f2736ff2ab5","name":"73e01a99-5cd7-4139-a149-9f2736ff2ab5","etag":"\"0500531e-0000-0100-0000-6050749d0000\"","type":"Microsoft.SecurityInsights/Bookmarks","properties":{"displayName":"My
+        bookmark","created":"2021-03-16T09:04:29.7955741+00:00","updated":"2021-03-16T09:04:29.7955741+00:00","createdBy":{"objectId":"ade81686-dde7-4bb0-9062-8f5250ff95eb","email":"yungez@microsoft.com","name":"Catherine
         Zhu"},"updatedBy":{"objectId":"ade81686-dde7-4bb0-9062-8f5250ff95eb","email":"yungez@microsoft.com","name":"Catherine
-        Zhu"},"eventTime":"2021-03-16T06:12:24.7610803+00:00","notes":"Found a suspicious
+        Zhu"},"eventTime":"2021-03-16T09:04:29.7955741+00:00","notes":"Found a suspicious
         activity","labels":["Tag2"],"query":"SecurityEvent | where TimeGenerated >
         ago(1d) and TimeGenerated < ago(2d)","queryResult":"Security Event query result","incidentInfo":{"incidentId":null,"title":null,"relationName":null,"severity":null}}}]}'
     headers:
@@ -16413,7 +16413,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Mar 2021 06:12:28 GMT
+      - Tue, 16 Mar 2021 09:04:32 GMT
       expires:
       - '-1'
       pragma:
@@ -16461,7 +16461,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Mar 2021 06:12:31 GMT
+      - Tue, 16 Mar 2021 09:04:34 GMT
       expires:
       - '-1'
       pragma:
@@ -16511,9 +16511,9 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/incidents/73e01a99-5cd7-4139-a149-9f2736ff2ab5?api-version=2020-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/Incidents/73e01a99-5cd7-4139-a149-9f2736ff2ab5","name":"73e01a99-5cd7-4139-a149-9f2736ff2ab5","etag":"\"5a000678-0000-0100-0000-60504c510000\"","type":"Microsoft.SecurityInsights/Incidents","properties":{"title":"title","description":"This
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/Incidents/73e01a99-5cd7-4139-a149-9f2736ff2ab5","name":"73e01a99-5cd7-4139-a149-9f2736ff2ab5","etag":"\"01000d0a-0000-0100-0000-605074a30000\"","type":"Microsoft.SecurityInsights/Incidents","properties":{"title":"title","description":"This
         is a demo incident","severity":"High","status":"Closed","classification":"FalsePositive","classificationReason":"IncorrectAlertLogic","classificationComment":"Not
-        a malicious activity","owner":{"objectId":"2046feea-040d-4a46-9e2b-91c2941bfa70","email":null,"assignedTo":null,"userPrincipalName":null},"labels":[],"firstActivityTimeUtc":"2019-01-01T13:00:30Z","lastActivityTimeUtc":"2019-01-01T13:05:30Z","lastModifiedTimeUtc":"2021-03-16T06:12:33.5179138Z","createdTimeUtc":"2021-03-16T06:12:33.5179138Z","incidentNumber":1,"additionalData":{"alertsCount":0,"bookmarksCount":0,"commentsCount":0,"alertProductNames":[],"tactics":[]},"relatedAnalyticRuleIds":[],"incidentUrl":"https://portal.azure.com/#asset/Microsoft_Azure_Security_Insights/Incident/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/Incidents/73e01a99-5cd7-4139-a149-9f2736ff2ab5"}}'
+        a malicious activity","owner":{"objectId":"2046feea-040d-4a46-9e2b-91c2941bfa70","email":null,"assignedTo":null,"userPrincipalName":null},"labels":[],"firstActivityTimeUtc":"2019-01-01T13:00:30Z","lastActivityTimeUtc":"2019-01-01T13:05:30Z","lastModifiedTimeUtc":"2021-03-16T09:04:35.9200598Z","createdTimeUtc":"2021-03-16T09:04:35.9200598Z","incidentNumber":1,"additionalData":{"alertsCount":0,"bookmarksCount":0,"commentsCount":0,"alertProductNames":[],"tactics":[]},"relatedAnalyticRuleIds":[],"incidentUrl":"https://portal.azure.com/#asset/Microsoft_Azure_Security_Insights/Incident/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/Incidents/73e01a99-5cd7-4139-a149-9f2736ff2ab5"}}'
     headers:
       cache-control:
       - no-cache
@@ -16522,7 +16522,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Mar 2021 06:12:33 GMT
+      - Tue, 16 Mar 2021 09:04:35 GMT
       expires:
       - '-1'
       pragma:
@@ -16561,9 +16561,9 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/incidents/73e01a99-5cd7-4139-a149-9f2736ff2ab5?api-version=2020-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/Incidents/73e01a99-5cd7-4139-a149-9f2736ff2ab5","name":"73e01a99-5cd7-4139-a149-9f2736ff2ab5","etag":"\"5a000678-0000-0100-0000-60504c510000\"","type":"Microsoft.SecurityInsights/Incidents","properties":{"title":"title","description":"This
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/Incidents/73e01a99-5cd7-4139-a149-9f2736ff2ab5","name":"73e01a99-5cd7-4139-a149-9f2736ff2ab5","etag":"\"01000d0a-0000-0100-0000-605074a30000\"","type":"Microsoft.SecurityInsights/Incidents","properties":{"title":"title","description":"This
         is a demo incident","severity":"High","status":"Closed","classification":"FalsePositive","classificationReason":"IncorrectAlertLogic","classificationComment":"Not
-        a malicious activity","owner":{"objectId":"2046feea-040d-4a46-9e2b-91c2941bfa70","email":null,"assignedTo":null,"userPrincipalName":null},"labels":[],"firstActivityTimeUtc":"2019-01-01T13:00:30Z","lastActivityTimeUtc":"2019-01-01T13:05:30Z","lastModifiedTimeUtc":"2021-03-16T06:12:33.5179138Z","createdTimeUtc":"2021-03-16T06:12:33.5179138Z","incidentNumber":1,"additionalData":{"alertsCount":0,"bookmarksCount":0,"commentsCount":0,"alertProductNames":[],"tactics":[]},"relatedAnalyticRuleIds":[],"incidentUrl":"https://portal.azure.com/#asset/Microsoft_Azure_Security_Insights/Incident/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/Incidents/73e01a99-5cd7-4139-a149-9f2736ff2ab5"}}'
+        a malicious activity","owner":{"objectId":"2046feea-040d-4a46-9e2b-91c2941bfa70","email":null,"assignedTo":null,"userPrincipalName":null},"labels":[],"firstActivityTimeUtc":"2019-01-01T13:00:30Z","lastActivityTimeUtc":"2019-01-01T13:05:30Z","lastModifiedTimeUtc":"2021-03-16T09:04:35.9200598Z","createdTimeUtc":"2021-03-16T09:04:35.9200598Z","incidentNumber":1,"additionalData":{"alertsCount":0,"bookmarksCount":0,"commentsCount":0,"alertProductNames":[],"tactics":[]},"relatedAnalyticRuleIds":[],"incidentUrl":"https://portal.azure.com/#asset/Microsoft_Azure_Security_Insights/Incident/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/Incidents/73e01a99-5cd7-4139-a149-9f2736ff2ab5"}}'
     headers:
       cache-control:
       - no-cache
@@ -16572,7 +16572,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Mar 2021 06:12:34 GMT
+      - Tue, 16 Mar 2021 09:04:36 GMT
       expires:
       - '-1'
       pragma:
@@ -16614,7 +16614,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/Incidents/73e01a99-5cd7-4139-a149-9f2736ff2ab5/Comments/4bb36b7b-26ff-4d1c-9cbe-0d8ab3da0014","name":"4bb36b7b-26ff-4d1c-9cbe-0d8ab3da0014","type":"Microsoft.SecurityInsights/Incidents/Comments","properties":{"message":"Some
-        message","createdTimeUtc":"2021-03-16T06:12:36.8174962Z","author":{"objectId":"ade81686-dde7-4bb0-9062-8f5250ff95eb","email":"yungez@microsoft.com","name":"Catherine
+        message","createdTimeUtc":"2021-03-16T09:04:38.0892344Z","author":{"objectId":"ade81686-dde7-4bb0-9062-8f5250ff95eb","email":"yungez@microsoft.com","name":"Catherine
         Zhu","userPrincipalName":"yungez@microsoft.com"}}}'
     headers:
       cache-control:
@@ -16624,7 +16624,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Mar 2021 06:12:36 GMT
+      - Tue, 16 Mar 2021 09:04:37 GMT
       expires:
       - '-1'
       pragma:
@@ -16660,7 +16660,7 @@ interactions:
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/Incidents/73e01a99-5cd7-4139-a149-9f2736ff2ab5/Comments/4bb36b7b-26ff-4d1c-9cbe-0d8ab3da0014","name":"4bb36b7b-26ff-4d1c-9cbe-0d8ab3da0014","type":"Microsoft.SecurityInsights/Incidents/Comments","properties":{"message":"Some
-        message","createdTimeUtc":"2021-03-16T06:12:36.8174962Z","author":{"objectId":"ade81686-dde7-4bb0-9062-8f5250ff95eb","email":"yungez@microsoft.com","name":"Catherine
+        message","createdTimeUtc":"2021-03-16T09:04:38.0892344Z","author":{"objectId":"ade81686-dde7-4bb0-9062-8f5250ff95eb","email":"yungez@microsoft.com","name":"Catherine
         Zhu","userPrincipalName":"yungez@microsoft.com"}}}]}'
     headers:
       cache-control:
@@ -16670,7 +16670,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Mar 2021 06:12:37 GMT
+      - Tue, 16 Mar 2021 09:04:39 GMT
       expires:
       - '-1'
       pragma:
@@ -16708,7 +16708,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.OperationalInsights/workspaces/clitestws-000002/providers/Microsoft.SecurityInsights/Incidents/73e01a99-5cd7-4139-a149-9f2736ff2ab5/Comments/4bb36b7b-26ff-4d1c-9cbe-0d8ab3da0014","name":"4bb36b7b-26ff-4d1c-9cbe-0d8ab3da0014","type":"Microsoft.SecurityInsights/Incidents/Comments","properties":{"message":"Some
-        message","createdTimeUtc":"2021-03-16T06:12:36.8174962Z","author":{"objectId":"ade81686-dde7-4bb0-9062-8f5250ff95eb","email":"yungez@microsoft.com","name":"Catherine
+        message","createdTimeUtc":"2021-03-16T09:04:38.0892344Z","author":{"objectId":"ade81686-dde7-4bb0-9062-8f5250ff95eb","email":"yungez@microsoft.com","name":"Catherine
         Zhu","userPrincipalName":"yungez@microsoft.com"}}}'
     headers:
       cache-control:
@@ -16718,7 +16718,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Mar 2021 06:12:38 GMT
+      - Tue, 16 Mar 2021 09:04:40 GMT
       expires:
       - '-1'
       pragma:
@@ -16766,7 +16766,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 16 Mar 2021 06:12:38 GMT
+      - Tue, 16 Mar 2021 09:04:41 GMT
       expires:
       - '-1'
       pragma:
