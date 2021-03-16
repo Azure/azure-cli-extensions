@@ -257,10 +257,13 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Create connected cluster resource
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
 
+    # Checking if custom locations rp is registered and fetching oid if it is registered
+    enable_custom_locations,custom_locations_oid = check_cl_registration_and_get_oid(cmd)
+
     # Install azure-arc agents
     utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                                location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
-                               kube_context, no_wait, values_file_provided, values_file, azure_cloud, disable_auto_upgrade)
+                               kube_context, no_wait, values_file_provided, values_file, azure_cloud, disable_auto_upgrade, enable_custom_locations, custom_locations_oid)
 
     return put_cc_response
 
@@ -1145,23 +1148,8 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
             raise CLIError("Please provide both aad authorization client id and client secret to enable AAD RBAC feature")
 
     if enable_cl:
-        try:
-            rp_client = _resource_providers_client(cmd.cli_ctx)
-            cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
-            if cl_registration_state != "Registered" and cl_registration_state != "Registering":
-                try:
-                    logger.warning("Registering Custom Locations resource provider 'Microsoft.ExtendedLocation' ...")
-                    rp_client.register(consts.Custom_Locations_Provider_Namespace)  # Asynchronous registration
-                except ClientAuthenticationError as ex:
-                    # raise CLIERRor -> ask user to register
-                    pass
-                except Exception as e:
-                    # Add error/exceptions -> also ask user only
-                    pass
-        except Exception as ex:
-            # Add error/exceptions -> user to register
-            pass
-        if not enable_cluster_connect:
+        enable_cl,custom_locations_oid = check_cl_registration_and_get_oid(cmd)
+        if not enable_cluster_connect and enable_cl:
             enable_cluster_connect = True
             logger.warning("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too")
 
@@ -1256,20 +1244,6 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
     # Get Helm chart path
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context)
 
-    if enable_cl:
-        # Wait until Custom Locations RP is Registered before invoking helm upgrade
-        try:
-            rp_client = _resource_providers_client(cmd.cli_ctx)
-            cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
-            while True:
-                cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
-                if cl_registration_state.registration_state == 'Registered':
-                    break
-                time.sleep(10)
-        except Exception as ex:
-            # add errors/exceptions
-            pass
-
     cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path,
                         "--reuse-values",
                         "--wait", "--output", "json"]
@@ -1286,8 +1260,8 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
     if enable_cluster_connect:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=true"])
     if enable_cl:
-        # add custom locations related enabling
-        pass
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.enabled=true"])
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.oid={}".format(custom_locations_oid)])
 
     response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
     _, error_helm_upgrade = response_helm_upgrade.communicate()
@@ -1382,16 +1356,8 @@ def disable_features(cmd, client, resource_group_name, cluster_name, kube_config
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
-    # Uncomment below custom locations related params are available
-
-    # if disable_cluster_connect:
-    #     helm_values = get_all_helm_values(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
-    #     # helm_values_flattened = utils.flatten(helm_values)
-    #     if helm_values.get('systemDefaultValues').get('customlocations').get('enabled') == True: # update this line
-    #         raise CLIError("Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature is enabled.")
-
-    # if disable_cl:
-    #     logger.warning("Disabling 'custom-locations' feature is not suggested.")
+    if disable_cl:
+        logger.warning("Disabling 'custom-locations' feature is not suggested.")
 
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
@@ -1430,8 +1396,8 @@ def disable_features(cmd, client, resource_group_name, cluster_name, kube_config
     if disable_cluster_connect:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=false"])
     if disable_cl:
-        # add custom locations related disabling
-        pass
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.enabled=false"])
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.customLocations.oid={}".format("")])
 
     response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
     _, error_helm_upgrade = response_helm_upgrade.communicate()
@@ -1942,3 +1908,43 @@ def check_process(processName):
 
 def ctrlc_handler(sig, frame):
     interrupt_main()
+
+
+def get_custom_locations_oid(cmd):
+    try:
+        graph_client=_graph_client_factory(cmd.cli_ctx)
+        sub_filters = []
+        sub_filters.append("startswith(displayName,'{}')".format("Custom Locations RP"))
+        result=list(graph_client.service_principals.list(filter=(' and '.join(sub_filters))))
+        if len(result)!=0:
+            return result[0].object_id
+        else:
+            logger.warning("Unable to fetch oid of custom locations app. Proceeding without enabling the feature.")
+            telemetry.set_exception(exception='Unable to fetch oid of custom locations app.', fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type,
+                                    summary='Unable to fetch oid for custom locations app.')
+            return ""
+    except Exception as e:
+        logger.warning("Unable to fetch oid of custom locations app. Proceeding without enabling the feature. "+str(e))
+        telemetry.set_exception(exception=e, fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type,
+                                summary='Unable to fetch oid for custom locations app.')
+        return ""
+
+def check_cl_registration_and_get_oid(cmd):
+    enable_custom_locations=True
+    custom_locations_oid=""
+    try:
+        rp_client = _resource_providers_client(cmd.cli_ctx)
+        cl_registration_state = rp_client.get(consts.Custom_Locations_Provider_Namespace).registration_state
+        if cl_registration_state != "Registered":
+            enable_custom_locations=False
+            logger.warning("Registering Custom Locations requires resource provider 'Microsoft.ExtendedLocation' to be registered. Please register the provider and then enable with az connectedk8s enable-features.")
+        else:
+            custom_locations_oid = get_custom_locations_oid(cmd)
+            if custom_locations_oid=="":
+                enable_custom_locations=False
+    except Exception as e:
+        enable_custom_locations=False
+        logger.warning("Unable to fetch registration state of 'Microsoft.ExtendedLocation'.Proceeding without enabling the feature.")
+        telemetry.set_exception(exception=e, fault_type=consts.Custom_Locations_Registration_Check_Fault_Type,
+                                summary='Unable to fetch status of Custom Locations RP registration.')
+    return enable_custom_locations,custom_locations_oid
