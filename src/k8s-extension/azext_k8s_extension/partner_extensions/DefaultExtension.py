@@ -5,7 +5,7 @@
 
 # pylint: disable=unused-argument
 
-from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceForCreate
+from azext_k8s_extension.vendored_sdks.models import ExtensionInstance
 from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceUpdate
 from azext_k8s_extension.vendored_sdks.models import ScopeCluster
 from azext_k8s_extension.vendored_sdks.models import ScopeNamespace
@@ -21,7 +21,7 @@ class DefaultExtension(PartnerExtensionModel):
                configuration_settings_file, configuration_protected_settings_file):
 
         """Default validations & defaults for Create
-           Must create and return a valid 'ExtensionInstanceForCreate' object.
+           Must create and return a valid 'ExtensionInstance' object.
 
         """
         ext_scope = None
@@ -37,7 +37,7 @@ class DefaultExtension(PartnerExtensionModel):
             release_train = 'stable'
 
         create_identity = False
-        extension_instance = ExtensionInstanceForCreate(
+        extension_instance = ExtensionInstance(
             extension_type=extension_type,
             auto_upgrade_minor_version=auto_upgrade_minor_version,
             release_train=release_train,

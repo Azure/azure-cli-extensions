@@ -9,8 +9,12 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from ._k8s_extensions_operations import K8sExtensionsOperations
+from ._source_control_configurations_operations import SourceControlConfigurationsOperations
+from ._operations import Operations
+from ._extensions_operations import ExtensionsOperations
 
 __all__ = [
-    'K8sExtensionsOperations',
+    'SourceControlConfigurationsOperations',
+    'Operations',
+    'ExtensionsOperations',
 ]

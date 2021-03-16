@@ -9,9 +9,9 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from ._configuration import K8sExtensionClientConfiguration
-from ._k8s_extension_client import K8sExtensionClient
-__all__ = ['K8sExtensionClient', 'K8sExtensionClientConfiguration']
+from ._configuration import SourceControlConfigurationClientConfiguration
+from ._source_control_configuration_client import SourceControlConfigurationClient
+__all__ = ['SourceControlConfigurationClient', 'SourceControlConfigurationClientConfiguration']
 
 from .version import VERSION
 

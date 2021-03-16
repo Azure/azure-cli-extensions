@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from abc import ABC, abstractmethod
-from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceForCreate
+from azext_k8s_extension.vendored_sdks.models import ExtensionInstance
 from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceUpdate
 
 
@@ -14,10 +14,10 @@ class PartnerExtensionModel(ABC):
                extension_type: str, scope: str, auto_upgrade_minor_version: bool, release_train: str, version: str,
                target_namespace: str, release_namespace: str, configuration_settings: dict,
                configuration_protected_settings: dict, configuration_settings_file: str,
-               configuration_protected_settings_file: str) -> ExtensionInstanceForCreate:
+               configuration_protected_settings_file: str) -> ExtensionInstance:
         pass
 
     @abstractmethod
-    def Update(self, extension: ExtensionInstanceForCreate, auto_upgrade_minor_version: bool,
+    def Update(self, extension: ExtensionInstance, auto_upgrade_minor_version: bool,
                release_train: str, version: str) -> ExtensionInstanceUpdate:
         pass

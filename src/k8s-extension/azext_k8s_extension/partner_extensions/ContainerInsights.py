@@ -17,7 +17,7 @@ from azure.cli.core.util import sdk_no_wait
 from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
-from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceForCreate
+from azext_k8s_extension.vendored_sdks.models import ExtensionInstance
 from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceUpdate
 from azext_k8s_extension.vendored_sdks.models import ScopeCluster
 from azext_k8s_extension.vendored_sdks.models import Scope
@@ -37,7 +37,7 @@ class ContainerInsights(PartnerExtensionModel):
                configuration_settings_file, configuration_protected_settings_file):
 
         """ExtensionType 'microsoft.azuremonitor.containers' specific validations & defaults for Create
-           Must create and return a valid 'ExtensionInstanceForCreate' object.
+           Must create and return a valid 'ExtensionInstance' object.
 
         """
         # NOTE-1: Replace default scope creation with your customization!
@@ -58,9 +58,9 @@ class ContainerInsights(PartnerExtensionModel):
         _get_container_insights_settings(cmd, resource_group_name, cluster_name, configuration_settings,
                                          configuration_protected_settings, is_ci_extension_type)
 
-        # NOTE-2: Return a valid ExtensionInstanceForCreate object, Instance name and flag for Identity
+        # NOTE-2: Return a valid ExtensionInstance object, Instance name and flag for Identity
         create_identity = True
-        extension_instance = ExtensionInstanceForCreate(
+        extension_instance = ExtensionInstance(
             extension_type=extension_type,
             auto_upgrade_minor_version=auto_upgrade_minor_version,
             release_train=release_train,

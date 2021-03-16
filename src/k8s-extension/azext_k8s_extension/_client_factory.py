@@ -8,12 +8,12 @@ from azure.cli.core.profiles import ResourceType
 
 
 def cf_k8s_extension(cli_ctx, *_):
-    from azext_k8s_extension.vendored_sdks import K8sExtensionClient
-    return get_mgmt_service_client(cli_ctx, K8sExtensionClient)
+    from azext_k8s_extension.vendored_sdks import SourceControlConfigurationClient
+    return get_mgmt_service_client(cli_ctx, SourceControlConfigurationClient)
 
 
 def cf_k8s_extension_operation(cli_ctx, _):
-    return cf_k8s_extension(cli_ctx).k8s_extensions
+    return cf_k8s_extension(cli_ctx).extensions
 
 
 def cf_resource_groups(cli_ctx, subscription_id=None):
