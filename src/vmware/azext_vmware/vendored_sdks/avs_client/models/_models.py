@@ -7,6 +7,203 @@
 import msrest.serialization
 
 
+class Resource(msrest.serialization.Model):
+    """The core properties of ARM resources.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource ID.
+    :vartype id: str
+    :ivar name: Resource name.
+    :vartype name: str
+    :ivar type: Resource type.
+    :vartype type: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(Resource, self).__init__(**kwargs)
+        self.id = None
+        self.name = None
+        self.type = None
+
+
+class Addon(Resource):
+    """An addon resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource ID.
+    :vartype id: str
+    :ivar name: Resource name.
+    :vartype name: str
+    :ivar type: Resource type.
+    :vartype type: str
+    :param license_key: The SRM license.
+    :type license_key: str
+    :param addon_type: The type of private cloud addon. Possible values include: "SRM", "VR".
+    :type addon_type: str or ~avs_client.models.AddonType
+    :ivar provisioning_state: The state of the addon provisioning. Possible values include:
+     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating".
+    :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'license_key': {'key': 'properties.licenseKey', 'type': 'str'},
+        'addon_type': {'key': 'properties.addonType', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(Addon, self).__init__(**kwargs)
+        self.license_key = kwargs.get('license_key', None)
+        self.addon_type = kwargs.get('addon_type', None)
+        self.provisioning_state = None
+
+
+class AddonList(msrest.serialization.Model):
+    """A paged list of addons.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: The items on a page.
+    :vartype value: list[~avs_client.models.Addon]
+    :ivar next_link: URL to get the next page if any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[Addon]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AddonList, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
+class AddonSrmProperties(msrest.serialization.Model):
+    """The properties of an SRM addon that may be updated.
+
+    :param license_key: The SRM license.
+    :type license_key: str
+    """
+
+    _attribute_map = {
+        'license_key': {'key': 'licenseKey', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AddonSrmProperties, self).__init__(**kwargs)
+        self.license_key = kwargs.get('license_key', None)
+
+
+class AddonProperties(AddonSrmProperties):
+    """The properties of an addon that may be updated.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :param license_key: The SRM license.
+    :type license_key: str
+    :param addon_type: The type of private cloud addon. Possible values include: "SRM", "VR".
+    :type addon_type: str or ~avs_client.models.AddonType
+    :ivar provisioning_state: The state of the addon provisioning. Possible values include:
+     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating".
+    :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
+    """
+
+    _validation = {
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'license_key': {'key': 'licenseKey', 'type': 'str'},
+        'addon_type': {'key': 'addonType', 'type': 'str'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AddonProperties, self).__init__(**kwargs)
+        self.addon_type = kwargs.get('addon_type', None)
+        self.provisioning_state = None
+
+
+class AddonUpdate(msrest.serialization.Model):
+    """An update of an addon resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :param license_key: The SRM license.
+    :type license_key: str
+    :param addon_type: The type of private cloud addon. Possible values include: "SRM", "VR".
+    :type addon_type: str or ~avs_client.models.AddonType
+    :ivar provisioning_state: The state of the addon provisioning. Possible values include:
+     "Succeeded", "Failed", "Cancelled", "Building", "Deleting", "Updating".
+    :vartype provisioning_state: str or ~avs_client.models.AddonProvisioningState
+    """
+
+    _validation = {
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'license_key': {'key': 'properties.properties.licenseKey', 'type': 'str'},
+        'addon_type': {'key': 'properties.properties.addonType', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.properties.provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AddonUpdate, self).__init__(**kwargs)
+        self.license_key = kwargs.get('license_key', None)
+        self.addon_type = kwargs.get('addon_type', None)
+        self.provisioning_state = None
+
+
 class AdminCredentials(msrest.serialization.Model):
     """Administrative credentials for accessing vCenter and NSX-T.
 
@@ -87,41 +284,6 @@ class Circuit(msrest.serialization.Model):
         self.express_route_private_peering_id = None
 
 
-class Resource(msrest.serialization.Model):
-    """The core properties of ARM resources.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: Resource ID.
-    :vartype id: str
-    :ivar name: Resource name.
-    :vartype name: str
-    :ivar type: Resource type.
-    :vartype type: str
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(Resource, self).__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
-
-
 class Cluster(Resource):
     """A cluster resource.
 
@@ -137,11 +299,11 @@ class Cluster(Resource):
     :vartype type: str
     :param sku: Required. The cluster SKU.
     :type sku: ~avs_client.models.Sku
-    :param cluster_size: The cluster size.
-    :type cluster_size: int
     :ivar provisioning_state: The state of the cluster provisioning. Possible values include:
      "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
     :vartype provisioning_state: str or ~avs_client.models.ClusterProvisioningState
+    :param cluster_size: The cluster size.
+    :type cluster_size: int
     :ivar cluster_id: The identity.
     :vartype cluster_id: int
     :ivar hosts: The hosts.
@@ -163,8 +325,8 @@ class Cluster(Resource):
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'sku': {'key': 'sku', 'type': 'Sku'},
-        'cluster_size': {'key': 'properties.clusterSize', 'type': 'int'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'cluster_size': {'key': 'properties.clusterSize', 'type': 'int'},
         'cluster_id': {'key': 'properties.clusterId', 'type': 'int'},
         'hosts': {'key': 'properties.hosts', 'type': '[str]'},
     }
@@ -175,8 +337,8 @@ class Cluster(Resource):
     ):
         super(Cluster, self).__init__(**kwargs)
         self.sku = kwargs['sku']
-        self.cluster_size = kwargs.get('cluster_size', None)
         self.provisioning_state = None
+        self.cluster_size = kwargs.get('cluster_size', None)
         self.cluster_id = None
         self.hosts = None
 
@@ -211,35 +373,16 @@ class ClusterList(msrest.serialization.Model):
         self.next_link = None
 
 
-class ClusterUpdateProperties(msrest.serialization.Model):
-    """The properties of a cluster that may be updated.
-
-    :param cluster_size: The cluster size.
-    :type cluster_size: int
-    """
-
-    _attribute_map = {
-        'cluster_size': {'key': 'clusterSize', 'type': 'int'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(ClusterUpdateProperties, self).__init__(**kwargs)
-        self.cluster_size = kwargs.get('cluster_size', None)
-
-
-class ManagementCluster(ClusterUpdateProperties):
-    """The properties of a default cluster.
+class CommonClusterProperties(msrest.serialization.Model):
+    """The common properties of a cluster.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :param cluster_size: The cluster size.
-    :type cluster_size: int
     :ivar provisioning_state: The state of the cluster provisioning. Possible values include:
      "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
     :vartype provisioning_state: str or ~avs_client.models.ClusterProvisioningState
+    :param cluster_size: The cluster size.
+    :type cluster_size: int
     :ivar cluster_id: The identity.
     :vartype cluster_id: int
     :ivar hosts: The hosts.
@@ -253,8 +396,8 @@ class ManagementCluster(ClusterUpdateProperties):
     }
 
     _attribute_map = {
-        'cluster_size': {'key': 'clusterSize', 'type': 'int'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'cluster_size': {'key': 'clusterSize', 'type': 'int'},
         'cluster_id': {'key': 'clusterId', 'type': 'int'},
         'hosts': {'key': 'hosts', 'type': '[str]'},
     }
@@ -263,22 +406,23 @@ class ManagementCluster(ClusterUpdateProperties):
         self,
         **kwargs
     ):
-        super(ManagementCluster, self).__init__(**kwargs)
+        super(CommonClusterProperties, self).__init__(**kwargs)
         self.provisioning_state = None
+        self.cluster_size = kwargs.get('cluster_size', None)
         self.cluster_id = None
         self.hosts = None
 
 
-class ClusterProperties(ManagementCluster):
+class ClusterProperties(CommonClusterProperties):
     """The properties of a cluster.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :param cluster_size: The cluster size.
-    :type cluster_size: int
     :ivar provisioning_state: The state of the cluster provisioning. Possible values include:
      "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
     :vartype provisioning_state: str or ~avs_client.models.ClusterProvisioningState
+    :param cluster_size: The cluster size.
+    :type cluster_size: int
     :ivar cluster_id: The identity.
     :vartype cluster_id: int
     :ivar hosts: The hosts.
@@ -292,8 +436,8 @@ class ClusterProperties(ManagementCluster):
     }
 
     _attribute_map = {
-        'cluster_size': {'key': 'clusterSize', 'type': 'int'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'cluster_size': {'key': 'clusterSize', 'type': 'int'},
         'cluster_id': {'key': 'clusterId', 'type': 'int'},
         'hosts': {'key': 'hosts', 'type': '[str]'},
     }
@@ -322,6 +466,105 @@ class ClusterUpdate(msrest.serialization.Model):
     ):
         super(ClusterUpdate, self).__init__(**kwargs)
         self.cluster_size = kwargs.get('cluster_size', None)
+
+
+class Datastore(Resource):
+    """A datastore resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource ID.
+    :vartype id: str
+    :ivar name: Resource name.
+    :vartype name: str
+    :ivar type: Resource type.
+    :vartype type: str
+    :ivar provisioning_state: The state of the datastore provisioning. Possible values include:
+     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
+    :vartype provisioning_state: str or ~avs_client.models.DatastoreProvisioningState
+    :param net_app_volume: An Azure NetApp Files volume.
+    :type net_app_volume: ~avs_client.models.NetAppVolume
+    :param disk_pool_volume: An iSCSI volume.
+    :type disk_pool_volume: ~avs_client.models.DiskPoolVolume
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'net_app_volume': {'key': 'properties.netAppVolume', 'type': 'NetAppVolume'},
+        'disk_pool_volume': {'key': 'properties.diskPoolVolume', 'type': 'DiskPoolVolume'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(Datastore, self).__init__(**kwargs)
+        self.provisioning_state = None
+        self.net_app_volume = kwargs.get('net_app_volume', None)
+        self.disk_pool_volume = kwargs.get('disk_pool_volume', None)
+
+
+class DatastoreList(msrest.serialization.Model):
+    """A paged list of datastores.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: The items on a page.
+    :vartype value: list[~avs_client.models.Datastore]
+    :ivar next_link: URL to get the next page if any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[Datastore]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DatastoreList, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
+class DiskPoolVolume(msrest.serialization.Model):
+    """An iSCSI volume from Microsoft.StoragePool provider.
+
+    :param endpoints: iSCSI provider target IP address list.
+    :type endpoints: list[str]
+    :param lun_name: Name of the LUN to be used.
+    :type lun_name: str
+    """
+
+    _attribute_map = {
+        'endpoints': {'key': 'endpoints', 'type': '[str]'},
+        'lun_name': {'key': 'lunName', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DiskPoolVolume, self).__init__(**kwargs)
+        self.endpoints = kwargs.get('endpoints', None)
+        self.lun_name = kwargs.get('lun_name', None)
 
 
 class Endpoints(msrest.serialization.Model):
@@ -513,6 +756,96 @@ class ExpressRouteAuthorizationList(msrest.serialization.Model):
         self.next_link = None
 
 
+class GlobalReachConnection(Resource):
+    """A global reach connection resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource ID.
+    :vartype id: str
+    :ivar name: Resource name.
+    :vartype name: str
+    :ivar type: Resource type.
+    :vartype type: str
+    :ivar provisioning_state: The state of the  ExpressRoute Circuit Authorization provisioning.
+     Possible values include: "Succeeded", "Failed", "Updating".
+    :vartype provisioning_state: str or ~avs_client.models.GlobalReachConnectionProvisioningState
+    :ivar address_prefix: The network used for global reach carved out from the original network
+     block provided for the private cloud.
+    :vartype address_prefix: str
+    :param authorization_key: Authorization key from the peer express route used for the global
+     reach connection.
+    :type authorization_key: str
+    :ivar circuit_connection_status: The connection status of the global reach connection. Possible
+     values include: "Connected", "Connecting", "Disconnected".
+    :vartype circuit_connection_status: str or ~avs_client.models.GlobalReachConnectionStatus
+    :param peer_express_route_circuit: Identifier of the ExpressRoute Circuit to peer with in the
+     global reach connection.
+    :type peer_express_route_circuit: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+        'address_prefix': {'readonly': True},
+        'circuit_connection_status': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'address_prefix': {'key': 'properties.addressPrefix', 'type': 'str'},
+        'authorization_key': {'key': 'properties.authorizationKey', 'type': 'str'},
+        'circuit_connection_status': {'key': 'properties.circuitConnectionStatus', 'type': 'str'},
+        'peer_express_route_circuit': {'key': 'properties.peerExpressRouteCircuit', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(GlobalReachConnection, self).__init__(**kwargs)
+        self.provisioning_state = None
+        self.address_prefix = None
+        self.authorization_key = kwargs.get('authorization_key', None)
+        self.circuit_connection_status = None
+        self.peer_express_route_circuit = kwargs.get('peer_express_route_circuit', None)
+
+
+class GlobalReachConnectionList(msrest.serialization.Model):
+    """A paged list of global reach connections.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: The items on a page.
+    :vartype value: list[~avs_client.models.GlobalReachConnection]
+    :ivar next_link: URL to get the next page if any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[GlobalReachConnection]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(GlobalReachConnectionList, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
 class HcxEnterpriseSite(Resource):
     """An HCX Enterprise Site resource.
 
@@ -671,6 +1004,42 @@ class LogSpecification(msrest.serialization.Model):
         self.blob_duration = kwargs.get('blob_duration', None)
 
 
+class ManagementCluster(CommonClusterProperties):
+    """The properties of a management cluster.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar provisioning_state: The state of the cluster provisioning. Possible values include:
+     "Succeeded", "Failed", "Cancelled", "Deleting", "Updating".
+    :vartype provisioning_state: str or ~avs_client.models.ClusterProvisioningState
+    :param cluster_size: The cluster size.
+    :type cluster_size: int
+    :ivar cluster_id: The identity.
+    :vartype cluster_id: int
+    :ivar hosts: The hosts.
+    :vartype hosts: list[str]
+    """
+
+    _validation = {
+        'provisioning_state': {'readonly': True},
+        'cluster_id': {'readonly': True},
+        'hosts': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'cluster_size': {'key': 'clusterSize', 'type': 'int'},
+        'cluster_id': {'key': 'clusterId', 'type': 'int'},
+        'hosts': {'key': 'hosts', 'type': '[str]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ManagementCluster, self).__init__(**kwargs)
+
+
 class MetricDimension(msrest.serialization.Model):
     """Specifications of the Dimension of metrics.
 
@@ -771,6 +1140,29 @@ class MetricSpecification(msrest.serialization.Model):
         self.enable_regional_mdm_account = kwargs.get('enable_regional_mdm_account', None)
         self.source_mdm_account = kwargs.get('source_mdm_account', None)
         self.source_mdm_namespace = kwargs.get('source_mdm_namespace', None)
+
+
+class NetAppVolume(msrest.serialization.Model):
+    """An Azure NetApp Files volume from Microsoft.NetApp provider.
+
+    :param nfs_provider_ip: IP address of the NFS provider.
+    :type nfs_provider_ip: str
+    :param nfs_file_path: File path through which the NFS volume is exposed by the provider.
+    :type nfs_file_path: str
+    """
+
+    _attribute_map = {
+        'nfs_provider_ip': {'key': 'nfsProviderIp', 'type': 'str'},
+        'nfs_file_path': {'key': 'nfsFilePath', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(NetAppVolume, self).__init__(**kwargs)
+        self.nfs_provider_ip = kwargs.get('nfs_provider_ip', None)
+        self.nfs_file_path = kwargs.get('nfs_file_path', None)
 
 
 class Operation(msrest.serialization.Model):
@@ -965,7 +1357,7 @@ class PrivateCloud(TrackedResource):
     :param sku: Required. The private cloud SKU.
     :type sku: ~avs_client.models.Sku
     :param management_cluster: The default cluster used for management.
-    :type management_cluster: ~avs_client.models.ManagementCluster
+    :type management_cluster: ~avs_client.models.CommonClusterProperties
     :param internet: Connectivity to internet is enabled or disabled. Possible values include:
      "Enabled", "Disabled". Default value: "Disabled".
     :type internet: str or ~avs_client.models.InternetEnum
@@ -978,9 +1370,9 @@ class PrivateCloud(TrackedResource):
     :type circuit: ~avs_client.models.Circuit
     :ivar endpoints: The endpoints.
     :vartype endpoints: ~avs_client.models.Endpoints
-    :param network_block: Required. The block of addresses should be unique across VNet in your
-     subscription as well as on-premise. Make sure the CIDR format is conformed to (A.B.C.D/X) where
-     A,B,C,D are between 0 and 255, and X is between 0 and 22.
+    :param network_block: The block of addresses should be unique across VNet in your subscription
+     as well as on-premise. Make sure the CIDR format is conformed to (A.B.C.D/X) where A,B,C,D are
+     between 0 and 255, and X is between 0 and 22.
     :type network_block: str
     :ivar management_network: Network used to access vCenter Server and NSX-T Manager.
     :vartype management_network: str
@@ -1008,7 +1400,6 @@ class PrivateCloud(TrackedResource):
         'sku': {'required': True},
         'provisioning_state': {'readonly': True},
         'endpoints': {'readonly': True},
-        'network_block': {'required': True},
         'management_network': {'readonly': True},
         'provisioning_network': {'readonly': True},
         'vmotion_network': {'readonly': True},
@@ -1023,7 +1414,7 @@ class PrivateCloud(TrackedResource):
         'location': {'key': 'location', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
         'sku': {'key': 'sku', 'type': 'Sku'},
-        'management_cluster': {'key': 'properties.managementCluster', 'type': 'ManagementCluster'},
+        'management_cluster': {'key': 'properties.managementCluster', 'type': 'CommonClusterProperties'},
         'internet': {'key': 'properties.internet', 'type': 'str'},
         'identity_sources': {'key': 'properties.identitySources', 'type': '[IdentitySource]'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
@@ -1051,7 +1442,7 @@ class PrivateCloud(TrackedResource):
         self.provisioning_state = None
         self.circuit = kwargs.get('circuit', None)
         self.endpoints = None
-        self.network_block = kwargs['network_block']
+        self.network_block = kwargs.get('network_block', None)
         self.management_network = None
         self.provisioning_network = None
         self.vmotion_network = None
@@ -1095,7 +1486,7 @@ class PrivateCloudUpdateProperties(msrest.serialization.Model):
     """The properties of a private cloud resource that may be updated.
 
     :param management_cluster: The default cluster used for management.
-    :type management_cluster: ~avs_client.models.ManagementCluster
+    :type management_cluster: ~avs_client.models.CommonClusterProperties
     :param internet: Connectivity to internet is enabled or disabled. Possible values include:
      "Enabled", "Disabled". Default value: "Disabled".
     :type internet: str or ~avs_client.models.InternetEnum
@@ -1104,7 +1495,7 @@ class PrivateCloudUpdateProperties(msrest.serialization.Model):
     """
 
     _attribute_map = {
-        'management_cluster': {'key': 'managementCluster', 'type': 'ManagementCluster'},
+        'management_cluster': {'key': 'managementCluster', 'type': 'CommonClusterProperties'},
         'internet': {'key': 'internet', 'type': 'str'},
         'identity_sources': {'key': 'identitySources', 'type': '[IdentitySource]'},
     }
@@ -1127,7 +1518,7 @@ class PrivateCloudProperties(PrivateCloudUpdateProperties):
     All required parameters must be populated in order to send to Azure.
 
     :param management_cluster: The default cluster used for management.
-    :type management_cluster: ~avs_client.models.ManagementCluster
+    :type management_cluster: ~avs_client.models.CommonClusterProperties
     :param internet: Connectivity to internet is enabled or disabled. Possible values include:
      "Enabled", "Disabled". Default value: "Disabled".
     :type internet: str or ~avs_client.models.InternetEnum
@@ -1175,7 +1566,7 @@ class PrivateCloudProperties(PrivateCloudUpdateProperties):
     }
 
     _attribute_map = {
-        'management_cluster': {'key': 'managementCluster', 'type': 'ManagementCluster'},
+        'management_cluster': {'key': 'managementCluster', 'type': 'CommonClusterProperties'},
         'internet': {'key': 'internet', 'type': 'str'},
         'identity_sources': {'key': 'identitySources', 'type': '[IdentitySource]'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
@@ -1215,7 +1606,7 @@ class PrivateCloudUpdate(msrest.serialization.Model):
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
     :param management_cluster: The default cluster used for management.
-    :type management_cluster: ~avs_client.models.ManagementCluster
+    :type management_cluster: ~avs_client.models.CommonClusterProperties
     :param internet: Connectivity to internet is enabled or disabled. Possible values include:
      "Enabled", "Disabled". Default value: "Disabled".
     :type internet: str or ~avs_client.models.InternetEnum
@@ -1225,7 +1616,7 @@ class PrivateCloudUpdate(msrest.serialization.Model):
 
     _attribute_map = {
         'tags': {'key': 'tags', 'type': '{str}'},
-        'management_cluster': {'key': 'properties.managementCluster', 'type': 'ManagementCluster'},
+        'management_cluster': {'key': 'properties.managementCluster', 'type': 'CommonClusterProperties'},
         'internet': {'key': 'properties.internet', 'type': 'str'},
         'identity_sources': {'key': 'properties.identitySources', 'type': '[IdentitySource]'},
     }
@@ -1239,6 +1630,38 @@ class PrivateCloudUpdate(msrest.serialization.Model):
         self.management_cluster = kwargs.get('management_cluster', None)
         self.internet = kwargs.get('internet', "Disabled")
         self.identity_sources = kwargs.get('identity_sources', None)
+
+
+class ProxyResource(Resource):
+    """The resource model definition for a ARM proxy resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource ID.
+    :vartype id: str
+    :ivar name: Resource name.
+    :vartype name: str
+    :ivar type: Resource type.
+    :vartype type: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ProxyResource, self).__init__(**kwargs)
 
 
 class Quota(msrest.serialization.Model):
@@ -1349,3 +1772,891 @@ class Trial(msrest.serialization.Model):
         super(Trial, self).__init__(**kwargs)
         self.status = None
         self.available_hosts = None
+
+
+class WorkloadNetworkDhcp(Resource):
+    """NSX DHCP.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource ID.
+    :vartype id: str
+    :ivar name: Resource name.
+    :vartype name: str
+    :ivar type: Resource type.
+    :vartype type: str
+    :param dhcp_type: Type of DHCP: SERVER or RELAY.Constant filled by server.  Possible values
+     include: "SERVER, RELAY".
+    :type dhcp_type: str or ~avs_client.models.DhcpTypeEnum
+    :param display_name: Display name of the DHCP entity.
+    :type display_name: str
+    :ivar segments: NSX Segments consuming DHCP.
+    :vartype segments: list[str]
+    :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
+     "Failed", "Building", "Deleting", "Updating".
+    :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkDhcpProvisioningState
+    :param revision: NSX revision number.
+    :type revision: long
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'segments': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'dhcp_type': {'key': 'properties.dhcpType', 'type': 'str'},
+        'display_name': {'key': 'properties.displayName', 'type': 'str'},
+        'segments': {'key': 'properties.segments', 'type': '[str]'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'revision': {'key': 'properties.revision', 'type': 'long'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkDhcp, self).__init__(**kwargs)
+        self.dhcp_type = None  # type: Optional[str]
+        self.display_name = kwargs.get('display_name', None)
+        self.segments = None
+        self.provisioning_state = None
+        self.revision = kwargs.get('revision', None)
+
+
+class WorkloadNetworkDhcpEntity(msrest.serialization.Model):
+    """Base class for WorkloadNetworkDhcpServer and WorkloadNetworkDhcpRelay to inherit from.
+
+    You probably want to use the sub-classes and not this class directly. Known
+    sub-classes are: WorkloadNetworkDhcpRelay, WorkloadNetworkDhcpServer.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param dhcp_type: Required. Type of DHCP: SERVER or RELAY.Constant filled by server.  Possible
+     values include: "SERVER, RELAY".
+    :type dhcp_type: str or ~avs_client.models.DhcpTypeEnum
+    :param display_name: Display name of the DHCP entity.
+    :type display_name: str
+    :ivar segments: NSX Segments consuming DHCP.
+    :vartype segments: list[str]
+    :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
+     "Failed", "Building", "Deleting", "Updating".
+    :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkDhcpProvisioningState
+    :param revision: NSX revision number.
+    :type revision: long
+    """
+
+    _validation = {
+        'dhcp_type': {'required': True},
+        'segments': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'dhcp_type': {'key': 'dhcpType', 'type': 'str'},
+        'display_name': {'key': 'displayName', 'type': 'str'},
+        'segments': {'key': 'segments', 'type': '[str]'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'revision': {'key': 'revision', 'type': 'long'},
+    }
+
+    _subtype_map = {
+        'dhcp_type': {'RELAY': 'WorkloadNetworkDhcpRelay', 'SERVER': 'WorkloadNetworkDhcpServer'}
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkDhcpEntity, self).__init__(**kwargs)
+        self.dhcp_type = None  # type: Optional[str]
+        self.display_name = kwargs.get('display_name', None)
+        self.segments = None
+        self.provisioning_state = None
+        self.revision = kwargs.get('revision', None)
+
+
+class WorkloadNetworkDhcpList(msrest.serialization.Model):
+    """A list of NSX dhcp entities.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: The items on the page.
+    :vartype value: list[~avs_client.models.WorkloadNetworkDhcp]
+    :ivar next_link: URL to get the next page if any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[WorkloadNetworkDhcp]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkDhcpList, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
+class WorkloadNetworkDhcpRelay(WorkloadNetworkDhcpEntity):
+    """NSX DHCP Relay.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param dhcp_type: Required. Type of DHCP: SERVER or RELAY.Constant filled by server.  Possible
+     values include: "SERVER, RELAY".
+    :type dhcp_type: str or ~avs_client.models.DhcpTypeEnum
+    :param display_name: Display name of the DHCP entity.
+    :type display_name: str
+    :ivar segments: NSX Segments consuming DHCP.
+    :vartype segments: list[str]
+    :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
+     "Failed", "Building", "Deleting", "Updating".
+    :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkDhcpProvisioningState
+    :param revision: NSX revision number.
+    :type revision: long
+    :param server_addresses: DHCP Relay Addresses. Max 3.
+    :type server_addresses: list[str]
+    """
+
+    _validation = {
+        'dhcp_type': {'required': True},
+        'segments': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+        'server_addresses': {'max_items': 3, 'min_items': 1},
+    }
+
+    _attribute_map = {
+        'dhcp_type': {'key': 'dhcpType', 'type': 'str'},
+        'display_name': {'key': 'displayName', 'type': 'str'},
+        'segments': {'key': 'segments', 'type': '[str]'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'revision': {'key': 'revision', 'type': 'long'},
+        'server_addresses': {'key': 'serverAddresses', 'type': '[str]'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkDhcpRelay, self).__init__(**kwargs)
+        self.dhcp_type = 'RELAY'  # type: str
+        self.server_addresses = kwargs.get('server_addresses', None)
+
+
+class WorkloadNetworkDhcpServer(WorkloadNetworkDhcpEntity):
+    """NSX DHCP Server.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param dhcp_type: Required. Type of DHCP: SERVER or RELAY.Constant filled by server.  Possible
+     values include: "SERVER, RELAY".
+    :type dhcp_type: str or ~avs_client.models.DhcpTypeEnum
+    :param display_name: Display name of the DHCP entity.
+    :type display_name: str
+    :ivar segments: NSX Segments consuming DHCP.
+    :vartype segments: list[str]
+    :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
+     "Failed", "Building", "Deleting", "Updating".
+    :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkDhcpProvisioningState
+    :param revision: NSX revision number.
+    :type revision: long
+    :param server_address: DHCP Server Address.
+    :type server_address: str
+    :param lease_time: DHCP Server Lease Time.
+    :type lease_time: long
+    """
+
+    _validation = {
+        'dhcp_type': {'required': True},
+        'segments': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'dhcp_type': {'key': 'dhcpType', 'type': 'str'},
+        'display_name': {'key': 'displayName', 'type': 'str'},
+        'segments': {'key': 'segments', 'type': '[str]'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'revision': {'key': 'revision', 'type': 'long'},
+        'server_address': {'key': 'serverAddress', 'type': 'str'},
+        'lease_time': {'key': 'leaseTime', 'type': 'long'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkDhcpServer, self).__init__(**kwargs)
+        self.dhcp_type = 'SERVER'  # type: str
+        self.server_address = kwargs.get('server_address', None)
+        self.lease_time = kwargs.get('lease_time', None)
+
+
+class WorkloadNetworkDnsService(Resource):
+    """NSX DNS Service.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource ID.
+    :vartype id: str
+    :ivar name: Resource name.
+    :vartype name: str
+    :ivar type: Resource type.
+    :vartype type: str
+    :param display_name: Display name of the DNS Service.
+    :type display_name: str
+    :param dns_service_ip: DNS service IP of the DNS Service.
+    :type dns_service_ip: str
+    :param default_dns_zone: Default DNS zone of the DNS Service.
+    :type default_dns_zone: str
+    :param fqdn_zones: FQDN zones of the DNS Service.
+    :type fqdn_zones: list[str]
+    :param log_level: DNS Service log level. Possible values include: "DEBUG", "INFO", "WARNING",
+     "ERROR", "FATAL".
+    :type log_level: str or ~avs_client.models.DnsServiceLogLevelEnum
+    :ivar status: DNS Service status. Possible values include: "SUCCESS", "FAILURE".
+    :vartype status: str or ~avs_client.models.DnsServiceStatusEnum
+    :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
+     "Failed", "Building", "Deleting", "Updating".
+    :vartype provisioning_state: str or
+     ~avs_client.models.WorkloadNetworkDnsServiceProvisioningState
+    :param revision: NSX revision number.
+    :type revision: long
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'status': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'display_name': {'key': 'properties.displayName', 'type': 'str'},
+        'dns_service_ip': {'key': 'properties.dnsServiceIp', 'type': 'str'},
+        'default_dns_zone': {'key': 'properties.defaultDnsZone', 'type': 'str'},
+        'fqdn_zones': {'key': 'properties.fqdnZones', 'type': '[str]'},
+        'log_level': {'key': 'properties.logLevel', 'type': 'str'},
+        'status': {'key': 'properties.status', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'revision': {'key': 'properties.revision', 'type': 'long'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkDnsService, self).__init__(**kwargs)
+        self.display_name = kwargs.get('display_name', None)
+        self.dns_service_ip = kwargs.get('dns_service_ip', None)
+        self.default_dns_zone = kwargs.get('default_dns_zone', None)
+        self.fqdn_zones = kwargs.get('fqdn_zones', None)
+        self.log_level = kwargs.get('log_level', None)
+        self.status = None
+        self.provisioning_state = None
+        self.revision = kwargs.get('revision', None)
+
+
+class WorkloadNetworkDnsServicesList(msrest.serialization.Model):
+    """A list of NSX DNS Services.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: The items on the page.
+    :vartype value: list[~avs_client.models.WorkloadNetworkDnsService]
+    :ivar next_link: URL to get the next page if any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[WorkloadNetworkDnsService]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkDnsServicesList, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
+class WorkloadNetworkDnsZone(Resource):
+    """NSX DNS Zone.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource ID.
+    :vartype id: str
+    :ivar name: Resource name.
+    :vartype name: str
+    :ivar type: Resource type.
+    :vartype type: str
+    :param display_name: Display name of the DNS Zone.
+    :type display_name: str
+    :param domain: Domain names of the DNS Zone.
+    :type domain: list[str]
+    :param dns_server_ips: DNS Server IP array of the DNS Zone.
+    :type dns_server_ips: list[str]
+    :param source_ip: Source IP of the DNS Zone.
+    :type source_ip: str
+    :param dns_services: Number of DNS Services using the DNS zone.
+    :type dns_services: long
+    :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
+     "Failed", "Building", "Deleting", "Updating".
+    :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkDnsZoneProvisioningState
+    :param revision: NSX revision number.
+    :type revision: long
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'display_name': {'key': 'properties.displayName', 'type': 'str'},
+        'domain': {'key': 'properties.domain', 'type': '[str]'},
+        'dns_server_ips': {'key': 'properties.dnsServerIps', 'type': '[str]'},
+        'source_ip': {'key': 'properties.sourceIp', 'type': 'str'},
+        'dns_services': {'key': 'properties.dnsServices', 'type': 'long'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'revision': {'key': 'properties.revision', 'type': 'long'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkDnsZone, self).__init__(**kwargs)
+        self.display_name = kwargs.get('display_name', None)
+        self.domain = kwargs.get('domain', None)
+        self.dns_server_ips = kwargs.get('dns_server_ips', None)
+        self.source_ip = kwargs.get('source_ip', None)
+        self.dns_services = kwargs.get('dns_services', None)
+        self.provisioning_state = None
+        self.revision = kwargs.get('revision', None)
+
+
+class WorkloadNetworkDnsZonesList(msrest.serialization.Model):
+    """A list of NSX DNS Zones.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: The items on the page.
+    :vartype value: list[~avs_client.models.WorkloadNetworkDnsZone]
+    :ivar next_link: URL to get the next page if any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[WorkloadNetworkDnsZone]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkDnsZonesList, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
+class WorkloadNetworkGateway(Resource):
+    """NSX Gateway.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource ID.
+    :vartype id: str
+    :ivar name: Resource name.
+    :vartype name: str
+    :ivar type: Resource type.
+    :vartype type: str
+    :param display_name: Display name of the DHCP entity.
+    :type display_name: str
+    :ivar path: NSX Gateway Path.
+    :vartype path: str
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'path': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'display_name': {'key': 'properties.displayName', 'type': 'str'},
+        'path': {'key': 'properties.path', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkGateway, self).__init__(**kwargs)
+        self.display_name = kwargs.get('display_name', None)
+        self.path = None
+
+
+class WorkloadNetworkGatewayList(msrest.serialization.Model):
+    """A list of NSX Gateways.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: The items on the page.
+    :vartype value: list[~avs_client.models.WorkloadNetworkGateway]
+    :ivar next_link: URL to get the next page if any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[WorkloadNetworkGateway]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkGatewayList, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
+class WorkloadNetworkPortMirroring(Resource):
+    """NSX Port Mirroring.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource ID.
+    :vartype id: str
+    :ivar name: Resource name.
+    :vartype name: str
+    :ivar type: Resource type.
+    :vartype type: str
+    :param display_name: Display name of the port mirroring profile.
+    :type display_name: str
+    :param direction: Direction of port mirroring profile. Possible values include: "INGRESS,
+     EGRESS, BIDIRECTIONAL".
+    :type direction: str or ~avs_client.models.PortMirroringDirectionEnum
+    :param source: Source VM Group.
+    :type source: str
+    :param destination: Destination VM Group.
+    :type destination: str
+    :ivar status: Port Mirroring Status. Possible values include: "SUCCESS, FAILURE".
+    :vartype status: str or ~avs_client.models.PortMirroringStatusEnum
+    :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
+     "Failed", "Building", "Deleting", "Updating".
+    :vartype provisioning_state: str or
+     ~avs_client.models.WorkloadNetworkPortMirroringProvisioningState
+    :param revision: NSX revision number.
+    :type revision: long
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'status': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'display_name': {'key': 'properties.displayName', 'type': 'str'},
+        'direction': {'key': 'properties.direction', 'type': 'str'},
+        'source': {'key': 'properties.source', 'type': 'str'},
+        'destination': {'key': 'properties.destination', 'type': 'str'},
+        'status': {'key': 'properties.status', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'revision': {'key': 'properties.revision', 'type': 'long'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkPortMirroring, self).__init__(**kwargs)
+        self.display_name = kwargs.get('display_name', None)
+        self.direction = kwargs.get('direction', None)
+        self.source = kwargs.get('source', None)
+        self.destination = kwargs.get('destination', None)
+        self.status = None
+        self.provisioning_state = None
+        self.revision = kwargs.get('revision', None)
+
+
+class WorkloadNetworkPortMirroringList(msrest.serialization.Model):
+    """A list of NSX Port Mirroring.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: The items on the page.
+    :vartype value: list[~avs_client.models.WorkloadNetworkPortMirroring]
+    :ivar next_link: URL to get the next page if any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[WorkloadNetworkPortMirroring]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkPortMirroringList, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
+class WorkloadNetworkSegment(Resource):
+    """NSX Segment.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource ID.
+    :vartype id: str
+    :ivar name: Resource name.
+    :vartype name: str
+    :ivar type: Resource type.
+    :vartype type: str
+    :param display_name: Display name of the segment.
+    :type display_name: str
+    :param connected_gateway: Gateway which to connect segment to.
+    :type connected_gateway: str
+    :param subnet: Subnet which to connect segment to.
+    :type subnet: ~avs_client.models.WorkloadNetworkSegmentSubnet
+    :ivar port_vif: Port Vif which segment is associated with.
+    :vartype port_vif: list[~avs_client.models.WorkloadNetworkSegmentPortVif]
+    :ivar status: Segment status. Possible values include: "SUCCESS, FAILURE".
+    :vartype status: str or ~avs_client.models.SegmentStatusEnum
+    :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
+     "Failed", "Building", "Deleting", "Updating".
+    :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkSegmentProvisioningState
+    :param revision: NSX revision number.
+    :type revision: long
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'port_vif': {'readonly': True},
+        'status': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'display_name': {'key': 'properties.displayName', 'type': 'str'},
+        'connected_gateway': {'key': 'properties.connectedGateway', 'type': 'str'},
+        'subnet': {'key': 'properties.subnet', 'type': 'WorkloadNetworkSegmentSubnet'},
+        'port_vif': {'key': 'properties.portVif', 'type': '[WorkloadNetworkSegmentPortVif]'},
+        'status': {'key': 'properties.status', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'revision': {'key': 'properties.revision', 'type': 'long'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkSegment, self).__init__(**kwargs)
+        self.display_name = kwargs.get('display_name', None)
+        self.connected_gateway = kwargs.get('connected_gateway', None)
+        self.subnet = kwargs.get('subnet', None)
+        self.port_vif = None
+        self.status = None
+        self.provisioning_state = None
+        self.revision = kwargs.get('revision', None)
+
+
+class WorkloadNetworkSegmentPortVif(msrest.serialization.Model):
+    """Ports and any VIF attached to segment.
+
+    :param port_name: Name of port or VIF attached to segment.
+    :type port_name: str
+    """
+
+    _attribute_map = {
+        'port_name': {'key': 'portName', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkSegmentPortVif, self).__init__(**kwargs)
+        self.port_name = kwargs.get('port_name', None)
+
+
+class WorkloadNetworkSegmentsList(msrest.serialization.Model):
+    """A list of NSX Segments.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: The items on the page.
+    :vartype value: list[~avs_client.models.WorkloadNetworkSegment]
+    :ivar next_link: URL to get the next page if any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[WorkloadNetworkSegment]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkSegmentsList, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
+class WorkloadNetworkSegmentSubnet(msrest.serialization.Model):
+    """Subnet configuration for segment.
+
+    :param dhcp_ranges: DHCP Range assigned for subnet.
+    :type dhcp_ranges: list[str]
+    :param gateway_address: Gateway address.
+    :type gateway_address: str
+    """
+
+    _attribute_map = {
+        'dhcp_ranges': {'key': 'dhcpRanges', 'type': '[str]'},
+        'gateway_address': {'key': 'gatewayAddress', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkSegmentSubnet, self).__init__(**kwargs)
+        self.dhcp_ranges = kwargs.get('dhcp_ranges', None)
+        self.gateway_address = kwargs.get('gateway_address', None)
+
+
+class WorkloadNetworkVirtualMachine(Resource):
+    """NSX Virtual Machine.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource ID.
+    :vartype id: str
+    :ivar name: Resource name.
+    :vartype name: str
+    :ivar type: Resource type.
+    :vartype type: str
+    :param display_name: Display name of the VM.
+    :type display_name: str
+    :ivar vm_type: Virtual machine type. Possible values include: "REGULAR, EDGE, SERVICE".
+    :vartype vm_type: str or ~avs_client.models.VMTypeEnum
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'vm_type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'display_name': {'key': 'properties.displayName', 'type': 'str'},
+        'vm_type': {'key': 'properties.vmType', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkVirtualMachine, self).__init__(**kwargs)
+        self.display_name = kwargs.get('display_name', None)
+        self.vm_type = None
+
+
+class WorkloadNetworkVirtualMachinesList(msrest.serialization.Model):
+    """A list of NSX Virtual Machines.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: The items on the page.
+    :vartype value: list[~avs_client.models.WorkloadNetworkVirtualMachine]
+    :ivar next_link: URL to get the next page if any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[WorkloadNetworkVirtualMachine]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkVirtualMachinesList, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None
+
+
+class WorkloadNetworkVMGroup(Resource):
+    """NSX VM Group.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Resource ID.
+    :vartype id: str
+    :ivar name: Resource name.
+    :vartype name: str
+    :ivar type: Resource type.
+    :vartype type: str
+    :param display_name: Display name of the VM group.
+    :type display_name: str
+    :param members: Virtual machine members of this group.
+    :type members: list[str]
+    :ivar status: VM Group status. Possible values include: "SUCCESS, FAILURE".
+    :vartype status: str or ~avs_client.models.VMGroupStatusEnum
+    :ivar provisioning_state: The provisioning state. Possible values include: "Succeeded",
+     "Failed", "Building", "Deleting", "Updating".
+    :vartype provisioning_state: str or ~avs_client.models.WorkloadNetworkVMGroupProvisioningState
+    :param revision: NSX revision number.
+    :type revision: long
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'status': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'display_name': {'key': 'properties.displayName', 'type': 'str'},
+        'members': {'key': 'properties.members', 'type': '[str]'},
+        'status': {'key': 'properties.status', 'type': 'str'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        'revision': {'key': 'properties.revision', 'type': 'long'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkVMGroup, self).__init__(**kwargs)
+        self.display_name = kwargs.get('display_name', None)
+        self.members = kwargs.get('members', None)
+        self.status = None
+        self.provisioning_state = None
+        self.revision = kwargs.get('revision', None)
+
+
+class WorkloadNetworkVMGroupsList(msrest.serialization.Model):
+    """A list of NSX VM Groups.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: The items on the page.
+    :vartype value: list[~avs_client.models.WorkloadNetworkVMGroup]
+    :ivar next_link: URL to get the next page if any.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        'value': {'readonly': True},
+        'next_link': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[WorkloadNetworkVMGroup]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(WorkloadNetworkVMGroupsList, self).__init__(**kwargs)
+        self.value = None
+        self.next_link = None

@@ -40,6 +40,10 @@ def cf_agent_pools(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW).agent_pools
 
 
+def cf_maintenance_configurations(cli_ctx, *_):
+    return get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_AKS_PREVIEW).maintenance_configurations
+
+
 def cf_resource_groups(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
                                    subscription_id=subscription_id).resource_groups

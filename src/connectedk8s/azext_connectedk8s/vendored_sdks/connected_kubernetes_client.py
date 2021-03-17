@@ -57,9 +57,9 @@ class ConnectedKubernetesClient(SDKClient):
     :vartype config: ConnectedKubernetesClientConfiguration
 
     :ivar connected_cluster: ConnectedCluster operations
-    :vartype connected_cluster: azure.mgmt.hybridkubernetes.v2020_01_01_preview.operations.ConnectedClusterOperations
+    :vartype connected_cluster: azure.mgmt.hybridkubernetes.operations.ConnectedClusterOperations
     :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.hybridkubernetes.v2020_01_01_preview.operations.Operations
+    :vartype operations: azure.mgmt.hybridkubernetes.operations.Operations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -76,7 +76,7 @@ class ConnectedKubernetesClient(SDKClient):
         super(ConnectedKubernetesClient, self).__init__(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
-        self.api_version = '2020-01-01-preview'
+        self.api_version = '2021-03-01'
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
