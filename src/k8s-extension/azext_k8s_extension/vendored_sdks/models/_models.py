@@ -239,6 +239,8 @@ class ExtensionInstance(ProxyResource):
     :vartype name: str
     :ivar type: Resource type
     :vartype type: str
+    :param location: Location of resource type
+    :type location: str
     :param system_data: Top level metadata
      https://github.com/Azure/azure-resource-manager-rpc/blob/master/v1.0/common-api-contracts.md#system-metadata-for-all-azure-resources
     :type system_data: ~azure.mgmt.kubernetesconfiguration.models.SystemData
@@ -305,6 +307,7 @@ class ExtensionInstance(ProxyResource):
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
+        'location': {'key': 'location', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'identity': {'key': 'identity', 'type': 'ConfigurationIdentity'},
         'extension_type': {'key': 'properties.extensionType', 'type': 'str'},
@@ -324,6 +327,7 @@ class ExtensionInstance(ProxyResource):
 
     def __init__(self, **kwargs):
         super(ExtensionInstance, self).__init__(**kwargs)
+        self.location = kwargs.get('location', None)
         self.extension_type = kwargs.get('extension_type', None)
         self.auto_upgrade_minor_version = kwargs.get('auto_upgrade_minor_version', None)
         self.release_train = kwargs.get('release_train', None)

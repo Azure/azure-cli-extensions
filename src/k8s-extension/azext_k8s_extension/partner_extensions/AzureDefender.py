@@ -55,9 +55,7 @@ class AzureDefender(PartnerExtensionModel):
             version=version,
             scope=ext_scope,
             configuration_settings=configuration_settings,
-            configuration_protected_settings=configuration_protected_settings,
-            identity=None,
-            location=""
+            configuration_protected_settings=configuration_protected_settings
         )
         return extension_instance, name, create_identity
 

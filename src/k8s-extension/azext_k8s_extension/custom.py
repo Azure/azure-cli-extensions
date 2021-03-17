@@ -19,6 +19,7 @@ from azext_k8s_extension.vendored_sdks.models import Scope
 
 from azext_k8s_extension.partner_extensions.ContainerInsights import ContainerInsights
 from azext_k8s_extension.partner_extensions.AzureDefender import AzureDefender
+from azext_k8s_extension.partner_extensions.Cassandra import Cassandra
 from azext_k8s_extension.partner_extensions.DefaultExtension import DefaultExtension
 import azext_k8s_extension._consts as consts
 
@@ -32,6 +33,7 @@ def ExtensionFactory(extension_name):
     extension_map = {
         'microsoft.azuremonitor.containers': ContainerInsights,
         'microsoft.azuredefender.kubernetes': AzureDefender,
+        'cassandradatacentersoperator': Cassandra
     }
 
     # Return the extension if we find it in the map, else return the default

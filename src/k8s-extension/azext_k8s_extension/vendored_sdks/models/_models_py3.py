@@ -239,6 +239,8 @@ class ExtensionInstance(ProxyResource):
     :vartype name: str
     :ivar type: Resource type
     :vartype type: str
+    :param location: Location of resource type
+    :type location: str
     :param system_data: Top level metadata
      https://github.com/Azure/azure-resource-manager-rpc/blob/master/v1.0/common-api-contracts.md#system-metadata-for-all-azure-resources
     :type system_data: ~azure.mgmt.kubernetesconfiguration.models.SystemData
@@ -305,6 +307,7 @@ class ExtensionInstance(ProxyResource):
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
+        'location': {'key': 'location', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'identity': {'key': 'identity', 'type': 'ConfigurationIdentity'},
         'extension_type': {'key': 'properties.extensionType', 'type': 'str'},
@@ -322,8 +325,9 @@ class ExtensionInstance(ProxyResource):
         'error_info': {'key': 'properties.errorInfo', 'type': 'ErrorDefinition'}
     }
 
-    def __init__(self, *, system_data=None, extension_type: str=None, auto_upgrade_minor_version: bool=None, release_train: str=None, version: str=None, scope=None, configuration_settings=None, configuration_protected_settings=None, install_state=None, statuses=None, identity=None, **kwargs) -> None:
+    def __init__(self, *, system_data=None, location: str=None, extension_type: str=None, auto_upgrade_minor_version: bool=None, release_train: str=None, version: str=None, scope=None, configuration_settings=None, configuration_protected_settings=None, install_state=None, statuses=None, identity=None, **kwargs) -> None:
         super(ExtensionInstance, self).__init__(system_data=system_data, **kwargs)
+        self.location = location
         self.extension_type = extension_type
         self.auto_upgrade_minor_version = auto_upgrade_minor_version
         self.release_train = release_train

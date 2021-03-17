@@ -14,7 +14,7 @@ from azext_k8s_extension.vendored_sdks.models import Scope
 from azext_k8s_extension.partner_extensions.PartnerExtensionModel import PartnerExtensionModel
 
 
-class DefaultExtension(PartnerExtensionModel):
+class Cassandra(PartnerExtensionModel):
     def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, extension_type,
                scope, auto_upgrade_minor_version, release_train, version, target_namespace,
                release_namespace, configuration_settings, configuration_protected_settings,
@@ -33,7 +33,7 @@ class DefaultExtension(PartnerExtensionModel):
                 scope_namespace = ScopeNamespace(target_namespace=target_namespace)
                 ext_scope = Scope(namespace=scope_namespace, cluster=None)
 
-        create_identity = False
+        create_identity = True
         extension_instance = ExtensionInstance(
             extension_type=extension_type,
             auto_upgrade_minor_version=auto_upgrade_minor_version,
@@ -41,7 +41,7 @@ class DefaultExtension(PartnerExtensionModel):
             version=version,
             scope=ext_scope,
             configuration_settings=configuration_settings,
-            configuration_protected_settings=configuration_protected_settings
+            configuration_protected_settings=configuration_protected_settings,
         )
         return extension_instance, name, create_identity
 
