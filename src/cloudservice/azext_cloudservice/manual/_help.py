@@ -19,7 +19,7 @@ helps['cloud-service role-instance'] = """
 
 helps['cloud-service role-instance list'] = """
     type: command
-    short-summary: "Gets the list of all role instances in a cloud service."
+    short-summary: "Get the list of all role instances in a cloud service."
 """
 
 helps['cloud-service role-instance show'] = """
@@ -79,8 +79,7 @@ helps['cloud-service role'] = """
 
 helps['cloud-service role list'] = """
     type: command
-    short-summary: "Get a list of all roles in a cloud service. Use nextLink property in the response to get the next \
-page of roles. Do this till nextLink is null to fetch all the roles."
+    short-summary: "Get a list of all roles in a cloud service."
 """
 
 helps['cloud-service role show'] = """
@@ -95,8 +94,7 @@ helps['cloud-service'] = """
 
 helps['cloud-service list'] = """
     type: command
-    short-summary: "Get a list of all cloud services under a resource group. Use nextLink property in the response to \
-get the next page of Cloud Services. Do this till nextLink is null to fetch all the Cloud Services."
+    short-summary: "Get a list of all cloud services under a resource group."
 """
 
 helps['cloud-service show'] = """
@@ -225,8 +223,7 @@ helps['cloud-service update-domain list-update-domain'] = """
 
 helps['cloud-service update-domain show-update-domain'] = """
     type: command
-    short-summary: "Get the specified update domain of a cloud service. Use nextLink property in the response to get \
-the next page of update domains. Do this till nextLink is null to fetch all the update domains."
+    short-summary: "Get the specified update domain of a cloud service."
 """
 
 helps['cloud-service update-domain walk-update-domain'] = """
