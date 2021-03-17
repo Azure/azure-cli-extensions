@@ -65,7 +65,7 @@ def show_k8s_extension(client, resource_group_name, cluster_name, name, cluster_
 
 
 def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, cluster_type,
-                         extension_type, scope='cluster', auto_upgrade_minor_version=None, release_train=None,
+                         extension_type, scope=None, auto_upgrade_minor_version=None, release_train=None,
                          version=None, target_namespace=None, release_namespace=None, configuration_settings=None,
                          configuration_protected_settings=None, configuration_settings_file=None,
                          configuration_protected_settings_file=None, tags=None):

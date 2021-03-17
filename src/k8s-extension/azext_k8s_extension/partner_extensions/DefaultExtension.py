@@ -25,16 +25,13 @@ class DefaultExtension(PartnerExtensionModel):
 
         """
         ext_scope = None
-        if scope is None or scope.lower() == 'cluster':
-            scope_cluster = ScopeCluster(release_namespace=release_namespace)
-            ext_scope = Scope(cluster=scope_cluster, namespace=None)
-        else:
-            scope_namespace = ScopeNamespace(target_namespace=target_namespace)
-            ext_scope = Scope(namespace=scope_namespace, cluster=None)
-
-        # If release-train is not input, set it to 'stable'
-        if release_train is None:
-            release_train = 'stable'
+        if scope is not None:
+            if scope.lower() == 'cluster':
+                scope_cluster = ScopeCluster(release_namespace=release_namespace)
+                ext_scope = Scope(cluster=scope_cluster, namespace=None)
+            elif scope.lower() == 'namespace':
+                scope_namespace = ScopeNamespace(target_namespace=target_namespace)
+                ext_scope = Scope(namespace=scope_namespace, cluster=None)
 
         create_identity = False
         extension_instance = ExtensionInstance(
