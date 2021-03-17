@@ -390,3 +390,12 @@ def user_confirmation(message, yes=False):
             raise CLIError('Operation cancelled.')
     except NoTTYException:
         raise CLIError('Unable to prompt for confirmation as no tty available. Use --yes.')
+
+
+def is_guid(guid):
+    import uuid
+    try:
+        uuid.UUID(guid)
+        return True
+    except ValueError:
+        return False
