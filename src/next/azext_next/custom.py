@@ -190,7 +190,7 @@ def _execute_nx_cmd(cmd, nx_cmd, nx_param, catch_exception=False):
         if param in store_true_params:
             args.append(param)
         else:
-            print("Please input " + Fore.LIGHTBLUE_EX + param + Fore.RESET + ":", end='')
+            print("Please input " + Fore.LIGHTBLUE_EX + param + Fore.RESET + ": ", end='')
             value = input()
             if param == '<positional argument>':
                 if value:

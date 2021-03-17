@@ -189,7 +189,7 @@ def print_successful_styled_text(message):
 
     prefix_text = '\nDone: '
     if is_modern_terminal():
-        prefix_text = '\n(✓ )Done: '
+        prefix_text = '\n(✓)Done: '
     print_styled_text([(Style.SUCCESS, prefix_text), (Style.PRIMARY, message)])
 
 
