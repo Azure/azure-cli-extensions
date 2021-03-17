@@ -247,10 +247,12 @@ def __validate_scope_and_namespace(scope, release_namespace, target_namespace):
             message = "When --scope is 'namespace', --release-namespace must not be given."
             raise MutuallyExclusiveArgumentError(message)
 
+
 def __validate_scope_after_customization(scope_obj: Scope):
     if scope_obj is not None and scope_obj.namespace is not None and scope_obj.namespace.target_namespace is None:
         message = "When --scope is 'namespace', --target-namespace must be given."
         raise RequiredArgumentMissingError(message)
+
 
 def __validate_version_and_auto_upgrade(version, auto_upgrade_minor_version):
     if version is not None:
