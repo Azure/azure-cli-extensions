@@ -14,7 +14,6 @@ from azure.cli.core.azclierror import ResourceNotFoundError, MutuallyExclusiveAr
     InvalidArgumentValueError, CommandNotFoundError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azext_k8s_extension.vendored_sdks.models import ConfigurationIdentity
-# from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceUpdate
 from azext_k8s_extension.vendored_sdks.models import ErrorResponseException
 
 from azext_k8s_extension.partner_extensions.ContainerInsights import ContainerInsights
