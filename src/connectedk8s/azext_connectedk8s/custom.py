@@ -1149,13 +1149,15 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
             raise CLIError("Please provide both aad authorization client id and client secret to enable AAD RBAC feature")
 
     if enable_cl:
-        enable_cl_flag, custom_locations_oid = check_cl_registration_and_get_oid(cmd)
-        if not enable_cluster_connect and enable_cl_flag:
+        enable_cl, custom_locations_oid = check_cl_registration_and_get_oid(cmd)
+        if not enable_cluster_connect and enable_cl:
             enable_cluster_connect = True
             features.append("cluster-connect")
             logger.warning("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too.")
-        if not enable_cl_flag:
+        if not enable_cl:
             features.remove("custom-locations")
+            if len(features) == 0:
+                raise CLIError("Based on the inputs given and the warnings displayed above, there are no features to be enabled.")
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
