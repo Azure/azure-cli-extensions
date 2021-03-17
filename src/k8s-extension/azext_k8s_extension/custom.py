@@ -19,6 +19,7 @@ from azext_k8s_extension.vendored_sdks.models import ErrorResponseException
 from azext_k8s_extension.partner_extensions.ContainerInsights import ContainerInsights
 from azext_k8s_extension.partner_extensions.AzureDefender import AzureDefender
 from azext_k8s_extension.partner_extensions.DefaultExtension import DefaultExtension
+import azext_k8s_extension._consts as consts
 
 from ._client_factory import cf_resources
 
@@ -111,7 +112,6 @@ def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
 
     # Identity is not created by default.  Extension type must specify if identity is required.
     create_identity = False
-
     extension_instance = None
 
     # Scope & Namespace validation - common to all extension-types
@@ -152,8 +152,8 @@ def update_k8s_extension(client, resource_group_name, cluster_type, cluster_name
 
     # TODO: Remove this after we eventually get PATCH implemented for update and uncomment
     raise CommandNotFoundError(
-        "\"k8s-extension update\" currently is not available. "
-        "Use \"k8s-extension create\" to update a previously created extension instance."
+        f"\"{consts.EXTENSION_NAME} update\" currently is not available. "
+        f"Use \"{consts.EXTENSION_NAME} create\" to update a previously created extension instance."
     )
 
     # # Ensure some values are provided for update
@@ -188,10 +188,7 @@ def delete_k8s_extension(client, resource_group_name, cluster_name, name, cluste
     """
     # Determine ClusterRP
     cluster_rp = __get_cluster_rp(cluster_type)
-
-    k8s_extension_instance_name = name
-
-    return client.delete(resource_group_name, cluster_rp, cluster_type, cluster_name, k8s_extension_instance_name)
+    return client.delete(resource_group_name, cluster_rp, cluster_type, cluster_name, name)
 
 
 def __create_identity(cmd, resource_group_name, cluster_name, cluster_type, cluster_rp):
