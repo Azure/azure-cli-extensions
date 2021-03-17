@@ -84,7 +84,7 @@ Run_RefreshThread_Fault_Type = "Error while starting refresh thread"
 Load_Kubeconfig_Fault_Type = "Error while loading kubeconfig"
 
 Unsupported_Fault_Type = "Error while checking operating system.Unsupported OS detected."
-
+Port_Check_Fault_Type = "Error while checking if port is in use."
 Cluster_Info_Not_Found_Type = 'Error while finding current cluster server details'
 Kubeconfig_Failed_To_Load_Fault_Type = "failed-to-load-kubeconfig-file"
 Proxy_Cert_Path_Does_Not_Exist_Fault_Type = 'proxy-cert-path-does-not-exist-error'

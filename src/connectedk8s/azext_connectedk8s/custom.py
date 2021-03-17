@@ -19,7 +19,7 @@ import requests
 import urllib.request
 import signal
 from _thread import interrupt_main
-from psutil import process_iter, NoSuchProcess, AccessDenied, ZombieProcess
+from psutil import process_iter, NoSuchProcess, AccessDenied, ZombieProcess, net_connections
 from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
@@ -1590,6 +1590,19 @@ def client_side_proxy_wrapper(cmd,
     cloud = send_cloud_telemetry(cmd)
     args = []
     operating_system = platform.system()
+    proc_name = f'arcProxy{operating_system}'
+
+    if(check_process(proc_name)):
+        raise CLIError('Another instance of proxy already running')
+    
+    port_error_string=""
+    if check_if_port_is_open(api_server_port):
+        port_error_string += f'Port {api_server_port} is already in use. Please select a different port with --api-server option.\n'
+    if check_if_port_is_open(client_proxy_port):
+        port_error_string += f'Port {client_proxy_port} is already in use. Please select a different port with --client-proxy-option.\n'
+    if port_error_string!="":
+        raise CLIError(port_error_string)
+    
     signal.signal(signal.SIGINT, ctrlc_handler)
     # Creating installation location, request uri and older version exe location depending on OS
     if(operating_system == 'Windows'):
@@ -1597,22 +1610,18 @@ def client_side_proxy_wrapper(cmd,
         requestUri = f'https://k8sconnectcsp.blob.core.windows.net/release12-03-21/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe'
         older_version_string = f'.clientproxy\\arcProxy{operating_system}*.exe'
         creds_string = r'.azure\accessTokens.json'
-        proc_name = f'arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe'
 
     elif(operating_system == 'Linux' or operating_system == 'Darwin'):
         install_location_string = f'.clientproxy/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}'
         requestUri = f'https://k8sconnectcsp.blob.core.windows.net/release12-03-21/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}'
         older_version_string = f'.clientproxy/arcProxy{operating_system}*'
         creds_string = r'.azure/accessTokens.json'
-        proc_name = f'arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}'
 
     else:
         telemetry.set_exception(exception='Unsupported OS', fault_type=consts.Unsupported_Fault_Type,
                                 summary=f'{operating_system} is not supported yet')
         raise CLIError(f'The {operating_system} platform is not currently supported.')
 
-    if(check_process(proc_name)):
-        raise CLIError('Another instance of proxy already running')
 
     install_location = os.path.expanduser(os.path.join('~', install_location_string))
     args.append(install_location)
@@ -1875,6 +1884,7 @@ def client_side_proxy(cmd,
 
     try:
         print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
+        print("You can now start sending requests using kubectl on the current context.")
 
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Merge_Kubeconfig_Fault_Type,
@@ -1911,7 +1921,7 @@ def check_process(processName):
     '''
     for proc in process_iter():
         try:
-            if processName == proc.name():
+            if proc.name().startswith(processName):
                 return True
         except (NoSuchProcess, AccessDenied, ZombieProcess):
             pass
@@ -1960,4 +1970,17 @@ def check_cl_registration_and_get_oid(cmd):
         logger.warning("Unable to fetch registration state of 'Microsoft.ExtendedLocation'.Proceeding without enabling the feature.")
         telemetry.set_exception(exception=e, fault_type=consts.Custom_Locations_Registration_Check_Fault_Type,
                                 summary='Unable to fetch status of Custom Locations RP registration.')
-    return enable_custom_locations, custom_locations_oid
+    return enable_custom_locations,custom_locations_oid
+
+
+def check_if_port_is_open(port):
+    try:
+        connections = net_connections(kind='inet')
+        for tup in connections:
+            if tup[3][1] == port:
+                return True
+    except Exception as e:
+        telemetry.set_exception(exception=e, fault_type=consts.Port_Check_Fault_Type,
+                                summary='Failed to check if port is in use.')
+        raise CLIError("Failed to check if port is in use. " + str(e))
+    return False
