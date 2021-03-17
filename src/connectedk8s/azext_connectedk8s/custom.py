@@ -1596,15 +1596,15 @@ def client_side_proxy_wrapper(cmd,
 
     if(check_process(proc_name)):
         raise CLIError('Another instance of proxy already running')
-    
-    port_error_string=""
+
+    port_error_string = ""
     if check_if_port_is_open(api_server_port):
         port_error_string += f'Port {api_server_port} is already in use. Please select a different port with --api-server option.\n'
     if check_if_port_is_open(client_proxy_port):
         port_error_string += f'Port {client_proxy_port} is already in use. Please select a different port with --client-proxy-option.\n'
-    if port_error_string!="":
+    if port_error_string != "":
         raise CLIError(port_error_string)
-    
+
     signal.signal(signal.SIGINT, ctrlc_handler)
     # Creating installation location, request uri and older version exe location depending on OS
     if(operating_system == 'Windows'):
@@ -1623,7 +1623,6 @@ def client_side_proxy_wrapper(cmd,
         telemetry.set_exception(exception='Unsupported OS', fault_type=consts.Unsupported_Fault_Type,
                                 summary=f'{operating_system} is not supported yet')
         raise CLIError(f'The {operating_system} platform is not currently supported.')
-
 
     install_location = os.path.expanduser(os.path.join('~', install_location_string))
     args.append(install_location)
@@ -1972,7 +1971,7 @@ def check_cl_registration_and_get_oid(cmd):
         logger.warning("Unable to fetch registration state of 'Microsoft.ExtendedLocation'.Proceeding without enabling the feature.")
         telemetry.set_exception(exception=e, fault_type=consts.Custom_Locations_Registration_Check_Fault_Type,
                                 summary='Unable to fetch status of Custom Locations RP registration.')
-    return enable_custom_locations,custom_locations_oid
+    return enable_custom_locations, custom_locations_oid
 
 
 def check_if_port_is_open(port):
