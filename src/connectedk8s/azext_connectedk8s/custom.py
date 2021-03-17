@@ -37,6 +37,7 @@ from azext_connectedk8s._client_factory import _graph_client_factory
 from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import _resource_client_factory
 from azext_connectedk8s._client_factory import _resource_providers_client
+from azext_connectedk8s._client_factory import get_graph_client_service_principals
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 from glob import glob
@@ -1923,7 +1924,7 @@ def ctrlc_handler(sig, frame):
 
 def get_custom_locations_oid(cmd):
     try:
-        sp_graph_client = utils.get_graph_client_service_principals(cmd.cli_ctx)
+        sp_graph_client = get_graph_client_service_principals(cmd.cli_ctx)
         sub_filters = []
         sub_filters.append("startswith(displayName,'{}')".format("Custom Locations RP"))
         result = list(sp_graph_client.list(filter=(' and '.join(sub_filters))))
