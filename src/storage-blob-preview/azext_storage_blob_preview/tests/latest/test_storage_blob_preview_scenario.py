@@ -394,3 +394,38 @@ class StorageContainerScenarioTest(StorageScenarioMixin, ScenarioTest):
             .assert_with_checks(JMESPathCheck('length(@)', 1))
         self.storage_cmd('storage container list --include-deleted ', account_info) \
             .assert_with_checks(JMESPathCheck('length(@)', 1))
+
+    @ResourceGroupPreparer(name_prefix='clitest')
+    @StorageAccountPreparer(kind='StorageV2', name_prefix='clitest', location='eastus2euap')
+    def test_storage_container_vlm_scenarios(self, resource_group, storage_account):
+        import time
+        account_info = self.get_account_info(resource_group, storage_account)
+        self.kwargs.update({
+            'container1': self.create_random_name(prefix='con1', length=10),
+            'container2': self.create_random_name(prefix='con2', length=10)
+        })
+        self.cmd('storage account blob-service-properties update -n {sa} -g {rg} --enable-versioning ',
+                 checks={
+                     JMESPathCheck('isVersioningEnabled', True)
+                 })
+        # Enable vlm when creation
+        self.cmd('storage container-rm create -n {container1} --storage-account {sa} --enable-vlm',
+                 checks={
+                     JMESPathCheck('name', self.kwargs['container1']),
+                     JMESPathCheck('enabled', True)})
+
+        # Enable vlm for containers with immutability policy
+        self.cmd('storage container-rm create -n {container2} --storage-account {sa}',
+                 checks={
+                     JMESPathCheck('name', self.kwargs['container2']),
+                     JMESPathCheck('enabled', None)})
+
+        self.cmd('storage container immutability-policy create -n {container2} --account-name {sa} -w --period 1',
+                 checks={
+                     JMESPathCheck('name', self.kwargs['container2']),
+                     JMESPathCheck('immutabilityPeriodSinceCreationInDays', 1)})
+
+        self.storage_cmd('storage container-rm enable-vlm -n {container2} --storage-account {sa} ',
+                         checks={
+                             JMESPathCheck('name', self.kwargs['container2']),
+                             JMESPathCheck('enabled', True)})
