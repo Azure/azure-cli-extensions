@@ -56,5 +56,5 @@ def _graph_client_factory(cli_ctx, **_):
     return client
 
 
-def get_graph_client_service_principals(cli_ctx, _):
+def get_graph_client_service_principals(cli_ctx):
     return _graph_client_factory(cli_ctx).service_principals
