@@ -306,6 +306,7 @@ class ExtensionInstance(ProxyResource):
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'identity': {'key': 'identity', 'type': 'ConfigurationIdentity'},
         'extension_type': {'key': 'properties.extensionType', 'type': 'str'},
         'auto_upgrade_minor_version': {'key': 'properties.autoUpgradeMinorVersion', 'type': 'bool'},
         'release_train': {'key': 'properties.releaseTrain', 'type': 'str'},
@@ -318,8 +319,7 @@ class ExtensionInstance(ProxyResource):
         'creation_time': {'key': 'properties.creationTime', 'type': 'str'},
         'last_modified_time': {'key': 'properties.lastModifiedTime', 'type': 'str'},
         'last_status_time': {'key': 'properties.lastStatusTime', 'type': 'str'},
-        'error_info': {'key': 'properties.errorInfo', 'type': 'ErrorDefinition'},
-        'identity': {'key': 'properties.identity', 'type': 'ConfigurationIdentity'},
+        'error_info': {'key': 'properties.errorInfo', 'type': 'ErrorDefinition'}
     }
 
     def __init__(self, *, system_data=None, extension_type: str=None, auto_upgrade_minor_version: bool=None, release_train: str=None, version: str=None, scope=None, configuration_settings=None, configuration_protected_settings=None, install_state=None, statuses=None, identity=None, **kwargs) -> None:
