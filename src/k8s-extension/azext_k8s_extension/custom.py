@@ -11,10 +11,11 @@ from knack.log import get_logger
 from msrestazure.azure_exceptions import CloudError
 
 from azure.cli.core.azclierror import ResourceNotFoundError, MutuallyExclusiveArgumentError, \
-    InvalidArgumentValueError, CommandNotFoundError
+    InvalidArgumentValueError, CommandNotFoundError, RequiredArgumentMissingError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azext_k8s_extension.vendored_sdks.models import ConfigurationIdentity
 from azext_k8s_extension.vendored_sdks.models import ErrorResponseException
+from azext_k8s_extension.vendored_sdks.models import Scope
 
 from azext_k8s_extension.partner_extensions.ContainerInsights import ContainerInsights
 from azext_k8s_extension.partner_extensions.AzureDefender import AzureDefender
@@ -128,6 +129,7 @@ def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
 
     # Common validations
     __validate_version_and_auto_upgrade(extension_instance.version, extension_instance.auto_upgrade_minor_version)
+    __validate_scope_after_customization(extension_instance.scope)
 
     # Create identity, if required
     if create_identity:
@@ -238,13 +240,17 @@ def __get_cluster_rp(cluster_type):
 def __validate_scope_and_namespace(scope, release_namespace, target_namespace):
     if scope == 'cluster':
         if target_namespace is not None:
-            message = "When Scope is 'cluster', target-namespace must not be given."
+            message = "When --scope is 'cluster', --target-namespace must not be given."
             raise MutuallyExclusiveArgumentError(message)
     else:
         if release_namespace is not None:
-            message = "When Scope is 'namespace', release-namespace must not be given."
+            message = "When --scope is 'namespace', --release-namespace must not be given."
             raise MutuallyExclusiveArgumentError(message)
 
+def __validate_scope_after_customization(scope_obj: Scope):
+    if scope_obj is not None and scope_obj.namespace is not None and scope_obj.namespace.target_namespace is None:
+        message = "When --scope is 'namespace', --target-namespace must be given."
+        raise RequiredArgumentMissingError(message)
 
 def __validate_version_and_auto_upgrade(version, auto_upgrade_minor_version):
     if version is not None:
