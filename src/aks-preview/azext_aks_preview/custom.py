@@ -592,12 +592,13 @@ _re_user_assigned_identity_resource_id = re.compile(
 
 
 def _get_user_assigned_identity(cli_ctx, resource_id):
-    msi_client = get_msi_client(cli_ctx)
     resource_id = resource_id.lower()
     match = _re_user_assigned_identity_resource_id.search(resource_id)
     if match:
+        subscription_id = match.group(1)
         resource_group_name = match.group(2)
         identity_name = match.group(3)
+        msi_client = get_msi_client(cli_ctx, subscription_id)
         try:
             identity = msi_client.user_assigned_identities.get(resource_group_name=resource_group_name,
                                                                resource_name=identity_name)
@@ -1980,6 +1981,7 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
                 control_plane_only=False,
                 no_wait=False,
                 node_image_only=False,
+                aks_custom_headers=None,
                 yes=False):
     from knack.prompting import prompt_y_n
     msg = 'Kubernetes may be unavailable during cluster upgrades.\n Are you sure you want to perform this operation?'
@@ -2056,7 +2058,9 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
     instance.service_principal_profile = None
     instance.aad_profile = None
 
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance)
+    headers = get_aks_custom_headers(aks_custom_headers)
+
+    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, name, instance, custom_headers=headers)
 
 
 def _upgrade_single_nodepool_image_version(no_wait, client, resource_group_name, cluster_name, nodepool_name):
