@@ -1577,12 +1577,18 @@ def client_side_proxy_wrapper(cmd,
                               api_server_port=consts.API_SERVER_PORT,
                               client_proxy_port=consts.CLIENT_PROXY_PORT):
 
+    signal.signal(signal.SIGINT, ctrlc_handler)
+
     cloud = send_cloud_telemetry(cmd)
     args = []
     operating_system = platform.system()
     proc_name = f'arcProxy{operating_system}'
 
+    telemetry.set_debug_info('CSP Version is ', consts.CLIENT_PROXY_VERSION)
+    telemetry.set_debug_info('OS is ', operating_system)
+
     if(check_process(proc_name)):
+        telemetry.set_user_fault()
         raise CLIError('Another instance of proxy already running')
 
     port_error_string = ""
@@ -1591,19 +1597,19 @@ def client_side_proxy_wrapper(cmd,
     if check_if_port_is_open(client_proxy_port):
         port_error_string += f'Port {client_proxy_port} is already in use. Please select a different port with --client-proxy-option.\n'
     if port_error_string != "":
+        telemetry.set_user_fault()
         raise CLIError(port_error_string)
 
-    signal.signal(signal.SIGINT, ctrlc_handler)
     # Creating installation location, request uri and older version exe location depending on OS
     if(operating_system == 'Windows'):
         install_location_string = f'.clientproxy\\arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe'
-        requestUri = f'https://k8sconnectcsp.blob.core.windows.net/release12-03-21/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe'
+        requestUri = f'{consts.CSP_Storage_Url}/{consts.RELEASE_DATE_WINDOWS}/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}.exe'
         older_version_string = f'.clientproxy\\arcProxy{operating_system}*.exe'
         creds_string = r'.azure\accessTokens.json'
 
     elif(operating_system == 'Linux' or operating_system == 'Darwin'):
         install_location_string = f'.clientproxy/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}'
-        requestUri = f'https://k8sconnectcsp.blob.core.windows.net/release12-03-21/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}'
+        requestUri = f'{consts.CSP_Storage_Url}/{consts.RELEASE_DATE_LINUX}/arcProxy{operating_system}{consts.CLIENT_PROXY_VERSION}'
         older_version_string = f'.clientproxy/arcProxy{operating_system}*'
         creds_string = r'.azure/accessTokens.json'
 
@@ -1736,6 +1742,8 @@ def client_side_proxy_wrapper(cmd,
     else:
         dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}}
 
+    telemetry.set_debug_info('User type is ', user_type)
+    
     try:
         with open(config_file_location, 'w') as f:
             yaml.dump(dict_file, f, default_flow_style=False)
@@ -1874,6 +1882,7 @@ def client_side_proxy(cmd,
     try:
         print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
         print("You can now start sending requests using kubectl on the current context.")
+        print("Press Ctrl+C to close proxy.")
 
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Merge_Kubeconfig_Fault_Type,

@@ -114,6 +114,8 @@ CLIENT_PROXY_PORT = 47010
 CLIENTPROXY_CLIENT_ID = '04b07795-8ddb-461a-bbee-02f9e1bf7b46'
 API_CALL_RETRIES = 200
 DEFAULT_REQUEST_TIMEOUT = 10  # seconds
-
+RELEASE_DATE_WINDOWS = 'release12-03-21'
+RELEASE_DATE_LINUX = 'release12-03-21'
 # URL constants
 Kubernetes_Github_Latest_Release_Uri = "https://api.github.com/repos/kubernetes/kubernetes/releases/latest"
+CSP_Storage_Url = "https://k8sconnectcsp.blob.core.windows.net"
