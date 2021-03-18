@@ -94,6 +94,8 @@ helps['connectedk8s enable-features'] = """
   examples:
   - name: Enables the Cluster-Connect feature.
     text: az connectedk8s enable-features -n clusterName -g resourceGroupName --features cluster-connect
+  - name: Enable multiple features.
+    text: az connectedk8s enable-features -n clusterName -g resourceGroupName --features cluster-connect custom-locations
 """
 
 helps['connectedk8s disable-features'] = """
@@ -102,4 +104,6 @@ helps['connectedk8s disable-features'] = """
   examples:
   - name: Disables the azure-rbac feature.
     text: az connectedk8s disable-features -n clusterName -g resourceGroupName --features azure-rbac
+  - name: Disable multiple features.
+    text: az connectedk8s enable-features -n clusterName -g resourceGroupName --features custom-locations azure-rbac
 """
