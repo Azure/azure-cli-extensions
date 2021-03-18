@@ -17,18 +17,17 @@ class ConnectedClusterPatch(Model):
 
     :param tags: Resource tags.
     :type tags: dict[str, str]
-    :param agent_public_key_certificate: Base64 encoded public certificate
-     used by the agent to do the initial handshake to the backend services in
-     Azure.
-    :type agent_public_key_certificate: str
+    :param properties: Describes the connected cluster resource properties
+     that can be updated during PATCH operation.
+    :type properties: object
     """
 
     _attribute_map = {
         'tags': {'key': 'tags', 'type': '{str}'},
-        'agent_public_key_certificate': {'key': 'properties.agentPublicKeyCertificate', 'type': 'str'},
+        'properties': {'key': 'properties', 'type': 'object'},
     }
 
-    def __init__(self, *, tags=None, agent_public_key_certificate: str=None, **kwargs) -> None:
+    def __init__(self, *, tags=None, properties=None, **kwargs) -> None:
         super(ConnectedClusterPatch, self).__init__(**kwargs)
         self.tags = tags
-        self.agent_public_key_certificate = agent_public_key_certificate
+        self.properties = properties

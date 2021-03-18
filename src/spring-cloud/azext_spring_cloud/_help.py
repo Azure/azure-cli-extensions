@@ -93,7 +93,7 @@ helps['spring-cloud app create'] = """
     - name: Create an app with the default configuration.
       text: az spring-cloud app create -n MyApp -s MyCluster -g MyResourceGroup
     - name: Create an public accessible app with 3 instances and 2 cpu cores and 3 GB of memory per instance.
-      text: az spring-cloud app create -n MyApp -s MyCluster -g MyResourceGroup --is-public true --cpu 2 --memory 3 --instance-count 3
+      text: az spring-cloud app create -n MyApp -s MyCluster -g MyResourceGroup --assign-endpoint true --cpu 2 --memory 3 --instance-count 3
 """
 
 helps['spring-cloud app update'] = """
@@ -208,6 +208,13 @@ helps['spring-cloud app set-deployment'] = """
       text: az spring-cloud app set-deployment -d green-deployment -n MyApp -s MyCluster -g MyResourceGroup
 """
 
+helps['spring-cloud app unset-deployment'] = """
+    type: command
+    short-summary: Unset production deployment of an app.
+    examples:
+    - name: Swap the production deployment of an app to staging if the app has the production deployment.
+      text: az spring-cloud app unset-deployment -n MyApp -s MyCluster -g MyResourceGroup
+"""
 
 helps['spring-cloud app log'] = """
     type: group

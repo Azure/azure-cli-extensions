@@ -40,6 +40,8 @@ APP_CREATE_OR_UPDATE_SLEEP_INTERVAL = 2
 
 # pylint: disable=line-too-long
 NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment or create deployment with: az spring-cloud app deployment create"
+NO_PRODUCTION_DEPLOYMENT_SET_ERROR = "This app has no production deployment, use \"az spring-cloud app deployment create\" to create a deployment and \"az spring-cloud app set-deployment\" to set production deployment."
+DELETE_PRODUCTION_DEPLOYMENT_WARNING = "You are going to delete production deployment, the app will be inaccessible after this operation."
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
 
 
@@ -91,7 +93,7 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
 
 
 def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
-                        disable_distributed_tracing=None, disable_app_insights=None, enable_java_agent=None,
+                        disable_distributed_tracing=None, disable_app_insights=None,
                         sku=None, tags=None, no_wait=False):
     updated_resource = models.ServiceResource()
     update_app_insights = False
@@ -197,6 +199,8 @@ def list_keys(cmd, client, resource_group, name, app=None, deployment=None):
                 keys.primary_test_endpoint, app, deployment)
             keys.secondary_test_endpoint = "{}/{}/{}/".format(
                 keys.secondary_test_endpoint, app, deployment)
+        else:
+            logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
     return keys
 
 
@@ -206,7 +210,7 @@ def regenerate_keys(cmd, client, resource_group, name, type):
 
 
 def app_create(cmd, client, resource_group, service, name,
-               is_public=None,
+               assign_endpoint=None,
                cpu=None,
                memory=None,
                instance_count=None,
@@ -222,7 +226,6 @@ def app_create(cmd, client, resource_group, service, name,
     properties = models.AppResourceProperties()
     properties.temporary_disk = models.TemporaryDisk(
         size_in_gb=5, mount_path="/tmp")
-
     resource = client.services.get(resource_group, service)
 
     _validate_instance_count(resource.sku.tier, instance_count)
@@ -263,7 +266,7 @@ def app_create(cmd, client, resource_group, service, name,
 
     logger.warning("[3/4] Setting default deployment to production")
     properties = models.AppResourceProperties(
-        active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=is_public)
+        active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=assign_endpoint)
 
     if enable_persistent_storage:
         properties.persistent_disk = models.PersistentDisk(
@@ -289,26 +292,35 @@ def app_create(cmd, client, resource_group, service, name,
     return app
 
 
+def _check_active_deployment_exist(client, resource_group, service, app):
+    active_deployment_name = client.apps.get(resource_group, service, app).properties.active_deployment_name
+    if not active_deployment_name:
+        logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
+
+
 def app_update(cmd, client, resource_group, service, name,
-               is_public=None,
+               assign_endpoint=None,
                deployment=None,
                runtime_version=None,
                jvm_options=None,
                main_entry=None,
                env=None,
                enable_persistent_storage=None,
-               https_only=None):
+               https_only=None,
+               enable_end_to_end_tls=None):
+    _check_active_deployment_exist(client, resource_group, service, name)
     resource = client.services.get(resource_group, service)
     location = resource.location
 
-    properties = models.AppResourceProperties(public=is_public, https_only=https_only)
+    properties = models_20201101preview.AppResourceProperties(public=assign_endpoint, https_only=https_only,
+                                                              enable_end_to_end_tls=enable_end_to_end_tls)
     if enable_persistent_storage is True:
         properties.persistent_disk = models.PersistentDisk(
             size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
     if enable_persistent_storage is False:
         properties.persistent_disk = models.PersistentDisk(size_in_gb=0)
 
-    app_resource = models.AppResource()
+    app_resource = models_20201101preview.AppResource()
     app_resource.properties = properties
     app_resource.location = location
 
@@ -326,7 +338,7 @@ def app_update(cmd, client, resource_group, service, name,
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
         if deployment is None:
-            logger.warning("No deployment found for update")
+            logger.warning("No production deployment found for update")
             return app_updated
 
     logger.warning("[2/2] Updating deployment '{}'".format(deployment))
@@ -367,8 +379,9 @@ def app_start(cmd, client,
     if deployment is None:
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
-    if deployment is None:
-        raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
+        if deployment is None:
+            logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
+            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
     return sdk_no_wait(no_wait, client.deployments.start,
                        resource_group, service, name, deployment)
 
@@ -382,8 +395,9 @@ def app_stop(cmd, client,
     if deployment is None:
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
-    if deployment is None:
-        raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
+        if deployment is None:
+            logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
+            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
     return sdk_no_wait(no_wait, client.deployments.stop,
                        resource_group, service, name, deployment)
 
@@ -397,8 +411,9 @@ def app_restart(cmd, client,
     if deployment is None:
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
-    if deployment is None:
-        raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
+        if deployment is None:
+            logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
+            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
     return sdk_no_wait(no_wait, client.deployments.restart,
                        resource_group, service, name, deployment)
 
@@ -428,6 +443,8 @@ def app_get(cmd, client,
         deployment = client.deployments.get(
             resource_group, service, name, deployment_name)
         app.properties.active_deployment = deployment
+    else:
+        logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
 
     return app
 
@@ -447,6 +464,7 @@ def app_deploy(cmd, client, resource_group, service, name,
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
         if not deployment:
+            logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
             raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
 
     client.deployments.get(resource_group, service, name, deployment)
@@ -482,8 +500,9 @@ def app_scale(cmd, client, resource_group, service, name,
     if deployment is None:
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
-    if deployment is None:
-        raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
+        if deployment is None:
+            logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
+            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
 
     resource = client.services.get(resource_group, service)
     _validate_instance_count(resource.sku.tier, instance_count)
@@ -511,21 +530,21 @@ def app_get_build_log(cmd, client, resource_group, service, name, deployment=Non
     return stream_logs(client.deployments, resource_group, service, name, deployment)
 
 
-def app_tail_log(cmd, client, resource_group, service, name, instance=None, follow=False, lines=50, since=None, limit=2048):
+def app_tail_log(cmd, client, resource_group, service, name, deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048):
     if not instance:
-        deployment_name = client.apps.get(
-            resource_group, service, name).properties.active_deployment_name
-        if not deployment_name:
-            raise CLIError(
-                "No production deployment found for app '{}'".format(name))
-        deployment = client.deployments.get(
-            resource_group, service, name, deployment_name)
-        if not deployment.properties.instances:
+        if deployment is None:
+            deployment = client.apps.get(
+                resource_group, service, name).properties.active_deployment_name
+        if not deployment:
+            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
+        deployment_properties = client.deployments.get(
+            resource_group, service, name, deployment).properties
+        if not deployment_properties.instances:
             raise CLIError("No instances found for deployment '{0}' in app '{1}'".format(
-                deployment_name, name))
-        instances = deployment.properties.instances
+                deployment, name))
+        instances = deployment_properties.instances
         if len(instances) > 1:
-            logger.warning("Mulitple app instances found:")
+            logger.warning("Multiple app instances found:")
             for temp_instance in instances:
                 logger.warning("{}".format(temp_instance.name))
             logger.warning("Please use '-i/--instance' parameter to specify the instance name")
@@ -567,6 +586,7 @@ def app_tail_log(cmd, client, resource_group, service, name, instance=None, foll
 
 
 def app_identity_assign(cmd, client, resource_group, service, name, role=None, scope=None):
+    _check_active_deployment_exist(client, resource_group, service, name)
     app_resource = models.AppResource()
     identity = models.ManagedIdentityProperties(type="systemassigned")
     properties = models.AppResourceProperties()
@@ -624,6 +644,7 @@ def app_identity_remove(cmd, client, resource_group, service, name):
 
 
 def app_identity_show(cmd, client, resource_group, service, name):
+    _check_active_deployment_exist(client, resource_group, service, name)
     app = client.apps.get(resource_group, service, name)
     return app.identity
 
@@ -640,6 +661,25 @@ def app_set_deployment(cmd, client, resource_group, service, name, deployment):
                        "' not found, please use 'az spring-cloud app deployment create' to create the new deployment")
     properties = models.AppResourceProperties(
         active_deployment_name=deployment)
+
+    resource = client.services.get(resource_group, service)
+    location = resource.location
+
+    app_resource = models.AppResource()
+    app_resource.properties = properties
+    app_resource.location = location
+
+    return client.apps.update(resource_group, service, name, app_resource)
+
+
+def app_unset_deployment(cmd, client, resource_group, service, name):
+    active_deployment_name = client.apps.get(
+        resource_group, service, name).properties.active_deployment_name
+    if not active_deployment_name:
+        raise CLIError(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
+
+    # It's designed to use empty string for active_deployment_name to unset active deployment
+    properties = models.AppResourceProperties(active_deployment_name="")
 
     resource = client.services.get(resource_group, service)
     location = resource.location
@@ -676,16 +716,17 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         active_deployment_name = client.apps.get(
             resource_group, service, app).properties.active_deployment_name
         if not active_deployment_name:
-            raise CLIError("No production deployment found, use --skip-clone-settings to skip copying settings from "
+            logger.warning("No production deployment found, use --skip-clone-settings to skip copying settings from "
                            "production deployment.")
-        active_deployment = client.deployments.get(
-            resource_group, service, app, active_deployment_name)
-        if active_deployment:
-            cpu = cpu or active_deployment.properties.deployment_settings.cpu
-            memory = memory or active_deployment.properties.deployment_settings.memory_in_gb
-            instance_count = instance_count or active_deployment.sku.capacity
-            jvm_options = jvm_options or active_deployment.properties.deployment_settings.jvm_options
-            env = env or active_deployment.properties.deployment_settings.environment_variables
+        else:
+            active_deployment = client.deployments.get(
+                resource_group, service, app, active_deployment_name)
+            if active_deployment:
+                cpu = cpu or active_deployment.properties.deployment_settings.cpu
+                memory = memory or active_deployment.properties.deployment_settings.memory_in_gb
+                instance_count = instance_count or active_deployment.sku.capacity
+                jvm_options = jvm_options or active_deployment.properties.deployment_settings.jvm_options
+                env = env or active_deployment.properties.deployment_settings.environment_variables
     else:
         cpu = cpu or 1
         memory = memory or 1
@@ -727,6 +768,9 @@ def deployment_get(cmd, client, resource_group, service, app, name):
 
 
 def deployment_delete(cmd, client, resource_group, service, app, name):
+    active_deployment_name = client.apps.get(resource_group, service, app).properties.active_deployment_name
+    if active_deployment_name == name:
+        logger.warning(DELETE_PRODUCTION_DEPLOYMENT_WARNING)
     client.deployments.get(resource_group, service, app, name)
     return client.deployments.delete(resource_group, service, app, name)
 
@@ -988,15 +1032,17 @@ def config_repo_list(cmd, client, resource_group, name):
 
 
 def binding_list(cmd, client, resource_group, service, app):
-    return client.list(resource_group, service, app)
+    _check_active_deployment_exist(client, resource_group, service, app)
+    return client.bindings.list(resource_group, service, app)
 
 
 def binding_get(cmd, client, resource_group, service, app, name):
-    return client.get(resource_group, service, app, name)
+    _check_active_deployment_exist(client, resource_group, service, app)
+    return client.bindings.get(resource_group, service, app, name)
 
 
 def binding_remove(cmd, client, resource_group, service, app, name):
-    return client.delete(resource_group, service, app, name)
+    return client.bindings.delete(resource_group, service, app, name)
 
 
 def binding_cosmos_add(cmd, client, resource_group, service, app, name,
@@ -1005,6 +1051,7 @@ def binding_cosmos_add(cmd, client, resource_group, service, app, name,
                        database_name=None,
                        key_space=None,
                        collection_name=None):
+    _check_active_deployment_exist(client, resource_group, service, app)
     resource_id_dict = parse_resource_id(resource_id)
     resource_type = resource_id_dict['resource_type']
     resource_name = resource_id_dict['resource_name']
@@ -1018,7 +1065,7 @@ def binding_cosmos_add(cmd, client, resource_group, service, app, name,
         binding_parameters['collectionName'] = collection_name
 
     try:
-        primary_key = _get_cosmosdb_primary_key(client, resource_id)
+        primary_key = _get_cosmosdb_primary_key(client.bindings, resource_id)
     except:
         raise CLIError(
             "Couldn't get cosmosdb {}'s primary key".format(resource_name))
@@ -1030,14 +1077,15 @@ def binding_cosmos_add(cmd, client, resource_group, service, app, name,
         key=primary_key,
         binding_parameters=binding_parameters
     )
-    return client.create_or_update(resource_group, service, app, name, properties)
+    return client.bindings.create_or_update(resource_group, service, app, name, properties)
 
 
 def binding_cosmos_update(cmd, client, resource_group, service, app, name,
                           database_name=None,
                           key_space=None,
                           collection_name=None):
-    binding = client.get(resource_group, service, app, name).properties
+    _check_active_deployment_exist(client, resource_group, service, app)
+    binding = client.bindings.get(resource_group, service, app, name).properties
     resource_id = binding.resource_id
     resource_name = binding.resource_name
     binding_parameters = {}
@@ -1046,7 +1094,7 @@ def binding_cosmos_update(cmd, client, resource_group, service, app, name,
     binding_parameters['collectionName'] = collection_name
 
     try:
-        primary_key = _get_cosmosdb_primary_key(client, resource_id)
+        primary_key = _get_cosmosdb_primary_key(client.bindings, resource_id)
     except:
         raise CLIError(
             "Couldn't get cosmosdb {}'s primary key".format(resource_name))
@@ -1055,7 +1103,7 @@ def binding_cosmos_update(cmd, client, resource_group, service, app, name,
         key=primary_key,
         binding_parameters=binding_parameters
     )
-    return client.update(resource_group, service, app, name, properties)
+    return client.bindings.update(resource_group, service, app, name, properties)
 
 
 def binding_mysql_add(cmd, client, resource_group, service, app, name,
@@ -1063,6 +1111,7 @@ def binding_mysql_add(cmd, client, resource_group, service, app, name,
                       key,
                       username,
                       database_name):
+    _check_active_deployment_exist(client, resource_group, service, app)
     resource_id_dict = parse_resource_id(resource_id)
     resource_type = resource_id_dict['resource_type']
     resource_name = resource_id_dict['resource_name']
@@ -1077,13 +1126,14 @@ def binding_mysql_add(cmd, client, resource_group, service, app, name,
         key=key,
         binding_parameters=binding_parameters
     )
-    return client.create_or_update(resource_group, service, app, name, properties)
+    return client.bindings.create_or_update(resource_group, service, app, name, properties)
 
 
 def binding_mysql_update(cmd, client, resource_group, service, app, name,
                          key=None,
                          username=None,
                          database_name=None):
+    _check_active_deployment_exist(client, resource_group, service, app)
     binding_parameters = {}
     binding_parameters['username'] = username
     binding_parameters['databaseName'] = database_name
@@ -1092,12 +1142,13 @@ def binding_mysql_update(cmd, client, resource_group, service, app, name,
         key=key,
         binding_parameters=binding_parameters
     )
-    return client.update(resource_group, service, app, name, properties)
+    return client.bindings.update(resource_group, service, app, name, properties)
 
 
 def binding_redis_add(cmd, client, resource_group, service, app, name,
                       resource_id,
                       disable_ssl=None):
+    _check_active_deployment_exist(client, resource_group, service, app)
     use_ssl = not disable_ssl
     resource_id_dict = parse_resource_id(resource_id)
     resource_type = resource_id_dict['resource_type']
@@ -1106,7 +1157,7 @@ def binding_redis_add(cmd, client, resource_group, service, app, name,
     binding_parameters['useSsl'] = use_ssl
     primary_key = None
     try:
-        primary_key = _get_redis_primary_key(client, resource_id)
+        primary_key = _get_redis_primary_key(client.bindings, resource_id)
     except:
         raise CLIError(
             "Couldn't get redis {}'s primary key".format(resource_name))
@@ -1119,12 +1170,13 @@ def binding_redis_add(cmd, client, resource_group, service, app, name,
         binding_parameters=binding_parameters
     )
 
-    return client.create_or_update(resource_group, service, app, name, properties)
+    return client.bindings.create_or_update(resource_group, service, app, name, properties)
 
 
 def binding_redis_update(cmd, client, resource_group, service, app, name,
                          disable_ssl=None):
-    binding = client.get(resource_group, service, app, name).properties
+    _check_active_deployment_exist(client, resource_group, service, app)
+    binding = client.bindings.get(resource_group, service, app, name).properties
     resource_id = binding.resource_id
     resource_name = binding.resource_name
     binding_parameters = {}
@@ -1133,7 +1185,7 @@ def binding_redis_update(cmd, client, resource_group, service, app, name,
 
     primary_key = None
     try:
-        primary_key = _get_redis_primary_key(client, resource_id)
+        primary_key = _get_redis_primary_key(client.bindings, resource_id)
     except:
         raise CLIError(
             "Couldn't get redis {}'s primary key".format(resource_name))
@@ -1142,7 +1194,7 @@ def binding_redis_update(cmd, client, resource_group, service, app, name,
         key=primary_key,
         binding_parameters=binding_parameters
     )
-    return client.update(resource_group, service, app, name, properties)
+    return client.bindings.update(resource_group, service, app, name, properties)
 
 
 def _get_cosmosdb_primary_key(client, resource_id):
@@ -1332,7 +1384,9 @@ def certificate_remove(cmd, client, resource_group, service, name):
 
 def domain_bind(cmd, client, resource_group, service, app,
                 domain_name,
-                certificate=None):
+                certificate=None,
+                enable_end_to_end_tls=None):
+    _check_active_deployment_exist(client, resource_group, service, app)
     properties = models.CustomDomainProperties()
     if certificate is not None:
         certificate_response = client.certificates.get(resource_group, service, certificate)
@@ -1340,20 +1394,43 @@ def domain_bind(cmd, client, resource_group, service, app,
             thumbprint=certificate_response.properties.thumbprint,
             cert_name=certificate
         )
+    if enable_end_to_end_tls is not None:
+        _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls)
+
     return client.custom_domains.create_or_update(resource_group, service, app, domain_name, properties)
 
 
+def _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls):
+    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20201101preview)
+    resource = client.services.get(resource_group, service)
+    location = resource.location
+
+    properties = models_20201101preview.AppResourceProperties(enable_end_to_end_tls=enable_end_to_end_tls)
+    app_resource = models_20201101preview.AppResource()
+    app_resource.properties = properties
+    app_resource.location = location
+
+    logger.warning("Set end to end tls for app '{}'".format(app))
+    poller = client.apps.update(
+        resource_group, service, app, app_resource)
+    return poller.result()
+
+
 def domain_show(cmd, client, resource_group, service, app, domain_name):
+    _check_active_deployment_exist(client, resource_group, service, app)
     return client.custom_domains.get(resource_group, service, app, domain_name)
 
 
 def domain_list(cmd, client, resource_group, service, app):
+    _check_active_deployment_exist(client, resource_group, service, app)
     return client.custom_domains.list(resource_group, service, app)
 
 
 def domain_update(cmd, client, resource_group, service, app,
                   domain_name,
-                  certificate=None):
+                  certificate=None,
+                  enable_end_to_end_tls=None):
+    _check_active_deployment_exist(client, resource_group, service, app)
     properties = models.CustomDomainProperties()
     if certificate is not None:
         certificate_response = client.certificates.get(resource_group, service, certificate)
@@ -1361,6 +1438,9 @@ def domain_update(cmd, client, resource_group, service, app,
             thumbprint=certificate_response.properties.thumbprint,
             cert_name=certificate
         )
+    if enable_end_to_end_tls is not None:
+        _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls)
+
     return client.custom_domains.create_or_update(resource_group, service, app, domain_name, properties)
 
 

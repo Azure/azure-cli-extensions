@@ -56,7 +56,7 @@ def set_blob_tier(client, container_name, blob_name, tier, blob_type='block', ti
 
 
 def set_delete_policy(client, enable=None, days_retained=None):
-    policy = client.get_blob_service_properties().delete_retention_policy
+    policy = client.get_service_properties()['delete_retention_policy']
 
     if enable is not None:
         policy.enabled = enable == 'true'
@@ -66,47 +66,35 @@ def set_delete_policy(client, enable=None, days_retained=None):
     if policy.enabled and not policy.days:
         raise CLIError("must specify days-retained")
 
-    client.set_blob_service_properties(delete_retention_policy=policy)
-    return client.get_blob_service_properties().delete_retention_policy
+    client.set_service_properties(delete_retention_policy=policy)
+    return client.get_service_properties()['delete_retention_policy']
 
 
-def set_service_properties(client, parameters, delete_retention=None, delete_retention_period=None,
-                           static_website=None, index_document=None, error_document_404_path=None):
+def set_service_properties(client, delete_retention=None, delete_retention_period=None,
+                           static_website=None, index_document=None, error_document_404_path=None,
+                           default_index_document_path=None, timeout=None):
+    properties = client.get_service_properties()
+
     # update
-    kwargs = {}
-    if hasattr(parameters, 'delete_retention_policy'):
-        kwargs['delete_retention_policy'] = parameters.delete_retention_policy
     if delete_retention is not None:
-        parameters.delete_retention_policy.enabled = delete_retention
+        properties['delete_retention_policy'].enabled = delete_retention
     if delete_retention_period is not None:
-        parameters.delete_retention_policy.days = delete_retention_period
+        properties['delete_retention_policy'].days = delete_retention_period
 
-    if hasattr(parameters, 'static_website'):
-        kwargs['static_website'] = parameters.static_website
-    elif any(param is not None for param in [static_website, index_document, error_document_404_path]):
-        raise CLIError('Static websites are only supported for StorageV2 (general-purpose v2) accounts.')
     if static_website is not None:
-        parameters.static_website.enabled = static_website
+        properties['static_website'].enabled = static_website
     if index_document is not None:
-        parameters.static_website.index_document = index_document
+        properties['static_website'].index_document = index_document
     if error_document_404_path is not None:
-        parameters.static_website.error_document_404_path = error_document_404_path
-    if hasattr(parameters, 'hour_metrics'):
-        kwargs['hour_metrics'] = parameters.hour_metrics
-    if hasattr(parameters, 'logging'):
-        kwargs['logging'] = parameters.logging
-    if hasattr(parameters, 'minute_metrics'):
-        kwargs['minute_metrics'] = parameters.minute_metrics
-    if hasattr(parameters, 'cors'):
-        kwargs['cors'] = parameters.cors
-
-    # checks
-    policy = kwargs.get('delete_retention_policy', None)
+        properties['static_website'].error_document404_path = error_document_404_path
+    if default_index_document_path is not None:
+        properties['static_website'].default_index_document_path = default_index_document_path
+    policy = properties.get('delete_retention_policy', None)
     if policy and policy.enabled and not policy.days:
         raise CLIError("must specify days-retained")
 
-    client.set_blob_service_properties(**kwargs)
-    return client.get_blob_service_properties()
+    client.set_service_properties(timeout=timeout, **properties)
+    return client.get_service_properties()
 
 
 def storage_blob_copy_batch(cmd, client, source_client, container_name=None,
@@ -586,13 +574,25 @@ def snapshot_blob(client, metadata=None, **kwargs):
     return client.get_blob_properties()
 
 
+# pylint: disable=protected-access
+def _adjust_block_blob_size(client, blob_type, length):
+    if not blob_type or blob_type != 'block':
+        return
+    # increase the block size to 4000MB when the block list will contain more than
+    # 50,000 blocks(each block 4MB)
+    if length > 50000 * 4 * 1024 * 1024:
+        client._config.max_block_size = 4000 * 1024 * 1024
+        client._config.max_single_put_size = 5000 * 1024 * 1024
+
+
 # pylint: disable=too-many-locals
-def upload_blob(cmd, client, file_path, container_name=None, blob_name=None, blob_type=None,
+def upload_blob(cmd, client, file_path=None, container_name=None, blob_name=None, blob_type=None,
                 metadata=None, validate_content=False, maxsize_condition=None, max_connections=2, lease_id=None,
                 if_modified_since=None, if_unmodified_since=None, if_match=None, if_none_match=None,
-                timeout=None, progress_callback=None, encryption_scope=None, overwrite=None, **kwargs):
+                timeout=None, progress_callback=None, encryption_scope=None, overwrite=None, data=None,
+                length=None, **kwargs):
     """Upload a blob to a container."""
-
+    from azure.core.exceptions import ResourceExistsError
     upload_args = {
         'blob_type': transform_blob_type(cmd, blob_type),
         'lease': lease_id,
@@ -626,10 +626,23 @@ def upload_blob(cmd, client, file_path, container_name=None, blob_name=None, blo
 
     # Because the contents of the uploaded file may be too large, it should be passed into the a stream object,
     # upload_blob() read file data in batches to avoid OOM problems
-    count = os.path.getsize(file_path)
-    with open(file_path, 'rb') as stream:
-        response = client.upload_blob(data=stream, length=count, metadata=metadata, encryption_scope=encryption_scope,
-                                      **upload_args, **kwargs)
+    try:
+        if file_path:
+            length = os.path.getsize(file_path)
+            _adjust_block_blob_size(client, blob_type, length)
+            with open(file_path, 'rb') as stream:
+                response = client.upload_blob(data=stream, length=length, metadata=metadata,
+                                              encryption_scope=encryption_scope,
+                                              **upload_args, **kwargs)
+        if data is not None:
+            _adjust_block_blob_size(client, blob_type, length)
+            response = client.upload_blob(data=data, length=length, metadata=metadata,
+                                          encryption_scope=encryption_scope,
+                                          **upload_args, **kwargs)
+    except ResourceExistsError as ex:
+        from azure.cli.core.azclierror import AzureResponseError
+        raise AzureResponseError(
+            "{}\nIf you want to overwrite the existing one, please add --overwrite in your command.".format(ex.message))
 
     # PageBlobChunkUploader verifies the file when uploading the chunk data, If the contents of the file are
     # all null byte("\x00"), the file will not be uploaded, and the response will be none.

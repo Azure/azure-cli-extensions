@@ -47,12 +47,18 @@ class StorageBlobUploadLiveTests(LiveScenarioTest):
 
     @ResourceGroupPreparer()
     @StorageAccountPreparer()
+    def test_storage_blob_upload_5G_file_with_fixed_block_size(self, resource_group, storage_account):
+        self.verify_blob_upload_and_download(resource_group, storage_account, 5 * 1024 * 1024,
+                                             'block', skip_download=True, fix_block_size=True)
+
+    @ResourceGroupPreparer()
+    @StorageAccountPreparer()
     def test_storage_page_blob_upload_10G_file(self, resource_group, storage_account):
         self.verify_blob_upload_and_download(resource_group, storage_account, 10 * 1024 * 1024,
                                              'page', skip_download=True)
 
     def verify_blob_upload_and_download(self, group, account, file_size_kb, blob_type,
-                                        skip_download=False):
+                                        skip_download=False, fix_block_size=False):
         container = self.create_random_name(prefix='cont', length=24)
         local_dir = self.create_temp_dir()
         local_file = self.create_temp_file(file_size_kb, full_random=True)
@@ -68,8 +74,19 @@ class StorageBlobUploadLiveTests(LiveScenarioTest):
         self.cmd('storage blob exists -n {} -c {}'.format(blob_name, container),
                  checks=JMESPathCheck('exists', False))
 
-        self.cmd('storage blob upload -c {} -f "{}" -n {} --type {}'
-                 .format(container, local_file, blob_name, blob_type))
+        def fix_block_blob_size(client, blob_type, length):
+            client._config.max_block_size = 4000 * 1024 * 1024
+            client._config.max_single_put_size = 5000 * 1024 * 1024
+
+        if fix_block_size:
+            import mock
+            with mock.patch('azext_storage_blob_preview.operations.blob._adjust_block_blob_size',
+                            side_effect=fix_block_blob_size):
+                self.cmd('storage blob upload -c {} -f "{}" -n {} --type {} --timeout 1200'
+                         .format(container, local_file, blob_name, blob_type))
+        else:
+            self.cmd('storage blob upload -c {} -f "{}" -n {} --type {}'
+                     .format(container, local_file, blob_name, blob_type))
 
         self.cmd('storage blob exists -n {} -c {}'.format(blob_name, container),
                  checks=JMESPathCheck('exists', True))
@@ -86,6 +103,38 @@ class StorageBlobUploadLiveTests(LiveScenarioTest):
             self.assertTrue(os.path.isfile(downloaded), 'The file is not downloaded.')
             self.assertEqual(file_size_kb * 1024, os.stat(downloaded).st_size,
                              'The download file size is not right.')
+
+    @ResourceGroupPreparer()
+    @StorageAccountPreparer()
+    def test_storage_blob_upload(self, resource_group, storage_account):
+        from azure.cli.core.azclierror import AzureResponseError
+        file_size_kb = 128
+        local_file = self.create_temp_file(file_size_kb, full_random=True)
+
+        container = self.create_random_name(prefix='cont', length=10)
+        blob_name = self.create_random_name(prefix='blob', length=24)
+        account_key = self.cmd('storage account keys list -n {} -g {} --query "[0].value" -otsv'
+                               .format(storage_account, resource_group)).output
+
+        self.set_env('AZURE_STORAGE_ACCOUNT', storage_account)
+        self.set_env('AZURE_STORAGE_KEY', account_key)
+
+        self.cmd('storage container create -n {}'.format(container))
+        # test upload through file path
+        self.cmd('storage blob upload -c {} -f "{}" -n {}'.format(container, local_file, blob_name))
+
+        self.cmd('storage blob exists -n {} -c {}'.format(blob_name, container), checks=JMESPathCheck('exists', True))
+
+        self.cmd('storage blob show -n {} -c {}'.format(blob_name, container), checks=[
+            JMESPathCheck('properties.contentLength', file_size_kb * 1024),
+            JMESPathCheck('name', blob_name)])
+
+        # test upload from data
+        self.cmd('storage blob upload -c {} --data {} --length 4 -n {} --overwrite'.format(
+            container, "test", blob_name))
+        self.cmd('storage blob show -n {} -c {}'.format(blob_name, container), checks=[
+            JMESPathCheck('properties.contentLength', 4),
+            JMESPathCheck('name', blob_name)])
 
 
 class StorageBlobURLScenarioTest(StorageScenarioMixin, LiveScenarioTest):

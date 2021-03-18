@@ -9,9 +9,11 @@
 # --------------------------------------------------------------------------
 
 import os
+import mock
 from azure.cli.testsdk import ScenarioTest
 from .. import try_manual, raise_if, calc_coverage
 from azure.cli.testsdk import ResourceGroupPreparer
+from azure_devtools.scenario_tests import AllowLargeResponse
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -25,24 +27,25 @@ def setup(test, rg):
 # EXAMPLE: /Monitors/put/Monitors_Create
 @try_manual
 def step__monitors_put_monitors_create(test, rg):
-    test.cmd('az datadog monitor create '
-             '--name "{myMonitor}" '
-             '--sku-name "drawdown_testing_20200904_Monthly" '
-             '--location "East US 2 EUAP" '
-             '--identity-type "SystemAssigned" '
-             '--monitoring-status "Enabled" '
-             '--user-info name="Alice" email-address="alice@microsoft.com" phone-number="123-456-7890" '
-             '--tags Environment="Dev" '
-             '--resource-group "{rg}"',
-             checks=[
-                 test.check("name", "{myMonitor}", case_sensitive=False),
-                 test.check("nameSkuName", "drawdown_testing_20200904_Monthly", case_sensitive=False),
-                 test.check("location", "eastus2euap", case_sensitive=False),
-                 test.check("marketplaceSubscriptionStatus", "Active", case_sensitive=False),
-                 test.check("monitoringStatus", "Enabled", case_sensitive=False),
-                 test.check("marketplaceSubscriptionStatus", "Active", case_sensitive=False),
-                 test.check("tags.Environment", "Dev", case_sensitive=False),
-             ])
+    with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=test.create_guid):
+        test.cmd('az datadog monitor create '
+                 '--name "{myMonitor}" '
+                 '--sku-name "drawdown_testing_20200904_Monthly" '
+                 '--location "East US 2 EUAP" '
+                 '--identity-type "SystemAssigned" '
+                 '--monitoring-status "Enabled" '
+                 '--user-info name="Alice" email-address="alice@microsoft.com" phone-number="123-456-7890" '
+                 '--tags Environment="Dev" '
+                 '--resource-group "{rg}"',
+                 checks=[
+                     test.check("name", "{myMonitor}", case_sensitive=False),
+                     test.check("nameSkuName", "drawdown_testing_20200904_Monthly", case_sensitive=False),
+                     test.check("location", "eastus2euap", case_sensitive=False),
+                     test.check("marketplaceSubscriptionStatus", "Active", case_sensitive=False),
+                     test.check("monitoringStatus", "Enabled", case_sensitive=False),
+                     test.check("marketplaceSubscriptionStatus", "Active", case_sensitive=False),
+                     test.check("tags.Environment", "Dev", case_sensitive=False),
+                 ])
     test.cmd('az datadog monitor wait --created '
              '--name "{myMonitor}" '
              '--resource-group "{rg}"',
@@ -264,6 +267,14 @@ def step__monitors_delete_monitors_delete(test, rg):
 
 
 @try_manual
+def step__terms_list(test, rg):
+    test.cmd('az datadog terms list',
+             checks=[
+                 test.check('length(@)', 2)
+             ])
+
+
+@try_manual
 def cleanup(test, rg):
     pass
 
@@ -290,12 +301,14 @@ def call_scenario(test, rg):
     step__apikeys_post_apikeys_setdefaultkey(test, rg)
     step__apikeys_post_apikeys_getdefaultkey(test, rg)
     step__monitors_delete_monitors_delete(test, rg)
+    step__terms_list(test, rg)
     cleanup(test, rg)
 
 
 @try_manual
 class MicrosoftDatadogClientScenarioTest(ScenarioTest):
 
+    @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitestdatadog_myResourceGroup'[:7], key='rg', parameter_name='rg')
     def test_datadog(self, rg):
 

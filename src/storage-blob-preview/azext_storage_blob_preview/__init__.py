@@ -15,7 +15,7 @@ class StorageCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         register_resource_type('latest', CUSTOM_DATA_STORAGE_BLOB, '2020-02-10')
-        register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2019-06-01')
+        register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2021-01-01')
         storage_custom = CliCommandType(operations_tmpl='azure.cli.command_modules.storage.custom#{}')
         super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                     resource_type=CUSTOM_DATA_STORAGE_BLOB,
@@ -56,7 +56,8 @@ class StorageArgumentContext(AzArgumentContext):
 
         self.ignore('content_settings')
         self.extra('content_type', default=None, help='The content MIME type.', arg_group=arg_group,
-                   validator=get_content_setting_validator(settings_class, update, guess_from_file=guess_from_file))
+                   validator=get_content_setting_validator(settings_class, update, guess_from_file=guess_from_file,
+                                                           process_md5=True))
         self.extra('content_encoding', default=None, help='The content encoding type.', arg_group=arg_group)
         self.extra('content_language', default=None, help='The content language.', arg_group=arg_group)
         self.extra('content_disposition', default=None, arg_group=arg_group,
