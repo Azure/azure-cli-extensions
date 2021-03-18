@@ -14,6 +14,8 @@ example:
     text: az mysql flexible-server connect -n testServer -u username -p password -d flexibleserverdb
   - name: Connect to a flexible server and execute a query with results outputted in a table.
     text: az mysql flexible-server connect -n testServer -u username -p password --querytext "select host, user from mysql.user;" --output table
+  - name: Connect to a flexible server and run queries interactively.
+    text: az mysql flexible-server connect -n testServer -u username --interactive
 """
 
 helps['postgres flexible-server connect'] = """
@@ -24,4 +26,6 @@ example:
     text: az postgres flexible-server connect -n testServer -u username -p password -d postgres
   - name: Connect to a flexible server and execute a query with results outputted in a table.
     text: az postgres flexible-server connect -n testServer -u username -p password --querytext "select * from pg_user;" --output table
+  - name: Connect to a flexible server and run queries interactively.
+    text: az postgres flexible-server connect -n testServer -u username --interactive
 """

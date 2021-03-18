@@ -91,6 +91,7 @@ def load_arguments(self, _):
                    help='If true, assign endpoint URL for direct access.',
                    options_list=['--assign-endpoint', c.deprecate(target='--is-public', redirect='--assign-endpoint', hide=True)])
         c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
+        c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
 
     for scope in ['spring-cloud app update', 'spring-cloud app start', 'spring-cloud app stop', 'spring-cloud app restart', 'spring-cloud app deploy', 'spring-cloud app scale', 'spring-cloud app set-deployment', 'spring-cloud app show-deploy-log']:
         with self.argument_context(scope) as c:
@@ -252,9 +253,11 @@ def load_arguments(self, _):
 
     with self.argument_context('spring-cloud app custom-domain bind') as c:
         c.argument('certificate', type=str, help='Certificate name in Azure Spring Cloud.')
+        c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
 
     with self.argument_context('spring-cloud app custom-domain update') as c:
         c.argument('certificate', help='Certificate name in Azure Spring Cloud.')
+        c.argument('enable_end_to_end_tls', arg_type=get_three_state_flag(), help='If true, enable end to end tls')
 
     with self.argument_context('spring-cloud app-insights update') as c:
         c.argument('app_insights_key',
