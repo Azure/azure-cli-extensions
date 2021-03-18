@@ -113,15 +113,19 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         telemetry.set_user_fault()
         telemetry.set_exception(fault_type=consts.Linux_Amd64_Node_Not_Exists,
                                 summary="Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'")
-        raise CLIError("Couldn't connect this Kubernetes cluster to Azure Arc as it doesn't have any nodes with OS 'linux' and architecture 'amd64'. Learn more at {}".format("https://aka.ms/ArcK8sSupportedOSArchitecture"))
+        logger.warning("Please ensure that this Kubernetes cluster have any nodes with OS 'linux' and architecture 'amd64', for scheduling the Arc-Agents onto and connecting to Azure. Learn more at {}".format("https://aka.ms/ArcK8sSupportedOSArchitecture"))
 
     # Get kubernetes cluster info
     kubernetes_version = get_server_version(configuration)
-    current_version_minor = kubernetes_version.split('.')[1]
+    current_version_details = kubernetes_version.split('.')  # Format v1.20.0S
+    current_version_minor = current_version_details[1]
+    current_version_major = current_version_details[0][1:]
     try:
         latest_kubernetes_version = utils.get_latest_kubernetes_version()
-        latest_version_minor = latest_kubernetes_version.split('.')[1]
-        if int(current_version_minor) < int(latest_version_minor) - 2:
+        latest_version_details = latest_kubernetes_version.split('.')
+        latest_version_minor = latest_version_details[1]
+        latest_version_major = latest_version_details[0][1:]
+        if (int(current_version_major) < int(latest_version_major)) or (int(current_version_minor) < int(latest_version_minor) - 2):
             logger.warning("The Kubernetes cluster you are trying to connect to Azure Arc is of version {}, which is out of Azure Arc's support window. Learn more at {}".format(kubernetes_version, "https://aka.ms/ArcK8sVersionSupportPolicy"))
     except Exception as e:
         logger.warning("Please ensure that the version of your Kubernetes cluster is within the Azure Arc's support window. Learn more at {}".format("https://aka.ms/ArcK8sVersionSupportPolicy"))
@@ -1130,11 +1134,8 @@ def get_all_helm_values(client, cluster_name, resource_group_name, configuration
         raise CLIError("Problem loading the helm existing values: " + str(e))
 
 
-def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None,
-                    features=None, aad_client_id=None, aad_client_secret=None):
-    if features is None:
-        raise CLIError(consts.No_Features_Param_Provided.format("enable-features", "enable-features"))
-
+def enable_features(cmd, client, resource_group_name, cluster_name, features, kube_config=None, kube_context=None,
+                    aad_client_id=None, aad_client_secret=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -1153,7 +1154,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
         if not enable_cluster_connect and enable_cl:
             enable_cluster_connect = True
             features.append("cluster-connect")
-            logger.warning("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too.")
+            logger.info("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too.")
         if not enable_cl:
             features.remove("custom-locations")
             if len(features) == 0:
@@ -1281,10 +1282,8 @@ def enable_features(cmd, client, resource_group_name, cluster_name, kube_config=
     return str.format(consts.Successfully_Enabled_Features, features, connected_cluster.name)
 
 
-def disable_features(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None,
-                     features=None, yes=False):
-    if features is None:
-        raise CLIError(consts.No_Features_Param_Provided.format("disable-features", "disable-features"))
+def disable_features(cmd, client, resource_group_name, cluster_name, features, kube_config=None, kube_context=None,
+                     yes=False):
     features = [x.lower() for x in features]
     confirmation_message = "Disabling few of the features may adversely impact dependent resources. Learn more about this at https://aka.ms/ArcK8sDependentResources. \n" + "Are you sure you want to disable these features: {}".format(features)
     utils.user_confirmation(confirmation_message, yes)
