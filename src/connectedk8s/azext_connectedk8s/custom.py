@@ -1616,6 +1616,7 @@ def client_side_proxy_wrapper(cmd,
         creds_string = r'.azure/accessTokens.json'
 
     else:
+        telemetry.set_user_fault()
         telemetry.set_exception(exception='Unsupported OS', fault_type=consts.Unsupported_Fault_Type,
                                 summary=f'{operating_system} is not supported yet')
         raise CLIError(f'The {operating_system} platform is not currently supported.')
@@ -1745,7 +1746,7 @@ def client_side_proxy_wrapper(cmd,
         dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}}
 
     telemetry.set_debug_info('User type is ', user_type)
-    
+
     try:
         with open(config_file_location, 'w') as f:
             yaml.dump(dict_file, f, default_flow_style=False)
