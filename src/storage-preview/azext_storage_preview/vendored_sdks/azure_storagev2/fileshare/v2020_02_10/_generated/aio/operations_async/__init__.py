@@ -9,16 +9,6 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-<<<<<<< HEAD:src/healthcareapis/azext_healthcareapis/vendored_sdks/subscription/__init__.py
-from ._healthcare_apis_management_client import HealthcareApisManagementClient
-__all__ = ['HealthcareApisManagementClient']
-
-try:
-    from ._patch import patch_sdk  # type: ignore
-    patch_sdk()
-except ImportError:
-    pass
-=======
 from ._service_operations_async import ServiceOperations
 from ._share_operations_async import ShareOperations
 from ._directory_operations_async import DirectoryOperations
@@ -30,4 +20,3 @@ __all__ = [
     'DirectoryOperations',
     'FileOperations',
 ]
->>>>>>> e434fbf47d8eff609d846a79addbb673009cfbef:src/storage-preview/azext_storage_preview/vendored_sdks/azure_storagev2/fileshare/v2020_02_10/_generated/aio/operations_async/__init__.py
