@@ -1354,9 +1354,11 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
         try:
             helm_values = get_all_helm_values(release_namespace, kube_config, kube_context)
             if not disable_cl and helm_values.get('systemDefaultValues').get('customLocations').get('enabled') is True and helm_values.get('systemDefaultValues').get('customLocations').get('oid') != "":
-                raise CLIError("Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature is enabled.")
-        except Exception as e:
+                raise Exception("Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature is enabled.")
+        except AttributeError as e:
             raise CLIError("Disabling 'custom-locations' is not available on this chart version. " + str(e))
+        except Exception as ex:
+            raise CLIError(str(ex))
 
     if disable_cl:
         logger.warning("Disabling 'custom-locations' feature might impact some dependent resources. Learn more about this at https://aka.ms/ArcK8sDependentResources.")
