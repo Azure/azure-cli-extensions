@@ -353,7 +353,7 @@ def get_latest_kubernetes_version():
     req_session.mount("https://", adapter)
     req_session.mount("http://", adapter)
 
-    url = "https://api.github.com/repos/kubernetes/kubernetes/releases/latest"
+    url = consts.Kubernetes_Github_Latest_Release_Uri
 
     payload = {}
     headers = {'Accept': 'application/vnd.github.v3+json'}
