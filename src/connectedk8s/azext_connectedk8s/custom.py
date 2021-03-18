@@ -1120,7 +1120,7 @@ def get_all_helm_values(release_namespace, kube_config, kube_context):
     response_helm_values_get = Popen(cmd_helm_values, stdout=PIPE, stderr=PIPE)
     output_helm_values, error_helm_get_values = response_helm_values_get.communicate()
     if response_helm_values_get.returncode != 0:
-        if ('forbidden' in error_helm_get_values.decode("ascii") or 'timed out waiting for the condition' in error_helm_get_values.decode("ascii")):
+        if 'forbidden' in error_helm_get_values.decode("ascii"):
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Get_Helm_Values_Failed,
                                 summary='Error while doing helm get values azure-arc')
