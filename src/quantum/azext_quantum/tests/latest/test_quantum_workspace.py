@@ -42,7 +42,7 @@ class QuantumWorkspacesScenarioTest(ScenarioTest):
         self.cmd(f'az quantum workspace clear')
 
         # create
-        self.cmd(f'az quantum workspace create -g {TEST_RG} -w {TEST_WORKSPACE_CREATE_DELETE} -l {TEST_WORKSPACE_LOCATION} -a {TEST_WORKSPACE_SA} -o json --skip-role-assignment', checks=[
+        self.cmd(f'az quantum workspace create -g {TEST_RG} -w {TEST_WORKSPACE_CREATE_DELETE} -l {TEST_WORKSPACE_LOCATION} -a {TEST_WORKSPACE_SA} -r "Microsoft/Basic" -o json --skip-role-assignment', checks=[
             self.check("name", TEST_WORKSPACE_CREATE_DELETE),
             self.check("provisioningState", "Accepted")  # Status is accepted since we're not linking the storage account.
         ])
