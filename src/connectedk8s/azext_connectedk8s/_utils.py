@@ -365,7 +365,7 @@ def get_latest_kubernetes_version():
         else:
             logger.warning("Couldn't fetch the latest kubernetes stable release information. Response status code: {}".format(response.status_code))
     except Exception as e:
-        kubernetes_exception_handler(e, consts.Kubernetes_Latest_Version_Fetch_Fault, "Couldn't fetch latest kubernetes release info", error_message="Error while fetching the latest stable kubernetes release", raise_error=False)
+        logger.warning("Couldn't fetch the latest kubernetes stable release information. Error: " + str(e))
 
     return None
 
