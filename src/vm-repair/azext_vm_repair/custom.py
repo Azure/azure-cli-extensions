@@ -66,10 +66,10 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         # Set up base create vm command
         if is_linux:
             create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password} --custom-data {cloud_init_script}' \
-                                   .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, cloud_init_script=_get_cloud_init_script() )
+                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, cloud_init_script=_get_cloud_init_script())
         else:
             create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password}' \
-                                   .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password)
+                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password)
 
         # Fetch VM size of repair VM
         sku = _fetch_compatible_sku(source_vm, enable_nested)

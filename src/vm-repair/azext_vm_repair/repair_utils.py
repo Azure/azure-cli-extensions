@@ -23,6 +23,7 @@ REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/
 
 logger = get_logger(__name__)
 
+
 def _get_cloud_init_script():
     REPAIR_DIR_NAME = 'azext_vm_repair'
     SCRIPTS_DIR_NAME = 'scripts'
