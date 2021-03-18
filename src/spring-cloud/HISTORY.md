@@ -1,5 +1,17 @@
 Release History
 ===============
+2.3.0
+-----
+* Support End-to-end TLS.
+
+2.2.1
+-----
+* Fix exception in app service binding
+
+2.2.0
+-----
+* Add bring your own route tables support
+
 2.1.2
 -----
 * Add optional '--deployment' to 'az spring-cloud app logs' command

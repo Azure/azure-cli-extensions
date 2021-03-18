@@ -126,6 +126,7 @@ def load_arguments(self, _):
         c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
         c.argument('aci_subnet_name', type=str)
         c.argument('enable_encryption_at_host', arg_type=get_three_state_flag(), help='Enable EncryptionAtHost.')
+        c.argument('enable_secret_rotation', action='store_true')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('aks update') as c:
@@ -153,6 +154,8 @@ def load_arguments(self, _):
         c.argument('assign_identity', type=str, validator=validate_assign_identity)
         c.argument('enable_pod_identity', action='store_true')
         c.argument('disable_pod_identity', action='store_true')
+        c.argument('enable_secret_rotation', action='store_true')
+        c.argument('disable_secret_rotation', action='store_true')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('aks scale') as c:
@@ -162,6 +165,20 @@ def load_arguments(self, _):
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+
+    with self.argument_context('aks maintenanceconfiguration') as c:
+        c.argument('cluster_name', type=str, help='The cluster name.')
+
+    for scope in ['aks maintenanceconfiguration add', 'aks maintenanceconfiguration update']:
+        with self.argument_context(scope) as c:
+            c.argument('config_name', type=str, options_list=['--name', '-n'], help='The config name.')
+            c.argument('config_file', type=str, options_list=['--config-file'], help='The config json file.', required=False)
+            c.argument('weekday', type=str, options_list=['--weekday'], help='weekday on which maintenance can happen. e.g. Monday', required=False)
+            c.argument('start_hour', type=int, options_list=['--start-hour'], help='maintenance start hour of 1 hour window on the weekday. e.g. 1 means 1:00am - 2:00am', required=False)
+
+    for scope in ['aks maintenanceconfiguration show', 'aks maintenanceconfiguration delete']:
+        with self.argument_context(scope) as c:
+            c.argument('config_name', type=str, options_list=['--name', '-n'], help='The config name.')
 
     with self.argument_context('aks nodepool') as c:
         c.argument('cluster_name', type=str, help='The cluster name.')
@@ -222,6 +239,7 @@ def load_arguments(self, _):
         c.argument('appgw_id', options_list=['--appgw-id'], arg_group='Application Gateway')
         c.argument('appgw_subnet_id', options_list=['--appgw-subnet-id'], arg_group='Application Gateway')
         c.argument('appgw_watch_namespace', options_list=['--appgw-watch-namespace'], arg_group='Application Gateway')
+        c.argument('enable_secret_rotation', action='store_true')
 
     with self.argument_context('aks get-credentials') as c:
         c.argument('admin', options_list=['--admin', '-a'], default=False)

@@ -13,7 +13,7 @@ short-summary: Recommend the possible next set of commands to take
 long-summary: >
     There are some custom configurations:\n
 
-    [1] az config set next.execute_in_prompt
+    [1] az config set next.execute_in_prompt=True/False
         Turn on/off the step of executing recommended commands in interactive mode. Turn on by default.
 
     [2] az config set next.filter_type=True/False
