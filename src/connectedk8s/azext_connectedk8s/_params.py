@@ -56,8 +56,8 @@ def load_arguments(self, _):
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
         c.argument('features', features_types, options_list=['--features'], help='Space-separated list of features you want to enable.')
-        c.argument('aad_client_id', options_list=['--aad-client-id'], help='AAD authorization client ID for enabling AAD RBAC. Specify when enabling azure-rbac.')
-        c.argument('aad_client_secret', options_list=['--aad-client-secret'], help='AAD authorization client secret for enabling AAD RBAC. Specify when enabling azure-rbac.')
+        c.argument('azrbac_client_id', options_list=['--client-id'], help='Client ID for enabling Azure RBAC. Specify when enabling azure-rbac.')
+        c.argument('azrbac_client_secret', options_list=['--client-secret'], help='Client secret for enabling Azure RBAC. Specify when enabling azure-rbac.')
 
     with self.argument_context('connectedk8s disable-features') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')

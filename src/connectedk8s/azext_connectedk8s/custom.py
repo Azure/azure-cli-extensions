@@ -1138,7 +1138,7 @@ def get_all_helm_values(release_namespace, kube_config, kube_context):
 
 
 def enable_features(cmd, client, resource_group_name, cluster_name, features, kube_config=None, kube_context=None,
-                    aad_client_id=None, aad_client_secret=None):
+                    azrbac_client_id=None, azrbac_client_secret=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -1146,11 +1146,11 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     enable_cluster_connect, enable_azure_rbac, enable_cl = utils.check_features_to_update(features)
 
     if enable_azure_rbac:
-        if (aad_client_id is None) or (aad_client_secret is None):
+        if (azrbac_client_id is None) or (azrbac_client_secret is None):
             telemetry.set_user_fault()
-            telemetry.set_exception(exception='Client ID or secret not provided for AAD RBAC', fault_type=consts.Client_Details_Not_Provided_For_AAD_RBAC_Fault,
-                                    summary='Both aad authorization client id and client secret is required to enable AAD RBAC feature')
-            raise CLIError("Please provide both aad authorization client id and client secret to enable AAD RBAC feature")
+            telemetry.set_exception(exception='Client ID or secret not provided for Azure RBAC', fault_type=consts.Client_Details_Not_Provided_For_Azure_RBAC_Fault,
+                                    summary='Both client id and client secret is required to enable Azure RBAC feature')
+            raise CLIError("Please provide both client id and client secret to enable Azure RBAC feature")
 
     if enable_cl:
         enable_cl, custom_locations_oid = check_cl_registration_and_get_oid(cmd)
@@ -1258,8 +1258,8 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         cmd_helm_upgrade.extend(["--kube-context", kube_context])
     if enable_azure_rbac:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.enabled=true"])
-        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.clientId={}".format(aad_client_id)])
-        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.clientSecret={}".format(aad_client_secret)])
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.clientId={}".format(azrbac_client_id)])
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.clientSecret={}".format(azrbac_client_secret)])
     if enable_cluster_connect:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=true"])
     if enable_cl:
