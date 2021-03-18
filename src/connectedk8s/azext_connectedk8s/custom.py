@@ -1071,7 +1071,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     return str.format(consts.Upgrade_Agent_Success, connected_cluster.name)
 
 
-def get_all_helm_values(client, cluster_name, resource_group_name, configuration, kube_config, kube_context):
+def validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context):
     # Check Release Existance
     release_namespace = get_release_namespace(kube_config, kube_context)
     if release_namespace:
@@ -1091,7 +1091,7 @@ def get_all_helm_values(client, cluster_name, resource_group_name, configuration
                 telemetry.set_user_fault()
                 telemetry.set_exception(exception='The provided cluster name and rg correspond to different cluster', fault_type=consts.Operate_RG_Cluster_Name_Conflict,
                                         summary='The provided cluster name and resource group name do not correspond to the kubernetes cluster being operated on.')
-                raise CLIError("The provided cluster name and resource group name do not correspond to the kubernetes cluster you are operating on." +
+                raise CLIError("The provided cluster name and resource group name do not correspond to the kubernetes cluster you are operating on. " +
                                "Please use the cluster, with correct resource group and cluster name.")
         else:
             telemetry.set_user_fault()
@@ -1107,7 +1107,10 @@ def get_all_helm_values(client, cluster_name, resource_group_name, configuration
                                 summary="The azure-arc release namespace couldn't be retrieved, which implies that the kubernetes cluster has not been onboarded to azure-arc.")
         raise CLIError("The azure-arc release namespace couldn't be retrieved, which implies that the kubernetes cluster has not been onboarded to azure-arc." +
                        "Please run 'az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>' to onboard the cluster")
+    return release_namespace
 
+
+def get_all_helm_values(release_namespace, kube_config, kube_context):
     cmd_helm_values = ["helm", "get", "values", "--all", "azure-arc", "--namespace", release_namespace]
     if kube_config:
         cmd_helm_values.extend(["--kubeconfig", kube_config])
@@ -1154,7 +1157,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         if not enable_cluster_connect and enable_cl:
             enable_cluster_connect = True
             features.append("cluster-connect")
-            logger.info("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too.")
+            logger.warning("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too.")
         if not enable_cl:
             features.remove("custom-locations")
             if len(features) == 0:
@@ -1199,14 +1202,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         telemetry.set_user_fault()
         raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
 
-    # Check whether Connected Cluster is present
-    if not connected_cluster_exists(client, resource_group_name, cluster_name):
-        telemetry.set_user_fault()
-        telemetry.set_exception(exception='The connected cluster resource does not exist', fault_type=consts.Resource_Does_Not_Exist_Fault_Type,
-                                summary='Connected cluster resource does not exist')
-        raise CLIError("The connected cluster resource {} does not exist ".format(cluster_name) +
-                       "in the resource group {} ".format(resource_group_name) +
-                       "Please onboard the connected cluster using: az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>")
+    validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
@@ -1332,14 +1328,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
         telemetry.set_user_fault()
         raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
 
-    # Check whether Connected Cluster is present
-    if not connected_cluster_exists(client, resource_group_name, cluster_name):
-        telemetry.set_user_fault()
-        telemetry.set_exception(exception='The connected cluster resource does not exist', fault_type=consts.Resource_Does_Not_Exist_Fault_Type,
-                                summary='Connected cluster resource does not exist')
-        raise CLIError("The connected cluster resource {} does not exist ".format(cluster_name) +
-                       "in the resource group {} ".format(resource_group_name) +
-                       "Please onboard the connected cluster using: az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>")
+    release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
@@ -1362,12 +1351,12 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
     if disable_cluster_connect:
-        helm_values = get_all_helm_values(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
         try:
+            helm_values = get_all_helm_values(release_namespace, kube_config, kube_context)
             if not disable_cl and helm_values.get('systemDefaultValues').get('customLocations').get('enabled') is True and helm_values.get('systemDefaultValues').get('customLocations').get('oid') != "":
                 raise CLIError("Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature is enabled.")
         except Exception as e:
-            raise CLIError("Disabling 'custom-locations' is not allowed on older charts. " + str(e))
+            raise CLIError("Disabling 'custom-locations' is not available on this chart version. " + str(e))
 
     if disable_cl:
         logger.warning("Disabling 'custom-locations' feature might impact some dependent resources. Learn more about this at https://aka.ms/ArcK8sDependentResources.")
