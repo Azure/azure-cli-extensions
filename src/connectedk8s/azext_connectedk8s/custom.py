@@ -1937,7 +1937,7 @@ def get_custom_locations_oid(cmd):
     try:
         sp_graph_client = get_graph_client_service_principals(cmd.cli_ctx)
         sub_filters = []
-        sub_filters.append("startswith(displayName,'{}')".format("Custom Locations RP"))
+        sub_filters.append("displayName eq '{}'".format("Custom Locations RP"))
         result = list(sp_graph_client.list(filter=(' and '.join(sub_filters))))
         if len(result) != 0:
             return result[0].object_id
