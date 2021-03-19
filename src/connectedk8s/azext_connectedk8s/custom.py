@@ -1562,7 +1562,6 @@ def client_side_proxy_wrapper(cmd,
                               cluster_name,
                               token=None,
                               path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
-                              overwrite_existing=False,
                               context_name=None,
                               api_server_port=consts.API_SERVER_PORT):
 
@@ -1750,7 +1749,7 @@ def client_side_proxy_wrapper(cmd,
         args.append("-d")
         debug_mode = True
 
-    client_side_proxy(cmd, client, resource_group_name, cluster_name, 0, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, overwrite_existing=overwrite_existing, context_name=context_name)
+    client_side_proxy(cmd, client, resource_group_name, cluster_name, 0, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name)
 
 
 # Prepare data as needed by client proxy executable
@@ -1783,7 +1782,6 @@ def client_side_proxy(cmd,
                       debug_mode,
                       token=None,
                       path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
-                      overwrite_existing=False,
                       context_name=None):
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -1840,7 +1838,7 @@ def client_side_proxy(cmd,
         data['kubeconfigs'][0]['value'] = insert_token_in_kubeconfig(data, token)
 
     # Starting a timer to refresh the credentials, 5 mins before expiry
-    fun_args = [cmd, client, resource_group_name, cluster_name, 1, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token, path, overwrite_existing, context_name]
+    fun_args = [cmd, client, resource_group_name, cluster_name, 1, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token, path, context_name]
     refresh_thread = Timer(expiry - time.time() - 300, client_side_proxy, args=fun_args)
     refresh_thread.setDaemon(True)
     try:
@@ -1869,8 +1867,13 @@ def client_side_proxy(cmd,
     kubeconfig = b64decode(kubeconfig).decode("utf-8")
 
     try:
-        print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
-        print("You can now start sending requests using kubectl on '{}' context using kubeconfig at {}".format(context_name, path))
+        print_or_merge_credentials(path, kubeconfig, True, context_name)
+        if context_name is None:
+            kubeconfig_obj = load_kubernetes_configuration(path)
+            temp_context_name = kubeconfig_obj['current-context']
+        else:
+            temp_context_name = context_name
+        print("You can now start sending requests using kubectl on '{}' context using kubeconfig at {}".format(temp_context_name, path))
         print("Press Ctrl+C to close proxy.")
 
     except Exception as e:
