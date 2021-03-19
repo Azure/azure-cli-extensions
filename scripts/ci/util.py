@@ -8,10 +8,6 @@ import re
 import json
 import zipfile
 
-# Dependencies that will not be checked.
-# This is for packages starting with 'azure-' but do not use the 'azure' namespace.
-SKIP_DEP_CHECK = ['azure-batch-extensions']
-
 # copy from wheel==0.30.0
 WHEEL_INFO_RE = re.compile(
     r"""^(?P<namever>(?P<name>.+?)(-(?P<ver>\d.+?))?)
