@@ -240,6 +240,8 @@ def _execute_nx_cmd(cmd, nx_cmd, nx_param, catch_exception=False):
         except Exception:
             return -1
         except SystemExit:
+            if '-h' in args:
+                return 0
             return -1
 
     if 'status' == output_format and exit_code == 0:
