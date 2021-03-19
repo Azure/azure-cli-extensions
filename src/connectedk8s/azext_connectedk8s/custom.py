@@ -117,18 +117,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Get kubernetes cluster info
     kubernetes_version = get_server_version(configuration)
-    current_version_details = kubernetes_version.split('.')  # Format v1.20.0S
-    current_version_minor = current_version_details[1]
-    current_version_major = current_version_details[0][1:]
-    try:
-        latest_kubernetes_version = utils.get_latest_kubernetes_version()
-        latest_version_details = latest_kubernetes_version.split('.')
-        latest_version_minor = latest_version_details[1]
-        latest_version_major = latest_version_details[0][1:]
-        if (int(current_version_major) < int(latest_version_major)) or (int(current_version_minor) < int(latest_version_minor) - 2):
-            logger.warning("The Kubernetes cluster you are trying to connect to Azure Arc is of version {}, which is out of Azure Arc's support window. Learn more at {}".format(kubernetes_version, "https://aka.ms/ArcK8sVersionSupportPolicy"))
-    except Exception as e:
-        logger.warning("Please ensure that the version of your Kubernetes cluster is within the Azure Arc's support window. Learn more at {}".format("https://aka.ms/ArcK8sVersionSupportPolicy"))
 
     if distribution == 'auto':
         kubernetes_distro = get_kubernetes_distro(configuration)  # (cluster heuristics)
