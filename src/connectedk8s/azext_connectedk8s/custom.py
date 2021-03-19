@@ -1149,6 +1149,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         if not enable_cl:
             features.remove("custom-locations")
             if len(features) == 0:
+                telemetry.set_user_fault()
                 raise CLIError("Based on the warning displayed above, 'custom-locations' cannot be enabled.")
 
     # Send cloud information to telemetry
@@ -1797,8 +1798,7 @@ def client_side_proxy(cmd,
     try:
         response = client.list_cluster_user_credentials(resource_group_name, cluster_name, auth_method, True)
     except Exception as e:
-        telemetry.set_exception(exception=e, fault_type=consts.Get_Credentials_Failed_Fault_Type,
-                                summary='Unable to list cluster user credentials')
+        utils.arm_exception_handler(e, consts.Get_Credentials_Failed_Fault_Type, 'Unable to list cluster user credentials')
         raise CLIError("Failed to get credentials." + str(e))
 
     # Starting the client proxy process, if this is the first time that this function is invoked
@@ -1859,6 +1859,7 @@ def client_side_proxy(cmd,
     try:
         kubeconfig = json.loads(response.text)
     except Exception as e:
+        telemetry.set_user_fault()
         telemetry.set_exception(exception=e, fault_type=consts.Load_Kubeconfig_Fault_Type,
                                 summary='Unable to load Kubeconfig')
         raise CLIError("Failed to load kubeonfig." + str(e))
