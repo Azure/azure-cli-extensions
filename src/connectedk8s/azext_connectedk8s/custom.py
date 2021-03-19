@@ -1149,7 +1149,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         if not enable_cl:
             features.remove("custom-locations")
             if len(features) == 0:
-                raise CLIError("Based on the inputs given and the warnings displayed above, there are no features to be enabled.")
+                raise CLIError("Based on the warning displayed above, 'custom-locations' cannot be enabled.")
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
@@ -1954,7 +1954,7 @@ def check_cl_registration_and_get_oid(cmd):
                 enable_custom_locations = False
     except Exception as e:
         enable_custom_locations = False
-        logger.warning("Unable to fetch registration state of 'Microsoft.ExtendedLocation'.Proceeding without enabling the feature.")
+        logger.warning("Unable to fetch registration state of 'Microsoft.ExtendedLocation'. Proceeding without enabling the feature...")
         telemetry.set_exception(exception=e, fault_type=consts.Custom_Locations_Registration_Check_Fault_Type,
                                 summary='Unable to fetch status of Custom Locations RP registration.')
     return enable_custom_locations, custom_locations_oid
