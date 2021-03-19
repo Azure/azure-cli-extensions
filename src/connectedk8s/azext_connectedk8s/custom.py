@@ -1958,7 +1958,7 @@ def check_cl_registration_and_get_oid(cmd):
                 enable_custom_locations = False
     except Exception as e:
         enable_custom_locations = False
-        logger.warning("Unable to fetch registration state of 'Microsoft.ExtendedLocation'. Proceeding without enabling the feature...")
+        logger.warning("Unable to fetch registration state of 'Microsoft.ExtendedLocation'. Failed to enable Custom Locations feature...")
         telemetry.set_exception(exception=e, fault_type=consts.Custom_Locations_Registration_Check_Fault_Type,
                                 summary='Unable to fetch status of Custom Locations RP registration.')
     return enable_custom_locations, custom_locations_oid
