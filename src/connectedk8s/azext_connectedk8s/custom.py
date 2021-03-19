@@ -1717,7 +1717,7 @@ def client_side_proxy_wrapper(cmd,
             raise CLIError("Failed to load credentials." + str(e))
 
         user_name = account['user']['name']
- 
+
         if user_type == 'user':
             key = 'userId'
             key2 = 'refreshToken'
