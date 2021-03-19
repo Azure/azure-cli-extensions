@@ -1126,7 +1126,7 @@ def get_all_helm_values(release_namespace, kube_config, kube_context):
 
 
 def enable_features(cmd, client, resource_group_name, cluster_name, features, kube_config=None, kube_context=None,
-                    azrbac_client_id=None, azrbac_client_secret=None):
+                    azrbac_client_id=None, azrbac_client_secret=None, azrbac_skip_authz_check=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -1134,11 +1134,13 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     enable_cluster_connect, enable_azure_rbac, enable_cl = utils.check_features_to_update(features)
 
     if enable_azure_rbac:
-        if (azrbac_client_id is None) or (azrbac_client_secret is None):
+        if (azrbac_client_id is None) and (azrbac_client_secret is None) and (azrbac_skip_authz_check is None):
             telemetry.set_user_fault()
-            telemetry.set_exception(exception='Client ID or secret not provided for Azure RBAC', fault_type=consts.Client_Details_Not_Provided_For_Azure_RBAC_Fault,
-                                    summary='Both client id and client secret is required to enable Azure RBAC feature')
-            raise CLIError("Please provide both client id and client secret to enable Azure RBAC feature")
+            telemetry.set_exception(exception='Client ID or secret or skip-azure-rbac-for is not provided for Azure RBAC', fault_type=consts.Client_Details_Not_Provided_For_Azure_RBAC_Fault,
+                                    summary='Client id, client secret or skip-azure-rbac-for is required to enable/update Azure RBAC feature')
+            raise CLIError("Please provide client id, client secret or skip-azure-rbac-for to enable/update Azure RBAC feature")
+        if azrbac_skip_authz_check is not None:
+            azrbac_skip_authz_check = escape_proxy_settings(azrbac_skip_authz_check)
 
     if enable_cl:
         enable_cl, custom_locations_oid = check_cl_registration_and_get_oid(cmd)
@@ -1249,6 +1251,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.enabled=true"])
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.clientId={}".format(azrbac_client_id)])
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.clientSecret={}".format(azrbac_client_secret)])
+        cmd_helm_upgrade.extend(["--set", "systemDefaultValues.guard.skipAuthzCheck={}".format(azrbac_skip_authz_check)])
     if enable_cluster_connect:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.clusterconnect-agent.enabled=true"])
     if enable_cl:
