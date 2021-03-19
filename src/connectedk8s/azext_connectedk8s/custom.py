@@ -1717,18 +1717,18 @@ def client_side_proxy_wrapper(cmd,
             raise CLIError("Failed to load credentials." + str(e))
 
         user_name = account['user']['name']
-        
+ 
         if user_type == 'user':
             key = 'userId'
             key2 = 'refreshToken'
-        else :
+        else:
             key = 'servicePrincipalId'
             key2 = 'accessToken'
 
         for i in range(len(creds_list)):
             creds_obj = creds_list[i]
-            
-            if creds_obj[key] == user_name :
+
+            if key in creds_obj and creds_obj[key] == user_name:
                 creds = creds_obj[key2]
                 break
 
@@ -1882,7 +1882,7 @@ def client_side_proxy(cmd,
 
     try:
         print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
-        print("You can now start sending requests using kubectl on {} context using kubeconfig at {}".format(context_name,path))
+        print("You can now start sending requests using kubectl on '{}' context using kubeconfig at {}".format(context_name, path))
         print("Press Ctrl+C to close proxy.")
 
     except Exception as e:
