@@ -58,7 +58,7 @@ def load_arguments(self, _):
         c.argument('features', features_types, options_list=['--features'], help='Space-separated list of features you want to enable.')
         c.argument('azrbac_client_id', options_list=['--client-id'], help='Client ID for enabling Azure RBAC. Specify when enabling azure-rbac.')
         c.argument('azrbac_client_secret', options_list=['--client-secret'], help='Client secret for enabling Azure RBAC. Specify when enabling azure-rbac.')
-        c.argument('azrbac_skip_authz_check', options_list=['--skip-azure-rbac-for'], help='Comma separated list of names of usernames/email. Azure RBAC will be skipped for these users. Specify when enabling azure-rbac.')
+        c.argument('azrbac_skip_authz_check', options_list=['--skip-azure-rbac-list'], help='Comma separated list of names of usernames/email/oid. Azure RBAC will be skipped for these users. Specify when enabling azure-rbac.')
 
     with self.argument_context('connectedk8s disable-features') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
