@@ -1356,7 +1356,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
             if not disable_cl and helm_values.get('systemDefaultValues').get('customLocations').get('enabled') is True and helm_values.get('systemDefaultValues').get('customLocations').get('oid') != "":
                 raise Exception("Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature is enabled.")
         except AttributeError as e:
-            raise CLIError("Disabling 'custom-locations' is not available on this chart version. " + str(e))
+            pass
         except Exception as ex:
             raise CLIError(str(ex))
 
