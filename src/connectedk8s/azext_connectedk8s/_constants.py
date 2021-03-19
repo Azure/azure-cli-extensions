@@ -78,6 +78,7 @@ Create_Config_Fault_Type = "Error while creating config file for proxy"
 Run_RefreshThread_Fault_Type = "Error while starting refresh thread"
 Load_Kubeconfig_Fault_Type = "Error while loading kubeconfig"
 
+Client_Proxy_Port_Fault_Type = "Client proxy port was in use."
 Unsupported_Fault_Type = "Error while checking operating system.Unsupported OS detected."
 Port_Check_Fault_Type = "Error while checking if port is in use."
 Cluster_Info_Not_Found_Type = 'Error while finding current cluster server details'

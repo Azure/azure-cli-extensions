@@ -1576,9 +1576,9 @@ def client_side_proxy_wrapper(cmd,
                               path=os.path.join(os.path.expanduser('~'), '.kube', 'config'),
                               overwrite_existing=False,
                               context_name=None,
-                              api_server_port=consts.API_SERVER_PORT,
-                              client_proxy_port=consts.CLIENT_PROXY_PORT):
+                              api_server_port=consts.API_SERVER_PORT):
 
+    client_proxy_port = consts.CLIENT_PROXY_PORT
     signal.signal(signal.SIGINT, ctrlc_handler)
 
     cloud = send_cloud_telemetry(cmd)
@@ -1597,7 +1597,9 @@ def client_side_proxy_wrapper(cmd,
     if check_if_port_is_open(api_server_port):
         port_error_string += f'Port {api_server_port} is already in use. Please select a different port with --api-server option.\n'
     if check_if_port_is_open(client_proxy_port):
-        port_error_string += f'Port {client_proxy_port} is already in use. Please select a different port with --client-proxy-option.\n'
+        telemetry.set_exception(exception='Client proxy port was in use.', fault_type=consts.Client_Proxy_Port_Fault_Type,
+                                summary=f'Client proxy port was in use.')
+        port_error_string += f"Port {client_proxy_port} is already in use. This is an internal port that proxy uses. Please ensure that this port is open before running 'az connectedk8s proxy'.\n"
     if port_error_string != "":
         telemetry.set_user_fault()
         raise CLIError(port_error_string)
