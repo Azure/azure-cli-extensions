@@ -1717,24 +1717,20 @@ def client_side_proxy_wrapper(cmd,
             raise CLIError("Failed to load credentials." + str(e))
 
         user_name = account['user']['name']
-        loop_flag = False
+        
+        if user_type == 'user':
+            key = 'userId'
+            key2 = 'refreshToken'
+        else :
+            key = 'servicePrincipalId'
+            key2 = 'accessToken'
+
         for i in range(len(creds_list)):
-            if loop_flag:
-                break
             creds_obj = creds_list[i]
-            for key in creds_obj:
-                if user_type == 'user':
-                    if key == 'refreshToken':
-                        creds = creds_obj[key]
-                    elif key == 'userId':
-                        if creds_obj[key] == user_name:
-                            loop_flag = True
-                else:
-                    if key == 'accessToken':
-                        creds = creds_obj[key]
-                    elif key == 'servicePrincipalId':
-                        if creds_obj[key] == user_name:
-                            loop_flag = True
+            
+            if creds_obj[key] == user_name :
+                creds = creds_obj[key2]
+                break
 
         if creds == '':
             telemetry.set_user_fault()
@@ -1886,7 +1882,7 @@ def client_side_proxy(cmd,
 
     try:
         print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name)
-        print("You can now start sending requests using kubectl on the current context.")
+        print("You can now start sending requests using kubectl on {} context using kubeconfig at {}".format(context_name,path))
         print("Press Ctrl+C to close proxy.")
 
     except Exception as e:
