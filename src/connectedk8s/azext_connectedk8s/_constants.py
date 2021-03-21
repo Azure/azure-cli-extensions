@@ -70,7 +70,7 @@ Creds_NotFound_Fault_Type = "Credentials of user not found"
 Create_Config_Fault_Type = "Error while creating config file for proxy"
 Run_RefreshThread_Fault_Type = "Error while starting refresh thread"
 Load_Kubeconfig_Fault_Type = "Error while loading kubeconfig"
-
+Run_Check_CSP_Thread_Fault_Type = "Error while starting 'check csp thread'."
 Client_Proxy_Port_Fault_Type = "Client proxy port was in use."
 Unsupported_Fault_Type = "Error while checking operating system.Unsupported OS detected."
 Port_Check_Fault_Type = "Error while checking if port is in use."
