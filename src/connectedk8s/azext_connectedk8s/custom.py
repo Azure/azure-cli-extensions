@@ -1140,7 +1140,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
                                     summary='Client id, client secret and skip-azure-rbac-list is required to enable/update Azure RBAC feature')
             raise CLIError("Please provide client id, client secret and skip-azure-rbac-list to enable/update Azure RBAC feature")
         if azrbac_skip_authz_check is None:
-            azrbac_skip_authz_check = ""   
+            azrbac_skip_authz_check = ""
         azrbac_skip_authz_check = escape_proxy_settings(azrbac_skip_authz_check)
 
     if enable_cl:
@@ -1561,8 +1561,10 @@ def _resolve_service_principal(client, identifier):  # Uses service principal gr
     raise error
 
 
-stop_threads = False # DONOT REMOVE
-thread_exception = "" # DONOT REMOVE
+stop_threads = False  # DONOT REMOVE
+thread_exception = ""  # DONOT REMOVE
+
+
 def client_side_proxy_wrapper(cmd,
                               client,
                               resource_group_name,
@@ -1794,9 +1796,9 @@ def client_side_proxy(cmd,
     global stop_threads
     global thread_exception
 
-    if flag==1:
+    if flag == 1:
         clientproxy_process = None
-    
+
     if token is not None:
         auth_method = 'Token'
         telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': False})
@@ -1811,36 +1813,36 @@ def client_side_proxy(cmd,
         utils.arm_exception_handler(e, consts.Get_Credentials_Failed_Fault_Type, 'Unable to list cluster user credentials')
         if flag == 0:
             raise CLIError("Failed to get credentials." + str(e))
-        else :
+        else:
             thread_exception = "Failed to get credentials." + str(e)
             stop_threads = True
             return
-    
+
     # Starting the client proxy process, if this is the first time that this function is invoked
     if flag == 0:
         try:
             if debug_mode:
                 clientproxy_process = Popen(args)
             else:
-                clientproxy_process = Popen(args,stdout=DEVNULL,stderr=DEVNULL)
+                clientproxy_process = Popen(args, stdout=DEVNULL, stderr=DEVNULL)
             print(f'Proxy is listening on port {api_server_port}')
-        
+
         except Exception as e:
             telemetry.set_exception(exception=e, fault_type=consts.Run_Clientproxy_Fault_Type,
                                     summary='Unable to run client proxy executable')
             raise CLIError("Failed to start proxy process." + str(e))
 
         check_args = [clientproxy_process]
-        check_csp_thread = Thread(target=check_if_csp_is_running,args=check_args)
+        check_csp_thread = Thread(target=check_if_csp_is_running, args=check_args)
         check_csp_thread.setDaemon(True)
         try:
             check_csp_thread.start()
         except Exception as e:
             telemetry.set_exception(exception=e, fault_type=consts.Run_Check_CSP_Thread_Fault_Type,
                                     summary="Unable to run 'check csp thread'.")
-            close_subprocess(clientproxy_process)                        
+            close_subprocess(clientproxy_process)                    
             raise CLIError("Failed to start 'check csp thread'." + str(e))
-        
+
         if user_type == 'user':
             identity_data = {}
             identity_data['refreshToken'] = creds
@@ -1869,9 +1871,9 @@ def client_side_proxy(cmd,
                                           'Unable to post hybrid connection details to clientproxy',
                                           "Failed to pass hybrid connection details to proxy.", flag, clientproxy_process=clientproxy_process)
 
-    if flag==1 and response is None:
+    if flag == 1 and response is None:
         return
-    
+
     # Decoding kubeconfig into a string
     try:
         kubeconfig = json.loads(response.text)
@@ -1879,7 +1881,7 @@ def client_side_proxy(cmd,
         telemetry.set_user_fault()
         telemetry.set_exception(exception=e, fault_type=consts.Load_Kubeconfig_Fault_Type,
                                 summary='Unable to load Kubeconfig')
-        if flag==0:
+        if flag == 0:
             close_subprocess(clientproxy_process)
             raise CLIError("Failed to load kubeconfig." + str(e))
         else:
@@ -1902,7 +1904,7 @@ def client_side_proxy(cmd,
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Merge_Kubeconfig_Fault_Type,
                                 summary='Unable to merge kubeconfig.')
-        if flag==0:
+        if flag == 0:
             close_subprocess(clientproxy_process)
             raise CLIError("Failed to merge kubeconfig." + str(e))
         else:
@@ -1919,7 +1921,7 @@ def client_side_proxy(cmd,
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Run_RefreshThread_Fault_Type,
                                 summary='Unable to run refresh thread')
-        if flag==0:
+        if flag == 0:
             close_subprocess(clientproxy_process)
             raise CLIError("Failed to start thread for refreshing credentials." + str(e))
         else:
@@ -1929,7 +1931,7 @@ def client_side_proxy(cmd,
     if flag == 0:
         while not stop_threads:
             pass
-        time.sleep(10) # give some time for thread that changed the flag to return
+        time.sleep(10)  # give some time for thread that changed the flag to return
         close_subprocess(clientproxy_process)
 
 
@@ -1952,6 +1954,7 @@ def make_api_call_with_retries(uri, data, tls_verify, fault_type, summary, cli_e
                     thread_exception = cli_error + str(e)
                     stop_threads = True
                     return None
+
 
 def insert_token_in_kubeconfig(data, token):
     b64kubeconfig = data['kubeconfigs'][0]['value']
