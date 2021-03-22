@@ -1840,7 +1840,7 @@ def client_side_proxy(cmd,
         except Exception as e:
             telemetry.set_exception(exception=e, fault_type=consts.Run_Check_CSP_Thread_Fault_Type,
                                     summary="Unable to run 'check csp thread'.")
-            close_subprocess(clientproxy_process)                    
+            close_subprocess(clientproxy_process)         
             raise CLIError("Failed to start 'check csp thread'." + str(e))
 
         if user_type == 'user':
