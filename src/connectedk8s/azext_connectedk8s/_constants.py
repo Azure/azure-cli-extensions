@@ -71,6 +71,7 @@ Create_Config_Fault_Type = "Error while creating config file for proxy"
 Run_RefreshThread_Fault_Type = "Error while starting refresh thread"
 Load_Kubeconfig_Fault_Type = "Error while loading kubeconfig"
 Run_Check_CSP_Thread_Fault_Type = "Error while starting 'check csp thread'."
+Proxy_Closed_Externally_Fault_Type = "Proxy closed externally."
 Client_Proxy_Port_Fault_Type = "Client proxy port was in use."
 Unsupported_Fault_Type = "Error while checking operating system.Unsupported OS detected."
 Port_Check_Fault_Type = "Error while checking if port is in use."
@@ -107,5 +108,6 @@ API_CALL_RETRIES = 200
 DEFAULT_REQUEST_TIMEOUT = 10  # seconds
 RELEASE_DATE_WINDOWS = 'release12-03-21'
 RELEASE_DATE_LINUX = 'release12-03-21'
+CSP_REFRESH_TIME = 300
 # URL constants
 CSP_Storage_Url = "https://k8sconnectcsp.blob.core.windows.net"
