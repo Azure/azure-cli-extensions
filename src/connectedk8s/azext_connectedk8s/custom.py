@@ -1571,6 +1571,10 @@ def client_side_proxy_wrapper(cmd,
                               api_server_port=consts.API_SERVER_PORT):
 
     client_proxy_port = consts.CLIENT_PROXY_PORT
+    if token is not None:
+        telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': False})
+    else:
+        telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': True})
 
     cloud = send_cloud_telemetry(cmd)
     args = []
@@ -1826,10 +1830,8 @@ def client_side_proxy(cmd,
 
     if token is not None:
         auth_method = 'Token'
-        telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': False})
     else:
         auth_method = 'AAD'
-        telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': True})
 
     # Fetching hybrid connection details from Userrp
     try:
@@ -1903,7 +1905,7 @@ def client_side_proxy(cmd,
                 temp_context_name = kubeconfig_obj['current-context']
             else:
                 temp_context_name = context_name
-            print("You can now start sending requests using kubectl on '{}' context using kubeconfig at {}".format(temp_context_name, path))
+            print("Start sending kubectl requests on '{}' context using kubeconfig at {}".format(temp_context_name, path))
             print("Press Ctrl+C to close proxy.")
 
         except Exception as e:
