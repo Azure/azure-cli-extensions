@@ -1134,11 +1134,11 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     enable_cluster_connect, enable_azure_rbac, enable_cl = utils.check_features_to_update(features)
 
     if enable_azure_rbac:
-        if (azrbac_client_id is None) or (azrbac_client_secret is None) or (azrbac_skip_authz_check is None):
+        if (azrbac_client_id is None) or (azrbac_client_secret is None):
             telemetry.set_user_fault()
-            telemetry.set_exception(exception='Client ID or secret or skip-azure-rbac-list is not provided for Azure RBAC', fault_type=consts.Client_Details_Not_Provided_For_Azure_RBAC_Fault,
-                                    summary='Client id, client secret and skip-azure-rbac-list is required to enable/update Azure RBAC feature')
-            raise CLIError("Please provide client id, client secret and skip-azure-rbac-list to enable/update Azure RBAC feature")
+            telemetry.set_exception(exception='Client ID or secret is not provided for Azure RBAC', fault_type=consts.Client_Details_Not_Provided_For_Azure_RBAC_Fault,
+                                    summary='Client id, client secret is required to enable/update Azure RBAC feature')
+            raise CLIError("Please provide client id, client secret to enable/update Azure RBAC feature")
         if azrbac_skip_authz_check is None:
             azrbac_skip_authz_check = ""
         azrbac_skip_authz_check = escape_proxy_settings(azrbac_skip_authz_check)
