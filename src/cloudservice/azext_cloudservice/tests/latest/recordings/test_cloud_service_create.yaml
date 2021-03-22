@@ -1,0 +1,167 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cloud-service create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --roles --package-url --configuration --load-balancer-configurations
+      User-Agent:
+      - python/3.7.4 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-resource/12.0.0 Azure-SDK-For-Python AZURECLI/2.20.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cloud_service_create_000001?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cloud_service_create_000001","name":"cli_test_cloud_service_create_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2021-03-22T07:11:40Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '428'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Mar 2021 07:11:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"packageUrl": "packageurl", "configuration":
+      "config", "roleProfile": {"roles": [{"name": "ContosoFrontend", "sku": {"name":
+      "Standard_D1_v2", "tier": "Standard", "capacity": 1}}, {"name": "ContosoBackend",
+      "sku": {"name": "Standard_D1_v2", "tier": "Standard", "capacity": 1}}]}, "osProfile":
+      {}, "networkProfile": {"loadBalancerConfigurations": [{"name": "myLoadBalancer",
+      "properties": {"frontendIPConfigurations": [{"name": "myfe", "properties": {"publicIPAddress":
+      {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cloud_service_create_000001/providers/Microsoft.Network/publicIPAddresses/publicip"}}}]}}],
+      "swappableCloudService": {}}, "extensionProfile": {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cloud-service create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '776'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --roles --package-url --configuration --load-balancer-configurations
+      User-Agent:
+      - AZURECLI/2.20.0 azsdk-python-azure-mgmt-compute/19.0.0 Python/3.7.4 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cloud_service_create_000001/providers/Microsoft.Compute/cloudServices/cs?api-version=2020-10-01-preview
+  response:
+    body:
+      string: "{\r\n  \"error\": {\r\n    \"code\": \"InternalOperationError\",\r\n
+        \   \"message\": \"The operation has timed out.\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '109'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Mar 2021 07:12:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/CreateUpdateDeleteCloudServiceOperations30Min;299
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 500
+      message: Internal Server Error
+- request:
+    body: '{"location": "westus", "properties": {"packageUrl": "packageurl", "configuration":
+      "config", "roleProfile": {"roles": [{"name": "ContosoFrontend", "sku": {"name":
+      "Standard_D1_v2", "tier": "Standard", "capacity": 1}}, {"name": "ContosoBackend",
+      "sku": {"name": "Standard_D1_v2", "tier": "Standard", "capacity": 1}}]}, "osProfile":
+      {}, "networkProfile": {"loadBalancerConfigurations": [{"name": "myLoadBalancer",
+      "properties": {"frontendIPConfigurations": [{"name": "myfe", "properties": {"publicIPAddress":
+      {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cloud_service_create_000001/providers/Microsoft.Network/publicIPAddresses/publicip"}}}]}}],
+      "swappableCloudService": {}}, "extensionProfile": {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cloud-service create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '776'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --roles --package-url --configuration --load-balancer-configurations
+      User-Agent:
+      - AZURECLI/2.20.0 azsdk-python-azure-mgmt-compute/19.0.0 Python/3.7.4 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cloud_service_create_000001/providers/Microsoft.Compute/cloudServices/cs?api-version=2020-10-01-preview
+  response:
+    body:
+      string: "{\r\n  \"error\": {\r\n    \"code\": \"InvalidParameter\",\r\n    \"message\":
+        \"The value of parameter packageUrl is invalid.\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '120'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Mar 2021 07:15:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 400
+      message: Bad Request
+version: 1

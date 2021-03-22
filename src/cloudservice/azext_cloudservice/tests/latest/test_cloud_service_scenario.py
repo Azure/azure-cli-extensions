@@ -132,6 +132,14 @@ class Cloud_serviceScenarioTest(ScenarioTest):
         calc_coverage(__file__)
         raise_if()
 
+    @ResourceGroupPreparer(name_prefix='cli_test_cloud_service_create_')
+    def test_cloud_service_create(self, resource_group):
+        self.cmd('cloud-service create -g {rg} -n cs '
+                 '--roles ContosoFrontend:Standard_D1_v2:1:Standard ContosoBackend:Standard_D1_v2:1:Standard '
+                 '--package-url packageurl '
+                 '--configuration config '
+                 '--load-balancer-configurations myLoadBalancer:myfe:publicip ')
+
     @ResourceGroupPreparer(name_prefix='cli_test_cloud_service_')
     def test_cloud_service(self, rg):
         self.cmd('cloud-service show -g {rg} -n cs')

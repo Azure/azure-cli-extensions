@@ -33,3 +33,7 @@ def load_arguments(self, _):
                    'If not specified, the default value is Auto. If set to Manual, PUT '
                    'UpdateDomain must be called to apply the update. If set to Auto, the update is automatically '
                    'applied to each update domain in sequence.')
+        c.argument('roles', nargs='+', help='List of roles for the cloud service. Expected value: '
+                   'json-string/@json-file.', arg_group='Role Profile')
+        c.argument('load_balancer_configurations', nargs='+', arg_group='Network Profile',
+                   help='The list of load balancer configurations for the cloud service.')
