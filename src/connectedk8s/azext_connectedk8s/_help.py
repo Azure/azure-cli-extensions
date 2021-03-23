@@ -103,7 +103,7 @@ helps['connectedk8s enable-features'] = """
   - name: Enables the Cluster-Connect feature.
     text: az connectedk8s enable-features -n clusterName -g resourceGroupName --features cluster-connect
   - name: Enable Azure RBAC feature.
-    text: az connectedk8s enable-features -n clusterName -g resourceGroupName --features azure-rbac --client-id clientID --client-secret clientSecret
+    text: az connectedk8s enable-features -n clusterName -g resourceGroupName --features azure-rbac --client-id clientID --client-secret clientSecret --skip-azure-rbac-list "user1@domain.com,spn_id"
   - name: Enable multiple features.
     text: az connectedk8s enable-features -n clusterName -g resourceGroupName --features cluster-connect custom-locations
 """
