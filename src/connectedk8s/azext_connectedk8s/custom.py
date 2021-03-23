@@ -1571,8 +1571,6 @@ def client_side_proxy_wrapper(cmd,
                               api_server_port=consts.API_SERVER_PORT):
 
     client_proxy_port = consts.CLIENT_PROXY_PORT
-
-
     cloud = send_cloud_telemetry(cmd)
     args = []
     operating_system = platform.system()
