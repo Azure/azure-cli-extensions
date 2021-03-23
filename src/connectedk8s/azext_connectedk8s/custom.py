@@ -1896,12 +1896,14 @@ def client_side_proxy(cmd,
 
         try:
             print_or_merge_credentials(path, kubeconfig, True, context_name)
-            if context_name is None:
-                kubeconfig_obj = load_kubernetes_configuration(path)
-                temp_context_name = kubeconfig_obj['current-context']
-            else:
-                temp_context_name = context_name
-            print("Start sending kubectl requests on '{}' context using kubeconfig at {}".format(temp_context_name, path))
+            if path != "-":
+                if context_name is None:
+                    kubeconfig_obj = load_kubernetes_configuration(path)
+                    temp_context_name = kubeconfig_obj['current-context']
+                else:
+                    temp_context_name = context_name
+                print("Start sending kubectl requests on '{}' context using kubeconfig at {}".format(temp_context_name, path))
+
             print("Press Ctrl+C to close proxy.")
 
         except Exception as e:
