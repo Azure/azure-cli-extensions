@@ -77,7 +77,7 @@ def load_command_table(self, _):
             'show', 'deployment_get', table_transformer=transform_spring_cloud_deployment_output)
         g.custom_command('delete', 'deployment_delete')
 
-    with self.command_group('spring-cloud app binding', client_factory=cf_bindings) as g:
+    with self.command_group('spring-cloud app binding', client_factory=cf_spring_cloud) as g:
         g.custom_command('list', 'binding_list')
         g.custom_show_command('show', 'binding_get')
         g.custom_command('cosmos add', 'binding_cosmos_add')

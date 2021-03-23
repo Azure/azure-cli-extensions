@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.2.1
+++++++
+* Command group ``az tsi`` GA
+
 0.2.0
 ++++++
 * [BREAKING CHANGE] ``az timeseriesinsights`` is changed to ``az tsi``

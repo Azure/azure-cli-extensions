@@ -387,6 +387,9 @@ helps['aks upgrade'] = """
         - name: --node-image-only
           type: bool
           short-summary: Only upgrade node image for agent pools.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 """
 
 helps['aks update'] = """
