@@ -89,11 +89,11 @@ helps['connectedk8s proxy'] = """
   - name: Get access to a connected kubernetes cluster with custom port
     text: az connectedk8s proxy -n clusterName -g resourceGroupName --port portValue
   - name: Get access to a connected kubernetes cluster with service account token
-    text: az connectedk8s proxy -n clusterName -g resourceGroupName --service-account-token tokenValue
+    text: az connectedk8s proxy -n clusterName -g resourceGroupName --token tokenValue
   - name: Get access to a connected kubernetes cluster by specifying custom kubeconfig location
     text: az connectedk8s proxy -n clusterName -g resourceGroupName -f path/to/kubeconfig
   - name: Get access to a connected kubernetes cluster by specifying custom context
-    text: az connectedk8s proxy -n clusterName -g resourceGroupName --context contextName
+    text: az connectedk8s proxy -n clusterName -g resourceGroupName --kube-context contextName
 """
 
 helps['connectedk8s enable-features'] = """

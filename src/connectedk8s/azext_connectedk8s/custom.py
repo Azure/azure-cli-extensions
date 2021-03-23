@@ -1569,6 +1569,10 @@ def client_side_proxy_wrapper(cmd,
                               api_server_port=consts.API_SERVER_PORT):
 
     client_proxy_port = consts.CLIENT_PROXY_PORT
+    if int(client_proxy_port) == int(api_server_port):
+        telemetry.set_user_fault()
+        raise CLIError('Proxy uses port 47010 internally. Please pass some other unused port through --port option.')
+
     cloud = send_cloud_telemetry(cmd)
     args = []
     operating_system = platform.system()
