@@ -138,7 +138,7 @@ def submit(cmd, program_args, resource_group_name=None, workspace_name=None, loc
 
     if result.returncode == 0:
         job_id = result.stdout.decode('ascii').strip()
-        return get(cmd, job_id, resource_group_name, workspace_name)
+        return get(cmd, job_id, resource_group_name, workspace_name, location)
 
     raise CLIError("Failed to submit job.")
 
