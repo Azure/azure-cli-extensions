@@ -1990,7 +1990,7 @@ def check_if_port_is_open(port):
     try:
         connections = net_connections(kind='inet')
         for tup in connections:
-            if tup[3][1] == port:
+            if int(tup[3][1]) == int(port):
                 return True
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Port_Check_Fault_Type,
