@@ -229,9 +229,8 @@ def server_down(cmd, client, resource_group_name=None, server_name=None, delete_
     return client.delete(resource_group_name, server_name)
 
 
-def create_mysql_connection_string(cmd,
-        server_name='{server}', database_name='{database}', administrator_login='{login}',
-        administrator_login_password='{password}'):
+def create_mysql_connection_string(cmd, server_name='{server}', database_name='{database}',
+                                   administrator_login='{login}', administrator_login_password='{password}'):
     user = '{}@{}'.format(administrator_login, server_name)
     host = server_name + cmd.cli_ctx.cloud.suffixes.mysql_server_endpoint
     return _form_response(
@@ -240,9 +239,8 @@ def create_mysql_connection_string(cmd,
     )
 
 
-def create_postgresql_connection_string(cmd,
-        server_name='{server}', database_name='{database}', administrator_login='{login}',
-        administrator_login_password='{password}'):
+def create_postgresql_connection_string(cmd, server_name='{server}', database_name='{database}',
+                                        administrator_login='{login}', administrator_login_password='{password}'):
     user = '{}@{}'.format(administrator_login, server_name)
     host = server_name + cmd.cli_ctx.cloud.suffixes.postgresql_server_endpoint
     return _form_response(
@@ -251,9 +249,8 @@ def create_postgresql_connection_string(cmd,
     )
 
 
-def create_sql_connection_string(cmd,
-        server_name='{server}', database_name='{database}', administrator_login='{login}',
-        administrator_login_password='{password}'):
+def create_sql_connection_string(cmd, server_name='{server}', database_name='{database}', administrator_login='{login}',
+                                 administrator_login_password='{password}'):
     user = '{}@{}'.format(administrator_login, server_name)
     host = server_name + cmd.cli_ctx.cloud.suffixes.sql_server_endpoint
     return _form_response(
