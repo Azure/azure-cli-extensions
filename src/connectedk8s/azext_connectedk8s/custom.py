@@ -1832,11 +1832,10 @@ def client_side_proxy(cmd,
     try:
         response = client.list_cluster_user_credentials(resource_group_name, cluster_name, auth_method, True)
     except Exception as e:
+        if flag == 1:
+            clientproxy_process.terminate()
         utils.arm_exception_handler(e, consts.Get_Credentials_Failed_Fault_Type, 'Unable to list cluster user credentials')
-        if flag == 0:
-            raise CLIError("Failed to get credentials." + str(e))
-        else:
-            close_subprocess_and_raise_cli_error(clientproxy_process, "Failed to get credentials." + str(e))
+        raise CLIError("Failed to get credentials." + str(e))
 
     # Starting the client proxy process, if this is the first time that this function is invoked
     if flag == 0:
