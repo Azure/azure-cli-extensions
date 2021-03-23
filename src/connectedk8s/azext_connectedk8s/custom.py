@@ -1571,10 +1571,7 @@ def client_side_proxy_wrapper(cmd,
                               api_server_port=consts.API_SERVER_PORT):
 
     client_proxy_port = consts.CLIENT_PROXY_PORT
-    if token is not None:
-        telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': False})
-    else:
-        telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.IsAADEnabled': True})
+
 
     cloud = send_cloud_telemetry(cmd)
     args = []
@@ -1590,7 +1587,7 @@ def client_side_proxy_wrapper(cmd,
 
     port_error_string = ""
     if check_if_port_is_open(api_server_port):
-        port_error_string += f'Port {api_server_port} is already in use. Please select a different port with --api-server option.\n'
+        port_error_string += f'Port {api_server_port} is already in use. Please select a different port with --port option.\n'
     if check_if_port_is_open(client_proxy_port):
         telemetry.set_exception(exception='Client proxy port was in use.', fault_type=consts.Client_Proxy_Port_Fault_Type,
                                 summary=f'Client proxy port was in use.')
@@ -1624,7 +1621,7 @@ def client_side_proxy_wrapper(cmd,
 
     # If version specified by install location doesnt exist, then download the executable
     if not os.path.isfile(install_location):
-        
+
         print("Setting up environment for first time use. This can take few minutes...")
         # Downloading the executable
         try:
@@ -1795,7 +1792,7 @@ def client_side_proxy_main(cmd,
                            clientproxy_process=None):
     expiry, clientproxy_process = client_side_proxy(cmd, client, resource_group_name, cluster_name, 0, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=None)
     next_refresh_time = expiry - consts.CSP_REFRESH_TIME
-    
+
     while(True):
         time.sleep(60)
         if(check_if_csp_is_running(clientproxy_process)):
@@ -1839,10 +1836,10 @@ def client_side_proxy(cmd,
     except Exception as e:
         utils.arm_exception_handler(e, consts.Get_Credentials_Failed_Fault_Type, 'Unable to list cluster user credentials')
         if flag == 0:
-            raise CLIError("Failed to get credentials." + str(e))    
+            raise CLIError("Failed to get credentials." + str(e))
         else:
             close_subprocess_and_raise_cli_error(clientproxy_process, "Failed to get credentials." + str(e))
-    
+
     # Starting the client proxy process, if this is the first time that this function is invoked
     if flag == 0:
         try:
@@ -1893,8 +1890,8 @@ def client_side_proxy(cmd,
             telemetry.set_user_fault()
             telemetry.set_exception(exception=e, fault_type=consts.Load_Kubeconfig_Fault_Type,
                                     summary='Unable to load Kubeconfig')
-            close_subprocess_and_raise_cli_error(clientproxy_process,"Failed to load kubeconfig." + str(e))
-        
+            close_subprocess_and_raise_cli_error(clientproxy_process, "Failed to load kubeconfig." + str(e))
+
         kubeconfig = kubeconfig['kubeconfigs'][0]['value']
         kubeconfig = b64decode(kubeconfig).decode("utf-8")
 
@@ -1912,8 +1909,9 @@ def client_side_proxy(cmd,
             telemetry.set_exception(exception=e, fault_type=consts.Merge_Kubeconfig_Fault_Type,
                                     summary='Unable to merge kubeconfig.')
             close_subprocess_and_raise_cli_error(clientproxy_process, "Failed to merge kubeconfig." + str(e))
-    
+
     return expiry, clientproxy_process
+
 
 def make_api_call_with_retries(uri, data, tls_verify, fault_type, summary, cli_error, clientproxy_process):
     for i in range(consts.API_CALL_RETRIES):
@@ -2008,6 +2006,7 @@ def check_if_port_is_open(port):
 def close_subprocess_and_raise_cli_error(proc_subprocess, msg):
     proc_subprocess.terminate()
     raise CLIError(msg)
+
 
 def check_if_csp_is_running(clientproxy_process):
     if clientproxy_process.poll() is None:
