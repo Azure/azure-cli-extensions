@@ -1147,7 +1147,6 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         enable_cl, custom_locations_oid = check_cl_registration_and_get_oid(cmd)
         if not enable_cluster_connect and enable_cl:
             enable_cluster_connect = True
-            features.append("cluster-connect")
             logger.warning("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too.")
         if not enable_cl:
             features.remove("custom-locations")
