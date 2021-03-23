@@ -73,8 +73,6 @@ def healthcareapis_service_create(client,
         'properties': properties
     }
 
-    print(service_description)
-
     return sdk_no_wait(no_wait,
                        client.create_or_update,
                        resource_group_name=resource_group_name,
