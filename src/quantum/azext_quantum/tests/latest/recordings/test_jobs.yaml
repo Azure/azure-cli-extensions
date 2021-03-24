@@ -31,15 +31,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Jan 2021 17:44:48 GMT
+      - Mon, 22 Mar 2021 16:47:04 GMT
       etag:
       - '"07009043-0000-3300-0000-5fa7d2e40000"'
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -48,6 +46,8 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
     status:
       code: 200
       message: OK
@@ -69,14 +69,14 @@ interactions:
     uri: https://eastus2euap.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testalias-e2e-tests-canary-rg/providers/Microsoft.Quantum/workspaces/e2e-tests-workspace-ionq/providerStatus
   response:
     body:
-      string: '{"value":[{"id":"ionq","currentAvailability":"Available","targets":[{"id":"ionq.qpu","currentAvailability":"Available","averageQueueTime":140,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://status.ionq.co"}]}],"nextLink":null}'
+      string: '{"value":[{"id":"ionq","currentAvailability":"Available","targets":[{"id":"ionq.qpu","currentAvailability":"Available","averageQueueTime":5105,"statusPage":"https://status.ionq.co"},{"id":"ionq.simulator","currentAvailability":"Available","averageQueueTime":0,"statusPage":"https://status.ionq.co"}]}],"nextLink":null}'
     headers:
       content-length:
-      - '317'
+      - '318'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Jan 2021 17:44:52 GMT
+      - Mon, 22 Mar 2021 16:47:08 GMT
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:
