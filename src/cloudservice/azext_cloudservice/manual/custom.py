@@ -46,7 +46,8 @@ def cloud_service_create(cmd,
     parameters['properties']['network_profile']['swappable_cloud_service'] = {}
     parameters['properties']['network_profile']['swappable_cloud_service']['id'] = id_
     parameters['properties']['os_profile'] = {}
-    parameters['properties']['os_profile']['secrets'] = secrets
+    parameters['properties']['os_profile']['secrets'] = _parse_secrets(
+        secrets, cmd, resource_group_name)
     parameters['properties']['role_profile'] = {}
     parameters['properties']['role_profile']['roles'] = _parse_roles(roles)
     return sdk_no_wait(no_wait,
@@ -103,3 +104,26 @@ def _parse_lbs(lbs, cmd, resource_group_name):
             'name': terms[0]
         })
     return lbs_json
+
+
+def _parse_secrets(secrets, cmd, resource_group_name):
+    from msrestazure.tools import resource_id, is_valid_resource_id
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    secrets_json = []
+    for secret in secrets:
+        terms = secrets.split(':')
+        vault = terms[0]
+        certs = terms[1:]
+        if not is_valid_resource_id(vault):
+            ip = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx), resource_group=resource_group_name,
+                namespace='Microsoft.KeyVault', type='vaults', name=vault)
+        secrets_json.append({
+            'sourceVault': {
+                'id': vault
+            },
+            'vaultCertificates': [
+                {'certificateUrl': cert} for cert in certs
+            ]
+        })
+    return secrets_json

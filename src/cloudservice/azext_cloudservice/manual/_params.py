@@ -37,3 +37,5 @@ def load_arguments(self, _):
                    'json-string/@json-file.', arg_group='Role Profile')
         c.argument('load_balancer_configurations', nargs='+', arg_group='Network Profile',
                    help='The list of load balancer configurations for the cloud service.')
+        c.argument('secrets', nargs='+', arg_group='Os Profile',
+                   help='Specifies set of certificates that should be installed onto the role instances.')

@@ -138,7 +138,8 @@ class Cloud_serviceScenarioTest(ScenarioTest):
                  '--roles ContosoFrontend:Standard_D1_v2:1:Standard ContosoBackend:Standard_D1_v2:1:Standard '
                  '--package-url packageurl '
                  '--configuration config '
-                 '--load-balancer-configurations myLoadBalancer:myfe:publicip ')
+                 '--load-balancer-configurations myLoadBalancer:myfe:publicip myLoadBalancer2:myfe:publicip '
+                 '--secrets vault0:cert0:cert1 vault1:cert2:cert3')
 
     @ResourceGroupPreparer(name_prefix='cli_test_cloud_service_')
     def test_cloud_service(self, rg):
