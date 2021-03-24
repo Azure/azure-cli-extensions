@@ -1525,26 +1525,32 @@ def handle_merge(existing, addition, key, replace):
         existing[key] = addition[key]
         return
 
-    for i in addition[key]:
-        for j in existing[key]:
-            if i['name'] == j['name']:
-                if replace or i == j:
-                    existing[key].remove(j)
+    i = addition[key][0]
+    temp_list = []
+    for j in existing[key]:
+        remove_flag = False
+        if i['name'] == j['name']:
+            if replace or i == j:
+                remove_flag = True
+            else:
+                msg = 'A different object named {} already exists in your kubeconfig file.\nOverwrite?'
+                overwrite = False
+                try:
+                    overwrite = prompt_y_n(msg.format(i['name']))
+                except NoTTYException:
+                    pass
+                if overwrite:
+                    remove_flag = True
                 else:
-                    msg = 'A different object named {} already exists in your kubeconfig file.\nOverwrite?'
-                    overwrite = False
-                    try:
-                        overwrite = prompt_y_n(msg.format(i['name']))
-                    except NoTTYException:
-                        pass
-                    if overwrite:
-                        existing[key].remove(j)
-                    else:
-                        msg = 'A different object named {} already exists in {} in your kubeconfig file.'
-                        telemetry.set_exception(exception='A different object with same name exists in the kubeconfig file', fault_type=consts.Different_Object_With_Same_Name_Fault_Type,
-                                                summary=msg.format(i['name'], key))
-                        raise CLIError(msg.format(i['name'], key))
-        existing[key].append(i)
+                    msg = 'A different object named {} already exists in {} in your kubeconfig file.'
+                    telemetry.set_exception(exception='A different object with same name exists in the kubeconfig file', fault_type=consts.Different_Object_With_Same_Name_Fault_Type,
+                                            summary=msg.format(i['name'], key))
+                    raise CLIError(msg.format(i['name'], key))
+        if not remove_flag:
+            temp_list.append(j)
+
+    existing[key][:] = temp_list
+    existing[key].append(i)
 
 
 def _resolve_service_principal(client, identifier):  # Uses service principal graph client
