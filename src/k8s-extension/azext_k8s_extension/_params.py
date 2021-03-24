@@ -45,6 +45,9 @@ def load_arguments(self, _):
                    arg_group="Version",
                    help='Specify the version to install for the extension instance if'
                    ' --auto-upgrade-minor-version is not enabled.')
+        c.argument('release_train',
+                   arg_group="Version",
+                   help='Specify the release train for the extension type.')
         c.argument('configuration_settings',
                    arg_group="Configuration",
                    options_list=['--configuration-settings', '--config'],
@@ -67,8 +70,6 @@ def load_arguments(self, _):
                    help='JSON file path for configuration-protected-settings')
         c.argument('release_namespace',
                    help='Specify the namespace to install the extension release.')
-        c.argument('release_train',
-                   help='Specify the release train for the extension type.')
         c.argument('target_namespace',
                    help='Specify the target namespace to install to for the extension instance. This'
                    ' parameter is required if extension scope is set to \'namespace\'')
