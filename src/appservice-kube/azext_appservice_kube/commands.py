@@ -68,12 +68,16 @@ def load_command_table(self, _):
                          exception_handler=ex_handler_factory(creating_plan=True))
         g.generic_update_command('update', custom_func_name='update_app_service_plan', setter_arg_name='app_service_plan',
                                  validator=validate_asp_sku, supports_no_wait=True)
+        g.custom_command('list', 'list_app_service_plans')
 
     with self.command_group('webapp') as g:
         g.custom_command('create', 'create_webapp', exception_handler=ex_handler_factory())
         g.custom_show_command('show', 'show_webapp', table_transformer=transform_web_output,
                               validator=validate_app_or_slot_exists_in_rg)
         g.custom_command('up', 'webapp_up', exception_handler=ex_handler_factory())
+
+    with self.command_group('webapp deployment source') as g:
+        g.custom_command('config-zip', 'enable_zip_deploy_webapp')
 
     with self.command_group('functionapp') as g:
         g.custom_command('create', 'create_function', exception_handler=ex_handler_factory())

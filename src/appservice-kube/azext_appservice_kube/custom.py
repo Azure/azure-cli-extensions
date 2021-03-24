@@ -28,13 +28,16 @@ from azure.mgmt.storage import StorageManagementClient
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 
 from azure.cli.core.util import get_az_user_agent
+from azure.cli.core.azclierror import (ResourceNotFoundError, RequiredArgumentMissingError, ValidationError,
+                                       CLIInternalError, UnclassifiedUserFault, AzureResponseError,
+                                       ArgumentUsageError, MutuallyExclusiveArgumentError)
 
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
 from six.moves.urllib.request import urlopen
 
 from ._constants import (FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION, FUNCTIONS_VERSION_TO_DEFAULT_NODE_VERSION,
-                         FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS, NODE_VERSION_DEFAULT,
+                         FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS, NODE_VERSION_DEFAULT, NODE_EXACT_VERSION_DEFAULT,
                          DOTNET_RUNTIME_VERSION_TO_DOTNET_LINUX_FX_VERSION, KUBE_DEFAULT_SKU,
                          KUBE_ASP_KIND, KUBE_APP_KIND, LINUX_RUNTIMES, WINDOWS_RUNTIMES, MULTI_CONTAINER_TYPES,
                          CONTAINER_APPSETTING_NAMES, APPSETTINGS_TO_MASK)
@@ -42,9 +45,9 @@ from ._constants import (FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION, FUNCTIONS
 from ._utils import (_normalize_sku, get_sku_name, validate_subnet_id, _generic_site_operation,
                      _get_location_from_resource_group, validate_aks_id)
 from ._create_util import (zip_contents_from_dir, get_runtime_version_details, create_resource_group, get_app_details,
-                           should_create_new_rg, set_location, does_app_already_exist, get_profile_username,
+                           should_create_new_rg, set_location, get_site_availability, does_app_already_exist, get_profile_username,
                            get_plan_to_use,get_kube_plan_to_use, get_lang_from_content, get_rg_to_use, get_sku_to_use,
-                           detect_os_form_src)
+                           detect_os_form_src, get_current_stack_from_runtime)
 from ._client_factory import web_client_factory, cf_kube_environments, ex_handler_factory
 from .vsts_cd_provider import VstsContinuousDeliveryProvider
 
@@ -107,6 +110,19 @@ def update_kube_environment(cmd,
     raise CLIError("Update is not yet supported for Kubernetes Environments.")
 
 
+def list_app_service_plans(cmd, resource_group_name=None):
+    client = web_client_factory(cmd.cli_ctx)
+    if resource_group_name is None:
+        plans = list(client.app_service_plans.list(detailed=True))  # enables querying "numberOfSites"
+    else:
+        plans = list(client.app_service_plans.list_by_resource_group(resource_group_name))
+    for plan in plans:
+        # prune a few useless fields
+        del plan.geo_region
+        del plan.subscription
+    return plans
+
+
 def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False,
                             app_service_environment=None, kube_environment=None, sku='B1', kube_sku=KUBE_DEFAULT_SKU,
                             number_of_workers=None, location=None, tags=None, no_wait=False):
@@ -115,20 +131,20 @@ def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, p
     sku = _normalize_sku(sku)
     _validate_asp_sku(app_service_environment, sku)
     if is_linux and hyper_v:
-        raise CLIError('usage error: --is-linux | --hyper-v')
+        raise MutuallyExclusiveArgumentError('Usage error: --is-linux and --hyper-v cannot be used together.')
 
     kind = None
 
     client = web_client_factory(cmd.cli_ctx)
     if app_service_environment:
         if hyper_v:
-            raise CLIError('Windows containers is not yet supported in app service environment')
+            raise ArgumentUsageError('Windows containers is not yet supported in app service environment')
         ase_id = _validate_app_service_environment_id(cmd.cli_ctx, app_service_environment, resource_group_name)
         ase_def = HostingEnvironmentProfile(id=ase_id)
         ase_list = client.app_service_environments.list()
         ase_found = False
         for ase in ase_list:
-            if ase.id.lower() == ase_id.lower():
+            if ase.name.lower() == app_service_environment.lower() or ase.id.lower() == ase_id.lower():
                 location = ase.location
                 ase_found = True
                 break
@@ -194,7 +210,7 @@ def create_webapp(cmd, resource_group_name, name, plan, runtime=None, startup_fi
                   deployment_container_image_name=None, deployment_source_url=None, deployment_source_branch='master',
                   deployment_local_git=None, docker_registry_server_password=None, docker_registry_server_user=None,
                   multicontainer_config_type=None, multicontainer_config_file=None, tags=None,
-                  using_webapp_up=False, language=None,
+                  using_webapp_up=False, language=None, assign_identities=None, role='Contributor', scope=None,
                   min_worker_count=None, max_worker_count=None):
     SiteConfig, SkuDescription, Site, NameValuePair = cmd.get_models(
         'SiteConfig', 'SkuDescription', 'Site', 'NameValuePair')
@@ -210,13 +226,25 @@ def create_webapp(cmd, resource_group_name, name, plan, runtime=None, startup_fi
     else:
         plan_info = client.app_service_plans.get(resource_group_name, plan)
     if not plan_info:
-        raise CLIError("The plan '{}' doesn't exist".format(plan))
+        raise CLIError("The plan '{}' doesn't exist in the resource group '{}".format(plan, resource_group_name))
     is_linux = plan_info.reserved
-    node_default_version = NODE_VERSION_DEFAULT
+    node_default_version = NODE_EXACT_VERSION_DEFAULT
     location = plan_info.location
     # This is to keep the existing appsettings for a newly created webapp on existing webapp name.
-    name_validation = client.check_name_availability(name, 'Site')
+    name_validation = get_site_availability(cmd, name)
     if not name_validation.name_available:
+        if name_validation.reason == 'Invalid':
+            raise CLIError(name_validation.message)
+        logger.warning("Webapp '%s' already exists. The command will use the existing app's settings.", name)
+        app_details = get_app_details(cmd, name)
+        if app_details is None:
+            raise CLIError("Unable to retrieve details of the existing app '{}'. Please check that "
+                           "the app is a part of the current subscription".format(name))
+        current_rg = app_details.resource_group
+        if resource_group_name is not None and (resource_group_name.lower() != current_rg.lower()):
+            raise CLIError("The webapp '{}' exists in resource group '{}' and does not "
+                           "match the value entered '{}'. Please re-run command with the "
+                           "correct parameters.". format(name, current_rg, resource_group_name))
         existing_app_settings = _generic_site_operation(cmd.cli_ctx, resource_group_name,
                                                         name, 'list_application_settings')
         settings = []
@@ -249,6 +277,8 @@ def create_webapp(cmd, resource_group_name, name, plan, runtime=None, startup_fi
                 site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_USERNAME', value=docker_registry_server_user))
                 site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD', value=docker_registry_server_password))
     helper = _StackRuntimeHelper(cmd, client, linux=(is_linux or is_kube))
+    if runtime:
+        runtime = helper.remove_delimiters(runtime)
 
     if is_linux or is_kube:
         if not validate_container_app_create_options(runtime, deployment_container_image_name,
@@ -274,7 +304,16 @@ def create_webapp(cmd, resource_group_name, name, plan, runtime=None, startup_fi
             site_config.linux_fx_version = _format_fx_version(encoded_config_file, multicontainer_config_type)
 
     elif plan_info.is_xenon:  # windows container webapp
-        site_config.windows_fx_version = _format_fx_version(deployment_container_image_name)
+        if deployment_container_image_name:
+            site_config.windows_fx_version = _format_fx_version(deployment_container_image_name)
+        # set the needed app settings for container image validation
+        if name_validation.name_available:
+            site_config.app_settings.append(NameValuePair(name="DOCKER_REGISTRY_SERVER_USERNAME",
+                                                          value=docker_registry_server_user))
+            site_config.app_settings.append(NameValuePair(name="DOCKER_REGISTRY_SERVER_PASSWORD",
+                                                          value=docker_registry_server_password))
+            site_config.app_settings.append(NameValuePair(name="DOCKER_REGISTRY_SERVER_URL",
+                                                          value=docker_registry_server_url))
 
     elif runtime:  # windows webapp with runtime specified
         if any([startup_file, deployment_container_image_name, multicontainer_config_file, multicontainer_config_type]):
@@ -283,15 +322,15 @@ def create_webapp(cmd, resource_group_name, name, plan, runtime=None, startup_fi
                            "only appliable on linux webapp")
         match = helper.resolve(runtime)
         if not match:
-            raise CLIError("Runtime '{}' is not supported. Please invoke 'list-runtimes' to cross check".format(runtime))  # pylint: disable=line-too-long
+            raise CLIError("Windows runtime '{}' is not supported. "
+                           "Please invoke 'az webapp list-runtimes' to cross check".format(runtime))
         match['setter'](cmd=cmd, stack=match, site_config=site_config)
-        # Be consistent with portal: any windows webapp should have this even it doesn't have node in the stack
-        if not match['displayName'].startswith('node'):
-            if name_validation.name_available:
-                site_config.app_settings.append(NameValuePair(name="WEBSITE_NODE_DEFAULT_VERSION",
-                                                              value=node_default_version))
+
+        # portal uses the current_stack propety in metadata to display stack for windows apps
+        current_stack = get_current_stack_from_runtime(runtime)
+
     else:  # windows webapp without runtime specified
-        if name_validation.name_available:
+        if name_validation.name_available:  # If creating new webapp
             site_config.app_settings.append(NameValuePair(name="WEBSITE_NODE_DEFAULT_VERSION",
                                                           value=node_default_version))
 
@@ -314,6 +353,9 @@ def create_webapp(cmd, resource_group_name, name, plan, runtime=None, startup_fi
     if is_kube:
         return webapp
 
+    if current_stack:
+        _update_webapp_current_stack_property_if_needed(cmd, resource_group_name, name, current_stack)
+
     # Ensure SCC operations follow right after the 'create', no precedent appsetting update commands
     _set_remote_or_local_git(cmd, webapp, resource_group_name, name, deployment_source_url,
                              deployment_source_branch, deployment_local_git)
@@ -324,6 +366,11 @@ def create_webapp(cmd, resource_group_name, name, plan, runtime=None, startup_fi
         update_container_settings(cmd, resource_group_name, name, docker_registry_server_url,
                                   deployment_container_image_name, docker_registry_server_user,
                                   docker_registry_server_password=docker_registry_server_password)
+
+    if assign_identities is not None:
+        identity = assign_identity(cmd, resource_group_name, name, assign_identities,
+                                   role, None, scope)
+        webapp.identity = identity
 
     return webapp
 
@@ -502,12 +549,25 @@ def webapp_up(cmd, name, resource_group_name=None, plan=None, location=None, sku
             cmd.cli_ctx.config.set_value('defaults', 'web', name)
     return create_json
 
+
+def _update_webapp_current_stack_property_if_needed(cmd, resource_group, name, current_stack):
+    if not current_stack:
+        return
+    # portal uses this current_stack value to display correct runtime for windows webapps
+    client = web_client_factory(cmd.cli_ctx)
+    app_metadata = client.web_apps.list_metadata(resource_group, name)
+    if 'CURRENT_STACK' not in app_metadata.properties or app_metadata.properties["CURRENT_STACK"] != current_stack:
+        app_metadata.properties["CURRENT_STACK"] = current_stack
+        client.web_apps.update_metadata(resource_group, name, kind="app", properties=app_metadata.properties)
+
+
 def show_webapp(cmd, resource_group_name, name, slot=None, app_instance=None):
     webapp = app_instance
     if not app_instance:  # when the routine is invoked as a help method, not through commands
         webapp = _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'get', slot)
     if not webapp:
         raise CLIError("'{}' app doesn't exist".format(name))
+    webapp.site_config = _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'get_configuration', slot)
     _rename_server_farm_props(webapp)
 
     # TODO: get rid of this conditional once the api's are implemented for kubapps
@@ -940,16 +1000,29 @@ def update_site_configs(cmd, resource_group_name, name, slot=None, number_of_wor
             setattr(configs, arg, values[arg] if arg not in bool_flags else values[arg] == 'true')
 
     generic_configurations = generic_configurations or []
+
+    # https://github.com/Azure/azure-cli/issues/14857
+    updating_ip_security_restrictions = False
+
     result = {}
     for s in generic_configurations:
         try:
-            result.update(get_json_object(s))
+            json_object = get_json_object(s)
+            for config_name in json_object:
+                if config_name.lower() == 'ip_security_restrictions':
+                    updating_ip_security_restrictions = True
+            result.update(json_object)
         except CLIError:
             config_name, value = s.split('=', 1)
             result[config_name] = value
 
     for config_name, value in result.items():
+        if config_name.lower() == 'ip_security_restrictions':
+            updating_ip_security_restrictions = True
         setattr(configs, config_name, value)
+
+    if not updating_ip_security_restrictions:
+        setattr(configs, 'ip_security_restrictions', None)
 
     return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'update_configuration', slot, configs)
 
@@ -1092,7 +1165,7 @@ def url_validator(url):
         return False
 
 
-def list_publish_profiles(cmd, resource_group_name, name, slot=None):
+def list_publish_profiles(cmd, resource_group_name, name, slot=None, xml=False):
     import xmltodict
 
     content = _generic_site_operation(cmd.cli_ctx, resource_group_name, name,
@@ -1101,20 +1174,22 @@ def list_publish_profiles(cmd, resource_group_name, name, slot=None):
     for f in content:
         full_xml += f.decode()
 
-    profiles = xmltodict.parse(full_xml, xml_attribs=True)['publishData']['publishProfile']
-    converted = []
+    if not xml:
+        profiles = xmltodict.parse(full_xml, xml_attribs=True)['publishData']['publishProfile']
+        converted = []
 
-    if type(profiles) is not list:
-        profiles = [profiles]
+        if type(profiles) is not list:
+            profiles = [profiles]
 
-    for profile in profiles:
-        new = {}
-        for key in profile:
-            # strip the leading '@' xmltodict put in for attributes
-            new[key.lstrip('@')] = profile[key]
-        converted.append(new)
-
-    return converted
+        for profile in profiles:
+            new = {}
+            for key in profile:
+                # strip the leading '@' xmltodict put in for attributes
+                new[key.lstrip('@')] = profile[key]
+            converted.append(new)
+        return converted
+    cmd.cli_ctx.invocation.data['output'] = 'tsv'
+    return full_xml
 
 
 # private helpers
@@ -1264,6 +1339,9 @@ def _validate_and_get_connection_string(cli_ctx, resource_group_name, storage_ac
 
 
 def _format_fx_version(custom_image_name, container_config_type=None):
+    lower_custom_image_name = custom_image_name.lower()
+    if "https://" in lower_custom_image_name or "http://" in lower_custom_image_name:
+        custom_image_name = lower_custom_image_name.replace("https://", "").replace("http://", "")
     fx_version = custom_image_name.strip()
     fx_version_lower = fx_version.lower()
     # handles case of only spaces
@@ -1318,6 +1396,8 @@ def _get_acr_cred(cli_ctx, registry_name):
 def _add_fx_version(cmd, resource_group_name, name, custom_image_name, slot=None):
     fx_version = _format_fx_version(custom_image_name)
     web_app = get_webapp(cmd, resource_group_name, name, slot)
+    if not web_app:
+        raise CLIError("'{}' app doesn't exist in resource group {}".format(name, resource_group_name))
     linux_fx = fx_version if web_app.reserved else None
     windows_fx = fx_version if web_app.is_xenon else None
     return update_site_configs(cmd, resource_group_name, name,
@@ -1407,6 +1487,10 @@ def _rename_server_farm_props(webapp):
     return webapp
 
 
+def enable_zip_deploy_webapp(cmd, resource_group_name, name, src, timeout=None, slot=None, is_kube=False):
+    return enable_zip_deploy(cmd, resource_group_name, name, src, timeout=timeout, slot=slot, is_kube=is_kube)
+
+
 def enable_zip_deploy(cmd, resource_group_name, name, src, timeout=None, slot=None, is_kube=False):
     logger.warning("Getting scm site credentials for zip deployment")
     user_name, password = _get_site_credential(cmd.cli_ctx, resource_group_name, name, slot)
@@ -1427,6 +1511,7 @@ def enable_zip_deploy(cmd, resource_group_name, name, src, timeout=None, slot=No
     headers['Content-Type'] = 'application/octet-stream'
     headers['Cache-Control'] = 'no-cache'
     headers['User-Agent'] = get_az_user_agent()
+
     import requests
     import os
     from azure.cli.core.util import should_disable_connection_verify
@@ -1462,6 +1547,9 @@ def _get_scm_url(cmd, resource_group_name, name, slot=None):
     for host in webapp.host_name_ssl_states or []:
         if host.host_type == HostType.repository:
             return "https://{}".format(host.name)
+
+    # this should not happen, but throw anyway
+    raise ValueError('Failed to retrieve Scm Uri')
 
 
 def _get_site_credential(cli_ctx, resource_group_name, name, slot=None):
@@ -1529,6 +1617,18 @@ class _StackRuntimeHelper(object):
         self._linux = linux
         self._stacks = []
 
+    @staticmethod
+    def remove_delimiters(runtime):
+        import re
+        # delimiters allowed: '|', ':'
+        if '|' in runtime:
+            runtime = re.split('[|]', runtime)
+        elif ':' in runtime:
+            runtime = re.split('[:]', runtime)
+        else:
+            runtime = [runtime]
+        return '|'.join(filter(None, runtime))
+
     def resolve(self, display_name):
         self._load_stacks()
         return next((s for s in self._stacks if s['displayName'].lower() == display_name.lower()),
@@ -1550,9 +1650,35 @@ class _StackRuntimeHelper(object):
         NameValuePair = cmd.get_models('NameValuePair')
         if site_config.app_settings is None:
             site_config.app_settings = []
-        site_config.app_settings += [NameValuePair(name=k, value=v) for k, v in stack['configs'].items()]
+
+        for k, v in stack['configs'].items():
+            already_in_appsettings = False
+            for app_setting in site_config.app_settings:
+                if app_setting.name == k:
+                    already_in_appsettings = True
+                    app_setting.value = v
+            if not already_in_appsettings:
+                site_config.app_settings.append(NameValuePair(name=k, value=v))
         return site_config
 
+    def _load_stacks_hardcoded(self):
+        if self._stacks:
+            return
+        result = []
+        if self._linux:
+            result = get_file_json(RUNTIME_STACKS)['linux']
+            for r in result:
+                r['setter'] = _StackRuntimeHelper.update_site_config
+        else:  # Windows stacks
+            result = get_file_json(RUNTIME_STACKS)['windows']
+            for r in result:
+                r['setter'] = (_StackRuntimeHelper.update_site_appsettings if 'node' in
+                               r['displayName'] else _StackRuntimeHelper.update_site_config)
+        self._stacks = result
+
+    # Currently using hardcoded values instead of this function. This function calls the stacks API;
+    # Stacks API is updated with Antares deployments,
+    # which are infrequent and don't line up with stacks EOL schedule.
     def _load_stacks(self):
         if self._stacks:
             return

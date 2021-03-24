@@ -286,6 +286,20 @@ def should_create_new_rg(cmd, rg_name, is_linux):
     return True
 
 
+def get_site_availability(cmd, name):
+    """ This is used by az webapp up to verify if a site needs to be created or should just be deployed"""
+    client = web_client_factory(cmd.cli_ctx)
+    availability = client.check_name_availability(name, 'Site')
+
+    # check for "." in app name. it is valid for hostnames to contain it, but not allowed for webapp names
+    if "." in name:
+        availability.name_available = False
+        availability.reason = "Invalid"
+        availability.message = ("Site names only allow alphanumeric characters and hyphens, "
+                                "cannot start or end in a hyphen, and must be less than 64 chars.")
+    return availability
+
+
 def does_app_already_exist(cmd, name):
     """ This is used by az webapp up to verify if a site needs to be created or should just be deployed"""
     client = web_client_factory(cmd.cli_ctx)
@@ -358,6 +372,16 @@ def get_kube_plan_to_use(cmd, kube_environment, loc, sku, create_rg, resource_gr
         # get the plan name to use
         return _determine_if_default_plan_to_use(cmd, _default_asp, resource_group_name, loc, sku, create_rg)
     return plan
+
+
+# Portal uses the current_stack property in the app metadata to display the correct stack
+# This value should be one of: ['dotnet', 'dotnetcore', 'node', 'php', 'python', 'java']
+def get_current_stack_from_runtime(runtime):
+    language = runtime.split('|')[0].lower()
+    if language == 'aspnet':
+        return 'dotnet'
+    return language
+
 
 # if plan name not provided we need to get a plan name based on the OS, location & SKU
 def _determine_if_default_plan_to_use(cmd, plan_name, resource_group_name, loc, sku, create_rg):
