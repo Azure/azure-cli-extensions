@@ -83,7 +83,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # check whether proxy cert path exists
     if proxy_cert != "" and (not os.path.exists(proxy_cert)):
         telemetry.set_user_fault()
-        telemetry.set_exception(fault_type=consts.Proxy_Cert_Path_Does_Not_Exist_Fault_Type,
+        telemetry.set_exception(exception='Proxy cert path does not exist', fault_type=consts.Proxy_Cert_Path_Does_Not_Exist_Fault_Type,
                                 summary='Proxy cert path does not exist')
         raise CLIError(str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert))
 
@@ -111,7 +111,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     required_node_exists = check_linux_amd64_node(configuration)
     if not required_node_exists:
         telemetry.set_user_fault()
-        telemetry.set_exception(fault_type=consts.Linux_Amd64_Node_Not_Exists,
+        telemetry.set_exception(exception="Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'", fault_type=consts.Linux_Amd64_Node_Not_Exists,
                                 summary="Couldn't find any node on the kubernetes cluster with the architecture type 'amd64' and OS 'linux'")
         logger.warning("Please ensure that this Kubernetes cluster have any nodes with OS 'linux' and architecture 'amd64', for scheduling the Arc-Agents onto and connecting to Azure. Learn more at {}".format("https://aka.ms/ArcK8sSupportedOSArchitecture"))
 
@@ -729,7 +729,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     # check whether proxy cert path exists
     if proxy_cert != "" and (not os.path.exists(proxy_cert)):
         telemetry.set_user_fault()
-        telemetry.set_exception(fault_type=consts.Proxy_Cert_Path_Does_Not_Exist_Fault_Type,
+        telemetry.set_exception(exception='Proxy cert path does not exist', fault_type=consts.Proxy_Cert_Path_Does_Not_Exist_Fault_Type,
                                 summary='Proxy cert path does not exist')
         raise CLIError(str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert))
 
