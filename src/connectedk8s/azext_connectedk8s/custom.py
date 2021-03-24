@@ -1529,6 +1529,8 @@ def handle_merge(existing, addition, key, replace):
     temp_list = []
     for j in existing[key]:
         remove_flag = False
+        if not i.get('name', False) or not j.get('name', False):
+            continue
         if i['name'] == j['name']:
             if replace or i == j:
                 remove_flag = True
