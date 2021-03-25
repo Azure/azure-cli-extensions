@@ -131,19 +131,25 @@ class EnhancedMonitoring(object):
     def _enable_new(self):
         self._extension = aem_extension_info_v2[self._os_type]
 
+        new_identity = None
         if self._vm.identity is None:
             logger.info("VM has no identity, enabling system assigned")
-            params_identity = {}
-            params_identity['type'] = ResourceIdentityType.system_assigned
-            self._vm.identity = params_identity
-            poller = (self._vm_client.virtual_machines.
-                      begin_create_or_update(self._resource_group, self._vm.name, self._vm))
-            self._vm = poller.result()
+            new_identity = ResourceIdentityType.system_assigned
+
         elif self._vm.identity is not None and self._vm.identity.type == ResourceIdentityType.user_assigned:
             logger.info("VM has user assigned identity, enabling user and system assigned")
-            self._vm.identity.type = ResourceIdentityType.system_assigned_user_assigned
+            new_identity = ResourceIdentityType.system_assigned_user_assigned
+
+        if new_identity is not None:
+            params_identity = {}
+            params_identity['type'] = new_identity
+            VirtualMachineUpdate = self._cmd.get_models('VirtualMachineUpdate',
+                                                        resource_type=ResourceType.MGMT_COMPUTE,
+                                                        operation_group='virtual_machines')
+            vm_patch = VirtualMachineUpdate()
+            vm_patch.identity = params_identity
             poller = (self._vm_client.virtual_machines.
-                      begin_create_or_update(self._resource_group, self._vm.name, self._vm))
+                      begin_update(self._resource_group, self._vm.name, vm_patch))
             self._vm = poller.result()
 
         scopes = set()

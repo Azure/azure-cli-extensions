@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.1.0
+++++++
+* Adding enable/disable features support and az connectedk8s proxy
+
 1.0.0
 ++++++
 * Moving to GA API version
