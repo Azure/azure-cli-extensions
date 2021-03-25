@@ -117,3 +117,11 @@ helps['connectedk8s disable-features'] = """
   - name: Disable multiple features.
     text: az connectedk8s disable-features -n clusterName -g resourceGroupName --features custom-locations azure-rbac
 """
+
+helps['connectedk8s troubleshoot'] = """
+type: command
+  short-summary: Troubleshoots and gets logs for a broken cluster.
+  examples:
+  - name: Troubleshoots a broken cluster .
+    text: az connectedk8s troubleshoot -n clusterName -g resourceGroupName
+"""

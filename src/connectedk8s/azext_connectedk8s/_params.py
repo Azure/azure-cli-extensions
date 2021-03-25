@@ -84,3 +84,7 @@ def load_arguments(self, _):
         c.argument('context_name', options_list=['--kube-context'], help='If specified, overwrite the default context name.')
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(), default=os.path.join(os.path.expanduser('~'), '.kube', 'config'), help="Kubernetes configuration file to update. If not provided, updates the file '~/.kube/config'. Use '-' to print YAML to stdout instead.")
         c.argument('api_server_port', options_list=['--port'], help='Port used for accessing connected cluster.')
+    
+    with self.argument_context('connectedk8s troubleshoot') as c:
+        c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
