@@ -119,7 +119,7 @@ helps['connectedk8s disable-features'] = """
 """
 
 helps['connectedk8s troubleshoot'] = """
-type: command
+  type: command
   short-summary: Troubleshoots and gets logs for a broken cluster.
   examples:
   - name: Troubleshoots a broken cluster .

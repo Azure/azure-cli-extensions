@@ -2023,6 +2023,6 @@ def check_if_csp_is_running(clientproxy_process):
     else:
         return False
 
+
 def troubleshoot(resource_group_name, cluster_name):
-    print("Hello world")
     return "Needs implementation"
