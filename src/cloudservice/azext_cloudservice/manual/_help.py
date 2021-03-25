@@ -109,47 +109,7 @@ creation."
     examples:
       - name: Create a cloud service.
         text: |-
-               az cloud-service create -g fy -n cs --roles ContosoFrontend:Standard_D1_v2:1:Standard ContosoBackend:Standard_D1_v2:1:Standard --package-url packageurl --configuration config --load-balancer-configurations myLoadBalancer:myfe:publicip:subnetid: myLoadBalancer2:myfe2:::privateip --secrets vault0:cert0:cert1 vault1:cert2:cert3:cert4 --extensions extensions.json
-      - name: Create New Cloud Service with Multiple Roles
-        text: |-
-               az cloud-service create --name "{cs-name}" --location "westus" --configuration "{ServiceConfiguration}" \
---load-balancer-configurations "[{\\"name\\":\\"contosolb\\",\\"properties\\":{\\"frontendIPConfigurations\\":[{\\"name\
-\\":\\"contosofe\\",\\"properties\\":{\\"publicIPAddress\\":{\\"id\\":\\"/subscriptions/{subscription-id}/resourceGroup\
-s/ConstosoRG/providers/Microsoft.Network/publicIPAddresses/contosopublicip\\"}}}]}}]" --package-url "{PackageUrl}" \
---roles "[{\\"name\\":\\"ContosoFrontend\\",\\"sku\\":{\\"name\\":\\"Standard_D1_v2\\",\\"capacity\\":1,\\"tier\\":\\"S\
-tandard\\"}},{\\"name\\":\\"ContosoBackend\\",\\"sku\\":{\\"name\\":\\"Standard_D1_v2\\",\\"capacity\\":1,\\"tier\\":\\\
-"Standard\\"}}]" --upgrade-mode "Auto" --resource-group "ConstosoRG"
-      - name: Create New Cloud Service with Single Role
-        text: |-
-               az cloud-service create --name "{cs-name}" --location "westus" --configuration "{ServiceConfiguration}" \
---load-balancer-configurations "[{\\"name\\":\\"myLoadBalancer\\",\\"properties\\":{\\"frontendIPConfigurations\\":[{\\\
-"name\\":\\"myfe\\",\\"properties\\":{\\"publicIPAddress\\":{\\"id\\":\\"/subscriptions/{subscription-id}/resourceGroup\
-s/ConstosoRG/providers/Microsoft.Network/publicIPAddresses/myPublicIP\\"}}}]}}]" --package-url "{PackageUrl}" --roles \
-"[{\\"name\\":\\"ContosoFrontend\\",\\"sku\\":{\\"name\\":\\"Standard_D1_v2\\",\\"capacity\\":1,\\"tier\\":\\"Standard\
-\\"}}]" --upgrade-mode "Auto" --resource-group "ConstosoRG"
-      - name: Create New Cloud Service with Single Role and Certificate from Key Vault
-        text: |-
-               az cloud-service create --name "{cs-name}" --location "westus" --configuration "{ServiceConfiguration}" \
---load-balancer-configurations "[{\\"name\\":\\"contosolb\\",\\"properties\\":{\\"frontendIPConfigurations\\":[{\\"name\
-\\":\\"contosofe\\",\\"properties\\":{\\"publicIPAddress\\":{\\"id\\":\\"/subscriptions/{subscription-id}/resourceGroup\
-s/ConstosoRG/providers/Microsoft.Network/publicIPAddresses/contosopublicip\\"}}}]}}]" --secrets \
-"[{\\"sourceVault\\":{\\"id\\":\\"/subscriptions/{subscription-id}/resourceGroups/ConstosoRG/providers/Microsoft.KeyVau\
-lt/vaults/{keyvault-name}\\"},\\"vaultCertificates\\":[{\\"certificateUrl\\":\\"https://{keyvault-name}.vault.azure.net\
-:443/secrets/ContosoCertificate/{secret-id}\\"}]}]" --package-url "{PackageUrl}" --roles \
-"[{\\"name\\":\\"ContosoFrontend\\",\\"sku\\":{\\"name\\":\\"Standard_D1_v2\\",\\"capacity\\":1,\\"tier\\":\\"Standard\
-\\"}}]" --upgrade-mode "Auto" --resource-group "ConstosoRG"
-      - name: Create New Cloud Service with Single Role and RDP Extension
-        text: |-
-               az cloud-service create --name "{cs-name}" --location "westus" --configuration "{ServiceConfiguration}" \
---extensions "[{\\"name\\":\\"RDPExtension\\",\\"properties\\":{\\"type\\":\\"RDP\\",\\"autoUpgradeMinorVersion\\":fals\
-e,\\"protectedSettings\\":\\"<PrivateConfig><Password>{password}</Password></PrivateConfig>\\",\\"publisher\\":\\"Micro\
-soft.Windows.Azure.Extensions\\",\\"settings\\":\\"<PublicConfig><UserName>UserAzure</UserName><Expiration>10/22/2021 \
-15:05:45</Expiration></PublicConfig>\\",\\"typeHandlerVersion\\":\\"1.2.1\\"}}]" --load-balancer-configurations \
-"[{\\"name\\":\\"contosolb\\",\\"properties\\":{\\"frontendIPConfigurations\\":[{\\"name\\":\\"contosofe\\",\\"properti\
-es\\":{\\"publicIPAddress\\":{\\"id\\":\\"/subscriptions/{subscription-id}/resourceGroups/ConstosoRG/providers/Microsof\
-t.Network/publicIPAddresses/contosopublicip\\"}}}]}}]" --package-url "{PackageUrl}" --roles \
-"[{\\"name\\":\\"ContosoFrontend\\",\\"sku\\":{\\"name\\":\\"Standard_D1_v2\\",\\"capacity\\":1,\\"tier\\":\\"Standard\
-\\"}}]" --upgrade-mode "Auto" --resource-group "ConstosoRG"
+               az cloud-service create -g rg -n cs --roles ContosoFrontend:Standard_D1_v2:1:Standard ContosoBackend:Standard_D1_v2:1:Standard --package-url packageurl --configuration config --load-balancer-configurations myLoadBalancer:myfe:publicip:subnetid: myLoadBalancer2:myfe2:::privateip --secrets vault0:cert0:cert1 vault1:cert2:cert3:cert4 --extensions extensions.json
 """
 
 helps['cloud-service update'] = """
