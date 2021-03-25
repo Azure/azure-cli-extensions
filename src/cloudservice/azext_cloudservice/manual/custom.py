@@ -84,7 +84,9 @@ def _parse_lbs(lbs, cmd, resource_group_name):
     for lb in lbs:
         terms = lb.split(':')
         ip = terms[2]
-        if not is_valid_resource_id(ip):
+        subnet = terms[3]
+        private_ip = terms[4]
+        if ip and not is_valid_resource_id(ip):
             ip = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx), resource_group=resource_group_name,
                 namespace='Microsoft.Network', type='publicIPAddresses', name=ip)
@@ -93,9 +95,9 @@ def _parse_lbs(lbs, cmd, resource_group_name):
                 'frontendIPConfigurations': [
                     {
                         'properties': {
-                            'publicIPAddress': {
-                                'id': ip
-                            }
+                            'publicIPAddress': {'id': ip} if ip else None,
+                            'subnet': {'id': subnet} if subnet else None,
+                            'privateIPAddress': private_ip if private_ip else None
                         },
                         'name': terms[1]
                     }
@@ -111,11 +113,11 @@ def _parse_secrets(secrets, cmd, resource_group_name):
     from azure.cli.core.commands.client_factory import get_subscription_id
     secrets_json = []
     for secret in secrets:
-        terms = secrets.split(':')
+        terms = secret.split(':')
         vault = terms[0]
         certs = terms[1:]
-        if not is_valid_resource_id(vault):
-            ip = resource_id(
+        if vault and not is_valid_resource_id(vault):
+            vault = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx), resource_group=resource_group_name,
                 namespace='Microsoft.KeyVault', type='vaults', name=vault)
         secrets_json.append({
