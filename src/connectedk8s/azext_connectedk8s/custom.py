@@ -28,6 +28,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core._profile import Profile
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core import telemetry
+from azure.cli.core.azclierror import InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ValidationError
 from msrestazure.azure_exceptions import CloudError
 from kubernetes import client as kube_client, config
 from Crypto.IO import PEM
@@ -82,10 +83,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # check whether proxy cert path exists
     if proxy_cert != "" and (not os.path.exists(proxy_cert)):
-        telemetry.set_user_fault()
         telemetry.set_exception(exception='Proxy cert path does not exist', fault_type=consts.Proxy_Cert_Path_Does_Not_Exist_Fault_Type,
                                 summary='Proxy cert path does not exist')
-        raise CLIError(str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert))
+        raise InvalidArgumentValueError(str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert))
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
@@ -148,8 +148,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Check for faulty pre-release helm versions
     if "3.3.0-rc" in helm_version:
-        telemetry.set_user_fault()
-        raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
+        raise ClientRequestError("The current helm version is not supported for azure-arc onboarding.", recommendation="Please upgrade helm to a stable version and try again.")
 
     # Validate location
     utils.validate_location(cmd, location)
@@ -180,10 +179,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                 cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra)
                 create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
             else:
-                telemetry.set_user_fault()
                 telemetry.set_exception(exception='The kubernetes cluster is already onboarded', fault_type=consts.Cluster_Already_Onboarded_Fault_Type,
                                         summary='Kubernetes cluster already onboarded')
-                raise CLIError("The kubernetes cluster you are trying to onboard " +
+                raise InvalidArgumentValueError("The kubernetes cluster you are trying to onboard " +
                                "is already onboarded to the resource group" +
                                " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
         else:
@@ -191,12 +189,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
             utils.delete_arc_agents(release_namespace, kube_config, kube_context, configuration)
     else:
         if connected_cluster_exists(client, resource_group_name, cluster_name):
-            telemetry.set_user_fault()
             telemetry.set_exception(exception='The connected cluster resource already exists', fault_type=consts.Resource_Already_Exists_Fault_Type,
                                     summary='Connected cluster resource already exists')
-            raise CLIError("The connected cluster resource {} already exists ".format(cluster_name) +
+            raise InvalidArgumentValueError("The connected cluster resource {} already exists ".format(cluster_name) +
                            "in the resource group {} ".format(resource_group_name) +
-                           "and corresponds to a different Kubernetes cluster. To onboard this Kubernetes cluster " +
+                           "and corresponds to a different Kubernetes cluster.", recommendation="To onboard this Kubernetes cluster " +
                            "to Azure, specify different resource name or resource group name.")
 
     # Resource group Creation
@@ -230,19 +227,19 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.KeyPair_Generate_Fault_Type,
                                 summary='Failed to generate public-private key pair')
-        raise CLIError("Failed to generate public-private key pair. " + str(e))
+        raise CLIInternalError("Failed to generate public-private key pair. " + str(e))
     try:
         public_key = get_public_key(key_pair)
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.PublicKey_Export_Fault_Type,
                                 summary='Failed to export public key')
-        raise CLIError("Failed to export public key." + str(e))
+        raise CLIInternalError("Failed to export public key." + str(e))
     try:
         private_key_pem = get_private_key(key_pair)
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.PrivateKey_Export_Fault_Type,
                                 summary='Failed to export private key')
-        raise CLIError("Failed to export private key." + str(e))
+        raise CLIInternalError("Failed to export private key." + str(e))
 
     # Generate request payload
     cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra)
@@ -274,27 +271,24 @@ def send_cloud_telemetry(cmd):
 
 def validate_env_file_dogfood(values_file, values_file_provided):
     if not values_file_provided:
-        telemetry.set_user_fault()
         telemetry.set_exception(exception='Helm environment file not provided', fault_type=consts.Helm_Environment_File_Fault_Type,
                                 summary='Helm environment file missing')
-        raise CLIError("Helm environment file is required when using Dogfood environment for onboarding the cluster. Please set the environment variable 'HELMVALUESPATH' to point to the file.")
+        raise ClientRequestError("Helm environment file is required when using Dogfood environment for onboarding the cluster.", recommendation="Please set the environment variable 'HELMVALUESPATH' to point to the file.")
 
     with open(values_file, 'r') as f:
         try:
             env_dict = yaml.safe_load(f)
         except Exception as e:
-            telemetry.set_user_fault()
             telemetry.set_exception(exception=e, fault_type=consts.Helm_Environment_File_Fault_Type,
                                     summary='Problem loading the helm environment file')
-            raise CLIError("Problem loading the helm environment file: " + str(e))
+            raise FileOperationError("Problem loading the helm environment file: " + str(e))
         try:
             assert env_dict.get('global').get('azureEnvironment') == 'AZUREDOGFOOD'
             assert env_dict.get('systemDefaultValues').get('azureArcAgents').get('config_dp_endpoint_override')
         except Exception as e:
-            telemetry.set_user_fault()
             telemetry.set_exception(exception=e, fault_type=consts.Helm_Environment_File_Fault_Type,
                                     summary='Problem loading the helm environment variables')
-            raise CLIError("The required helm environment variables for dogfood onboarding are either not present in the file or incorrectly set. Please check the values 'global.azureEnvironment' and 'systemDefaultValues.azureArcAgents.config_dp_endpoint_override' in the file.")
+            raise FileOperationError("The required helm environment variables for dogfood onboarding are either not present in the file or incorrectly set.", recommendation="Please check the values 'global.azureEnvironment' and 'systemDefaultValues.azureArcAgents.config_dp_endpoint_override' in the file.")
 
     # Return the dp endpoint and release train
     dp_endpoint = env_dict.get('systemDefaultValues').get('azureArcAgents').get('config_dp_endpoint_override')
@@ -341,27 +335,23 @@ def check_helm_install(kube_config, kube_context):
         _, error_helm_installed = response_helm_installed.communicate()
         if response_helm_installed.returncode != 0:
             if "unknown flag" in error_helm_installed.decode("ascii"):
-                telemetry.set_user_fault()
                 telemetry.set_exception(exception='Helm 3 not found', fault_type=consts.Helm_Version_Fault_Type,
                                         summary='Helm3 not found on the machine')
-                raise CLIError("Please install the latest version of Helm. " +
-                               "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
-            telemetry.set_user_fault()
+                raise ClientRequestError("Helm 3 not found", recommendation="Please install the latest version of Helm. " +
+                                         "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
             telemetry.set_exception(exception=error_helm_installed.decode("ascii"), fault_type=consts.Helm_Installation_Fault_Type,
                                     summary='Helm3 not installed on the machine')
-            raise CLIError(error_helm_installed.decode("ascii"))
+            raise DeploymentError(error_helm_installed.decode("ascii"))
     except FileNotFoundError as e:
-        telemetry.set_user_fault()
         telemetry.set_exception(exception=e, fault_type=consts.Check_HelmInstallation_Fault_Type,
                                 summary='Unable to verify helm installation')
-        raise CLIError("Helm is not installed or the helm binary is not accessible to the connectedk8s cli. Could be a permission issue." +
-                       "Ensure that you have the latest version of Helm installed on your machine and run using admin privilege. " +
-                       "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
+        raise ClientRequestError("Helm is not installed or the helm binary is not accessible to the connectedk8s cli. Could be a permission issue.",
+                                 recommendation="Ensure that you have the latest version of Helm installed on your machine and run using admin privilege. " +
+                                 "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
     except Exception as e2:
-        telemetry.set_user_fault()
         telemetry.set_exception(exception=e2, fault_type=consts.Check_HelmInstallation_Fault_Type,
                                 summary='Error while verifying helm installation')
-        raise CLIError("Error occured while verifying helm installation: " + str(e2))
+        raise ValidationError("Error occured while verifying helm installation: " + str(e2))
 
 
 def check_helm_version(kube_config, kube_context):
