@@ -229,33 +229,30 @@ def server_down(cmd, client, resource_group_name=None, server_name=None, delete_
     return client.delete(resource_group_name, server_name)
 
 
-def create_mysql_connection_string(
-        server_name='{server}', database_name='{database}', administrator_login='{login}',
-        administrator_login_password='{password}'):
+def create_mysql_connection_string(cmd, server_name='{server}', database_name='{database}',
+                                   administrator_login='{login}', administrator_login_password='{password}'):
     user = '{}@{}'.format(administrator_login, server_name)
-    host = '{}.mysql.database.azure.com'.format(server_name)
+    host = server_name + cmd.cli_ctx.cloud.suffixes.mysql_server_endpoint
     return _form_response(
         _create_mysql_connection_string(host, user, administrator_login_password, database_name),
         host, user, administrator_login_password
     )
 
 
-def create_postgresql_connection_string(
-        server_name='{server}', database_name='{database}', administrator_login='{login}',
-        administrator_login_password='{password}'):
+def create_postgresql_connection_string(cmd, server_name='{server}', database_name='{database}',
+                                        administrator_login='{login}', administrator_login_password='{password}'):
     user = '{}@{}'.format(administrator_login, server_name)
-    host = '{}.postgres.database.azure.com'.format(server_name)
+    host = server_name + cmd.cli_ctx.cloud.suffixes.postgresql_server_endpoint
     return _form_response(
         _create_postgresql_connection_string(host, user, administrator_login_password, database_name),
         host, user, administrator_login_password
     )
 
 
-def create_sql_connection_string(
-        server_name='{server}', database_name='{database}', administrator_login='{login}',
-        administrator_login_password='{password}'):
+def create_sql_connection_string(cmd, server_name='{server}', database_name='{database}', administrator_login='{login}',
+                                 administrator_login_password='{password}'):
     user = '{}@{}'.format(administrator_login, server_name)
-    host = '{}.database.windows.net'.format(server_name)
+    host = server_name + cmd.cli_ctx.cloud.suffixes.sql_server_endpoint
     return _form_response(
         _create_sql_connection_string(host, user, administrator_login_password, database_name),
         host, user, administrator_login_password
