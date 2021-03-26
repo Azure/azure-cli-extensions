@@ -9,129 +9,20 @@
 # --------------------------------------------------------------------------
 
 import os
+import unittest
+
+from azext_cloudservice.tests import try_manual
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
-from .example_steps import step_create
-from .example_steps import step_create2
-from .example_steps import step_create3
-from .example_steps import step_create4
-from .. import (
-    try_manual,
-    raise_if,
-    calc_coverage
-)
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-
-# Env setup_scenario
-@try_manual
-def setup_scenario(test, rg):
-    pass
-
-
-# Env cleanup_scenario
-@try_manual
-def cleanup_scenario(test, rg):
-    pass
-
-
-# Testcase: Scenario
-@try_manual
-def call_scenario(test, rg):
-    setup_scenario(test, rg)
-    step_create(test, rg, checks=[
-        test.check("name", "{myCloudService}", case_sensitive=False),
-        test.check("location", "westus", case_sensitive=False),
-        test.check("configuration", "{{ServiceConfiguration}}", case_sensitive=False),
-        test.check("networkProfile.loadBalancerConfigurations[0].name", "contosolb", case_sensitive=False),
-        test.check("networkProfile.loadBalancerConfigurations[0].properties.frontendIPConfigurations[0].name",
-                   "contosofe", case_sensitive=False),
-        test.check("networkProfile.loadBalancerConfigurations[0].properties.frontendIPConfigurations[0].properties.publ"
-                   "icIPAddress.id", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/"
-                   "publicIPAddresses/contosopublicip", case_sensitive=False),
-        test.check("packageUrl", "{{PackageUrl}}", case_sensitive=False),
-        test.check("upgradeMode", "Auto", case_sensitive=False),
-    ])
-    step_create2(test, rg, checks=[
-        test.check("name", "{myCloudService}", case_sensitive=False),
-        test.check("location", "westus", case_sensitive=False),
-        test.check("configuration", "{{ServiceConfiguration}}", case_sensitive=False),
-        test.check("networkProfile.loadBalancerConfigurations[0].name", "myLoadBalancer", case_sensitive=False),
-        test.check("networkProfile.loadBalancerConfigurations[0].properties.frontendIPConfigurations[0].name", "myfe",
-                   case_sensitive=False),
-        test.check("networkProfile.loadBalancerConfigurations[0].properties.frontendIPConfigurations[0].properties.publ"
-                   "icIPAddress.id", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/"
-                   "publicIPAddresses/myPublicIP", case_sensitive=False),
-        test.check("packageUrl", "{{PackageUrl}}", case_sensitive=False),
-        test.check("roleProfile.roles[0].name", "ContosoFrontend", case_sensitive=False),
-        test.check("roleProfile.roles[0].sku.name", "Standard_D1_v2", case_sensitive=False),
-        test.check("roleProfile.roles[0].sku.capacity", 1),
-        test.check("roleProfile.roles[0].sku.tier", "Standard", case_sensitive=False),
-        test.check("upgradeMode", "Auto", case_sensitive=False),
-    ])
-    step_create3(test, rg, checks=[
-        test.check("name", "{myCloudService}", case_sensitive=False),
-        test.check("location", "westus", case_sensitive=False),
-        test.check("configuration", "{{ServiceConfiguration}}", case_sensitive=False),
-        test.check("networkProfile.loadBalancerConfigurations[0].name", "contosolb", case_sensitive=False),
-        test.check("networkProfile.loadBalancerConfigurations[0].properties.frontendIPConfigurations[0].name",
-                   "contosofe", case_sensitive=False),
-        test.check("networkProfile.loadBalancerConfigurations[0].properties.frontendIPConfigurations[0].properties.publ"
-                   "icIPAddress.id", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/"
-                   "publicIPAddresses/contosopublicip", case_sensitive=False),
-        test.check("packageUrl", "{{PackageUrl}}", case_sensitive=False),
-        test.check("roleProfile.roles[0].name", "ContosoFrontend", case_sensitive=False),
-        test.check("roleProfile.roles[0].sku.name", "Standard_D1_v2", case_sensitive=False),
-        test.check("roleProfile.roles[0].sku.capacity", 1),
-        test.check("roleProfile.roles[0].sku.tier", "Standard", case_sensitive=False),
-        test.check("upgradeMode", "Auto", case_sensitive=False),
-        test.check("osProfile.secrets[0].sourceVault.id", "/subscriptions/{subscription_id}/resourceGroups/{rg}/provide"
-                   "rs/Microsoft.KeyVault/vaults/{{keyvault-name}}", case_sensitive=False),
-        test.check("osProfile.secrets[0].vaultCertificates[0].certificateUrl", "https://{{keyvault-name}}.vault.azure.n"
-                   "et:443/secrets/ContosoCertificate/{{secret-id}}", case_sensitive=False),
-    ])
-    step_create4(test, rg, checks=[
-        test.check("name", "{myCloudService}", case_sensitive=False),
-        test.check("location", "westus", case_sensitive=False),
-        test.check("configuration", "{{ServiceConfiguration}}", case_sensitive=False),
-        test.check("networkProfile.loadBalancerConfigurations[0].name", "contosolb", case_sensitive=False),
-        test.check("networkProfile.loadBalancerConfigurations[0].properties.frontendIPConfigurations[0].name",
-                   "contosofe", case_sensitive=False),
-        test.check("networkProfile.loadBalancerConfigurations[0].properties.frontendIPConfigurations[0].properties.publ"
-                   "icIPAddress.id", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/"
-                   "publicIPAddresses/contosopublicip", case_sensitive=False),
-        test.check("packageUrl", "{{PackageUrl}}", case_sensitive=False),
-        test.check("roleProfile.roles[0].name", "ContosoFrontend", case_sensitive=False),
-        test.check("roleProfile.roles[0].sku.name", "Standard_D1_v2", case_sensitive=False),
-        test.check("roleProfile.roles[0].sku.capacity", 1),
-        test.check("roleProfile.roles[0].sku.tier", "Standard", case_sensitive=False),
-        test.check("upgradeMode", "Auto", case_sensitive=False),
-    ])
-    cleanup_scenario(test, rg)
-
-
 # Test class for Scenario
 @try_manual
-class Cloud_serviceScenarioTest(ScenarioTest):
+class CloudServiceScenarioTest(ScenarioTest):
 
-    def __init__(self, *args, **kwargs):
-        super(Cloud_serviceScenarioTest, self).__init__(*args, **kwargs)
-        self.kwargs.update({
-            'subscription_id': self.get_subscription_id()
-        })
-
-        self.kwargs.update({
-            'myCloudService': 'cs1',
-        })
-
-    @ResourceGroupPreparer(name_prefix='clitestcloud_service_ConstosoRG'[:7], key='rg', parameter_name='rg')
-    def test_cloud_service_Scenario(self, rg):
-        call_scenario(self, rg)
-        calc_coverage(__file__)
-        raise_if()
-
+    @unittest.skip('skip')
     @ResourceGroupPreparer(name_prefix='cli_test_cloud_service_create_')
     def test_cloud_service_create(self, resource_group):
         self.cmd('cloud-service create -g {rg} -n cs '
@@ -143,6 +34,7 @@ class Cloud_serviceScenarioTest(ScenarioTest):
                  '--secrets vault0:cert0:cert1 vault1:cert2:cert3:cert4 '
                  '--extensions "@extensions.json"')
 
+    @unittest.skip('skip')
     @ResourceGroupPreparer(name_prefix='cli_test_cloud_service_')
     def test_cloud_service(self, rg):
         self.cmd('cloud-service show -g {rg} -n cs')
@@ -156,11 +48,13 @@ class Cloud_serviceScenarioTest(ScenarioTest):
         self.cmd('cloud-service restart -g {rg} -n cs')
         self.cmd('cloud-service delete -g {rg} -n cs')
 
+    @unittest.skip('skip')
     @ResourceGroupPreparer(name_prefix='cli_test_cloud_service_role_')
     def test_cloud_service_role(self, rg):
         self.cmd('cloud-service role list')
         self.cmd('cloud-service role show -g {rg} --cloud-service-name cs --role-name role')
 
+    @unittest.skip('skip')
     @ResourceGroupPreparer(name_prefix='cli_test_cloud_service_role_instance_')
     def test_cloud_service_role_instance(self, rg):
         self.cmd('cloud-service role-instance list')
@@ -172,6 +66,7 @@ class Cloud_serviceScenarioTest(ScenarioTest):
         self.cmd('cloud-service role-instance reimage -g {rg}')
         self.cmd('cloud-service role-instance restart -g {rg}')
 
+    @unittest.skip('skip')
     @ResourceGroupPreparer(name_prefix='cli_test_cloud_service_update_domain_')
     def test_cloud_service_update_domain(self, rg):
         self.cmd('cloud-service update-domain list-update-domain')

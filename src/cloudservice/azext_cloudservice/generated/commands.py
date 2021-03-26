@@ -22,10 +22,11 @@ def load_command_table(self, _):
         operations_tmpl='azure.mgmt.compute.operations._cloud_service_role_instances_operations#CloudServiceRoleInstancesOperations.{}',
         client_factory=cf_cloud_service_role_instance,
     )
+    # Generated code has indent error
     with self.command_group(
-        'cloud-service role-instance',
-        cloud_service_cloud_service_role_instance,
-        client_factory=cf_cloud_service_role_instance,
+            'cloud-service role-instance',
+            cloud_service_cloud_service_role_instance,
+            client_factory=cf_cloud_service_role_instance,
     ) as g:
         g.custom_command('list', 'cloud_service_role_instance_list')
         g.custom_show_command('show', 'cloud_service_role_instance_show')
@@ -44,7 +45,7 @@ def load_command_table(self, _):
         client_factory=cf_cloud_service_role,
     )
     with self.command_group(
-        'cloud-service role', cloud_service_cloud_service_role, client_factory=cf_cloud_service_role
+            'cloud-service role', cloud_service_cloud_service_role, client_factory=cf_cloud_service_role
     ) as g:
         g.custom_command('list', 'cloud_service_role_list')
         g.custom_show_command('show', 'cloud_service_role_show')
@@ -56,7 +57,7 @@ def load_command_table(self, _):
         client_factory=cf_cloud_service,
     )
     with self.command_group(
-        'cloud-service', cloud_service_cloud_service, client_factory=cf_cloud_service, is_experimental=True
+            'cloud-service', cloud_service_cloud_service, client_factory=cf_cloud_service, is_experimental=True
     ) as g:
         g.custom_command('list', 'cloud_service_list')
         g.custom_show_command('show', 'cloud_service_show')
@@ -80,9 +81,9 @@ def load_command_table(self, _):
         client_factory=cf_cloud_service_update_domain,
     )
     with self.command_group(
-        'cloud-service update-domain',
-        cloud_service_cloud_service_update_domain,
-        client_factory=cf_cloud_service_update_domain,
+            'cloud-service update-domain',
+            cloud_service_cloud_service_update_domain,
+            client_factory=cf_cloud_service_update_domain,
     ) as g:
         g.custom_command('list-update-domain', 'cloud_service_update_domain_list_update_domain')
         g.custom_command('show-update-domain', 'cloud_service_update_domain_show_update_domain')

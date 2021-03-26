@@ -65,11 +65,6 @@ helps['cloud-service role-instance wait'] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the cloud-service role-instance \
 is met.
-    examples:
-      - name: Pause executing next line of CLI script until the cloud-service role-instance is \
-successfully deleted.
-      - name: Pause executing next line of CLI script until the cloud-service role-instance is \
-successfully created.
 """
 
 helps['cloud-service role'] = """
@@ -170,8 +165,6 @@ helps['cloud-service start'] = """
 helps['cloud-service wait'] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the cloud-service is met.
-    examples:
-      - name: Pause executing next line of CLI script until the cloud-service is successfully created.
 """
 
 helps['cloud-service update-domain'] = """

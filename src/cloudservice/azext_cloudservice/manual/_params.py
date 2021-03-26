@@ -12,7 +12,6 @@
 
 from azure.cli.core.commands.parameters import (
     get_enum_type, get_three_state_flag, file_type)
-from azure.cli.core.commands.validators import validate_file_or_dict
 
 
 def load_arguments(self, _):
@@ -29,6 +28,7 @@ def load_arguments(self, _):
                    'rolename:skuname:capacity:tier',
                    arg_group='Role Profile')
         c.argument('load_balancer_configurations', nargs='+', arg_group='Network Profile',
+                   options_list=['--load-balancer-configurations', '--lb'],
                    help='The list of load balancer configurations separated by space for the cloud service. Format: '
                    'lbname:configname:publicip:subnet:privateip.')
         c.argument('secrets', nargs='+', arg_group='Os Profile',

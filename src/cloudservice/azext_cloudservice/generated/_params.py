@@ -25,58 +25,59 @@ from azure.cli.core.commands.validators import (
 
 def load_arguments(self, _):
 
+    # All "cloud_service_name" miss help
     with self.argument_context('cloud-service role-instance list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cloud_service_name', type=str, help='')
+        c.argument('cloud_service_name', type=str, help='Cloud service name.')
 
     with self.argument_context('cloud-service role-instance show') as c:
         c.argument('role_instance_name', type=str, help='Name of the role instance.', id_part='child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cloud_service_name', type=str, help='', id_part='name')
+        c.argument('cloud_service_name', type=str, help='Cloud service name.', id_part='name')
 
     with self.argument_context('cloud-service role-instance delete') as c:
         c.argument('role_instance_name', type=str, help='Name of the role instance.', id_part='child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cloud_service_name', type=str, help='', id_part='name')
+        c.argument('cloud_service_name', type=str, help='Cloud service name.', id_part='name')
 
     with self.argument_context('cloud-service role-instance rebuild') as c:
         c.argument('role_instance_name', type=str, help='Name of the role instance.', id_part='child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cloud_service_name', type=str, help='', id_part='name')
+        c.argument('cloud_service_name', type=str, help='Cloud service name.', id_part='name')
 
     with self.argument_context('cloud-service role-instance reimage') as c:
         c.argument('role_instance_name', type=str, help='Name of the role instance.', id_part='child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cloud_service_name', type=str, help='', id_part='name')
+        c.argument('cloud_service_name', type=str, help='Cloud service name.', id_part='name')
 
     with self.argument_context('cloud-service role-instance restart') as c:
         c.argument('role_instance_name', type=str, help='Name of the role instance.', id_part='child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cloud_service_name', type=str, help='', id_part='name')
+        c.argument('cloud_service_name', type=str, help='Cloud service name.', id_part='name')
 
     with self.argument_context('cloud-service role-instance show-instance-view') as c:
         c.argument('role_instance_name', type=str, help='Name of the role instance.', id_part='child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cloud_service_name', type=str, help='', id_part='name')
+        c.argument('cloud_service_name', type=str, help='Cloud service name.', id_part='name')
 
     with self.argument_context('cloud-service role-instance show-remote-desktop-file') as c:
         c.argument('role_instance_name', type=str, help='Name of the role instance.', id_part='child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cloud_service_name', type=str, help='', id_part='name')
+        c.argument('cloud_service_name', type=str, help='Cloud service name.', id_part='name')
 
     with self.argument_context('cloud-service role-instance wait') as c:
         c.argument('role_instance_name', type=str, help='Name of the role instance.', id_part='child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cloud_service_name', type=str, help='', id_part='name')
+        c.argument('cloud_service_name', type=str, help='Cloud service name.', id_part='name')
 
     with self.argument_context('cloud-service role list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cloud_service_name', type=str, help='')
+        c.argument('cloud_service_name', type=str, help='Cloud service name.')
 
     with self.argument_context('cloud-service role show') as c:
         c.argument('role_name', type=str, help='Name of the role.', id_part='child_name_1')
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('cloud_service_name', type=str, help='', id_part='name')
+        c.argument('cloud_service_name', type=str, help='Cloud service name.', id_part='name')
 
     with self.argument_context('cloud-service list') as c:
         c.argument('resource_group_name', resource_group_name_type)
