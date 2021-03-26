@@ -15,8 +15,8 @@ from azext_cloudservice.tests import try_manual
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 
-
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+
 
 # Test class for Scenario
 @try_manual
