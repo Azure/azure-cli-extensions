@@ -13,10 +13,8 @@ import json
 from azure.cli.core import MainCommandsLoader, AzCli
 from azure.cli.core._help import AzCliHelp, CliCommandHelpFile
 from azure.cli.core.commands import AzCliCommandInvoker, ExtensionCommandSource
-from azure.cli.core.file_util import create_invoker_and_load_cmds_and_args, get_all_help
 from azure.cli.core.parser import AzCliCommandParser
 from knack.help import GroupHelpFile
-from mock import patch
 
 
 def get_extension_help_files(cli_ctx):
@@ -88,7 +86,7 @@ def _is_group(parser):
         or getattr(parser, 'choices', None) is not None
 
 
-def main():
+def check():
     az_cli = AzCli(cli_name='az',
                    commands_loader_cls=MainCommandsLoader,
                    invocation_cls=AzCliCommandInvoker,
@@ -104,7 +102,7 @@ def main():
     print(high_command_set)
 
     # Load and check service_name.json
-    with open('src/azure-cli/service_name.json') as f:
+    with open('src/service_name.json') as f:
         service_names = json.load(f)
     # print(service_names)
     service_name_map = {}
@@ -125,4 +123,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    check()
