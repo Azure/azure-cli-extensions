@@ -236,7 +236,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.register_blob_arguments()
         c.register_precondition_options()
         c.argument('file_path', options_list=('--file', '-f'), type=file_type, completer=FilesCompleter(),
-                   help='Path of file to write out to.')
+                   help='Path of file to write out to. If not specified, stdout will be used '
+                        'and max_connections will be set to 1.')
         c.extra('start_range', type=int,
                 help='Start of byte range to use for downloading a section of the blob. If no end_range is given, '
                 'all bytes after the start_range will be downloaded. The start_range and end_range params are '
