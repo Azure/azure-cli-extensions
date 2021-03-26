@@ -109,7 +109,7 @@ creation."
     examples:
       - name: Create a cloud service.
         text: |-
-               az cloud-service create -g rg -n cs --roles ContosoFrontend:Standard_D1_v2:1:Standard ContosoBackend:Standard_D1_v2:1:Standard --package-url packageurl --configuration config --load-balancer-configurations myLoadBalancer:myfe:publicip:subnetid: myLoadBalancer2:myfe2:::privateip --secrets vault0:cert0:cert1 vault1:cert2:cert3:cert4 --extensions extensions.json
+               az cloud-service create -g rg -n cs --roles ContosoFrontend:Standard_D1_v2:1:Standard ContosoBackend:Standard_D1_v2:1:Standard --package-url packageurl --configuration config --load-balancer-configurations myLoadBalancer:myfe:publicip:: myLoadBalancer2:myfe2::subnetid:privateip --secrets vault0:cert0:cert1 vault1:cert2:cert3:cert4 --extensions "@extensions.json"
 """
 
 helps['cloud-service update'] = """

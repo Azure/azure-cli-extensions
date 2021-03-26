@@ -11,7 +11,8 @@
 # pylint: disable=too-many-statements
 
 from azure.cli.core.commands.parameters import (
-    get_enum_type)
+    get_enum_type, get_three_state_flag, file_type)
+from azure.cli.core.commands.validators import validate_file_or_dict
 
 
 def load_arguments(self, _):
@@ -24,9 +25,25 @@ def load_arguments(self, _):
                    'If not specified, the default value is Auto. If set to Manual, PUT '
                    'UpdateDomain must be called to apply the update. If set to Auto, the update is automatically '
                    'applied to each update domain in sequence.')
-        c.argument('roles', nargs='+', help='List of roles for the cloud service. Expected value: '
-                   'json-string/@json-file.', arg_group='Role Profile')
+        c.argument('roles', nargs='+', help='List of roles separated by space for the cloud service. Format: '
+                   'rolename:skuname:capacity:tier',
+                   arg_group='Role Profile')
         c.argument('load_balancer_configurations', nargs='+', arg_group='Network Profile',
-                   help='The list of load balancer configurations for the cloud service.')
+                   help='The list of load balancer configurations separated by space for the cloud service. Format: '
+                   'lbname:configname:publicip:subnet:privateip.')
         c.argument('secrets', nargs='+', arg_group='Os Profile',
-                   help='Specifies set of certificates that should be installed onto the role instances.')
+                   help='Specifiy certificates separated by space that should be installed onto the role instances. '
+                   'Format: vault0:cert0:cert1:...:certn')
+        c.argument('configuration', type=file_type, help='Specify the XML service configuration (.cscfg) '
+                   'for the cloud service. Expected value: json-string/@json-file.')
+        c.argument('configuration_url', type=str, help='Specify a URL that refers to the location of the service '
+                   'configuration in the Blob service. The service package URL  can be Shared Access Signature (SAS) '
+                   'URI from any storage account. This is a write-only property and is not returned in GET calls.')
+        c.argument('package_url', type=str, help='Specify a URL that refers to the location of the service package '
+                   'in the Blob service. The service package URL can be Shared Access Signature (SAS) URI from any '
+                   'storage account. This is a write-only property and is not returned in GET calls.')
+        c.argument('start_cloud_service', arg_type=get_three_state_flag(), help='Indicate whether to start '
+                   'the cloud service immediately after it is created. The default value is `true`. If false, the '
+                   'service model is still deployed, but the code is not run immediately. Instead, the service is '
+                   'PoweredOff until you call Start, at which time the service will be started. A deployed service '
+                   'still incurs charges, even if it is poweredoff.')
