@@ -89,7 +89,6 @@ class Windows_iot_servicesScenarioTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(Windows_iot_servicesScenarioTest, self).__init__(*args, **kwargs)
 
-
     @ResourceGroupPreparer(name_prefix='clitestwindows_iot_services_res6117'[:7], key='rg', parameter_name='rg')
     @ResourceGroupPreparer(name_prefix='clitestwindows_iot_services_res9407'[:7], key='rg_2', parameter_name='rg_2')
     @ResourceGroupPreparer(name_prefix='clitestwindows_iot_services_res9101'[:7], key='rg_3', parameter_name='rg_3')
@@ -98,4 +97,3 @@ class Windows_iot_servicesScenarioTest(ScenarioTest):
         call_scenario(self, rg, rg_2, rg_3, rg_4)
         calc_coverage(__file__)
         raise_if()
-

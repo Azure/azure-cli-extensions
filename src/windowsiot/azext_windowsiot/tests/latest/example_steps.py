@@ -84,4 +84,3 @@ def step_delete(test, rg, rg_2, rg_3, rg_4, checks=None):
              '--name "{wiot}" '
              '--resource-group "{rg}"',
              checks=checks)
-
