@@ -15,7 +15,7 @@ import json
 from subprocess import check_output, check_call
 from pkg_resources import parse_version
 
-from scripts.ci import service_name
+import service_name
 
 
 def separator_line():
