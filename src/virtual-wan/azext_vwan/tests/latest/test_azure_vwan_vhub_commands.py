@@ -548,8 +548,8 @@ class P2SVpnGatewayVpnClientTestScenario(ScenarioTest):
 
         # when live test, run in Linux environment or annotate "self.escape = '\\'" in shlex.py in Powershell before run
         self.cmd('network vpn-server-config create -g {rg} -n {vpn_server_config} '
-                 '--vpn-client-root-certs {vpn_server_cert} '
-                 '--vpn-client-revoked-certs {vpn_server_pem}')
+                 '--vpn-client-root-certs "{vpn_server_cert}" '
+                 '--vpn-client-revoked-certs "{vpn_server_pem}"')
 
         self.cmd('az network p2s-vpn-gateway create -g {rg} --vhub {vhub} -n {p2s_gateway} '
                  '--scale-unit 2 '
