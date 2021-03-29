@@ -213,7 +213,6 @@ class AzureVWanVHubScenario(ScenarioTest):
                      self.check('aadAuthenticationParameters.aadAudience', '{aad_audience}')
                  ])
 
-
     @ResourceGroupPreparer(name_prefix='cli_test_azure_p2s_vpn_gateway', location='westcentralus')
     def test_azure_p2s_vpn_gateway_basic_scenario(self, resource_group):
         self.kwargs.update({
