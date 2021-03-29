@@ -109,13 +109,10 @@ def check():
     for service_name in service_names:
         command = service_name['Command']
         service = service_name['AzureServiceName']
-        extension = service_name['ExtensionName']
         if not command.startswith('az '):
             raise Exception('{} not starts with az'.format(command))
         if not service:
             raise Exception('AzureServiceName of {} is empty!'.format(command))
-        if not extension:
-            raise Exception('ExtensionName of {} is empty!'.format(command))
         service_name_map[command[3:]] = service
     print(service_name_map)
 
