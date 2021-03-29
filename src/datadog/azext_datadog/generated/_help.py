@@ -26,6 +26,52 @@ helps['datadog terms list'] = """
                az datadog terms list
 """
 
+helps['datadog terms create'] = """
+    type: command
+    short-summary: "Create Datadog marketplace agreement in the subscription."
+    parameters:
+      - name: --properties
+        short-summary: "Represents the properties of the resource."
+        long-summary: |
+            Usage: --properties publisher=XX product=XX plan=XX license-text-link=XX privacy-policy-link=XX \
+retrieve-datetime=XX signature=XX accepted=XX
+
+            publisher: Publisher identifier string.
+            product: Product identifier string.
+            plan: Plan identifier string.
+            license-text-link: Link to HTML with Microsoft and Publisher terms.
+            privacy-policy-link: Link to the privacy policy of the publisher.
+            retrieve-datetime: Date and time in UTC of when the terms were accepted. This is empty if Accepted is \
+false.
+            signature: Terms signature.
+            accepted: If any version of the terms have been accepted, otherwise false.
+    examples:
+      - name: MarketplaceAgreements_CreateOrUpdate
+        text: |-
+               az datadog terms create --properties accepted=true
+"""
+
+helps['datadog terms update'] = """
+    type: command
+    short-summary: "Update Datadog marketplace agreement in the subscription."
+    parameters:
+      - name: --properties
+        short-summary: "Represents the properties of the resource."
+        long-summary: |
+            Usage: --properties publisher=XX product=XX plan=XX license-text-link=XX privacy-policy-link=XX \
+retrieve-datetime=XX signature=XX accepted=XX
+
+            publisher: Publisher identifier string.
+            product: Product identifier string.
+            plan: Plan identifier string.
+            license-text-link: Link to HTML with Microsoft and Publisher terms.
+            privacy-policy-link: Link to the privacy policy of the publisher.
+            retrieve-datetime: Date and time in UTC of when the terms were accepted. This is empty if Accepted is \
+false.
+            signature: Terms signature.
+            accepted: If any version of the terms have been accepted, otherwise false.
+"""
+
 helps['datadog monitor'] = """
     type: group
     short-summary: Manage monitor with datadog

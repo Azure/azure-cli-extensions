@@ -30,11 +30,11 @@ from azext_datadog.action import (
 
 def load_arguments(self, _):
 
-    with self.argument_context('datadog marketplace-agreement create') as c:
+    with self.argument_context('datadog terms create') as c:
         c.argument('properties', action=AddMarketplaceagreementsProperties, nargs='+', help='Represents the properties '
                    'of the resource.')
 
-    with self.argument_context('datadog marketplace-agreement update') as c:
+    with self.argument_context('datadog terms update') as c:
         c.argument('properties', action=AddMarketplaceagreementsProperties, nargs='+', help='Represents the properties '
                    'of the resource.')
 
@@ -127,9 +127,6 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('monitor_name', type=str, help='Monitor resource name')
         c.argument('rule_set_name', type=str, help='Rule set name')
-        c.argument('provisioning_state', arg_type=get_enum_type(['Accepted', 'Creating', 'Updating', 'Deleting',
-                                                                 'Succeeded', 'Failed', 'Canceled', 'Deleted',
-                                                                 'NotSpecified']), help='Provisioning state')
         c.argument('filtering_tags', action=AddFilteringTags, nargs='+', help='List of filtering tags to be used for '
                    'capturing metrics. If empty, all resources will be captured. If only Exclude action is specified, '
                    'the rules will apply to the list of all available resources. If Include actions are specified, the '
@@ -150,9 +147,6 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('monitor_name', type=str, help='Monitor resource name', id_part='name')
         c.argument('rule_set_name', type=str, help='Rule set name', id_part='child_name_1')
-        c.argument('provisioning_state', arg_type=get_enum_type(['Accepted', 'Creating', 'Updating', 'Deleting',
-                                                                 'Succeeded', 'Failed', 'Canceled', 'Deleted',
-                                                                 'NotSpecified']), help='Provisioning state')
         c.argument('filtering_tags', action=AddFilteringTags, nargs='+', help='List of filtering tags to be used for '
                    'capturing metrics. If empty, all resources will be captured. If only Exclude action is specified, '
                    'the rules will apply to the list of all available resources. If Include actions are specified, the '

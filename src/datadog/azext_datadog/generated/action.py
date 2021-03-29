@@ -194,13 +194,11 @@ class AddSinglesignonconfigurationsProperties(argparse.Action):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            if kl == 'provisioning-state':
-                d['provisioning_state'] = v[0]
-            elif kl == 'single-sign-on-state':
+            if kl == 'single-sign-on-state':
                 d['single_sign_on_state'] = v[0]
             elif kl == 'enterprise-app-id':
                 d['enterprise_app_id'] = v[0]
             else:
                 raise CLIError('Unsupported Key {} is provided for parameter properties. All possible keys are: '
-                               'provisioning-state, single-sign-on-state, enterprise-app-id'.format(k))
+                               'single-sign-on-state, enterprise-app-id'.format(k))
         return d

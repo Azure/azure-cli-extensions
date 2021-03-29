@@ -501,9 +501,9 @@ class DatadogSingleSignOnProperties(msrest.serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :param provisioning_state:  Possible values include: "Accepted", "Creating", "Updating",
+    :ivar provisioning_state:  Possible values include: "Accepted", "Creating", "Updating",
      "Deleting", "Succeeded", "Failed", "Canceled", "Deleted", "NotSpecified".
-    :type provisioning_state: str or ~microsoft_datadog_client.models.ProvisioningState
+    :vartype provisioning_state: str or ~microsoft_datadog_client.models.ProvisioningState
     :param single_sign_on_state: Various states of the SSO resource. Possible values include:
      "Initial", "Enable", "Disable", "Existing".
     :type single_sign_on_state: str or ~microsoft_datadog_client.models.SingleSignOnStates
@@ -514,6 +514,7 @@ class DatadogSingleSignOnProperties(msrest.serialization.Model):
     """
 
     _validation = {
+        'provisioning_state': {'readonly': True},
         'single_sign_on_url': {'readonly': True},
     }
 
@@ -529,7 +530,7 @@ class DatadogSingleSignOnProperties(msrest.serialization.Model):
         **kwargs
     ):
         super(DatadogSingleSignOnProperties, self).__init__(**kwargs)
-        self.provisioning_state = kwargs.get('provisioning_state', None)
+        self.provisioning_state = None
         self.single_sign_on_state = kwargs.get('single_sign_on_state', None)
         self.enterprise_app_id = kwargs.get('enterprise_app_id', None)
         self.single_sign_on_url = None
@@ -988,14 +989,18 @@ class MonitoringTagRulesListResponse(msrest.serialization.Model):
 class MonitoringTagRulesProperties(msrest.serialization.Model):
     """Definition of the properties for a TagRules resource.
 
-    :param provisioning_state:  Possible values include: "Accepted", "Creating", "Updating",
+    :ivar provisioning_state:  Possible values include: "Accepted", "Creating", "Updating",
      "Deleting", "Succeeded", "Failed", "Canceled", "Deleted", "NotSpecified".
-    :type provisioning_state: str or ~microsoft_datadog_client.models.ProvisioningState
+    :vartype provisioning_state: str or ~microsoft_datadog_client.models.ProvisioningState
     :param log_rules: Set of rules for sending logs for the Monitor resource.
     :type log_rules: ~microsoft_datadog_client.models.LogRules
     :param metric_rules: Set of rules for sending metrics for the Monitor resource.
     :type metric_rules: ~microsoft_datadog_client.models.MetricRules
     """
+
+    _validation = {
+        'provisioning_state': {'readonly': True},
+    }
 
     _attribute_map = {
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
@@ -1008,7 +1013,7 @@ class MonitoringTagRulesProperties(msrest.serialization.Model):
         **kwargs
     ):
         super(MonitoringTagRulesProperties, self).__init__(**kwargs)
-        self.provisioning_state = kwargs.get('provisioning_state', None)
+        self.provisioning_state = None
         self.log_rules = kwargs.get('log_rules', None)
         self.metric_rules = kwargs.get('metric_rules', None)
 
@@ -1018,9 +1023,9 @@ class MonitorProperties(msrest.serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :param provisioning_state:  Possible values include: "Accepted", "Creating", "Updating",
+    :ivar provisioning_state:  Possible values include: "Accepted", "Creating", "Updating",
      "Deleting", "Succeeded", "Failed", "Canceled", "Deleted", "NotSpecified".
-    :type provisioning_state: str or ~microsoft_datadog_client.models.ProvisioningState
+    :vartype provisioning_state: str or ~microsoft_datadog_client.models.ProvisioningState
     :param monitoring_status: Flag specifying if the resource monitoring is enabled or disabled.
      Possible values include: "Enabled", "Disabled". Default value: "Enabled".
     :type monitoring_status: str or ~microsoft_datadog_client.models.MonitoringStatus
@@ -1042,6 +1047,7 @@ class MonitorProperties(msrest.serialization.Model):
     """
 
     _validation = {
+        'provisioning_state': {'readonly': True},
         'marketplace_subscription_status': {'readonly': True},
         'liftr_resource_category': {'readonly': True},
         'liftr_resource_preference': {'readonly': True},
@@ -1062,7 +1068,7 @@ class MonitorProperties(msrest.serialization.Model):
         **kwargs
     ):
         super(MonitorProperties, self).__init__(**kwargs)
-        self.provisioning_state = kwargs.get('provisioning_state', None)
+        self.provisioning_state = None
         self.monitoring_status = kwargs.get('monitoring_status', "Enabled")
         self.marketplace_subscription_status = None
         self.datadog_organization_properties = kwargs.get('datadog_organization_properties', None)

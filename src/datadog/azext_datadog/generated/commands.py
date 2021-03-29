@@ -22,7 +22,9 @@ def load_command_table(self, _):
         client_factory=cf_marketplace_agreement)
     with self.command_group('datadog terms', datadog_marketplace_agreement,
                             client_factory=cf_marketplace_agreement, is_experimental=True) as g:
-        g.custom_command('list', 'datadog_marketplace_agreement_list')
+        g.custom_command('list', 'datadog_terms_list')
+        g.custom_command('create', 'datadog_terms_create')
+        g.custom_command('update', 'datadog_terms_update')
 
     from azext_datadog.generated._client_factory import cf_monitor
     datadog_monitor = CliCommandType(

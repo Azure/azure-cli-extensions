@@ -14,7 +14,7 @@ from azure.cli.command_modules.role.custom import create_role_assignment, list_r
 from azure.cli.core.util import sdk_no_wait
 
 
-def datadog_marketplace_agreement_list(client):
+def datadog_terms_list(client):
     return client.list()
 
 
@@ -25,8 +25,15 @@ def datadog_marketplace_agreement_create(client,
     return client.create_or_update(body=body)
 
 
-def datadog_marketplace_agreement_update(client,
-                                         properties=None):
+def datadog_terms_create(client,
+                         properties=None):
+    body = {}
+    body['properties'] = properties
+    return client.create_or_update(body=body)
+
+
+def datadog_terms_update(client,
+                         properties=None):
     body = {}
     body['properties'] = properties
     return client.create_or_update(body=body)
@@ -196,22 +203,19 @@ def datadog_tag_rule_create(client,
                             resource_group_name,
                             monitor_name,
                             rule_set_name,
-                            provisioning_state=None,
                             filtering_tags=None,
                             send_aad_logs=None,
                             send_subscription_logs=None,
                             send_resource_logs=None,
                             log_rules_filtering_tags=None):
     body = {}
-    body['properties'] = {}
-    body['properties']['provisioning_state'] = provisioning_state
-    body['properties']['metric_rules'] = {}
-    body['properties']['metric_rules']['filtering_tags'] = filtering_tags
-    body['properties']['log_rules'] = {}
-    body['properties']['log_rules']['send_aad_logs'] = send_aad_logs
-    body['properties']['log_rules']['send_subs_logs'] = send_subscription_logs
-    body['properties']['log_rules']['send_resource_logs'] = send_resource_logs
-    body['properties']['log_rules']['filtering_tags'] = log_rules_filtering_tags
+    body['metric_rules'] = {}
+    body['metric_rules']['filtering_tags'] = filtering_tags
+    body['log_rules'] = {}
+    body['log_rules']['send_aad_logs'] = send_aad_logs
+    body['log_rules']['send_subscription_logs'] = send_subscription_logs
+    body['log_rules']['send_resource_logs'] = send_resource_logs
+    body['log_rules']['filtering_tags'] = log_rules_filtering_tags
     return client.create_or_update(resource_group_name=resource_group_name,
                                    monitor_name=monitor_name,
                                    rule_set_name=rule_set_name,
@@ -222,24 +226,21 @@ def datadog_tag_rule_update(instance,
                             resource_group_name,
                             monitor_name,
                             rule_set_name,
-                            provisioning_state=None,
                             filtering_tags=None,
                             send_aad_logs=None,
                             send_subscription_logs=None,
                             send_resource_logs=None,
                             log_rules_filtering_tags=None):
-    if provisioning_state is not None:
-        instance.properties.provisioning_state = provisioning_state
     if filtering_tags is not None:
-        instance.properties.metric_rules.filtering_tags = filtering_tags
+        instance.metric_rules.filtering_tags = filtering_tags
     if send_aad_logs is not None:
-        instance.properties.log_rules.send_aad_logs = send_aad_logs
+        instance.log_rules.send_aad_logs = send_aad_logs
     if send_subscription_logs is not None:
-        instance.properties.log_rules.send_subscription_logs = send_subscription_logs
+        instance.log_rules.send_subscription_logs = send_subscription_logs
     if send_resource_logs is not None:
-        instance.properties.log_rules.send_resource_logs = send_resource_logs
+        instance.log_rules.send_resource_logs = send_resource_logs
     if log_rules_filtering_tags is not None:
-        instance.properties.log_rules.filtering_tags = log_rules_filtering_tags
+        instance.log_rules.filtering_tags = log_rules_filtering_tags
     return instance
 
 
