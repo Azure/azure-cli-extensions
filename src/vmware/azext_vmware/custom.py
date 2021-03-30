@@ -101,11 +101,11 @@ def privatecloud_deleteidentitysource(cmd, client: AVSClient, resource_group_nam
 
 
 def privatecloud_rotate_vcenter_password(cmd, client: AVSClient, resource_group_name, private_cloud):
-    client.private_clouds.begin_rotate_vcenter_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+    return client.private_clouds.begin_rotate_vcenter_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 
 
 def privatecloud_rotate_nsxt_password(cmd, client: AVSClient, resource_group_name, private_cloud):
-    client.private_clouds.begin_rotate_nsxt_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+    return client.private_clouds.begin_rotate_nsxt_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
 
 
 def cluster_create(cmd, client: AVSClient, resource_group_name, name, sku, private_cloud, size, tags=[]):

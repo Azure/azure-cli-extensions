@@ -53,8 +53,8 @@ class VmwareScenarioTest(ScenarioTest):
         # self.cmd('vmware private-cloud listadmincredentials -g {rg} -c {privatecloud}')
 
         # rotate passwords
-        # self.cmd('vmware private-cloud rotate-vcenter-password -g {rg} -c {privatecloud}')
-        # self.cmd('vmware private-cloud rotate-nsxt-password -g {rg} -c {privatecloud}')
+        self.cmd('vmware private-cloud rotate-vcenter-password -g {rg} -c {privatecloud}')
+        self.cmd('vmware private-cloud rotate-nsxt-password -g {rg} -c {privatecloud}')
 
         # hcx-enterprise-site list should report 0
         count = len(self.cmd('vmware hcx-enterprise-site list -g {rg} -c {privatecloud}').get_output_in_json())
