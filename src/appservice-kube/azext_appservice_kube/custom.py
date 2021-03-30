@@ -113,7 +113,7 @@ def update_kube_environment(cmd,
 def list_app_service_plans(cmd, resource_group_name=None):
     client = web_client_factory(cmd.cli_ctx)
     if resource_group_name is None:
-        plans = list(client.app_service_plans.list(detailed=True))  # enables querying "numberOfSites"
+        plans = list(client.app_service_plans.list())
     else:
         plans = list(client.app_service_plans.list_by_resource_group(resource_group_name))
     for plan in plans:
@@ -1178,7 +1178,7 @@ def list_publish_profiles(cmd, resource_group_name, name, slot=None, xml=False):
         profiles = xmltodict.parse(full_xml, xml_attribs=True)['publishData']['publishProfile']
         converted = []
 
-        if type(profiles) is not list:
+        if not isinstance(profiles, list):
             profiles = [profiles]
 
         for profile in profiles:
@@ -1593,9 +1593,12 @@ def _check_zip_deployment_status(cmd, rg_name, name, deployment_status_url, auth
 
 def _fill_ftp_publishing_url(cmd, webapp, resource_group_name, name, slot=None):
     profiles = list_publish_profiles(cmd, resource_group_name, name, slot)
-    url = next((p['publishUrl'] for p in profiles if p['publishMethod'] == 'FTP'), None)
-    if url:
+    try:
+        url = next((p['publishUrl'] for p in profiles if p['publishMethod'] == 'FTP'), None)
         setattr(webapp, 'ftpPublishingUrl', url)
+    except StopIteration as e:
+        pass
+
     return webapp
 
 def _get_url(cmd, resource_group_name, name, slot=None):
