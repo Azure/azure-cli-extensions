@@ -662,6 +662,8 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
         if check_proxy_kubeconfig(kube_config, kube_context, arm_hash):
             telemetry.set_user_fault()
+            telemetry.set_exception(exception='Encountered proxy kubeconfig during deletion.', fault_type=consts.Proxy_Kubeconfig_During_Deletion_Fault_Type,
+                                    summary='The resource cannot be deleted as user is using proxy kubeconfig.')
             raise CLIError("az connectedk8s delete is not supported when using the Cluster Connect kubeconfig. Run the az connectedk8s delete command with your kubeconfig file pointing to the actual Kubernetes cluster to ensure that the agents are cleaned up successfully as part of the delete command.")
 
         delete_cc_resource(client, resource_group_name, cluster_name, no_wait)
