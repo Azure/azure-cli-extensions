@@ -92,28 +92,28 @@ def check():
                    invocation_cls=AzCliCommandInvoker,
                    parser_cls=AzCliCommandParser,
                    help_cls=AzCliHelp)
-    # with patch('getpass.getuser', return_value='your_system_user_login_name'):
-    #     create_invoker_and_load_cmds_and_args(az_cli)
     help_files = get_extension_help_files(az_cli)
     high_command_set = set()
     for help_file in help_files:
         if help_file.command:
             high_command_set.add(help_file.command.split()[0])
+    print('high_command_set:')
     print(high_command_set)
 
     # Load and check service_name.json
     with open('src/service_name.json') as f:
         service_names = json.load(f)
-    # print(service_names)
+    print('Verifying src/service_name.json')
     service_name_map = {}
     for service_name in service_names:
         command = service_name['Command']
         service = service_name['AzureServiceName']
         if not command.startswith('az '):
-            raise Exception('{} not starts with az'.format(command))
+            raise Exception('{} does not start with az!'.format(command))
         if not service:
             raise Exception('AzureServiceName of {} is empty!'.format(command))
         service_name_map[command[3:]] = service
+    print('service_name_map:')
     print(service_name_map)
 
     # Check existence in service_name.json
