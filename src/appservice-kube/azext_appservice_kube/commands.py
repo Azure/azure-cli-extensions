@@ -76,6 +76,9 @@ def load_command_table(self, _):
                               validator=validate_app_or_slot_exists_in_rg)
         g.custom_command('up', 'webapp_up', exception_handler=ex_handler_factory())
 
+    with self.command_group('webapp config container') as g:
+        g.custom_command('set', 'update_container_settings')
+
     with self.command_group('webapp deployment source') as g:
         g.custom_command('config-zip', 'enable_zip_deploy_webapp')
 
