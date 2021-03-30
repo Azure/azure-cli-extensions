@@ -554,7 +554,7 @@ def get_kubeconfig_node_dict(kube_config=None):
 
 def check_proxy_kubeconfig(kube_config, kube_context, arm_hash):
     server_address = get_server_address(kube_config, kube_context)
-    regex_string = r'https://127.0.0.1:[0-9]{1,5}/'+arm_hash
+    regex_string = r'https://127.0.0.1:[0-9]{1,5}/' + arm_hash
     p = re.compile(regex_string)
     if p.fullmatch(server_address) is not None:
         return True
@@ -662,7 +662,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
         if check_proxy_kubeconfig(kube_config, kube_context, arm_hash):
             telemetry.set_user_fault()
-            raise CLIError("Delete is not supported with proxy kubeconfig.")
+            raise CLIError("az connectedk8s delete is not supported when using the Cluster Connect kubeconfig. Run the az connectedk8s delete command with your kubeconfig file pointing to the actual Kubernetes cluster to ensure that the agents are cleaned up successfully as part of the delete command.")
 
         delete_cc_resource(client, resource_group_name, cluster_name, no_wait)
     else:
