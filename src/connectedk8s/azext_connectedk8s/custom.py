@@ -2036,7 +2036,8 @@ def check_if_port_is_open(port):
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Port_Check_Fault_Type,
                                 summary='Failed to check if port is in use.')
-        logger.warning("Failed to check if port is in use. " + str(e))
+        if platform.system() != 'Darwin':
+            logger.warning("Failed to check if port is in use. " + str(e))
         return False
     return False
 
