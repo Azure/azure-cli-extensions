@@ -44,6 +44,8 @@ from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity
 from threading import Timer, Thread
 import sys
+import hashlib
+import re
 logger = get_logger(__name__)
 # pylint:disable=unused-argument
 # pylint: disable=too-many-locals
@@ -550,7 +552,25 @@ def get_kubeconfig_node_dict(kube_config=None):
     return kubeconfig_data
 
 
+def check_proxy_kubeconfig(kube_config, kube_context, arm_hash):
+    server_address = get_server_address(kube_config, kube_context)
+    regex_string = r'https://127.0.0.1:[0-9]{1,5}/' + arm_hash
+    p = re.compile(regex_string)
+    if p.fullmatch(server_address) is not None:
+        return True
+    else:
+        return False
+
+
 def check_aks_cluster(kube_config, kube_context):
+    server_address = get_server_address(kube_config, kube_context)
+    if server_address.find(".azmk8s.io:") == -1:
+        return False
+    else:
+        return True
+
+
+def get_server_address(kube_config, kube_context):
     config_data = get_kubeconfig_node_dict(kube_config=kube_config)
     try:
         all_contexts, current_context = config.list_kube_config_contexts(config_file=kube_config)
@@ -578,11 +598,7 @@ def check_aks_cluster(kube_config, kube_context):
         if cluster.safe_get('name') == cluster_name:
             server_address = cluster.safe_get('cluster').get('server')
             break
-
-    if server_address.find(".azmk8s.io:") == -1:
-        return False
-    else:
-        return True
+    return server_address
 
 
 def get_connectedk8s(cmd, client, resource_group_name, cluster_name):
@@ -636,8 +652,20 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
                                            error_message="Unable to read ConfigMap 'azure-clusterconfig' in 'azure-arc' namespace: ",
                                            message_for_not_found="The helm release 'azure-arc' is present but the azure-arc namespace/configmap is missing. Please run 'helm delete azure-arc --no-hooks' to cleanup the release before onboarding the cluster again.")
 
+    subscription_id = get_subscription_id(cmd.cli_ctx)
+
     if (configmap.data["AZURE_RESOURCE_GROUP"].lower() == resource_group_name.lower() and
-            configmap.data["AZURE_RESOURCE_NAME"].lower() == cluster_name.lower()):
+            configmap.data["AZURE_RESOURCE_NAME"].lower() == cluster_name.lower() and configmap.data["AZURE_SUBSCRIPTION_ID"].lower() == subscription_id.lower()):
+
+        armid = "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Kubernetes/connectedClusters/{}".format(subscription_id, resource_group_name, cluster_name)
+        arm_hash = hashlib.sha256(armid.lower().encode('utf-8')).hexdigest()
+
+        if check_proxy_kubeconfig(kube_config, kube_context, arm_hash):
+            telemetry.set_user_fault()
+            telemetry.set_exception(exception='Encountered proxy kubeconfig during deletion.', fault_type=consts.Proxy_Kubeconfig_During_Deletion_Fault_Type,
+                                    summary='The resource cannot be deleted as user is using proxy kubeconfig.')
+            raise CLIError("az connectedk8s delete is not supported when using the Cluster Connect kubeconfig. Run the az connectedk8s delete command with your kubeconfig file pointing to the actual Kubernetes cluster to ensure that the agents are cleaned up successfully as part of the delete command.")
+
         delete_cc_resource(client, resource_group_name, cluster_name, no_wait)
     else:
         telemetry.set_user_fault()
@@ -2008,7 +2036,9 @@ def check_if_port_is_open(port):
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Port_Check_Fault_Type,
                                 summary='Failed to check if port is in use.')
-        raise CLIError("Failed to check if port is in use. " + str(e))
+        if platform.system() != 'Darwin':
+            logger.warning("Failed to check if port is in use. " + str(e))
+        return False
     return False
 
 
