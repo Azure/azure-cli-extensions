@@ -28,7 +28,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core._profile import Profile
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core import telemetry
-from azure.cli.core.azclierror import InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError
+from azure.cli.core.azclierror import InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError, ResourceNotFoundError
 from msrestazure.azure_exceptions import CloudError
 from kubernetes import client as kube_client, config
 from Crypto.IO import PEM
@@ -752,7 +752,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
     if https_proxy == "" and http_proxy == "" and no_proxy == "" and proxy_cert == "" and not disable_proxy and not auto_upgrade:
-        raise CLIError(consts.No_Param_Error)
+        raise RequiredArgumentMissingError(consts.No_Param_Error)
 
     if (https_proxy or http_proxy or no_proxy or proxy_cert) and disable_proxy:
         raise MutuallyExclusiveArgumentError(consts.EnableProxy_Conflict_Error)
@@ -1556,7 +1556,7 @@ def _resolve_service_principal(client, identifier):  # Uses service principal gr
         return result[0].object_id
     if utils.is_guid(identifier):
         return identifier  # assume an object id
-    error = CLIError("Service principal '{}' doesn't exist".format(identifier))
+    error = ResourceNotFoundError("Service principal '{}' doesn't exist".format(identifier))
     error.status_code = 404  # Make sure CLI returns 3
     raise error
 
