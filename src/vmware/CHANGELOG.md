@@ -1,5 +1,9 @@
 # Release History
 
+## 2.1.0 (TBD)
+- add az vmware private-cloud rotate-vcenter-password
+- add az vmware private-cloud rotate-nsxt-password
+
 ## 2.0.1 (2021-02)
 - Update the minimum az cli version to 2.11.0 [#3045](https://github.com/Azure/azure-cli-extensions/issues/3045)
 

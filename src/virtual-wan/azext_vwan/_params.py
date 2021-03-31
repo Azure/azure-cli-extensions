@@ -170,7 +170,7 @@ def load_arguments(self, _):
     # region VpnServerConfigurations
     with self.argument_context('network vpn-server-config') as c:
         c.argument('vpn_protocols', nargs='+', options_list=['--protocols'], arg_type=get_enum_type(VpnGatewayTunnelingProtocol), help='VPN protocols for the VpnServerConfiguration.')
-        c.argument('vpn_auth_types', nargs='+', options_list=['--auth-types'], arg_type=get_enum_type(VpnAuthenticationType), help='VPN authentication types for the VpnServerConfiguration.')
+        c.argument('vpn_auth_types', nargs='+', options_list=['--auth-types'], arg_type=get_enum_type(VpnAuthenticationType), help='List of VPN authentication types for the VpnServerConfiguration.')
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
         c.argument('vpn_server_configuration_name', options_list=['--name', '-n'], help='Name of the Vpn server configuration.')
     with self.argument_context('network vpn-server-config', arg_group='AAD Auth') as c:
