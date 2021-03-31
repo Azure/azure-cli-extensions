@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.1.9
+++++++
+* Fix webapp zipdeploy command
+* Fix webapp config container set command
+
 0.1.8
 ++++++
 * Remove azure-cli-core dependency
