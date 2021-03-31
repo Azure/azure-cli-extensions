@@ -536,7 +536,7 @@ def get_kubeconfig_node_dict(kube_config=None):
         telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=consts.Load_Kubeconfig_Fault_Type,
                                 summary='Error while fetching details from kubeconfig')
-        raise CLIError("Error while fetching details from kubeconfig." + str(ex))
+        raise FileOperationError("Error while fetching details from kubeconfig." + str(ex))
     return kubeconfig_data
 
 
