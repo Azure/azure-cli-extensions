@@ -28,7 +28,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core._profile import Profile
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core import telemetry
-from azure.cli.core.azclierror import InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ValidationError
+from azure.cli.core.azclierror import InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError
 from msrestazure.azure_exceptions import CloudError
 from kubernetes import client as kube_client, config
 from Crypto.IO import PEM
@@ -183,7 +183,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
             else:
                 telemetry.set_exception(exception='The kubernetes cluster is already onboarded', fault_type=consts.Cluster_Already_Onboarded_Fault_Type,
                                         summary='Kubernetes cluster already onboarded')
-                raise InvalidArgumentValueError("The kubernetes cluster you are trying to onboard " +
+                raise ArgumentUsageError("The kubernetes cluster you are trying to onboard " +
                                "is already onboarded to the resource group" +
                                " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
         else:
@@ -193,7 +193,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         if connected_cluster_exists(client, resource_group_name, cluster_name):
             telemetry.set_exception(exception='The connected cluster resource already exists', fault_type=consts.Resource_Already_Exists_Fault_Type,
                                     summary='Connected cluster resource already exists')
-            raise InvalidArgumentValueError("The connected cluster resource {} already exists ".format(cluster_name) +
+            raise ArgumentUsageError("The connected cluster resource {} already exists ".format(cluster_name) +
                            "in the resource group {} ".format(resource_group_name) +
                            "and corresponds to a different Kubernetes cluster.", recommendation="To onboard this Kubernetes cluster " +
                            "to Azure, specify different resource name or resource group name.")
@@ -367,14 +367,13 @@ def check_helm_version(kube_config, kube_context):
     if response_helm_version.returncode != 0:
         telemetry.set_exception(exception=error_helm_version.decode('ascii'), fault_type=consts.Check_HelmVersion_Fault_Type,
                                 summary='Unable to determine helm version')
-        raise CLIError("Unable to determine helm version: " + error_helm_version.decode("ascii"))
+        raise CLIInternalError("Unable to determine helm version: " + error_helm_version.decode("ascii"))
     if "v2" in output_helm_version.decode("ascii"):
-        telemetry.set_user_fault()
         telemetry.set_exception(exception='Helm 3 not found', fault_type=consts.Helm_Version_Fault_Type,
                                 summary='Helm3 not found on the machine')
-        raise CLIError("Helm version 3+ is required. " +
-                       "Ensure that you have installed the latest version of Helm. " +
-                       "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
+        raise ClientRequestError("Helm version 3+ is required.",
+                                 recommendation="Ensure that you have installed the latest version of Helm. " +
+                                 "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
     return output_helm_version.decode('ascii')
 
 
@@ -413,10 +412,9 @@ def load_kube_config(kube_config, kube_context):
     try:
         config.load_kube_config(config_file=kube_config, context=kube_context)
     except Exception as e:
-        telemetry.set_user_fault()
         telemetry.set_exception(exception=e, fault_type=consts.Load_Kubeconfig_Fault_Type,
                                 summary='Problem loading the kubeconfig file')
-        raise CLIError("Problem loading the kubeconfig file." + str(e))
+        raise FileOperationError("Problem loading the kubeconfig file." + str(e))
 
 
 def get_private_key(key_pair):
@@ -661,7 +659,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         telemetry.set_user_fault()
         telemetry.set_exception(exception='Unable to delete connected cluster', fault_type=consts.Bad_DeleteRequest_Fault_Type,
                                 summary='The resource cannot be deleted as kubernetes cluster is onboarded with some other resource id')
-        raise CLIError("The current context in the kubeconfig file does not correspond " +
+        raise ArgumentUsageError("The current context in the kubeconfig file does not correspond " +
                        "to the connected cluster resource specified. Agents installed on this cluster correspond " +
                        "to the resource group name '{}' ".format(configmap.data["AZURE_RESOURCE_GROUP"]) +
                        "and resource name '{}'.".format(configmap.data["AZURE_RESOURCE_NAME"]))
@@ -683,7 +681,7 @@ def get_release_namespace(kube_config, kube_context):
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_release.decode("ascii"), fault_type=consts.List_HelmRelease_Fault_Type,
                                 summary='Unable to list helm release')
-        raise CLIError("Helm list release failed: " + error_helm_release.decode("ascii"))
+        raise CLIInternalError("Helm list release failed: " + error_helm_release.decode("ascii"))
     output_helm_release = output_helm_release.decode("ascii")
     try:
         output_helm_release = json.loads(output_helm_release)
@@ -749,7 +747,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         telemetry.set_user_fault()
         telemetry.set_exception(exception='Proxy cert path does not exist', fault_type=consts.Proxy_Cert_Path_Does_Not_Exist_Fault_Type,
                                 summary='Proxy cert path does not exist')
-        raise CLIError(str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert))
+        raise InvalidArgumentValueError(str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert))
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
@@ -757,7 +755,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
         raise CLIError(consts.No_Param_Error)
 
     if (https_proxy or http_proxy or no_proxy or proxy_cert) and disable_proxy:
-        raise CLIError(consts.EnableProxy_Conflict_Error)
+        raise MutuallyExclusiveArgumentError(consts.EnableProxy_Conflict_Error)
 
     # Checking whether optional extra values file has been provided.
     values_file_provided, values_file = utils.get_values_file()
@@ -789,17 +787,9 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     # Check for faulty pre-release helm versions
     if "3.3.0-rc" in helm_version:
-        telemetry.set_user_fault()
-        raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
+        raise ClientRequestError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
 
-    # Check whether Connected Cluster is present
-    if not connected_cluster_exists(client, resource_group_name, cluster_name):
-        telemetry.set_user_fault()
-        telemetry.set_exception(exception='The connected cluster resource does not exist', fault_type=consts.Resource_Does_Not_Exist_Fault_Type,
-                                summary='Connected cluster resource does not exist')
-        raise CLIError("The connected cluster resource {} does not exist ".format(cluster_name) +
-                       "in the resource group {} ".format(resource_group_name) +
-                       "Please onboard the connected cluster using: az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>")
+    validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
@@ -874,7 +864,7 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_upgrade.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
-        raise CLIError(str.format(consts.Update_Agent_Failure, error_helm_upgrade.decode("ascii")))
+        raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_upgrade.decode("ascii")))
 
     return str.format(consts.Update_Agent_Success, connected_cluster.name)
 
@@ -919,8 +909,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
 
     # Check for faulty pre-release helm versions
     if "3.3.0-rc" in helm_version:
-        telemetry.set_user_fault()
-        raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
+        raise ClientRequestError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
 
     # Check Release Existance
     release_namespace = get_release_namespace(kube_config, kube_context)
@@ -938,33 +927,29 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
         if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
             if not (configmap_rg_name.lower() == resource_group_name.lower() and
                     configmap_cluster_name.lower() == cluster_name.lower()):
-                telemetry.set_user_fault()
                 telemetry.set_exception(exception='The provided cluster name and rg correspond to different cluster', fault_type=consts.Upgrade_RG_Cluster_Name_Conflict,
                                         summary='The provided cluster name and resource group name do not correspond to the kubernetes cluster being upgraded.')
-                raise CLIError("The provided cluster name and resource group name do not correspond to the kubernetes cluster you are trying to upgrade." +
-                               "Please upgrade the cluster, with correct resource group and cluster name, using 'az upgrade agents -g <rg_name> -n <cluster_name>'.")
+                raise ArgumentUsageError("The provided cluster name and resource group name do not correspond to the kubernetes cluster you are trying to upgrade.",
+                                         recommendation="Please upgrade the cluster, with correct resource group and cluster name, using 'az upgrade agents -g <rg_name> -n <cluster_name>'.")
         else:
-            telemetry.set_user_fault()
             telemetry.set_exception(exception='The corresponding CC resource does not exist', fault_type=consts.Corresponding_CC_Resource_Deleted_Fault,
                                     summary='CC resource corresponding to this cluster has been deleted by the customer')
-            raise CLIError("There exist no ConnectedCluster resource corresponding to this kubernetes Cluster." +
-                           "Please cleanup the helm release first using 'az connectedk8s delete -n <connected-cluster-name> -g <resource-group-name>' and re-onboard the cluster using " +
-                           "'az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>'")
+            raise ClientRequestError("There exist no ConnectedCluster resource corresponding to this kubernetes Cluster.",
+                                     recommendation="Please cleanup the helm release first using 'az connectedk8s delete -n <connected-cluster-name> -g <resource-group-name>' and re-onboard the cluster using " +
+                                     "'az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>'")
 
         auto_update_enabled = configmap.data["AZURE_ARC_AUTOUPDATE"]
         if auto_update_enabled == "true":
-            telemetry.set_user_fault()
             telemetry.set_exception(exception='connectedk8s upgrade called when auto-update is set to true', fault_type=consts.Manual_Upgrade_Called_In_Auto_Update_Enabled,
                                     summary='az connectedk8s upgrade to manually upgrade agents and extensions is only supported when auto-upgrade is set to false.')
-            raise CLIError("az connectedk8s upgrade to manually upgrade agents and extensions is only supported when auto-upgrade is set to false. " +
-                           "Please run az connectedk8s update -n <connected-cluster-name> -g <resource-group-name> --auto-upgrade 'false' before performing manual upgrade")
+            raise ClientRequestError("az connectedk8s upgrade to manually upgrade agents and extensions is only supported when auto-upgrade is set to false.",
+                                     recommendation="Please run az connectedk8s update -n <connected-cluster-name> -g <resource-group-name> --auto-upgrade 'false' before performing manual upgrade")
 
     else:
-        telemetry.set_user_fault()
         telemetry.set_exception(exception="The azure-arc release namespace couldn't be retrieved", fault_type=consts.Release_Namespace_Not_Found,
                                 summary="The azure-arc release namespace couldn't be retrieved, which implies that the kubernetes cluster has not been onboarded to azure-arc.")
-        raise CLIError("The azure-arc release namespace couldn't be retrieved, which implies that the kubernetes cluster has not been onboarded to azure-arc." +
-                       "Please run 'az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>' to onboard the cluster")
+        raise ClientRequestError("The azure-arc release namespace couldn't be retrieved, which implies that the kubernetes cluster has not been onboarded to azure-arc.",
+                                 recommendation="Please run 'az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>' to onboard the cluster")
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
@@ -1021,7 +1006,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Get_Helm_Values_Failed,
                                 summary='Error while doing helm get values azure-arc')
-        raise CLIError(str.format(consts.Upgrade_Agent_Failure, error_helm_get_values.decode("ascii")))
+        raise CLIInternalError(str.format(consts.Upgrade_Agent_Failure, error_helm_get_values.decode("ascii")))
 
     output_helm_values = output_helm_values.decode("ascii")
 
@@ -1030,7 +1015,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Helm_Existing_User_Supplied_Value_Get_Fault,
                                 summary='Problem loading the helm existing user supplied values')
-        raise CLIError("Problem loading the helm existing user supplied values: " + str(e))
+        raise CLIInternalError("Problem loading the helm existing user supplied values: " + str(e))
 
     cmd_helm_upgrade = ["helm", "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "--output", "json", "--atomic"]
@@ -1071,7 +1056,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_upgrade.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
-        raise CLIError(str.format(consts.Upgrade_Agent_Failure, error_helm_upgrade.decode("ascii")))
+        raise CLIInternalError(str.format(consts.Upgrade_Agent_Failure, error_helm_upgrade.decode("ascii")))
 
     return str.format(consts.Upgrade_Agent_Success, connected_cluster.name)
 
@@ -1093,25 +1078,22 @@ def validate_release_namespace(client, cluster_name, resource_group_name, config
         if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
             if not (configmap_rg_name.lower() == resource_group_name.lower() and
                     configmap_cluster_name.lower() == cluster_name.lower()):
-                telemetry.set_user_fault()
                 telemetry.set_exception(exception='The provided cluster name and rg correspond to different cluster', fault_type=consts.Operate_RG_Cluster_Name_Conflict,
                                         summary='The provided cluster name and resource group name do not correspond to the kubernetes cluster being operated on.')
-                raise CLIError("The provided cluster name and resource group name do not correspond to the kubernetes cluster you are operating on. " +
-                               "Please use the cluster, with correct resource group and cluster name.")
+                raise ArgumentUsageError("The provided cluster name and resource group name do not correspond to the kubernetes cluster you are operating on.",
+                                         recommendation="Please use the cluster, with correct resource group and cluster name.")
         else:
-            telemetry.set_user_fault()
             telemetry.set_exception(exception='The corresponding CC resource does not exist', fault_type=consts.Corresponding_CC_Resource_Deleted_Fault,
                                     summary='CC resource corresponding to this cluster has been deleted by the customer')
-            raise CLIError("There exist no ConnectedCluster resource corresponding to this kubernetes Cluster." +
-                           "Please cleanup the helm release first using 'az connectedk8s delete -n <connected-cluster-name> -g <resource-group-name>' and re-onboard the cluster using " +
-                           "'az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>'")
+            raise ClientRequestError("There exist no ConnectedCluster resource corresponding to this kubernetes Cluster.",
+                                     recommendation="Please cleanup the helm release first using 'az connectedk8s delete -n <connected-cluster-name> -g <resource-group-name>' and re-onboard the cluster using " +
+                                     "'az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>'")
 
     else:
-        telemetry.set_user_fault()
         telemetry.set_exception(exception="The azure-arc release namespace couldn't be retrieved", fault_type=consts.Release_Namespace_Not_Found,
                                 summary="The azure-arc release namespace couldn't be retrieved, which implies that the kubernetes cluster has not been onboarded to azure-arc.")
-        raise CLIError("The azure-arc release namespace couldn't be retrieved, which implies that the kubernetes cluster has not been onboarded to azure-arc." +
-                       "Please run 'az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>' to onboard the cluster")
+        raise ClientRequestError("The azure-arc release namespace couldn't be retrieved, which implies that the kubernetes cluster has not been onboarded to azure-arc.",
+                                 recommendation="Please run 'az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>' to onboard the cluster")
     return release_namespace
 
 
@@ -1129,7 +1111,7 @@ def get_all_helm_values(release_namespace, kube_config, kube_context):
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Get_Helm_Values_Failed,
                                 summary='Error while doing helm get values azure-arc')
-        raise CLIError("Error while getting the helm values in the azure-arc namespace: " + error_helm_get_values.decode("ascii"))
+        raise CLIInternalError("Error while getting the helm values in the azure-arc namespace: " + error_helm_get_values.decode("ascii"))
 
     output_helm_values = output_helm_values.decode("ascii")
 
@@ -1139,7 +1121,7 @@ def get_all_helm_values(release_namespace, kube_config, kube_context):
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Helm_Existing_User_Supplied_Value_Get_Fault,
                                 summary='Problem loading the helm existing values')
-        raise CLIError("Problem loading the helm existing values: " + str(e))
+        raise CLIInternalError("Problem loading the helm existing values: " + str(e))
 
 
 def enable_features(cmd, client, resource_group_name, cluster_name, features, kube_config=None, kube_context=None,
@@ -1152,10 +1134,9 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
 
     if enable_azure_rbac:
         if (azrbac_client_id is None) or (azrbac_client_secret is None):
-            telemetry.set_user_fault()
             telemetry.set_exception(exception='Client ID or secret is not provided for Azure RBAC', fault_type=consts.Client_Details_Not_Provided_For_Azure_RBAC_Fault,
                                     summary='Client id, client secret is required to enable/update Azure RBAC feature')
-            raise CLIError("Please provide client id, client secret to enable/update Azure RBAC feature")
+            raise RequiredArgumentMissingError("Please provide client id, client secret to enable/update Azure RBAC feature")
         if azrbac_skip_authz_check is None:
             azrbac_skip_authz_check = ""
         azrbac_skip_authz_check = escape_proxy_settings(azrbac_skip_authz_check)
@@ -1168,8 +1149,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         if not enable_cl:
             features.remove("custom-locations")
             if len(features) == 0:
-                telemetry.set_user_fault()
-                raise CLIError("Failed to enable 'custom-locations' feature.")
+                raise ClientRequestError("Failed to enable 'custom-locations' feature.")
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
@@ -1207,8 +1187,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
 
     # Check for faulty pre-release helm versions
     if "3.3.0-rc" in helm_version:
-        telemetry.set_user_fault()
-        raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
+        raise ClientRequestError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
 
     validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
 
@@ -1282,7 +1261,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_upgrade.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
-        raise CLIError(str.format(consts.Error_enabling_Features, error_helm_upgrade.decode("ascii")))
+        raise CLIInternalError(str.format(consts.Error_enabling_Features, error_helm_upgrade.decode("ascii")))
 
     return str.format(consts.Successfully_Enabled_Features, features, connected_cluster.name)
 
@@ -1334,8 +1313,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
 
     # Check for faulty pre-release helm versions
     if "3.3.0-rc" in helm_version:
-        telemetry.set_user_fault()
-        raise CLIError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
+        raise ClientRequestError("The current helm version is not supported for azure-arc onboarding. Please upgrade helm to a stable version and try again.")
 
     release_namespace = validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
 
@@ -1367,7 +1345,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
         except AttributeError as e:
             pass
         except Exception as ex:
-            raise CLIError(str(ex))
+            raise ArgumentUsageError(str(ex))
 
     if disable_cl:
         logger.warning("Disabling 'custom-locations' feature might impact some dependent resources. Learn more about this at https://aka.ms/ArcK8sDependentResources.")
@@ -1419,7 +1397,7 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_upgrade.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
-        raise CLIError(str.format(consts.Error_disabling_Features, error_helm_upgrade.decode("ascii")))
+        raise CLIInternalError(str.format(consts.Error_disabling_Features, error_helm_upgrade.decode("ascii")))
 
     return str.format(consts.Successfully_Disabled_Features, features, connected_cluster.name)
 
@@ -1430,14 +1408,13 @@ def load_kubernetes_configuration(filename):
             return yaml.safe_load(stream)
     except (IOError, OSError) as ex:
         if getattr(ex, 'errno', 0) == errno.ENOENT:
-            telemetry.set_user_fault()
             telemetry.set_exception(exception=ex, fault_type=consts.Kubeconfig_Failed_To_Load_Fault_Type,
                                     summary='{} does not exist'.format(filename))
-            raise CLIError('{} does not exist'.format(filename))
+            raise FileOperationError('{} does not exist'.format(filename))
     except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
         telemetry.set_exception(exception=ex, fault_type=consts.Kubeconfig_Failed_To_Load_Fault_Type,
                                 summary='Error parsing {} ({})'.format(filename, str(ex)))
-        raise CLIError('Error parsing {} ({})'.format(filename, str(ex)))
+        raise FileOperationError('Error parsing {} ({})'.format(filename, str(ex)))
 
 
 def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name):
@@ -1456,10 +1433,9 @@ def print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_nam
             os.makedirs(directory)
         except OSError as ex:
             if ex.errno != errno.EEXIST:
-                telemetry.set_user_fault()
                 telemetry.set_exception(exception=ex, fault_type=consts.Failed_To_Merge_Credentials_Fault_Type,
                                         summary='Could not create a kubeconfig directory.')
-                raise CLIError("Could not create a kubeconfig directory." + str(ex))
+                raise FileOperationError("Could not create a kubeconfig directory." + str(ex))
     if not os.path.exists(path):
         with os.fdopen(os.open(path, os.O_CREAT | os.O_WRONLY, 0o600), 'wt'):
             pass
@@ -1485,7 +1461,7 @@ def merge_kubernetes_configurations(existing_file, addition_file, replace, conte
     except Exception as ex:
         telemetry.set_exception(exception=ex, fault_type=consts.Failed_To_Load_K8s_Configuration_Fault_Type,
                                 summary='Exception while loading kubernetes configuration')
-        raise CLIError('Exception while loading kubernetes configuration.' + str(ex))
+        raise CLIInternalError('Exception while loading kubernetes configuration.' + str(ex))
 
     if context_name is not None:
         addition['contexts'][0]['name'] = context_name
@@ -1506,7 +1482,7 @@ def merge_kubernetes_configurations(existing_file, addition_file, replace, conte
     if addition is None:
         telemetry.set_exception(exception='Failed to load additional configuration', fault_type=consts.Failed_To_Load_K8s_Configuration_Fault_Type,
                                 summary='failed to load additional configuration from {}'.format(addition_file))
-        raise CLIError('failed to load additional configuration from {}'.format(addition_file))
+        raise FileOperationError('failed to load additional configuration from {}'.format(addition_file))
 
     if existing is None:
         existing = addition
@@ -1529,7 +1505,7 @@ def merge_kubernetes_configurations(existing_file, addition_file, replace, conte
         except Exception as e:
             telemetry.set_exception(exception=e, fault_type=consts.Failed_To_Merge_Kubeconfig_File,
                                     summary='Exception while merging the kubeconfig file')
-            raise CLIError('Exception while merging the kubeconfig file.' + str(e))
+            raise FileOperationError('Exception while merging the kubeconfig file.' + str(e))
 
     current_context = addition.get('current-context', 'UNKNOWN')
     msg = 'Merged "{}" as current context in {}'.format(current_context, existing_file)
@@ -1565,7 +1541,7 @@ def handle_merge(existing, addition, key, replace):
                     msg = 'A different object named {} already exists in {} in your kubeconfig file.'
                     telemetry.set_exception(exception='A different object with same name exists in the kubeconfig file', fault_type=consts.Different_Object_With_Same_Name_Fault_Type,
                                             summary=msg.format(i['name'], key))
-                    raise CLIError(msg.format(i['name'], key))
+                    raise FileOperationError(msg.format(i['name'], key))
         if not remove_flag:
             temp_list.append(j)
 
