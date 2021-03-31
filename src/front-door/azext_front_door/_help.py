@@ -37,6 +37,23 @@ helps['network front-door delete'] = """
     type: command
     short-summary: Delete a Front Door.
 """
+
+helps['network front-door check-name-availability'] = """
+type: command
+short-summary: Check the availability of a Front Door resource name.
+examples:
+  - name: Check the availability of a Front Door resource name.
+    text: >
+        az network front-door check-name-availability --name frontdoor1 --resource-type Microsoft.Network/frontDoors
+"""
+
+helps['network front-door wait'] = """
+type: command
+short-summary: Place the CLI in a waiting state until a condition of the Front Door is met.
+examples:
+  - name: Wait until a front door is created.
+    text: az network front-door wait -g MyResourceGroup --name frontdoor1 --created
+"""
 # endregion
 
 # region FrontDoor BackendPool
