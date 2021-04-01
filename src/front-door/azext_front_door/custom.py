@@ -247,6 +247,10 @@ def list_front_doors(cmd, resource_group_name=None):
     return client.list()
 
 
+def check_front_door_name_availability(client, name, resource_type):
+    return client.check(name, resource_type)
+
+
 def list_fd_frontend_endpoints(cmd, resource_group_name, resource_name):
     client = cf_fd_frontend_endpoints(cmd.cli_ctx, None)
     return client.list_by_front_door(resource_group_name, resource_name)
@@ -672,7 +676,6 @@ def create_waf_policy(cmd, resource_group_name, policy_name,
 def update_waf_policy(instance, tags=None, mode=None, redirect_url=None,
                       custom_block_response_status_code=None, custom_block_response_body=None,
                       disabled=False, request_body_check=None, sku=None):
-    from azext_front_door.vendored_sdks.models import SkuName
     with UpdateContext(instance) as c:
         c.update_param('tags', tags, True)
 
