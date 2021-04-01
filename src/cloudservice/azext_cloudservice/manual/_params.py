@@ -12,6 +12,7 @@
 
 from azure.cli.core.commands.parameters import (
     get_enum_type, get_three_state_flag, file_type)
+from azure.cli.core.commands.validators import validate_file_or_dict
 
 
 def load_arguments(self, _):
@@ -47,3 +48,8 @@ def load_arguments(self, _):
                    'service model is still deployed, but the code is not run immediately. Instead, the service is '
                    'PoweredOff until you call Start, at which time the service will be started. A deployed service '
                    'still incurs charges, even if it is poweredoff.')
+        c.argument('extensions', type=validate_file_or_dict, arg_group='Extension Profile',
+                   help='List of extensions for the cloud service. Expected value: json-string/@json-file. Example: '
+                   '[{"properties": {"type": "RDP", "autoUpgradeMinorVersion": false, "protectedSettings": "settings",'
+                   '"publisher": "Microsoft.Windows.Azure.Extensions", "settings": "settings", '
+                   '"typeHandlerVersion": "1.2.1"}, "name": "RDPExtension"}]')

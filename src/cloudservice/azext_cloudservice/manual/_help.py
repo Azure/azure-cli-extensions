@@ -102,9 +102,9 @@ helps['cloud-service create'] = """
     short-summary: "Create a cloud service. Please note some properties can be set only during cloud service \
 creation."
     examples:
-      - name: Create a cloud service.
+      - name: Create a cloud service with roles, load balancers, secrets and extensions. 
         text: |-
-               az cloud-service create -g rg -n cs --roles ContosoFrontend:Standard_D1_v2:1:Standard ContosoBackend:Standard_D1_v2:1:Standard --package-url packageurl --configuration config --load-balancer-configurations myLoadBalancer:myfe:publicip:: myLoadBalancer2:myfe2::subnetid:privateip --secrets vault0:cert0:cert1 vault1:cert2:cert3:cert4 --extensions "@extensions.json"
+               az cloud-service create -g ResourceGroup -n CloudService --roles ContosoFrontend:Standard_D1_v2:1:Standard ContosoBackend:Standard_D1_v2:1:Standard --package-url packageurl --configuration config --load-balancer-configurations myLoadBalancer:myfe:publicip:: myLoadBalancer2:myfe2::subnetid:privateip --secrets vault0:cert0:cert1 vault1:cert2:cert3:cert4 --extensions "@extensions.json"
 """
 
 helps['cloud-service update'] = """
