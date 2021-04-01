@@ -8,9 +8,12 @@ import shutil
 import subprocess
 from subprocess import Popen, PIPE
 import time
+import requests
+import json
 
 from knack.util import CLIError
 from knack.log import get_logger
+from knack.prompting import NoTTYException, prompt_y_n
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import send_raw_request
 from azure.cli.core import telemetry
@@ -20,12 +23,29 @@ from kubernetes.client.rest import ApiException
 from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 
 logger = get_logger(__name__)
 
 # pylint: disable=line-too-long
 # pylint: disable=bare-except
+
+
+class TimeoutHTTPAdapter(HTTPAdapter):
+    def __init__(self, *args, **kwargs):
+        self.timeout = consts.DEFAULT_REQUEST_TIMEOUT
+        if "timeout" in kwargs:
+            self.timeout = kwargs["timeout"]
+            del kwargs["timeout"]
+        super().__init__(*args, **kwargs)
+
+    def send(self, request, **kwargs):
+        timeout = kwargs.get("timeout")
+        if timeout is None:
+            kwargs["timeout"] = self.timeout
+        return super().send(request, **kwargs)
 
 
 def validate_location(cmd, location):
@@ -263,7 +283,7 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, configuratio
 
 def helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                          location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
-                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade):
+                         kube_config, kube_context, no_wait, values_file_provided, values_file, cloud_name, disable_auto_upgrade, enable_custom_locations, custom_locations_oid):
     cmd_helm_install = ["helm", "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
@@ -275,7 +295,12 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
                         "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
                         "--set", "systemDefaultValues.spnOnboarding=false",
                         "--set", "global.azureEnvironment={}".format(cloud_name),
+                        "--set", "systemDefaultValues.clusterconnect-agent.enabled=true",
                         "--output", "json"]
+    # Add custom-locations related params
+    if enable_custom_locations:
+        cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.enabled=true"])
+        cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.oid={}".format(custom_locations_oid)])
     # To set some other helm parameters through file
     if values_file_provided:
         cmd_helm_install.extend(["-f", values_file])
@@ -318,3 +343,34 @@ def flatten(dd, separator='.', prefix=''):
         telemetry.set_exception(exception=e, fault_type=consts.Error_Flattening_User_Supplied_Value_Dict,
                                 summary='Error while flattening the user supplied helm values dict')
         raise CLIError("Error while flattening the user supplied helm values dict")
+
+
+def check_features_to_update(features_to_update):
+    update_cluster_connect, update_azure_rbac, update_cl = False, False, False
+    for feature in features_to_update:
+        if feature == "cluster-connect":
+            update_cluster_connect = True
+        elif feature == "azure-rbac":
+            update_azure_rbac = True
+        elif feature == "custom-locations":
+            update_cl = True
+    return update_cluster_connect, update_azure_rbac, update_cl
+
+
+def user_confirmation(message, yes=False):
+    if yes:
+        return
+    try:
+        if not prompt_y_n(message):
+            raise CLIError('Operation cancelled.')
+    except NoTTYException:
+        raise CLIError('Unable to prompt for confirmation as no tty available. Use --yes.')
+
+
+def is_guid(guid):
+    import uuid
+    try:
+        uuid.UUID(guid)
+        return True
+    except ValueError:
+        return False

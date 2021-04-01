@@ -25,18 +25,27 @@ try:
     from ._models_py3 import DatadogSingleSignOnProperties
     from ._models_py3 import DatadogSingleSignOnResource
     from ._models_py3 import DatadogSingleSignOnResourceListResponse
-    from ._models_py3 import ErrorResponseBody
+    from ._models_py3 import ErrorAdditionalInfo
+    from ._models_py3 import ErrorDetail
+    from ._models_py3 import ErrorResponse
     from ._models_py3 import FilteringTag
+    from ._models_py3 import IdentityProperties
     from ._models_py3 import LinkedResource
     from ._models_py3 import LinkedResourceListResponse
+    from ._models_py3 import LogRules
+    from ._models_py3 import MetricRules
+    from ._models_py3 import MonitorProperties
+    from ._models_py3 import MonitorUpdateProperties
     from ._models_py3 import MonitoredResource
     from ._models_py3 import MonitoredResourceListResponse
     from ._models_py3 import MonitoringTagRules
     from ._models_py3 import MonitoringTagRulesListResponse
+    from ._models_py3 import MonitoringTagRulesProperties
     from ._models_py3 import OperationDisplay
     from ._models_py3 import OperationListResult
     from ._models_py3 import OperationResult
-    from ._models_py3 import ResourceProviderDefaultErrorResponse
+    from ._models_py3 import ResourceSku
+    from ._models_py3 import SystemData
     from ._models_py3 import UserInfo
 except (SyntaxError, ImportError):
     from ._models import DatadogAgreementProperties  # type: ignore
@@ -57,21 +66,31 @@ except (SyntaxError, ImportError):
     from ._models import DatadogSingleSignOnProperties  # type: ignore
     from ._models import DatadogSingleSignOnResource  # type: ignore
     from ._models import DatadogSingleSignOnResourceListResponse  # type: ignore
-    from ._models import ErrorResponseBody  # type: ignore
+    from ._models import ErrorAdditionalInfo  # type: ignore
+    from ._models import ErrorDetail  # type: ignore
+    from ._models import ErrorResponse  # type: ignore
     from ._models import FilteringTag  # type: ignore
+    from ._models import IdentityProperties  # type: ignore
     from ._models import LinkedResource  # type: ignore
     from ._models import LinkedResourceListResponse  # type: ignore
+    from ._models import LogRules  # type: ignore
+    from ._models import MetricRules  # type: ignore
+    from ._models import MonitorProperties  # type: ignore
+    from ._models import MonitorUpdateProperties  # type: ignore
     from ._models import MonitoredResource  # type: ignore
     from ._models import MonitoredResourceListResponse  # type: ignore
     from ._models import MonitoringTagRules  # type: ignore
     from ._models import MonitoringTagRulesListResponse  # type: ignore
+    from ._models import MonitoringTagRulesProperties  # type: ignore
     from ._models import OperationDisplay  # type: ignore
     from ._models import OperationListResult  # type: ignore
     from ._models import OperationResult  # type: ignore
-    from ._models import ResourceProviderDefaultErrorResponse  # type: ignore
+    from ._models import ResourceSku  # type: ignore
+    from ._models import SystemData  # type: ignore
     from ._models import UserInfo  # type: ignore
 
 from ._microsoft_datadog_client_enums import (
+    CreatedByType,
     LiftrResourceCategories,
     ManagedIdentityTypes,
     MarketplaceSubscriptionStatus,
@@ -82,6 +101,9 @@ from ._microsoft_datadog_client_enums import (
 )
 
 __all__ = [
+    'DatadogAgreementProperties',
+    'DatadogAgreementResource',
+    'DatadogAgreementResourceListResponse',
     'DatadogApiKey',
     'DatadogApiKeyListResponse',
     'DatadogHost',
@@ -97,19 +119,29 @@ __all__ = [
     'DatadogSingleSignOnProperties',
     'DatadogSingleSignOnResource',
     'DatadogSingleSignOnResourceListResponse',
-    'ErrorResponseBody',
+    'ErrorAdditionalInfo',
+    'ErrorDetail',
+    'ErrorResponse',
     'FilteringTag',
+    'IdentityProperties',
     'LinkedResource',
     'LinkedResourceListResponse',
+    'LogRules',
+    'MetricRules',
+    'MonitorProperties',
+    'MonitorUpdateProperties',
     'MonitoredResource',
     'MonitoredResourceListResponse',
     'MonitoringTagRules',
     'MonitoringTagRulesListResponse',
+    'MonitoringTagRulesProperties',
     'OperationDisplay',
     'OperationListResult',
     'OperationResult',
-    'ResourceProviderDefaultErrorResponse',
+    'ResourceSku',
+    'SystemData',
     'UserInfo',
+    'CreatedByType',
     'LiftrResourceCategories',
     'ManagedIdentityTypes',
     'MarketplaceSubscriptionStatus',
