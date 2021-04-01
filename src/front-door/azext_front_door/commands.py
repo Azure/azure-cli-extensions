@@ -8,7 +8,8 @@ from azure.cli.core.commands import CliCommandType
 
 from .custom import (
     list_frontdoor_resource_property, get_frontdoor_resource_property_entry, delete_frontdoor_resource_property_entry)
-from ._client_factory import cf_frontdoor, cf_fd_endpoints, cf_waf_policies, cf_fd_rules_engines
+from ._client_factory import (
+    cf_frontdoor, cf_fd_endpoints, cf_waf_policies, cf_fd_rules_engines, cf_front_door_name_availability)
 
 
 # pylint: disable=too-many-locals, too-many-statements
@@ -69,6 +70,8 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_front_doors')
         g.generic_update_command('update', custom_func_name='update_front_door', setter_arg_name='front_door_parameters')
         g.command('check-custom-domain', 'validate_custom_domain')
+        g.custom_command('check-name-availability', 'check_front_door_name_availability', client_factory=cf_front_door_name_availability)
+        g.wait_command('wait')
 
     with self.command_group('network front-door', fd_endpoint_sdk) as g:
         g.command('purge-endpoint', 'purge_content')
