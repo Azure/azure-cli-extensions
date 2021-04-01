@@ -9,7 +9,7 @@ from typing import Any, AsyncIterable, Callable, Dict, Generic, Optional, TypeVa
 import warnings
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core.exceptions import ARMErrorFormat
@@ -19,8 +19,8 @@ from ... import models
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class ApiKeyOperations:
-    """ApiKeyOperations async operations.
+class TagRulesOperations:
+    """TagRulesOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -46,37 +46,39 @@ class ApiKeyOperations:
         resource_group_name: str,
         monitor_name: str,
         **kwargs
-    ) -> AsyncIterable["models.DatadogApiKeyListResponse"]:
-        """List the api keys for a given monitor resource.
+    ) -> AsyncIterable["models.MonitoringTagRulesListResponse"]:
+        """List the tag rules for a given monitor resource.
 
-        List the api keys for a given monitor resource.
+        List the tag rules for a given monitor resource.
 
-        :param resource_group_name: The name of the resource group to which the Datadog resource
-         belongs.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param monitor_name: Monitor resource name.
         :type monitor_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either DatadogApiKeyListResponse or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~microsoft_datadog_client.models.DatadogApiKeyListResponse]
+        :return: An iterator like instance of either MonitoringTagRulesListResponse or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~microsoft_datadog_client.models.MonitoringTagRulesListResponse]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.DatadogApiKeyListResponse"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.MonitoringTagRulesListResponse"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-02-01-preview"
+        api_version = "2021-03-01"
+        accept = "application/json"
 
         def prepare_request(next_link=None):
             # Construct headers
             header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = 'application/json'
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
             if not next_link:
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
                     'monitorName': self._serialize.url("monitor_name", monitor_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
@@ -84,7 +86,7 @@ class ApiKeyOperations:
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
-                request = self._client.post(url, query_parameters, header_parameters)
+                request = self._client.get(url, query_parameters, header_parameters)
             else:
                 url = next_link
                 query_parameters = {}  # type: Dict[str, Any]
@@ -92,7 +94,7 @@ class ApiKeyOperations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize('DatadogApiKeyListResponse', pipeline_response)
+            deserialized = self._deserialize('MonitoringTagRulesListResponse', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -105,7 +107,7 @@ class ApiKeyOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                error = self._deserialize(models.ResourceProviderDefaultErrorResponse, response)
+                error = self._deserialize(models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
@@ -114,113 +116,49 @@ class ApiKeyOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/listApiKeys'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/tagRules'}  # type: ignore
 
-    async def get_default_key(
+    async def create_or_update(
         self,
         resource_group_name: str,
         monitor_name: str,
+        rule_set_name: str,
+        body: Optional["models.MonitoringTagRules"] = None,
         **kwargs
-    ) -> "models.DatadogApiKey":
-        """Get the default api key.
+    ) -> "models.MonitoringTagRules":
+        """Create or update a tag rule set for a given monitor resource.
 
-        Get the default api key.
+        Create or update a tag rule set for a given monitor resource.
 
-        :param resource_group_name: The name of the resource group to which the Datadog resource
-         belongs.
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param monitor_name: Monitor resource name.
         :type monitor_name: str
+        :param rule_set_name: Rule set name.
+        :type rule_set_name: str
+        :param body:
+        :type body: ~microsoft_datadog_client.models.MonitoringTagRules
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: DatadogApiKey, or the result of cls(response)
-        :rtype: ~microsoft_datadog_client.models.DatadogApiKey
+        :return: MonitoringTagRules, or the result of cls(response)
+        :rtype: ~microsoft_datadog_client.models.MonitoringTagRules
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.DatadogApiKey"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-02-01-preview"
-
-        # Construct URL
-        url = self.get_default_key.metadata['url']  # type: ignore
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'monitorName': self._serialize.url("monitor_name", monitor_name, 'str'),
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.MonitoringTagRules"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
-
-        request = self._client.post(url, query_parameters, header_parameters)
-        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.ResourceProviderDefaultErrorResponse, response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        deserialized = self._deserialize('DatadogApiKey', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-    get_default_key.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/getDefaultKey'}  # type: ignore
-
-    async def set_default_key(
-        self,
-        resource_group_name: str,
-        monitor_name: str,
-        key: str,
-        created_by: Optional[str] = None,
-        name: Optional[str] = None,
-        created: Optional[str] = None,
-        **kwargs
-    ) -> None:
-        """Set the default api key.
-
-        Set the default api key.
-
-        :param resource_group_name: The name of the resource group to which the Datadog resource
-         belongs.
-        :type resource_group_name: str
-        :param monitor_name: Monitor resource name.
-        :type monitor_name: str
-        :param key: The value of the API key.
-        :type key: str
-        :param created_by: The user that created the API key.
-        :type created_by: str
-        :param name: The name of the API key.
-        :type name: str
-        :param created: The time of creation of the API key.
-        :type created: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: None, or the result of cls(response)
-        :rtype: None
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
         error_map.update(kwargs.pop('error_map', {}))
-
-        _body = models.DatadogApiKey(created_by=created_by, name=name, key=key, created=created)
-        api_version = "2020-02-01-preview"
+        api_version = "2021-03-01"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
-        url = self.set_default_key.metadata['url']  # type: ignore
+        url = self.create_or_update.metadata['url']  # type: ignore
         path_format_arguments = {
-            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'monitorName': self._serialize.url("monitor_name", monitor_name, 'str'),
+            'ruleSetName': self._serialize.url("rule_set_name", rule_set_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -231,24 +169,92 @@ class ApiKeyOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        if _body is not None:
-            body_content = self._serialize.body(_body, 'DatadogApiKey')
+        if body is not None:
+            body_content = self._serialize.body(body, 'MonitoringTagRules')
         else:
             body_content = None
         body_content_kwargs['content'] = body_content
-        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
-
+        request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.ResourceProviderDefaultErrorResponse, response)
+            error = self._deserialize(models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        if cls:
-            return cls(pipeline_response, None, {})
+        deserialized = self._deserialize('MonitoringTagRules', pipeline_response)
 
-    set_default_key.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/setDefaultKey'}  # type: ignore
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/tagRules/{ruleSetName}'}  # type: ignore
+
+    async def get(
+        self,
+        resource_group_name: str,
+        monitor_name: str,
+        rule_set_name: str,
+        **kwargs
+    ) -> "models.MonitoringTagRules":
+        """Get a tag rule set for a given monitor resource.
+
+        Get a tag rule set for a given monitor resource.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+        :type resource_group_name: str
+        :param monitor_name: Monitor resource name.
+        :type monitor_name: str
+        :param rule_set_name: Rule set name.
+        :type rule_set_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: MonitoringTagRules, or the result of cls(response)
+        :rtype: ~microsoft_datadog_client.models.MonitoringTagRules
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.MonitoringTagRules"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2021-03-01"
+        accept = "application/json"
+
+        # Construct URL
+        url = self.get.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'monitorName': self._serialize.url("monitor_name", monitor_name, 'str'),
+            'ruleSetName': self._serialize.url("rule_set_name", rule_set_name, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.get(url, query_parameters, header_parameters)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize('MonitoringTagRules', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Datadog/monitors/{monitorName}/tagRules/{ruleSetName}'}  # type: ignore

@@ -100,6 +100,14 @@ def privatecloud_deleteidentitysource(cmd, client: AVSClient, resource_group_nam
         return pc
 
 
+def privatecloud_rotate_vcenter_password(cmd, client: AVSClient, resource_group_name, private_cloud):
+    return client.private_clouds.begin_rotate_vcenter_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def privatecloud_rotate_nsxt_password(cmd, client: AVSClient, resource_group_name, private_cloud):
+    return client.private_clouds.begin_rotate_nsxt_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
 def cluster_create(cmd, client: AVSClient, resource_group_name, name, sku, private_cloud, size, tags=[]):
     from azext_vmware.vendored_sdks.avs_client.models import Cluster, Sku
     cluster = Cluster(sku=Sku(name=sku), cluster_size=size)
