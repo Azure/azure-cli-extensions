@@ -35,5 +35,4 @@ az cloud-service create -g rg -n cs --roles ContosoFrontend:Standard_D1_v2:1:Sta
     "name": "RDPExtension"
   }
 ]
-``` 
-
+```
