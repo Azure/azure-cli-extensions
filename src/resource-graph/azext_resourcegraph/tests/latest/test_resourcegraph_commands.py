@@ -98,7 +98,7 @@ class ResourceGraphTests(ScenarioTest):
 
         self.assertTrue("management" in data[0]['type'])
         self.assertTrue("management" in data[1]['type'])
-        
+
     def test_skip_token_query(self):
         command = 'az graph query -q "project id" --skip-token ew0KICAiJGlkIjogIjEiLA0KICAiTWF4Um93cyI6IDMsDQogICJSb3dzVG9Ta2lwIjogNSwNCiAgIkt1c3RvQ2x1c3RlclVybCI6ICJodHRwczovL2FyZy13dXMyLXRocmVlLXNmLmFyZy5jb3JlLndpbmRvd3MubmV0Ig0KfQ=='
         response = self.cmd(command).get_output_in_json()
@@ -129,3 +129,31 @@ class ResourceGraphTests(ScenarioTest):
         self.assertTrue(len(data[0]['id']) > 0)
         self.assertTrue(len(data[1]['id']) > 0)
         self.assertTrue(len(data[2]['id']) > 0)
+
+    def test_query_error(self):
+        command = 'az graph query -q "where where"'
+
+        with self.assertRaises(CLIError) as error:
+            self.cmd(command)
+
+        error_response = json.loads(error.exception.args[0])
+        print(error_response)
+        self.assertIsInstance(error_response, dict)
+        self.assertTrue(len(error_response) == 3)
+
+        self.assertIsInstance(error_response['code'], string_types)
+        self.assertIsInstance(error_response['message'], string_types)
+        self.assertIsInstance(error_response['details'], list)
+        self.assertTrue(len(error_response['code']) > 0)
+        self.assertTrue(len(error_response['message']) > 0)
+        self.assertTrue(len(error_response['details']) == 2)
+
+        self.assertIsInstance(error_response['details'][0], dict)
+        self.assertTrue(len(error_response['details'][0]) == 2)
+
+        self.assertIsInstance(error_response['details'][0]['code'], string_types)
+        self.assertIsInstance(error_response['details'][0]['message'], string_types)
+        self.assertIsInstance(error_response['details'][1]['additionalProperties'], dict)
+        self.assertTrue(len(error_response['details'][0]['code']) > 0)
+        self.assertTrue(len(error_response['details'][0]['message']) > 0)
+        self.assertTrue(len(error_response['details'][1]['additionalProperties']) == 4)
