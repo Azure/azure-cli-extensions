@@ -31,7 +31,7 @@ def load_arguments(self, _):
     from azext_front_door.vendored_sdks.models import (
         PolicyMode, FrontDoorProtocol, FrontDoorHealthProbeMethod, FrontDoorCertificateSource, FrontDoorQuery, ActionType, RuleType, TransformType,
         FrontDoorRedirectType, FrontDoorRedirectProtocol, MinimumTLSVersion, Transform, HeaderActionType, RulesEngineOperator, RulesEngineMatchVariable,
-        FrontDoorForwardingProtocol, MatchProcessingBehavior, PolicyRequestBodyCheck, SkuName
+        FrontDoorForwardingProtocol, MatchProcessingBehavior, PolicyRequestBodyCheck, SkuName, ResourceType
     )
 
     frontdoor_name_type = CLIArgumentType(options_list=['--front-door-name', '-f'], help='Name of the Front Door.', completer=get_resource_name_completion_list('Microsoft.Network/frontdoors'), id_part='name')
@@ -92,6 +92,11 @@ def load_arguments(self, _):
 
     with self.argument_context('network front-door purge-endpoint') as c:
         c.argument('content_paths', nargs='+')
+
+    with self.argument_context('network front-door check-name-availability') as c:
+        c.argument('name', help='The resource name to be validated.')
+        c.argument('resource_type', arg_type=get_enum_type(ResourceType),
+                   help='The type of the resource whose name is to be validated.')
 
     with self.argument_context('network front-door backend-pool') as c:
         c.argument('load_balancing_settings', options_list='--load-balancing', help='Name or ID of the load balancing settings.', validator=validate_load_balancing_settings)

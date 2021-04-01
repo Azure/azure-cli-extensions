@@ -24,6 +24,17 @@ REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/
 logger = get_logger(__name__)
 
 
+def _get_cloud_init_script():
+    REPAIR_DIR_NAME = 'azext_vm_repair'
+    SCRIPTS_DIR_NAME = 'scripts'
+    CLOUD_INIT = 'linux-build_setup-cloud-init.txt'
+    # Build absoulte path of driver script
+    loader = pkgutil.get_loader(REPAIR_DIR_NAME)
+    mod = loader.load_module(REPAIR_DIR_NAME)
+    rootpath = os.path.dirname(mod.__file__)
+    return os.path.join(rootpath, SCRIPTS_DIR_NAME, CLOUD_INIT)
+
+
 def _uses_managed_disk(vm):
     if vm.storage_profile.os_disk.managed_disk is None:
         return False

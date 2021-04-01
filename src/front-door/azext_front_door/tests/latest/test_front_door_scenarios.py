@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import unittest
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 
 
 class FrontDoorBasicScenarioTests(ScenarioTest):
@@ -23,3 +23,14 @@ class FrontDoorBasicScenarioTests(ScenarioTest):
         # Since it's not easy to have a custom domain, we skip this test for now.
         self.cmd('network front-door frontend-endpoint create -g {rg} -f {front_door} -n myclitest '
                  '--host-name {frontend_endpoint} --session-affinity-enabled')
+
+    @ResourceGroupPreparer(location='westus')
+    def test_front_door_check_name_availability(self, resource_group):
+        front_door_name = self.create_random_name(prefix='frontdoor', length=20)
+        available_checks = [JMESPathCheck('nameAvailability', 'Available')]
+        self.cmd(f'network front-door check-name-availability --name {front_door_name} --resource-type Microsoft.Network/frontdoors', checks=available_checks)
+
+        self.cmd(f'network front-door create -g {resource_group} -n {front_door_name} --backend-address 202.120.2.3')
+
+        unavailable_checks = [JMESPathCheck('nameAvailability', "Not Available")]
+        self.cmd(f'network front-door check-name-availability --name {front_door_name} --resource-type Microsoft.Network/frontdoors', checks=unavailable_checks)
