@@ -31,7 +31,8 @@ from .repair_utils import (
     _fetch_disk_info,
     _unlock_singlepass_encrypted_disk,
     _invoke_run_command,
-    _check_hyperV_gen
+    _check_hyperV_gen,
+    _get_cloud_init_script
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError
 logger = get_logger(__name__)
@@ -63,8 +64,13 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             _check_hyperV_gen(source_vm)
 
         # Set up base create vm command
-        create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password}' \
-                                   .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password)
+        if is_linux:
+            create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password} --custom-data {cloud_init_script}' \
+                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, cloud_init_script=_get_cloud_init_script())
+        else:
+            create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password}' \
+                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password)
+
         # Fetch VM size of repair VM
         sku = _fetch_compatible_sku(source_vm, enable_nested)
         if not sku:
@@ -169,29 +175,27 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
         # invoke enable-NestedHyperV.ps1 again to attach Disk to Nested
         if enable_nested:
-            logger.info("Running hyperv")
+            logger.info("Running Script win-enable-nested-hyperv.ps1 to install HyperV")
 
-            stdout, stderr = _invoke_run_command("win-enable-nested-hyperv.ps1", repair_vm_name, repair_group_name, 0)
-            logger.debug("stderr: %s", stderr)
-            if stderr:
-                logger.debug(stderr)
-                raise ScriptReturnsError('Error when running script')
+            run_hyperv_command = "az vm repair run -g {g} -n {name} --run-id win-enable-nested-hyperv" \
+                .format(g=repair_group_name, name=repair_vm_name)
+            ret_enable_nested = _call_az_command(run_hyperv_command)
 
-            logger.debug("stdout: %s", stdout)
-            if str.find(stdout, "SuccessRestartRequired") > -1:
+            logger.debug("az vm repair run hyperv command returned: %s", ret_enable_nested)
+
+            if str.find(ret_enable_nested, "SuccessRestartRequired") > -1:
                 restart_cmd = 'az vm restart -g {rg} -n {vm}'.format(rg=repair_group_name, vm=repair_vm_name)
-                logger.info("restarting")
+                logger.info("Restarting Repair VM")
                 restart_ret = _call_az_command(restart_cmd)
-                logger.info(restart_ret)
+                logger.debug(restart_ret)
 
                 # invoking hyperv script again
-                logger.info("Running HyperV script again")
-                stdout, stderr = _invoke_run_command("win-enable-nested-hyperv.ps1", repair_vm_name, repair_group_name, 0)
-                if stderr:
-                    raise ScriptReturnsError('Error when running script')
+                logger.info("Running win-enable-nested-hyperv.ps1 again to create nested VM")
+                run_hyperv_command = "az vm repair run -g {g} -n {name} --run-id win-enable-nested-hyperv" \
+                    .format(g=repair_group_name, name=repair_vm_name)
+                ret_enable_nested_again = _call_az_command(run_hyperv_command)
 
-                logger.debug("stderr: %s", stderr)
-                print(stdout)
+                logger.debug("stderr: %s", ret_enable_nested_again)
 
         created_resources = _list_resource_ids_in_rg(repair_group_name)
         command.set_status_success()

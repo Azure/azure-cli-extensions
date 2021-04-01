@@ -1,0 +1,11 @@
+#cloud-config
+# cloud-init script to setup the build environment for alar2
+
+runcmd:
+ - cd /root
+ - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -o rustinstall.sh
+ - chmod 700 rustinstall.sh
+ - ./rustinstall.sh -y --default-toolchain nightly
+ - apt-get update
+ - apt install -y build-essential
+

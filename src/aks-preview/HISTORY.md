@@ -2,6 +2,24 @@
 
 Release History
 ===============
+
+0.5.6
++++++
+* Fix issue that assigning identity in another subscription will fail
+
+0.5.5
++++++
+* Add support for Azure KeyVault Secrets Provider as an AKS addon
+
+0.5.4
++++++
+* Add operations of maintenance configuration
+
+0.5.3
++++++
+* Add `--enable-pod-identity-with-kubenet` for enabling AAD Pod Identity in Kubenet cluster
+* Add `--fqdn-subdomain parameter` to create private cluster with custom private dns zone scenario
+
 0.5.2
 +++++
 * Add support for node public IP prefix ID '--node-public-ip-prefix-id'

@@ -60,6 +60,10 @@ CONST_ACC_SGX_QUOTE_HELPER_ENABLED = "ACCSGXQuoteHelperEnabled"
 CONST_PRIVATE_DNS_ZONE_SYSTEM = "system"
 CONST_PRIVATE_DNS_ZONE_NONE = "none"
 
+# Azure Keyvault Secrets Provider configuration keys
+CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME = "azureKeyvaultSecretsProvider"
+CONST_SECRET_ROTATION_ENABLED = "enableSecretRotation"
+
 ADDONS = {
     'http_application_routing': CONST_HTTP_APPLICATION_ROUTING_ADDON_NAME,
     'monitoring': CONST_MONITORING_ADDON_NAME,
@@ -69,5 +73,6 @@ ADDONS = {
     'ingress-appgw': CONST_INGRESS_APPGW_ADDON_NAME,
     'open-service-mesh': CONST_OPEN_SERVICE_MESH_ADDON_NAME,
     "confcom": CONST_CONFCOM_ADDON_NAME,
-    'gitops': 'gitops'
+    'gitops': 'gitops',
+    'azure-keyvault-secrets-provider': CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
 }

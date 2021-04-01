@@ -8,10 +8,6 @@ import re
 import json
 import zipfile
 
-# Dependencies that will not be checked.
-# This is for packages starting with 'azure-' but do not use the 'azure' namespace.
-SKIP_DEP_CHECK = ['azure-batch-extensions']
-
 # copy from wheel==0.30.0
 WHEEL_INFO_RE = re.compile(
     r"""^(?P<namever>(?P<name>.+?)(-(?P<ver>\d.+?))?)
@@ -121,10 +117,3 @@ def get_index_data():
             return json.load(f, object_pairs_hook=_catch_dup_keys)
     except ValueError as err:
         raise AssertionError("Invalid JSON in {}: {}".format(INDEX_PATH, err))
-
-
-def verify_dependency(dep):
-    # ex. "azure-batch-extensions (<3.1,>=3.0.0)", "paho-mqtt (==1.3.1)", "pyyaml"
-    # check if 'azure-' dependency, as they use 'azure' namespace.
-    dep_split = dep.split()
-    return not (dep_split and dep_split[0].startswith('azure-') and dep_split[0] not in SKIP_DEP_CHECK)
