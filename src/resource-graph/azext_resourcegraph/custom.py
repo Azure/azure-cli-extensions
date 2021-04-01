@@ -34,7 +34,7 @@ __logger = get_logger(__name__)
 def execute_query(client, graph_query, first, skip, subscriptions, management_groups, allow_partial_scopes, skip_token):
     # type: (ResourceGraphClient, str, int, int, list[str], str) -> object
     mgs_list = management_groups
-    if len(mgs_list) > __MANAGEMENT_GROUP_LIMIT:
+    if mgs_list is not None and len(mgs_list) > __MANAGEMENT_GROUP_LIMIT:
         mgs_list = mgs_list[:__MANAGEMENT_GROUP_LIMIT]
         warning_message = "The query included more management groups than allowed. "\
                           "Only the first {0} management groups were included for the results. "\
@@ -46,7 +46,7 @@ def execute_query(client, graph_query, first, skip, subscriptions, management_gr
     subs_list = None
     if mgs_list is None:
         subs_list = subscriptions or _get_cached_subscriptions()
-        if len(subs_list) > __SUBSCRIPTION_LIMIT:
+        if subs_list is not None and len(subs_list) > __SUBSCRIPTION_LIMIT:
             subs_list = subs_list[:__SUBSCRIPTION_LIMIT]
             warning_message = "The query included more subscriptions than allowed. "\
                               "Only the first {0} subscriptions were included for the results. "\
@@ -83,8 +83,11 @@ def execute_query(client, graph_query, first, skip, subscriptions, management_gr
         response = client.resources(request)  # type: QueryResponse
         if response.result_truncated == ResultTruncated.true:
             result_truncated = True
-
+        
         results.extend(response.data)
+
+        if hasattr(response, 'skip_token'):
+            skip_token = response.skip_token
 
         if result_truncated and len(results) < first:
             __logger.warning("Unable to paginate the results of the query. "
@@ -93,9 +96,12 @@ def execute_query(client, graph_query, first, skip, subscriptions, management_gr
                              "see the docs for an example: https://aka.ms/arg-results-truncated")
 
     except HttpResponseError as ex:
-        raise CLIError(json.dumps(_to_dict(ex.response), indent=4))
+        raise CLIError(ex.response)
 
-    return results
+    result_dict = dict(); 
+    result_dict['data']=results
+    result_dict['skip_token']=skip_token
+    return result_dict
 
 
 def _get_cached_subscriptions():

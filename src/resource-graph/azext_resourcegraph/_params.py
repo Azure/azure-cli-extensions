@@ -34,7 +34,7 @@ def load_arguments(self, _):
                    help='Ignores the first N objects and then gets the remaining objects. Default value is 0.')
         c.argument('subscriptions', options_list=['--subscriptions', '-s'], nargs='*', required=False, default=None,
                    help='List of subscriptions to run query against. By default all accessible subscriptions are queried.')
-        c.argument('management_groups', options_list=['--management-groups'], nargs='*', required=False, default=None,
+        c.argument('management_groups', options_list=['--management-groups', '-m'], nargs='*', required=False, default=None,
                    help='List of management groups to run query against.')
         c.argument('skip_token', options_list=['--skip-token'], type=str, required=False, default=None,
                    help='Skip token to get the next page of the query if applicable.')
