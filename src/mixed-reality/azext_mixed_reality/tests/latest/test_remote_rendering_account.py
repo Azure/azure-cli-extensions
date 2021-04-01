@@ -4,9 +4,15 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from .recording_processors import KeyReplacer
 
 
 class RemoteRenderingAccountScenarioTest(ScenarioTest):
+
+    def __init__(self, method_name):
+        super(RemoteRenderingAccountScenarioTest, self).__init__(
+            method_name, recording_processors=[KeyReplacer()]
+        )
 
     @ResourceGroupPreparer(location='eastus2', parameter_name_for_location='location')
     def test_remote_rendering_account_scenario(self, resource_group, location):

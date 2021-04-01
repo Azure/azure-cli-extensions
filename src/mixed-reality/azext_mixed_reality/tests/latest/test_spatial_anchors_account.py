@@ -4,9 +4,15 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from .recording_processors import KeyReplacer
 
 
 class SpatialAnchorsAccountScenarioTest(ScenarioTest):
+
+    def __init__(self, method_name):
+        super(SpatialAnchorsAccountScenarioTest, self).__init__(
+            method_name, recording_processors=[KeyReplacer()]
+        )
 
     @ResourceGroupPreparer(location='eastus2', parameter_name_for_location='location')
     def test_spatial_anchors_account_scenario(self, resource_group, location):

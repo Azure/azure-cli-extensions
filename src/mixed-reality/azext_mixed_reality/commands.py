@@ -28,7 +28,7 @@ def load_command_table(self, _):
         g.custom_command('delete', 'spatial_anchor_account_delete')
 
     with self.command_group('spatial-anchors-account key', spatial_anchor_account, is_preview=True) as g:
-        g.custom_command('show', 'spatial_anchor_account_list_key')
+        g.custom_show_command('show', 'spatial_anchor_account_list_key')
         g.custom_command('renew', 'spatial_anchor_account_regenerate_key')
 
     with self.command_group('remote-rendering-account', remote_rendering_account, is_preview=True) as g:
@@ -39,5 +39,5 @@ def load_command_table(self, _):
         g.custom_command('delete', 'remote_rendering_account_delete')
 
     with self.command_group('remote-rendering-account key', remote_rendering_account, is_preview=True) as g:
-        g.custom_command('show', 'remote_rendering_account_list_key')
+        g.custom_show_command('show', 'remote_rendering_account_list_key')
         g.custom_command('renew', 'remote_rendering_account_regenerate_key')
