@@ -11,17 +11,18 @@ from collections import OrderedDict
 from datetime import datetime, timedelta
 
 import requests
-from azure.core.exceptions import HttpResponseError
 from azure.cli.core._config import GLOBAL_CONFIG_DIR
 from azure.cli.core._profile import Profile
 from azure.cli.core._session import SESSION
+from azure.core.exceptions import HttpResponseError
+from azure.mgmt.core.exceptions import ARMErrorFormat
 from knack.log import get_logger
 from knack.util import todict, CLIError, ensure_dir
 
 from azext_resourcegraph.vendored_sdks.resourcegraph.models import ResultTruncated
 from .vendored_sdks.resourcegraph import ResourceGraphClient
 from .vendored_sdks.resourcegraph.models import \
-    QueryRequest, QueryRequestOptions, QueryResponse, ResultFormat, ErrorResponse
+    QueryRequest, QueryRequestOptions, QueryResponse, ResultFormat, ErrorResponse, Error
 
 __ROWS_PER_PAGE = 1000
 __SUBSCRIPTION_LIMIT = 1000
@@ -83,7 +84,7 @@ def execute_query(client, graph_query, first, skip, subscriptions, management_gr
         response = client.resources(request)  # type: QueryResponse
         if response.result_truncated == ResultTruncated.true:
             result_truncated = True
-        
+
         results.extend(response.data)
 
         if hasattr(response, 'skip_token'):
@@ -96,11 +97,11 @@ def execute_query(client, graph_query, first, skip, subscriptions, management_gr
                              "see the docs for an example: https://aka.ms/arg-results-truncated")
 
     except HttpResponseError as ex:
-        raise CLIError(ex.response)
+        raise CLIError(json.dumps(_to_dict(ex.model.error), indent=4))
 
-    result_dict = dict(); 
-    result_dict['data']=results
-    result_dict['skip_token']=skip_token
+    result_dict = dict()
+    result_dict['data'] = results
+    result_dict['skip_token'] = skip_token
     return result_dict
 
 
@@ -112,7 +113,7 @@ def _get_cached_subscriptions():
 
 
 def _to_dict(obj):
-    if isinstance(obj, ErrorResponse):
+    if isinstance(obj, Error):
         return _to_dict(todict(obj))
 
     if isinstance(obj, dict):
