@@ -28,7 +28,7 @@ helps['spatial-anchors-account show'] = """
     examples:
       - name: Get spatial anchors account
         text: |-
-               az spatial-anchors-account show --account-name "MyAccount" --resource-group \
+               az spatial-anchors-account show -n "MyAccount" --resource-group \
 "MyResourceGroup"
 """
 
@@ -67,7 +67,7 @@ is not possible for the resource this may be omitted.
     examples:
       - name: Create spatial anchor account
         text: |-
-               az spatial-anchors-account create --account-name "MyAccount" --resource-group "MyResourceGroup"
+               az spatial-anchors-account create -n "MyAccount" --resource-group "MyResourceGroup"
 """
 
 helps['spatial-anchors-account update'] = """
@@ -105,7 +105,7 @@ is not possible for the resource this may be omitted.
     examples:
       - name: Update spatial anchors account
         text: |-
-               az spatial-anchors-account update --account-name "MyAccount" --resource-group \
+               az spatial-anchors-account update -n "MyAccount" --resource-group \
 "MyResourceGroup" --location "eastus2euap" --tags hero="romeo" heroine="juliet"
 """
 
@@ -115,7 +115,7 @@ helps['spatial-anchors-account delete'] = """
     examples:
       - name: Delete spatial anchors account
         text: |-
-               az spatial-anchors-account delete --account-name "MyAccount" --resource-group \
+               az spatial-anchors-account delete -n "MyAccount" --resource-group \
 "MyResourceGroup"
 """
 
@@ -125,7 +125,7 @@ helps['spatial-anchors-account key show'] = """
     examples:
       - name: List spatial anchor account key
         text: |-
-               az spatial-anchors-account key show --account-name "MyAccount" --resource-group \
+               az spatial-anchors-account key show -n "MyAccount" --resource-group \
 "MyResourceGroup"
 """
 
@@ -135,7 +135,7 @@ helps['spatial-anchors-account key renew'] = """
     examples:
       - name: Regenerate spatial anchors account keys
         text: |-
-               az spatial-anchors-account key renew --account-name "MyAccount" --serial 1 \
+               az spatial-anchors-account key renew -n "MyAccount" --serial 1 \
 --resource-group "MyResourceGroup"
 """
 
@@ -162,7 +162,7 @@ helps['remote-rendering-account show'] = """
     examples:
       - name: Get remote rendering account
         text: |-
-               az remote-rendering-account show --account-name "MyAccount" --resource-group \
+               az remote-rendering-account show -n "MyAccount" --resource-group \
 "MyResourceGroup"
 """
 
@@ -201,7 +201,7 @@ is not possible for the resource this may be omitted.
     examples:
       - name: Create remote rendering account
         text: |-
-               az remote-rendering-account create --account-name "MyAccount" --location "eastus2euap" \
+               az remote-rendering-account create -n "MyAccount" --location "eastus2euap" \
 --resource-group "MyResourceGroup"
 """
 
@@ -240,7 +240,7 @@ is not possible for the resource this may be omitted.
     examples:
       - name: Update remote rendering account
         text: |-
-               az remote-rendering-account update --account-name "MyAccount" --tags hero="romeo" heroine="juliet" \
+               az remote-rendering-account update -n "MyAccount" --tags hero="romeo" heroine="juliet" \
 --resource-group "MyResourceGroup"
 """
 
@@ -250,7 +250,7 @@ helps['remote-rendering-account delete'] = """
     examples:
       - name: Delete remote rendering account
         text: |-
-               az remote-rendering-account delete --account-name "MyAccount" --resource-group \
+               az remote-rendering-account delete -n "MyAccount" --resource-group \
 "MyResourceGroup"
 """
 
@@ -260,7 +260,7 @@ helps['remote-rendering-account key show'] = """
     examples:
       - name: List remote rendering account key
         text: |-
-               az remote-rendering-account key show --account-name "MyAccount" --resource-group \
+               az remote-rendering-account key show -n "MyAccount" --resource-group \
 "MyResourceGroup"
 """
 
@@ -270,7 +270,7 @@ helps['remote-rendering-account key renew'] = """
     examples:
       - name: Regenerate remote rendering account keys
         text: |-
-               az remote-rendering-account key renew --account-name "MyAccount" --serial 1 \
+               az remote-rendering-account key renew -n "MyAccount" --serial 1 \
 --resource-group "MyResourceGroup"
 """
 
