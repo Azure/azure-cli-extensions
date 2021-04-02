@@ -28,7 +28,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core._profile import Profile
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core import telemetry
-from azure.cli.core.azclierror import InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError, ResourceNotFoundError
+from azure.cli.core.azclierror import ManualInterrupt, InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError, ResourceNotFoundError
 from msrestazure.azure_exceptions import CloudError
 from kubernetes import client as kube_client, config
 from Crypto.IO import PEM
@@ -649,10 +649,9 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         arm_hash = hashlib.sha256(armid.lower().encode('utf-8')).hexdigest()
 
         if check_proxy_kubeconfig(kube_config, kube_context, arm_hash):
-            telemetry.set_user_fault()
             telemetry.set_exception(exception='Encountered proxy kubeconfig during deletion.', fault_type=consts.Proxy_Kubeconfig_During_Deletion_Fault_Type,
                                     summary='The resource cannot be deleted as user is using proxy kubeconfig.')
-            raise CLIError("az connectedk8s delete is not supported when using the Cluster Connect kubeconfig. Run the az connectedk8s delete command with your kubeconfig file pointing to the actual Kubernetes cluster to ensure that the agents are cleaned up successfully as part of the delete command.")
+            raise ClientRequestError("az connectedk8s delete is not supported when using the Cluster Connect kubeconfig.", recommendation="Run the az connectedk8s delete command with your kubeconfig file pointing to the actual Kubernetes cluster to ensure that the agents are cleaned up successfully as part of the delete command.")
 
         delete_cc_resource(client, resource_group_name, cluster_name, no_wait)
     else:
@@ -1572,8 +1571,7 @@ def client_side_proxy_wrapper(cmd,
 
     client_proxy_port = consts.CLIENT_PROXY_PORT
     if int(client_proxy_port) == int(api_server_port):
-        telemetry.set_user_fault()
-        raise CLIError('Proxy uses port 47010 internally. Please pass some other unused port through --port option.')
+        raise ClientRequestError('Proxy uses port 47010 internally.', recommendation='Please pass some other unused port through --port option.')
 
     cloud = send_cloud_telemetry(cmd)
     args = []
@@ -1584,8 +1582,7 @@ def client_side_proxy_wrapper(cmd,
     telemetry.set_debug_info('OS is ', operating_system)
 
     if(check_process(proc_name)):
-        telemetry.set_user_fault()
-        raise CLIError('Another instance of proxy already running')
+        raise ClientRequestError('Another instance of proxy already running')
 
     port_error_string = ""
     if check_if_port_is_open(api_server_port):
@@ -1595,8 +1592,7 @@ def client_side_proxy_wrapper(cmd,
                                 summary=f'Client proxy port was in use.')
         port_error_string += f"Port {client_proxy_port} is already in use. This is an internal port that proxy uses. Please ensure that this port is open before running 'az connectedk8s proxy'.\n"
     if port_error_string != "":
-        telemetry.set_user_fault()
-        raise CLIError(port_error_string)
+        raise ClientRequestError(port_error_string)
 
     # Creating installation location, request uri and older version exe location depending on OS
     if(operating_system == 'Windows'):
@@ -1612,10 +1608,9 @@ def client_side_proxy_wrapper(cmd,
         creds_string = r'.azure/accessTokens.json'
 
     else:
-        telemetry.set_user_fault()
         telemetry.set_exception(exception='Unsupported OS', fault_type=consts.Unsupported_Fault_Type,
                                 summary=f'{operating_system} is not supported yet')
-        raise CLIError(f'The {operating_system} platform is not currently supported.')
+        raise ClientRequestError(f'The {operating_system} platform is not currently supported.')
 
     install_location = os.path.expanduser(os.path.join('~', install_location_string))
     args.append(install_location)
@@ -1631,7 +1626,7 @@ def client_side_proxy_wrapper(cmd,
         except Exception as e:
             telemetry.set_exception(exception=e, fault_type=consts.Download_Exe_Fault_Type,
                                     summary='Unable to download clientproxy executable.')
-            raise CLIError("Failed to download executable with client. Please check your internet connection." + str(e))
+            raise CLIInternalError("Failed to download executable with client.", recommendation="Please check your internet connection." + str(e))
 
         responseContent = response.read()
         response.close()
@@ -1641,10 +1636,9 @@ def client_side_proxy_wrapper(cmd,
             try:
                 os.makedirs(install_dir)
             except Exception as e:
-                telemetry.set_user_fault()
                 telemetry.set_exception(exception=e, fault_type=consts.Create_Directory_Fault_Type,
                                         summary='Unable to create installation directory')
-                raise CLIError("Failed to create installation directory." + str(e))
+                raise ClientRequestError("Failed to create installation directory." + str(e))
         else:
             older_version_string = os.path.expanduser(os.path.join('~', older_version_string))
             older_version_files = glob(older_version_string)
@@ -1660,10 +1654,9 @@ def client_side_proxy_wrapper(cmd,
             with open(install_location, 'wb') as f:
                 f.write(responseContent)
         except Exception as e:
-            telemetry.set_user_fault()
             telemetry.set_exception(exception=e, fault_type=consts.Create_CSPExe_Fault_Type,
                                     summary='Unable to create proxy executable')
-            raise CLIError("Failed to create proxy executable." + str(e))
+            raise ClientRequestError("Failed to create proxy executable." + str(e))
 
         os.chmod(install_location, os.stat(install_location).st_mode | stat.S_IXUSR)
 
@@ -1674,10 +1667,9 @@ def client_side_proxy_wrapper(cmd,
         try:
             os.remove(config_file_location)
         except Exception as e:
-            telemetry.set_user_fault()
             telemetry.set_exception(exception=e, fault_type=consts.Remove_Config_Fault_Type,
                                     summary='Unable to remove old config file')
-            raise CLIError("Failed to remove old config." + str(e))
+            raise FileOperationError("Failed to remove old config." + str(e))
 
     # initializations
     user_type = 'sat'
@@ -1706,10 +1698,9 @@ def client_side_proxy_wrapper(cmd,
             with open(creds_location) as f:
                 creds_list = json.load(f)
         except Exception as e:
-            telemetry.set_user_fault()
             telemetry.set_exception(exception=e, fault_type=consts.Load_Creds_Fault_Type,
                                     summary='Unable to load accessToken.json')
-            raise CLIError("Failed to load credentials." + str(e))
+            raise FileOperationError("Failed to load credentials." + str(e))
 
         user_name = account['user']['name']
 
@@ -1728,10 +1719,9 @@ def client_side_proxy_wrapper(cmd,
                 break
 
         if creds == '':
-            telemetry.set_user_fault()
             telemetry.set_exception(exception='Credentials of user not found.', fault_type=consts.Creds_NotFound_Fault_Type,
                                     summary='Unable to find creds of user')
-            raise CLIError("Credentials of user not found.")
+            raise UnclassifiedUserFault("Credentials of user not found.")
 
         if user_type != 'user':
             dict_file['identity']['clientSecret'] = creds
@@ -1744,10 +1734,9 @@ def client_side_proxy_wrapper(cmd,
         with open(config_file_location, 'w') as f:
             yaml.dump(dict_file, f, default_flow_style=False)
     except Exception as e:
-        telemetry.set_user_fault()
         telemetry.set_exception(exception=e, fault_type=consts.Create_Config_Fault_Type,
                                 summary='Unable to create config file for proxy.')
-        raise CLIError("Failed to create config for proxy." + str(e))
+        raise FileOperationError("Failed to create config for proxy." + str(e))
 
     args.append("-c")
     args.append(config_file_location)
@@ -1802,10 +1791,9 @@ def client_side_proxy_main(cmd,
                 expiry, clientproxy_process = client_side_proxy(cmd, client, resource_group_name, cluster_name, 1, args, client_proxy_port, api_server_port, operating_system, creds, user_type, debug_mode, token=token, path=path, context_name=context_name, clientproxy_process=clientproxy_process)
                 next_refresh_time = expiry - consts.CSP_REFRESH_TIME
         else:
-            telemetry.set_user_fault()
             telemetry.set_exception(exception='Process closed externally.', fault_type=consts.Proxy_Closed_Externally_Fault_Type,
                                     summary='Process closed externally.')
-            raise CLIError('Proxy closed externally.')
+            raise ManualInterrupt('Proxy closed externally.')
 
 
 def client_side_proxy(cmd,
@@ -1839,7 +1827,7 @@ def client_side_proxy(cmd,
         if flag == 1:
             clientproxy_process.terminate()
         utils.arm_exception_handler(e, consts.Get_Credentials_Failed_Fault_Type, 'Unable to list cluster user credentials')
-        raise CLIError("Failed to get credentials." + str(e))
+        raise CLIInternalError("Failed to get credentials." + str(e))
 
     # Starting the client proxy process, if this is the first time that this function is invoked
     if flag == 0:
@@ -1853,7 +1841,7 @@ def client_side_proxy(cmd,
         except Exception as e:
             telemetry.set_exception(exception=e, fault_type=consts.Run_Clientproxy_Fault_Type,
                                     summary='Unable to run client proxy executable')
-            raise CLIError("Failed to start proxy process." + str(e))
+            raise CLIInternalError("Failed to start proxy process." + str(e))
 
         if user_type == 'user':
             identity_data = {}
@@ -2003,14 +1991,14 @@ def check_if_port_is_open(port):
         telemetry.set_exception(exception=e, fault_type=consts.Port_Check_Fault_Type,
                                 summary='Failed to check if port is in use.')
         if platform.system() != 'Darwin':
-            logger.warning("Failed to check if port is in use. " + str(e))
+            logger.info("Failed to check if port is in use. " + str(e))
         return False
     return False
 
 
 def close_subprocess_and_raise_cli_error(proc_subprocess, msg):
     proc_subprocess.terminate()
-    raise CLIError(msg)
+    raise CLIInternalError(msg)
 
 
 def check_if_csp_is_running(clientproxy_process):
