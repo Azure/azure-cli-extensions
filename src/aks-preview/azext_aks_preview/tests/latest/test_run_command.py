@@ -23,5 +23,13 @@ class TestRunCommand(unittest.TestCase):
             _get_command_context([".", "/home/dummy/not-existing-file"])
         self.assertEqual(str(cm.exception), '. is used to attach current folder, not expecting other attachements.')
 
+    def test_get_command_context_empty(self):
+        context = _get_command_context([])
+        self.assertEqual(context, "")
+
+    def test_get_command_context_valid(self):
+        context = _get_command_context(["./data/kubeletconfig.json", "./data/linuxosconfig.json"])
+        self.assertNotEqual(context, '')
+
 if __name__ == '__main__':
     unittest.main()
