@@ -38,13 +38,19 @@ def cloud_service_create(cmd,
     parameters['properties']['configuration_url'] = configuration_url
     parameters['properties']['start_cloud_service'] = start_cloud_service
     parameters['properties']['upgrade_mode'] = upgrade_mode
-    parameters['properties']['extension_profile'] = {}
-    parameters['properties']['extension_profile']['extensions'] = extensions
+    if extensions:
+        parameters['properties']['extension_profile'] = {}
+        parameters['properties']['extension_profile']['extensions'] = extensions
+    else:
+        parameters['properties']['extension_profile'] = None
     parameters['properties']['network_profile'] = {}
     parameters['properties']['network_profile']['load_balancer_configurations'] = _parse_lbs(
         load_balancer_configurations, cmd, resource_group_name)
-    parameters['properties']['network_profile']['swappable_cloud_service'] = {}
-    parameters['properties']['network_profile']['swappable_cloud_service']['id'] = id_
+    if id_:
+        parameters['properties']['network_profile']['swappable_cloud_service'] = {}
+        parameters['properties']['network_profile']['swappable_cloud_service']['id'] = id_
+    else:
+        parameters['properties']['network_profile']['swappable_cloud_service'] = None
     parameters['properties']['os_profile'] = {}
     parameters['properties']['os_profile']['secrets'] = _parse_secrets(
         secrets, cmd, resource_group_name)
