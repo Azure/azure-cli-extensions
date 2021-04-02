@@ -16,6 +16,7 @@ from azure.cli.testsdk import (
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk.checkers import (
     StringContainCheck, StringContainCheckIgnoreCase)
+from .test_aks_commands import _get_test_data_file
 
 
 class TestRunCommand(ScenarioTest):
@@ -26,13 +27,14 @@ class TestRunCommand(ScenarioTest):
 
     def test_get_command_context_invalid_file(self):
         with self.assertRaises(CLIError) as cm:
-            _get_command_context(["/home/dummy/not-existing-file"])
-        self.assertEqual(str(
-            cm.exception), '/home/dummy/not-existing-file is not valid file, or not accessable.')
+            _get_command_context([_get_test_data_file("notexistingfile")])
+        self.assertIn('notexistingfile is not valid file, or not accessable.', str(
+            cm.exception))
 
     def test_get_command_context_mixed(self):
         with self.assertRaises(CLIError) as cm:
-            _get_command_context([".", "/home/dummy/not-existing-file"])
+            _get_command_context(
+                [".", _get_test_data_file("kubeletconfig.json")])
         self.assertEqual(str(
             cm.exception), '. is used to attach current folder, not expecting other attachements.')
 
@@ -42,7 +44,7 @@ class TestRunCommand(ScenarioTest):
 
     def test_get_command_context_valid(self):
         context = _get_command_context(
-            ["./data/kubeletconfig.json", "./data/linuxosconfig.json"])
+            [_get_test_data_file("kubeletconfig.json"), _get_test_data_file("linuxosconfig.json")])
         self.assertNotEqual(context, '')
 
     @AllowLargeResponse()
