@@ -249,11 +249,11 @@ helps['aks create'] = """
           short-summary: Enable private cluster.
         - name: --private-dns-zone
           type: string
-          short-summary: (PREVIEW) private dns zone mode for private cluster.
-          long-summary: Allowed values are "system", "none" or your custom private dns zone resource id. If not set, defaults to type system. Requires --enable-private-cluster to be used.
+          short-summary: Private dns zone mode for private cluster. "none" mode is in preview.
+          long-summary: Allowed values are "system", "none" (Preview) or your custom private dns zone resource id. If not set, defaults to type system. Requires --enable-private-cluster to be used.
         - name: --fqdn-subdomain
           type: string
-          short-summary: (Preview) Prefix for FQDN that is created for private cluster with custom private dns zone scenario.
+          short-summary: Prefix for FQDN that is created for private cluster with custom private dns zone scenario.
         - name: --enable-node-public-ip
           type: bool
           short-summary: Enable VMSS node public IP.
