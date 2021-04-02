@@ -26,15 +26,16 @@ def load_arguments(self, _):
                    'UpdateDomain must be called to apply the update. If set to Auto, the update is automatically '
                    'applied to each update domain in sequence.')
         c.argument('roles', nargs='+', help='List of roles separated by space for the cloud service. Format: '
-                   'rolename:skuname:capacity:tier',
+                   'RoleName:SkuName:SkuCapacity:SkuTier.',
                    arg_group='Role Profile')
         c.argument('load_balancer_configurations', nargs='+', arg_group='Network Profile',
                    options_list=['--load-balancer-configurations', '--lb'],
-                   help='The list of load balancer configurations separated by space for the cloud service. Format: '
-                   'lbname:configname:publicip:subnet:privateip.')
+                   help='The list of load balancer configurations separated by space for the cloud service. '
+                   'The public IP is a mandatory field. Format: '
+                   'LBName:FrontendIPConfiguration:PublicIPAddress:Subnet:PrivateIP.')
         c.argument('secrets', nargs='+', arg_group='Os Profile',
-                   help='Specifiy certificates separated by space that should be installed onto the role instances. '
-                   'Format: vault0:cert0:cert1:...:certn')
+                   help='Specify certificates separated by space that should be installed onto the role instances. '
+                   'Format: KeyVaultName:CertificateUrl:CertificateUrl2:...:CertificateUrlN')
         c.argument('configuration', type=file_type, help='Specify the XML service configuration (.cscfg) '
                    'for the cloud service. Expected value: json-string/@json-file.')
         c.argument('configuration_url', type=str, help='Specify a URL that refers to the location of the service '
