@@ -26,7 +26,7 @@ from kubernetes import client as kube_client
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from azure.cli.core.azclierror import InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError, UnauthorizedError, ManualInterrupt
-from azure.cli.core.azclierror import AuthenticationError as AuthNError # To differentiate from msrest exception with same name
+from azure.cli.core.azclierror import AuthenticationError as AuthNError  # To differentiate from msrest exception with same name
 
 
 logger = get_logger(__name__)
@@ -273,8 +273,8 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, configuratio
         telemetry.set_exception(exception=error_helm_delete.decode("ascii"), fault_type=consts.Delete_HelmRelease_Fault_Type,
                                 summary='Unable to delete helm release')
         raise CLIInternalError("Error occured while cleaning up arc agents. " +
-                       "Helm release deletion failed: " + error_helm_delete.decode("ascii") +
-                       " Please run 'helm delete azure-arc' to ensure that the release is deleted.")
+                               "Helm release deletion failed: " + error_helm_delete.decode("ascii") +
+                               " Please run 'helm delete azure-arc' to ensure that the release is deleted.")
     ensure_namespace_cleanup(configuration)
 
 

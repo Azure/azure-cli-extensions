@@ -184,8 +184,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                 telemetry.set_exception(exception='The kubernetes cluster is already onboarded', fault_type=consts.Cluster_Already_Onboarded_Fault_Type,
                                         summary='Kubernetes cluster already onboarded')
                 raise ArgumentUsageError("The kubernetes cluster you are trying to onboard " +
-                               "is already onboarded to the resource group" +
-                               " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
+                                         "is already onboarded to the resource group" +
+                                         " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
         else:
             # Cleanup agents and continue with put
             utils.delete_arc_agents(release_namespace, kube_config, kube_context, configuration)
@@ -194,9 +194,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
             telemetry.set_exception(exception='The connected cluster resource already exists', fault_type=consts.Resource_Already_Exists_Fault_Type,
                                     summary='Connected cluster resource already exists')
             raise ArgumentUsageError("The connected cluster resource {} already exists ".format(cluster_name) +
-                           "in the resource group {} ".format(resource_group_name) +
-                           "and corresponds to a different Kubernetes cluster.", recommendation="To onboard this Kubernetes cluster " +
-                           "to Azure, specify different resource name or resource group name.")
+                                     "in the resource group {} ".format(resource_group_name) +
+                                     "and corresponds to a different Kubernetes cluster.", recommendation="To onboard this Kubernetes cluster " +
+                                     "to Azure, specify different resource name or resource group name.")
 
     # Resource group Creation
     if resource_group_exists(cmd.cli_ctx, resource_group_name, subscription_id) is False:
@@ -660,9 +660,9 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         telemetry.set_exception(exception='Unable to delete connected cluster', fault_type=consts.Bad_DeleteRequest_Fault_Type,
                                 summary='The resource cannot be deleted as kubernetes cluster is onboarded with some other resource id')
         raise ArgumentUsageError("The current context in the kubeconfig file does not correspond " +
-                       "to the connected cluster resource specified. Agents installed on this cluster correspond " +
-                       "to the resource group name '{}' ".format(configmap.data["AZURE_RESOURCE_GROUP"]) +
-                       "and resource name '{}'.".format(configmap.data["AZURE_RESOURCE_NAME"]))
+                                 "to the connected cluster resource specified. Agents installed on this cluster correspond " +
+                                 "to the resource group name '{}' ".format(configmap.data["AZURE_RESOURCE_GROUP"]) +
+                                 "and resource name '{}'.".format(configmap.data["AZURE_RESOURCE_NAME"]))
 
     # Deleting the azure-arc agents
     utils.delete_arc_agents(release_namespace, kube_config, kube_context, configuration)
