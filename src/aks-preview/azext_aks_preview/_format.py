@@ -10,6 +10,18 @@ from jmespath import compile as compile_jmes, Options
 from jmespath import functions
 
 
+def aks_run_command_result_format(result):
+    parsed = compile_jmes("""{
+        exitCode: exitCode,
+        startedAt: startedAt,
+        finishedAt: finishedAt,
+        provisioningState: provisioningState,
+        logs: logs
+    }""")
+    # use ordered dicts so headers are predictable
+    return parsed.search(result, Options(dict_cls=OrderedDict))
+
+
 def aks_agentpool_show_table_format(result):
     """Format an agent pool as summary results for display with "-o table"."""
     return [_aks_agentpool_table_format(result)]
@@ -98,7 +110,8 @@ def aks_versions_table_format(result):
         upgrades: upgrades[].orchestratorVersion || [`None available`] | sort_versions(@) | set_preview_array(@) | join(`, `, @)
     }""")
     # use ordered dicts so headers are predictable
-    results = parsed.search(result, Options(dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))
+    results = parsed.search(result, Options(
+        dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))
     return sorted(results, key=lambda x: version_to_tuple(x.get('kubernetesVersion')), reverse=True)
 
 
@@ -117,7 +130,8 @@ def _custom_functions(preview_versions):
             """Custom JMESPath `sort_versions` function that sorts an array of strings as software versions"""
             try:
                 return sorted(versions, key=version_to_tuple)
-            except (TypeError, ValueError):  # if it wasn't sortable, return the input so the pipeline continues
+            # if it wasn't sortable, return the input so the pipeline continues
+            except (TypeError, ValueError):
                 return versions
 
         @functions.signature({'types': ['array']})
