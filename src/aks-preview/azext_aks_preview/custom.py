@@ -114,6 +114,7 @@ from ._consts import CONST_PRIVATE_DNS_ZONE_SYSTEM, CONST_PRIVATE_DNS_ZONE_NONE
 logger = get_logger(__name__)
 
 
+
 def which(binary):
     path_var = os.getenv('PATH')
     if platform.system() == 'Windows':
