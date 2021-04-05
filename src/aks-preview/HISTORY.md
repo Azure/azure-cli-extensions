@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.7
++++++
+* Add command invoke for run-command feature
+
 0.5.6
 +++++
 * Fix issue that assigning identity in another subscription will fail
