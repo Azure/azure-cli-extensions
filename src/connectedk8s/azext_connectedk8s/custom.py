@@ -44,6 +44,7 @@ from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity
 from threading import Timer, Thread
 import sys
+from packaging import version
 logger = get_logger(__name__)
 # pylint:disable=unused-argument
 # pylint: disable=too-many-locals
@@ -2023,6 +2024,73 @@ def check_if_csp_is_running(clientproxy_process):
     else:
         return False
 
+def check_helm_installed(condition, failMsg, passMsg, username):
+    kube_config = set_kube_config(None)
+
+    # Loading the kubeconfig file in kubernetes client configuration
+    load_kube_config(kube_config, None)
+    configuration = kube_client.Configuration()
+
+    # Checking the connection to kubernetes cluster.
+    # This check was added to avoid large timeouts when connecting to AAD Enabled
+    # AKS clusters if the user had not logged in.
+    check_kube_connection(configuration)
+
+    # Checking helm installation
+    try:
+        check_helm_install(kube_config, None) 
+        print(passMsg)       
+    except Exception as e:
+        print(e)
+        print(failMsg)
+        return 
+
+
+def check_helm_3(condition, failMsg, passMsg, username):
+    try:
+        ver = check_helm_version(None, None)[1:]
+        if eval("version.parse(ver)"+condition):
+            print(passMsg)
+        else:
+            print(failMsg)
+            return
+    except Exception as e:
+        print(e)
+        print(failMsg)
+        return
+
+
+
+def check_azure_folder_permissions(condition, failMsg, passMsg, username):
+    #username = input("Checking to see if you have access to ~/.azure. Please enter your username: ")
+    try:
+        path = 'C:\\Users\\'+username+'\\.azure'
+        for dirpath, dirnames, filenames in os.walk(path):
+            dirs = [os.path.join(dirpath, x) for x in dirnames]
+            for dirname in dirs:
+                if os.access(path, os.R_OK | os.X_OK | os.W_OK):
+                    print(path + " "+passMsg)
+                else:
+                    cmd = "(Get-Acl "+path+").Access | ?{$_.IdentityReference -match \""+username+"\"} | Select IdentityReference,FileSystemRights"
+                    #permissions = run(["powershell", "-Command", cmd], capture_output=True)
+                    print(failMsg + cmd)
+    except Exception as e: 
+        print(e)
+        print("An exception occured: Please try again.")
+        return
 
 def troubleshoot(resource_group_name, cluster_name):
-    return "Needs implementation"
+    username = input("Please enter your username.This is used to locate the ~/.azure folder on windows: ")
+    troubleshoot_file= 'C:\\Users\\'+username+'\\.azure\\cliextensions\\connectedk8s\\azext_connectedk8s\\troubleshoot.json'
+    platform = ''
+    try:
+        with open(troubleshoot_file, 'r') as f:
+            checks = json.load(f)
+        for check in checks:
+            if check['Enabled']:
+                method = eval(check["Method"]+'(check["Condition"], check["FailMessage"], check["PassMessage"], username)')
+                method
+    except OSError as e:
+        print(e)
+        print("Please ensure troubleshoot.json is in local directory.")
+    

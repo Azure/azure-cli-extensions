@@ -1,0 +1,26 @@
+[
+    {
+        "Check": "HelmInstallation",
+        "Condition": "true", 
+        "Method": "check_helm_installed",
+        "PassMessage": "Helm installation check passed!",
+        "FailMessage": "Helm not found. Please install the latest version of Helm. Learn more at https://aka.ms/arc/k8s/onboarding-helm-install",
+        "Enabled": "true"
+    },
+    {   
+        "Check": "HelmVersion",
+        "Condition": ">=version.parse(\"3.0\")",
+        "Method": "check_helm_3",
+        "PassMessage": "Your Helm version is up to date!", 
+        "FailMessage": "Helm 3+ required. Please visit https://aka.ms/arc/k8s/onboarding-helm-install to download the latest installation of Helm.",
+        "Enabled": "true"
+    },
+    {
+        "Check": "AzurePermissionCheck",
+        "Condition": "true",
+        "Method": "check_azure_folder_permissions",
+        "PassMessage": "You have the correct permissions!", 
+        "FailMessage": "Please use the following command to get the correct permissions: ",
+        "Enabled": "true"
+    }
+]

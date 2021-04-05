@@ -120,8 +120,8 @@ helps['connectedk8s disable-features'] = """
 
 helps['connectedk8s troubleshoot'] = """
   type: command
-  short-summary: Troubleshoots and gets logs for a broken cluster.
+  short-summary: Collects diagnose infomation and  gets logs  on the connected cluster.
   examples:
-  - name: Troubleshoots a broken cluster .
-    text: az connectedk8s troubleshoot -n clusterName -g resourceGroupName
+  - name: Troubleshoots a connected cluster .
+    text: az connectedk8s troubleshoot -g resourceGroupName -n connectedClusterName
 """
