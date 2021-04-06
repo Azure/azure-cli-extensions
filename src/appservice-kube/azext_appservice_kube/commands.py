@@ -88,3 +88,6 @@ def load_command_table(self, _):
 
     with self.command_group('functionapp config container') as g:
         g.custom_command('set', 'update_container_settings_functionapp')
+
+    with self.command_group('functionapp deployment source') as g:
+        g.custom_command('config-zip', 'enable_zip_deploy_functionapp')

@@ -49,7 +49,11 @@ from azure.cli.command_modules.appservice.custom import (
     _get_linux_multicontainer_encoded_config_from_file,
     _filter_for_container_settings,
     _get_url,
-    _StackRuntimeHelper)
+    _StackRuntimeHelper,
+    upload_zip_to_storage,
+    is_plan_consumption)
+
+from azure.cli.command_modules.appservice.utils import retryable_method
 
 from azure.cli.core.util import sdk_no_wait, shell_safe_json_parse, get_json_object, in_cloud_console
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -1187,6 +1191,169 @@ def _add_fx_version(cmd, resource_group_name, name, custom_image_name, slot=None
     windows_fx = fx_version if web_app.is_xenon else None
     return update_site_configs(cmd, resource_group_name, name,
                                linux_fx_version=linux_fx, windows_fx_version=windows_fx, slot=slot)
+
+
+@retryable_method(3, 5)
+def _get_app_settings_from_scm(cmd, resource_group_name, name, slot=None):
+    scm_url = _get_scm_url(cmd, resource_group_name, name, slot)
+    settings_url = '{}/api/settings'.format(scm_url)
+    username, password = _get_site_credential(cmd.cli_ctx, resource_group_name, name, slot)
+    headers = {
+        'Content-Type': 'application/octet-stream',
+        'Cache-Control': 'no-cache',
+        'User-Agent': get_az_user_agent()
+    }
+
+    import requests
+    response = requests.get(settings_url, headers=headers, auth=(username, password), timeout=3)
+
+    return response.json() or {}
+
+
+# Check if the app setting is propagated to the Kudu site correctly by calling api/settings endpoint
+# should_have [] is a list of app settings which are expected to be set
+# should_not_have [] is a list of app settings which are expected to be absent
+# should_contain {} is a dictionary of app settings which are expected to be set with precise values
+# Return True if validation succeeded
+def validate_app_settings_in_scm(cmd, resource_group_name, name, slot=None,
+                                 should_have=None, should_not_have=None, should_contain=None):
+    scm_settings = _get_app_settings_from_scm(cmd, resource_group_name, name, slot)
+    scm_setting_keys = set(scm_settings.keys())
+
+    if should_have and not set(should_have).issubset(scm_setting_keys):
+        return False
+
+    if should_not_have and set(should_not_have).intersection(scm_setting_keys):
+        return False
+
+    temp_setting = scm_settings.copy()
+    temp_setting.update(should_contain or {})
+    if temp_setting != scm_settings:
+        return False
+
+    return True
+
+
+def remove_remote_build_app_settings(cmd, resource_group_name, name, slot):
+    settings = get_app_settings(cmd, resource_group_name, name, slot)
+    scm_do_build_during_deployment = None
+
+    app_settings_should_contain = {}
+
+    for keyval in settings:
+        value = keyval['value'].lower()
+        if keyval['name'] == 'SCM_DO_BUILD_DURING_DEPLOYMENT':
+            scm_do_build_during_deployment = value in ('true', '1')
+
+    if scm_do_build_during_deployment is not False:
+        logger.warning("Setting SCM_DO_BUILD_DURING_DEPLOYMENT to false")
+        update_app_settings(cmd, resource_group_name, name, [
+            "SCM_DO_BUILD_DURING_DEPLOYMENT=false"
+        ], slot)
+        app_settings_should_contain['SCM_DO_BUILD_DURING_DEPLOYMENT'] = 'false'
+
+    # Wait for scm site to get the latest app settings
+    if app_settings_should_contain:
+        logger.warning("Waiting SCM site to be updated with the latest app settings")
+        scm_is_up_to_date = False
+        retries = 10
+        while not scm_is_up_to_date and retries >= 0:
+            scm_is_up_to_date = validate_app_settings_in_scm(
+                cmd, resource_group_name, name, slot,
+                should_contain=app_settings_should_contain)
+            retries -= 1
+            time.sleep(5)
+
+        if retries < 0:
+            logger.warning("App settings may not be propagated to the SCM site")
+
+
+def add_remote_build_app_settings(cmd, resource_group_name, name, slot):
+    settings = get_app_settings(cmd, resource_group_name, name, slot)
+    scm_do_build_during_deployment = None
+    website_run_from_package = None
+    enable_oryx_build = None
+
+    app_settings_should_not_have = []
+    app_settings_should_contain = {}
+
+    for keyval in settings:
+        value = keyval['value'].lower()
+        if keyval['name'] == 'SCM_DO_BUILD_DURING_DEPLOYMENT':
+            scm_do_build_during_deployment = value in ('true', '1')
+        if keyval['name'] == 'WEBSITE_RUN_FROM_PACKAGE':
+            website_run_from_package = value
+        if keyval['name'] == 'ENABLE_ORYX_BUILD':
+            enable_oryx_build = value
+
+    if scm_do_build_during_deployment is not True:
+        logger.warning("Setting SCM_DO_BUILD_DURING_DEPLOYMENT to true")
+        update_app_settings(cmd, resource_group_name, name, [
+            "SCM_DO_BUILD_DURING_DEPLOYMENT=true"
+        ], slot)
+        app_settings_should_contain['SCM_DO_BUILD_DURING_DEPLOYMENT'] = 'true'
+
+    if website_run_from_package:
+        logger.warning("Removing WEBSITE_RUN_FROM_PACKAGE app setting")
+        delete_app_settings(cmd, resource_group_name, name, [
+            "WEBSITE_RUN_FROM_PACKAGE"
+        ], slot)
+        app_settings_should_not_have.append('WEBSITE_RUN_FROM_PACKAGE')
+
+    if enable_oryx_build:
+        logger.warning("Removing ENABLE_ORYX_BUILD app setting")
+        delete_app_settings(cmd, resource_group_name, name, [
+            "ENABLE_ORYX_BUILD"
+        ], slot)
+        app_settings_should_not_have.append('ENABLE_ORYX_BUILD')
+
+    # Wait for scm site to get the latest app settings
+    if app_settings_should_not_have or app_settings_should_contain:
+        logger.warning("Waiting SCM site to be updated with the latest app settings")
+        scm_is_up_to_date = False
+        retries = 10
+        while not scm_is_up_to_date and retries >= 0:
+            scm_is_up_to_date = validate_app_settings_in_scm(
+                cmd, resource_group_name, name, slot,
+                should_contain=app_settings_should_contain,
+                should_not_have=app_settings_should_not_have)
+            retries -= 1
+            time.sleep(5)
+
+        if retries < 0:
+            logger.warning("App settings may not be propagated to the SCM site.")
+
+
+def enable_zip_deploy_functionapp(cmd, resource_group_name, name, src, build_remote=False, timeout=None, slot=None):
+    client = web_client_factory(cmd.cli_ctx)
+    app = client.web_apps.get(resource_group_name, name)
+    if app is None:
+        raise CLIError('The function app \'{}\' was not found in resource group \'{}\'. '
+                       'Please make sure these values are correct.'.format(name, resource_group_name))
+    parse_plan_id = parse_resource_id(app.server_farm_id)
+    plan_info = None
+    retry_delay = 10  # seconds
+    # We need to retry getting the plan because sometimes if the plan is created as part of function app,
+    # it can take a couple of tries before it gets the plan
+    for _ in range(5):
+        plan_info = client.app_service_plans.get(parse_plan_id['resource_group'],
+                                                 parse_plan_id['name'])
+        if plan_info is not None:
+            break
+        time.sleep(retry_delay)
+
+    if build_remote and not app.reserved:
+        raise CLIError('Remote build is only available on Linux function apps')
+
+    is_consumption = is_plan_consumption(cmd, plan_info)
+    if (not build_remote) and is_consumption and app.reserved:
+        return upload_zip_to_storage(cmd, resource_group_name, name, src, slot)
+    if build_remote:
+        add_remote_build_app_settings(cmd, resource_group_name, name, slot)
+    else:
+        remove_remote_build_app_settings(cmd, resource_group_name, name, slot)
+
+    return enable_zip_deploy(cmd, resource_group_name, name, src, timeout, slot)
 
 
 def enable_zip_deploy_webapp(cmd, resource_group_name, name, src, timeout=None, slot=None, is_kube=False):
