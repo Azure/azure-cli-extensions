@@ -533,7 +533,6 @@ def get_kubeconfig_node_dict(kube_config=None):
     try:
         kubeconfig_data = config.kube_config._get_kube_config_loader_for_yaml_file(kube_config)._config
     except Exception as ex:
-        telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=consts.Load_Kubeconfig_Fault_Type,
                                 summary='Error while fetching details from kubeconfig')
         raise FileOperationError("Error while fetching details from kubeconfig." + str(ex))
@@ -742,7 +741,6 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
 
     # check whether proxy cert path exists
     if proxy_cert != "" and (not os.path.exists(proxy_cert)):
-        telemetry.set_user_fault()
         telemetry.set_exception(exception='Proxy cert path does not exist', fault_type=consts.Proxy_Cert_Path_Does_Not_Exist_Fault_Type,
                                 summary='Proxy cert path does not exist')
         raise InvalidArgumentValueError(str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert))
@@ -1875,7 +1873,6 @@ def client_side_proxy(cmd,
         try:
             kubeconfig = json.loads(response.text)
         except Exception as e:
-            telemetry.set_user_fault()
             telemetry.set_exception(exception=e, fault_type=consts.Load_Kubeconfig_Fault_Type,
                                     summary='Unable to load Kubeconfig')
             close_subprocess_and_raise_cli_error(clientproxy_process, "Failed to load kubeconfig." + str(e))
