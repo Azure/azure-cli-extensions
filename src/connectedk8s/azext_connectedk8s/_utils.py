@@ -25,7 +25,7 @@ import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-from azure.cli.core.azclierror import InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError, UnauthorizedError, ManualInterrupt
+from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt
 from azure.cli.core.azclierror import AuthenticationError as AuthNError  # To differentiate from msrest exception with same name
 
 

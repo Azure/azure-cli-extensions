@@ -655,7 +655,6 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
         delete_cc_resource(client, resource_group_name, cluster_name, no_wait)
     else:
-        telemetry.set_user_fault()
         telemetry.set_exception(exception='Unable to delete connected cluster', fault_type=consts.Bad_DeleteRequest_Fault_Type,
                                 summary='The resource cannot be deleted as kubernetes cluster is onboarded with some other resource id')
         raise ArgumentUsageError("The current context in the kubeconfig file does not correspond " +
