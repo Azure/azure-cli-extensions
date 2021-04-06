@@ -85,3 +85,6 @@ def load_command_table(self, _):
     with self.command_group('functionapp') as g:
         g.custom_command('create', 'create_function', exception_handler=ex_handler_factory())
         g.custom_show_command('show', 'show_webapp', table_transformer=transform_web_output)
+
+    with self.command_group('functionapp config container') as g:
+        g.custom_command('set', 'update_container_settings_functionapp')
