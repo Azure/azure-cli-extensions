@@ -20,6 +20,37 @@ except ImportError:
 from knack.util import CLIError
 from knack.log import get_logger
 
+from azure.cli.command_modules.appservice.custom import (
+    list_webapp,
+    _rename_server_farm_props,
+    _generic_settings_operation,
+    _build_app_settings_output,
+    get_site_configs,
+    get_webapp,
+    _get_site_credential,
+    _mask_creds_related_appsettings,
+    _format_fx_version,
+    _get_extension_version_functionapp,
+    _validate_app_service_environment_id,
+    _validate_asp_sku,
+    _get_location_from_webapp,
+    validate_and_convert_to_int,
+    validate_range_of_int_flag,
+    get_app_settings,
+    get_app_insights_key,
+    _update_webapp_current_stack_property_if_needed,
+    validate_container_app_create_options,
+    parse_docker_image_name,
+    list_consumption_locations,
+    is_plan_elastic_premium,
+    enable_local_git,
+    _validate_and_get_connection_string,
+    _get_acr_cred,
+    _get_linux_multicontainer_encoded_config_from_file,
+    _filter_for_container_settings,
+    _get_url,
+    _StackRuntimeHelper)
+
 from azure.cli.core.util import sdk_no_wait, shell_safe_json_parse, get_json_object, in_cloud_console
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands import LongRunningOperation
@@ -550,17 +581,6 @@ def webapp_up(cmd, name, resource_group_name=None, plan=None, location=None, sku
     return create_json
 
 
-def _update_webapp_current_stack_property_if_needed(cmd, resource_group, name, current_stack):
-    if not current_stack:
-        return
-    # portal uses this current_stack value to display correct runtime for windows webapps
-    client = web_client_factory(cmd.cli_ctx)
-    app_metadata = client.web_apps.list_metadata(resource_group, name)
-    if 'CURRENT_STACK' not in app_metadata.properties or app_metadata.properties["CURRENT_STACK"] != current_stack:
-        app_metadata.properties["CURRENT_STACK"] = current_stack
-        client.web_apps.update_metadata(resource_group, name, kind="app", properties=app_metadata.properties)
-
-
 def show_webapp(cmd, resource_group_name, name, slot=None, app_instance=None):
     webapp = app_instance
     if not app_instance:  # when the routine is invoked as a help method, not through commands
@@ -829,46 +849,6 @@ def update_container_settings(cmd, resource_group_name, name, docker_registry_se
                                                                           slot=slot))
 
 
-def validate_container_app_create_options(runtime=None, deployment_container_image_name=None,
-                                          multicontainer_config_type=None, multicontainer_config_file=None):
-    if bool(multicontainer_config_type) != bool(multicontainer_config_file):
-        return False
-    opts = [runtime, deployment_container_image_name, multicontainer_config_type]
-    return len([x for x in opts if x]) == 1  # you can only specify one out the combinations
-
-
-def parse_docker_image_name(deployment_container_image_name):
-    if not deployment_container_image_name:
-        return None
-    slash_ix = deployment_container_image_name.rfind('/')
-    docker_registry_server_url = deployment_container_image_name[0:slash_ix]
-    if slash_ix == -1 or ("." not in docker_registry_server_url and ":" not in docker_registry_server_url):
-        return None
-    return docker_registry_server_url
-
-
-def list_consumption_locations(cmd):
-    client = web_client_factory(cmd.cli_ctx)
-    regions = client.list_geo_regions(sku='Dynamic')
-    return [{'name': x.name.lower().replace(' ', '')} for x in regions]
-
-
-def is_plan_elastic_premium(cmd, plan_info):
-    SkuDescription, AppServicePlan = cmd.get_models('SkuDescription', 'AppServicePlan')
-    if isinstance(plan_info, AppServicePlan):
-        if isinstance(plan_info.sku, SkuDescription):
-            return plan_info.sku.tier == 'ElasticPremium'
-    return False
-
-
-def get_app_insights_key(cli_ctx, resource_group, name):
-    appinsights_client = get_mgmt_service_client(cli_ctx, ApplicationInsightsManagementClient)
-    appinsights = appinsights_client.components.get(resource_group, name)
-    if appinsights is None or appinsights.instrumentation_key is None:
-        raise CLIError("App Insights {} under resource group {} was not found.".format(name, resource_group))
-    return appinsights.instrumentation_key
-
-
 def try_create_application_insights(cmd, functionapp):
     creation_failed_warn = 'Unable to create the Application Insights for the Function App. ' \
                            'Please use the Azure Portal to manually create and configure the Application Insights, ' \
@@ -950,13 +930,6 @@ def update_app_settings(cmd, resource_group_name, name, settings=None, slot=None
     return _build_app_settings_output(result.properties, app_settings_slot_cfg_names)
 
 
-def get_app_settings(cmd, resource_group_name, name, slot=None):
-    result = _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'list_application_settings', slot)
-    client = web_client_factory(cmd.cli_ctx)
-    slot_app_setting_names = client.web_apps.list_slot_configuration_names(resource_group_name, name).app_setting_names
-    return _build_app_settings_output(result.properties, slot_app_setting_names)
-
-
 # for any modifications to the non-optional parameters, adjust the reflection logic accordingly
 # in the method
 # pylint: disable=unused-argument
@@ -1025,21 +998,6 @@ def update_site_configs(cmd, resource_group_name, name, slot=None, number_of_wor
         setattr(configs, 'ip_security_restrictions', None)
 
     return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'update_configuration', slot, configs)
-
-
-def validate_range_of_int_flag(flag_name, value, min_val, max_val):
-    value = validate_and_convert_to_int(flag_name, value)
-    if min_val > value or value > max_val:
-        raise CLIError("Usage error: {} is expected to be between {} and {} (inclusive)".format(flag_name, min_val,
-                                                                                                max_val))
-    return value
-
-
-def validate_and_convert_to_int(flag, val):
-    try:
-        return int(val)
-    except ValueError:
-        raise CLIError("Usage error: {} is expected to have an int value.".format(flag))
 
 
 def delete_app_settings(cmd, resource_group_name, name, setting_names, slot=None):
@@ -1128,43 +1086,6 @@ def config_source_control(cmd, resource_group_name, name, repo_url, repository_t
             time.sleep(5)   # retry in a moment
 
 
-def list_webapp(cmd, resource_group_name=None):
-    result = _list_app(cmd.cli_ctx, resource_group_name)
-    return [r for r in result if 'function' not in r.kind]
-
-
-def get_site_configs(cmd, resource_group_name, name, slot=None):
-    return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'get_configuration', slot)
-
-
-# for generic updater
-def get_webapp(cmd, resource_group_name, name, slot=None):
-    return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'get', slot)
-
-
-def enable_local_git(cmd, resource_group_name, name, slot=None):
-    SiteConfigResource = cmd.get_models('SiteConfigResource')
-    client = web_client_factory(cmd.cli_ctx)
-    location = _get_location_from_webapp(client, resource_group_name, name)
-    site_config = SiteConfigResource(location=location)
-    site_config.scm_type = 'LocalGit'
-    if slot is None:
-        client.web_apps.create_or_update_configuration(resource_group_name, name, site_config)
-    else:
-        client.web_apps.create_or_update_configuration_slot(resource_group_name, name,
-                                                            site_config, slot)
-
-    return {'url': _get_local_git_url(cmd.cli_ctx, client, resource_group_name, name, slot)}
-
-
-def url_validator(url):
-    try:
-        result = urlparse(url)
-        return all([result.scheme, result.netloc, result.path])
-    except ValueError:
-        return False
-
-
 def list_publish_profiles(cmd, resource_group_name, name, slot=None, xml=False):
     import xmltodict
 
@@ -1194,32 +1115,6 @@ def list_publish_profiles(cmd, resource_group_name, name, slot=None, xml=False):
 
 # private helpers
 
-def _get_local_git_url(cli_ctx, client, resource_group_name, name, slot=None):
-    user = client.get_publishing_user()
-    result = _generic_site_operation(cli_ctx, resource_group_name, name, 'get_source_control', slot)
-    parsed = urlparse(result.repo_url)
-    return '{}://{}@{}/{}.git'.format(parsed.scheme, user.publishing_user_name,
-                                      parsed.netloc, name)
-
-
-def _get_location_from_webapp(client, resource_group_name, webapp):
-    webapp = client.web_apps.get(resource_group_name, webapp)
-    if not webapp:
-        raise CLIError("'{}' app doesn't exist".format(webapp))
-    return webapp.location
-
-
-def _list_app(cli_ctx, resource_group_name=None):
-    client = web_client_factory(cli_ctx)
-    if resource_group_name:
-        result = list(client.web_apps.list_by_resource_group(resource_group_name))
-    else:
-        result = list(client.web_apps.list())
-    for webapp in result:
-        _rename_server_farm_props(webapp)
-    return result
-
-
 def _resolve_kube_environment_id(cli_ctx, kube_environment, resource_group_name):
     if is_valid_resource_id(kube_environment):
         return kube_environment
@@ -1232,39 +1127,6 @@ def _resolve_kube_environment_id(cli_ctx, kube_environment, resource_group_name)
         namespace='Microsoft.Web',
         type='kubeEnvironments',
         name=kube_environment)
-
-
-def _validate_asp_sku(app_service_environment, sku):
-    # Isolated SKU is supported only for ASE
-    if sku in ['I1', 'I2', 'I3']:
-        if not app_service_environment:
-            raise CLIError("The pricing tier 'Isolated' is not allowed for this app service plan. Use this link to "
-                           "learn more: https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
-    else:
-        if app_service_environment:
-            raise CLIError("Only pricing tier 'Isolated' is allowed in this app service plan. Use this link to "
-                           "learn more: https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
-
-
-def _validate_app_service_environment_id(cli_ctx, ase, resource_group_name):
-    ase_is_id = is_valid_resource_id(ase)
-    if ase_is_id:
-        return ase
-
-    from msrestazure.tools import resource_id
-    from azure.cli.core.commands.client_factory import get_subscription_id
-    return resource_id(
-        subscription=get_subscription_id(cli_ctx),
-        resource_group=resource_group_name,
-        namespace='Microsoft.Web',
-        type='hostingEnvironments',
-        name=ase)
-
-
-def _get_extension_version_functionapp(functions_version):
-    if functions_version is not None:
-        return '~{}'.format(functions_version)
-    return '~2'
 
 
 def _get_linux_fx_functionapp(functions_version, runtime, runtime_version):
@@ -1299,62 +1161,6 @@ def _get_java_version_functionapp(functions_version, runtime_version):
     return runtime_version
 
 
-def _validate_and_get_connection_string(cli_ctx, resource_group_name, storage_account):
-    sa_resource_group = resource_group_name
-    if is_valid_resource_id(storage_account):
-        sa_resource_group = parse_resource_id(storage_account)['resource_group']
-        storage_account = parse_resource_id(storage_account)['name']
-    storage_client = get_mgmt_service_client(cli_ctx, StorageManagementClient)
-    storage_properties = storage_client.storage_accounts.get_properties(sa_resource_group,
-                                                                        storage_account)
-    error_message = ''
-    endpoints = storage_properties.primary_endpoints
-    sku = storage_properties.sku.name
-    allowed_storage_types = ['Standard_GRS', 'Standard_RAGRS', 'Standard_LRS', 'Standard_ZRS', 'Premium_LRS']
-
-    for e in ['blob', 'queue', 'table']:
-        if not getattr(endpoints, e, None):
-            error_message = "Storage account '{}' has no '{}' endpoint. It must have table, queue, and blob endpoints all enabled".format(storage_account, e)   # pylint: disable=line-too-long
-    if sku not in allowed_storage_types:
-        error_message += 'Storage type {} is not allowed'.format(sku)
-
-    if error_message:
-        raise CLIError(error_message)
-
-    obj = storage_client.storage_accounts.list_keys(sa_resource_group, storage_account)  # pylint: disable=no-member
-    try:
-        keys = [obj.keys[0].value, obj.keys[1].value]  # pylint: disable=no-member
-    except AttributeError:
-        # Older API versions have a slightly different structure
-        keys = [obj.key1, obj.key2]  # pylint: disable=no-member
-
-    endpoint_suffix = cli_ctx.cloud.suffixes.storage_endpoint
-    connection_string = 'DefaultEndpointsProtocol={};EndpointSuffix={};AccountName={};AccountKey={}'.format(
-        "https",
-        endpoint_suffix,
-        storage_account,
-        keys[0])  # pylint: disable=no-member
-
-    return connection_string
-
-
-def _format_fx_version(custom_image_name, container_config_type=None):
-    lower_custom_image_name = custom_image_name.lower()
-    if "https://" in lower_custom_image_name or "http://" in lower_custom_image_name:
-        custom_image_name = lower_custom_image_name.replace("https://", "").replace("http://", "")
-    fx_version = custom_image_name.strip()
-    fx_version_lower = fx_version.lower()
-    # handles case of only spaces
-    if fx_version:
-        if container_config_type:
-            fx_version = '{}|{}'.format(container_config_type, custom_image_name)
-        elif not fx_version_lower.startswith('docker|'):
-            fx_version = '{}|{}'.format('DOCKER', custom_image_name)
-    else:
-        fx_version = ' '
-    return fx_version
-
-
 def _set_remote_or_local_git(cmd, webapp, resource_group_name, name, deployment_source_url=None,
                              deployment_source_branch='master', deployment_local_git=None):
     if deployment_source_url:
@@ -1372,27 +1178,6 @@ def _set_remote_or_local_git(cmd, webapp, resource_group_name, name, deployment_
         setattr(webapp, 'deploymentLocalGitUrl', local_git_info['url'])
 
 
-def _get_acr_cred(cli_ctx, registry_name):
-    from azure.mgmt.containerregistry import ContainerRegistryManagementClient
-    from azure.cli.core.commands.parameters import get_resources_in_subscription
-    client = get_mgmt_service_client(cli_ctx, ContainerRegistryManagementClient).registries
-
-    result = get_resources_in_subscription(cli_ctx, 'Microsoft.ContainerRegistry/registries')
-    result = [item for item in result if item.name.lower() == registry_name]
-    if not result or len(result) > 1:
-        raise CLIError("No resource or more than one were found with name '{}'.".format(registry_name))
-    resource_group_name = parse_resource_id(result[0].id)['resource_group']
-
-    registry = client.get(resource_group_name, registry_name)
-
-    if registry.admin_user_enabled:  # pylint: disable=no-member
-        cred = client.list_credentials(resource_group_name, registry_name)
-        return cred.username, cred.passwords[0].value
-    raise CLIError("Failed to retrieve container registry credentials. Please either provide the "
-                   "credentials or run 'az acr update -n {} --admin-enabled true' to enable "
-                   "admin first.".format(registry_name))
-
-
 def _add_fx_version(cmd, resource_group_name, name, custom_image_name, slot=None):
     fx_version = _format_fx_version(custom_image_name)
     web_app = get_webapp(cmd, resource_group_name, name, slot)
@@ -1402,89 +1187,6 @@ def _add_fx_version(cmd, resource_group_name, name, custom_image_name, slot=None
     windows_fx = fx_version if web_app.is_xenon else None
     return update_site_configs(cmd, resource_group_name, name,
                                linux_fx_version=linux_fx, windows_fx_version=windows_fx, slot=slot)
-
-
-def _get_fx_version(cmd, resource_group_name, name, slot=None):
-    site_config = get_site_configs(cmd, resource_group_name, name, slot)
-    return site_config.linux_fx_version or site_config.windows_fx_version or ''
-
-
-def _ssl_context():
-    if sys.version_info < (3, 4) or (in_cloud_console() and platform.system() == 'Windows'):
-        try:
-            return ssl.SSLContext(ssl.PROTOCOL_TLS)  # added in python 2.7.13 and 3.6
-        except AttributeError:
-            return ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-
-    return ssl.create_default_context()
-
-
-def _get_linux_multicontainer_encoded_config_from_file(file_name):
-    from base64 import b64encode
-    config_file_bytes = None
-    if url_validator(file_name):
-        response = urlopen(file_name, context=_ssl_context())
-        config_file_bytes = response.read()
-    else:
-        with open(file_name, 'rb') as f:
-            config_file_bytes = f.read()
-    # Decode base64 encoded byte array into string
-    return b64encode(config_file_bytes).decode('utf-8')
-
-
-def _get_linux_multicontainer_decoded_config(cmd, resource_group_name, name, slot=None):
-    from base64 import b64decode
-    linux_fx_version = _get_fx_version(cmd, resource_group_name, name, slot)
-    if not any([linux_fx_version.startswith(s) for s in MULTI_CONTAINER_TYPES]):
-        raise CLIError("Cannot decode config that is not one of the"
-                       " following types: {}".format(','.join(MULTI_CONTAINER_TYPES)))
-    return b64decode(linux_fx_version.split('|')[1].encode('utf-8'))
-
-
-# TODO: remove this when #3660(service tracking issue) is resolved
-def _mask_creds_related_appsettings(settings):
-    for x in [x1 for x1 in settings if x1 in APPSETTINGS_TO_MASK]:
-        settings[x] = None
-    return settings
-
-
-def _filter_for_container_settings(cmd, resource_group_name, name, settings,
-                                   show_multicontainer_config=None, slot=None):
-    result = [x for x in settings if x['name'] in CONTAINER_APPSETTING_NAMES]
-    fx_version = _get_fx_version(cmd, resource_group_name, name, slot).strip()
-    if fx_version:
-        added_image_name = {'name': 'DOCKER_CUSTOM_IMAGE_NAME',
-                            'value': fx_version}
-        result.append(added_image_name)
-        if show_multicontainer_config:
-            decoded_value = _get_linux_multicontainer_decoded_config(cmd, resource_group_name, name, slot)
-            decoded_image_name = {'name': 'DOCKER_CUSTOM_IMAGE_NAME_DECODED',
-                                  'value': decoded_value}
-            result.append(decoded_image_name)
-    return result
-
-
-def _generic_settings_operation(cli_ctx, resource_group_name, name, operation_name,
-                                setting_properties, slot=None, client=None):
-    client = client or web_client_factory(cli_ctx)
-    operation = getattr(client.web_apps, operation_name if slot is None else operation_name + '_slot')
-    if slot is None:
-        return operation(resource_group_name, name, str, setting_properties)
-
-    return operation(resource_group_name, name, slot, str, setting_properties)
-
-
-def _build_app_settings_output(app_settings, slot_cfg_names):
-    slot_cfg_names = slot_cfg_names or []
-    return [{'name': p,
-             'value': app_settings[p],
-             'slotSetting': p in slot_cfg_names} for p in _mask_creds_related_appsettings(app_settings)]
-
-def _rename_server_farm_props(webapp):
-    # Should be renamed in SDK in a future release
-    setattr(webapp, 'app_service_plan_id', webapp.server_farm_id)
-    del webapp.server_farm_id
-    return webapp
 
 
 def enable_zip_deploy_webapp(cmd, resource_group_name, name, src, timeout=None, slot=None, is_kube=False):
@@ -1552,12 +1254,6 @@ def _get_scm_url(cmd, resource_group_name, name, slot=None):
     raise ValueError('Failed to retrieve Scm Uri')
 
 
-def _get_site_credential(cli_ctx, resource_group_name, name, slot=None):
-    creds = _generic_site_operation(cli_ctx, resource_group_name, name, 'list_publishing_credentials', slot)
-    creds = creds.result()
-    return (creds.publishing_user_name, creds.publishing_password)
-
-
 def _check_zip_deployment_status(cmd, rg_name, name, deployment_status_url, authorization, timeout=None):
     import requests
     from azure.cli.core.util import should_disable_connection_verify
@@ -1600,152 +1296,6 @@ def _fill_ftp_publishing_url(cmd, webapp, resource_group_name, name, slot=None):
         pass
 
     return webapp
-
-def _get_url(cmd, resource_group_name, name, slot=None):
-    SslState = cmd.get_models('SslState')
-    site = _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'get', slot)
-    if not site:
-        raise CLIError("'{}' app doesn't exist".format(name))
-    url = site.enabled_host_names[0]  # picks the custom domain URL incase a domain is assigned
-    ssl_host = next((h for h in site.host_name_ssl_states
-                     if h.ssl_state != SslState.disabled), None)
-    return ('https' if ssl_host else 'http') + '://' + url
-
-# help class handles runtime stack in format like 'node|6.1', 'php|5.5'
-class _StackRuntimeHelper(object):
-
-    def __init__(self, cmd, client, linux=False):
-        self._cmd = cmd
-        self._client = client
-        self._linux = linux
-        self._stacks = []
-
-    @staticmethod
-    def remove_delimiters(runtime):
-        import re
-        # delimiters allowed: '|', ':'
-        if '|' in runtime:
-            runtime = re.split('[|]', runtime)
-        elif ':' in runtime:
-            runtime = re.split('[:]', runtime)
-        else:
-            runtime = [runtime]
-        return '|'.join(filter(None, runtime))
-
-    def resolve(self, display_name):
-        self._load_stacks()
-        return next((s for s in self._stacks if s['displayName'].lower() == display_name.lower()),
-                    None)
-
-    @property
-    def stacks(self):
-        self._load_stacks()
-        return self._stacks
-
-    @staticmethod
-    def update_site_config(stack, site_config, cmd=None):
-        for k, v in stack['configs'].items():
-            setattr(site_config, k, v)
-        return site_config
-
-    @staticmethod
-    def update_site_appsettings(cmd, stack, site_config):
-        NameValuePair = cmd.get_models('NameValuePair')
-        if site_config.app_settings is None:
-            site_config.app_settings = []
-
-        for k, v in stack['configs'].items():
-            already_in_appsettings = False
-            for app_setting in site_config.app_settings:
-                if app_setting.name == k:
-                    already_in_appsettings = True
-                    app_setting.value = v
-            if not already_in_appsettings:
-                site_config.app_settings.append(NameValuePair(name=k, value=v))
-        return site_config
-
-    def _load_stacks_hardcoded(self):
-        if self._stacks:
-            return
-        result = []
-        if self._linux:
-            result = get_file_json(RUNTIME_STACKS)['linux']
-            for r in result:
-                r['setter'] = _StackRuntimeHelper.update_site_config
-        else:  # Windows stacks
-            result = get_file_json(RUNTIME_STACKS)['windows']
-            for r in result:
-                r['setter'] = (_StackRuntimeHelper.update_site_appsettings if 'node' in
-                               r['displayName'] else _StackRuntimeHelper.update_site_config)
-        self._stacks = result
-
-    # Currently using hardcoded values instead of this function. This function calls the stacks API;
-    # Stacks API is updated with Antares deployments,
-    # which are infrequent and don't line up with stacks EOL schedule.
-    def _load_stacks(self):
-        if self._stacks:
-            return
-        os_type = ('Linux' if self._linux else 'Windows')
-        raw_stacks = self._client.provider.get_available_stacks(os_type_selected=os_type, raw=True)
-        bytes_value = raw_stacks._get_next().content  # pylint: disable=protected-access
-        json_value = bytes_value.decode('utf8')
-        json_stacks = json.loads(json_value)
-        stacks = json_stacks['value']
-        result = []
-        if self._linux:
-            for properties in [(s['properties']) for s in stacks]:
-                for major in properties['majorVersions']:
-                    default_minor = next((m for m in (major['minorVersions'] or []) if m['isDefault']),
-                                         None)
-                    result.append({
-                        'displayName': (default_minor['runtimeVersion']
-                                        if default_minor else major['runtimeVersion'])
-                    })
-        else:  # Windows stacks
-            config_mappings = {
-                'node': 'WEBSITE_NODE_DEFAULT_VERSION',
-                'python': 'python_version',
-                'php': 'php_version',
-                'aspnet': 'net_framework_version'
-            }
-
-            # get all stack version except 'java'
-            for stack in stacks:
-                if stack['name'] not in config_mappings:
-                    continue
-                name, properties = stack['name'], stack['properties']
-                for major in properties['majorVersions']:
-                    default_minor = next((m for m in (major['minorVersions'] or []) if m['isDefault']),
-                                         None)
-                    result.append({
-                        'displayName': name + '|' + major['displayVersion'],
-                        'configs': {
-                            config_mappings[name]: (default_minor['runtimeVersion']
-                                                    if default_minor else major['runtimeVersion'])
-                        }
-                    })
-
-            # deal with java, which pairs with java container version
-            java_stack = next((s for s in stacks if s['name'] == 'java'))
-            java_container_stack = next((s for s in stacks if s['name'] == 'javaContainers'))
-            for java_version in java_stack['properties']['majorVersions']:
-                for fx in java_container_stack['properties']['frameworks']:
-                    for fx_version in fx['majorVersions']:
-                        result.append({
-                            'displayName': 'java|{}|{}|{}'.format(java_version['displayVersion'],
-                                                                  fx['display'],
-                                                                  fx_version['displayVersion']),
-                            'configs': {
-                                'java_version': java_version['runtimeVersion'],
-                                'java_container': fx['name'],
-                                'java_container_version': fx_version['runtimeVersion']
-                            }
-                        })
-
-            for r in result:
-                r['setter'] = (_StackRuntimeHelper.update_site_appsettings if 'node' in
-                               r['displayName'] else _StackRuntimeHelper.update_site_config)
-        self._stacks = result
 
 
 class DockerHelper:
