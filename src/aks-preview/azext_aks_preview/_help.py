@@ -171,6 +171,7 @@ helps['aks create'] = """
                 open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
                 gitops                          - enable GitOps (PREVIEW).
                 azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon (PREVIEW).
+                azure-defender                  - enable Azure Defender addon (PREVIEW).
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -961,6 +962,8 @@ long-summary: |-
         open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
         gitops                          - enable GitOps (PREVIEW).
         azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon (PREVIEW).
+        azure-defender                  - enable Azure Defender addon (PREVIEW).
+
 parameters:
   - name: --addons -a
     type: string
@@ -1004,6 +1007,9 @@ examples:
     crafted: true
   - name: Enable open-service-mesh addon.
     text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons open-service-mesh
+    crafted: true
+  - name: Enable azure-defender addon with workspace resourceId.
+    text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons azure-defender --appgw-subnet-cidr 10.2.0.0/16 --workspace-resource-id WorkspaceResourceId
     crafted: true
 """
 

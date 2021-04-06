@@ -2292,24 +2292,26 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
             enabled=True)
         addons.remove('kube-dashboard')
     # TODO: can we help the user find a workspace resource ID?
-    if 'monitoring' in addons:
+    if 'monitoring' in addons or 'azure-defender' in addons:
         if not workspace_resource_id:
             # use default workspace if exists else create default workspace
             workspace_resource_id = _ensure_default_log_analytics_workspace_for_monitoring(
                 cmd, subscription_id, resource_group_name)
 
-        workspace_resource_id = workspace_resource_id.strip()
-        if not workspace_resource_id.startswith('/'):
-            workspace_resource_id = '/' + workspace_resource_id
-        if workspace_resource_id.endswith('/'):
-            workspace_resource_id = workspace_resource_id.rstrip('/')
-        addon_profiles[CONST_MONITORING_ADDON_NAME] = ManagedClusterAddonProfile(
+        workspace_resource_id = _sanitize_loganalytics_ws_resource_id(workspace_resource_id)
+
+        if 'monitoring' in addons:
+            addon_profiles[CONST_MONITORING_ADDON_NAME] = ManagedClusterAddonProfile(
             enabled=True, config={CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id})
-        addons.remove('monitoring')
+            addons.remove('monitoring')
+        if 'azure-defender' in addons:
+            addon_profiles[CONST_AZURE_DEFENDER_ADDON_NAME] = ManagedClusterAddonProfile(
+            enabled=True, config={CONST_AZURE_DEFENDER_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id})
+            addons.remove('azure-defender')
     # error out if '--enable-addons=monitoring' isn't set but workspace_resource_id is
     elif workspace_resource_id:
         raise CLIError(
-            '"--workspace-resource-id" requires "--enable-addons monitoring".')
+            '"--workspace-resource-id" requires "--enable-addons [monitoring/azure-defender]".')
     if 'azure-policy' in addons:
         addon_profiles[CONST_AZURE_POLICY_ADDON_NAME] = ManagedClusterAddonProfile(
             enabled=True)
@@ -2544,6 +2546,15 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
             break
 
     return ws_resource_id
+
+def _sanitize_loganalytics_ws_resource_id(workspace_resource_id):
+    workspace_resource_id = workspace_resource_id.strip()
+    if not workspace_resource_id.startswith('/'):
+        workspace_resource_id = '/' + workspace_resource_id
+    if workspace_resource_id.endswith('/'):
+        workspace_resource_id = workspace_resource_id.rstrip('/')
+    
+    return workspace_resource_id
 
 
 def _ensure_container_insights_for_monitoring(cmd, addon):
@@ -3253,23 +3264,21 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
             addon_profile = addon_profiles.get(
                 addon, ManagedClusterAddonProfile(enabled=False))
             # special config handling for certain addons
-            if addon == CONST_MONITORING_ADDON_NAME:
+            if addon in [CONST_MONITORING_ADDON_NAME, CONST_AZURE_DEFENDER_ADDON_NAME]:
+                logAnalyticsConstName = CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID if addon == CONST_MONITORING_ADDON_NAME else CONST_AZURE_DEFENDER_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
                 if addon_profile.enabled:
-                    raise CLIError('The monitoring addon is already enabled for this managed cluster.\n'
-                                   'To change monitoring configuration, run "az aks disable-addons -a monitoring"'
+                    raise CLIError(f'The {addon} addon is already enabled for this managed cluster.\n'
+                                   f'To change {addon} configuration, run "az aks disable-addons -a {addon}"'
                                    'before enabling it again.')
                 if not workspace_resource_id:
                     workspace_resource_id = _ensure_default_log_analytics_workspace_for_monitoring(
                         cmd,
                         subscription_id,
                         resource_group_name)
-                workspace_resource_id = workspace_resource_id.strip()
-                if not workspace_resource_id.startswith('/'):
-                    workspace_resource_id = '/' + workspace_resource_id
-                if workspace_resource_id.endswith('/'):
-                    workspace_resource_id = workspace_resource_id.rstrip('/')
+                workspace_resource_id = _sanitize_loganalytics_ws_resource_id(workspace_resource_id)
+
                 addon_profile.config = {
-                    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id}
+                    logAnalyticsConstName: workspace_resource_id}
             elif addon == (CONST_VIRTUAL_NODE_ADDON_NAME + os_type):
                 if addon_profile.enabled:
                     raise CLIError('The virtual-node addon is already enabled for this managed cluster.\n'
