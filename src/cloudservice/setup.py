@@ -5,10 +5,19 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from codecs import open as open1
+
+from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "0.5.7"
+# HISTORY.rst entry.
+VERSION = '0.1.0'
+try:
+    from azext_cloudservice.manual.version import VERSION
+except ImportError:
+    pass
+
+# The full list of classifiers is available at
+# https://pypi.python.org/pypi?%3Aaction=list_classifiers
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
@@ -21,24 +30,31 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = [
+    'azure-mgmt-compute~=19.0.0'
+]
 
-with open1('README.md', 'r', encoding='utf-8') as f:
+try:
+    from azext_cloudservice.manual.dependency import DEPENDENCIES
+except ImportError:
+    pass
+
+with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
-with open1('HISTORY.md', 'r', encoding='utf-8') as f:
+with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='aks-preview',
+    name='cloud_service',
     version=VERSION,
-    description='Provides a preview for upcoming AKS features',
-    long_description=README + '\n\n' + HISTORY,
-    license='MIT',
+    description='Microsoft Azure Command-Line Tools ComputeManagementClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/aks-preview',
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/cloudservice',
+    long_description=README + '\n\n' + HISTORY,
+    license='MIT',
     classifiers=CLASSIFIERS,
-    packages=find_packages(exclude=["tests"]),
-    package_data={'azext_aks_preview': ['azext_metadata.json']},
-    install_requires=DEPENDENCIES
+    packages=find_packages(),
+    install_requires=DEPENDENCIES,
+    package_data={'azext_cloudservice': ['azext_metadata.json']},
 )
