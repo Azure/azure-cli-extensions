@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.1.1
+++++++
+* Adapting to the new CLI error handling guidelines
+
+
 1.1.0
 ++++++
 * Adding enable/disable features support and az connectedk8s proxy
