@@ -2302,12 +2302,10 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
         workspace_resource_id = _sanitize_loganalytics_ws_resource_id(workspace_resource_id)
 
         if 'monitoring' in addons:
-            addon_profiles[CONST_MONITORING_ADDON_NAME] = ManagedClusterAddonProfile(
-                                                            enabled=True, config={CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id})
+            addon_profiles[CONST_MONITORING_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True, config={CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id})
             addons.remove('monitoring')
         if 'azure-defender' in addons:
-            addon_profiles[CONST_AZURE_DEFENDER_ADDON_NAME] = ManagedClusterAddonProfile(
-                                                            enabled=True, config={CONST_AZURE_DEFENDER_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id})
+            addon_profiles[CONST_AZURE_DEFENDER_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True, config={CONST_AZURE_DEFENDER_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id})
             addons.remove('azure-defender')
     # error out if '--enable-addons=monitoring/azure-defender' isn't set but workspace_resource_id is
     elif workspace_resource_id:
@@ -2547,6 +2545,7 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
             break
 
     return ws_resource_id
+
 
 def _sanitize_loganalytics_ws_resource_id(workspace_resource_id):
     workspace_resource_id = workspace_resource_id.strip()
