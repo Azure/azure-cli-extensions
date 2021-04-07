@@ -2553,7 +2553,6 @@ def _sanitize_loganalytics_ws_resource_id(workspace_resource_id):
         workspace_resource_id = '/' + workspace_resource_id
     if workspace_resource_id.endswith('/'):
         workspace_resource_id = workspace_resource_id.rstrip('/')
-    
     return workspace_resource_id
 
 
