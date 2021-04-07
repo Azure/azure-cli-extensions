@@ -1,0 +1,113 @@
+interactions:
+- request:
+    body: '{"certificateSource": "AzureKeyVault", "protocolType": "ServerNameIndication",
+      "minimumTlsVersion": "1.2", "keyVaultCertificateSourceParameters": {"vault":
+      {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bzhanafdtest/providers/Microsoft.KeyVault/vaults/bzhanbyostest"},
+      "secretName": "frontdoorpstest2"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door frontend-endpoint enable-https
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '331'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -f -g -n --certificate-source --vault-id --secret-name
+      User-Agent:
+      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.21.0
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bzhanafdtest/providers/Microsoft.Network/frontDoors/frontdoorpstest2/frontendEndpoints/afd-byoc-latest-localdev-cdn-azure-cn/enableHttps?api-version=2020-05-01
+  response:
+    body:
+      string: '{"hostName":"afd-byoc-latest.localdev.cdn.azure.cn","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":"Enabling","customHttpsProvisioningSubstate":"ImportingUserProvidedCertificate","resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":{"protocolType":"ServerNameIndication","certificateSource":"AzureKeyVault","minimumTlsVersion":"1.2","frontDoorCertificateSourceParameters":{"certificateType":null},"keyVaultCertificateSourceParameters":{"secretName":"frontdoorpstest2","secretVersion":null,"vault":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bzhanafdtest/providers/Microsoft.KeyVault/vaults/bzhanbyostest"}}}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/bzhanafdtest/providers/Microsoft.Network/frontdooroperationresults/0785c1a9-e4ed-496c-b92b-5c36c23368e5?api-version=2020-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '733'
+      content-type:
+      - application/json; odata.metadata=minimal; odata.streaming=true
+      date:
+      - Wed, 07 Apr 2021 02:47:07 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/bzhanafdtest/providers/Microsoft.Network/frontdooroperationresults/0785c1a9-e4ed-496c-b92b-5c36c23368e5/frontdoorresults/frontdoorpstest2?api-version=2020-05-01
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door frontend-endpoint enable-https
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -f -g -n --certificate-source --vault-id --secret-name
+      User-Agent:
+      - python/3.7.9 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.21.0
+      accept-language:
+      - en-US
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bzhanafdtest/providers/Microsoft.Network/frontDoors/frontdoorpstest2/frontendEndpoints/afd-byoc-latest-localdev-cdn-azure-cn?api-version=2020-05-01
+  response:
+    body:
+      string: '{"name":"afd-byoc-latest-localdev-cdn-azure-cn","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/bzhanafdtest/providers/Microsoft.Network/frontdoors/frontdoorpstest2/frontendendpoints/afd-byoc-latest-localdev-cdn-azure-cn","type":"Microsoft.Network/frontdoors/frontendendpoints","properties":{"hostName":"afd-byoc-latest.localdev.cdn.azure.cn","sessionAffinityEnabledState":"Disabled","sessionAffinityTtlSeconds":0,"customHttpsProvisioningState":"Enabling","customHttpsProvisioningSubstate":"ImportingUserProvidedCertificate","resourceState":"Enabled","webApplicationFirewallPolicyLink":null,"customHttpsConfiguration":{"protocolType":"ServerNameIndication","certificateSource":"AzureKeyVault","minimumTlsVersion":"1.2","frontDoorCertificateSourceParameters":{"certificateType":null},"keyVaultCertificateSourceParameters":{"secretName":"frontdoorpstest2","secretVersion":null,"vault":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bzhanafdtest/providers/Microsoft.KeyVault/vaults/bzhanbyostest"}}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1050'
+      content-type:
+      - application/json; odata.metadata=minimal; odata.streaming=true
+      date:
+      - Wed, 07 Apr 2021 02:47:08 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
