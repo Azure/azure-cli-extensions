@@ -187,9 +187,8 @@ def get_certificates(input_certificates):
     from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import Certificate
     certificates = []
     for item in input_certificates:
-        for i in item.split(","):
-            certificate = get_certificate(i)
-            certificates.append(Certificate(pem=certificate))
+        certificate = get_certificate(item)
+        certificates.append(Certificate(pem=certificate))
     return certificates
 
 
@@ -215,14 +214,20 @@ def validate_seednodes(ns):
     if ns.external_seed_nodes is not None:
         seed_nodes = []
         for item in ns.external_seed_nodes:
-            for i in item.split(","):
-                try:
-                    ipaddress.ip_address(i)
-                except ValueError:
-                    raise InvalidArgumentValueError("""IP address provided is invalid.
-                Please verify if there are any spaces or other invalid characters.""")
-                seed_nodes.append(SeedNode(ip_address=i))
+            try:
+                ipaddress.ip_address(item)
+            except ValueError:
+                raise InvalidArgumentValueError("""IP address provided is invalid.
+            Please verify if there are any spaces or other invalid characters.""")
+            seed_nodes.append(SeedNode(ip_address=item))
         ns.external_seed_nodes = seed_nodes
+
+
+def validate_node_count(ns):
+    """ Validate node count is greater than 3"""
+    if ns.node_count is not None:
+        if int(ns.node_count) < 3:
+            raise InvalidArgumentValueError("""Node count cannot be less than 3.""")
 
 
 def _gen_guid():
