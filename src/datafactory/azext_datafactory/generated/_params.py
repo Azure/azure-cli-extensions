@@ -58,19 +58,12 @@ def load_arguments(self, _):
                    'GitHub repo information.', arg_group='RepoConfiguration')
         c.argument('global_parameters', type=validate_file_or_dict, help='List of parameters for factory. Expected '
                    'value: json-string/@json-file.')
-        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Whether or not '
-                   'public network access is allowed for the data factory.')
 
     with self.argument_context('datafactory update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', options_list=['--name', '-n', '--factory-name'], type=str, help='The factory name.',
                    id_part='name')
         c.argument('tags', tags_type)
-        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
-                                                                             'SystemAssigned,UserAssigned']),
-                   help='The identity type.', arg_group='Identity')
-        c.argument('user_assigned_identities', type=validate_file_or_dict, help='List of user assigned identities for '
-                   'the factory. Expected value: json-string/@json-file.', arg_group='Identity')
 
     with self.argument_context('datafactory delete') as c:
         c.argument('resource_group_name', resource_group_name_type)

@@ -179,7 +179,6 @@ az datafactory create --location "East US" --name "exampleFactoryName" --resourc
 |**--factory-vsts-configuration**|object|Factory's VSTS repo information.|factory_vsts_configuration|FactoryVSTSConfiguration|
 |**--factory-git-hub-configuration**|object|Factory's GitHub repo information.|factory_git_hub_configuration|FactoryGitHubConfiguration|
 |**--global-parameters**|dictionary|List of parameters for factory.|global_parameters|globalParameters|
-|**--public-network-access**|choice|Whether or not public network access is allowed for the data factory.|public_network_access|publicNetworkAccess|
 
 #### <a name="FactoriesUpdate">Command `az datafactory update`</a>
 
@@ -194,8 +193,6 @@ az datafactory update --name "exampleFactoryName" --tags exampleTag="exampleValu
 |**--resource-group-name**|string|The resource group name.|resource_group_name|resourceGroupName|
 |**--factory-name**|string|The factory name.|factory_name|factoryName|
 |**--tags**|dictionary|The resource tags.|tags|tags|
-|**--type**|choice|The identity type.|type|type|
-|**--user-assigned-identities**|dictionary|List of user assigned identities for the factory.|user_assigned_identities|userAssignedIdentities|
 
 #### <a name="FactoriesDelete">Command `az datafactory delete`</a>
 
