@@ -65,7 +65,8 @@ def load_arguments(self, _):
     with self.argument_context('network front-door', arg_group='HTTPS') as c:
         c.argument('certificate_source', arg_type=get_enum_type(FrontDoorCertificateSource), help='Certificate source to enable HTTPS.')
         c.argument('secret_name', help='The name of the Key Vault secret representing the full certificate PFX')
-        c.argument('secret_version', help='The version of the Key Vault secret representing the full certificate PFX')
+        c.argument('secret_version', help='The version of the Key Vault secret representing the full certificate PFX, '
+                                          'the "Latest" version will always be used if not specified and your certificate will be auto-rotated when a new version of secret generated.')
         c.argument('vault_id', help='The resource id of the Key Vault containing the SSL certificate')
         c.argument('minimum_tls_version', arg_type=get_enum_type(MinimumTLSVersion), help='The minimum TLS version required from the clients to establish an SSL handshake with Front Door.')
 
