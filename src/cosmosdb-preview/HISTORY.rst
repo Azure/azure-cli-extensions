@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.6.0
+++++++
+* Addressing CLI bugs for Managed Cassandra Service and updating to python sdk 4.0.
+
 0.5.0
 ++++++
 * Create and Manage Azure Managed Cassandra Clusters and Cassandra Datacenters.
