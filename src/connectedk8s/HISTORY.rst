@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.1.2
+++++++
+* Fix/remove bug for unused error type import from az cli version 2.20.0+
+
+
 1.1.1
 ++++++
 * Adapting to the new CLI error handling guidelines
