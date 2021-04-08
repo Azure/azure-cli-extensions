@@ -24,7 +24,6 @@ from azure.cli.core.commands.validators import (
 from azext_datafactory.action import (
     AddFactoryVstsConfiguration,
     AddFactoryGitHubConfiguration,
-    AddIdentity,
     AddManagedVirtualNetwork,
     AddFolder,
     AddFilters,
@@ -61,18 +60,6 @@ def load_arguments(self, _):
                    'value: json-string/@json-file.')
         c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Whether or not '
                    'public network access is allowed for the data factory.')
-        c.argument('key_name', type=str, help='The name of the key in Azure Key Vault to use as Customer Managed Key.',
-                   arg_group='Encryption')
-        c.argument('vault_base_url', type=str, help='The url of the Azure Key Vault used for CMK.',
-                   arg_group='Encryption')
-        c.argument('key_version', type=str, help='The version of the key used for CMK. If not provided, latest version '
-                   'will be used.', arg_group='Encryption')
-        c.argument('identity', action=AddIdentity, nargs='+', help='User assigned identity to use to authenticate to '
-                   'customer\'s key vault. If not provided Managed Service Identity will be used.',
-                   arg_group='Encryption')
-        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['SystemAssigned', 'UserAssigned',
-                                                                             'SystemAssigned,UserAssigned']),
-                   help='The identity type.', arg_group='Identity')
 
     with self.argument_context('datafactory update') as c:
         c.argument('resource_group_name', resource_group_name_type)

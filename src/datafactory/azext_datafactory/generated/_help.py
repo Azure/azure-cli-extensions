@@ -69,14 +69,6 @@ collaboration-branch=XX root-folder=XX last-commit-id=XX
             collaboration-branch: Required. Collaboration branch.
             root-folder: Required. Root folder.
             last-commit-id: Last commit id.
-      - name: --identity
-        short-summary: "User assigned identity to use to authenticate to customer's key vault. If not provided Managed \
-Service Identity will be used."
-        long-summary: |
-            Usage: --identity user-assigned-identity=XX
-
-            user-assigned-identity: The resource id of the user assigned identity to authenticate to customer's key \
-vault.
     examples:
       - name: Factories_CreateOrUpdate
         text: |-

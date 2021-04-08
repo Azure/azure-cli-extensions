@@ -40,12 +40,7 @@ def datafactory_create(client,
                        factory_vsts_configuration=None,
                        factory_git_hub_configuration=None,
                        global_parameters=None,
-                       public_network_access=None,
-                       key_name=None,
-                       vault_base_url=None,
-                       key_version=None,
-                       identity=None,
-                       type_=None):
+                       public_network_access=None):
     all_repo_configuration = []
     if factory_vsts_configuration is not None:
         all_repo_configuration.append(factory_vsts_configuration)
@@ -62,12 +57,7 @@ def datafactory_create(client,
     factory['global_parameters'] = global_parameters
     factory['public_network_access'] = public_network_access
     factory['encryption'] = {}
-    factory['encryption']['key_name'] = key_name
-    factory['encryption']['vault_base_url'] = vault_base_url
-    factory['encryption']['key_version'] = key_version
-    factory['encryption']['identity'] = identity
     factory['identity'] = {}
-    factory['identity']['type'] = type_
     return client.create_or_update(resource_group_name=resource_group_name,
                                    factory_name=factory_name,
                                    if_match=if_match,

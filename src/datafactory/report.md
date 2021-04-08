@@ -180,11 +180,6 @@ az datafactory create --location "East US" --name "exampleFactoryName" --resourc
 |**--factory-git-hub-configuration**|object|Factory's GitHub repo information.|factory_git_hub_configuration|FactoryGitHubConfiguration|
 |**--global-parameters**|dictionary|List of parameters for factory.|global_parameters|globalParameters|
 |**--public-network-access**|choice|Whether or not public network access is allowed for the data factory.|public_network_access|publicNetworkAccess|
-|**--key-name**|string|The name of the key in Azure Key Vault to use as Customer Managed Key.|key_name|keyName|
-|**--vault-base-url**|string|The url of the Azure Key Vault used for CMK.|vault_base_url|vaultBaseUrl|
-|**--key-version**|string|The version of the key used for CMK. If not provided, latest version will be used.|key_version|keyVersion|
-|**--identity**|object|User assigned identity to use to authenticate to customer's key vault. If not provided Managed Service Identity will be used.|identity|identity|
-|**--type**|choice|The identity type.|type|type|
 
 #### <a name="FactoriesUpdate">Command `az datafactory update`</a>
 
