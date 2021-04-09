@@ -89,7 +89,6 @@ def spatial_anchor_account_regenerate_key(cmd,
         regenerate['serial'] = ['primary', 'secondary'].index(key) + 1
     else:
         regenerate['serial'] = 1 if serial is None else serial
-    regenerate['serial'] = 1 if serial is None else serial
     client = cf_spatial_anchor_account(cmd.cli_ctx)
     return client.regenerate_keys(resource_group_name=resource_group_name,
                                   account_name=account_name,
