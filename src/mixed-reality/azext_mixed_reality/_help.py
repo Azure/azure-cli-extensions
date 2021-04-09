@@ -34,7 +34,7 @@ helps['spatial-anchors-account show'] = """
 
 helps['spatial-anchors-account create'] = """
     type: command
-    short-summary: create a spatial anchors account.
+    short-summary: Create a spatial anchors account.
     parameters:
       - name: --sku
         short-summary: The sku associated with this account

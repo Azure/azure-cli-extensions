@@ -17,7 +17,7 @@ from azext_mixed_reality.action import AddSku
 def load_arguments(self, _):
     with self.argument_context('spatial-anchors-account') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
-        c.argument('account_name', type=str, help='Name of an Mixed Reality Account.',
+        c.argument('account_name', type=str, help='Name of an mixed reality account.',
                    options_list=['--account-name', '--name', '-n', c.deprecate(target='--spatial-anchors-account-name', hide=True)], id_part='name')  # pylint: disable=line-too-long
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False, validator=get_default_location_from_resource_group)  # pylint: disable=line-too-long
         c.argument('tags', tags_type)
@@ -30,7 +30,7 @@ def load_arguments(self, _):
 
     with self.argument_context('remote-rendering-account') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('account_name', type=str, help='Name of an Mixed Reality Account.', arg_type=name_type, id_part='name')  # pylint: disable=line-too-long
+        c.argument('account_name', type=str, help='Name of an mixed reality account.', arg_type=name_type, id_part='name')  # pylint: disable=line-too-long
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
