@@ -75,7 +75,7 @@ helps['spatial-anchors-account update'] = """
     short-summary: Update a spatial anchors account.
     parameters:
       - name: --sku
-        short-summary: The sku associated with this account
+        short-summary: The SKU associated with this account
         long-summary: |
             Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
 
@@ -131,7 +131,7 @@ helps['spatial-anchors-account key show'] = """
 
 helps['spatial-anchors-account key renew'] = """
     type: command
-    short-summary: Regenerate specified Key of a spatial anchors account.
+    short-summary: Regenerate specified key of a spatial anchors account.
     examples:
       - name: Regenerate spatial anchors account keys
         text: |-
@@ -168,10 +168,10 @@ helps['remote-rendering-account show'] = """
 
 helps['remote-rendering-account create'] = """
     type: command
-    short-summary: create a remote rendering account.
+    short-summary: Create a remote rendering account.
     parameters:
       - name: --sku
-        short-summary: The sku associated with this account
+        short-summary: The SKU associated with this account
         long-summary: |
             Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
 
@@ -210,7 +210,7 @@ helps['remote-rendering-account update'] = """
     short-summary: Update a remote rendering account.
     parameters:
       - name: --sku
-        short-summary: The sku associated with this account
+        short-summary: The SKU associated with this account
         long-summary: |
             Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
 
@@ -266,7 +266,7 @@ helps['remote-rendering-account key show'] = """
 
 helps['remote-rendering-account key renew'] = """
     type: command
-    short-summary: Regenerate specified Key of a remote rendering account.
+    short-summary: Regenerate specified key of a remote rendering account.
     examples:
       - name: Regenerate remote rendering account keys
         text: |-
