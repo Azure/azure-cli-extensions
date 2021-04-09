@@ -20,23 +20,61 @@ DEFAULT_MYSQL_DB_NAME = ''  # no default database required
 DEFAULT_PG_DB_NAME = 'postgres'
 
 def connect_to_flexible_server_mysql(cmd, server_name, administrator_login, administrator_login_password=None,
-                                     database_name=None, querytext=None, interactive_mode=None, file_path=None):
+                                     database_name=None, interactive_mode=None):
     mysql_server_endpoint = cmd.cli_ctx.cloud.suffixes.mysql_server_endpoint
-    return connect_to_server_helper("mysql", mysql_server_endpoint, DEFAULT_MYSQL_DB_NAME, server_name,
-                                    administrator_login, administrator_login_password, database_name,
-                                    querytext, interactive_mode, file_path)
+    return connect_to_server_helper(server_type="mysql",
+                                    endpoint=mysql_server_endpoint,
+                                    default_db_name=DEFAULT_MYSQL_DB_NAME,
+                                    server_name=server_name,
+                                    administrator_login=administrator_login,
+                                    administrator_login_password=administrator_login_password,
+                                    database_name=database_name,
+                                    interactive=interactive_mode)
 
 
 def connect_to_flexible_server_postgres(cmd, server_name, administrator_login, administrator_login_password=None,
-                                        database_name=None, querytext=None, interactive_mode=None, file_path=None):
+                                        database_name=None, interactive_mode=None):
     postgresql_server_endpoint = cmd.cli_ctx.cloud.suffixes.postgresql_server_endpoint
-    return connect_to_server_helper("postgres", postgresql_server_endpoint, DEFAULT_PG_DB_NAME, server_name,
-                                    administrator_login, administrator_login_password, database_name,
-                                    querytext, interactive_mode, file_path)
+    return connect_to_server_helper(server_type="postgres",
+                                    endpoint=postgresql_server_endpoint,
+                                    default_db_name=DEFAULT_PG_DB_NAME,
+                                    server_name=server_name,
+                                    administrator_login=administrator_login,
+                                    administrator_login_password=administrator_login_password,
+                                    database_name=database_name,
+                                    interactive=interactive_mode)
+
+
+def execute_flexible_server_mysql(cmd, server_name, administrator_login, administrator_login_password,
+                                  database_name=None, querytext=None, file_path=None):
+    mysql_server_endpoint = cmd.cli_ctx.cloud.suffixes.mysql_server_endpoint
+    return connect_to_server_helper(server_type="mysql",
+                                    endpoint=mysql_server_endpoint,
+                                    default_db_name=DEFAULT_MYSQL_DB_NAME,
+                                    server_name=server_name,
+                                    administrator_login=administrator_login,
+                                    administrator_login_password=administrator_login_password,
+                                    database_name=database_name,
+                                    query_command=querytext,
+                                    file_path=file_path)
+
+
+def execute_flexible_server_postgres(cmd, server_name, administrator_login, administrator_login_password,
+                                     database_name=None, querytext=None, file_path=None):
+    postgresql_server_endpoint = cmd.cli_ctx.cloud.suffixes.postgresql_server_endpoint
+    return connect_to_server_helper(server_type="postgres",
+                                    endpoint=postgresql_server_endpoint,
+                                    default_db_name=DEFAULT_PG_DB_NAME,
+                                    server_name=server_name,
+                                    administrator_login=administrator_login,
+                                    administrator_login_password=administrator_login_password,
+                                    database_name=database_name,
+                                    query_command=querytext,
+                                    file_path=file_path)
 
 
 def connect_to_server_helper(server_type, endpoint, default_db_name, server_name, administrator_login,
-                             administrator_login_password, database_name, query_command, interactive, file_path):
+                             administrator_login_password, database_name, query_command=None, interactive=None, file_path=None):
     host = '{}{}'.format(server_name, endpoint)
     json_data = None
 
