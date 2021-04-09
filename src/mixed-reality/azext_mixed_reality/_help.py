@@ -37,7 +37,7 @@ helps['spatial-anchors-account create'] = """
     short-summary: create a spatial anchors account.
     parameters:
       - name: --sku
-        short-summary: The sku associated with this account"
+        short-summary: The sku associated with this account
         long-summary: |
             Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
 
@@ -51,7 +51,7 @@ here.
             capacity: If the SKU supports scale out/in then the capacity integer should be included. If scale out/in \
 is not possible for the resource this may be omitted.
       - name: --kind
-        short-summary: The kind of account, if supported"
+        short-summary: The kind of account, if supported
         long-summary: |
             Usage: --kind name=XX tier=XX size=XX family=XX capacity=XX
 
@@ -75,7 +75,7 @@ helps['spatial-anchors-account update'] = """
     short-summary: Update a spatial anchors account.
     parameters:
       - name: --sku
-        short-summary: The sku associated with this account"
+        short-summary: The sku associated with this account
         long-summary: |
             Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
 
@@ -89,7 +89,7 @@ here.
             capacity: If the SKU supports scale out/in then the capacity integer should be included. If scale out/in \
 is not possible for the resource this may be omitted.
       - name: --kind
-        short-summary: The kind of account, if supported"
+        short-summary: The kind of account, if supported
         long-summary: |
             Usage: --kind name=XX tier=XX size=XX family=XX capacity=XX
 
@@ -171,7 +171,7 @@ helps['remote-rendering-account create'] = """
     short-summary: create a remote rendering account.
     parameters:
       - name: --sku
-        short-summary: The sku associated with this account"
+        short-summary: The sku associated with this account
         long-summary: |
             Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
 
@@ -185,7 +185,7 @@ here.
             capacity: If the SKU supports scale out/in then the capacity integer should be included. If scale out/in \
 is not possible for the resource this may be omitted.
       - name: --kind
-        short-summary: The kind of account, if supported"
+        short-summary: The kind of account, if supported
         long-summary: |
             Usage: --kind name=XX tier=XX size=XX family=XX capacity=XX
 
@@ -210,7 +210,7 @@ helps['remote-rendering-account update'] = """
     short-summary: Update a remote rendering account.
     parameters:
       - name: --sku
-        short-summary: The sku associated with this account"
+        short-summary: The sku associated with this account
         long-summary: |
             Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
 
@@ -224,7 +224,7 @@ here.
             capacity: If the SKU supports scale out/in then the capacity integer should be included. If scale out/in \
 is not possible for the resource this may be omitted.
       - name: --kind
-        short-summary: The kind of account, if supported"
+        short-summary: The kind of account, if supported
         long-summary: |
             Usage: --kind name=XX tier=XX size=XX family=XX capacity=XX
 
