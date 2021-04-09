@@ -3,7 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, ResourceGroupPreparer,
-                               api_version_constraint)
+                               api_version_constraint, live_only)
+
 from .frontdoor_test_util import WafScenarioMixin
 from knack.cli import CLIError
 try:
@@ -14,6 +15,7 @@ except (SyntaxError, ImportError):
 
 class WafTests(WafScenarioMixin, ScenarioTest):
 
+    @live_only()  # --defer seems not work with VCR.py well
     @ResourceGroupPreparer(location='westus')
     def test_waf_policy_basic(self, resource_group):
         # multi-line comment below
@@ -322,6 +324,7 @@ az network front-door waf-policy managed-rule-definition list
         self.assertEqual(rule['ruleId'], ruleid)
 
     @ResourceGroupPreparer(location='westus')
+    @live_only()  # --defer seems not work with VCR.py well
     def test_waf_policy_custom_rules(self, resource_group):
         # multi-line comment below
         """

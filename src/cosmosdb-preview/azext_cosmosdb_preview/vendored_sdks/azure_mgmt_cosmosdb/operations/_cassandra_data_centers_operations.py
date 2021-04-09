@@ -18,8 +18,8 @@ from msrestazure.polling.arm_polling import ARMPolling
 from .. import models
 
 
-class CassandraDataCenterOperations(object):
-    """CassandraDataCenterOperations operations.
+class CassandraDataCentersOperations(object):
+    """CassandraDataCentersOperations operations.
 
     You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
 
@@ -27,7 +27,7 @@ class CassandraDataCenterOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The API version to use for the request. Constant value: "2021-03-01-preview".
+    :ivar api_version: The API version to use for this operation. Constant value: "2021-03-01-preview".
     """
 
     models = models
@@ -41,7 +41,7 @@ class CassandraDataCenterOperations(object):
 
         self.config = config
 
-    def list_data_centers_method(
+    def list(
             self, resource_group_name, cluster_name, custom_headers=None, raw=False, **operation_config):
         """List all data centers in a particular managed Cassandra cluster.
 
@@ -63,7 +63,7 @@ class CassandraDataCenterOperations(object):
         def prepare_request(next_link=None):
             if not next_link:
                 # Construct URL
-                url = self.list_data_centers_method.metadata['url']
+                url = self.list.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str', min_length=1),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
@@ -73,7 +73,7 @@ class CassandraDataCenterOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
 
             else:
                 url = next_link
@@ -112,7 +112,7 @@ class CassandraDataCenterOperations(object):
         deserialized = models.DataCenterResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
-    list_data_centers_method.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/dataCenters'}
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/dataCenters'}
 
     def get(
             self, resource_group_name, cluster_name, data_center_name, custom_headers=None, raw=False, **operation_config):
@@ -148,7 +148,7 @@ class CassandraDataCenterOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
 
         # Construct headers
         header_parameters = {}
@@ -195,7 +195,7 @@ class CassandraDataCenterOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
 
         # Construct headers
         header_parameters = {}
@@ -282,7 +282,7 @@ class CassandraDataCenterOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
 
         # Construct headers
         header_parameters = {}
@@ -394,10 +394,11 @@ class CassandraDataCenterOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
 
         # Construct headers
         header_parameters = {}
+        header_parameters['Accept'] = 'application/json'
         header_parameters['Content-Type'] = 'application/json; charset=utf-8'
         if self.config.generate_client_request_id:
             header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
@@ -418,9 +419,18 @@ class CassandraDataCenterOperations(object):
             exp.request_id = response.headers.get('x-ms-request-id')
             raise exp
 
+        deserialized = None
+
+        if response.status_code == 200:
+            deserialized = self._deserialize('DataCenterResource', response)
+        if response.status_code == 202:
+            deserialized = self._deserialize('DataCenterResource', response)
+
         if raw:
-            client_raw_response = ClientRawResponse(None, response)
+            client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
+
+        return deserialized
 
     def update(
             self, resource_group_name, cluster_name, data_center_name, properties=None, custom_headers=None, raw=False, polling=True, **operation_config):
@@ -442,10 +452,12 @@ class CassandraDataCenterOperations(object):
          direct response alongside the deserialized response
         :param polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
-        :return: An instance of LROPoller that returns None or
-         ClientRawResponse<None> if raw==True
-        :rtype: ~msrestazure.azure_operation.AzureOperationPoller[None] or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[None]]
+        :return: An instance of LROPoller that returns DataCenterResource or
+         ClientRawResponse<DataCenterResource> if raw==True
+        :rtype:
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.cosmosdb.models.DataCenterResource]
+         or
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.cosmosdb.models.DataCenterResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._update_initial(
@@ -459,9 +471,13 @@ class CassandraDataCenterOperations(object):
         )
 
         def get_long_running_output(response):
+            deserialized = self._deserialize('DataCenterResource', response)
+
             if raw:
-                client_raw_response = ClientRawResponse(None, response)
+                client_raw_response = ClientRawResponse(deserialized, response)
                 return client_raw_response
+
+            return deserialized
 
         lro_delay = operation_config.get(
             'long_running_operation_timeout',

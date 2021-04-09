@@ -296,14 +296,14 @@ def configure_fd_frontend_endpoint_enable_https(cmd, resource_group_name, front_
                                                 secret_name=None, secret_version=None,
                                                 certificate_source='FrontDoor', vault_id=None,
                                                 minimum_tls_version='1.2'):
-    keyvault_usage = ('usage error: --certificate-source AzureKeyVault --vault-id ID '
-                      '--secret-name NAME --secret-version VERSION')
+    from knack.util import CLIError
     if certificate_source != 'AzureKeyVault' and any([vault_id, secret_name, secret_version]):
-        from knack.util import CLIError
-        raise CLIError(keyvault_usage)
-    if certificate_source == 'AzureKeyVault' and not all([vault_id, secret_name, secret_version]):
-        from knack.util import CLIError
-        raise CLIError(keyvault_usage)
+        raise CLIError("usage error: no need to specify --vault-id, --secret-name and --secret-version "
+                       "for Front Door managed certificate source.")
+
+    if certificate_source == 'AzureKeyVault' and not all([vault_id, secret_name]):
+        raise CLIError("usage error: at least --vault-id and --secret-name are rquired for "
+                       "Azure Key Vault certificate source.")
 
     # if not being disabled, then must be enabled
     if certificate_source == 'FrontDoor':
