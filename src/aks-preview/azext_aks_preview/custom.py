@@ -53,7 +53,7 @@ from azure.graphrbac.models import (ApplicationCreateParameters,
                                     KeyCredential,
                                     ServicePrincipalCreateParameters,
                                     GetObjectsParameters)
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_02_01.models import (ContainerServiceLinuxProfile,
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_03_01.models import (ContainerServiceLinuxProfile,
                                                                       ManagedClusterWindowsProfile,
                                                                       ContainerServiceNetworkProfile,
                                                                       ManagedClusterServicePrincipalProfile,
@@ -2170,8 +2170,7 @@ def aks_runcommand(cmd, client, resource_group_name, name, command_string="", co
     if not command_string:
         raise CLIError('Command cannot be empty.')
 
-    request_payload = RunCommandRequest()
-    request_payload.command = command_string
+    request_payload = RunCommandRequest(command=command_string)
     request_payload.context = _get_command_context(command_files)
     if mc.aad_profile is not None and mc.aad_profile.managed:
         request_payload.cluster_token = _get_dataplane_aad_token(
