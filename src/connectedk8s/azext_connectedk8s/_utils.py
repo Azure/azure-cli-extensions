@@ -25,7 +25,7 @@ import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt
+from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError
 
 
 logger = get_logger(__name__)
@@ -179,11 +179,11 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
         if status_code // 100 == 4:
             telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        raise ClientRequestError("Http operation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise AzureResponseError("Http operation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     if isinstance(ex, ValidationError):
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        raise ClientRequestError("Validation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise AzureResponseError("Validation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     if isinstance(ex, CloudError):
         status_code = ex.status_code
@@ -206,8 +206,10 @@ def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error o
         status_code = ex.status
         if status_code == 403:
             logger.warning(message_for_unauthorized_request)
-        if status_code == 404:
+        elif status_code == 404:
             logger.warning(message_for_not_found)
+        else:
+            logger.debug("Kubernetes Exception: " + str(ex))
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
             raise CLIInternalError(error_message + "\nError Response: " + str(ex.body))
@@ -215,6 +217,8 @@ def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error o
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
             raise CLIInternalError(error_message + "\nError: " + str(ex))
+        else:
+            logger.debug("Kubernetes Exception: " + str(ex))
 
 
 def validate_infrastructure_type(infra):

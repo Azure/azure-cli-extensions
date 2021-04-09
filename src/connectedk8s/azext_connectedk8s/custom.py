@@ -275,7 +275,7 @@ def validate_env_file_dogfood(values_file, values_file_provided):
     if not values_file_provided:
         telemetry.set_exception(exception='Helm environment file not provided', fault_type=consts.Helm_Environment_File_Fault_Type,
                                 summary='Helm environment file missing')
-        raise ClientRequestError("Helm environment file is required when using Dogfood environment for onboarding the cluster.", recommendation="Please set the environment variable 'HELMVALUESPATH' to point to the file.")
+        raise ValidationError("Helm environment file is required when using Dogfood environment for onboarding the cluster.", recommendation="Please set the environment variable 'HELMVALUESPATH' to point to the file.")
 
     with open(values_file, 'r') as f:
         try:
@@ -339,17 +339,17 @@ def check_helm_install(kube_config, kube_context):
             if "unknown flag" in error_helm_installed.decode("ascii"):
                 telemetry.set_exception(exception='Helm 3 not found', fault_type=consts.Helm_Version_Fault_Type,
                                         summary='Helm3 not found on the machine')
-                raise ClientRequestError("Helm 3 not found", recommendation="Please install the latest version of Helm. " +
-                                         "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
+                raise ValidationError("Helm 3 not found", recommendation="Please install the latest version of Helm. " +
+                                      "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
             telemetry.set_exception(exception=error_helm_installed.decode("ascii"), fault_type=consts.Helm_Installation_Fault_Type,
                                     summary='Helm3 not installed on the machine')
-            raise DeploymentError(error_helm_installed.decode("ascii"))
+            raise ValidationError(error_helm_installed.decode("ascii"))
     except FileNotFoundError as e:
         telemetry.set_exception(exception=e, fault_type=consts.Check_HelmInstallation_Fault_Type,
                                 summary='Unable to verify helm installation')
-        raise ClientRequestError("Helm is not installed or the helm binary is not accessible to the connectedk8s cli. Could be a permission issue.",
-                                 recommendation="Ensure that you have the latest version of Helm installed on your machine and run using admin privilege. " +
-                                 "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
+        raise ValidationError("Helm is not installed or the helm binary is not accessible to the connectedk8s cli. Could be a permission issue.",
+                              recommendation="Ensure that you have the latest version of Helm installed on your machine and run using admin privilege. " +
+                              "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
     except Exception as e2:
         telemetry.set_exception(exception=e2, fault_type=consts.Check_HelmInstallation_Fault_Type,
                                 summary='Error while verifying helm installation')
@@ -371,9 +371,9 @@ def check_helm_version(kube_config, kube_context):
     if "v2" in output_helm_version.decode("ascii"):
         telemetry.set_exception(exception='Helm 3 not found', fault_type=consts.Helm_Version_Fault_Type,
                                 summary='Helm3 not found on the machine')
-        raise ClientRequestError("Helm version 3+ is required.",
-                                 recommendation="Ensure that you have installed the latest version of Helm. " +
-                                 "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
+        raise ValidationError("Helm version 3+ is required.",
+                              recommendation="Ensure that you have installed the latest version of Helm. " +
+                              "Learn more at https://aka.ms/arc/k8s/onboarding-helm-install")
     return output_helm_version.decode('ascii')
 
 
@@ -461,7 +461,7 @@ def get_kubernetes_distro(configuration):  # Heuristic
                 return "generic"                   # return "aks_hci"
         return "generic"
     except Exception as e:  # pylint: disable=broad-except
-        logger.warning("Error occured while trying to fetch kubernetes distribution.")
+        logger.debug("Error occured while trying to fetch kubernetes distribution: " + str(e))
         utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Distro_Fault_Type, 'Unable to fetch kubernetes distribution',
                                            raise_error=False)
         return "generic"
@@ -487,7 +487,7 @@ def get_kubernetes_infra(configuration):  # Heuristic
             return utils.validate_infrastructure_type(infra)
         return "generic"
     except Exception as e:  # pylint: disable=broad-except
-        logger.warning("Error occured while trying to fetch kubernetes infrastructure.")
+        logger.debug("Error occured while trying to fetch kubernetes infrastructure: " + str(e))
         utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Infra_Fault_Type, 'Unable to fetch kubernetes infrastructure',
                                            raise_error=False)
         return "generic"
@@ -503,7 +503,7 @@ def check_linux_amd64_node(configuration):
             if node_arch == "amd64" and node_os == "linux":
                 return True
     except Exception as e:  # pylint: disable=broad-except
-        logger.warning("Error occured while trying to find a linux/amd64 node.")
+        logger.debug("Error occured while trying to find a linux/amd64 node: " + str(e))
         utils.kubernetes_exception_handler(e, consts.Kubernetes_Node_Type_Fetch_Fault, 'Unable to find a linux/amd64 node',
                                            raise_error=False)
     return False
@@ -930,7 +930,7 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
         else:
             telemetry.set_exception(exception='The corresponding CC resource does not exist', fault_type=consts.Corresponding_CC_Resource_Deleted_Fault,
                                     summary='CC resource corresponding to this cluster has been deleted by the customer')
-            raise ClientRequestError("There exist no ConnectedCluster resource corresponding to this kubernetes Cluster.",
+            raise ArgumentUsageError("There exist no ConnectedCluster resource corresponding to this kubernetes Cluster.",
                                      recommendation="Please cleanup the helm release first using 'az connectedk8s delete -n <connected-cluster-name> -g <resource-group-name>' and re-onboard the cluster using " +
                                      "'az connectedk8s connect -n <connected-cluster-name> -g <resource-group-name>'")
 
@@ -1543,18 +1543,6 @@ def handle_merge(existing, addition, key, replace):
 
     existing[key][:] = temp_list
     existing[key].append(i)
-
-
-def _resolve_service_principal(client, identifier):  # Uses service principal graph client
-    # todo: confirm with graph team that a service principal name must be unique
-    result = list(client.list(filter="servicePrincipalNames/any(c:c eq '{}')".format(identifier)))
-    if result:
-        return result[0].object_id
-    if utils.is_guid(identifier):
-        return identifier  # assume an object id
-    error = ResourceNotFoundError("Service principal '{}' doesn't exist".format(identifier))
-    error.status_code = 404  # Make sure CLI returns 3
-    raise error
 
 
 def client_side_proxy_wrapper(cmd,
