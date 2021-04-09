@@ -24,15 +24,6 @@ CLASSIFIERS = [
 
 DEPENDENCIES = []
 
-try:
-    from azext_mixed_reality.manual.dependency import DEPENDENCIES
-except ImportError:
-    pass
-
-with open('README.md', 'r', encoding='utf-8') as f:
-    README = f.read()
-with open('HISTORY.rst', 'r', encoding='utf-8') as f:
-    HISTORY = f.read()
 
 setup(
     name='mixed-reality',
