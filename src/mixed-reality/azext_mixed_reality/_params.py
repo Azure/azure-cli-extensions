@@ -26,7 +26,7 @@ def load_arguments(self, _):
         c.argument('storage_account_name', type=str, help='The name of the storage account associated with this accountId')  # pylint: disable=line-too-long
 
     with self.argument_context('spatial-anchors-account key renew') as c:
-        c.argument('serial', arg_type=get_enum_type(['1', '2'], '1'), help='serial of key to be regenerated.')
+        c.argument('serial', arg_type=get_enum_type(['1', '2'], '1'), help='Serial of key to be regenerated.')
 
     with self.argument_context('remote-rendering-account') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -38,4 +38,4 @@ def load_arguments(self, _):
         c.argument('storage_account_name', type=str, help='The name of the storage account associated with this accountId')  # pylint: disable=line-too-long
 
     with self.argument_context('remote-rendering-account key renew') as c:
-        c.argument('serial', arg_type=get_enum_type(['1', '2'], '1'), help='serial of key to be regenerated')
+        c.argument('serial', arg_type=get_enum_type(['1', '2'], '1'), help='Serial of key to be regenerated')

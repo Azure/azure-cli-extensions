@@ -37,7 +37,7 @@ helps['spatial-anchors-account create'] = """
     short-summary: Create a spatial anchors account.
     parameters:
       - name: --sku
-        short-summary: The sku associated with this account
+        short-summary: The SKU associated with this account
         long-summary: |
             Usage: --sku name=XX tier=XX size=XX family=XX capacity=XX
 
@@ -121,7 +121,7 @@ helps['spatial-anchors-account delete'] = """
 
 helps['spatial-anchors-account key show'] = """
     type: command
-    short-summary: List both of the 2 Keys of a spatial anchors account.
+    short-summary: List both of the 2 keys of a spatial anchors account.
     examples:
       - name: List spatial anchor account key
         text: |-
@@ -256,7 +256,7 @@ helps['remote-rendering-account delete'] = """
 
 helps['remote-rendering-account key show'] = """
     type: command
-    short-summary: List both of the 2 Keys of a remote rendering account.
+    short-summary: List both of the 2 keys of a remote rendering account.
     examples:
       - name: List remote rendering account key
         text: |-
