@@ -48,3 +48,6 @@ class SpatialAnchorsAccountScenarioTest(ScenarioTest):
         self.cmd('spatial-anchors-account key renew -g {rg} -n {account_name} --serial 1')
         self.cmd('spatial-anchors-account key renew -g {rg} -n {account_name} --serial 2')
         self.cmd('spatial-anchors-account key show -g {rg} -n {account_name}')
+
+        # test old parameter
+        self.cmd('spatial-anchors-account key renew -g {rg} -n {account_name} -k primary')

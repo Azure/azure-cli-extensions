@@ -82,8 +82,13 @@ def spatial_anchor_account_list_key(cmd,
 def spatial_anchor_account_regenerate_key(cmd,
                                           resource_group_name,
                                           account_name,
+                                          key=None,
                                           serial=None):
     regenerate = {}
+    if key and not serial:
+        regenerate['serial'] = ['primary', 'secondary'].index(key) + 1
+    else:
+        regenerate['serial'] = 1 if serial is None else serial
     regenerate['serial'] = 1 if serial is None else serial
     client = cf_spatial_anchor_account(cmd.cli_ctx)
     return client.regenerate_keys(resource_group_name=resource_group_name,
@@ -110,7 +115,7 @@ def remote_rendering_account_show(cmd,
 def remote_rendering_account_create(cmd,
                                     resource_group_name,
                                     account_name,
-                                    location=None,
+                                    location,
                                     tags=None,
                                     sku=None,
                                     kind=None,
