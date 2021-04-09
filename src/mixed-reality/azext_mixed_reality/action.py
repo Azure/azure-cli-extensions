@@ -12,7 +12,7 @@
 import argparse
 from collections import defaultdict
 from knack.util import CLIError
-
+from azure.cli.core.azclierror import ArgumentUsageError, InvalidArgumentValueError
 
 class AddSku(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
@@ -26,7 +26,7 @@ class AddSku(argparse.Action):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
-            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+            raise ArgumentUsageError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
             kl = k.lower()
@@ -42,6 +42,6 @@ class AddSku(argparse.Action):
             elif kl == 'capacity':
                 d['capacity'] = v[0]
             else:
-                raise CLIError('Unsupported Key {} is provided for parameter sku. All possible keys are: name, tier, '
-                               'size, family, capacity'.format(k))
+                raise InvalidArgumentValueError('Unsupported Key {} is provided for parameter sku. All possible keys '
+                                                'are: name, tier, size, family, capacity'.format(k))
         return d
