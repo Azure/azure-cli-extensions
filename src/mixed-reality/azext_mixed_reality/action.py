@@ -11,8 +11,8 @@
 
 import argparse
 from collections import defaultdict
-from knack.util import CLIError
 from azure.cli.core.azclierror import ArgumentUsageError, InvalidArgumentValueError
+
 
 class AddSku(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
