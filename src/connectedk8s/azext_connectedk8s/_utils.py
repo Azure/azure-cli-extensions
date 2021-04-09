@@ -257,7 +257,7 @@ def ensure_namespace_cleanup(configuration):
                 return
             time.sleep(5)
         except Exception as e:  # pylint: disable=broad-except
-            logger.warning("Error while retrieving namespace information.")
+            logger.warning("Error while retrieving namespace information: " + str(e))
             kubernetes_exception_handler(e, consts.Get_Kubernetes_Namespace_Fault_Type, 'Unable to fetch kubernetes namespace',
                                          raise_error=False)
 
