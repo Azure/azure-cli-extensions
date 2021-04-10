@@ -32,7 +32,6 @@ from azure.cli.command_modules.appservice.custom import (
     _format_fx_version,
     _get_extension_version_functionapp,
     _validate_app_service_environment_id,
-    _validate_asp_sku,
     _get_location_from_webapp,
     validate_and_convert_to_int,
     validate_range_of_int_flag,
@@ -73,7 +72,7 @@ from six.moves.urllib.request import urlopen
 
 from ._constants import (FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION, FUNCTIONS_VERSION_TO_DEFAULT_NODE_VERSION,
                          FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS, NODE_VERSION_DEFAULT, NODE_EXACT_VERSION_DEFAULT,
-                         DOTNET_RUNTIME_VERSION_TO_DOTNET_LINUX_FX_VERSION, KUBE_DEFAULT_SKU,
+                         DOTNET_RUNTIME_VERSION_TO_DOTNET_LINUX_FX_VERSION, KUBE_DEFAULT_SKU, KUBE_SKUS,
                          KUBE_ASP_KIND, KUBE_APP_KIND, LINUX_RUNTIMES, WINDOWS_RUNTIMES, MULTI_CONTAINER_TYPES,
                          CONTAINER_APPSETTING_NAMES, APPSETTINGS_TO_MASK)
 
@@ -158,19 +157,76 @@ def list_app_service_plans(cmd, resource_group_name=None):
     return plans
 
 
-def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False,
-                            app_service_environment=None, kube_environment=None, sku='B1', kube_sku=KUBE_DEFAULT_SKU,
+def _validate_asp_sku(app_service_environment, custom_location, sku):
+    # Isolated SKU is supported only for ASE
+    if sku.upper() not in ['F1', 'FREE', 'D1', 'SHARED', 'B1', 'B2', 'B3', 'S1', 'S2', 'S3', 'P1V2', 'P2V2', 'P3V2', 'PC2', 'PC3', 'PC4', 'I1', 'I2', 'I3', 'ANY', 'ELASTICANY']:
+        raise CLIError('Invalid sku entered: {}', sku)
+
+    if sku.upper() in ['I1', 'I2', 'I3', 'I1V2', 'I2V2', 'I3V2']:
+        if not app_service_environment:
+            raise CLIError("The pricing tier 'Isolated' is not allowed for this app service plan. Use this link to "
+                           "learn more: https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
+    elif app_service_environment:
+        raise CLIError("Only pricing tier 'Isolated' is allowed in this app service plan. Use this link to "
+                        "learn more: https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
+    elif custom_location:
+        # Custom Location only supports Any and ElasticAny
+        if sku.upper() not in KUBE_SKUS:
+            raise CLIError("Only pricing tier 'Any' or 'ElasticAny' is allowed in this app service plan.")
+
+
+def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False, custom_location=None,
+                            app_service_environment=None, sku=None, kube_sku=KUBE_DEFAULT_SKU,
+                            number_of_workers=None, location=None, tags=None, no_wait=False):
+    if not sku:
+        sku = 'B1' if not custom_location else KUBE_DEFAULT_SKU
+
+    if custom_location:
+        if not per_site_scaling:
+            raise ArgumentUsageError('Per Site Scaling must be true when using Custom Location')
+        if app_service_environment:
+            raise ArgumentUsageError('App Service Environment is not supported with using Custom Location')
+        if hyper_v:
+            raise ArgumentUsageError('Hyper V is not supported with using Custom Location')
+        if not is_linux:
+            raise ArgumentUsageError('Only Linux is supported with using Custom Location')
+
+    return create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling, custom_location,
+        app_service_environment, sku, number_of_workers, location, tags, no_wait)
+
+
+def get_vm_sizes(cli_ctx, location):
+    from ._client_factory import cf_compute_service
+
+    return cf_compute_service(cli_ctx).virtual_machine_sizes.list(location)
+
+
+def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False, custom_location=None,
+                            app_service_environment=None, sku=None,
                             number_of_workers=None, location=None, tags=None, no_wait=False):
     HostingEnvironmentProfile, SkuDescription, AppServicePlan, KubeEnvironmentProfile = cmd.get_models(
         'HostingEnvironmentProfile', 'SkuDescription', 'AppServicePlan', 'KubeEnvironmentProfile')
     sku = _normalize_sku(sku)
-    _validate_asp_sku(app_service_environment, sku)
+    _validate_asp_sku(app_service_environment, custom_location, sku)
+
     if is_linux and hyper_v:
         raise MutuallyExclusiveArgumentError('Usage error: --is-linux and --hyper-v cannot be used together.')
 
+    kube_environment = None
     kind = None
 
     client = web_client_factory(cmd.cli_ctx)
+
+    if custom_location:
+        kube_envs = cf_kube_environments(cmd.cli_ctx).list_by_subscription()
+        for kube in kube_envs:
+            if kube.extended_location and kube.extended_location.custom_location:
+                if kube.extended_location.custom_location.lower() == custom_location.lower():
+                    kube_environment = kube.id
+                    break
+    if not kube_environment:
+        raise CLIError('Unable to find Kube Environment associated to the Custom Location')
+
     if app_service_environment:
         if hyper_v:
             raise ArgumentUsageError('Windows containers is not yet supported in app service environment')
@@ -208,7 +264,7 @@ def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, p
         location = _get_location_from_resource_group(cmd.cli_ctx, resource_group_name)
 
     if kube_environment:
-        sku_def = SkuDescription(tier=kube_sku, name="KUBE", capacity=number_of_workers)
+        sku_def = SkuDescription(tier=get_sku_name(sku), name=sku, capacity=number_of_workers)
     else:
         # the api is odd on parameter naming, have to live with it for now
         sku_def = SkuDescription(tier=get_sku_name(sku), name=sku, capacity=number_of_workers)
@@ -221,7 +277,7 @@ def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, p
                        resource_group_name=resource_group_name, app_service_plan=plan_def)
 
 
-def update_app_service_plan(instance, sku=None, number_of_workers=None, kube_sku=KUBE_DEFAULT_SKU):
+def update_app_service_plan(instance, sku=None, number_of_workers=None):
     if number_of_workers is None and sku is None:
         logger.warning(
             'No update is done. Specify --sku and/or --kube-sku and/or --number-of-workers.')
@@ -231,13 +287,9 @@ def update_app_service_plan(instance, sku=None, number_of_workers=None, kube_sku
         sku_def.tier = get_sku_name(sku)
         sku_def.name = sku
 
-    if kube_sku is not None:
-        sku_def.tier = kube_sku
-
     if number_of_workers is not None:
         sku_def.capacity = number_of_workers
     instance.sku = sku_def
-
     return instance
 
 

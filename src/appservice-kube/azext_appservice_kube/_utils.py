@@ -6,6 +6,7 @@
 from knack.util import CLIError
 
 from ._client_factory import web_client_factory, cf_resource_groups
+from ._constants import KUBE_SKUS
 
 
 def _normalize_sku(sku):
@@ -37,6 +38,8 @@ def get_sku_name(tier):  # pylint: disable=too-many-return-statements
         return 'ElasticPremium'
     if tier in ['I1', 'I2', 'I3']:
         return 'Isolated'
+    if tier in KUBE_SKUS:
+        return tier
     raise CLIError("Invalid sku(pricing tier), please refer to command help for valid values")
 
 

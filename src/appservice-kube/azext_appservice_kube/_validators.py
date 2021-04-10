@@ -52,7 +52,7 @@ def validate_asp_create(cmd, namespace):
             "type": "Microsoft.Web/serverfarms",
             "location": location,
             "properties": {
-                "skuName": _normalize_sku(namespace.sku) or 'B1',
+                "skuName": _normalize_sku(namespace.sku) if namespace.sku else None,
                 "capacity": namespace.number_of_workers or 1,
                 "needLinuxWorkers": namespace.is_linux,
                 "isXenon": namespace.hyper_v

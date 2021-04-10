@@ -20,8 +20,8 @@ def load_arguments(self, _):
     # pylint: disable=too-many-statements
     # pylint: disable=line-too-long
     name_arg_type = CLIArgumentType(options_list=['--name', '-n'], metavar='NAME')
-    sku_arg_type = CLIArgumentType(help='The pricing tiers, e.g., F1(Free), D1(Shared), B1(Basic Small), B2(Basic Medium), B3(Basic Large), S1(Standard Small), P1V2(Premium V2 Small), PC2 (Premium Container Small), PC3 (Premium Container Medium), PC4 (Premium Container Large), I1 (Isolated Small), I2 (Isolated Medium), I3 (Isolated Large)',
-                                   arg_type=get_enum_type(['F1', 'FREE', 'D1', 'SHARED', 'B1', 'B2', 'B3', 'S1', 'S2', 'S3', 'P1V2', 'P2V2', 'P3V2', 'PC2', 'PC3', 'PC4', 'I1', 'I2', 'I3']))
+    sku_arg_type = CLIArgumentType(help='The pricing tiers, e.g., F1(Free), D1(Shared), B1(Basic Small), B2(Basic Medium), B3(Basic Large), S1(Standard Small), P1V2(Premium V2 Small), PC2 (Premium Container Small), PC3 (Premium Container Medium), PC4 (Premium Container Large), I1 (Isolated Small), I2 (Isolated Medium), I3 (Isolated Large), Any, ElasticAny',
+                                   arg_type=get_enum_type(['F1', 'FREE', 'D1', 'SHARED', 'B1', 'B2', 'B3', 'S1', 'S2', 'S3', 'P1V2', 'P2V2', 'P3V2', 'PC2', 'PC3', 'PC4', 'I1', 'I2', 'I3', 'ANY', 'ELASTICANY']))
     webapp_name_arg_type = CLIArgumentType(configured_default='web', options_list=['--name', '-n'], metavar='NAME',
                                            completer=get_resource_name_completion_list('Microsoft.Web/sites'), id_part='name',
                                            help="name of the web app. You can configure the default using `az configure --defaults web=<name>`")
@@ -65,6 +65,7 @@ def load_arguments(self, _):
         c.ignore('language')
         c.ignore('using_webapp_up')
 
+    '''
     with self.argument_context('webapp up') as c:
         c.argument('name', arg_type=webapp_name_arg_type)
         c.argument('plan', options_list=['--plan', '-p'], configured_default='appserviceplan',
@@ -77,6 +78,7 @@ def load_arguments(self, _):
         c.argument('logs', help="Configure default logging required to enable viewing log stream immediately after launching the webapp", default=False, action='store_true')
         c.argument('html', help="Ignore app detection and deploy as an html app", default=False, action='store_true')
         c.argument('environment', help="Name of the kube environment, if app is to be deployed to a k8 cluster", options_list=['--environment', '-e'])
+    '''
 
     with self.argument_context('webapp show') as c:
         c.argument('name', arg_type=webapp_name_arg_type)
@@ -135,8 +137,9 @@ def load_arguments(self, _):
                    validator=validate_asp_create)
         c.argument('app_service_environment', options_list=['--app-service-environment', '-e'],
                    help="Name or ID of the app service environment")
-        c.argument('kube_environment', options_list=['--kube-environment', '-k'], help='Name or ID of the kubernetes environment', is_preview=True)
-        c.argument('sku', arg_type=sku_arg_type)
+        c.argument('custom_location', options_list=['--custom-location', '-c'], help="ID of the custom location")
+        c.argument('sku',
+                   help='The pricing tiers, e.g., F1(Free), D1(Shared), B1(Basic Small), B2(Basic Medium), B3(Basic Large), S1(Standard Small), P1V2(Premium V2 Small), PC2 (Premium Container Small), PC3 (Premium Container Medium), PC4 (Premium Container Large), I1 (Isolated Small), I2 (Isolated Medium), I3 (Isolated Large), Any, ElasticAny')
         c.argument('kube_sku', required=False, help='VM size or ANY', default=KUBE_DEFAULT_SKU, completer=get_kube_sku_completion_list, is_preview=True)
         c.argument('is_linux', action='store_true', required=False, help='host web app on Linux worker')
         c.argument('hyper_v', action='store_true', required=False, help='Host web app on Windows container', is_preview=True)
@@ -147,8 +150,9 @@ def load_arguments(self, _):
         c.argument('tags', arg_type=tags_type)
 
     with self.argument_context('appservice plan update') as c:
-        c.argument('sku', arg_type=sku_arg_type)
-        c.argument('kube_sku', required=False, help='VM size or ANY', completer=get_kube_sku_completion_list, is_preview=True)
+        c.argument('sku',
+            help='The pricing tiers, e.g., F1(Free), D1(Shared), B1(Basic Small), B2(Basic Medium), B3(Basic Large), S1(Standard Small), P1V2(Premium V2 Small), PC2 (Premium Container Small), PC3 (Premium Container Medium), PC4 (Premium Container Large), I1 (Isolated Small), I2 (Isolated Medium), I3 (Isolated Large), Any, ElasticAny',
+            arg_type=sku_arg_type)
         c.ignore('allow_pending_state')
 
     # App Service on Kubernetes Commands
