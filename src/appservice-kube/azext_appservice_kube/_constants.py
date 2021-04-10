@@ -6,8 +6,10 @@
 
 KUBE_DEFAULT_SKU = "ANY"
 KUBE_SKUS = ['ANY', 'ELASTICANY']
-KUBE_ASP_KIND = "K8SE"
-KUBE_APP_KIND = "kubeapp"
+KUBE_ASP_KIND = "linux,kubernetes"
+KUBE_APP_KIND = "linux,kubernetes,app"
+KUBE_FUNCTION_APP_KIND = 'linux,kubernetes,functionapp'
+KUBE_FUNCTION_CONTAINER_APP_KIND = 'linux,kubernetes,functionapp,container'
 
 LINUX_RUNTIMES = ['dotnet', 'node', 'python', 'java']
 WINDOWS_RUNTIMES = ['dotnet', 'node', 'java', 'powershell']

@@ -73,8 +73,8 @@ from six.moves.urllib.request import urlopen
 from ._constants import (FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION, FUNCTIONS_VERSION_TO_DEFAULT_NODE_VERSION,
                          FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS, NODE_VERSION_DEFAULT, NODE_EXACT_VERSION_DEFAULT,
                          DOTNET_RUNTIME_VERSION_TO_DOTNET_LINUX_FX_VERSION, KUBE_DEFAULT_SKU, KUBE_SKUS,
-                         KUBE_ASP_KIND, KUBE_APP_KIND, LINUX_RUNTIMES, WINDOWS_RUNTIMES, MULTI_CONTAINER_TYPES,
-                         CONTAINER_APPSETTING_NAMES, APPSETTINGS_TO_MASK)
+                         KUBE_ASP_KIND, KUBE_APP_KIND, KUBE_FUNCTION_APP_KIND, KUBE_FUNCTION_CONTAINER_APP_KIND, LINUX_RUNTIMES, WINDOWS_RUNTIMES,
+                         MULTI_CONTAINER_TYPES,CONTAINER_APPSETTING_NAMES, APPSETTINGS_TO_MASK)
 
 from ._utils import (_normalize_sku, get_sku_name, validate_subnet_id, _generic_site_operation,
                      _get_location_from_resource_group, validate_aks_id)
@@ -770,13 +770,13 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None,
         if deployment_container_image_name is None:
             site_config.linux_fx_version = _get_linux_fx_functionapp(functions_version, runtime, runtime_version)
     elif is_kube:
-        functionapp_def.kind = 'kubeapp,functionapp,linux'
+        functionapp_def.kind = KUBE_FUNCTION_APP_KIND
         functionapp_def.reserved = False
         site_config.app_settings.append(NameValuePair(name='WEBSITES_PORT', value='80'))
         site_config.app_settings.append(NameValuePair(name='MACHINEKEY_DecryptionKey',
                                                       value=str(hexlify(urandom(32)).decode()).upper()))
         if deployment_container_image_name:
-            functionapp_def.kind = 'kubeapp,functionapp,linux,container'
+            functionapp_def.kind = KUBE_FUNCTION_CONTAINER_APP_KIND
             site_config.app_settings.append(NameValuePair(name='DOCKER_CUSTOM_IMAGE_NAME',
                                                           value=deployment_container_image_name))
             site_config.app_settings.append(NameValuePair(name='FUNCTION_APP_EDIT_MODE', value='readOnly'))
