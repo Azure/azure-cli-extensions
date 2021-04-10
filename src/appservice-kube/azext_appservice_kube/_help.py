@@ -25,7 +25,7 @@ examples:
   - name: Create an app service plan for a kubernetes environment.
     text: >
         az appservice plan create -g MyResourceGroup -n MyPlan \\
-            --kube-environment MyKubeEnvironment --kube-sku ANY
+            --custom-location /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.ExtendedLocation/customLocations/<name> --sku ANY
 """
 
 helps['appservice plan update'] = """
@@ -38,7 +38,7 @@ examples:
   - name: Update a kubernetes app service plan.
     text: >
         az appservice plan update --name MyAppServicePlan --resource-group MyResourceGroup \\
-            --kube-sku Standard_DS2_v2 --number-of-workers 3
+            --sku ANY --number-of-workers 3
 """
 
 helps['appservice kube'] = """
