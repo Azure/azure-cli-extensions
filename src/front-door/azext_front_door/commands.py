@@ -62,6 +62,10 @@ def load_command_table(self, _):
         client_factory=cf_waf_policies
     )
 
+    fd_frontdoor_custom_sdk = CliCommandType(
+        operations_tmpl='azext_front_door.custom#{}',
+        client_factory=cf_fd_endpoints)
+
     # region Frontdoors
     with self.command_group('network front-door', frontdoor_sdk) as g:
         g.show_command('show')
@@ -110,6 +114,8 @@ def load_command_table(self, _):
     #   g.generic_update_command('update', custom_func_name='update_fd_frontend_endpoints')
         g.custom_command('disable-https', 'configure_fd_frontend_endpoint_disable_https')
         g.custom_command('enable-https', 'configure_fd_frontend_endpoint_enable_https')
+
+        g.wait_command('wait', getter_name="get_fd_frontend_endpoints", getter_type=fd_frontdoor_custom_sdk)
 
     with self.command_group('network front-door routing-rule', frontdoor_sdk) as g:
         g.generic_update_command('update', custom_func_name='update_fd_routing_rule',

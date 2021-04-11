@@ -148,6 +148,14 @@ helps['network front-door frontend-endpoint disable-https'] = """
     type: command
     short-summary: Disable HTTPS protocol for a custom domain.
 """
+
+helps['network front-door frontend-endpoint wait'] = """
+type: command
+short-summary: Place the CLI in a waiting state until a condition of the Front Door frontend endpoint is met.
+examples:
+  - name: Wait until a front endpoint's certificate is deployed.
+    text: az network front-door frontend-endpoint wait -g MyResourceGroup --name endpoint1 --front-door-name frontdoor1 --custom "customHttpsProvisioningState=='Enabled'"
+"""
 # endregion
 
 # region FrontDoor LoadBalancingSettings
