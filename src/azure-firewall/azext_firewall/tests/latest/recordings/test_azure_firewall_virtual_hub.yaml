@@ -13,15 +13,15 @@ interactions:
       ParameterSetName:
       - -n -g --type
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-resource/12.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-resource/12.1.0 Azure-SDK-For-Python AZURECLI/2.21.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_firewall_virtual_hub000001?api-version=2020-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001","name":"cli_test_azure_firewall_virtual_hub000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2021-01-18T09:52:54Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001","name":"cli_test_azure_firewall_virtual_hub000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2021-04-11T01:03:38Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -30,7 +30,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:52:57 GMT
+      - Sun, 11 Apr 2021 01:03:42 GMT
       expires:
       - '-1'
       pragma:
@@ -62,8 +62,8 @@ interactions:
       ParameterSetName:
       - -n -g --type
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
       accept-language:
       - en-US
     method: PUT
@@ -71,7 +71,7 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvwan\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualWans/clitestvwan\",\r\n
-        \ \"etag\": \"W/\\\"916f1a93-b4bf-4f78-803e-9ca848ea42d6\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"39b18ac0-c653-443f-9c54-eadc8467733b\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualWans\",\r\n  \"location\": \"eastus2euap\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"disableVpnEncryption\":
         false,\r\n    \"allowBranchToBranchTraffic\": true,\r\n    \"office365LocalBreakoutCategory\":
@@ -80,7 +80,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/ac589f65-8274-4065-a389-52a539b63839?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/c6ddf592-5a63-4a8b-9e71-eea35e85ed67?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -88,7 +88,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:53:05 GMT
+      - Sun, 11 Apr 2021 01:03:52 GMT
       expires:
       - '-1'
       pragma:
@@ -101,9 +101,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f5d92f94-208b-4c49-831c-d12cfb3fe76d
+      - 61fe6376-c503-4457-b6f5-9a553b26588c
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -121,10 +121,10 @@ interactions:
       ParameterSetName:
       - -n -g --type
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/ac589f65-8274-4065-a389-52a539b63839?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/c6ddf592-5a63-4a8b-9e71-eea35e85ed67?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -136,7 +136,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:53:16 GMT
+      - Sun, 11 Apr 2021 01:04:02 GMT
       expires:
       - '-1'
       pragma:
@@ -153,7 +153,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 8c564486-9ef1-4998-a35c-beb338146d2b
+      - 5e9b1807-b8d0-48c1-8095-a33d3810eb3f
     status:
       code: 200
       message: OK
@@ -171,14 +171,14 @@ interactions:
       ParameterSetName:
       - -n -g --type
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualWans/clitestvwan?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvwan\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualWans/clitestvwan\",\r\n
-        \ \"etag\": \"W/\\\"b875d444-7491-44c2-9717-9a0411fa8a38\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"4cdb6911-aff4-426b-828e-b6b85b2bd016\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualWans\",\r\n  \"location\": \"eastus2euap\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"disableVpnEncryption\":
         false,\r\n    \"allowBranchToBranchTraffic\": true,\r\n    \"office365LocalBreakoutCategory\":
@@ -191,9 +191,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:53:16 GMT
+      - Sun, 11 Apr 2021 01:04:03 GMT
       etag:
-      - W/"b875d444-7491-44c2-9717-9a0411fa8a38"
+      - W/"4cdb6911-aff4-426b-828e-b6b85b2bd016"
       expires:
       - '-1'
       pragma:
@@ -210,7 +210,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 069eb25f-131c-456e-9188-4d031a0817ba
+      - c8987979-5102-461f-bc80-32fe789d720f
     status:
       code: 200
       message: OK
@@ -233,8 +233,8 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix -l --sku
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
       accept-language:
       - en-US
     method: PUT
@@ -242,7 +242,7 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvhub\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualHubs/clitestvhub\",\r\n
-        \ \"etag\": \"W/\\\"c66da45f-936f-4f92-b409-f806bb78feb6\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"9a9bc615-762f-46f8-8393-ee5c129e9233\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualHubs\",\r\n  \"location\": \"eastus2euap\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"virtualHubRouteTableV2s\":
         [],\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n    \"virtualRouterAsn\":
@@ -254,7 +254,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/8c407d63-db5b-48c1-ae1e-4f8c1a39ed8a?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/2043e6bd-e588-4109-a86f-640bfe275646?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -262,7 +262,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:53:25 GMT
+      - Sun, 11 Apr 2021 01:04:15 GMT
       expires:
       - '-1'
       pragma:
@@ -275,9 +275,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - d880f7c4-6f9b-4c1a-a663-01622200ce8f
+      - a58b86d6-4875-46bf-994e-042c67d4e4a9
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1191'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -295,10 +295,10 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix -l --sku
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/8c407d63-db5b-48c1-ae1e-4f8c1a39ed8a?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/2043e6bd-e588-4109-a86f-640bfe275646?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -310,7 +310,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:53:37 GMT
+      - Sun, 11 Apr 2021 01:04:25 GMT
       expires:
       - '-1'
       pragma:
@@ -327,7 +327,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 7bb38ba7-b712-467f-a4a3-844ea155f384
+      - 1f072243-116b-48f8-8541-4453c8780e74
     status:
       code: 200
       message: OK
@@ -345,10 +345,10 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix -l --sku
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/8c407d63-db5b-48c1-ae1e-4f8c1a39ed8a?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/2043e6bd-e588-4109-a86f-640bfe275646?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -360,7 +360,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:53:47 GMT
+      - Sun, 11 Apr 2021 01:04:36 GMT
       expires:
       - '-1'
       pragma:
@@ -377,7 +377,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 2777a635-8285-4ee5-936f-92df8209ce3d
+      - bcb2b306-c8f4-4671-82fd-4eb2a9324ce4
     status:
       code: 200
       message: OK
@@ -395,10 +395,10 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix -l --sku
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/8c407d63-db5b-48c1-ae1e-4f8c1a39ed8a?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/2043e6bd-e588-4109-a86f-640bfe275646?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -410,7 +410,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:54:07 GMT
+      - Sun, 11 Apr 2021 01:04:56 GMT
       expires:
       - '-1'
       pragma:
@@ -427,7 +427,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 55df65c1-3a63-4323-b9be-8f729e896291
+      - 0a738743-8b87-4fa5-87e5-a83fb6d19b65
     status:
       code: 200
       message: OK
@@ -445,10 +445,10 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix -l --sku
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/8c407d63-db5b-48c1-ae1e-4f8c1a39ed8a?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/2043e6bd-e588-4109-a86f-640bfe275646?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -460,7 +460,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:54:29 GMT
+      - Sun, 11 Apr 2021 01:05:17 GMT
       expires:
       - '-1'
       pragma:
@@ -477,7 +477,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 15e1b984-7cc6-46cc-b243-df770c674bcf
+      - be0a1ca7-8c4b-405a-8d5f-4f36b9f54790
     status:
       code: 200
       message: OK
@@ -495,10 +495,10 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix -l --sku
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/8c407d63-db5b-48c1-ae1e-4f8c1a39ed8a?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/2043e6bd-e588-4109-a86f-640bfe275646?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -510,7 +510,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:55:09 GMT
+      - Sun, 11 Apr 2021 01:05:57 GMT
       expires:
       - '-1'
       pragma:
@@ -527,7 +527,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 49853d83-c687-40d3-a827-92fe5a43a34f
+      - 8362433d-f7fd-4d74-860b-58860b0761fe
     status:
       code: 200
       message: OK
@@ -545,10 +545,10 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix -l --sku
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/8c407d63-db5b-48c1-ae1e-4f8c1a39ed8a?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/2043e6bd-e588-4109-a86f-640bfe275646?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -560,7 +560,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:55:49 GMT
+      - Sun, 11 Apr 2021 01:06:38 GMT
       expires:
       - '-1'
       pragma:
@@ -577,7 +577,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 9765c051-ec77-4a0d-ad92-9f7cba2e8ad2
+      - 3560c656-7da0-4c11-a9cf-9d133cdfa157
     status:
       code: 200
       message: OK
@@ -595,10 +595,60 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix -l --sku
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/8c407d63-db5b-48c1-ae1e-4f8c1a39ed8a?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/2043e6bd-e588-4109-a86f-640bfe275646?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 11 Apr 2021 01:07:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - cd224187-ae78-4a93-901b-1fe4d63c03f1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vhub create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --vwan --address-prefix -l --sku
+      User-Agent:
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/2043e6bd-e588-4109-a86f-640bfe275646?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -610,7 +660,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:57:10 GMT
+      - Sun, 11 Apr 2021 01:10:39 GMT
       expires:
       - '-1'
       pragma:
@@ -627,7 +677,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - e74808d7-6bc3-4829-b969-f360616c227e
+      - 85e100f9-cd0b-4ef3-8128-d05f274aafca
     status:
       code: 200
       message: OK
@@ -645,14 +695,14 @@ interactions:
       ParameterSetName:
       - -g -n --vwan --address-prefix -l --sku
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualHubs/clitestvhub?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestvhub\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualHubs/clitestvhub\",\r\n
-        \ \"etag\": \"W/\\\"d788b164-abf1-4f45-976b-a006e2aa8b58\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"be853a60-9a2b-42d7-87ed-adc86ca79e93\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualHubs\",\r\n  \"location\": \"eastus2euap\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"virtualHubRouteTableV2s\":
         [],\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n    \"virtualRouterAsn\":
@@ -668,7 +718,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:57:11 GMT
+      - Sun, 11 Apr 2021 01:10:40 GMT
       expires:
       - '-1'
       pragma:
@@ -685,7 +735,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - db531e4e-abae-4efa-b5ee-f4b992df029e
+      - a1e283b2-7bb8-4f64-912d-62f9567f8e27
     status:
       code: 200
       message: OK
@@ -703,15 +753,15 @@ interactions:
       ParameterSetName:
       - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-resource/12.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-resource/12.1.0 Azure-SDK-For-Python AZURECLI/2.21.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_firewall_virtual_hub000001?api-version=2020-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001","name":"cli_test_azure_firewall_virtual_hub000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2021-01-18T09:52:54Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001","name":"cli_test_azure_firewall_virtual_hub000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2021-04-11T01:03:38Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -720,7 +770,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:57:11 GMT
+      - Sun, 11 Apr 2021 01:10:40 GMT
       expires:
       - '-1'
       pragma:
@@ -754,8 +804,8 @@ interactions:
       ParameterSetName:
       - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
       accept-language:
       - en-US
     method: PUT
@@ -763,7 +813,7 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"d1a934bc-e015-46bb-a411-3115f25003de\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"3b08713e-704f-44ab-b328-1224cb59253c\\\"\",\r\n  \"type\":
         \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"eastus2euap\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"sku\":
         {\r\n      \"name\": \"AZFW_Hub\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n
@@ -775,7 +825,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1fb963fa-e5f7-4b50-b3a5-3a51d0d5a3de?api-version=2020-07-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
       cache-control:
       - no-cache
       content-length:
@@ -783,7 +833,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:57:21 GMT
+      - Sun, 11 Apr 2021 01:10:51 GMT
       expires:
       - '-1'
       pragma:
@@ -796,9 +846,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f3c37b04-200d-48ce-b7d9-b6341b8ec6df
+      - f7d55b02-c6ca-4291-9576-6628508af8aa
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1194'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -816,10 +866,10 @@ interactions:
       ParameterSetName:
       - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1fb963fa-e5f7-4b50-b3a5-3a51d0d5a3de?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -831,7 +881,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:57:31 GMT
+      - Sun, 11 Apr 2021 01:11:01 GMT
       expires:
       - '-1'
       pragma:
@@ -848,7 +898,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 1dc79dea-edf1-4f5b-979a-89a07910d07b
+      - 47da974b-da92-464c-91ef-8f4c9cc1cb48
     status:
       code: 200
       message: OK
@@ -866,10 +916,10 @@ interactions:
       ParameterSetName:
       - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1fb963fa-e5f7-4b50-b3a5-3a51d0d5a3de?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -881,7 +931,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:57:42 GMT
+      - Sun, 11 Apr 2021 01:11:12 GMT
       expires:
       - '-1'
       pragma:
@@ -898,7 +948,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 8ad6dd6a-e735-44fb-ace8-9d0a4f4e0489
+      - 0fc0b717-08ae-4b5a-9eed-9bb3938f0003
     status:
       code: 200
       message: OK
@@ -916,10 +966,10 @@ interactions:
       ParameterSetName:
       - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1fb963fa-e5f7-4b50-b3a5-3a51d0d5a3de?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -931,7 +981,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:58:02 GMT
+      - Sun, 11 Apr 2021 01:11:33 GMT
       expires:
       - '-1'
       pragma:
@@ -948,7 +998,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f3372252-cbb5-4b48-8899-1684ac34ea1d
+      - 33eeeffd-777c-496a-b546-2d8cf1595152
     status:
       code: 200
       message: OK
@@ -966,10 +1016,10 @@ interactions:
       ParameterSetName:
       - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1fb963fa-e5f7-4b50-b3a5-3a51d0d5a3de?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -981,7 +1031,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:58:22 GMT
+      - Sun, 11 Apr 2021 01:11:53 GMT
       expires:
       - '-1'
       pragma:
@@ -998,7 +1048,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 88ec2ffa-ccca-40ad-8f17-919945b28b8c
+      - a3252f40-b480-472c-9b39-9006b5896dff
     status:
       code: 200
       message: OK
@@ -1016,10 +1066,10 @@ interactions:
       ParameterSetName:
       - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1fb963fa-e5f7-4b50-b3a5-3a51d0d5a3de?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1031,7 +1081,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:59:02 GMT
+      - Sun, 11 Apr 2021 01:12:33 GMT
       expires:
       - '-1'
       pragma:
@@ -1048,7 +1098,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 8cc139e2-c3ed-4868-8ad0-13b607737227
+      - 466cc87e-1ad6-40c5-a54e-eccf4467946e
     status:
       code: 200
       message: OK
@@ -1066,10 +1116,10 @@ interactions:
       ParameterSetName:
       - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1fb963fa-e5f7-4b50-b3a5-3a51d0d5a3de?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1081,7 +1131,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 09:59:43 GMT
+      - Sun, 11 Apr 2021 01:13:14 GMT
       expires:
       - '-1'
       pragma:
@@ -1098,7 +1148,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - c5ea45ce-7dc8-4942-b4bc-e201769580d6
+      - d43e194b-9dc0-4e62-bc78-99978a0bb973
     status:
       code: 200
       message: OK
@@ -1116,10 +1166,10 @@ interactions:
       ParameterSetName:
       - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1fb963fa-e5f7-4b50-b3a5-3a51d0d5a3de?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1131,7 +1181,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:01:03 GMT
+      - Sun, 11 Apr 2021 01:14:34 GMT
       expires:
       - '-1'
       pragma:
@@ -1148,7 +1198,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - eb20d3ae-fc2c-4903-b251-5257e3723427
+      - 658b28d5-c981-4fbf-a4e4-312f04d7adaa
     status:
       code: 200
       message: OK
@@ -1166,10 +1216,10 @@ interactions:
       ParameterSetName:
       - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1fb963fa-e5f7-4b50-b3a5-3a51d0d5a3de?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1181,7 +1231,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:03:44 GMT
+      - Sun, 11 Apr 2021 01:17:15 GMT
       expires:
       - '-1'
       pragma:
@@ -1198,7 +1248,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 18aec7f9-a1fb-4b1e-b9f9-0dd9a55a949e
+      - bfacfa8d-b3ba-4f07-a78e-327ab208fd8c
     status:
       code: 200
       message: OK
@@ -1216,10 +1266,10 @@ interactions:
       ParameterSetName:
       - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1fb963fa-e5f7-4b50-b3a5-3a51d0d5a3de?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1231,7 +1281,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:05:24 GMT
+      - Sun, 11 Apr 2021 01:18:56 GMT
       expires:
       - '-1'
       pragma:
@@ -1248,7 +1298,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 7083e252-c0d3-4093-8260-d5788f0b0fa1
+      - cefe7740-80b3-43d2-a3c9-2a264243528e
     status:
       code: 200
       message: OK
@@ -1266,10 +1316,10 @@ interactions:
       ParameterSetName:
       - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1fb963fa-e5f7-4b50-b3a5-3a51d0d5a3de?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1281,7 +1331,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:07:05 GMT
+      - Sun, 11 Apr 2021 01:20:36 GMT
       expires:
       - '-1'
       pragma:
@@ -1298,7 +1348,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 08b28e07-c2e8-4084-8e2e-407bd21abcda
+      - 1e2d5c9a-b5d9-48db-9427-4f5916a19467
     status:
       code: 200
       message: OK
@@ -1316,10 +1366,10 @@ interactions:
       ParameterSetName:
       - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1fb963fa-e5f7-4b50-b3a5-3a51d0d5a3de?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1331,7 +1381,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:08:45 GMT
+      - Sun, 11 Apr 2021 01:22:17 GMT
       expires:
       - '-1'
       pragma:
@@ -1348,7 +1398,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 54fcf849-8c09-4764-976b-cb20c084ff9c
+      - 9438f638-854f-41cd-8503-2eaa8e576b74
     status:
       code: 200
       message: OK
@@ -1366,10 +1416,10 @@ interactions:
       ParameterSetName:
       - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1fb963fa-e5f7-4b50-b3a5-3a51d0d5a3de?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1381,7 +1431,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:10:26 GMT
+      - Sun, 11 Apr 2021 01:23:58 GMT
       expires:
       - '-1'
       pragma:
@@ -1398,7 +1448,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 2998dba4-769b-4b79-a449-664d427f6f1d
+      - 506d2d05-badf-4d07-9f98-ec25dec1830c
     status:
       code: 200
       message: OK
@@ -1416,10 +1466,10 @@ interactions:
       ParameterSetName:
       - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1fb963fa-e5f7-4b50-b3a5-3a51d0d5a3de?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1431,7 +1481,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:12:06 GMT
+      - Sun, 11 Apr 2021 01:25:38 GMT
       expires:
       - '-1'
       pragma:
@@ -1448,7 +1498,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 5a36c13d-23a8-4af6-830c-9cee2daa0f30
+      - b7c4bcb7-dbc3-4cf7-b5c7-4756c7c40d7b
     status:
       code: 200
       message: OK
@@ -1466,22 +1516,22 @@ interactions:
       ParameterSetName:
       - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1fb963fa-e5f7-4b50-b3a5-3a51d0d5a3de?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '29'
+      - '30'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:13:47 GMT
+      - Sun, 11 Apr 2021 01:27:19 GMT
       expires:
       - '-1'
       pragma:
@@ -1498,7 +1548,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - c548398b-5147-41cc-aff8-1a8ebede3aa1
+      - 6961963a-f80e-43e0-ad0d-a73414feef3b
     status:
       code: 200
       message: OK
@@ -1516,207 +1566,10 @@ interactions:
       ParameterSetName:
       - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2020-07-01
-  response:
-    body:
-      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"b5cf5e9f-bf62-4262-b4b7-c8131adb74dc\\\"\",\r\n  \"type\":
-        \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"eastus2euap\",\r\n
-        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"sku\":
-        {\r\n      \"name\": \"AZFW_Hub\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n
-        \   \"additionalProperties\": {},\r\n    \"virtualHub\": {\r\n      \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualHubs/clitestvhub\"\r\n
-        \   },\r\n    \"hubIPAddresses\": {\r\n      \"privateIPAddress\": \"10.0.0.132\",\r\n
-        \     \"publicIPs\": {\r\n        \"addresses\": [\r\n          {\r\n            \"address\":
-        \"20.39.24.98\"\r\n          }\r\n        ],\r\n        \"count\": 1\r\n      }\r\n
-        \   }\r\n  }\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '992'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:13:48 GMT
-      etag:
-      - W/"b5cf5e9f-bf62-4262-b4b7-c8131adb74dc"
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 86c4fc82-1d64-409f-bfff-0480c1ac8105
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network firewall update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --vhub
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
-      accept-language:
-      - en-US
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2020-07-01
-  response:
-    body:
-      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"b5cf5e9f-bf62-4262-b4b7-c8131adb74dc\\\"\",\r\n  \"type\":
-        \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"eastus2euap\",\r\n
-        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"sku\":
-        {\r\n      \"name\": \"AZFW_Hub\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n
-        \   \"additionalProperties\": {},\r\n    \"virtualHub\": {\r\n      \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualHubs/clitestvhub\"\r\n
-        \   },\r\n    \"hubIPAddresses\": {\r\n      \"privateIPAddress\": \"10.0.0.132\",\r\n
-        \     \"publicIPs\": {\r\n        \"addresses\": [\r\n          {\r\n            \"address\":
-        \"20.39.24.98\"\r\n          }\r\n        ],\r\n        \"count\": 1\r\n      }\r\n
-        \   }\r\n  }\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '992'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:13:49 GMT
-      etag:
-      - W/"b5cf5e9f-bf62-4262-b4b7-c8131adb74dc"
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - b0ffff77-a7df-4a53-99fb-3702a813cb87
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/azureFirewalls/af1",
-      "location": "eastus2euap", "properties": {"hubIPAddresses": {"publicIPs": {"addresses":
-      [{"address": "20.39.24.98"}], "count": 1}, "privateIPAddress": "10.0.0.132"},
-      "sku": {"name": "AZFW_Hub", "tier": "Standard"}, "additionalProperties": {}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network firewall update
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '443'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - -g -n --vhub
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2020-07-01
-  response:
-    body:
-      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"ca290d3f-ca22-4ede-ab61-18a0207b19b0\\\"\",\r\n  \"type\":
-        \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"eastus2euap\",\r\n
-        \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"sku\":
-        {\r\n      \"name\": \"AZFW_Hub\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n
-        \   \"additionalProperties\": {},\r\n    \"hubIPAddresses\": {\r\n      \"privateIPAddress\":
-        \"10.0.0.132\",\r\n      \"publicIPs\": {\r\n        \"addresses\": [\r\n
-        \         {\r\n            \"address\": \"20.39.24.98\"\r\n          }\r\n
-        \       ],\r\n        \"count\": 1\r\n      }\r\n    }\r\n  }\r\n}"
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/6b2ec31e-0590-4c1d-b3d4-b2bc4e6580bd?api-version=2020-07-01
-      cache-control:
-      - no-cache
-      content-length:
-      - '752'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:13:50 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 97ae91ba-0470-4bda-bbfa-d9900723e96d
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1189'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network firewall update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --vhub
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/6b2ec31e-0590-4c1d-b3d4-b2bc4e6580bd?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1728,7 +1581,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:14:01 GMT
+      - Sun, 11 Apr 2021 01:28:59 GMT
       expires:
       - '-1'
       pragma:
@@ -1745,417 +1598,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - c0ff8805-5925-44ea-a3bd-c3f914bbf6c3
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network firewall update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --vhub
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/6b2ec31e-0590-4c1d-b3d4-b2bc4e6580bd?api-version=2020-07-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:14:11 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 53e59b1c-a668-4b4e-adbe-e516a088d655
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network firewall update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --vhub
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/6b2ec31e-0590-4c1d-b3d4-b2bc4e6580bd?api-version=2020-07-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:14:31 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 64a81a35-d88e-4757-9b40-d4dfb693e325
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network firewall update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --vhub
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/6b2ec31e-0590-4c1d-b3d4-b2bc4e6580bd?api-version=2020-07-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:15:11 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 815f2928-e502-4fb8-93f6-bf584ba337d2
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network firewall update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --vhub
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/6b2ec31e-0590-4c1d-b3d4-b2bc4e6580bd?api-version=2020-07-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:16:32 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 4ce2f5fd-b202-4c6d-ae0e-7753b483e917
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network firewall update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --vhub
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/6b2ec31e-0590-4c1d-b3d4-b2bc4e6580bd?api-version=2020-07-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:19:13 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - f38bb448-c4c9-48ef-9648-5334f88179be
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network firewall update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --vhub
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/6b2ec31e-0590-4c1d-b3d4-b2bc4e6580bd?api-version=2020-07-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:20:53 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 02fdecdb-353e-4d84-ac6e-b983fc293620
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network firewall update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --vhub
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/6b2ec31e-0590-4c1d-b3d4-b2bc4e6580bd?api-version=2020-07-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '29'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:22:33 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 94b722a5-fdbd-4c09-b2a7-b9cbf8cf01d7
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network firewall update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --vhub
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2020-07-01
-  response:
-    body:
-      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"5aa55c05-0890-4f69-8471-9003710dc1e0\\\"\",\r\n  \"type\":
-        \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"eastus2euap\",\r\n
-        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"sku\":
-        {\r\n      \"name\": \"AZFW_Hub\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n
-        \   \"additionalProperties\": {},\r\n    \"hubIPAddresses\": {\r\n      \"privateIPAddress\":
-        \"10.0.0.132\",\r\n      \"publicIPs\": {\r\n        \"addresses\": [\r\n
-        \         {\r\n            \"address\": \"20.39.24.98\"\r\n          }\r\n
-        \       ],\r\n        \"count\": 1\r\n      }\r\n    }\r\n  }\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '753'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:22:33 GMT
-      etag:
-      - W/"5aa55c05-0890-4f69-8471-9003710dc1e0"
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - b97a413a-4f26-4440-acd6-3c0c3ee0b67a
+      - 3114defa-0021-4233-9c79-2017b0b63080
     status:
       code: 200
       message: OK
@@ -2171,339 +1614,12 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --sku --count --vhub --allow-active-ftp
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-resource/12.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
-      accept-language:
-      - en-US
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_firewall_virtual_hub000001?api-version=2020-10-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001","name":"cli_test_azure_firewall_virtual_hub000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2021-01-18T09:52:54Z"},"properties":{"provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '433'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:22:34 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vwan create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --type
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-resource/12.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
-      accept-language:
-      - en-US
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_azure_firewall_virtual_hub000001?api-version=2020-10-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001","name":"cli_test_azure_firewall_virtual_hub000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2euap","tags":{"product":"azurecli","cause":"automation","date":"2021-01-18T09:52:54Z"},"properties":{"provisioningState":"Succeeded"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '433'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:22:34 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "eastus2euap"}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vwan create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '27'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - -n -g --type
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualWans/clitestvwan2?api-version=2020-05-01
-  response:
-    body:
-      string: "{\r\n  \"name\": \"clitestvwan2\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualWans/clitestvwan2\",\r\n
-        \ \"etag\": \"W/\\\"3f1ca521-0cca-4e2f-958a-2ffe4ac2d267\\\"\",\r\n  \"type\":
-        \"Microsoft.Network/virtualWans\",\r\n  \"location\": \"eastus2euap\",\r\n
-        \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"disableVpnEncryption\":
-        false,\r\n    \"allowBranchToBranchTraffic\": true,\r\n    \"office365LocalBreakoutCategory\":
-        \"None\",\r\n    \"type\": \"Standard\"\r\n  }\r\n}"
-    headers:
-      azure-asyncnotification:
-      - Enabled
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/242b35b3-3935-45b3-a4b0-8f3a4b1f5b58?api-version=2020-05-01
-      cache-control:
-      - no-cache
-      content-length:
-      - '580'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:22:47 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 25b16c4d-8785-49fa-a944-429bc225c89b
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1191'
-    status:
-      code: 201
-      message: Created
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vwan create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --type
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/242b35b3-3935-45b3-a4b0-8f3a4b1f5b58?api-version=2020-05-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '29'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:22:57 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 391b06f2-909d-49a9-b49b-d18e96962247
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vwan create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --type
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualWans/clitestvwan2?api-version=2020-05-01
-  response:
-    body:
-      string: "{\r\n  \"name\": \"clitestvwan2\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualWans/clitestvwan2\",\r\n
-        \ \"etag\": \"W/\\\"d4ad56c6-da55-4a14-9d36-4f50dd786c7b\\\"\",\r\n  \"type\":
-        \"Microsoft.Network/virtualWans\",\r\n  \"location\": \"eastus2euap\",\r\n
-        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"disableVpnEncryption\":
-        false,\r\n    \"allowBranchToBranchTraffic\": true,\r\n    \"office365LocalBreakoutCategory\":
-        \"None\",\r\n    \"type\": \"Standard\"\r\n  }\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '581'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:22:58 GMT
-      etag:
-      - W/"d4ad56c6-da55-4a14-9d36-4f50dd786c7b"
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - fb9ea0e2-ed14-49da-9308-555134d24b13
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "eastus2euap", "properties": {"virtualWan": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualWans/clitestvwan2"},
-      "addressPrefix": "10.0.0.0/24", "sku": "Standard"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vhub create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '315'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - -g -n --vwan --address-prefix -l --sku
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualHubs/clitestvhub2?api-version=2020-05-01
-  response:
-    body:
-      string: "{\r\n  \"name\": \"clitestvhub2\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualHubs/clitestvhub2\",\r\n
-        \ \"etag\": \"W/\\\"95157c32-7044-4043-88d7-b72e4f924e19\\\"\",\r\n  \"type\":
-        \"Microsoft.Network/virtualHubs\",\r\n  \"location\": \"eastus2euap\",\r\n
-        \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"virtualHubRouteTableV2s\":
-        [],\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n    \"virtualRouterAsn\":
-        0,\r\n    \"virtualRouterIps\": [],\r\n    \"routeTable\": {\r\n      \"routes\":
-        []\r\n    },\r\n    \"virtualWan\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualWans/clitestvwan2\"\r\n
-        \   },\r\n    \"sku\": \"Standard\",\r\n    \"routingState\": \"None\"\r\n
-        \ }\r\n}"
-    headers:
-      azure-asyncnotification:
-      - Enabled
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/4e5c2916-5b99-45dc-80d6-92a537082b9d?api-version=2020-05-01
-      cache-control:
-      - no-cache
-      content-length:
-      - '903'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:23:06 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 7f2c6022-963b-4fc3-9e84-edecf8be641b
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1187'
-    status:
-      code: 201
-      message: Created
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vhub create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --vwan --address-prefix -l --sku
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/4e5c2916-5b99-45dc-80d6-92a537082b9d?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -2515,7 +1631,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:23:17 GMT
+      - Sun, 11 Apr 2021 01:30:39 GMT
       expires:
       - '-1'
       pragma:
@@ -2532,7 +1648,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 75488856-e37a-43e0-b9e9-6834319b9c03
+      - 53714fa8-6aea-4e7b-b67a-991dc5b17fdd
     status:
       code: 200
       message: OK
@@ -2544,16 +1660,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network vhub create
+      - network firewall create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --vwan --address-prefix -l --sku
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/4e5c2916-5b99-45dc-80d6-92a537082b9d?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -2565,7 +1681,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:23:27 GMT
+      - Sun, 11 Apr 2021 01:32:20 GMT
       expires:
       - '-1'
       pragma:
@@ -2582,7 +1698,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 19693df5-8a13-47ff-8bf7-25e7beb4091e
+      - 2207db75-c483-47a0-a926-16ec3174f5ed
     status:
       code: 200
       message: OK
@@ -2594,16 +1710,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network vhub create
+      - network firewall create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --vwan --address-prefix -l --sku
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/4e5c2916-5b99-45dc-80d6-92a537082b9d?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -2615,7 +1731,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:23:47 GMT
+      - Sun, 11 Apr 2021 01:34:01 GMT
       expires:
       - '-1'
       pragma:
@@ -2632,7 +1748,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 9fc8352d-81dd-48a1-b35b-1724e8c3976b
+      - d5c94b1e-3832-48e8-8724-b9bae4dfd86b
     status:
       code: 200
       message: OK
@@ -2644,16 +1760,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network vhub create
+      - network firewall create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --vwan --address-prefix -l --sku
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/4e5c2916-5b99-45dc-80d6-92a537082b9d?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -2665,7 +1781,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:24:07 GMT
+      - Sun, 11 Apr 2021 01:35:42 GMT
       expires:
       - '-1'
       pragma:
@@ -2682,7 +1798,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 8388216d-4b84-43cf-92fd-73bc2040c661
+      - 5b8963e8-6a05-474d-a622-5237922f3b92
     status:
       code: 200
       message: OK
@@ -2694,16 +1810,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network vhub create
+      - network firewall create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --vwan --address-prefix -l --sku
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/4e5c2916-5b99-45dc-80d6-92a537082b9d?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -2715,7 +1831,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:24:48 GMT
+      - Sun, 11 Apr 2021 01:37:23 GMT
       expires:
       - '-1'
       pragma:
@@ -2732,7 +1848,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - a97e2413-3a32-40e2-91da-467a86071001
+      - 58d29f9f-b87c-4c96-bb8e-58e7b70a37d9
     status:
       code: 200
       message: OK
@@ -2744,16 +1860,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network vhub create
+      - network firewall create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --vwan --address-prefix -l --sku
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/4e5c2916-5b99-45dc-80d6-92a537082b9d?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -2765,7 +1881,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:25:28 GMT
+      - Sun, 11 Apr 2021 01:39:35 GMT
       expires:
       - '-1'
       pragma:
@@ -2782,7 +1898,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 9bcf182d-af15-41fe-9f78-8a5391c70f37
+      - d4d2c353-672b-4082-873f-195bd9585c2e
     status:
       code: 200
       message: OK
@@ -2794,260 +1910,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network vhub create
+      - network firewall create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --vwan --address-prefix -l --sku
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/4e5c2916-5b99-45dc-80d6-92a537082b9d?api-version=2020-05-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '29'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:26:48 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 7ea2ed4f-82a3-47f9-8e1d-511a180932c6
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network vhub create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --vwan --address-prefix -l --sku
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.17.1
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualHubs/clitestvhub2?api-version=2020-05-01
-  response:
-    body:
-      string: "{\r\n  \"name\": \"clitestvhub2\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualHubs/clitestvhub2\",\r\n
-        \ \"etag\": \"W/\\\"69f5682d-eacf-4347-b34f-1dd79c3bbe11\\\"\",\r\n  \"type\":
-        \"Microsoft.Network/virtualHubs\",\r\n  \"location\": \"eastus2euap\",\r\n
-        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"virtualHubRouteTableV2s\":
-        [],\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n    \"virtualRouterAsn\":
-        0,\r\n    \"virtualRouterIps\": [],\r\n    \"routeTable\": {\r\n      \"routes\":
-        []\r\n    },\r\n    \"virtualWan\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualWans/clitestvwan2\"\r\n
-        \   },\r\n    \"sku\": \"Standard\",\r\n    \"routingState\": \"Provisioning\"\r\n
-        \ }\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '912'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:26:49 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - db60cc99-36bc-47ef-b360-269305134dae
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network firewall update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --vhub
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
-      accept-language:
-      - en-US
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2020-07-01
-  response:
-    body:
-      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"5aa55c05-0890-4f69-8471-9003710dc1e0\\\"\",\r\n  \"type\":
-        \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"eastus2euap\",\r\n
-        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"sku\":
-        {\r\n      \"name\": \"AZFW_Hub\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n
-        \   \"additionalProperties\": {},\r\n    \"hubIPAddresses\": {\r\n      \"privateIPAddress\":
-        \"10.0.0.132\",\r\n      \"publicIPs\": {\r\n        \"addresses\": [\r\n
-        \         {\r\n            \"address\": \"20.39.24.98\"\r\n          }\r\n
-        \       ],\r\n        \"count\": 1\r\n      }\r\n    }\r\n  }\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '753'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:26:51 GMT
-      etag:
-      - W/"5aa55c05-0890-4f69-8471-9003710dc1e0"
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - de523231-f4d7-447b-a732-c62873d47d5a
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/azureFirewalls/af1",
-      "location": "eastus2euap", "properties": {"virtualHub": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualHubs/clitestvhub2"},
-      "hubIPAddresses": {"publicIPs": {"addresses": [{"address": "20.39.24.98"}],
-      "count": 1}, "privateIPAddress": "10.0.0.132"}, "sku": {"name": "AZFW_Hub",
-      "tier": "Standard"}, "additionalProperties": {}}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network firewall update
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '664'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - -g -n --vhub
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2020-07-01
-  response:
-    body:
-      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"a5219a95-aa4f-4695-bafa-0fccd4e137dc\\\"\",\r\n  \"type\":
-        \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"eastus2euap\",\r\n
-        \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"sku\":
-        {\r\n      \"name\": \"AZFW_Hub\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n
-        \   \"additionalProperties\": {},\r\n    \"virtualHub\": {\r\n      \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualHubs/clitestvhub2\"\r\n
-        \   },\r\n    \"hubIPAddresses\": {\r\n      \"privateIPAddress\": \"10.0.0.132\",\r\n
-        \     \"publicIPs\": {\r\n        \"addresses\": [\r\n          {\r\n            \"address\":
-        \"20.39.24.98\"\r\n          }\r\n        ],\r\n        \"count\": 1\r\n      }\r\n
-        \   }\r\n  }\r\n}"
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/ee712fdb-e3fb-4252-b0e1-b7efb798dfc2?api-version=2020-07-01
-      cache-control:
-      - no-cache
-      content-length:
-      - '992'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 18 Jan 2021 10:26:52 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - 601a5064-ad26-43f2-8f24-8007ce1227ad
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1193'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network firewall update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --vhub
-      User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/ee712fdb-e3fb-4252-b0e1-b7efb798dfc2?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3059,7 +1931,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:27:03 GMT
+      - Sun, 11 Apr 2021 01:41:16 GMT
       expires:
       - '-1'
       pragma:
@@ -3076,7 +1948,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 07ff8a5e-a791-4bab-a667-9e648c9a096e
+      - 89985401-667c-4e48-8771-11218dcea09d
     status:
       code: 200
       message: OK
@@ -3088,16 +1960,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall update
+      - network firewall create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --vhub
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/ee712fdb-e3fb-4252-b0e1-b7efb798dfc2?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3109,7 +1981,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:27:13 GMT
+      - Sun, 11 Apr 2021 01:42:57 GMT
       expires:
       - '-1'
       pragma:
@@ -3126,7 +1998,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 0dcbaef1-5321-4474-a2ec-5fd5f88048ec
+      - 883fffb0-0941-40a5-88e3-5863f14b5804
     status:
       code: 200
       message: OK
@@ -3138,16 +2010,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall update
+      - network firewall create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --vhub
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/ee712fdb-e3fb-4252-b0e1-b7efb798dfc2?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3159,7 +2031,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:27:33 GMT
+      - Sun, 11 Apr 2021 01:44:37 GMT
       expires:
       - '-1'
       pragma:
@@ -3176,7 +2048,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 7c030a88-f68d-4209-8e96-9f0bc691b35f
+      - be902054-e23c-42ef-8e6a-9bba1cdff0a0
     status:
       code: 200
       message: OK
@@ -3188,16 +2060,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall update
+      - network firewall create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --vhub
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/ee712fdb-e3fb-4252-b0e1-b7efb798dfc2?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3209,7 +2081,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:28:13 GMT
+      - Sun, 11 Apr 2021 01:46:18 GMT
       expires:
       - '-1'
       pragma:
@@ -3226,7 +2098,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 4ae8c195-3332-450c-93e8-7f7f8ab90804
+      - 7fe1581e-a206-44ee-abaf-53a3c3187f5c
     status:
       code: 200
       message: OK
@@ -3238,16 +2110,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall update
+      - network firewall create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --vhub
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/ee712fdb-e3fb-4252-b0e1-b7efb798dfc2?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3259,7 +2131,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:29:34 GMT
+      - Sun, 11 Apr 2021 01:47:58 GMT
       expires:
       - '-1'
       pragma:
@@ -3276,7 +2148,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - a82a437f-fe5e-4c9e-bc40-83ef2b1a1c59
+      - 8d468c62-b1f6-4b76-ae1f-a0df7b42a366
     status:
       code: 200
       message: OK
@@ -3288,16 +2160,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall update
+      - network firewall create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --vhub
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/ee712fdb-e3fb-4252-b0e1-b7efb798dfc2?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3309,7 +2181,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:32:15 GMT
+      - Sun, 11 Apr 2021 01:49:38 GMT
       expires:
       - '-1'
       pragma:
@@ -3326,7 +2198,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - adb8b202-602e-4215-821a-c2e4adfdf4b8
+      - 564e6fee-16c8-4799-9261-4e90f6354a2f
     status:
       code: 200
       message: OK
@@ -3338,16 +2210,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall update
+      - network firewall create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --vhub
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/ee712fdb-e3fb-4252-b0e1-b7efb798dfc2?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3359,7 +2231,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:33:55 GMT
+      - Sun, 11 Apr 2021 01:51:19 GMT
       expires:
       - '-1'
       pragma:
@@ -3376,7 +2248,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - e80c706a-cce6-41b5-b3a1-aa96cde78056
+      - fa979616-6823-4786-8d44-5d9d8241b371
     status:
       code: 200
       message: OK
@@ -3388,16 +2260,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall update
+      - network firewall create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --vhub
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/ee712fdb-e3fb-4252-b0e1-b7efb798dfc2?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3409,7 +2281,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:35:36 GMT
+      - Sun, 11 Apr 2021 01:52:59 GMT
       expires:
       - '-1'
       pragma:
@@ -3426,7 +2298,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - e8d36080-13cb-4ad2-9949-dcf6e08b7bec
+      - eb5102a5-54cf-45c4-9593-7384ad1fe9de
     status:
       code: 200
       message: OK
@@ -3438,16 +2310,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall update
+      - network firewall create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --vhub
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/ee712fdb-e3fb-4252-b0e1-b7efb798dfc2?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3459,7 +2331,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:37:15 GMT
+      - Sun, 11 Apr 2021 01:54:40 GMT
       expires:
       - '-1'
       pragma:
@@ -3476,7 +2348,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - d4d50984-ac81-4ef0-af10-f5195a3adcef
+      - f7fcdee1-b99d-43e6-91e3-43019e8b4827
     status:
       code: 200
       message: OK
@@ -3488,16 +2360,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall update
+      - network firewall create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --vhub
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/ee712fdb-e3fb-4252-b0e1-b7efb798dfc2?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3509,7 +2381,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:38:56 GMT
+      - Sun, 11 Apr 2021 01:56:22 GMT
       expires:
       - '-1'
       pragma:
@@ -3526,7 +2398,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 8c9d72a8-3b2c-4b60-8637-b9fd89e2c7b2
+      - 047c5e92-e1d7-4397-862f-9722f225f5a2
     status:
       code: 200
       message: OK
@@ -3538,16 +2410,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall update
+      - network firewall create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --vhub
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/ee712fdb-e3fb-4252-b0e1-b7efb798dfc2?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3559,7 +2431,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:40:37 GMT
+      - Sun, 11 Apr 2021 01:58:02 GMT
       expires:
       - '-1'
       pragma:
@@ -3576,7 +2448,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 6bab0900-9f58-4851-9d5e-0b8f58a9c12b
+      - f2e9a2f1-22f2-45ec-b8ba-602c01e25f5c
     status:
       code: 200
       message: OK
@@ -3588,16 +2460,16 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall update
+      - network firewall create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --vhub
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/ee712fdb-e3fb-4252-b0e1-b7efb798dfc2?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -3609,7 +2481,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:42:17 GMT
+      - Sun, 11 Apr 2021 01:59:43 GMT
       expires:
       - '-1'
       pragma:
@@ -3626,7 +2498,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - c41f99ae-d4bb-4d67-a50a-fac8acf1926c
+      - c1abae43-71b7-410e-9cb8-d8aab6ac2e4f
     status:
       code: 200
       message: OK
@@ -3638,28 +2510,28 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall update
+      - network firewall create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --vhub
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/ee712fdb-e3fb-4252-b0e1-b7efb798dfc2?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '29'
+      - '30'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:43:57 GMT
+      - Sun, 11 Apr 2021 02:01:23 GMT
       expires:
       - '-1'
       pragma:
@@ -3676,7 +2548,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 265847f5-46ff-4f83-a5f3-30f97c79008c
+      - b84d9c75-37c9-41ce-a1b0-c5273f305b3b
     status:
       code: 200
       message: OK
@@ -3688,40 +2560,28 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network firewall update
+      - network firewall create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --vhub
+      - -g -n --sku --count --vhub
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.17.1
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/azureFirewalls/af1?api-version=2020-07-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
   response:
     body:
-      string: "{\r\n  \"name\": \"af1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/azureFirewalls/af1\",\r\n
-        \ \"etag\": \"W/\\\"9f89a02e-bb12-4657-af7b-a2dd9077a4a9\\\"\",\r\n  \"type\":
-        \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"eastus2euap\",\r\n
-        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"sku\":
-        {\r\n      \"name\": \"AZFW_Hub\",\r\n      \"tier\": \"Standard\"\r\n    },\r\n
-        \   \"additionalProperties\": {},\r\n    \"virtualHub\": {\r\n      \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_azure_firewall_virtual_hub000001/providers/Microsoft.Network/virtualHubs/clitestvhub2\"\r\n
-        \   },\r\n    \"hubIPAddresses\": {\r\n      \"privateIPAddress\": \"10.0.0.132\",\r\n
-        \     \"publicIPs\": {\r\n        \"addresses\": [\r\n          {\r\n            \"address\":
-        \"20.47.144.61\"\r\n          }\r\n        ],\r\n        \"count\": 1\r\n
-        \     }\r\n    }\r\n  }\r\n}"
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '994'
+      - '30'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 18 Jan 2021 10:43:57 GMT
-      etag:
-      - W/"9f89a02e-bb12-4657-af7b-a2dd9077a4a9"
+      - Sun, 11 Apr 2021 02:03:04 GMT
       expires:
       - '-1'
       pragma:
@@ -3738,7 +2598,358 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - a36b218a-5186-4c6e-a846-8bcf3a3ed972
+      - 0cbaa10b-f614-4e8e-82ad-327cdd330869
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --count --vhub
+      User-Agent:
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 11 Apr 2021 02:04:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 9e8541c3-a646-4982-869e-f75d469007cc
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --count --vhub
+      User-Agent:
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 11 Apr 2021 02:06:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - edf7c0f8-6310-486b-9984-43126d3f6725
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --count --vhub
+      User-Agent:
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 11 Apr 2021 02:08:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 1888ea2b-44f8-48a0-a9e4-e599cec003a0
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --count --vhub
+      User-Agent:
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 11 Apr 2021 02:09:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 80078fb7-99a2-4238-bd2e-082af9551d9a
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --count --vhub
+      User-Agent:
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 11 Apr 2021 02:11:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - f4ae228b-284e-4e77-8266-0939f72c2af8
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --count --vhub
+      User-Agent:
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 11 Apr 2021 02:13:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 0fcc5ec1-bea9-4a8d-9d6d-f06f4eee6aa9
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --sku --count --vhub
+      User-Agent:
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-network/13.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2euap/operations/1651935f-ae74-4192-846e-df368552821f?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Failed\",\r\n  \"error\": {\r\n    \"code\": \"InternalServerError\",\r\n
+        \   \"message\": \"An error occurred.\",\r\n    \"details\": []\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '139'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 11 Apr 2021 02:14:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 2b633270-4615-4ffd-acd9-ebd29635c0e3
     status:
       code: 200
       message: OK

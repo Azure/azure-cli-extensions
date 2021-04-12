@@ -812,3 +812,11 @@ class AzureFirewallScenario(ScenarioTest):
         self.assertEqual(show_data['Network.DNS.EnableProxy'], 'true')
 
         self.cmd('network firewall delete -g {rg} --name {fw}')
+
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_tier', location='eastus2euap')
+    def test_azure_firewall_tier(self, resource_group):
+        self.kwargs.update({
+            'rg': resource_group
+        })
+        self.cmd('network firewall create -g {rg} -n af --sku AZFW_VNet --tier Premium',
+                 checks=self.check('sku.tier', 'Premium'))
