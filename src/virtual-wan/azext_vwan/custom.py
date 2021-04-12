@@ -114,7 +114,7 @@ def create_virtual_wan(cmd, resource_group_name, virtual_wan_name, tags=None, lo
         office365_local_breakout_category=office365_category,
         type=vwan_type
     )
-    return client.create_or_update(resource_group_name, virtual_wan_name, wan)
+    return client.begin_create_or_update(resource_group_name, virtual_wan_name, wan)
 
 
 def update_virtual_wan(instance, tags=None, security_provider_name=None, branch_to_branch_traffic=None,
@@ -146,9 +146,39 @@ def create_virtual_hub(cmd, resource_group_name, virtual_hub_name, address_prefi
         virtual_wan=SubResource(id=virtual_wan),
         sku=sku
     )
-    return sdk_no_wait(no_wait, client.create_or_update,
+    return sdk_no_wait(no_wait, client.begin_create_or_update,
                        resource_group_name, virtual_hub_name, hub)
 
+def get_effective_virtual_hub_routes(
+    cmd,
+    resource_group_name,
+    virtual_hub_name,
+    virtual_wan_resource_type,
+    resource_id,
+    no_wait=False):
+
+    client = network_client_factory(cmd.cli_ctx).virtual_hubs
+    Resource, EffectiveRoutesParameters = cmd.get_models("Resource", 'EffectiveRoutesParameters')
+    parameters = EffectiveRoutesParameters(
+        virtual_wan_resource_type=virtual_wan_resource_type,
+        resource_id=Resource(id=resource_id)
+    )
+    
+    return client.begin_get_effective_virtual_hub_routes(
+        resource_group_name,
+        virtual_hub_name,
+        parameters
+    )
+
+
+    # return sdk_no_wait(
+    #     no_wait,
+    #     client.begin_get_effective_virtual_hub_routes,
+    #     resource_group_name,
+    #     virtual_hub_name,
+    #     parameters
+    # )
+    # return poller.result()
 
 def update_virtual_hub(instance, cmd, address_prefix=None, virtual_wan=None, tags=None, sku=None):
     SubResource = cmd.get_models('SubResource')
@@ -722,7 +752,7 @@ def create_vpn_server_config(cmd, resource_group_name, vpn_server_configuration_
         )
     )
 
-    return sdk_no_wait(no_wait, client.create_or_update,
+    return sdk_no_wait(no_wait, client.begin_create_or_update,
                        resource_group_name, vpn_server_configuration_name, vpn_server_config)
 
 
