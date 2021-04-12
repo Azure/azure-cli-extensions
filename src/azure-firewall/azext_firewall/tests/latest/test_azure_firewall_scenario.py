@@ -110,6 +110,7 @@ class AzureFirewallScenario(ScenarioTest):
         #              self.check('subnet.id', subnet_id_ip_config)
         #          ])
 
+        self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24')
         self.cmd('network firewall ip-config create -g {rg} -n {ipconfig3} -f {af} --public-ip-address {pubip3} --vnet-name {vnet}', checks=[
             self.check('name', '{ipconfig3}'),
             # self.check('subnet', None)
