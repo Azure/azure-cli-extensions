@@ -81,7 +81,8 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_03_01.models import (ContainerS
                                                                       ManagedClusterPodIdentity,
                                                                       ManagedClusterPodIdentityException,
                                                                       UserAssignedIdentity,
-                                                                      RunCommandRequest)
+                                                                      RunCommandRequest,
+                                                                      ManagedClusterPropertiesIdentityProfileValue)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -641,6 +642,8 @@ def _get_user_assigned_identity(cli_ctx, resource_id):
 def _get_user_assigned_identity_client_id(cli_ctx, resource_id):
     return _get_user_assigned_identity(cli_ctx, resource_id).client_id
 
+def _get_user_assigned_identity_object_id(cli_ctx, resource_id):
+    return _get_user_assigned_identity(cli_ctx, resource_id).principal_id
 
 def _update_dict(dict1, dict2):
     cp = dict1.copy()
@@ -1027,6 +1030,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_encryption_at_host=False,
                enable_secret_rotation=False,
                no_wait=False,
+               assign_kubelet_identity=None,
                yes=False):
     if not no_ssh_key:
         try:
@@ -1327,6 +1331,22 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             user_assigned_identities=user_assigned_identity
         )
 
+    identity_profile = None
+    if assign_kubelet_identity:
+        if not assign_identity:
+            raise CLIError('--assign-kubelet-identity can only be specified when --assign-identity is specified')
+        kubelet_identity = _get_user_assigned_identity(cmd.cli_ctx, assign_kubelet_identity)
+        identity_profile = {
+            'kubeletidentity': ManagedClusterPropertiesIdentityProfileValue(
+                resource_id=assign_kubelet_identity,
+                client_id=kubelet_identity.client_id,
+                object_id=kubelet_identity.principal_id
+            )
+        }
+        cluster_identity_object_id = _get_user_assigned_identity_object_id(cmd.cli_ctx, assign_identity)
+        # ensure the cluster identity has "Managed Identity Operator" role at the scope of kubelet identity
+        _ensure_cluster_identity_permission_on_kubelet_identity(cmd.cli_ctx, cluster_identity_object_id, kubelet_identity.principal_id, assign_kubelet_identity)
+
     pod_identity_profile = None
     if enable_pod_identity:
         if not enable_managed_identity:
@@ -1363,7 +1383,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         disk_encryption_set_id=node_osdisk_diskencryptionset_id,
         api_server_access_profile=api_server_access_profile,
         auto_upgrade_profile=auto_upgrade_profile,
-        pod_identity_profile=pod_identity_profile)
+        pod_identity_profile=pod_identity_profile,
+        identity_profile=identity_profile)
 
     if node_resource_group:
         mc.node_resource_group = node_resource_group
@@ -4076,3 +4097,24 @@ def aks_pod_identity_exception_update(cmd, client, resource_group_name, cluster_
 def aks_pod_identity_exception_list(cmd, client, resource_group_name, cluster_name):
     instance = client.get(resource_group_name, cluster_name)
     return _remove_nulls([instance])[0]
+
+def _ensure_cluster_identity_permission_on_kubelet_identity(cli_ctx, cluster_identity_object_id, kubelet_identity_object_id, scope):
+    managed_identity_operator_role = 'Managed Identity Operator'
+    managed_identity_operator_role_id = 'f1a07417-d97a-45cb-824c-7a7467783830'
+
+    factory = get_auth_management_client(cli_ctx, scope)
+    assignments_client = factory.role_assignments
+
+    for i in assignments_client.list_for_scope(scope=scope, filter='atScope()'):
+        if i.scope.lower() != scope.lower():
+            continue
+        if not i.role_definition_id.lower().endswith(managed_identity_operator_role_id):
+            continue
+        if i.principal_id.lower() != cluster_identity_object_id.lower():
+            continue
+        # already assigned
+        return
+
+    if not _add_role_assignment(cli_ctx, managed_identity_operator_role, cluster_identity_object_id,
+                                is_service_principal=False, scope=scope):
+        raise CLIError('Could not grant Managed Identity Operator permission to cluster identity at scope {}'.format(scope))
