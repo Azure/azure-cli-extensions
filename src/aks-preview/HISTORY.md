@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.9
++++++
+* Add `--binding-selector` to AAD pod identity add sub command
+
 0.5.8
 +++++
 * Update to use 2021-03-01 api-version
