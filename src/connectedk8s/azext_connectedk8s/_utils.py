@@ -166,11 +166,11 @@ def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release
 def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
     if isinstance(ex, AuthenticationError):
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        raise ClientRequestError("Authentication error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise AzureResponseError("Authentication error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     if isinstance(ex, TokenExpiredError):
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        raise ClientRequestError("Token expiration error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise AzureResponseError("Token expiration error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     if isinstance(ex, HttpOperationError):
         status_code = ex.response.status_code

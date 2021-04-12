@@ -1478,7 +1478,7 @@ def merge_kubernetes_configurations(existing_file, addition_file, replace, conte
     if addition is None:
         telemetry.set_exception(exception='Failed to load additional configuration', fault_type=consts.Failed_To_Load_K8s_Configuration_Fault_Type,
                                 summary='failed to load additional configuration from {}'.format(addition_file))
-        raise FileOperationError('failed to load additional configuration from {}'.format(addition_file))
+        raise CLIInternalError('failed to load additional configuration from {}'.format(addition_file))
 
     if existing is None:
         existing = addition
@@ -1501,7 +1501,7 @@ def merge_kubernetes_configurations(existing_file, addition_file, replace, conte
         except Exception as e:
             telemetry.set_exception(exception=e, fault_type=consts.Failed_To_Merge_Kubeconfig_File,
                                     summary='Exception while merging the kubeconfig file')
-            raise FileOperationError('Exception while merging the kubeconfig file.' + str(e))
+            raise CLIInternalError('Exception while merging the kubeconfig file.' + str(e))
 
     current_context = addition.get('current-context', 'UNKNOWN')
     msg = 'Merged "{}" as current context in {}'.format(current_context, existing_file)
