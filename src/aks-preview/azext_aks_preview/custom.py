@@ -642,8 +642,10 @@ def _get_user_assigned_identity(cli_ctx, resource_id):
 def _get_user_assigned_identity_client_id(cli_ctx, resource_id):
     return _get_user_assigned_identity(cli_ctx, resource_id).client_id
 
+
 def _get_user_assigned_identity_object_id(cli_ctx, resource_id):
     return _get_user_assigned_identity(cli_ctx, resource_id).principal_id
+
 
 def _update_dict(dict1, dict2):
     cp = dict1.copy()
@@ -4097,6 +4099,7 @@ def aks_pod_identity_exception_update(cmd, client, resource_group_name, cluster_
 def aks_pod_identity_exception_list(cmd, client, resource_group_name, cluster_name):
     instance = client.get(resource_group_name, cluster_name)
     return _remove_nulls([instance])[0]
+
 
 def _ensure_cluster_identity_permission_on_kubelet_identity(cli_ctx, cluster_identity_object_id, scope):
     managed_identity_operator_role = 'Managed Identity Operator'
