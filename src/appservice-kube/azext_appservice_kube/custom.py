@@ -224,8 +224,8 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
                 if kube.extended_location.custom_location.lower() == custom_location.lower():
                     kube_environment = kube.id
                     break
-    if not kube_environment:
-        raise CLIError('Unable to find Kube Environment associated to the Custom Location')
+        if not kube_environment:
+            raise CLIError('Unable to find Kube Environment associated to the Custom Location')
 
     if app_service_environment:
         if hyper_v:

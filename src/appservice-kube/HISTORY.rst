@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.11
+++++++
+* Oops broke AppService plan create for non-k8se 
+
 0.1.10
 ++++++
 * Functions should not pull docker image
