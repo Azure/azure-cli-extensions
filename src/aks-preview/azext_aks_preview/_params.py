@@ -265,6 +265,7 @@ def load_arguments(self, _):
                    validator=validate_pod_identity_resource_name('identity_name', required=False))
         c.argument('identity_namespace', type=str, options_list=['--namespace'], help='The pod identity namespace.')
         c.argument('identity_resource_id', type=str, options_list=['--identity-resource-id'], help='Resource id of the identity to use.')
+        c.argument('binding_selector', type=str, options_list=['--binding-selector'], help='Optional binding selector to use.')
 
     with self.argument_context('aks pod-identity delete') as c:
         c.argument('identity_name', type=str, options_list=['--name', '-n'], default=None, required=True,
