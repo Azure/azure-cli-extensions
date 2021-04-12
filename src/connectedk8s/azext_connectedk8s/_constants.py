@@ -112,3 +112,4 @@ RELEASE_DATE_LINUX = 'release12-03-21'
 CSP_REFRESH_TIME = 300
 # URL constants
 CSP_Storage_Url = "https://k8sconnectcsp.blob.core.windows.net"
+Kubernetes_Github_Latest_Release_Uri = "https://api.github.com/repos/kubernetes/kubernetes/releases/latest"

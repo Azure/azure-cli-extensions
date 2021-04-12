@@ -9,6 +9,8 @@ import subprocess
 from subprocess import Popen, PIPE
 import time
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 import json
 
 from knack.util import CLIError
@@ -23,8 +25,6 @@ from kubernetes.client.rest import ApiException
 from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError
 
 
@@ -374,3 +374,81 @@ def is_guid(guid):
         return True
     except ValueError:
         return False
+
+
+def get_latest_extension_version(extension_name='connectedk8s'):
+    try:
+        import re
+        git_url = "https://raw.githubusercontent.com/Azure/azure-cli-extensions/master/src/{}/setup.py".format(extension_name)
+        response = requests.get(git_url, timeout=10)
+        if response.status_code != 200:
+            logger.info("Failed to fetch the latest version from '%s' with status code '%s' and reason '%s'",
+                        git_url, response.status_code, response.reason)
+            return None
+        for line in response.iter_lines():
+            txt = line.decode('utf-8', errors='ignore')
+            if txt.startswith('VERSION'):
+                match = re.search(r'VERSION = \'(.*)\'$', txt)
+                if match:
+                    return match.group(1)
+                else:
+                    match = re.search(r'VERSION = \"(.*)\"$', txt)
+                    if match:
+                        return match.group(1)
+        return None
+    except Exception as ex:  # pylint: disable=broad-except
+        logger.info("Failed to get the latest version from '%s'. %s", git_url, str(ex))
+        return None
+
+
+def get_existing_extension_version(extension_name='connectedk8s'):
+    from azure.cli.core.extension import get_extensions
+    extensions = get_extensions()
+    if extensions:
+        for ext in extensions:
+            if ext.name == extension_name:
+                return ext.version or 'Unknown'
+
+    return 'NotFound'
+
+
+def check_connectivity(url='https://example.org', max_retries=5, timeout=1):
+    import timeit
+    start = timeit.default_timer()
+    success = None
+    try:
+        with requests.Session() as s:
+            s.mount(url, requests.adapters.HTTPAdapter(max_retries=max_retries))
+            s.head(url, timeout=timeout)
+            success = True
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as ex:
+        logger.info('Connectivity problem detected.')
+        logger.debug(ex)
+        success = False
+    stop = timeit.default_timer()
+    logger.debug('Connectivity check: %s sec', stop - start)
+    return success
+
+
+def get_latest_kubernetes_version():
+    retries = Retry(total=3, backoff_factor=1, status_forcelist=[413, 429, 500, 502, 503, 504])
+    req_session = requests.Session()
+    adapter = TimeoutHTTPAdapter(max_retries=retries)
+    req_session.mount("https://", adapter)
+    req_session.mount("http://", adapter)
+
+    url = consts.Kubernetes_Github_Latest_Release_Uri
+
+    payload = {}
+    headers = {'Accept': 'application/vnd.github.v3+json'}
+    try:
+        response = req_session.request("GET", url, headers=headers, data=payload)
+        if response.status_code == 200:
+            latest_release = json.loads(response.text)
+            return latest_release["tag_name"]
+        else:
+            logger.warning("Couldn't fetch the latest kubernetes stable release information. Response status code: {}".format(response.status_code))
+    except Exception as e:
+        logger.warning("Couldn't fetch the latest kubernetes stable release information. Error: " + str(e))
+
+    return None
