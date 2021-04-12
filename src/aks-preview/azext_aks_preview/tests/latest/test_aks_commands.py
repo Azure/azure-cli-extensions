@@ -1429,7 +1429,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create control plane identity
         control_plane_identity = 'identity create --resource-group={resource_group} --name={control_plane_identity_name}'
         c_identity = self.cmd(control_plane_identity, checks=[
-            self.check('name', control_plane_identity)
+            self.check('name', control_plane_identity_name)
         ]).get_output_in_json()
         control_plane_identity_resource_id = c_identity["id"]
         assert control_plane_identity_resource_id is not None
@@ -1440,7 +1440,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create kubelet identity
         kubelet_identity = 'identity create --resource-group={resource_group} --name={kubelet_identity_name}'
         k_identity = self.cmd(kubelet_identity, checks=[
-            self.check('name', kubelet_identity)
+            self.check('name', kubelet_identity_name)
         ]).get_output_in_json()
         kubelet_identity_resource_id = k_identity["id"]
         assert kubelet_identity_resource_id is not None
