@@ -469,6 +469,7 @@ def validate_pod_identity_resource_namespace(namespace):
         # namespace cannot be empty
         raise CLIError('--namespace is required')
 
+
 def validate_assign_kubelet_identity(namespace):
     if namespace.assign_kubelet_identity is not None:
         if namespace.assign_kubelet_identity == '':

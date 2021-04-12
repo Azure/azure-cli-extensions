@@ -1345,7 +1345,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         }
         cluster_identity_object_id = _get_user_assigned_identity_object_id(cmd.cli_ctx, assign_identity)
         # ensure the cluster identity has "Managed Identity Operator" role at the scope of kubelet identity
-        _ensure_cluster_identity_permission_on_kubelet_identity(cmd.cli_ctx, cluster_identity_object_id, kubelet_identity.principal_id, assign_kubelet_identity)
+        _ensure_cluster_identity_permission_on_kubelet_identity(cmd.cli_ctx, cluster_identity_object_id, assign_kubelet_identity)
 
     pod_identity_profile = None
     if enable_pod_identity:
@@ -4098,7 +4098,7 @@ def aks_pod_identity_exception_list(cmd, client, resource_group_name, cluster_na
     instance = client.get(resource_group_name, cluster_name)
     return _remove_nulls([instance])[0]
 
-def _ensure_cluster_identity_permission_on_kubelet_identity(cli_ctx, cluster_identity_object_id, kubelet_identity_object_id, scope):
+def _ensure_cluster_identity_permission_on_kubelet_identity(cli_ctx, cluster_identity_object_id, scope):
     managed_identity_operator_role = 'Managed Identity Operator'
     managed_identity_operator_role_id = 'f1a07417-d97a-45cb-824c-7a7467783830'
 
