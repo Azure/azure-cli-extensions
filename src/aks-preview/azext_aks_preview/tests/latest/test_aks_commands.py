@@ -1456,7 +1456,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.exists('identity'),
             self.exists('identityProfile'),
             self.check('provisioningState', 'Succeeded'),
-            self.check('identityProfile.resourceId', kubelet_identity_resource_id),
+            self.check('identityProfile.kubeletidentity.resourceId', kubelet_identity_resource_id),
         ])
 
         # delete
