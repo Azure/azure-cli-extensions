@@ -69,7 +69,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall ip-config delete -g {rg} -n {ipconfig2} -f {af}')
         self.cmd('network firewall ip-config delete -g {rg} -n {ipconfig} -f {af}')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_management_ip_config')
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_management_ip_config')
     def test_azure_firewall_management_ip_config(self, resource_group):
         self.kwargs.update({
             'af': 'af1',
