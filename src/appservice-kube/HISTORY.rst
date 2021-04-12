@@ -3,6 +3,13 @@
 Release History
 ===============
 
+0.1.10
+++++++
+* Functions should not pull docker image
+* Functionapp deployment source config-zip command
+* AppService plan create should drop --kube-environment and --kube-sku
+* Change kind to 'linux,kubernetes'
+
 0.1.9
 ++++++
 * Fix webapp zipdeploy command
