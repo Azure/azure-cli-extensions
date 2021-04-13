@@ -218,10 +218,17 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
     client = web_client_factory(cmd.cli_ctx)
 
     if custom_location:
+        custom_location_rg = resource_group_name
+        if is_valid_resource_id(custom_location):
+            parsed_custom_location = parse_resource_id(custom_location)
+            custom_location_rg = parsed_custom_location.get("resource_group")
+            custom_location = parsed_custom_location.get("name")
+
         kube_envs = cf_kube_environments(cmd.cli_ctx).list_by_subscription()
         for kube in kube_envs:
             if kube.extended_location and kube.extended_location.custom_location:
-                if kube.extended_location.custom_location.lower() == custom_location.lower():
+                parsed_custom_location_2 = parse_resource_id(kube.extended_location.custom_location)
+                if (parsed_custom_location_2.get("name").lower() == custom_location.lower()) and (parsed_custom_location_2.get("resource_group").lower() == custom_location_rg.lower()):
                     kube_environment = kube.id
                     break
         if not kube_environment:

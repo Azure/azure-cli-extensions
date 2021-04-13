@@ -137,7 +137,7 @@ def load_arguments(self, _):
                    validator=validate_asp_create)
         c.argument('app_service_environment', options_list=['--app-service-environment', '-e'],
                    help="Name or ID of the app service environment")
-        c.argument('custom_location', options_list=['--custom-location', '-c'], help="ID of the custom location")
+        c.argument('custom_location', options_list=['--custom-location', '-c'], help="Name or ID of the custom location")
         c.argument('sku',
                    help='The pricing tiers, e.g., F1(Free), D1(Shared), B1(Basic Small), B2(Basic Medium), B3(Basic Large), S1(Standard Small), P1V2(Premium V2 Small), PC2 (Premium Container Small), PC3 (Premium Container Medium), PC4 (Premium Container Large), I1 (Isolated Small), I2 (Isolated Medium), I3 (Isolated Large), Any, ElasticAny')
         c.argument('kube_sku', required=False, help='VM size or ANY', default=KUBE_DEFAULT_SKU, completer=get_kube_sku_completion_list, is_preview=True)
