@@ -1736,16 +1736,30 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     if disable_pod_identity:
         _update_addon_pod_identity(instance, enable=False)
 
-    azure_keyvault_secrets_provider_addon_profile = instance.addon_profiles.get(
-        CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, None)
+    azure_keyvault_secrets_provider_addon_profile = None
+    monitoring_addon_enabled = False
+    ingress_appgw_addon_enabled = False
+    virtual_node_addon_enabled = False
+
+    if instance.addon_profiles is not None:
+        azure_keyvault_secrets_provider_addon_profile = instance.addon_profiles.get(CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, None)
+        azure_keyvault_secrets_provider_enabled = CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME in instance.addon_profiles and \
+            instance.addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME].enabled
+        monitoring_addon_enabled = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and \
+            instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
+        ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles and \
+            instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].enabled
+        virtual_node_addon_enabled = CONST_VIRTUAL_NODE_ADDON_NAME + 'Linux' in instance.addon_profiles and \
+            instance.addon_profiles[CONST_VIRTUAL_NODE_ADDON_NAME + 'Linux'].enabled
+
     if enable_secret_rotation:
-        if azure_keyvault_secrets_provider_addon_profile is None or not azure_keyvault_secrets_provider_addon_profile.enabled:
+        if not azure_keyvault_secrets_provider_enabled:
             raise CLIError(
                 '--enable-secret-rotation can only be specified when azure-keyvault-secrets-provider is enabled')
         azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
 
     if disable_secret_rotation:
-        if azure_keyvault_secrets_provider_addon_profile is None or not azure_keyvault_secrets_provider_addon_profile.enabled:
+        if not azure_keyvault_secrets_provider_enabled:
             raise CLIError(
                 '--disable-secret-rotation can only be specified when azure-keyvault-secrets-provider is enabled')
         azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "false"
@@ -1754,13 +1768,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.tags = tags
 
     headers = get_aks_custom_headers(aks_custom_headers)
-    monitoring_addon_enabled = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and \
-        instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
-    ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles and \
-        instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].enabled
-    virtual_node_addon_enabled = CONST_VIRTUAL_NODE_ADDON_NAME + 'Linux' in instance.addon_profiles and \
-        instance.addon_profiles[CONST_VIRTUAL_NODE_ADDON_NAME +
-                                'Linux'].enabled
+
     return _put_managed_cluster_ensuring_permission(cmd,
                                                     client,
                                                     subscription_id,
