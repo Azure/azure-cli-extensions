@@ -26,7 +26,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('account_name', type=str, help='Name of an mixed reality account.', arg_type=name_type, id_part='name')  # pylint: disable=line-too-long
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)  # pylint: disable=line-too-long
-        c.argument('tags', tags_type)
+        c.argument('tags', arg_type=tags_type)
         c.argument('sku', action=AddSku, nargs='+', help='The SKU associated with this account')
         c.argument('kind', action=AddSku, nargs='+', help='The kind of account, if supported')
         c.argument('storage_account_name', type=str, help='The name of the storage account associated with this accountId')  # pylint: disable=line-too-long
@@ -37,7 +37,7 @@ def load_arguments(self, _):
     with self.argument_context('remote-rendering-account') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('account_name', type=str, help='Name of an mixed reality account.', arg_type=name_type, id_part='name')  # pylint: disable=line-too-long
-        c.argument('tags', tags_type)
+        c.argument('tags', arg_type=tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)  # pylint: disable=line-too-long
         c.argument('sku', action=AddSku, nargs='+', help='The SKU associated with this account')
         c.argument('kind', action=AddSku, nargs='+', help='The kind of account, if supported')
