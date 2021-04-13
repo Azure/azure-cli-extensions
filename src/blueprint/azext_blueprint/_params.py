@@ -88,7 +88,7 @@ def load_arguments(self, _):
 
     with self.argument_context('blueprint export') as c:
         c.argument('blueprint_name', options_list=['--name', '-n'], help='Name of the blueprint definition to export.')
-        c.argument('output_path', type=file_type, required=True, help='The directory path for json definitions of the blueprint and artifacts. The blueprint definition file will be named blueprint.json. Artifacts json files will be in a subdirectory named artifacts.', completer=FilesCompleter())
+        c.argument('output_path', type=file_type, help='The directory path for json definitions of the blueprint and artifacts. The blueprint definition file will be named blueprint.json. Artifacts json files will be in a subdirectory named artifacts.', completer=FilesCompleter())
         c.argument('force', arg_type=get_three_state_flag(invert=True, return_label=True), options_list=['--force', '-f'], help='When set, if directory does not exist, it will be created. If the directory exists and has contents, they will be overwritten. If not set, user will be prompted for permission to proceed')
 
     with self.argument_context('blueprint artifact delete') as c:
