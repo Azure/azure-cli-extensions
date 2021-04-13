@@ -32,8 +32,8 @@ short-summary: Connect to a flexible server.
 example:
   - name: Connect to a flexible server and execute a query with results outputted in a table.
     text: az mysql flexible-server connect -n testServer -u username -p password --querytext "select host, user from mysql.user;" --output table
-  - name: Connect to a flexible server and execute a sql file. 
-    text: az mysql flexible-server connect -n testServer -u username -p password --file-path ".\example_file.sql" 
+  - name: Connect to a flexible server and execute a sql file.
+    text: az mysql flexible-server connect -n testServer -u username -p password --file-path path_to_sql_file
 """
 
 helps['postgres flexible-server execute'] = """
@@ -42,6 +42,6 @@ short-summary: Connect to a flexible server.
 example:
   - name: Connect to a flexible server and execute a query with results outputted in a table.
     text: az postgres flexible-server connect -n testServer -u username -p password --querytext "select * from pg_user;" --output table
-  - name: Connect to a flexible server and execute a sql file. 
-    text: az mysql flexible-server connect -n testServer -u username -p password --file-path ".\example_file.sql" 
+  - name: Connect to a flexible server and execute a sql file.
+    text: az mysql flexible-server connect -n testServer -u username -p password --file-path path_to_sql_file
 """

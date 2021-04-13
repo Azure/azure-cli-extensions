@@ -5,7 +5,6 @@
 
 # pylint: disable=import-error,too-many-locals,too-many-statements,too-many-nested-blocks
 import os
-import sys
 from knack.util import CLIError
 from knack.log import get_logger
 import psycopg2
@@ -18,6 +17,7 @@ from azure.cli.core.extension import EXTENSIONS_DIR
 logger = get_logger(__name__)
 DEFAULT_MYSQL_DB_NAME = ''  # no default database required
 DEFAULT_PG_DB_NAME = 'postgres'
+
 
 def connect_to_flexible_server_mysql(cmd, server_name, administrator_login, administrator_login_password=None,
                                      database_name=None, interactive_mode=None):
@@ -74,7 +74,8 @@ def execute_flexible_server_postgres(cmd, server_name, administrator_login, admi
 
 
 def connect_to_server_helper(server_type, endpoint, default_db_name, server_name, administrator_login,
-                             administrator_login_password, database_name, query_command=None, interactive=None, file_path=None):
+                             administrator_login_password, database_name, query_command=None,
+                             interactive=None, file_path=None):
     host = '{}{}'.format(server_name, endpoint)
     json_data = None
 
@@ -86,7 +87,8 @@ def connect_to_server_helper(server_type, endpoint, default_db_name, server_name
                            database_name)
 
     if administrator_login_password is None and interactive is None:
-        raise RequiredArgumentMissingError("Please provide password (--admin-password / -p) or run in --interactive mode.")
+        raise RequiredArgumentMissingError("Please provide password (--admin-password / -p) or "
+                                           "run in --interactive mode.")
 
     # run in either interactive or simple connection mode
     if interactive is not None:
@@ -95,29 +97,29 @@ def connect_to_server_helper(server_type, endpoint, default_db_name, server_name
                            "Please try running either a simple query using -q or run your query in interactive "
                            "mode using --interactive.")
 
-        _connect_interactive(server_type=server_type, 
-                             host=host, 
-                             server_name=server_name, 
-                             database_name=database_name, 
-                             login_username=administrator_login, 
-                             login_password=administrator_login_password)
+        _connect_interactive(server_type=server_type,
+                             host=host,
+                             server_name=server_name,
+                             database_name=database_name,
+                             login_username=administrator_login)
+
     elif file_path is None:
-        json_data =  _connect_execute_query(server_type=server_type, 
-                                            host=host, 
-                                            server_name=server_name, 
-                                            database_name=database_name, 
-                                            login_username=administrator_login,
-                                            login_password=administrator_login_password,
-                                            query=query_command)
+        json_data = _connect_execute_query(server_type=server_type,
+                                           host=host,
+                                           server_name=server_name,
+                                           database_name=database_name,
+                                           login_username=administrator_login,
+                                           login_password=administrator_login_password,
+                                           query=query_command)
 
     if file_path is not None:
-        _connect_execute_file(server_type=server_type, 
-                             host=host, 
-                             server_name=server_name, 
-                             database_name=database_name, 
-                             login_username=administrator_login,
-                             login_password=administrator_login_password,
-                             file_path=file_path)
+        _connect_execute_file(server_type=server_type,
+                              host=host,
+                              server_name=server_name,
+                              database_name=database_name,
+                              login_username=administrator_login,
+                              login_password=administrator_login_password,
+                              file_path=file_path)
 
     return json_data
 
@@ -141,11 +143,10 @@ def set_environment_paths(extension_directory):
         os.environ['PYTHONPATH'] = extension_python_path
 
 
-def _connect_interactive(server_type, host, server_name, database_name, login_username, login_password):
+def _connect_interactive(server_type, host, server_name, database_name, login_username):
     # if interactive mode indicated, use pgcli to connect
     try:
         # setup environment path variable for pgcli and mycli
-        from azure.cli.core.extension import EXTENSIONS_DIR
         set_environment_paths(EXTENSIONS_DIR)
 
         if server_type == "postgres":
@@ -181,7 +182,7 @@ def _connect_execute_query(server_type, host, server_name, database_name, login_
         logger.warning('Successfully connected to %s.', server_name)
     except Exception as e:
         logger.warning("Failed connection to %s. Check error and validate firewall and public access "
-                        "or virtual network settings.", server_name)
+                       "or virtual network settings.", server_name)
         raise AzureConnectionError("Unable to connect to flexible server: {}".format(e))
 
     if query is not None:
@@ -202,13 +203,13 @@ def _connect_execute_query(server_type, host, server_name, database_name, login_
         except Exception as e:
             raise CLIError("Unable to execute query '{0}': {1}".format(query, e))
         finally:
-                try:
-                    cursor.close()
-                    logger.warning("Closed the connection to %s", server_name)
-                except Exception as e:  # pylint: disable=broad-except
-                    logger.warning('Unable to close connection cursor.')
-                    raise CLIError(str(e))
-    
+            try:
+                cursor.close()
+                logger.warning("Closed the connection to %s", server_name)
+            except Exception as e:  # pylint: disable=broad-except
+                logger.warning('Unable to close connection cursor.')
+                raise CLIError(str(e))
+
     return json_data
 
 
@@ -236,7 +237,7 @@ def _connect_execute_file(server_type, host, server_name, database_name, login_u
 
     except Exception as e:
         logger.warning("Failed connection to %s. Check error and validate firewall and public access "
-                        "or virtual network settings.", server_name)
+                       "or virtual network settings.", server_name)
         raise AzureConnectionError("Unable to connect to flexible server: {}".format(e))
 
     # Execute the file
@@ -252,7 +253,7 @@ def _connect_execute_file(server_type, host, server_name, database_name, login_u
             logger.warning('Successfully executed the file.')
     except Exception as e:
         fail_flag = True
-        logger.warning("Unable to execute the sql file {0}".format(file_path))
+        logger.warning("Unable to execute the sql file %s", file_path)
         raise CLIError(e)
     finally:
         if cursor is not None:
@@ -264,5 +265,4 @@ def _connect_execute_file(server_type, host, server_name, database_name, login_u
             except Exception as e:  # pylint: disable=broad-except
                 if server_type == 'postgres':
                     raise CLIError("Unable to close connection cursor. " + str(e))
-                elif server_type == 'mysql':
-                    raise CLIError(str(e))
+                raise CLIError(str(e))
