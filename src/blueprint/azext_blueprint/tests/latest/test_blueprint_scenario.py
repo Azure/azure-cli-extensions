@@ -312,7 +312,7 @@ class BlueprintScenarioTest(ScenarioTest):
 
         self.cmd(
             'az blueprint export '
-            '--export-path "src/blueprint/azext_blueprint/tests/latest/input/export_with_artifacts/exported" '
+            '--output-path "src/blueprint/azext_blueprint/tests/latest/input/export_with_artifacts/exported" '
             '--name "{blueprintName}" '
             '--force',
             checks=[])

@@ -87,6 +87,16 @@ helps['blueprint import'] = """
                --input-path "path/to/blueprint/directory"
 """
 
+helps['blueprint export'] = """
+    type: command
+    short-summary: export a blueprint definition and artifacts to json file(s).
+    examples:
+      - name: export a blueprint definition and artifacts
+        text: |-
+               az blueprint export --name MyBlueprint \\
+               --ouptut-path "path/to/blueprint/directory"
+"""
+
 helps['blueprint resource-group'] = """
     type: group
     short-summary: Commands to manage blueprint resource group artifact.
