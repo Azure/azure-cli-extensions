@@ -343,19 +343,19 @@ class BlueprintScenarioTest(ScenarioTest):
 
         try:
             self.assertEqual(ordered_input_blueprint, ordered_output_blueprint)
-        except AssertionError as AE:
+        except AssertionError:
             if output_path.exists() and output_path.is_dir():
                 shutil.rmtree(output_path)
-            raise AE
+            raise
 
         # artifact directory comparison
         artifacts_cmp = filecmp.dircmp(input_artifact_directory, output_artifact_directory)
         try:
             assert len(artifacts_cmp.right_only) == 0 and len(artifacts_cmp.left_only) == 0 and len(artifacts_cmp.funny_files) == 0
-        except AssertionError as AE:
+        except AssertionError:
             if output_path.exists() and output_path.is_dir():
                 shutil.rmtree(output_path)
-            raise AE
+            raise
 
         # artifact file comparison
         for filename in os.listdir(input_artifact_directory):
@@ -367,10 +367,10 @@ class BlueprintScenarioTest(ScenarioTest):
                 ordered_output_artifact = ordered(output_artifact)
             try:
                 self.assertEqual(ordered_input_artifact, ordered_output_artifact)
-            except AssertionError as AE:
+            except AssertionError:
                 if output_path.exists() and output_path.is_dir():
                     shutil.rmtree(output_path)
-                raise AE
+                raise
 
         self.cmd('az blueprint delete '
                  '--name "{blueprintName}" '
