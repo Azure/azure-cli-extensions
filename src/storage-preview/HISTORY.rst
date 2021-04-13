@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.7.2(2021-04-09)
+++++++++++++++++++
+* Remove `az storage blob service-properties` as it is supported in storage-blob-preview extension and Azure CLI
+
 0.7.1(2021-04-06)
 ++++++++++++++++++
 * `az storage account file-service-properties`: Add support for secured SMB

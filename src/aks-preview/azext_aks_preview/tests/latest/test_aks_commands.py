@@ -744,7 +744,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                  checks=[
                      # if rerun the recording, please update latestNodeImageVersion to the latest value
                      self.check('latestNodeImageVersion',
-                                'AKSUbuntu-1804-2021.01.06'),
+                                'AKSUbuntu-1804gen2-2021.03.29'),
                      self.check(
                          'type', "Microsoft.ContainerService/managedClusters/agentPools/upgradeProfiles")
                  ])
