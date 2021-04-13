@@ -43,7 +43,17 @@ class RemoteRenderingAccountScenarioTest(ScenarioTest):
         self.cmd('remote-rendering-account list -g {rg}', checks=self.check('length(@)', 1))
 
         # key
-        self.cmd('remote-rendering-account key renew -g {rg} -n {account_name}')
-        self.cmd('remote-rendering-account key renew -g {rg} -n {account_name} --serial 1')
-        self.cmd('remote-rendering-account key renew -g {rg} -n {account_name} --serial 2')
-        self.cmd('remote-rendering-account key show -g {rg} -n {account_name}')
+        x = 'primaryKey'
+        y = 'secondaryKey'
+        key = self.cmd('remote-rendering-account key show -g {rg} -n {account_name}').get_output_in_json()
+        key1 = self.cmd('remote-rendering-account key renew -g {rg} -n {account_name}').get_output_in_json()
+        self.assertEqual(key[y], key1[y])
+        self.assertNotEqual(key[x], key1[x])
+
+        key2 = self.cmd('remote-rendering-account key renew -g {rg} -n {account_name} -k primary').get_output_in_json()
+        self.assertEqual(key2[y], key1[y])
+        self.assertNotEqual(key2[x], key1[x])
+
+        key3 = self.cmd('remote-rendering-account key renew -g {rg} -n {account_name} -k secondary').get_output_in_json()
+        self.assertEqual(key2[x], key3[x])
+        self.assertNotEqual(key2[y], key3[y])

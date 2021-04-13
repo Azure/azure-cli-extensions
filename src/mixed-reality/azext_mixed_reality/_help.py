@@ -135,7 +135,7 @@ helps['spatial-anchors-account key renew'] = """
     examples:
       - name: Regenerate spatial anchors account keys
         text: |-
-               az spatial-anchors-account key renew -n "MyAccount" --serial 1 \
+               az spatial-anchors-account key renew -n "MyAccount" -k primary \
 --resource-group "MyResourceGroup"
 """
 
@@ -270,7 +270,7 @@ helps['remote-rendering-account key renew'] = """
     examples:
       - name: Regenerate remote rendering account keys
         text: |-
-               az remote-rendering-account key renew -n "MyAccount" --serial 1 \
+               az remote-rendering-account key renew -n "MyAccount" -k primary \
 --resource-group "MyResourceGroup"
 """
 
