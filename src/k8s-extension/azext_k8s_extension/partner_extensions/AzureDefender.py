@@ -41,7 +41,8 @@ class AzureDefender(PartnerExtensionModel):
         is_ci_extension_type = False
 
         logger.warning('Ignoring name, release-namespace and scope parameters since %s '
-                       'only supports cluster scope and single instance of this extension', extension_type)
+                       'only supports cluster scope and single instance of this extension.', extension_type)
+        logger.warning("Defaulting to extension name '%s' and release-namespace '%s'", name, release_namespace)
 
         _get_container_insights_settings(cmd, resource_group_name, cluster_name, configuration_settings,
                                          configuration_protected_settings, is_ci_extension_type)

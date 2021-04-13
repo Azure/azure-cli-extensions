@@ -84,6 +84,11 @@ examples:
     text: az storage account file-service-properties update --enable-smb-multichannel -n mystorageaccount -g MyResourceGroup
   - name: Disable SMB Multichannel setting for file service.
     text: az storage account file-service-properties update --enable-smb-multichannel false -n mystorageaccount -g MyResourceGroup
+  - name: Set secured SMB setting for file service.
+    text: >
+        az storage account file-service-properties update --versions SMB2.1;SMB3.0;SMB3.1.1
+        --auth-methods NTLMv2;Kerberos --kerb-ticket-encryption RC4-HMAC;AES-256
+        --channel-encryption AES-CCM-128;AES-GCM-128;AES-GCM-256 -n mystorageaccount -g MyResourceGroup
 """
 
 helps['storage account keys list'] = """

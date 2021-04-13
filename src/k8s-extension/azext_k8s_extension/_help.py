@@ -32,8 +32,3 @@ helps[f'{consts.EXTENSION_NAME} show'] = """
     type: command
     short-summary: Show details of a K8s-extension.
 """
-
-helps[f'{consts.EXTENSION_NAME} update'] = """
-    type: command
-    short-summary: Update a K8s-extension.
-"""
