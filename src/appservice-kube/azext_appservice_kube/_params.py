@@ -158,25 +158,12 @@ def load_arguments(self, _):
     # App Service on Kubernetes Commands
     with self.argument_context('appservice kube create') as c:
         c.argument('kube_name', arg_type=name_arg_type, help='Name of the kubernetes environment.')
-        c.argument('node_count', type=int, help='Number of nodes in the default node pool.', validator=validate_nodes_count)
-        c.argument('max_count', type=int, help='Maximum number of nodes for autoscaling.', validator=validate_nodes_count)
-        c.argument('nodepool_name', help='Name of the cluster\'s default node pool.', validator=validate_nodepool_name)
-        c.argument('node_vm_size', help='Size of the default node pool\'s VMs.',
-                   completer=get_vm_size_completion_list)
-        c.argument('client_id', help='Service principal client id.')
-        c.argument('client_secret', help='Service principal client secret.')
+        c.argument('custom_location', options_list=['--custom-location', '-c'], help="ID of the custom location")
         c.argument('internal_load_balancing', arg_type=get_three_state_flag(), help='Whether the Kube Environment is only visible within Vnet/Subnet.')
-        c.argument('network_plugin', default='kubenet', arg_type=get_enum_type(K8SENetworkPlugin), help='If vnet subnet is not specified, only kubenet is supported')
-        c.argument('subnet', help='Name or ID of existing subnet. To create vnet and/or subnet \
-                   use `az network vnet [subnet] create`')
-        c.argument('vnet_name', help='Name of the vnet. Mandatory if only subnet name is specified.')
-        c.argument('dns_service_ip', help='Kubernetes Dns Service IP within service_cidr (commonly, .10 address). This is required if a vnet subnet is specified.')
-        c.argument('service_cidr', help='Address space to be used by services (nodeport/clusterip/loadbalancer). It must be within the vnet but not used by subnet. This is required if a vnet subnet is specified.')
-        c.argument('docker_bridge_cidr', help='This lets the cluster nodes communicate with the underlying management platform. This IP address must NOT be within the virtual network IP address range of your cluster, and shouldn\'t overlap with other address ranges in use on your network. Default (by AKS) is 172.17.0.1/16. If your VNET overlapped with this, you must specify others.')
-        c.argument('workspace_id', help='Log analytics workspace ID')
         c.argument('tags', arg_type=tags_type)
         c.argument('aks', help='AKS name or resource ID')
         c.argument('static_ip', help='Static IP Address. This is required if an AKS resource ID is specified.')
+        c.argument('no_wait', help='Do not wait for the create to complete, and return immediately after queuing the create.')
 
     with self.argument_context('appservice kube update') as c:
         c.argument('kube_name', arg_type=name_arg_type, help='Name of the kubernetes environment.')
