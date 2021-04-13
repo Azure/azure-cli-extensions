@@ -125,6 +125,7 @@ def get_blueprint(cmd, client, blueprint_name, management_group=None, subscripti
 def list_blueprint(cmd, client, management_group=None, subscription=None, scope=None, **kwargs):
     return client.list(scope=scope)
 
+
 def export_blueprint_with_artifacts(cmd, client, blueprint_name, export_path, force=False, management_group=None, subscription=None, scope=None, **kwargs):
     # match folder structure required for import_blueprint_with_artifact
     blueprint_parent_folder = os.path.join(os.path.abspath(export_path), blueprint_name)
@@ -154,6 +155,7 @@ def export_blueprint_with_artifacts(cmd, client, blueprint_name, export_path, fo
         serialized_artifact = artifact.serialize()
         with open(artifact_file_location, 'w') as f:
             json.dump(serialized_artifact, f, indent=4)
+
 
 def delete_blueprint_artifact(cmd, client, blueprint_name, artifact_name,
                               management_group=None, subscription=None, scope=None):

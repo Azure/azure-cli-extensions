@@ -310,7 +310,6 @@ class BlueprintScenarioTest(ScenarioTest):
             '-y',
             checks=[])
 
-
         self.cmd(
             'az blueprint export '
             '--export-path "src/blueprint/azext_blueprint/tests/latest/input/export_with_artifacts/exported" '
@@ -325,7 +324,7 @@ class BlueprintScenarioTest(ScenarioTest):
         output_artifact_directory = f"src/blueprint/azext_blueprint/tests/latest/input/export_with_artifacts/exported/{self.kwargs['blueprintName']}/artifacts"
         output_path = Path(f"src/blueprint/azext_blueprint/tests/latest/input/export_with_artifacts/exported/{self.kwargs['blueprintName']}")
 
-        #recursive function to check for json equality
+        # recursive function to check for json equality
         def ordered(obj):
             if isinstance(obj, dict):
                 return sorted((k, ordered(v)) for k, v in obj.items())
@@ -370,7 +369,7 @@ class BlueprintScenarioTest(ScenarioTest):
                 self.assertEqual(ordered_input_artifact, ordered_output_artifact)
             except AssertionError as AE:
                 if output_path.exists() and output_path.is_dir():
-                    shutil.rmtree(dirpath)
+                    shutil.rmtree(output_path)
                 raise AE
 
         self.cmd('az blueprint delete '
