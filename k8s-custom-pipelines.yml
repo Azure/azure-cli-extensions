@@ -169,7 +169,9 @@ stages:
         echo "Using the private preview of k8s-extension to build..."
 
         cp $(CLI_REPO_PATH)/src/k8s-extension $(CLI_REPO_PATH)/src/k8s-extension-private -r
-        cp $(CLI_REPO_PATH)/src/k8s-extension-private/azext_k8s_extension/_consts_private.py $(CLI_REPO_PATH)/src/k8s-extension-private/azext_k8s_extension/_consts.py
+        mv $(CLI_REPO_PATH)/src/k8s-extension-private/azext_k8s_extension $(CLI_REPO_PATH)/src/k8s-extension-private/azext_k8s_extension_private
+        cp $(CLI_REPO_PATH)/src/k8s-extension-private/setup_private.py $(CLI_REPO_PATH)/src/k8s-extension-private/setup.py
+        cp $(CLI_REPO_PATH)/src/k8s-extension-private/azext_k8s_extension_private/_consts_private.py $(CLI_REPO_PATH)/src/k8s-extension-private/azext_k8s_extension_private/_consts.py
 
         EXTENSION_NAME="k8s-extension-private"
         EXTENSION_FILE_NAME="k8s_extension_private"

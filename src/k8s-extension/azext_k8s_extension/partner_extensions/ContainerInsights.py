@@ -17,14 +17,14 @@ from azure.cli.core.util import sdk_no_wait
 from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
-from azext_k8s_extension.vendored_sdks.models import ExtensionInstance
-from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceUpdate
-from azext_k8s_extension.vendored_sdks.models import ScopeCluster
-from azext_k8s_extension.vendored_sdks.models import Scope
+from ..vendored_sdks.models import ExtensionInstance
+from ..vendored_sdks.models import ExtensionInstanceUpdate
+from ..vendored_sdks.models import ScopeCluster
+from ..vendored_sdks.models import Scope
 
-from azext_k8s_extension.partner_extensions.PartnerExtensionModel import PartnerExtensionModel
+from .PartnerExtensionModel import PartnerExtensionModel
 
-from azext_k8s_extension._client_factory import (
+from .._client_factory import (
     cf_resources, cf_resource_groups, cf_log_analytics)
 
 logger = get_logger(__name__)
