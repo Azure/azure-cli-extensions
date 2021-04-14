@@ -1,63 +1,5 @@
 interactions:
 - request:
-    body: '{"name": "frontdoor000002", "type": "Microsoft.Network/frontDoors"}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network front-door check-name-availability
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '72'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --name --resource-type
-      User-Agent:
-      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
-    method: POST
-    uri: https://management.azure.com/providers/Microsoft.Network/checkFrontDoorNameAvailability?api-version=2020-05-01
-  response:
-    body:
-      string: "{\r\n  \"nameAvailability\":\"Available\",\"reason\":null,\"message\":null\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '67'
-      content-type:
-      - application/json; odata.metadata=minimal
-      date:
-      - Wed, 14 Apr 2021 10:12:12 GMT
-      expires:
-      - '-1'
-      odata-version:
-      - '4.0'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-IIS/10.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-tenant-writes:
-      - '1198'
-      x-powered-by:
-      - ASP.NET
-    status:
-      code: 200
-      message: OK
-- request:
     body: '{"location": "global", "properties": {"friendlyName": "frontdoor000002",
       "routingRules": [{"name": "DefaultRoutingRule", "properties": {"frontendEndpoints":
       [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/frontdoor000002/frontendEndpoints/DefaultFrontendEndpoint"}],
@@ -120,11 +62,11 @@ interactions:
         \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/frontdoor000002/backendPools/DefaultBackendPool\"\r\n
         \           }\r\n          },\"rulesEngine\":null,\"webApplicationFirewallPolicyLink\":null\r\n
         \       }\r\n      }\r\n    ],\"backendPoolsSettings\":{\r\n      \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
-        \   },\"enabledState\":\"Enabled\",\"cName\":\"frontdoor000002.azurefd.net\",\"frontdoorId\":\"dab4762f-d639-4168-89d6-79d071e4db16\",\"friendlyName\":\"frontdoor000002\"\r\n
+        \   },\"enabledState\":\"Enabled\",\"cName\":\"frontdoor000002.azurefd.net\",\"frontdoorId\":\"cf464979-1320-43c2-8ff1-e97c18e73c77\",\"friendlyName\":\"frontdoor000002\"\r\n
         \ }\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/a4539441-833c-4aca-86f2-18f489a267c1?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/65fee355-3be3-46c9-845e-f5726ba2c3ba?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -170,7 +112,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/a4539441-833c-4aca-86f2-18f489a267c1?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/65fee355-3be3-46c9-845e-f5726ba2c3ba?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\":\"InProgress\",\"error\":{\r\n    \"code\":\"None\",\"message\":null\r\n
@@ -223,7 +165,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/a4539441-833c-4aca-86f2-18f489a267c1?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/65fee355-3be3-46c9-845e-f5726ba2c3ba?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\":\"Succeeded\",\"error\":{\r\n    \"code\":\"None\",\"message\":null\r\n
@@ -236,7 +178,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 14 Apr 2021 10:13:08 GMT
+      - Wed, 14 Apr 2021 10:13:09 GMT
       expires:
       - '-1'
       odata-version:
@@ -301,7 +243,7 @@ interactions:
         \             \"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontdoors/frontdoor000002/backendPools/DefaultBackendPool\"\r\n
         \           }\r\n          },\"rulesEngine\":null,\"webApplicationFirewallPolicyLink\":null\r\n
         \       }\r\n      }\r\n    ],\"backendPoolsSettings\":{\r\n      \"enforceCertificateNameCheck\":\"Enabled\",\"sendRecvTimeoutSeconds\":30\r\n
-        \   },\"enabledState\":\"Enabled\",\"cName\":\"frontdoor000002.azurefd.net\",\"frontdoorId\":\"dab4762f-d639-4168-89d6-79d071e4db16\",\"friendlyName\":\"frontdoor000002\"\r\n
+        \   },\"enabledState\":\"Enabled\",\"cName\":\"frontdoor000002.azurefd.net\",\"frontdoorId\":\"cf464979-1320-43c2-8ff1-e97c18e73c77\",\"friendlyName\":\"frontdoor000002\"\r\n
         \ }\r\n}"
     headers:
       cache-control:
@@ -311,7 +253,7 @@ interactions:
       content-type:
       - application/json; odata.metadata=minimal
       date:
-      - Wed, 14 Apr 2021 10:13:09 GMT
+      - Wed, 14 Apr 2021 10:13:10 GMT
       expires:
       - '-1'
       odata-version:
@@ -336,40 +278,84 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"name": "frontdoor000002", "type": "Microsoft.Network/frontDoors"}'
+    body: '{"contentPaths": ["/test1/azure.json", "/test2/*"]}'
     headers:
       Accept:
       - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - network front-door check-name-availability
+      - network front-door purge-endpoint
       Connection:
       - keep-alive
       Content-Length:
-      - '72'
+      - '51'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --name --resource-type
+      - --name -g --content-paths
       User-Agent:
       - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: POST
-    uri: https://management.azure.com/providers/Microsoft.Network/checkFrontDoorNameAvailability?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoors/frontdoor000002/purge?api-version=2020-05-01
   response:
     body:
-      string: "{\r\n  \"nameAvailability\":\"Not Available\",\"reason\":\". Please
-        select a different name for your Front Door.\",\"message\":\"Front Door Name
-        is not available.\"\r\n}"
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/0b34b43d-1f82-49fd-84c2-a886012c908d?api-version=2020-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 14 Apr 2021 10:13:13 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/0b34b43d-1f82-49fd-84c2-a886012c908d/frontdoorresults/frontdoor000002?api-version=2020-05-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door purge-endpoint
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --content-paths
+      User-Agent:
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdooroperationresults/0b34b43d-1f82-49fd-84c2-a886012c908d?api-version=2020-05-01
+  response:
+    body:
+      string: '{"status":"Succeeded","error":{"code":"None","message":null}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '153'
+      - '61'
       content-type:
-      - application/json; odata.metadata=minimal
+      - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 14 Apr 2021 10:13:12 GMT
+      - Wed, 14 Apr 2021 10:13:24 GMT
       expires:
       - '-1'
       odata-version:
@@ -377,21 +363,15 @@ interactions:
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnet-version:
-      - 4.0.30319
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-tenant-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
