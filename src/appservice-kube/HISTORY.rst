@@ -3,6 +3,12 @@
 Release History
 ===============
 
+0.1.12
+++++++
+* Allow specifying custom location by name as well, in appservice plan create
+* az appservice kube create command
+* Change ASP "kind" back to "K8SE", reserved to None so that "kind" is saved properly
+
 0.1.11
 ++++++
 * Oops broke AppService plan create for non-k8se 
