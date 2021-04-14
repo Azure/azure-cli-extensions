@@ -13,7 +13,7 @@ from . import consts
 def load_command_table(self, _):
 
     k8s_extension_sdk = CliCommandType(
-        operations_tmpl=consts.EXTENSION_PACKAGE_NAME+'.vendored_sdks.operations#K8sExtensionsOperations.{}',
+        operations_tmpl=consts.EXTENSION_PACKAGE_NAME + '.vendored_sdks.operations#K8sExtensionsOperations.{}',
         client_factory=cf_k8s_extension)
 
     with self.command_group(consts.EXTENSION_NAME, k8s_extension_sdk, client_factory=cf_k8s_extension_operation,
