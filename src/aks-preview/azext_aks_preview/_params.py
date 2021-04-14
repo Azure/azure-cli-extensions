@@ -129,6 +129,7 @@ def load_arguments(self, _):
         c.argument('enable_encryption_at_host', arg_type=get_three_state_flag(), help='Enable EncryptionAtHost.')
         c.argument('enable_secret_rotation', action='store_true')
         c.argument('assign_kubelet_identity', type=str, validator=validate_assign_kubelet_identity)
+        c.argument('disable_local_accounts', action='store_true')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('aks update') as c:
@@ -159,6 +160,8 @@ def load_arguments(self, _):
         c.argument('enable_secret_rotation', action='store_true')
         c.argument('disable_secret_rotation', action='store_true')
         c.argument('windows_admin_password', options_list=['--windows-admin-password'])
+        c.argument('disable_local_accounts', action='store_true')
+        c.argument('enable_local_accounts', action='store_true')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('aks scale') as c:
