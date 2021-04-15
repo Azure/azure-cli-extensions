@@ -24,6 +24,11 @@ CLASSIFIERS = [
 
 DEPENDENCIES = []
 
+with open('README.md', 'r', encoding='utf-8') as f:
+    README = f.read()
+with open('HISTORY.rst', 'r', encoding='utf-8') as f:
+    HISTORY = f.read()
+
 setup(
     name='front-door',
     version=VERSION,
@@ -32,6 +37,7 @@ setup(
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/front-door',
+    long_description=README + '\n\n' + HISTORY,
     classifiers=CLASSIFIERS,
     package_data={'azext_front_door': ['azext_metadata.json']},
     packages=find_packages(),
