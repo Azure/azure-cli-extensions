@@ -149,13 +149,10 @@ def create_virtual_hub(cmd, resource_group_name, virtual_hub_name, address_prefi
     return sdk_no_wait(no_wait, client.begin_create_or_update,
                        resource_group_name, virtual_hub_name, hub)
 
-def get_effective_virtual_hub_routes(
-    cmd,
-    resource_group_name,
-    virtual_hub_name,
-    virtual_wan_resource_type,
-    resource_id,
-    no_wait=False):
+
+# TODO: Fix later
+def get_effective_virtual_hub_routes(cmd, resource_group_name, virtual_hub_name, virtual_wan_resource_type,
+                                     resource_id, no_wait=False):
 
     client = network_client_factory(cmd.cli_ctx).virtual_hubs
     Resource, EffectiveRoutesParameters = cmd.get_models("Resource", 'EffectiveRoutesParameters')
@@ -164,11 +161,15 @@ def get_effective_virtual_hub_routes(
         resource_id=Resource(id=resource_id)
     )
     
-    return client.begin_get_effective_virtual_hub_routes(
+    poller = client.begin_get_effective_virtual_hub_routes(
         resource_group_name,
         virtual_hub_name,
         parameters
     )
+    print(poller)
+    result = poller.result()
+    print(result)
+    return result
 
 
     # return sdk_no_wait(
@@ -255,7 +256,7 @@ def create_hub_vnet_connection(cmd, resource_group_name, virtual_hub_name, conne
     )
 
     client = network_client_factory(cmd.cli_ctx).hub_virtual_network_connections
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name,
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name,
                        virtual_hub_name, connection_name, connection)
 
 
@@ -266,7 +267,7 @@ def add_hub_route(cmd, resource_group_name, virtual_hub_name, address_prefixes, 
     hub = client.get(resource_group_name, virtual_hub_name)
     route = VirtualHubRoute(address_prefixes=address_prefixes, next_hop_ip_address=next_hop_ip_address)
     hub.route_table.routes.append(route)
-    poller = sdk_no_wait(no_wait, client.create_or_update,
+    poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, virtual_hub_name, hub)
     try:
         return poller.result().route_table.routes
@@ -346,7 +347,7 @@ def create_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_ta
 
         client = _v3_route_table_client(cmd.cli_ctx)
 
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name,
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name,
                        virtual_hub_name, route_table_name, route_table)
 
 
@@ -486,7 +487,7 @@ def create_vpn_gateway(cmd, resource_group_name, gateway_name, virtual_hub,
                        location=None, tags=None, scale_unit=None,
                        asn=None, bgp_peering_address=None, peer_weight=None, no_wait=False):
     from msrestazure.azure_exceptions import CloudError
-    from .vendored_sdks.v2018_08_01.v2018_08_01.models.error_py3 import ErrorException
+    from azure.core.exceptions import AzureError as ErrorException
     client = network_client_factory(cmd.cli_ctx).vpn_gateways
     try:
         client.get(resource_group_name, gateway_name)
@@ -506,7 +507,7 @@ def create_vpn_gateway(cmd, resource_group_name, gateway_name, virtual_hub,
             'peerWeight': peer_weight
         }
     )
-    return sdk_no_wait(no_wait, client.create_or_update,
+    return sdk_no_wait(no_wait, client.begin_create_or_update,
                        resource_group_name, gateway_name, gateway)
 
 
@@ -578,7 +579,7 @@ def create_vpn_gateway_connection(cmd, resource_group_name, gateway_name, connec
         routing_configuration=routing_configuration
     )
 
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, gateway_name, connection_name, conn)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, gateway_name, connection_name, conn)
 
 
 def list_vpn_gateways(cmd, resource_group_name=None):
@@ -673,7 +674,7 @@ def create_vpn_site(cmd, resource_group_name, vpn_site_name, ip_address,
     )
     if not any([asn, bgp_peering_address, peer_weight]):
         site.bgp_properties = None
-    return sdk_no_wait(no_wait, client.create_or_update,
+    return sdk_no_wait(no_wait, client.begin_create_or_update,
                        resource_group_name, vpn_site_name, site)
 
 
@@ -812,7 +813,7 @@ def add_vpn_server_config_ipsec_policy(cmd, resource_group_name, vpn_server_conf
             pfs_group=pfs_group
         )
     )
-    poller = sdk_no_wait(no_wait, client.create_or_update,
+    poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, vpn_server_configuration_name, vpn_server_config)
     if no_wait:
         return poller
@@ -834,7 +835,7 @@ def remove_vpn_server_config_ipsec_policy(cmd, resource_group_name, vpn_server_c
         vpn_server_config.vpn_client_ipsec_policies.pop(index)
     except IndexError:
         raise CLIError('invalid index: {}. Index can range from 0 to {}'.format(index, len(vpn_server_config.vpn_client_ipsec_policies) - 1))
-    poller = sdk_no_wait(no_wait, client.create_or_update,
+    poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, vpn_server_configuration_name, vpn_server_config)
     if no_wait:
         return poller
@@ -846,7 +847,7 @@ def create_p2s_vpn_gateway(cmd, resource_group_name, gateway_name, virtual_hub,
                            scale_unit, location=None, tags=None, p2s_conn_config_name='P2SConnectionConfigDefault',
                            vpn_server_config=None, address_space=None, associated_route_table=None,
                            propagated_route_tables=None, labels=None, no_wait=False):
-    client = network_client_factory(cmd.cli_ctx).p2s_vpn_gateways
+    client = network_client_factory(cmd.cli_ctx).p2_svpn_gateways
     (P2SVpnGateway,
      SubResource,
      P2SConnectionConfiguration,
@@ -884,7 +885,7 @@ def create_p2s_vpn_gateway(cmd, resource_group_name, gateway_name, virtual_hub,
         ]
     )
 
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name, gateway_name, gateway)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, gateway_name, gateway)
 
 
 def update_p2s_vpn_gateway(instance, cmd, tags=None, scale_unit=None,
@@ -895,7 +896,7 @@ def update_p2s_vpn_gateway(instance, cmd, tags=None, scale_unit=None,
         c.set_param('tags', tags, True)
         c.set_param('vpn_gateway_scale_unit', scale_unit, False)
         c.set_param('vpn_server_configuration', SubResource(id=vpn_server_config) if vpn_server_config else None, True)
-    p2_sconnection_configurations = getattr(instance, 'p2_sconnection_configurations')
+    p2_sconnection_configurations = getattr(instance, 'p2_s_connection_configurations')
     if p2_sconnection_configurations:
         with UpdateContext(p2_sconnection_configurations[0]) as c:
             c.set_param('vpn_client_address_pool.address_prefixes', address_space, False)
@@ -911,10 +912,21 @@ def update_p2s_vpn_gateway(instance, cmd, tags=None, scale_unit=None,
 
 
 def list_p2s_vpn_gateways(cmd, resource_group_name=None):
-    client = network_client_factory(cmd.cli_ctx).p2s_vpn_gateways
+    client = network_client_factory(cmd.cli_ctx).p2_svpn_gateways
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name)
     return client.list()
+
+
+def generate_vpn_profile(cmd, resource_group_name, gateway_name, authentication_method=None):
+    client = network_client_factory(cmd.cli_ctx).p2_svpn_gateways
+    P2SVpnProfileParameters = cmd.get_models('P2SVpnProfileParameters')
+    parameters = P2SVpnProfileParameters(authentication_method=authentication_method)
+    return client.begin_generate_vpn_profile(
+        resource_group_name,
+        gateway_name,
+        parameters
+    )
 
 
 def _load_cert_file(file_path):
