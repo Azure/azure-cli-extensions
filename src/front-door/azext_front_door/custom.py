@@ -321,7 +321,7 @@ def create_fd_frontend_endpoints(cmd, resource_group_name, front_door_name, item
 def configure_fd_frontend_endpoint_disable_https(cmd, resource_group_name, front_door_name, item_name):
     return sdk_no_wait(True, cf_fd_frontend_endpoints(cmd.cli_ctx, None).begin_disable_https,
                        resource_group_name, front_door_name,
-                       item_name).result()
+                       item_name)
 
 
 def configure_fd_frontend_endpoint_enable_https(cmd, resource_group_name, front_door_name, item_name,
@@ -364,7 +364,7 @@ def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, fro
     sdk_no_wait(True,
                 cf_fd_frontend_endpoints(cmd.cli_ctx, None).begin_enable_https,
                 resource_group_name, front_door_name,
-                item_name, config).result()
+                item_name, config)
 
     return get_fd_frontend_endpoints(cmd, resource_group_name, front_door_name, item_name)
 
@@ -385,7 +385,7 @@ def configure_fd_frontend_endpoint_https_keyvault(cmd, resource_group_name, fron
     sdk_no_wait(True,
                 cf_fd_frontend_endpoints(cmd.cli_ctx, None).begin_enable_https,
                 resource_group_name, front_door_name,
-                item_name, config).result()
+                item_name, config)
 
     return get_fd_frontend_endpoints(cmd, resource_group_name, front_door_name, item_name)
 
