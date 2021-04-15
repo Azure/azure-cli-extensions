@@ -494,7 +494,7 @@ def get_kubernetes_infra(configuration):  # Heuristic
         return "generic"
 
 
-def check_linux_amd64_node(configuration):
+def check_linux_amd64_node(configuration, custom_logger=None):
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     try:
         api_response = api_instance.list_node()
@@ -504,7 +504,10 @@ def check_linux_amd64_node(configuration):
             if node_arch == "amd64" and node_os == "linux":
                 return True
     except Exception as e:  # pylint: disable=broad-except
-        logger.debug("Error occured while trying to find a linux/amd64 node: " + str(e))
+        if custom_logger:
+            custom_logger.error("Error occured while trying to find a linux/amd64 node: " + str(e))
+        else:
+            logger.debug("Error occured while trying to find a linux/amd64 node: " + str(e))
         utils.kubernetes_exception_handler(e, consts.Kubernetes_Node_Type_Fetch_Fault, 'Unable to find a linux/amd64 node',
                                            raise_error=False)
     return False
@@ -1415,7 +1418,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         permitted = utils.check_system_permissions(tr_logger)
         if not permitted:
             tr_logger.warning("CLI doesn't have the permission/privilege to install azure arc charts at path ~/.azure/AzureArcCharts")
-        required_node_exists = check_linux_amd64_node(configuration)
+        required_node_exists = check_linux_amd64_node(configuration, custom_logger=tr_logger)
         if not required_node_exists:
             tr_logger.warning("Couldn't find any linux/amd64 node on the Kubernetes cluster")
         config_dp_endpoint = get_config_dp_endpoint(cmd, location)
