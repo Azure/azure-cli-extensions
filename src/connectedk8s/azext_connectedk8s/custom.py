@@ -1412,7 +1412,9 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     try:
         # subscription_id = get_subscription_id(cmd.cli_ctx)
         # utils.validate_azure_management_reachability(subscription_id, tr_logger)
-        utils.check_system_permissions(tr_logger)
+        permitted = utils.check_system_permissions(tr_logger)
+        if not permitted:
+            tr_logger.warning("CLI doesn't have the permission/privilege to install azure arc charts at path ~/.azure/AzureArcCharts")
         required_node_exists = check_linux_amd64_node(configuration)
         if not required_node_exists:
             tr_logger.warning("Couldn't find any linux/amd64 node on the Kubernetes cluster")
@@ -1426,7 +1428,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
         utils.pull_helm_chart(helm_registry_path, kube_config, kube_context)
     except Exception as ex:
-        tr_logger.warning(str(ex))
+        tr_logger.error(str(ex))
 
 
 def load_kubernetes_configuration(filename):
