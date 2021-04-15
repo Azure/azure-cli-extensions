@@ -109,7 +109,7 @@ def connect_to_server_helper(server_type, endpoint, default_db_name, server_name
                                            server_name=server_name,
                                            database_name=database_name,
                                            login_username=administrator_login,
-                                           login_password=administrator_login_password,
+                                           login_pw=administrator_login_password,
                                            query=query_command)
 
     if file_path is not None:
@@ -118,7 +118,7 @@ def connect_to_server_helper(server_type, endpoint, default_db_name, server_name
                               server_name=server_name,
                               database_name=database_name,
                               login_username=administrator_login,
-                              login_password=administrator_login_password,
+                              login_pw=administrator_login_password,
                               file_path=file_path)
 
     return json_data
@@ -159,7 +159,7 @@ def _connect_interactive(server_type, host, server_name, database_name, login_us
         raise AzureConnectionError("Unable to open interactive mode to {0}. Error: {1}".format(server_name, e))
 
 
-def _connect_execute_query(server_type, host, server_name, database_name, login_username, login_password, query=None):
+def _connect_execute_query(server_type, host, server_name, database_name, login_username, login_pw, query=None):
     json_data = None
 
     # connect to server
@@ -168,7 +168,7 @@ def _connect_execute_query(server_type, host, server_name, database_name, login_
             'host': host,
             'database': database_name,
             'user': login_username,
-            'password': login_password
+            'password': login_pw
         }
 
         # depending on server type, use the right connection library to test the connetion
@@ -213,7 +213,7 @@ def _connect_execute_query(server_type, host, server_name, database_name, login_
     return json_data
 
 
-def _connect_execute_file(server_type, host, server_name, database_name, login_username, login_password, file_path):
+def _connect_execute_file(server_type, host, server_name, database_name, login_username, login_pw, file_path):
 
     # connect to server
     try:
@@ -221,7 +221,7 @@ def _connect_execute_file(server_type, host, server_name, database_name, login_u
             'host': host,
             'database': database_name,
             'user': login_username,
-            'password': login_password
+            'password': login_pw
         }
 
         # depending on server type, use the right connection library to test the connetion
