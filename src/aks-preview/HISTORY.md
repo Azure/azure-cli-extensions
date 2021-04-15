@@ -5,7 +5,8 @@ Release History
 
 0.5.9
 +++++
-* Add `--binding-selector` to AAD pod identity add sub command
+* Display result better for `az aks command invoke`, while still honor output option
+* Fix the bug that checking the addon profile whether it exists
 
 0.5.8
 +++++
