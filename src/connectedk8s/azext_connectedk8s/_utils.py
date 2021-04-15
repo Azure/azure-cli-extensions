@@ -35,14 +35,15 @@ logger = get_logger(__name__)
 # pylint: disable=line-too-long
 # pylint: disable=bare-except
 
+
 def setup_logger(logger_name, log_file, level=logging.DEBUG):
-    l = logging.getLogger(logger_name)
+    loggr = logging.getLogger(logger_name)
     formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(message)s')
     fileHandler = logging.FileHandler(log_file, mode='w')
     fileHandler.setFormatter(formatter)
 
-    l.setLevel(level)
-    l.addHandler(fileHandler)
+    loggr.setLevel(level)
+    loggr.addHandler(fileHandler)
 
 
 class TimeoutHTTPAdapter(HTTPAdapter):

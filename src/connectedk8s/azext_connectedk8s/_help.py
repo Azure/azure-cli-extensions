@@ -117,3 +117,47 @@ helps['connectedk8s disable-features'] = """
   - name: Disable multiple features.
     text: az connectedk8s disable-features -n clusterName -g resourceGroupName --features custom-locations azure-rbac
 """
+
+helps['connectedk8s troubleshoot'] = """
+  type: command
+  short-summary: Collects diagnose infomation and  gets logs on the connected cluster.
+  parameters:
+        - name: --storage-account
+          type: string
+          short-summary: Name or ID of the storage account to save the diagnostic information.
+        - name: --sas-token
+          type: string
+          short-summary: The SAS token with writable permission for the storage account.
+        - name: --container-logs
+          type: string
+          short-summary: The list of container logs to collect.
+          long-summary: |-
+            The list of container logs to collect. Its value can be either all containers
+            in a namespace, for example, kube-system, or a specific container in a
+            namespace, for example, kube-system/tunnelfront.
+        - name: --kube-objects
+          type: string
+          short-summary: The list of kubernetes objects to describe.
+          long-summary: |-
+            The list of kubernetes objects to describe. Its value can be either all objects of a type
+            in a namespace, for example, kube-system/pod, or a specific object of a type in a namespace,
+            for example, kube-system/deployment/tunnelfront.
+        - name: --node-logs
+          type: string
+          short-summary: The list of node logs to collect. For example, /var/log/cloud-init.log
+  examples:
+      - name: using storage account name and a shared access signature token with write permission
+        text: az connectedk8s troubleshoot -g MyResourceGroup -n ConnectedCluster --storage-account MyStorageAccount --sas-token "MySasToken"
+      - name: using the resource id of a storage account resource you own.
+        text: az connectedk8s troubleshoot -g MyResourceGroup -n ConnectedCluster --storage-account "MyStoreageAccountResourceId"
+      - name: using the storagea account in diagnostics settings for your connected cluster.
+        text: az connectedk8s troubleshoot -g MyResourceGroup -n ConnectedCluster
+      - name: customize the container logs to collect.
+        text: az connectedk8s troubleshoot -g MyResourceGroup -n ConnectedCluster --container-logs "mynamespace1/mypod1 myns2"
+      - name: customize the kubernetes objects to collect.
+        text: az connectedk8s troubleshoot -g MyResourceGroup -n ConnectedCluster --kube-objects "mynamespace1/service myns2/deployment/deployment1"
+      - name: customize the node log files to collect.
+        text: az connectedk8s troubleshoot -g MyResourceGroup -n ConnectedCluster --node-logs "/var/log/azure-vnet.log /var/log/azure-vnet-ipam.log"
+      - name: Onboard a connected kubernetes cluster by specifying the kubeconfig and kubecontext.
+        text: az connectedk8s troubleshoot -g resourceGroupName -n connectedClusterName --kube-config /path/to/kubeconfig --kube-context kubeContextName
+"""
