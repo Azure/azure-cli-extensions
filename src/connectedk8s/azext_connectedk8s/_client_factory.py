@@ -8,6 +8,7 @@ from azure.cli.core._profile import Profile
 from azure.cli.core.commands.client_factory import configure_common_settings
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.graphrbac import GraphRbacManagementClient
+from azure.common.client_factory import get_client_from_cli_profile
 
 
 def cf_connectedk8s(cli_ctx, *_):
@@ -58,3 +59,8 @@ def _graph_client_factory(cli_ctx, **_):
 
 def get_graph_client_service_principals(cli_ctx):
     return _graph_client_factory(cli_ctx).service_principals
+
+
+def get_subscription_client():
+    from azure.mgmt.resource import SubscriptionClient
+    return get_client_from_cli_profile(SubscriptionClient).subscriptions

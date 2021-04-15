@@ -47,6 +47,7 @@ from threading import Timer, Thread
 import sys
 import hashlib
 import re
+import logging
 logger = get_logger(__name__)
 # pylint:disable=unused-argument
 # pylint: disable=too-many-locals
@@ -1396,6 +1397,36 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
         raise CLIInternalError(str.format(consts.Error_disabling_Features, error_helm_upgrade.decode("ascii")))
 
     return str.format(consts.Successfully_Disabled_Features, features, connected_cluster.name)
+
+
+def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, location=None):
+    troubleshoot_log_path = os.path.join(os.path.expanduser('~'), '.azure', 'connected8s_troubleshoot.log')
+    utils.setup_logger('connectedk8s_troubleshoot', troubleshoot_log_path)
+    tr_logger = logging.getLogger('connectedk8s_troubleshoot')
+
+    kube_config = set_kube_config(kube_config)
+
+    # Loading the kubeconfig file in kubernetes client configuration
+    load_kube_config(kube_config, kube_context)
+    configuration = kube_client.Configuration()
+    try:
+        # subscription_id = get_subscription_id(cmd.cli_ctx)
+        # utils.validate_azure_management_reachability(subscription_id, tr_logger)
+        utils.check_system_permissions(tr_logger)
+        required_node_exists = check_linux_amd64_node(configuration)
+        if not required_node_exists:
+            tr_logger.warning("Couldn't find any linux/amd64 node on the Kubernetes cluster")
+        config_dp_endpoint = get_config_dp_endpoint(cmd, location)
+        helm_registry_path = utils.get_helm_registry(cmd, config_dp_endpoint)
+        # reg_path_array = helm_registry_path.split(':')
+        # agent_version = reg_path_array[1]
+        # utils.check_agent_version(agent_version)
+        tr_logger.info("Helm Registry path : {}".format(helm_registry_path))
+        utils.check_provider_registrations(cmd.cli_ctx, tr_logger)
+        os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
+        utils.pull_helm_chart(helm_registry_path, kube_config, kube_context)
+    except Exception as ex:
+        tr_logger.warning(str(ex))
 
 
 def load_kubernetes_configuration(filename):

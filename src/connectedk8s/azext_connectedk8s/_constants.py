@@ -10,6 +10,8 @@ Distribution_Enum_Values = ["auto", "generic", "openshift", "rancher_rke", "kind
 Infrastructure_Enum_Values = ["auto", "generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere", "windows_server"]
 Feature_Values = ["cluster-connect", "azure-rbac", "custom-locations"]
 Custom_Locations_Provider_Namespace = 'Microsoft.ExtendedLocation'
+Connected_Cluster_Provider_Namespace = 'Microsoft.Kubernetes'
+Kubernetes_Configuration_Provider_Namespace = 'Microsoft.KubernetesConfiguration'
 
 Azure_PublicCloudName = 'AZUREPUBLICCLOUD'
 Azure_USGovCloudName = 'AZUREUSGOVERNMENTCLOUD'

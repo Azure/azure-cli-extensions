@@ -3,11 +3,13 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from __future__ import absolute_import
 import os
 import shutil
 import subprocess
 from subprocess import Popen, PIPE
 import time
+import logging
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -26,12 +28,21 @@ from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError
-
+from azext_connectedk8s._client_factory import get_subscription_client, _resource_providers_client
 
 logger = get_logger(__name__)
 
 # pylint: disable=line-too-long
 # pylint: disable=bare-except
+
+def setup_logger(logger_name, log_file, level=logging.DEBUG):
+    l = logging.getLogger(logger_name)
+    formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(message)s')
+    fileHandler = logging.FileHandler(log_file, mode='w')
+    fileHandler.setFormatter(formatter)
+
+    l.setLevel(level)
+    l.addHandler(fileHandler)
 
 
 class TimeoutHTTPAdapter(HTTPAdapter):
@@ -452,3 +463,41 @@ def get_latest_kubernetes_version():
         logger.warning("Couldn't fetch the latest kubernetes stable release information. Error: " + str(e))
 
     return None
+
+
+def validate_azure_management_reachability(subscription_id, logger):
+    try:
+        get_subscription_client().get(subscription_id)
+    except Exception as ex:
+        logger.warning("Not able to reach azure management endpoints. Exception: " + str(ex))
+
+
+def check_system_permissions(logger):
+    try:
+        import tempfile
+        chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')
+        os.makedirs(chart_export_path, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=chart_export_path):
+            return True
+    except (OSError, EnvironmentError):
+        return False
+    except Exception as ex:
+        logger.debug("Couldn't check the system permissions for creating an azure arc charts directory. Error: {}".format(str(ex)))
+        return False
+
+
+def check_provider_registrations(cli_ctx, logger):
+    try:
+        rp_client = _resource_providers_client(cli_ctx)
+        cc_registration_state = rp_client.get(consts.Connected_Cluster_Provider_Namespace).registration_state
+        if cc_registration_state != "Registered":
+            logger.warning("{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace))
+        kc_registration_state = rp_client.get(consts.Kubernetes_Configuration_Provider_Namespace).registration_state
+        if kc_registration_state != "Registered":
+            logger.warning("{} provider is not registered".format(consts.Kubernetes_Configuration_Provider_Namespace))
+    except Exception as ex:
+        logger.debug("Couldn't check the required provider's registration status. Error: {}".format(str(ex)))
+
+
+def check_agent_version(agent_version):
+    pass

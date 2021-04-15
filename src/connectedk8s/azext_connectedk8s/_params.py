@@ -67,6 +67,12 @@ def load_arguments(self, _):
         c.argument('features', features_types, options_list=['--features'], help='Space-separated list of features you want to disable.')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
+    with self.argument_context('connectedk8s troubleshoot') as c:
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
+        c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
+        c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
+        c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
+
     with self.argument_context('connectedk8s list') as c:
         pass
 
