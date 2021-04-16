@@ -1468,14 +1468,14 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             import tarfile
             with tarfile.open(output_file, "w:gz") as tar:
                 tar.add(troubleshoot_log_path, 'connected8s_troubleshoot.log')
-            logging.shutdown() # To release log file handler, so that the actual log file can be removed after archiving
+            logging.shutdown()  # To release log file handler, so that the actual log file can be removed after archiving
             os.remove(troubleshoot_log_path)
-
         except Exception as ex:
-            tr_logger.error("Error occured while archiving the log file: {}".format(str(ex)))
+            tr_logger.error("Error occured while archiving the log file: {}".format(str(ex)), exc_info=True)
 
     except Exception as ex:
         tr_logger.error("Exception caught while running troubleshoot: {}".format(str(ex)), exc_info=True)
+        logger.error("Exception caught while running troubleshoot: {}".format(str(ex)), exc_info=True)
 
 
 def load_kubernetes_configuration(filename):
