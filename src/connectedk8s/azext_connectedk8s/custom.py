@@ -1415,8 +1415,6 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     load_kube_config(kube_config, kube_context)
     configuration = kube_client.Configuration()
     try:
-        # subscription_id = get_subscription_id(cmd.cli_ctx)
-        # utils.validate_azure_management_reachability(subscription_id, tr_logger)
         latest_connectedk8s_version = utils.get_latest_extension_version()
         local_connectedk8s_version = utils.get_existing_extension_version()
         tr_logger.info("Latest available connectedk8s version: {}".format(latest_connectedk8s_version))
@@ -1433,9 +1431,6 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             tr_logger.warning("Couldn't find any linux/amd64 node on the Kubernetes cluster")
         config_dp_endpoint = get_config_dp_endpoint(cmd, location)
         helm_registry_path = utils.get_helm_registry(cmd, config_dp_endpoint)
-        # reg_path_array = helm_registry_path.split(':')
-        # agent_version = reg_path_array[1]
-        # utils.check_agent_version(agent_version)
         tr_logger.info("Helm Registry path : {}".format(helm_registry_path))
         utils.check_provider_registrations(cmd.cli_ctx, tr_logger)
         os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
@@ -1453,7 +1448,6 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
                 pass
             tr_logger.error("Couldn't check the existence of Connected cluster resource. Error: {}".format(str(ex)))
 
-
         kapi_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
         try:
             pod_list = kapi_instance.list_namespaced_pod('azure-arc')
@@ -1468,6 +1462,17 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
         except Exception as ex:
             tr_logger.error("Error occured while fetching pod's statues : {}".format(str(ex)))
+
+        try:
+            # Creating the .tar.gz for logs and deleting the actual log file
+            import tarfile
+            with tarfile.open(output_file, "w:gz") as tar:
+                tar.add(troubleshoot_log_path, 'connected8s_troubleshoot.log')
+            logging.shutdown() # To release log file handler, so that the actual log file can be removed after archiving
+            os.remove(troubleshoot_log_path)
+
+        except Exception as ex:
+            tr_logger.error("Error occured while archiving the log file: {}".format(str(ex)))
 
     except Exception as ex:
         tr_logger.error("Exception caught while running troubleshoot: {}".format(str(ex)), exc_info=True)

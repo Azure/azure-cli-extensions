@@ -500,10 +500,6 @@ def check_provider_registrations(cli_ctx, custom_logger):
         custom_logger.debug("Couldn't check the required provider's registration status. Error: {}".format(str(ex)))
 
 
-def check_agent_version(agent_version):
-    pass
-
-
 # Returns a list of kubernetes pod objects in a given namespace. Object description at: https://github.com/kubernetes-client/python/blob/master/kubernetes/docs/V1PodList.md
 def get_pod_list(api_instance, namespace, label_selector="", field_selector=""):
     try:
