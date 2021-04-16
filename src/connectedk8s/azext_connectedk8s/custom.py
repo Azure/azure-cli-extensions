@@ -48,6 +48,7 @@ import sys
 import hashlib
 import re
 import logging
+from packaging import version
 logger = get_logger(__name__)
 # pylint:disable=unused-argument
 # pylint: disable=too-many-locals
@@ -1415,6 +1416,14 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     try:
         # subscription_id = get_subscription_id(cmd.cli_ctx)
         # utils.validate_azure_management_reachability(subscription_id, tr_logger)
+        latest_connectedk8s_version = utils.get_latest_extension_version()
+        local_connectedk8s_version = utils.get_existing_extension_version()
+        tr_logger.info("Latest available connectedk8s version: {}".format(latest_connectedk8s_version))
+        tr_logger.info("Local connectedk8s version: {}".format(local_connectedk8s_version))
+        if latest_connectedk8s_version and local_connectedk8s_version != 'Unknown' and local_connectedk8s_version != 'NotFound':
+            if version.parse(local_connectedk8s_version) < version.parse(latest_connectedk8s_version):
+                logger.warning("You have an update pending. You can update the connectedk8s extension to latest v{} using 'az extension update -n connectedk8s".format(latest_connectedk8s_version))
+
         permitted = utils.check_system_permissions(tr_logger)
         if not permitted:
             tr_logger.error("CLI doesn't have the permission/privilege to install azure arc charts at path ~/.azure/AzureArcCharts")

@@ -466,14 +466,14 @@ def get_latest_kubernetes_version():
     return None
 
 
-def validate_azure_management_reachability(subscription_id, logger):
+def validate_azure_management_reachability(subscription_id, custom_logger):
     try:
         get_subscription_client().get(subscription_id)
     except Exception as ex:
-        logger.warning("Not able to reach azure management endpoints. Exception: " + str(ex))
+        custom_logger.warning("Not able to reach azure management endpoints. Exception: " + str(ex))
 
 
-def check_system_permissions(logger):
+def check_system_permissions(custom_logger):
     try:
         import tempfile
         chart_export_path = os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')
@@ -483,21 +483,21 @@ def check_system_permissions(logger):
     except (OSError, EnvironmentError):
         return False
     except Exception as ex:
-        logger.debug("Couldn't check the system permissions for creating an azure arc charts directory. Error: {}".format(str(ex)))
+        custom_logger.debug("Couldn't check the system permissions for creating an azure arc charts directory. Error: {}".format(str(ex)))
         return False
 
 
-def check_provider_registrations(cli_ctx, logger):
+def check_provider_registrations(cli_ctx, custom_logger):
     try:
         rp_client = _resource_providers_client(cli_ctx)
         cc_registration_state = rp_client.get(consts.Connected_Cluster_Provider_Namespace).registration_state
         if cc_registration_state != "Registered":
-            logger.warning("{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace))
+            custom_logger.warning("{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace))
         kc_registration_state = rp_client.get(consts.Kubernetes_Configuration_Provider_Namespace).registration_state
         if kc_registration_state != "Registered":
-            logger.warning("{} provider is not registered".format(consts.Kubernetes_Configuration_Provider_Namespace))
+            custom_logger.warning("{} provider is not registered".format(consts.Kubernetes_Configuration_Provider_Namespace))
     except Exception as ex:
-        logger.debug("Couldn't check the required provider's registration status. Error: {}".format(str(ex)))
+        custom_logger.debug("Couldn't check the required provider's registration status. Error: {}".format(str(ex)))
 
 
 def check_agent_version(agent_version):
