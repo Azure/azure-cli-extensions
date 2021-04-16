@@ -314,7 +314,7 @@ class BlueprintScenarioTest(ScenarioTest):
             'az blueprint export '
             '--output-path "src/blueprint/azext_blueprint/tests/latest/input/export_with_artifacts/exported" '
             '--name "{blueprintName}" '
-            '--force',
+            '--yes',
             checks=[])
 
         # check if the import and output artifacts are equal in content

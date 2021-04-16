@@ -126,13 +126,13 @@ def list_blueprint(cmd, client, management_group=None, subscription=None, scope=
     return client.list(scope=scope)
 
 
-def export_blueprint_with_artifacts(cmd, client, blueprint_name, output_path, force=False, management_group=None, subscription=None, scope=None, **kwargs):
+def export_blueprint_with_artifacts(cmd, client, blueprint_name, output_path, skip_confirmation=False, management_group=None, subscription=None, scope=None, **kwargs):
     # match folder structure required for import_blueprint_with_artifact
     blueprint_parent_folder = os.path.join(os.path.abspath(output_path), blueprint_name)
     blueprint_file_location = os.path.join(blueprint_parent_folder, 'blueprint.json')
     artifacts_location = os.path.join(blueprint_parent_folder, 'artifacts')
 
-    if os.path.exists(blueprint_parent_folder) and os.listdir(blueprint_parent_folder) and not force:
+    if os.path.exists(blueprint_parent_folder) and os.listdir(blueprint_parent_folder) and not skip_confirmation:
         user_prompt = f"That directory already contains a folder with the name {blueprint_name}. Would you like to continue?"
         user_confirmation(user_prompt)
 
