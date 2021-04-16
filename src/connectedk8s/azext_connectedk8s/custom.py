@@ -1417,7 +1417,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         # utils.validate_azure_management_reachability(subscription_id, tr_logger)
         permitted = utils.check_system_permissions(tr_logger)
         if not permitted:
-            tr_logger.warning("CLI doesn't have the permission/privilege to install azure arc charts at path ~/.azure/AzureArcCharts")
+            tr_logger.error("CLI doesn't have the permission/privilege to install azure arc charts at path ~/.azure/AzureArcCharts")
         required_node_exists = check_linux_amd64_node(configuration, custom_logger=tr_logger)
         if not required_node_exists:
             tr_logger.warning("Couldn't find any linux/amd64 node on the Kubernetes cluster")
