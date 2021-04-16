@@ -505,8 +505,8 @@ def check_agent_version(agent_version):
 
 
 # Returns a list of kubernetes pod objects in a given namespace. Object description at: https://github.com/kubernetes-client/python/blob/master/kubernetes/docs/V1PodList.md
-def get_pod_list(api_instance, namespace, label_selector=""):
+def get_pod_list(api_instance, namespace, label_selector="", field_selector=""):
     try:
-        return api_instance.list_namespaced_pod(namespace, label_selector=label_selector)
+        return api_instance.list_namespaced_pod(namespace, label_selector=label_selector, field_selector="")
     except Exception as e:
         logger.debug("Error occurred when retrieving pod information: " + str(e))

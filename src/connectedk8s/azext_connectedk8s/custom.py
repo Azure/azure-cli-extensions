@@ -1442,13 +1442,16 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
         try:
             # Fetch ConnectedCluster
-            connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
-            tr_logger.info("Connected cluster agent version: {}".format(connected_cluster.agent_version))
+            connected_cluster = client.get(resource_group_name, cluster_name, raw=True)
+            tr_logger.info("Connected cluster resource: {}".format(connected_cluster.response.content))
         except Exception as ex:
-            if ex.error.error.code == "NotFound" or ex.error.error.code == "ResourceNotFound":
-                tr_logger.error("Connected cluster resource doesn't exist. " + str(ex))
-            else:
-                tr_logger.error("Couldn't check the existence of Connected cluster resource. Error: {}".format(str(ex)))
+            try:
+                if ex.error.error.code == "NotFound" or ex.error.error.code == "ResourceNotFound":
+                    tr_logger.error("Connected cluster resource doesn't exist. " + str(ex))
+            except AttributeError:
+                pass
+            tr_logger.error("Couldn't check the existence of Connected cluster resource. Error: {}".format(str(ex)))
+
 
         kapi_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
         try:
@@ -1457,7 +1460,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             for pod in pod_list.items:
                 pods_count += 1
                 if pod.status.phase != 'Running':
-                    tr_logger.warning("Pod {} is in {} state. Reason: {}".format(pod.metadata.name, pod.status.phase, pod.status.reason))
+                    tr_logger.warning("Pod {} is in {} state. Reason: {}. Container statuses: {}".format(pod.metadata.name, pod.status.phase, pod.status.reason, pod.status.container_statuses))
 
             if pods_count == 0:
                 tr_logger.warning("No pods found in azure-arc namespace.")
@@ -1466,7 +1469,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             tr_logger.error("Error occured while fetching pod's statues : {}".format(str(ex)))
 
     except Exception as ex:
-        tr_logger.error("Exception caught while running troubleshoot: {}".format(str(ex)))
+        tr_logger.error("Exception caught while running troubleshoot: {}".format(str(ex)), exc_info=True)
 
 
 def load_kubernetes_configuration(filename):
