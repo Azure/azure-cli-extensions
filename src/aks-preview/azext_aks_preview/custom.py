@@ -113,6 +113,7 @@ from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
 from ._consts import CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED
+from ._consts import CONST_MANAGED_IDENTITY_OPERATOR_ROLE, CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID
 from ._consts import ADDONS
 from .maintenanceconfiguration import aks_maintenanceconfiguration_update_internal
 from ._consts import CONST_PRIVATE_DNS_ZONE_SYSTEM, CONST_PRIVATE_DNS_ZONE_NONE
@@ -3916,9 +3917,6 @@ def _update_addon_pod_identity(instance, enable, pod_identities=None, pod_identi
 
 
 def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
-    managed_identity_operator_role = 'Managed Identity Operator'
-    managed_identity_operator_role_id = 'f1a07417-d97a-45cb-824c-7a7467783830'
-
     cluster_identity_object_id = None
     if instance.identity.type.lower() == 'userassigned':
         for identity in instance.identity.user_assigned_identities.values():
@@ -3938,14 +3936,14 @@ def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
     for i in assignments_client.list_for_scope(scope=scope, filter='atScope()'):
         if i.scope.lower() != scope.lower():
             continue
-        if not i.role_definition_id.lower().endswith(managed_identity_operator_role_id):
+        if not i.role_definition_id.lower().endswith(CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID):
             continue
         if i.principal_id.lower() != cluster_identity_object_id.lower():
             continue
         # already assigned
         return
 
-    if not _add_role_assignment(cli_ctx, managed_identity_operator_role, cluster_identity_object_id,
+    if not _add_role_assignment(cli_ctx, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,
                                 is_service_principal=False, scope=scope):
         raise CLIError(
             'Could not grant Managed Identity Operator permission for cluster')
@@ -4102,22 +4100,19 @@ def aks_pod_identity_exception_list(cmd, client, resource_group_name, cluster_na
 
 
 def _ensure_cluster_identity_permission_on_kubelet_identity(cli_ctx, cluster_identity_object_id, scope):
-    managed_identity_operator_role = 'Managed Identity Operator'
-    managed_identity_operator_role_id = 'f1a07417-d97a-45cb-824c-7a7467783830'
-
     factory = get_auth_management_client(cli_ctx, scope)
     assignments_client = factory.role_assignments
 
     for i in assignments_client.list_for_scope(scope=scope, filter='atScope()'):
         if i.scope.lower() != scope.lower():
             continue
-        if not i.role_definition_id.lower().endswith(managed_identity_operator_role_id):
+        if not i.role_definition_id.lower().endswith(CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID):
             continue
         if i.principal_id.lower() != cluster_identity_object_id.lower():
             continue
         # already assigned
         return
 
-    if not _add_role_assignment(cli_ctx, managed_identity_operator_role, cluster_identity_object_id,
+    if not _add_role_assignment(cli_ctx, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,
                                 is_service_principal=False, scope=scope):
         raise CLIError('Could not grant Managed Identity Operator permission to cluster identity at scope {}'.format(scope))
