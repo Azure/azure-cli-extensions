@@ -1426,7 +1426,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
         permitted = utils.check_system_permissions(tr_logger)
         if not permitted:
-            tr_logger.error("CLI doesn't have the permission/privilege to install azure arc charts at path ~/.azure/AzureArcCharts")
+            tr_logger.error("CLI doesn't have the permission/privilege to install azure arc charts at path {}".format(os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')))
         required_node_exists = check_linux_amd64_node(configuration, custom_logger=tr_logger)
         if not required_node_exists:
             tr_logger.warning("Couldn't find any linux/amd64 node on the Kubernetes cluster")
@@ -1449,6 +1449,21 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
                 tr_logger.error("Connected cluster resource doesn't exist. " + str(ex))
             else:
                 tr_logger.error("Couldn't check the existence of Connected cluster resource. Error: {}".format(str(ex)))
+
+        kapi_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
+        try:
+            pod_list = kapi_instance.list_namespaced_pod('azure-arc')
+            pods_count = 0
+            for pod in pod_list.items:
+                pods_count += 1
+                if pod.status.phase != 'Running':
+                    tr_logger.warning("Pod {} is in {} state. Reason: {}".format(pod.metadata.name, pod.status.phase, pod.status.reason))
+
+            if pods_count == 0:
+                tr_logger.warning("No pods found in azure-arc namespace.")
+
+        except Exception as ex:
+            tr_logger.error("Error occured while fetching pod's statues : {}".format(str(ex)))
 
     except Exception as ex:
         tr_logger.error("Exception caught while running troubleshoot: {}".format(str(ex)))
