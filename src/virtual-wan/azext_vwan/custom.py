@@ -874,7 +874,7 @@ def create_p2s_vpn_gateway(cmd, resource_group_name, gateway_name, virtual_hub,
         virtual_hub=SubResource(id=virtual_hub) if virtual_hub else None,
         vpn_gateway_scale_unit=scale_unit,
         vpn_server_configuration=SubResource(id=vpn_server_config) if vpn_server_config else None,
-        p2_sconnection_configurations=[
+        p2_s_connection_configurations=[
             P2SConnectionConfiguration(
                 vpn_client_address_pool=AddressSpace(
                     address_prefixes=address_space
