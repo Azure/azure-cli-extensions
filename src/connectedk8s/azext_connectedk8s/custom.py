@@ -1422,7 +1422,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         tr_logger.info("Local connectedk8s version: {}".format(local_connectedk8s_version))
         if latest_connectedk8s_version and local_connectedk8s_version != 'Unknown' and local_connectedk8s_version != 'NotFound':
             if version.parse(local_connectedk8s_version) < version.parse(latest_connectedk8s_version):
-                logger.warning("You have an update pending. You can update the connectedk8s extension to latest v{} using 'az extension update -n connectedk8s".format(latest_connectedk8s_version))
+                logger.warning("You have an update pending. You can update the connectedk8s extension to latest v{} using 'az extension update -n connectedk8s'".format(latest_connectedk8s_version))
 
         permitted = utils.check_system_permissions(tr_logger)
         if not permitted:
@@ -1439,8 +1439,19 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         utils.check_provider_registrations(cmd.cli_ctx, tr_logger)
         os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
         utils.pull_helm_chart(helm_registry_path, kube_config, kube_context)
+
+        try:
+            # Fetch ConnectedCluster
+            connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
+            tr_logger.info("Connected cluster agent version: {}".format(connected_cluster.agent_version))
+        except Exception as ex:
+            if ex.error.error.code == "NotFound" or ex.error.error.code == "ResourceNotFound":
+                tr_logger.error("Connected cluster resource doesn't exist. " + str(ex))
+            else:
+                tr_logger.error("Couldn't check the existence of Connected cluster resource. Error: {}".format(str(ex)))
+
     except Exception as ex:
-        tr_logger.error(str(ex))
+        tr_logger.error("Exception caught while running troubleshoot: {}".format(str(ex)))
 
 
 def load_kubernetes_configuration(filename):
