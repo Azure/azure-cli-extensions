@@ -3,7 +3,7 @@
 Release History
 ===============
 
-0.3.1
+0.3.0
 +++++
 * Allow user to export blueprint and artifacts to local directory
 
