@@ -1736,16 +1736,30 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     if disable_pod_identity:
         _update_addon_pod_identity(instance, enable=False)
 
-    azure_keyvault_secrets_provider_addon_profile = instance.addon_profiles.get(
-        CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, None)
+    azure_keyvault_secrets_provider_addon_profile = None
+    monitoring_addon_enabled = False
+    ingress_appgw_addon_enabled = False
+    virtual_node_addon_enabled = False
+
+    if instance.addon_profiles is not None:
+        azure_keyvault_secrets_provider_addon_profile = instance.addon_profiles.get(CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, None)
+        azure_keyvault_secrets_provider_enabled = CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME in instance.addon_profiles and \
+            instance.addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME].enabled
+        monitoring_addon_enabled = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and \
+            instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
+        ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles and \
+            instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].enabled
+        virtual_node_addon_enabled = CONST_VIRTUAL_NODE_ADDON_NAME + 'Linux' in instance.addon_profiles and \
+            instance.addon_profiles[CONST_VIRTUAL_NODE_ADDON_NAME + 'Linux'].enabled
+
     if enable_secret_rotation:
-        if azure_keyvault_secrets_provider_addon_profile is None or not azure_keyvault_secrets_provider_addon_profile.enabled:
+        if not azure_keyvault_secrets_provider_enabled:
             raise CLIError(
                 '--enable-secret-rotation can only be specified when azure-keyvault-secrets-provider is enabled')
         azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
 
     if disable_secret_rotation:
-        if azure_keyvault_secrets_provider_addon_profile is None or not azure_keyvault_secrets_provider_addon_profile.enabled:
+        if not azure_keyvault_secrets_provider_enabled:
             raise CLIError(
                 '--disable-secret-rotation can only be specified when azure-keyvault-secrets-provider is enabled')
         azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "false"
@@ -1754,13 +1768,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.tags = tags
 
     headers = get_aks_custom_headers(aks_custom_headers)
-    monitoring_addon_enabled = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and \
-        instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
-    ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles and \
-        instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].enabled
-    virtual_node_addon_enabled = CONST_VIRTUAL_NODE_ADDON_NAME + 'Linux' in instance.addon_profiles and \
-        instance.addon_profiles[CONST_VIRTUAL_NODE_ADDON_NAME +
-                                'Linux'].enabled
+
     return _put_managed_cluster_ensuring_permission(cmd,
                                                     client,
                                                     subscription_id,
@@ -2178,7 +2186,8 @@ def aks_runcommand(cmd, client, resource_group_name, name, command_string="", co
 
     commandResultFuture = client.run_command(
         resource_group_name, name, request_payload, long_running_operation_timeout=5, retry_total=0)
-    return commandResultFuture.result(300)
+
+    return _print_command_result(cmd.cli_ctx, commandResultFuture.result(300))
 
 
 def aks_command_result(cmd, client, resource_group_name, name, command_id=""):
@@ -2187,21 +2196,32 @@ def aks_command_result(cmd, client, resource_group_name, name, command_id=""):
 
     commandResult = client.get_command_result(
         resource_group_name, name, command_id)
-    return commandResult
+    return _print_command_result(cmd.cli_ctx, commandResult)
 
 
-def _print_command_result(commandResult):
-    # succeed, print exitcode, and logs
-    if commandResult.provisioning_state == "Succeeded":
-        print(f"{colorama.Fore.GREEN}command started at {commandResult.started_at}, finished at {commandResult.finished_at}, with exitcode={commandResult.exit_code}{colorama.Style.RESET_ALL}")
-        print(commandResult.logs)
-        return
-    # failed, print reason in error
-    if commandResult.provisioning_state == "Failed":
-        print(f"{colorama.Fore.RED}command failed with reason: {commandResult.reason}{colorama.Style.RESET_ALL}")
-        return
-    # *-ing state
-    print(f"{colorama.Fore.BLUE}command is in : {commandResult.provisioning_state} state{colorama.Style.RESET_ALL}")
+def _print_command_result(cli_ctx, commandResult):
+    # cli_ctx.data['safe_params'] contains list of parameter name user typed in, without value.
+    # cli core also use this calculate ParameterSetName header for all http request from cli.
+    if cli_ctx.data['safe_params'] is None or "-o" in cli_ctx.data['safe_params'] or "--output" in cli_ctx.data['safe_params']:
+        # user specified output format, honor their choice, return object to render pipeline
+        return commandResult
+    else:
+        # user didn't specified any format, we can customize the print for best experience
+        if commandResult.provisioning_state == "Succeeded":
+            # succeed, print exitcode, and logs
+            print(f"{colorama.Fore.GREEN}command started at {commandResult.started_at}, finished at {commandResult.finished_at}, with exitcode={commandResult.exit_code}{colorama.Style.RESET_ALL}")
+            print(commandResult.logs)
+            return
+
+        if commandResult.provisioning_state == "Failed":
+            # failed, print reason in error
+            print(
+                f"{colorama.Fore.RED}command failed with reason: {commandResult.reason}{colorama.Style.RESET_ALL}")
+            return
+
+        # *-ing state
+        print(f"{colorama.Fore.BLUE}command is in : {commandResult.provisioning_state} state{colorama.Style.RESET_ALL}")
+        return None
 
 
 def _get_command_context(command_files):
