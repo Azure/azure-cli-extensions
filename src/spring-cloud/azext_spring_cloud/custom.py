@@ -1180,8 +1180,7 @@ def binding_redis_update(cmd, client, resource_group, service, app, name,
     resource_id = binding.resource_id
     resource_name = binding.resource_name
     binding_parameters = {}
-    if disable_ssl:
-        binding_parameters['useSsl'] = not disable_ssl
+    binding_parameters['useSsl'] = not disable_ssl
 
     primary_key = None
     try:
