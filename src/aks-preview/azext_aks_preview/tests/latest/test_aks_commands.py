@@ -1352,11 +1352,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_pod_identity_usage(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         identity_name = self.create_random_name('id', 6)
+        binding_selector_name = 'binding_test'
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
             'location': resource_group_location,
             'identity_name': identity_name,
+            'binding_selector': binding_selector_name,
         })
 
         # create identity
@@ -1404,6 +1406,29 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('provisioningState', 'Succeeded'),
             self.check('podIdentityProfile.enabled', True),
             self.check('podIdentityProfile.userAssignedIdentities', None),
+        ])
+
+        # pod identity: add with binding selector
+        cmd = ('aks pod-identity add --cluster-name={name} --resource-group={resource_group} '
+               '--namespace test-namespace-binding-selector --name test-name-binding-selector '
+               '--identity-resource-id={application_identity_id} --binding-selector={binding_selector}')
+        self.cmd(cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('podIdentityProfile.enabled', True),
+            self.check(
+                'podIdentityProfile.userAssignedIdentities[0].name', 'test-name-binding-selector'),
+            self.check(
+                'podIdentityProfile.userAssignedIdentities[0].namespace', 'test-namespace-binding-selector'),
+            self.check(
+                'podIdentityProfile.userAssignedIdentities[0].provisioningState', 'Assigned'),
+            self.check(
+                'podIdentityProfile.userAssignedIdentities[0].bindingSelector', binding_selector_name),
+            self.check(
+                'podIdentityProfile.userAssignedIdentities[0].identity.clientId', application_identity['clientId']),
+            self.check(
+                'podIdentityProfile.userAssignedIdentities[0].identity.objectId', application_identity['principalId']),
+            self.check(
+                'podIdentityProfile.userAssignedIdentities[0].identity.resourceId', application_identity['id']),
         ])
 
         # delete

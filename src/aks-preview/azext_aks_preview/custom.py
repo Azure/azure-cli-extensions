@@ -3956,6 +3956,7 @@ def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
 
 def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
                          identity_name, identity_namespace, identity_resource_id,
+                         binding_selector=None,
                          no_wait=False):  # pylint: disable=unused-argument
     instance = client.get(resource_group_name, cluster_name)
     _ensure_pod_identity_addon_is_enabled(instance)
@@ -3977,6 +3978,8 @@ def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
             object_id=user_assigned_identity.principal_id,
         )
     )
+    if binding_selector is not None:
+        pod_identity.binding_selector = binding_selector
     pod_identities.append(pod_identity)
 
     _update_addon_pod_identity(
