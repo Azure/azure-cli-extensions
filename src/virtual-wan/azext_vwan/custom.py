@@ -359,16 +359,16 @@ def update_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_ta
         client = _v3_route_table_client(cmd.cli_ctx)
         route_table.labels = labels
 
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name,
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name,
                        virtual_hub_name, route_table_name, route_table)
 
 
 def get_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name):
-    from msrestazure.azure_exceptions import CloudError
+    from azure.core.exceptions import ResourceNotFoundError
     try:
         return _v3_route_table_client(cmd.cli_ctx)\
             .get(resource_group_name, virtual_hub_name, route_table_name)  # Get v3 route table first.
-    except CloudError as ex:
+    except ResourceNotFoundError as ex:
         if ex.status_code == 404:
             return _v2_route_table_client(cmd.cli_ctx)\
                 .get(resource_group_name, virtual_hub_name, route_table_name)  # Get v2 route table.
@@ -380,7 +380,7 @@ def delete_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_ta
     route_table = get_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name)
     client = _route_table_client(cmd.cli_ctx, route_table)
 
-    return sdk_no_wait(no_wait, client.delete, resource_group_name, virtual_hub_name, route_table_name)
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, virtual_hub_name, route_table_name)
 
 
 def list_vhub_route_tables(cmd, resource_group_name, virtual_hub_name):
@@ -426,7 +426,7 @@ def add_hub_routetable_route(cmd, resource_group_name, virtual_hub_name, route_t
                          next_hop=next_hop)
         route_table.routes.append(route)
 
-    poller = sdk_no_wait(no_wait, client.create_or_update,
+    poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, virtual_hub_name, route_table_name, route_table)
     try:
         return poller.result().routes
@@ -448,7 +448,7 @@ def remove_hub_routetable_route(cmd, resource_group_name, virtual_hub_name, rout
         raise CLIError('invalid index: {}. Index can range from 1 to {}'.format(index, len(route_table.routes)))
 
     client = _route_table_client(cmd.cli_ctx, route_table)
-    poller = sdk_no_wait(no_wait, client.create_or_update,
+    poller = sdk_no_wait(no_wait, client.begin_create_or_update,
                          resource_group_name, virtual_hub_name, route_table_name, route_table)
     try:
         return poller.result().routes
