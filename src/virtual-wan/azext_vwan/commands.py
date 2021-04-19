@@ -166,7 +166,7 @@ def load_command_table(self, _):
     # region VpnSites
     with self.command_group('network vpn-site', network_vpn_site_sdk) as g:
         g.custom_command('create', 'create_vpn_site', supports_no_wait=True)
-        g.command('delete', 'delete')
+        g.command('delete', 'begin_delete')
         g.custom_command('list', 'list_vpn_sites')
         g.show_command('show')
         g.generic_update_command('update', custom_func_name='update_vpn_site', setter_arg_name='vpn_site_parameters', supports_no_wait=True)

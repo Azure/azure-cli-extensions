@@ -162,7 +162,7 @@ def get_effective_virtual_hub_routes(cmd, resource_group_name, virtual_hub_name,
 
     client = network_client_factory(cmd.cli_ctx).virtual_hubs
 
-    def raw(response, *args, **kwargs):
+    def raw(response, *_):
         import json
         response = response.http_response
         return json.loads(response.body())
