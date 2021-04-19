@@ -1495,7 +1495,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_secret_rotation=False,
                disable_secret_rotation=False,
                yes=False,
-               tags=None):
+               tags=None,
+               windows_admin_password=None):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1527,7 +1528,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not disable_pod_identity and \
        not enable_secret_rotation and \
        not disable_secret_rotation and \
-       not tags:
+       not tags and \
+       not windows_admin_password:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1553,7 +1555,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--auto-upgrade-channel" or '
                        '"--enable-secret-rotation" or '
                        '"--disable-secret-rotation" or '
-                       '"--tags"')
+                       '"--tags" or '
+                       '"--windows-admin-password"')
 
     instance = client.get(resource_group_name, name)
 
@@ -1790,6 +1793,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     if tags:
         instance.tags = tags
+
+    if windows_admin_password:
+        instance.windows_profile.admin_password = windows_admin_password
 
     headers = get_aks_custom_headers(aks_custom_headers)
 

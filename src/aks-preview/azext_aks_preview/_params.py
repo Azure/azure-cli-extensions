@@ -157,6 +157,7 @@ def load_arguments(self, _):
         c.argument('disable_pod_identity', action='store_true')
         c.argument('enable_secret_rotation', action='store_true')
         c.argument('disable_secret_rotation', action='store_true')
+        c.argument('windows_admin_password', options_list=['--windows-admin-password'])
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('aks scale') as c:

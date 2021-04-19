@@ -81,7 +81,7 @@ helps['aks create'] = """
           short-summary: User account password to use on windows node VMs.
           long-summary: |-
             Rules for windows-admin-password:
-                - Minimum-length: 8 characters
+                - Minimum-length: 14 characters
                 - Max-length: 123 characters
                 - Complexity requirements: 3 out of 4 conditions below need to be fulfilled
                   * Has lower characters
@@ -505,6 +505,20 @@ helps['aks update'] = """
         - name: --tags
           type: string
           short-summary: The tags of the managed cluster. The managed cluster instance and all resources managed by the cloud provider will be tagged.
+        - name: --windows-admin-password
+          type: string
+          short-summary: User account password to use on windows node VMs.
+          long-summary: |-
+            Rules for windows-admin-password:
+                - Minimum-length: 14 characters
+                - Max-length: 123 characters
+                - Complexity requirements: 3 out of 4 conditions below need to be fulfilled
+                  * Has lower characters
+                  * Has upper characters
+                  * Has a digit
+                  * Has a special character (Regex match [\\W_])
+                - Disallowed values:  "abc@123", "P@$$w0rd", "P@ssw0rd", "P@ssword123", "Pa$$word", "pass@word1", "Password!", "Password1", "Password22", "iloveyou!"
+            Reference: https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.management.compute.models.virtualmachinescalesetosprofile.adminpassword?view=azure-dotnet
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -548,6 +562,8 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-pod-identity
       - name: Update the tags of a kubernetes cluster
         text: az aks update -g MyResourceGroup -n MyManagedCLuster --tags "foo=bar" "baz=qux"
+      - name: Update Windows password of a kubernetes cluster
+        text: az aks update -g MyResourceGroup -n MyManagedCLuster --windows-admin-password "Repl@cePassw0rd12345678"
 """
 
 helps['aks kollect'] = """
