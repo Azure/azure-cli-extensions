@@ -112,6 +112,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # if the user had not logged in.
     check_kube_connection(configuration)
 
+    utils.try_list_node_fix()  # Fix for AKS clusters v1.19.x
     required_node_exists = check_linux_amd64_node(configuration)
     if not required_node_exists:
         telemetry.set_user_fault()

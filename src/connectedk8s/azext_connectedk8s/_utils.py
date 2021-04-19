@@ -483,7 +483,7 @@ def check_system_permissions(custom_logger):
     except (OSError, EnvironmentError):
         return False
     except Exception as ex:
-        custom_logger.debug("Couldn't check the system permissions for creating an azure arc charts directory. Error: {}".format(str(ex)))
+        custom_logger.debug("Couldn't check the system permissions for creating an azure arc charts directory. Error: {}".format(str(ex)), exc_info=True)
         return False
 
 
@@ -492,12 +492,12 @@ def check_provider_registrations(cli_ctx, custom_logger):
         rp_client = _resource_providers_client(cli_ctx)
         cc_registration_state = rp_client.get(consts.Connected_Cluster_Provider_Namespace).registration_state
         if cc_registration_state != "Registered":
-            custom_logger.warning("{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace))
+            custom_logger.error("{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace))
         kc_registration_state = rp_client.get(consts.Kubernetes_Configuration_Provider_Namespace).registration_state
         if kc_registration_state != "Registered":
-            custom_logger.warning("{} provider is not registered".format(consts.Kubernetes_Configuration_Provider_Namespace))
+            custom_logger.error("{} provider is not registered".format(consts.Kubernetes_Configuration_Provider_Namespace))
     except Exception as ex:
-        custom_logger.debug("Couldn't check the required provider's registration status. Error: {}".format(str(ex)))
+        custom_logger.debug("Couldn't check the required provider's registration status. Error: {}".format(str(ex)), exc_info=True)
 
 
 # Returns a list of kubernetes pod objects in a given namespace. Object description at: https://github.com/kubernetes-client/python/blob/master/kubernetes/docs/V1PodList.md
@@ -506,3 +506,13 @@ def get_pod_list(api_instance, namespace, label_selector="", field_selector=""):
         return api_instance.list_namespaced_pod(namespace, label_selector=label_selector, field_selector="")
     except Exception as e:
         logger.debug("Error occurred when retrieving pod information: " + str(e))
+
+
+def try_list_node_fix():
+    try:
+        from kubernetes.client.models.v1_container_image import V1ContainerImage
+        def names(self, names):
+            self._names = names
+        V1ContainerImage.names = V1ContainerImage.names.setter(names)
+    except Exception as ex:
+        logger.debug("Error while trying to monkey patch the fix for list_node(): {}".format(str(ex)))
