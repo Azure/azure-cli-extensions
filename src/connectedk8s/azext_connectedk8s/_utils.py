@@ -26,7 +26,6 @@ from kubernetes import client as kube_client
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt
-from azure.cli.core.azclierror import AuthenticationError as AuthNError  # To differentiate from msrest exception with same name
 
 
 logger = get_logger(__name__)

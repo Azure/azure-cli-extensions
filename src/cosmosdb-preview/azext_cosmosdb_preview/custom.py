@@ -552,6 +552,12 @@ def cli_cosmosdb_managed_cassandra_cluster_create(client,
 
     """Creates an Azure Managed Cassandra Cluster"""
 
+    if initial_cassandra_admin_password is None and external_gossip_certificates is None:
+        raise CLIError('At least one out of the Initial Cassandra Admin Password or External Gossip Certificates is required.')
+
+    if initial_cassandra_admin_password is not None and external_gossip_certificates is not None:
+        raise CLIError('Only one out of the Initial Cassandra Admin Password or External Gossip Certificates has to be specified.')
+
     cluster_properties = ClusterResourceProperties(
         delegated_management_subnet_id=delegated_management_subnet_id,
         cluster_name_override=cluster_name_override,
@@ -579,13 +585,9 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
                                                   cluster_name,
                                                   tags=None,
                                                   identity=None,
-                                                  delegated_management_subnet_id=None,
-                                                  cluster_name_override=None,
-                                                  initial_cassandra_admin_password=None,
                                                   client_certificates=None,
                                                   external_gossip_certificates=None,
                                                   external_seed_nodes=None,
-                                                  restore_from_backup_id=None,
                                                   cassandra_version=None,
                                                   authentication_method=None,
                                                   hours_between_backups=None,
@@ -595,26 +597,14 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
 
     cluster_resource = client.get(resource_group_name, cluster_name)
 
-    if cluster_name_override is None:
-        cluster_name_override = cluster_resource.properties.cluster_name_override
-
-    if initial_cassandra_admin_password is None:
-        initial_cassandra_admin_password = cluster_resource.properties.initial_cassandra_admin_password
-
     if client_certificates is None:
         client_certificates = cluster_resource.properties.client_certificates
-
-    if delegated_management_subnet_id is None:
-        delegated_management_subnet_id = cluster_resource.properties.delegated_management_subnet_id
 
     if external_gossip_certificates is not None:
         external_gossip_certificates = cluster_resource.properties.external_gossip_certificates
 
     if external_seed_nodes is None:
         external_seed_nodes = cluster_resource.properties.external_seed_nodes
-
-    if restore_from_backup_id is None:
-        restore_from_backup_id = cluster_resource.properties.restore_from_backup_id
 
     if cassandra_version is None:
         cassandra_version = cluster_resource.properties.cassandra_version
@@ -636,12 +626,12 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
 
     cluster_properties = ClusterResourceProperties(
         provisioning_state=cluster_resource.properties.provisioning_state,
-        restore_from_backup_id=restore_from_backup_id,
-        delegated_management_subnet_id=delegated_management_subnet_id,
+        restore_from_backup_id=cluster_resource.properties.restore_from_backup_id,
+        delegated_management_subnet_id=cluster_resource.properties.delegated_management_subnet_id,
         cassandra_version=cassandra_version,
-        cluster_name_override=cluster_name_override,
+        cluster_name_override=cluster_resource.properties.cluster_name_override,
         authentication_method=authentication_method,
-        initial_cassandra_admin_password=initial_cassandra_admin_password,
+        initial_cassandra_admin_password=cluster_resource.properties.initial_cassandra_admin_password,
         hours_between_backups=hours_between_backups,
         repair_enabled=repair_enabled,
         client_certificates=client_certificates,
