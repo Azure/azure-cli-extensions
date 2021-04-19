@@ -265,7 +265,10 @@ helps['aks create'] = """
           short-summary: Using managed identity to manage cluster resource group. Default value is true, you can explicitly specify "--client-id" and "--secret" to disable managed identity.
         - name: --assign-identity
           type: string
-          short-summary: (PREVIEW) Specify an existing user assigned identity to manage cluster resource group.
+          short-summary: Specify an existing user assigned identity to manage cluster resource group.
+        - name: --assign-kubelet-identity
+          type: string
+          short-summary: Specify an existing user assigned identity for kubelet's usage, which is typically used to pull image from ACR.
         - name: --api-server-authorized-ip-ranges
           type: string
           short-summary: Comma seperated list of authorized apiserver IP ranges. Set to 0.0.0.0/32 to restrict apiserver traffic to node pools.
@@ -359,6 +362,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --tags "foo=bar" "baz=qux"
         - name: Create a kubernetes cluster with EncryptionAtHost enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-encryption-at-host
+        - name: Create a kubernetes cluster with custom control plane identity and kubelet identity.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --assign-identity <control-plane-identity-resource-id> --assign-kubelet-identity <kubelet-identity-resource-id>
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
