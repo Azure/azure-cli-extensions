@@ -93,7 +93,7 @@ def check():
                    parser_cls=AzCliCommandParser,
                    help_cls=AzCliHelp)
     help_files = get_extension_help_files(az_cli)
-    # High command represents left most word in a command, e.g., vm, disk. 
+    # High command represents left most word in a command, e.g., vm, disk.
     high_command_set = set()
     for help_file in help_files:
         if help_file.command:
