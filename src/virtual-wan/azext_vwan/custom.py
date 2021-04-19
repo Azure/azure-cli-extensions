@@ -150,36 +150,30 @@ def create_virtual_hub(cmd, resource_group_name, virtual_hub_name, address_prefi
                        resource_group_name, virtual_hub_name, hub)
 
 
-# TODO: Fix later
-def get_effective_virtual_hub_routes(cmd, resource_group_name, virtual_hub_name, virtual_wan_resource_type,
-                                     resource_id, no_wait=False):
+def get_effective_virtual_hub_routes(cmd, resource_group_name, virtual_hub_name,
+                                     virtual_wan_resource_type=None, resource_id=None):
+    parameters = None
+    Resource, EffectiveRoutesParameters = cmd.get_models("Resource", 'EffectiveRoutesParameters')
+    if virtual_wan_resource_type is not None or resource_id is not None:
+        parameters = EffectiveRoutesParameters(
+            virtual_wan_resource_type=virtual_wan_resource_type,
+            resource_id=Resource(id=resource_id)
+        )
 
     client = network_client_factory(cmd.cli_ctx).virtual_hubs
-    Resource, EffectiveRoutesParameters = cmd.get_models("Resource", 'EffectiveRoutesParameters')
-    parameters = EffectiveRoutesParameters(
-        virtual_wan_resource_type=virtual_wan_resource_type,
-        resource_id=Resource(id=resource_id)
-    )
-    
-    poller = client.begin_get_effective_virtual_hub_routes(
+
+    def raw(response, *args, **kwargs):
+        import json
+        response = response.http_response
+        return json.loads(response.body())
+
+    return client.begin_get_effective_virtual_hub_routes(
         resource_group_name,
         virtual_hub_name,
-        parameters
-    )
-    print(poller)
-    result = poller.result()
-    print(result)
-    return result
+        parameters,
+        cls=raw
+    ).result()
 
-
-    # return sdk_no_wait(
-    #     no_wait,
-    #     client.begin_get_effective_virtual_hub_routes,
-    #     resource_group_name,
-    #     virtual_hub_name,
-    #     parameters
-    # )
-    # return poller.result()
 
 def update_virtual_hub(instance, cmd, address_prefix=None, virtual_wan=None, tags=None, sku=None):
     SubResource = cmd.get_models('SubResource')

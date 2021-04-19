@@ -516,15 +516,14 @@ class AzureVWanVHubScenario(ScenarioTest):
         })
 
         # You need to create a virtual hub and a P2S VPN gateway with connection, then connect them together before running the following command.
-        # TODO: FIX later
-        # self.cmd('network vhub get-effective-routes '
-        #          '-g {rg} '
-        #          '-n {vhub} '
-        #          '--resource-type {resource_type} '
-        #          '--resource-id {resource_id}',
-        #          checks=[
-        #              self.check('length(value)', 5)
-        #          ])
+        self.cmd('network vhub get-effective-routes '
+                 '-g {rg} '
+                 '-n {vhub} '
+                 '--resource-type {resource_type} '
+                 '--resource-id {resource_id}',
+                 checks=[
+                     self.check('length(value)', 5)
+                 ])
 
 
 class P2SVpnGatewayVpnClientTestScenario(ScenarioTest):

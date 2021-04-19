@@ -1,0 +1,199 @@
+interactions:
+- request:
+    body: '{"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-cli-test-rg/providers/Microsoft.Network/p2sVpnGateways/p2svpngateway/p2sConnectionConfigurations/myconnectionconfig",
+      "virtualWanResourceType": "P2SConnection"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vhub get-effective-routes
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '249'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n --resource-type --resource-id
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.7.0
+      accept-language:
+      - en-US
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azure-cli-test-rg/providers/Microsoft.Network/virtualHubs/yu-vhub1/effectiveRoutes?api-version=2020-05-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/b4e8d4c4-ddaa-401c-9c79-57b9311474e0?api-version=2020-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Jul 2020 07:29:06 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operationResults/b4e8d4c4-ddaa-401c-9c79-57b9311474e0?api-version=2020-05-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 8700883f-4092-466d-8d5e-6173cd2cb630
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vhub get-effective-routes
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --resource-type --resource-id
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.7.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/b4e8d4c4-ddaa-401c-9c79-57b9311474e0?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\",\r\n  \"properties\": {\r\n    \"output\":
+        {\r\n      \"value\": [\r\n        {\r\n          \"addressPrefixes\": [\r\n
+        \           \"10.2.0.0/24\"\r\n          ],\r\n          \"nextHops\": [\r\n
+        \           \"\"\r\n          ],\r\n          \"nextHopType\": \"VPN_S2S_Gateway\",\r\n
+        \         \"routeOrigin\": \"\",\r\n          \"asPath\": \"\"\r\n        },\r\n
+        \       {\r\n          \"addressPrefixes\": [\r\n            \"10.42.0.0/25\"\r\n
+        \         ],\r\n          \"nextHops\": [\r\n            \"\"\r\n          ],\r\n
+        \         \"nextHopType\": \"VPN_S2S_Gateway\",\r\n          \"routeOrigin\":
+        \"\",\r\n          \"asPath\": \"\"\r\n        },\r\n        {\r\n          \"addressPrefixes\":
+        [\r\n            \"10.40.0.0/25\"\r\n          ],\r\n          \"nextHops\":
+        [\r\n            \"\"\r\n          ],\r\n          \"nextHopType\": \"VPN_S2S_Gateway\",\r\n
+        \         \"routeOrigin\": \"\",\r\n          \"asPath\": \"\"\r\n        },\r\n
+        \       {\r\n          \"addressPrefixes\": [\r\n            \"10.42.0.128/25\"\r\n
+        \         ],\r\n          \"nextHops\": [\r\n            \"\"\r\n          ],\r\n
+        \         \"nextHopType\": \"VPN_S2S_Gateway\",\r\n          \"routeOrigin\":
+        \"\",\r\n          \"asPath\": \"\"\r\n        },\r\n        {\r\n          \"addressPrefixes\":
+        [\r\n            \"10.40.0.128/25\"\r\n          ],\r\n          \"nextHops\":
+        [\r\n            \"\"\r\n          ],\r\n          \"nextHopType\": \"VPN_S2S_Gateway\",\r\n
+        \         \"routeOrigin\": \"\",\r\n          \"asPath\": \"\"\r\n        }\r\n
+        \     ]\r\n    }\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1362'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Jul 2020 07:29:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 017e8aca-43b9-4e1a-98ba-77476a25de0c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vhub get-effective-routes
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --resource-type --resource-id
+      User-Agent:
+      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
+        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.7.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operationResults/b4e8d4c4-ddaa-401c-9c79-57b9311474e0?api-version=2020-05-01
+  response:
+    body:
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"addressPrefixes\": [\r\n        \"10.2.0.0/24\"\r\n
+        \     ],\r\n      \"nextHops\": [\r\n        \"\"\r\n      ],\r\n      \"nextHopType\":
+        \"VPN_S2S_Gateway\",\r\n      \"routeOrigin\": \"\",\r\n      \"asPath\":
+        \"\"\r\n    },\r\n    {\r\n      \"addressPrefixes\": [\r\n        \"10.42.0.0/25\"\r\n
+        \     ],\r\n      \"nextHops\": [\r\n        \"\"\r\n      ],\r\n      \"nextHopType\":
+        \"VPN_S2S_Gateway\",\r\n      \"routeOrigin\": \"\",\r\n      \"asPath\":
+        \"\"\r\n    },\r\n    {\r\n      \"addressPrefixes\": [\r\n        \"10.40.0.0/25\"\r\n
+        \     ],\r\n      \"nextHops\": [\r\n        \"\"\r\n      ],\r\n      \"nextHopType\":
+        \"VPN_S2S_Gateway\",\r\n      \"routeOrigin\": \"\",\r\n      \"asPath\":
+        \"\"\r\n    },\r\n    {\r\n      \"addressPrefixes\": [\r\n        \"10.42.0.128/25\"\r\n
+        \     ],\r\n      \"nextHops\": [\r\n        \"\"\r\n      ],\r\n      \"nextHopType\":
+        \"VPN_S2S_Gateway\",\r\n      \"routeOrigin\": \"\",\r\n      \"asPath\":
+        \"\"\r\n    },\r\n    {\r\n      \"addressPrefixes\": [\r\n        \"10.40.0.128/25\"\r\n
+        \     ],\r\n      \"nextHops\": [\r\n        \"\"\r\n      ],\r\n      \"nextHopType\":
+        \"VPN_S2S_Gateway\",\r\n      \"routeOrigin\": \"\",\r\n      \"asPath\":
+        \"\"\r\n    }\r\n  ]\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/b4e8d4c4-ddaa-401c-9c79-57b9311474e0?api-version=2020-05-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1060'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 23 Jul 2020 07:29:17 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operationResults/b4e8d4c4-ddaa-401c-9c79-57b9311474e0?api-version=2020-05-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 8700883f-4092-466d-8d5e-6173cd2cb630
+    status:
+      code: 200
+      message: OK
+version: 1
