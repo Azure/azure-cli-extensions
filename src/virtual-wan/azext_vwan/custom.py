@@ -468,7 +468,7 @@ def _route_table_client(cli_ctx, route_table):
 
 
 def _v2_route_table_client(cli_ctx):
-    return network_client_factory(cli_ctx).virtual_hub_route_table_v2s
+    return network_client_factory(cli_ctx).virtual_hub_route_table_v2_s
 
 
 def _v3_route_table_client(cli_ctx):

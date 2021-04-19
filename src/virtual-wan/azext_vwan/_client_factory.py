@@ -24,7 +24,7 @@ def cf_virtual_hub_connection(cli_ctx, _):
 
 
 def cf_virtual_hub_route_table_v2s(cli_ctx, _):
-    return network_client_factory(cli_ctx).virtual_hub_route_table_v2s
+    return network_client_factory(cli_ctx).virtual_hub_route_table_v2_s
 
 
 def cf_vpn_server_config(cli_ctx, _):
