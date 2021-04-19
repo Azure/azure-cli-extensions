@@ -81,7 +81,8 @@ from .vendored_sdks.azure_mgmt_preview_aks.v2021_03_01.models import (ContainerS
                                                                       ManagedClusterPodIdentity,
                                                                       ManagedClusterPodIdentityException,
                                                                       UserAssignedIdentity,
-                                                                      RunCommandRequest)
+                                                                      RunCommandRequest,
+                                                                      ManagedClusterPropertiesIdentityProfileValue)
 from ._client_factory import cf_resource_groups
 from ._client_factory import get_auth_management_client
 from ._client_factory import get_graph_rbac_management_client
@@ -112,6 +113,7 @@ from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
 from ._consts import CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED
+from ._consts import CONST_MANAGED_IDENTITY_OPERATOR_ROLE, CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID
 from ._consts import ADDONS
 from .maintenanceconfiguration import aks_maintenanceconfiguration_update_internal
 from ._consts import CONST_PRIVATE_DNS_ZONE_SYSTEM, CONST_PRIVATE_DNS_ZONE_NONE
@@ -642,6 +644,10 @@ def _get_user_assigned_identity_client_id(cli_ctx, resource_id):
     return _get_user_assigned_identity(cli_ctx, resource_id).client_id
 
 
+def _get_user_assigned_identity_object_id(cli_ctx, resource_id):
+    return _get_user_assigned_identity(cli_ctx, resource_id).principal_id
+
+
 def _update_dict(dict1, dict2):
     cp = dict1.copy()
     cp.update(dict2)
@@ -1027,6 +1033,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_encryption_at_host=False,
                enable_secret_rotation=False,
                no_wait=False,
+               assign_kubelet_identity=None,
                yes=False):
     if not no_ssh_key:
         try:
@@ -1327,6 +1334,22 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             user_assigned_identities=user_assigned_identity
         )
 
+    identity_profile = None
+    if assign_kubelet_identity:
+        if not assign_identity:
+            raise CLIError('--assign-kubelet-identity can only be specified when --assign-identity is specified')
+        kubelet_identity = _get_user_assigned_identity(cmd.cli_ctx, assign_kubelet_identity)
+        identity_profile = {
+            'kubeletidentity': ManagedClusterPropertiesIdentityProfileValue(
+                resource_id=assign_kubelet_identity,
+                client_id=kubelet_identity.client_id,
+                object_id=kubelet_identity.principal_id
+            )
+        }
+        cluster_identity_object_id = _get_user_assigned_identity_object_id(cmd.cli_ctx, assign_identity)
+        # ensure the cluster identity has "Managed Identity Operator" role at the scope of kubelet identity
+        _ensure_cluster_identity_permission_on_kubelet_identity(cmd.cli_ctx, cluster_identity_object_id, assign_kubelet_identity)
+
     pod_identity_profile = None
     if enable_pod_identity:
         if not enable_managed_identity:
@@ -1363,7 +1386,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         disk_encryption_set_id=node_osdisk_diskencryptionset_id,
         api_server_access_profile=api_server_access_profile,
         auto_upgrade_profile=auto_upgrade_profile,
-        pod_identity_profile=pod_identity_profile)
+        pod_identity_profile=pod_identity_profile,
+        identity_profile=identity_profile)
 
     if node_resource_group:
         mc.node_resource_group = node_resource_group
@@ -1471,7 +1495,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_secret_rotation=False,
                disable_secret_rotation=False,
                yes=False,
-               tags=None):
+               tags=None,
+               windows_admin_password=None):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1503,7 +1528,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not disable_pod_identity and \
        not enable_secret_rotation and \
        not disable_secret_rotation and \
-       not tags:
+       not tags and \
+       not windows_admin_password:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1529,7 +1555,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--auto-upgrade-channel" or '
                        '"--enable-secret-rotation" or '
                        '"--disable-secret-rotation" or '
-                       '"--tags"')
+                       '"--tags" or '
+                       '"--windows-admin-password"')
 
     instance = client.get(resource_group_name, name)
 
@@ -1736,16 +1763,30 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     if disable_pod_identity:
         _update_addon_pod_identity(instance, enable=False)
 
-    azure_keyvault_secrets_provider_addon_profile = instance.addon_profiles.get(
-        CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, None)
+    azure_keyvault_secrets_provider_addon_profile = None
+    monitoring_addon_enabled = False
+    ingress_appgw_addon_enabled = False
+    virtual_node_addon_enabled = False
+
+    if instance.addon_profiles is not None:
+        azure_keyvault_secrets_provider_addon_profile = instance.addon_profiles.get(CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, None)
+        azure_keyvault_secrets_provider_enabled = CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME in instance.addon_profiles and \
+            instance.addon_profiles[CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME].enabled
+        monitoring_addon_enabled = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and \
+            instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
+        ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles and \
+            instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].enabled
+        virtual_node_addon_enabled = CONST_VIRTUAL_NODE_ADDON_NAME + 'Linux' in instance.addon_profiles and \
+            instance.addon_profiles[CONST_VIRTUAL_NODE_ADDON_NAME + 'Linux'].enabled
+
     if enable_secret_rotation:
-        if azure_keyvault_secrets_provider_addon_profile is None or not azure_keyvault_secrets_provider_addon_profile.enabled:
+        if not azure_keyvault_secrets_provider_enabled:
             raise CLIError(
                 '--enable-secret-rotation can only be specified when azure-keyvault-secrets-provider is enabled')
         azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "true"
 
     if disable_secret_rotation:
-        if azure_keyvault_secrets_provider_addon_profile is None or not azure_keyvault_secrets_provider_addon_profile.enabled:
+        if not azure_keyvault_secrets_provider_enabled:
             raise CLIError(
                 '--disable-secret-rotation can only be specified when azure-keyvault-secrets-provider is enabled')
         azure_keyvault_secrets_provider_addon_profile.config[CONST_SECRET_ROTATION_ENABLED] = "false"
@@ -1753,14 +1794,11 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     if tags:
         instance.tags = tags
 
+    if windows_admin_password:
+        instance.windows_profile.admin_password = windows_admin_password
+
     headers = get_aks_custom_headers(aks_custom_headers)
-    monitoring_addon_enabled = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and \
-        instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
-    ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles and \
-        instance.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].enabled
-    virtual_node_addon_enabled = CONST_VIRTUAL_NODE_ADDON_NAME + 'Linux' in instance.addon_profiles and \
-        instance.addon_profiles[CONST_VIRTUAL_NODE_ADDON_NAME +
-                                'Linux'].enabled
+
     return _put_managed_cluster_ensuring_permission(cmd,
                                                     client,
                                                     subscription_id,
@@ -2178,7 +2216,8 @@ def aks_runcommand(cmd, client, resource_group_name, name, command_string="", co
 
     commandResultFuture = client.run_command(
         resource_group_name, name, request_payload, long_running_operation_timeout=5, retry_total=0)
-    return commandResultFuture.result(300)
+
+    return _print_command_result(cmd.cli_ctx, commandResultFuture.result(300))
 
 
 def aks_command_result(cmd, client, resource_group_name, name, command_id=""):
@@ -2187,21 +2226,32 @@ def aks_command_result(cmd, client, resource_group_name, name, command_id=""):
 
     commandResult = client.get_command_result(
         resource_group_name, name, command_id)
-    return commandResult
+    return _print_command_result(cmd.cli_ctx, commandResult)
 
 
-def _print_command_result(commandResult):
-    # succeed, print exitcode, and logs
-    if commandResult.provisioning_state == "Succeeded":
-        print(f"{colorama.Fore.GREEN}command started at {commandResult.started_at}, finished at {commandResult.finished_at}, with exitcode={commandResult.exit_code}{colorama.Style.RESET_ALL}")
-        print(commandResult.logs)
-        return
-    # failed, print reason in error
-    if commandResult.provisioning_state == "Failed":
-        print(f"{colorama.Fore.RED}command failed with reason: {commandResult.reason}{colorama.Style.RESET_ALL}")
-        return
-    # *-ing state
-    print(f"{colorama.Fore.BLUE}command is in : {commandResult.provisioning_state} state{colorama.Style.RESET_ALL}")
+def _print_command_result(cli_ctx, commandResult):
+    # cli_ctx.data['safe_params'] contains list of parameter name user typed in, without value.
+    # cli core also use this calculate ParameterSetName header for all http request from cli.
+    if cli_ctx.data['safe_params'] is None or "-o" in cli_ctx.data['safe_params'] or "--output" in cli_ctx.data['safe_params']:
+        # user specified output format, honor their choice, return object to render pipeline
+        return commandResult
+    else:
+        # user didn't specified any format, we can customize the print for best experience
+        if commandResult.provisioning_state == "Succeeded":
+            # succeed, print exitcode, and logs
+            print(f"{colorama.Fore.GREEN}command started at {commandResult.started_at}, finished at {commandResult.finished_at}, with exitcode={commandResult.exit_code}{colorama.Style.RESET_ALL}")
+            print(commandResult.logs)
+            return
+
+        if commandResult.provisioning_state == "Failed":
+            # failed, print reason in error
+            print(
+                f"{colorama.Fore.RED}command failed with reason: {commandResult.reason}{colorama.Style.RESET_ALL}")
+            return
+
+        # *-ing state
+        print(f"{colorama.Fore.BLUE}command is in : {commandResult.provisioning_state} state{colorama.Style.RESET_ALL}")
+        return None
 
 
 def _get_command_context(command_files):
@@ -3873,9 +3923,6 @@ def _update_addon_pod_identity(instance, enable, pod_identities=None, pod_identi
 
 
 def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
-    managed_identity_operator_role = 'Managed Identity Operator'
-    managed_identity_operator_role_id = 'f1a07417-d97a-45cb-824c-7a7467783830'
-
     cluster_identity_object_id = None
     if instance.identity.type.lower() == 'userassigned':
         for identity in instance.identity.user_assigned_identities.values():
@@ -3895,14 +3942,14 @@ def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
     for i in assignments_client.list_for_scope(scope=scope, filter='atScope()'):
         if i.scope.lower() != scope.lower():
             continue
-        if not i.role_definition_id.lower().endswith(managed_identity_operator_role_id):
+        if not i.role_definition_id.lower().endswith(CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID):
             continue
         if i.principal_id.lower() != cluster_identity_object_id.lower():
             continue
         # already assigned
         return
 
-    if not _add_role_assignment(cli_ctx, managed_identity_operator_role, cluster_identity_object_id,
+    if not _add_role_assignment(cli_ctx, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,
                                 is_service_principal=False, scope=scope):
         raise CLIError(
             'Could not grant Managed Identity Operator permission for cluster')
@@ -3915,6 +3962,7 @@ def _ensure_managed_identity_operator_permission(cli_ctx, instance, scope):
 
 def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
                          identity_name, identity_namespace, identity_resource_id,
+                         binding_selector=None,
                          no_wait=False):  # pylint: disable=unused-argument
     instance = client.get(resource_group_name, cluster_name)
     _ensure_pod_identity_addon_is_enabled(instance)
@@ -3936,6 +3984,8 @@ def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
             object_id=user_assigned_identity.principal_id,
         )
     )
+    if binding_selector is not None:
+        pod_identity.binding_selector = binding_selector
     pod_identities.append(pod_identity)
 
     _update_addon_pod_identity(
@@ -4056,3 +4106,22 @@ def aks_pod_identity_exception_update(cmd, client, resource_group_name, cluster_
 def aks_pod_identity_exception_list(cmd, client, resource_group_name, cluster_name):
     instance = client.get(resource_group_name, cluster_name)
     return _remove_nulls([instance])[0]
+
+
+def _ensure_cluster_identity_permission_on_kubelet_identity(cli_ctx, cluster_identity_object_id, scope):
+    factory = get_auth_management_client(cli_ctx, scope)
+    assignments_client = factory.role_assignments
+
+    for i in assignments_client.list_for_scope(scope=scope, filter='atScope()'):
+        if i.scope.lower() != scope.lower():
+            continue
+        if not i.role_definition_id.lower().endswith(CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID):
+            continue
+        if i.principal_id.lower() != cluster_identity_object_id.lower():
+            continue
+        # already assigned
+        return
+
+    if not _add_role_assignment(cli_ctx, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,
+                                is_service_principal=False, scope=scope):
+        raise CLIError('Could not grant Managed Identity Operator permission to cluster identity at scope {}'.format(scope))
