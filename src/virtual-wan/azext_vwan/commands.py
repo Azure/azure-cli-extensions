@@ -172,7 +172,7 @@ def load_command_table(self, _):
         g.generic_update_command('update', custom_func_name='update_vpn_site', setter_name='begin_create_or_update', setter_arg_name='vpn_site_parameters', supports_no_wait=True)
 
     with self.command_group('network vpn-site', network_vpn_site_config_sdk) as g:
-        g.command('download', 'download')
+        g.command('download', 'begin_download')
     # endregion
 
     # region VpnServer
