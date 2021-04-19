@@ -109,7 +109,7 @@ def load_command_table(self, _):
         g.show_command('show')
         g.custom_command('list', 'list_virtual_hubs')
         g.generic_update_command('update', custom_func_name='update_virtual_hub', setter_name="begin_create_or_update", setter_arg_name='virtual_hub_parameters', supports_no_wait=True)
-        g.custom_command('get-effective-routes', 'get_effective_virtual_hub_routes')
+        g.custom_command('get-effective-routes', 'get_effective_virtual_hub_routes', supports_no_wait=True)
 
     with self.command_group('network vhub connection', network_vhub_connection_sdk) as g:
         g.custom_command('create', 'create_hub_vnet_connection', supports_no_wait=True)
@@ -169,7 +169,7 @@ def load_command_table(self, _):
         g.command('delete', 'begin_delete')
         g.custom_command('list', 'list_vpn_sites')
         g.show_command('show')
-        g.generic_update_command('update', custom_func_name='update_vpn_site', setter_arg_name='vpn_site_parameters', supports_no_wait=True)
+        g.generic_update_command('update', custom_func_name='update_vpn_site', setter_name='begin_create_or_update', setter_arg_name='vpn_site_parameters', supports_no_wait=True)
 
     with self.command_group('network vpn-site', network_vpn_site_config_sdk) as g:
         g.command('download', 'download')

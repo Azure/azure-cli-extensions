@@ -151,7 +151,7 @@ def create_virtual_hub(cmd, resource_group_name, virtual_hub_name, address_prefi
 
 
 def get_effective_virtual_hub_routes(cmd, resource_group_name, virtual_hub_name,
-                                     virtual_wan_resource_type=None, resource_id=None):
+                                     virtual_wan_resource_type=None, resource_id=None, no_wait=False):
     parameters = None
     Resource, EffectiveRoutesParameters = cmd.get_models("Resource", 'EffectiveRoutesParameters')
     if virtual_wan_resource_type is not None or resource_id is not None:
@@ -167,12 +167,14 @@ def get_effective_virtual_hub_routes(cmd, resource_group_name, virtual_hub_name,
         response = response.http_response
         return json.loads(response.body())
 
-    return client.begin_get_effective_virtual_hub_routes(
+    return sdk_no_wait(
+        no_wait,
+        client.begin_get_effective_virtual_hub_routes,
         resource_group_name,
         virtual_hub_name,
         parameters,
         cls=raw
-    ).result()
+    )
 
 
 def update_virtual_hub(instance, cmd, address_prefix=None, virtual_wan=None, tags=None, sku=None):
