@@ -110,6 +110,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # if the user had not logged in.
     check_kube_connection(configuration)
 
+    utils.try_list_node_fix()
     required_node_exists = check_linux_amd64_node(configuration)
     if not required_node_exists:
         telemetry.set_user_fault()
@@ -771,6 +772,8 @@ def update_agents(cmd, client, resource_group_name, cluster_name, https_proxy=""
     # if the user had not logged in.
     check_kube_connection(configuration)
 
+    utils.try_list_node_fix()
+
     # Get kubernetes cluster info for telemetry
     kubernetes_version = get_server_version(configuration)
 
@@ -892,6 +895,8 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
     # if the user had not logged in.
     check_kube_connection(configuration)
+
+    utils.try_list_node_fix()
 
     # Get kubernetes cluster info for telemetry
     kubernetes_version = get_server_version(configuration)
@@ -1171,6 +1176,8 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
     # if the user had not logged in.
     check_kube_connection(configuration)
 
+    utils.try_list_node_fix()
+
     # Get kubernetes cluster info for telemetry
     kubernetes_version = get_server_version(configuration)
 
@@ -1296,6 +1303,8 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
     # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
     # if the user had not logged in.
     check_kube_connection(configuration)
+
+    utils.try_list_node_fix()
 
     # Get kubernetes cluster info for telemetry
     kubernetes_version = get_server_version(configuration)

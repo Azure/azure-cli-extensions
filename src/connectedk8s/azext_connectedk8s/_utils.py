@@ -3,12 +3,15 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from __future__ import absolute_import
 import os
 import shutil
 import subprocess
 from subprocess import Popen, PIPE
 import time
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 import json
 
 from knack.util import CLIError
@@ -23,10 +26,8 @@ from kubernetes.client.rest import ApiException
 from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError
-
+from azext_connectedk8s._client_factory import get_subscription_client, _resource_providers_client
 
 logger = get_logger(__name__)
 
@@ -374,3 +375,13 @@ def is_guid(guid):
         return True
     except ValueError:
         return False
+
+
+def try_list_node_fix():
+    try:
+        from kubernetes.client.models.v1_container_image import V1ContainerImage
+        def names(self, names):
+            self._names = names
+        V1ContainerImage.names = V1ContainerImage.names.setter(names)
+    except Exception as ex:
+        logger.debug("Error while trying to monkey patch the fix for list_node(): {}".format(str(ex)))
