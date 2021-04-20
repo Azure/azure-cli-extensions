@@ -217,7 +217,7 @@ def load_arguments(self, _):
         c.argument('resource_name', p2s_vpn_gateway_name_type, id_part=None)
 
     with self.argument_context('network p2s-vpn-gateway vpn-client') as c:
-        c.argument('authentication_method', arg_type=get_enum_type(AuthenticationMethod))
+        c.argument('authentication_method', arg_type=get_enum_type(AuthenticationMethod), help='')
     # endregion
 
     # region Routing Configuration
