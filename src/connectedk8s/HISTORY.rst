@@ -8,6 +8,7 @@ Release History
 * Fix for list_node() sdk function for AKS v1.19.x clusters
 * Some logging and telemetry fixes
 
+
 1.1.2
 ++++++
 * Fix/remove bug for unused error type import from az cli version 2.16.0+
