@@ -23,7 +23,7 @@ from ._validators import (
     validate_taints, validate_priority, validate_eviction_policy, validate_spot_max_price, validate_acr, validate_user,
     validate_load_balancer_outbound_ports, validate_load_balancer_idle_timeout, validate_nodepool_tags,
     validate_nodepool_labels, validate_vnet_subnet_id, validate_pod_subnet_id, validate_max_surge, validate_assign_identity, validate_addons,
-    validate_pod_identity_pod_labels, validate_pod_identity_resource_name, validate_pod_identity_resource_namespace)
+    validate_pod_identity_pod_labels, validate_pod_identity_resource_name, validate_pod_identity_resource_namespace, validate_assign_kubelet_identity)
 from ._consts import CONST_OUTBOUND_TYPE_LOAD_BALANCER, \
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING, CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT, \
     CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE, \
@@ -127,6 +127,7 @@ def load_arguments(self, _):
         c.argument('aci_subnet_name', type=str)
         c.argument('enable_encryption_at_host', arg_type=get_three_state_flag(), help='Enable EncryptionAtHost.')
         c.argument('enable_secret_rotation', action='store_true')
+        c.argument('assign_kubelet_identity', type=str, validator=validate_assign_kubelet_identity)
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('aks update') as c:
@@ -156,6 +157,7 @@ def load_arguments(self, _):
         c.argument('disable_pod_identity', action='store_true')
         c.argument('enable_secret_rotation', action='store_true')
         c.argument('disable_secret_rotation', action='store_true')
+        c.argument('windows_admin_password', options_list=['--windows-admin-password'])
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('aks scale') as c:
@@ -182,6 +184,13 @@ def load_arguments(self, _):
 
     with self.argument_context('aks nodepool') as c:
         c.argument('cluster_name', type=str, help='The cluster name.')
+
+    with self.argument_context('aks command invoke') as c:
+        c.argument('command_string', type=str, options_list=["--command", "-c"], help='the command to run')
+        c.argument('command_files', options_list=["--file", "-f"], required=False, action="append", help='attach any files the command may use, or use \'.\' to upload the current folder.')
+
+    with self.argument_context('aks command result') as c:
+        c.argument('command_id', type=str, options_list=["--command-id", "-i"], help='the command ID from "aks command invoke"')
 
     for scope in ['aks nodepool add']:
         with self.argument_context(scope) as c:
@@ -258,6 +267,7 @@ def load_arguments(self, _):
                    validator=validate_pod_identity_resource_name('identity_name', required=False))
         c.argument('identity_namespace', type=str, options_list=['--namespace'], help='The pod identity namespace.')
         c.argument('identity_resource_id', type=str, options_list=['--identity-resource-id'], help='Resource id of the identity to use.')
+        c.argument('binding_selector', type=str, options_list=['--binding-selector'], help='Optional binding selector to use.')
 
     with self.argument_context('aks pod-identity delete') as c:
         c.argument('identity_name', type=str, options_list=['--name', '-n'], default=None, required=True,

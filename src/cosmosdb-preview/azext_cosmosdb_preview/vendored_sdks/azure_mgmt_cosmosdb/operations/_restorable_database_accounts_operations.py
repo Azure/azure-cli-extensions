@@ -25,7 +25,7 @@ class RestorableDatabaseAccountsOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The API version to use for the request. Constant value: "2021-03-01-preview".
+    :ivar api_version: The API version to use for this operation. Constant value: "2021-03-01-preview".
     """
 
     models = models
@@ -72,7 +72,7 @@ class RestorableDatabaseAccountsOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
 
             else:
                 url = next_link
@@ -142,7 +142,7 @@ class RestorableDatabaseAccountsOperations(object):
 
                 # Construct parameters
                 query_parameters = {}
-                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+                query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
 
             else:
                 url = next_link
@@ -218,7 +218,7 @@ class RestorableDatabaseAccountsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
 
         # Construct headers
         header_parameters = {}

@@ -18,27 +18,26 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/Microsoft.Quantum/workspaces/validator-qio-parallel-tempering-cpu-eastus2euap?api-version=2019-11-04-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/Microsoft.Quantum/workspaces/testworkspace-canary-microsoft?api-version=2019-11-04-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/microsoft.quantum/workspaces/validator-qio-parallel-tempering-cpu-eastus2euap","name":"validator-qio-parallel-tempering-cpu-eastus2euap","type":"microsoft.quantum/workspaces","location":"eastus2euap","properties":{"providers":[{"providerId":"Microsoft","providerSku":"Basic","applicationName":"validator-qio-parallel-tempering-cpu-eastus2euap-Microsoft","provisioningState":"Succeeded"}],"provisioningState":"Succeeded","usable":"Yes"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/microsoft.quantum/workspaces/testworkspace-canary-microsoft","name":"testworkspace-canary-microsoft","type":"microsoft.quantum/workspaces","location":"East
+        US 2 EUAP","properties":{"providers":[{"providerId":"Microsoft","providerSku":"basic","applicationName":"testworkspace-canary-microsoft-Microsoft","provisioningState":"Succeeded"}],"provisioningState":"Succeeded","usable":"Yes"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '544'
+      - '487'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Jan 2021 17:44:49 GMT
+      - Mon, 22 Mar 2021 16:47:05 GMT
       etag:
-      - '"0200b0aa-0000-3400-0000-5fd8fcfb0000"'
+      - '"07008443-0000-3300-0000-5fa7d2e40000"'
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -47,6 +46,8 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
     status:
       code: 200
       message: OK
@@ -65,7 +66,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://eastus2euap.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aqua-provider-validator/providers/Microsoft.Quantum/workspaces/validator-qio-parallel-tempering-cpu-eastus2euap/providerStatus
+    uri: https://eastus2euap.quantum.azure.com/v1.0/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/validator-test-rg/providers/Microsoft.Quantum/workspaces/testworkspace-canary-microsoft/providerStatus
   response:
     body:
       string: '{"value":[{"id":"Microsoft","currentAvailability":"Available","targets":[{"id":"microsoft.paralleltempering-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.paralleltempering.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.tabu-parameterfree.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.tabu.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing-parameterfree.fpga","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.simulatedannealing.fpga","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.chemistry.all","currentAvailability":"Available","averageQueueTime":0,"statusPage":null},{"id":"microsoft.qmc.cpu","currentAvailability":"Available","averageQueueTime":0,"statusPage":null}]}],"nextLink":null}'
@@ -75,7 +76,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 29 Jan 2021 17:44:52 GMT
+      - Mon, 22 Mar 2021 16:47:08 GMT
       request-context:
       - appId=cid-v1:4d6ac272-7369-45c6-9036-63d733c8519f
       server:

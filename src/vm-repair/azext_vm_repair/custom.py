@@ -31,7 +31,8 @@ from .repair_utils import (
     _fetch_disk_info,
     _unlock_singlepass_encrypted_disk,
     _invoke_run_command,
-    _check_hyperV_gen
+    _check_hyperV_gen,
+    _get_cloud_init_script
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError
 logger = get_logger(__name__)
@@ -63,8 +64,13 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             _check_hyperV_gen(source_vm)
 
         # Set up base create vm command
-        create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password}' \
-                                   .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password)
+        if is_linux:
+            create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password} --custom-data {cloud_init_script}' \
+                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, cloud_init_script=_get_cloud_init_script())
+        else:
+            create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password}' \
+                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password)
+
         # Fetch VM size of repair VM
         sku = _fetch_compatible_sku(source_vm, enable_nested)
         if not sku:

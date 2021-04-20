@@ -10,6 +10,21 @@ from jmespath import compile as compile_jmes, Options
 from jmespath import functions
 
 
+def aks_run_command_result_format(cmdResult):
+    result = OrderedDict()
+    if cmdResult['provisioningState'] == "Succeeded":
+        result['exit code'] = cmdResult['exitCode']
+        result['logs'] = cmdResult['logs']
+        return result
+    if cmdResult['provisioningState'] == "Failed":
+        result['provisioning state'] = cmdResult['provisioningState']
+        result['reason'] = cmdResult['reason']
+        return result
+    result['provisioning state'] = cmdResult['provisioningState']
+    result['started At'] = cmdResult['startedAt']
+    return result
+
+
 def aks_agentpool_show_table_format(result):
     """Format an agent pool as summary results for display with "-o table"."""
     return [_aks_agentpool_table_format(result)]
@@ -98,7 +113,8 @@ def aks_versions_table_format(result):
         upgrades: upgrades[].orchestratorVersion || [`None available`] | sort_versions(@) | set_preview_array(@) | join(`, `, @)
     }""")
     # use ordered dicts so headers are predictable
-    results = parsed.search(result, Options(dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))
+    results = parsed.search(result, Options(
+        dict_cls=OrderedDict, custom_functions=_custom_functions(preview)))
     return sorted(results, key=lambda x: version_to_tuple(x.get('kubernetesVersion')), reverse=True)
 
 
@@ -112,15 +128,16 @@ def version_to_tuple(version):
 def _custom_functions(preview_versions):
     class CustomFunctions(functions.Functions):  # pylint: disable=too-few-public-methods
 
-        @functions.signature({'types': ['array']})
+        @ functions.signature({'types': ['array']})
         def _func_sort_versions(self, versions):  # pylint: disable=no-self-use
             """Custom JMESPath `sort_versions` function that sorts an array of strings as software versions"""
             try:
                 return sorted(versions, key=version_to_tuple)
-            except (TypeError, ValueError):  # if it wasn't sortable, return the input so the pipeline continues
+            # if it wasn't sortable, return the input so the pipeline continues
+            except (TypeError, ValueError):
                 return versions
 
-        @functions.signature({'types': ['array']})
+        @ functions.signature({'types': ['array']})
         def _func_set_preview_array(self, versions):
             """Custom JMESPath `set_preview_array` function that suffixes preview version"""
             try:
@@ -130,7 +147,7 @@ def _custom_functions(preview_versions):
             except(TypeError, ValueError):
                 return versions
 
-        @functions.signature({'types': ['string']})
+        @ functions.signature({'types': ['string']})
         def _func_set_preview(self, version):  # pylint: disable=no-self-use
             """Custom JMESPath `set_preview` function that suffixes preview version"""
             try:
@@ -140,7 +157,7 @@ def _custom_functions(preview_versions):
             except(TypeError, ValueError):
                 return version
 
-        @functions.signature({'types': ['object']})
+        @ functions.signature({'types': ['object']})
         def _func_pprint_labels(self, labels):  # pylint: disable=no-self-use
             """Custom JMESPath `pprint_labels` function that pretty print labels"""
             if not labels:
