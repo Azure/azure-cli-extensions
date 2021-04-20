@@ -416,3 +416,11 @@ def should_create_new_app(cmd, rg_name, app_name):  # this is currently referenc
             return False
     return True
 
+
+def generate_default_app_service_plan_name(webapp_name):
+    import uuid
+    random_uuid = str(uuid.uuid4().hex)
+    webapp_name = webapp_name[:222]  # max length for app service plan name is 260
+
+    return '{}_plan_{}'.format(webapp_name, random_uuid)
+

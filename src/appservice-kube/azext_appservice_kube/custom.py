@@ -81,7 +81,7 @@ from ._utils import (_normalize_sku, get_sku_name, validate_subnet_id, _generic_
 from ._create_util import (zip_contents_from_dir, get_runtime_version_details, create_resource_group, get_app_details,
                            should_create_new_rg, set_location, get_site_availability, does_app_already_exist, get_profile_username,
                            get_plan_to_use,get_kube_plan_to_use, get_lang_from_content, get_rg_to_use, get_sku_to_use,
-                           detect_os_form_src, get_current_stack_from_runtime)
+                           detect_os_form_src, get_current_stack_from_runtime, generate_default_app_service_plan_name)
 from ._client_factory import web_client_factory, cf_kube_environments, ex_handler_factory
 from .vsts_cd_provider import VstsContinuousDeliveryProvider
 
@@ -178,7 +178,7 @@ def _validate_asp_sku(app_service_environment, custom_location, sku):
     elif custom_location:
         # Custom Location only supports Any and ElasticAny
         if sku.upper() not in KUBE_SKUS:
-            raise CLIError("Only pricing tier 'Any' or 'ElasticAny' is allowed in this app service plan.")
+            raise CLIError("Only pricing tier 'Any' or 'ElasticAny' is allowed for this type of app service plan.")
 
 
 def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False, custom_location=None,
@@ -207,6 +207,29 @@ def get_vm_sizes(cli_ctx, location):
     return cf_compute_service(cli_ctx).virtual_machine_sizes.list(location)
 
 
+def _get_kube_env_from_custom_location(cmd, custom_location, resource_group_name=None):
+    kube_environment_id = None
+    custom_location_rg = resource_group_name
+
+    if is_valid_resource_id(custom_location):
+        parsed_custom_location = parse_resource_id(custom_location)
+        custom_location_rg = parsed_custom_location.get("resource_group")
+        custom_location = parsed_custom_location.get("name")
+
+    kube_envs = cf_kube_environments(cmd.cli_ctx).list_by_subscription()
+    for kube in kube_envs:
+        if kube.extended_location and kube.extended_location.custom_location:
+            parsed_custom_location_2 = parse_resource_id(kube.extended_location.custom_location)
+            if (parsed_custom_location_2.get("name").lower() == custom_location.lower()) and (parsed_custom_location_2.get("resource_group").lower() == custom_location_rg.lower()):
+                kube_environment_id = kube.id
+                break
+
+    if not kube_environment_id:
+        raise ResourceNotFoundError('Unable to find Kube Environment associated to the Custom Location')
+
+    return kube_environment_id
+
+
 def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False, custom_location=None,
                             app_service_environment=None, sku=None,
                             number_of_workers=None, location=None, tags=None, no_wait=False):
@@ -224,21 +247,7 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
     client = web_client_factory(cmd.cli_ctx)
 
     if custom_location:
-        custom_location_rg = resource_group_name
-        if is_valid_resource_id(custom_location):
-            parsed_custom_location = parse_resource_id(custom_location)
-            custom_location_rg = parsed_custom_location.get("resource_group")
-            custom_location = parsed_custom_location.get("name")
-
-        kube_envs = cf_kube_environments(cmd.cli_ctx).list_by_subscription()
-        for kube in kube_envs:
-            if kube.extended_location and kube.extended_location.custom_location:
-                parsed_custom_location_2 = parse_resource_id(kube.extended_location.custom_location)
-                if (parsed_custom_location_2.get("name").lower() == custom_location.lower()) and (parsed_custom_location_2.get("resource_group").lower() == custom_location_rg.lower()):
-                    kube_environment = kube.id
-                    break
-        if not kube_environment:
-            raise CLIError('Unable to find Kube Environment associated to the Custom Location')
+        kube_environment = _get_kube_env_from_custom_location(cmd, custom_location, resource_group_name)
 
     if app_service_environment:
         if hyper_v:
@@ -306,7 +315,7 @@ def update_app_service_plan(instance, sku=None, number_of_workers=None):
     return instance
 
 
-def create_webapp(cmd, resource_group_name, name, plan, runtime=None, startup_file=None,  # pylint: disable=too-many-statements,too-many-branches
+def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custom_location=None, startup_file=None,  # pylint: disable=too-many-statements,too-many-branches
                   deployment_container_image_name=None, deployment_source_url=None, deployment_source_branch='master',
                   deployment_local_git=None, docker_registry_server_password=None, docker_registry_server_user=None,
                   multicontainer_config_type=None, multicontainer_config_file=None, tags=None,
@@ -317,19 +326,9 @@ def create_webapp(cmd, resource_group_name, name, plan, runtime=None, startup_fi
     if deployment_source_url and deployment_local_git:
         raise CLIError('usage error: --deployment-source-url <url> | --deployment-local-git')
 
-    docker_registry_server_url = parse_docker_image_name(deployment_container_image_name)
+    if not plan and not custom_location:
+        raise RequiredArgumentMissingError("Either Plan or Custom Location must be specified")
 
-    client = web_client_factory(cmd.cli_ctx)
-    if is_valid_resource_id(plan):
-        parse_result = parse_resource_id(plan)
-        plan_info = client.app_service_plans.get(parse_result['resource_group'], parse_result['name'])
-    else:
-        plan_info = client.app_service_plans.get(resource_group_name, plan)
-    if not plan_info:
-        raise CLIError("The plan '{}' doesn't exist in the resource group '{}".format(plan, resource_group_name))
-    is_linux = plan_info.reserved
-    node_default_version = NODE_EXACT_VERSION_DEFAULT
-    location = plan_info.location
     # This is to keep the existing appsettings for a newly created webapp on existing webapp name.
     name_validation = get_site_availability(cmd, name)
     if not name_validation.name_available:
@@ -353,6 +352,29 @@ def create_webapp(cmd, resource_group_name, name, plan, runtime=None, startup_fi
         site_config = SiteConfig(app_settings=settings)
     else:
         site_config = SiteConfig(app_settings=[])
+
+    if custom_location and not plan:
+        plan = generate_default_app_service_plan_name(name)
+        logger.warning("Plan not specified. Creating Plan '%s' with sku '%s'", plan, KUBE_DEFAULT_SKU)
+        create_app_service_plan(cmd=cmd, resource_group_name=resource_group_name,
+            name=plan, is_linux=True, hyper_v=False, custom_location=custom_location, per_site_scaling=True)
+
+    docker_registry_server_url = parse_docker_image_name(deployment_container_image_name)
+
+    client = web_client_factory(cmd.cli_ctx)
+    if is_valid_resource_id(plan):
+        parse_result = parse_resource_id(plan)
+        plan_info = client.app_service_plans.get(parse_result['resource_group'], parse_result['name'])
+    else:
+        plan_info = client.app_service_plans.get(resource_group_name, plan)
+    if not plan_info:
+        raise CLIError("The plan '{}' doesn't exist in the resource group '{}".format(plan, resource_group_name))
+    if custom_location:
+        _validate_asp_sku(app_service_environment=None, custom_location=custom_location, sku=plan_info.sku.tier)
+    is_linux = plan_info.reserved
+    node_default_version = NODE_EXACT_VERSION_DEFAULT
+    location = plan_info.location
+
     if isinstance(plan_info.sku, SkuDescription) and plan_info.sku.name.upper() not in ['F1', 'FREE', 'SHARED', 'D1',
                                                                                         'B1', 'B2', 'B3', 'BASIC']:
         site_config.always_on = True
@@ -360,7 +382,7 @@ def create_webapp(cmd, resource_group_name, name, plan, runtime=None, startup_fi
                       https_only=using_webapp_up)
 
     is_kube = False
-    if plan_info.kind.upper() == KUBE_ASP_KIND:
+    if custom_location or plan_info.kind.upper() == KUBE_ASP_KIND.upper():
         webapp_def.kind = KUBE_APP_KIND
         is_kube = True
 
@@ -380,6 +402,7 @@ def create_webapp(cmd, resource_group_name, name, plan, runtime=None, startup_fi
     if runtime:
         runtime = helper.remove_delimiters(runtime)
 
+    current_stack = None
     if is_linux or is_kube:
         if not validate_container_app_create_options(runtime, deployment_container_image_name,
                                                      multicontainer_config_type, multicontainer_config_file):

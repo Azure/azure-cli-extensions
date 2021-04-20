@@ -53,6 +53,7 @@ def load_arguments(self, _):
 
     with self.argument_context('webapp create') as c:
         c.argument('name', options_list=['--name', '-n'], help='name of the new web app', validator=validate_site_create)
+        c.argument('custom_location', options_list=['--custom-location', '-c'], help="Name or ID of the custom location")
         c.argument('startup_file', help="Linux only. The web's startup file")
         c.argument('docker_registry_server_user', options_list=['--docker-registry-server-user', '-s'], help='the container registry server username')
         c.argument('docker_registry_server_password', options_list=['--docker-registry-server-password', '-w'], help='The container registry server password. Required for private registries.')
