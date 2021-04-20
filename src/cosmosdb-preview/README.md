@@ -14,7 +14,7 @@ This package provides commands to
 Install this extension using the below CLI command
 
 ```sh
-az extension add --name cosmodb-preview
+az extension add --name cosmosdb-preview
 ```
 
 ### Included Features ###
