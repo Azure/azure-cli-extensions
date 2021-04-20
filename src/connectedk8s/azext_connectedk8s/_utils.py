@@ -379,8 +379,10 @@ def is_guid(guid):
 def try_list_node_fix():
     try:
         from kubernetes.client.models.v1_container_image import V1ContainerImage
+
         def names(self, names):
             self._names = names
+
         V1ContainerImage.names = V1ContainerImage.names.setter(names)
     except Exception as ex:
         logger.debug("Error while trying to monkey patch the fix for list_node(): {}".format(str(ex)))
