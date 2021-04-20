@@ -73,8 +73,8 @@ from six.moves.urllib.request import urlopen
 from ._constants import (FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION, FUNCTIONS_VERSION_TO_DEFAULT_NODE_VERSION,
                          FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS, NODE_VERSION_DEFAULT, NODE_EXACT_VERSION_DEFAULT,
                          DOTNET_RUNTIME_VERSION_TO_DOTNET_LINUX_FX_VERSION, KUBE_DEFAULT_SKU, KUBE_SKUS,
-                         KUBE_ASP_KIND, KUBE_APP_KIND, KUBE_FUNCTION_APP_KIND, KUBE_FUNCTION_CONTAINER_APP_KIND, LINUX_RUNTIMES, WINDOWS_RUNTIMES,
-                         MULTI_CONTAINER_TYPES,CONTAINER_APPSETTING_NAMES, APPSETTINGS_TO_MASK)
+                         KUBE_ASP_KIND, KUBE_APP_KIND, KUBE_FUNCTION_APP_KIND, KUBE_FUNCTION_CONTAINER_APP_KIND, KUBE_CONTAINER_APP_KIND,
+                         LINUX_RUNTIMES, WINDOWS_RUNTIMES, MULTI_CONTAINER_TYPES,CONTAINER_APPSETTING_NAMES, APPSETTINGS_TO_MASK)
 
 from ._utils import (_normalize_sku, get_sku_name, validate_subnet_id, _generic_site_operation,
                      _get_location_from_resource_group, validate_aks_id)
@@ -388,7 +388,10 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
 
     is_kube = False
     if custom_location or plan_info.kind.upper() == KUBE_ASP_KIND.upper() or (isinstance(plan_info.sku, SkuDescription) and plan_info.sku.tier.upper() in KUBE_SKUS):
-        webapp_def.kind = KUBE_APP_KIND
+        if deployment_container_image_name:
+            webapp_def.kind = KUBE_CONTAINER_APP_KIND
+        else:
+            webapp_def.kind = KUBE_APP_KIND
         is_kube = True
 
     if is_kube:
@@ -694,7 +697,7 @@ def show_webapp(cmd, resource_group_name, name, slot=None, app_instance=None):
     return webapp
 
 
-def create_function(cmd, resource_group_name, name, storage_account, plan=None,
+def create_function(cmd, resource_group_name, name, storage_account, plan=None, custom_location=None,
                     os_type=None, functions_version=None, runtime=None, runtime_version=None,
                     consumption_plan_location=None, app_insights=None, app_insights_key=None,
                     disable_app_insights=None, deployment_source_url=None,
@@ -703,14 +706,20 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None,
                     deployment_container_image_name=None, tags=None,
                     min_worker_count=None, max_worker_count=None):
     # pylint: disable=too-many-statements, too-many-branches
+    SkuDescription = cmd.get_models('SkuDescription')
     if functions_version is None:
         logger.warning("No functions version specified so defaulting to 2. In the future, specifying a version will "
                        "be required. To create a 2.x function you would pass in the flag `--functions-version 2`")
         functions_version = '2'
     if deployment_source_url and deployment_local_git:
         raise CLIError('usage error: --deployment-source-url <url> | --deployment-local-git')
-    if bool(plan) == bool(consumption_plan_location):
-        raise CLIError("usage error: --plan NAME_OR_ID | --consumption-plan-location LOCATION")
+
+    if not plan and not consumption_plan_location and not custom_location:
+        raise RequiredArgumentMissingError("Either Plan, Consumption Plan or Custom Location must be specified")
+
+    if consumption_plan_location and custom_location:
+        raise MutuallyExclusiveArgumentError("Consumption Plan and Custom Location cannot be used together")
+
     SiteConfig, Site, NameValuePair = cmd.get_models('SiteConfig', 'Site', 'NameValuePair')
     docker_registry_server_url = parse_docker_image_name(deployment_container_image_name)
 
@@ -732,6 +741,12 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None,
         is_linux = os_type and os_type.lower() == 'linux'
 
     else:  # apps with SKU based plan
+        if custom_location and not plan:
+            plan = generate_default_app_service_plan_name(name)
+            logger.warning("Plan not specified. Creating Plan '%s' with sku '%s'", plan, KUBE_DEFAULT_SKU)
+            create_app_service_plan(cmd=cmd, resource_group_name=resource_group_name,
+                name=plan, is_linux=True, hyper_v=False, custom_location=custom_location, per_site_scaling=True)
+
         if is_valid_resource_id(plan):
             parse_result = parse_resource_id(plan)
             plan_info = client.app_service_plans.get(parse_result['resource_group'], parse_result['name'])
@@ -741,14 +756,14 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None,
             raise CLIError("The plan '{}' doesn't exist".format(plan))
         location = plan_info.location
         is_linux = plan_info.reserved
-        functionapp_def.server_farm_id = plan
+        functionapp_def.server_farm_id = plan_info.id
         functionapp_def.location = location
+
     is_kube = False
-    if plan_info.kind.upper() == KUBE_ASP_KIND:
+    if custom_location or plan_info.kind.upper() == KUBE_ASP_KIND.upper() or (isinstance(plan_info.sku, SkuDescription) and plan_info.sku.tier.upper() in KUBE_SKUS):
         is_kube = True
 
     if is_kube:
-        functionapp_def.server_farm_id = plan_info.id
         if min_worker_count is not None:
             site_config.number_of_workers = min_worker_count
 
@@ -787,7 +802,26 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None,
 
     con_string = _validate_and_get_connection_string(cmd.cli_ctx, resource_group_name, storage_account)
 
-    if is_linux:
+    if is_kube:
+        functionapp_def.kind = KUBE_FUNCTION_APP_KIND
+        functionapp_def.reserved = True
+        site_config.app_settings.append(NameValuePair(name='WEBSITES_PORT', value='80'))
+        site_config.app_settings.append(NameValuePair(name='MACHINEKEY_DecryptionKey',
+                                                      value=str(hexlify(urandom(32)).decode()).upper()))
+        if deployment_container_image_name:
+            functionapp_def.kind = KUBE_FUNCTION_CONTAINER_APP_KIND
+            site_config.app_settings.append(NameValuePair(name='DOCKER_CUSTOM_IMAGE_NAME',
+                                                          value=deployment_container_image_name))
+            site_config.app_settings.append(NameValuePair(name='FUNCTION_APP_EDIT_MODE', value='readOnly'))
+            site_config.linux_fx_version = _format_fx_version(deployment_container_image_name)
+            site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_URL', value=docker_registry_server_url))
+            if docker_registry_server_user is not None and docker_registry_server_password is not None:
+                site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_USERNAME', value=docker_registry_server_user))
+                site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD', value=docker_registry_server_password))
+        else:
+            site_config.app_settings.append(NameValuePair(name='WEBSITES_ENABLE_APP_SERVICE_STORAGE', value='true'))
+            site_config.linux_fx_version = _get_linux_fx_kube_functionapp(runtime, runtime_version)
+    elif is_linux:
         functionapp_def.kind = 'functionapp,linux'
         functionapp_def.reserved = True
         is_consumption = consumption_plan_location is not None
@@ -810,25 +844,6 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None,
                                    "functions_version: '{}' was not found".format(runtime, functions_version))
         if deployment_container_image_name is None:
             site_config.linux_fx_version = _get_linux_fx_functionapp(functions_version, runtime, runtime_version)
-    elif is_kube:
-        functionapp_def.kind = KUBE_FUNCTION_APP_KIND
-        functionapp_def.reserved = False
-        site_config.app_settings.append(NameValuePair(name='WEBSITES_PORT', value='80'))
-        site_config.app_settings.append(NameValuePair(name='MACHINEKEY_DecryptionKey',
-                                                      value=str(hexlify(urandom(32)).decode()).upper()))
-        if deployment_container_image_name:
-            functionapp_def.kind = KUBE_FUNCTION_CONTAINER_APP_KIND
-            site_config.app_settings.append(NameValuePair(name='DOCKER_CUSTOM_IMAGE_NAME',
-                                                          value=deployment_container_image_name))
-            site_config.app_settings.append(NameValuePair(name='FUNCTION_APP_EDIT_MODE', value='readOnly'))
-            site_config.linux_fx_version = _format_fx_version(deployment_container_image_name)
-            site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_URL', value=docker_registry_server_url))
-            if docker_registry_server_user is not None and docker_registry_server_password is not None:
-                site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_USERNAME', value=docker_registry_server_user))
-                site_config.app_settings.append(NameValuePair(name='DOCKER_REGISTRY_SERVER_PASSWORD', value=docker_registry_server_password))
-        else:
-            site_config.app_settings.append(NameValuePair(name='WEBSITES_ENABLE_APP_SERVICE_STORAGE', value='true'))
-            site_config.linux_fx_version = _get_linux_fx_kube_functionapp(runtime, runtime_version)
     else:
         functionapp_def.kind = 'functionapp'
         if runtime == "java":
