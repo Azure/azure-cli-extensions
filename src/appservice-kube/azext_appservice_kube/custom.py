@@ -292,7 +292,7 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
         sku_def = SkuDescription(tier=get_sku_name(sku), name=sku, capacity=number_of_workers)
 
     plan_def = AppServicePlan(location=location, tags=tags, sku=sku_def, kind=kind,
-                              reserved=((is_linux and not kube_environment) or None), hyper_v=(hyper_v or None), name=name,
+                              reserved=(is_linux or None), hyper_v=(hyper_v or None), name=name,
                               per_site_scaling=per_site_scaling, hosting_environment_profile=ase_def,
                               kube_environment_profile=kube_def)
     return sdk_no_wait(no_wait, client.app_service_plans.create_or_update, name=name,
