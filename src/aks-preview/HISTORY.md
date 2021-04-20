@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.5.10
++++++
+* Add `--binding-selector` to AAD pod identity add sub command
+* Support using custom kubelet identity
+* Support updating Windows password
 
 0.5.9
 +++++
