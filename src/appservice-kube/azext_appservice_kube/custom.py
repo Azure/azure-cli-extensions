@@ -369,8 +369,13 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
         plan_info = client.app_service_plans.get(resource_group_name, plan)
     if not plan_info:
         raise CLIError("The plan '{}' doesn't exist in the resource group '{}".format(plan, resource_group_name))
+
     if custom_location:
+        sku_tier = None
+        if isinstance(plan_info.sku, SkuDescription):
+            sku_tier = plan_info.sku.tier
         _validate_asp_sku(app_service_environment=None, custom_location=custom_location, sku=plan_info.sku.tier)
+
     is_linux = plan_info.reserved
     node_default_version = NODE_EXACT_VERSION_DEFAULT
     location = plan_info.location
@@ -382,7 +387,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
                       https_only=using_webapp_up)
 
     is_kube = False
-    if custom_location or plan_info.kind.upper() == KUBE_ASP_KIND.upper():
+    if custom_location or plan_info.kind.upper() == KUBE_ASP_KIND.upper() or (isinstance(plan_info.sku, SkuDescription) and plan_info.sku.tier.upper() in KUBE_SKUS):
         webapp_def.kind = KUBE_APP_KIND
         is_kube = True
 
