@@ -353,6 +353,11 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
     else:
         site_config = SiteConfig(app_settings=[])
 
+    if not plan:
+        app_details = get_app_details(cmd, name)
+        if app_details is not None:
+            plan = app_details.server_farm_id
+
     if custom_location and not plan:
         plan = generate_default_app_service_plan_name(name)
         logger.warning("Plan not specified. Creating Plan '%s' with sku '%s'", plan, KUBE_DEFAULT_SKU)
@@ -481,6 +486,11 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
     poller = client.web_apps.create_or_update(resource_group_name, name, webapp_def)
     webapp = LongRunningOperation(cmd.cli_ctx)(poller)
 
+    if deployment_container_image_name:
+        update_container_settings(cmd, resource_group_name, name, docker_registry_server_url,
+                                  deployment_container_image_name, docker_registry_server_user,
+                                  docker_registry_server_password=docker_registry_server_password)
+
     if is_kube:
         return webapp
 
@@ -492,11 +502,6 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
                              deployment_source_branch, deployment_local_git)
 
     _fill_ftp_publishing_url(cmd, webapp, resource_group_name, name)
-
-    if deployment_container_image_name:
-        update_container_settings(cmd, resource_group_name, name, docker_registry_server_url,
-                                  deployment_container_image_name, docker_registry_server_user,
-                                  docker_registry_server_password=docker_registry_server_password)
 
     if assign_identities is not None:
         identity = assign_identity(cmd, resource_group_name, name, assign_identities,
@@ -741,6 +746,10 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
         is_linux = os_type and os_type.lower() == 'linux'
 
     else:  # apps with SKU based plan
+        if not plan:
+            app_details = get_app_details(cmd, name)
+            if app_details is not None:
+                plan = app_details.server_farm_id
         if custom_location and not plan:
             plan = generate_default_app_service_plan_name(name)
             logger.warning("Plan not specified. Creating Plan '%s' with sku '%s'", plan, KUBE_DEFAULT_SKU)
