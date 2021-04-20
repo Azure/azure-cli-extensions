@@ -27,7 +27,6 @@ from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError
-from azext_connectedk8s._client_factory import get_subscription_client, _resource_providers_client
 
 logger = get_logger(__name__)
 
