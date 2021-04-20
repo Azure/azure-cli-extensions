@@ -3,6 +3,19 @@
 Release History
 ===============
 
+0.5.9
++++++
+* Display result better for `az aks command invoke`, while still honor output option
+* Fix the bug that checking the addon profile whether it exists
+
+0.5.8
++++++
+* Update to use 2021-03-01 api-version
+
+0.5.7
++++++
+* Add command invoke for run-command feature
+
 0.5.6
 +++++
 * Fix issue that assigning identity in another subscription will fail
