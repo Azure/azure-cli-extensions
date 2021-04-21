@@ -11,6 +11,9 @@
 import json
 import os
 from knack.util import CLIError
+from azure.cli.core.util import user_confirmation
+from msrestazure.azure_exceptions import CloudError
+from ._client_factory import cf_artifacts
 
 
 def import_blueprint_with_artifacts(cmd,
@@ -20,8 +23,6 @@ def import_blueprint_with_artifacts(cmd,
                                     management_group=None,
                                     subscription=None,
                                     scope=None):
-    from ._client_factory import cf_artifacts
-
     artifact_client = cf_artifacts(cmd.cli_ctx)
     body = {}
     blueprint_path = os.path.join(input_path, 'blueprint.json')
@@ -123,6 +124,39 @@ def get_blueprint(cmd, client, blueprint_name, management_group=None, subscripti
 
 def list_blueprint(cmd, client, management_group=None, subscription=None, scope=None, **kwargs):
     return client.list(scope=scope)
+
+
+def export_blueprint_with_artifacts(cmd, client, blueprint_name, output_path, skip_confirmation=False, management_group=None, subscription=None, scope=None, **kwargs):
+    # match folder structure required for import_blueprint_with_artifact
+    blueprint_parent_folder = os.path.join(os.path.abspath(output_path), blueprint_name)
+    blueprint_file_location = os.path.join(blueprint_parent_folder, 'blueprint.json')
+    artifacts_location = os.path.join(blueprint_parent_folder, 'artifacts')
+
+    if os.path.exists(blueprint_parent_folder) and os.listdir(blueprint_parent_folder) and not skip_confirmation:
+        user_prompt = f"That directory already contains a folder with the name {blueprint_name}. Would you like to continue?"
+        user_confirmation(user_prompt)
+
+    try:
+        blueprint = client.get(scope=scope, blueprint_name=blueprint_name)
+        serialized_blueprint = blueprint.serialize()
+    except CloudError as error:
+        raise CLIError('Unable to export blueprint: {}'.format(str(error.message)))
+
+    os.makedirs(artifacts_location, exist_ok=True)
+
+    with open(blueprint_file_location, 'w') as f:
+        json.dump(serialized_blueprint, f, indent=4)
+
+    artifact_client = cf_artifacts(cmd.cli_ctx)
+    available_artifacts = artifact_client.list(scope=scope, blueprint_name=blueprint_name)
+
+    for artifact in available_artifacts:
+        artifact_file_location = os.path.join(artifacts_location, artifact.name + '.json')
+        serialized_artifact = artifact.serialize()
+        with open(artifact_file_location, 'w') as f:
+            json.dump(serialized_artifact, f, indent=4)
+
+    return blueprint
 
 
 def delete_blueprint_artifact(cmd, client, blueprint_name, artifact_name,
@@ -506,7 +540,6 @@ def create_blueprint_assignment(cmd,
                                 locks_mode=None,
                                 locks_excluded_principals=None,
                                 parameters=None):
-    from msrestazure.azure_exceptions import CloudError
     from .vendored_sdks.blueprint.models._blueprint_management_client_enums import ManagedServiceIdentityType
     try:
         result = client.get(scope=scope, assignment_name=assignment_name)
