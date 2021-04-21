@@ -370,12 +370,10 @@ def get_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table
     try:
         return _v3_route_table_client(cmd.cli_ctx)\
             .get(resource_group_name, virtual_hub_name, route_table_name)  # Get v3 route table first.
-    except ResourceNotFoundError as ex:
-        if ex.status_code == 404:
-            return _v2_route_table_client(cmd.cli_ctx)\
-                .get(resource_group_name, virtual_hub_name, route_table_name)  # Get v2 route table.
+    except ResourceNotFoundError:
+        return _v2_route_table_client(cmd.cli_ctx)\
+            .get(resource_group_name, virtual_hub_name, route_table_name)  # Get v2 route table.
 
-        raise
 
 
 def delete_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name, no_wait=False):
