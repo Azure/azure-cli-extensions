@@ -375,7 +375,6 @@ def get_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table
             .get(resource_group_name, virtual_hub_name, route_table_name)  # Get v2 route table.
 
 
-
 def delete_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name, no_wait=False):
     route_table = get_vhub_route_table(cmd, resource_group_name, virtual_hub_name, route_table_name)
     client = _route_table_client(cmd.cli_ctx, route_table)
