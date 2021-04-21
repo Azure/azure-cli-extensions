@@ -799,7 +799,7 @@ def add_azure_firewall_policy_nat_rule_collection(cmd, resource_group_name, fire
                                                           rules=[nat_rule])
     rule_collection_group.rule_collections.append(nat_rule_collection)
     return client.begin_create_or_update(resource_group_name, firewall_policy_name,
-                                   rule_collection_group_name, rule_collection_group)
+                                         rule_collection_group_name, rule_collection_group)
 
 
 # pylint: disable=too-many-locals
@@ -856,7 +856,7 @@ def add_azure_firewall_policy_filter_rule_collection(cmd, resource_group_name, f
                                                                 rules=[rule])
     rule_collection_group.rule_collections.append(filter_rule_collection)
     return client.begin_create_or_update(resource_group_name, firewall_policy_name,
-                                   rule_collection_group_name, rule_collection_group)
+                                         rule_collection_group_name, rule_collection_group)
 
 
 def remove_azure_firewall_policy_rule_collection(cmd, resource_group_name, firewall_policy_name,
@@ -867,7 +867,7 @@ def remove_azure_firewall_policy_rule_collection(cmd, resource_group_name, firew
         if rule_collection.name == rule_collection_name:
             rule_collection_group.rule_collections.remove(rule_collection)
     return client.begin_create_or_update(resource_group_name, firewall_policy_name,
-                                   rule_collection_group_name, rule_collection_group)
+                                         rule_collection_group_name, rule_collection_group)
 
 
 def list_azure_firewall_policy_rule_collection(cmd, resource_group_name,
@@ -951,7 +951,7 @@ def add_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_pol
                        source_ip_groups=source_ip_groups)
     target_rule_collection.rules.append(rule)
     return client.begin_create_or_update(resource_group_name, firewall_policy_name,
-                                   rule_collection_group_name, rule_collection_group)
+                                         rule_collection_group_name, rule_collection_group)
 
 
 def remove_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_policy_name,
@@ -972,7 +972,7 @@ def remove_azure_firewall_policy_filter_rule(cmd, resource_group_name, firewall_
         if rule.name == rule_name:
             target_rule_collection.rules.remove(rule)
     return client.begin_create_or_update(resource_group_name, firewall_policy_name,
-                                   rule_collection_group_name, rule_collection_group)
+                                         rule_collection_group_name, rule_collection_group)
 
 
 # pylint: disable=too-many-locals
