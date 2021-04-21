@@ -20,6 +20,9 @@ helps['ssh vm'] = """
         - name: Give the public IP (or hostname) of a VM to SSH to
           text: |
             az ssh vm --ip 1.2.3.4
+        - name: Using a custom private key file
+          text: |
+            az ssh vm --ip 1.2.3.4 --private-key-file key --public-key-file key.pub
 """
 
 helps['ssh config'] = """
