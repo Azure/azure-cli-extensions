@@ -26,7 +26,7 @@ from kubernetes.client.rest import ApiException
 from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
-from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError
+from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError, ValidationError
 
 logger = get_logger(__name__)
 
@@ -216,11 +216,11 @@ def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error o
             logger.debug("Kubernetes Exception: " + str(ex))
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-            raise CLIInternalError(error_message + "\nError Response: " + str(ex.body))
+            raise ValidationError(error_message + "\nError Response: " + str(ex.body))
     else:
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-            raise CLIInternalError(error_message + "\nError: " + str(ex))
+            raise ValidationError(error_message + "\nError: " + str(ex))
         else:
             logger.debug("Kubernetes Exception: " + str(ex))
 
