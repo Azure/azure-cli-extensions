@@ -207,20 +207,18 @@ def get_vm_sizes(cli_ctx, location):
     return cf_compute_service(cli_ctx).virtual_machine_sizes.list(location)
 
 
-def _get_kube_env_from_custom_location(cmd, custom_location, resource_group_name=None):
-    kube_environment_id = None
-    custom_location_rg = resource_group_name
+def _get_kube_env_from_custom_location(cmd, custom_location):
+    kube_environment_id = ""
 
     if is_valid_resource_id(custom_location):
         parsed_custom_location = parse_resource_id(custom_location)
-        custom_location_rg = parsed_custom_location.get("resource_group")
         custom_location = parsed_custom_location.get("name")
 
     kube_envs = cf_kube_environments(cmd.cli_ctx).list_by_subscription()
     for kube in kube_envs:
         if kube.extended_location and kube.extended_location.custom_location:
             parsed_custom_location_2 = parse_resource_id(kube.extended_location.custom_location)
-            if (parsed_custom_location_2.get("name").lower() == custom_location.lower()) and (parsed_custom_location_2.get("resource_group").lower() == custom_location_rg.lower()):
+            if parsed_custom_location_2.get("name").lower() == custom_location.lower():
                 kube_environment_id = kube.id
                 break
 
@@ -247,7 +245,7 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
     client = web_client_factory(cmd.cli_ctx)
 
     if custom_location:
-        kube_environment = _get_kube_env_from_custom_location(cmd, custom_location, resource_group_name)
+        kube_environment = _get_kube_env_from_custom_location(cmd, custom_location)
 
     if app_service_environment:
         if hyper_v:
@@ -315,6 +313,40 @@ def update_app_service_plan(instance, sku=None, number_of_workers=None):
     return instance
 
 
+def _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, custom_location, plan):
+    client = web_client_factory(cmd.cli_ctx)
+    if is_valid_resource_id(plan):
+        parse_result = parse_resource_id(plan)
+        plan_info = client.app_service_plans.get(parse_result['resource_group'], parse_result['name'])
+    else:
+        plan_info = client.app_service_plans.get(resource_group_name, plan)
+    if not plan_info:
+        raise CLIError("The plan '{}' doesn't exist in the resource group '{}".format(plan, resource_group_name))
+
+    plan_kube_env_id = ""
+    custom_location_kube_env_id = _get_kube_env_from_custom_location(cmd, custom_location)
+    if plan_info.kube_environment_profile:
+        plan_kube_env_id = plan_info.kube_environment_profile.id
+
+    return plan_kube_env_id.lower() == custom_location_kube_env_id.lower()
+
+
+def _should_create_new_appservice_plan_for_k8se(cmd, name, custom_location, plan):
+    if custom_location and plan:
+        return False
+    elif custom_location:
+        existing_app_details = get_app_details(cmd, name)
+        if not existing_app_details:
+            return True
+        else:
+            if _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, custom_location, existing_app_details.server_farm_id):  # existing app and kube environments match
+                return False
+            else:  # existing app but new custom location
+                return True
+    else:  # plan is not None
+        return False
+
+
 def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custom_location=None, startup_file=None,  # pylint: disable=too-many-statements,too-many-branches
                   deployment_container_image_name=None, deployment_source_url=None, deployment_source_branch='master',
                   deployment_local_git=None, docker_registry_server_password=None, docker_registry_server_user=None,
@@ -353,16 +385,20 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
     else:
         site_config = SiteConfig(app_settings=[])
 
-    if not plan:
-        app_details = get_app_details(cmd, name)
-        if app_details is not None:
-            plan = app_details.server_farm_id
-
-    if custom_location and not plan:
+    _should_create_new_plan = _should_create_new_appservice_plan_for_k8se(cmd, name, custom_location, plan)
+    if _should_create_new_plan:
         plan = generate_default_app_service_plan_name(name)
         logger.warning("Plan not specified. Creating Plan '%s' with sku '%s'", plan, KUBE_DEFAULT_SKU)
         create_app_service_plan(cmd=cmd, resource_group_name=resource_group_name,
             name=plan, is_linux=True, hyper_v=False, custom_location=custom_location, per_site_scaling=True)
+
+    if custom_location and plan:
+        if not _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, custom_location, plan):
+            raise ValidationError("Custom location's kube environment and App Service Plan's kube environment don't match")
+    elif custom_location and not plan:
+        app_details = get_app_details(cmd, name)
+        if app_details is not None:
+            plan = app_details.server_farm_id
 
     docker_registry_server_url = parse_docker_image_name(deployment_container_image_name)
 
@@ -725,6 +761,9 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
     if consumption_plan_location and custom_location:
         raise MutuallyExclusiveArgumentError("Consumption Plan and Custom Location cannot be used together")
 
+    if consumption_plan_location and plan:
+        raise MutuallyExclusiveArgumentError("Consumption Plan and Plan cannot be used together")
+
     SiteConfig, Site, NameValuePair = cmd.get_models('SiteConfig', 'Site', 'NameValuePair')
     docker_registry_server_url = parse_docker_image_name(deployment_container_image_name)
 
@@ -746,15 +785,20 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
         is_linux = os_type and os_type.lower() == 'linux'
 
     else:  # apps with SKU based plan
-        if not plan:
-            app_details = get_app_details(cmd, name)
-            if app_details is not None:
-                plan = app_details.server_farm_id
-        if custom_location and not plan:
+        _should_create_new_plan = _should_create_new_appservice_plan_for_k8se(cmd, name, custom_location, plan)
+        if _should_create_new_plan:
             plan = generate_default_app_service_plan_name(name)
             logger.warning("Plan not specified. Creating Plan '%s' with sku '%s'", plan, KUBE_DEFAULT_SKU)
             create_app_service_plan(cmd=cmd, resource_group_name=resource_group_name,
                 name=plan, is_linux=True, hyper_v=False, custom_location=custom_location, per_site_scaling=True)
+
+        if custom_location and plan:
+            if not _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, custom_location, plan):
+                raise ValidationError("Custom location's kube environment and App Service Plan's kube environment don't match")
+        elif custom_location and not plan:
+            app_details = get_app_details(cmd, name)
+            if app_details is not None:
+                plan = app_details.server_farm_id
 
         if is_valid_resource_id(plan):
             parse_result = parse_resource_id(plan)

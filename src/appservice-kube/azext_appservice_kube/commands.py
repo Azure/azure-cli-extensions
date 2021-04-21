@@ -68,6 +68,7 @@ def load_command_table(self, _):
                          exception_handler=ex_handler_factory(creating_plan=True))
         g.generic_update_command('update', custom_func_name='update_app_service_plan', setter_arg_name='app_service_plan',
                                  validator=validate_asp_sku, supports_no_wait=True)
+        g.show_command('show', 'get')
         g.custom_command('list', 'list_app_service_plans')
 
     with self.command_group('webapp') as g:
