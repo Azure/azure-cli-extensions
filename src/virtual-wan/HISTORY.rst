@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.2.5
+++++++
+* Migrate to Track2 SDK.
 
 0.2.3
 ++++++
