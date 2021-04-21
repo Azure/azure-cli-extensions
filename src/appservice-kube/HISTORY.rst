@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.1.13
+++++++
+* az webapp/functionapp create without --plan for k8se apps
+* Change ASP "kind" back to "linux,kubernetes..." and detect k8se apps in webapp/functionapp create using customlocation/plan sku
+
 0.1.12
 ++++++
 * Allow specifying custom location by name as well, in appservice plan create
