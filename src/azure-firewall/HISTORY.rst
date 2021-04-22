@@ -10,15 +10,6 @@ Release History
 ++++++
 * az network firewall policy rule-collection-group collection add-filter-collection: Add parameter 'web-categories'
 * az network firewall policy rule-collection-group collection rule add: Add parameter 'web-categories'
-* Intrusion Signature Override Arguments->IDPS Signature Override Arguments
-  Traffic Bypass Rule Arguments->IDPS Bypass Rule Arguments
-  Transport Security Arguments->TLS Inpection Arguments
-  intrusion detection general state->IDPS mode
-  detect-mode->idps-mode
-  enable-terminate-tls->enable-tls-inspection
-* az network firewall policy: Add parameter "identity"
-* az network firewall policy: Add custom exception_handler
-* network firewall policy rule-collection-group collection rule update: New command
 
 0.8.0
 ++++++
