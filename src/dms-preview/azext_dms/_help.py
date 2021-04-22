@@ -22,50 +22,6 @@ helps['dms task cancel'] = """
             az dms task cancel -g myresourcegroup --service-name mydms -n mytask
 """
 
-helps['dms task create'] = """
-    type: command
-    short-summary: Create and start a service-level task.
-    long-summary: |
-        The following tasks are currently supported:
-            1) Check OCI driver against Oracle source to check for compatibility
-            2) Upload OCI driver install package
-            3) Install an already uploaded OCI driver package
-
-    parameters:
-        - name: --task-type
-          type: string
-          short-summary: >
-            The type of task to create. The supported types are CheckOciDriver, UploadOciDriver, and InstallOciDriver.
-        - name: --task-options-json
-          type: string
-          short-summary: >
-            Information and settings relevant to the particular task's type. This can be either a JSON-formatted string or the location to a file containing the JSON object. See examples below for the format.
-          long-summary: >
-            For CheckOciDriver:
-                {
-                    // The version of your Oracle source server against which to check the driver's compatibility.
-                    // Can also be null to get a list of supported versions.
-                    "serverVersion": "Oracle source version"
-                }
-
-            For UploadOciDriver:
-                {
-                    "ociDriverPath": File share path of the driver install package,
-                    "userName": "user name",    // if this is missing or null, you will be prompted
-                    "password": "password"      // if this is missing or null (highly recommended) you will be prompted
-                }
-
-            For InstallOciDriver:
-                {
-                    // The output of the UploadOciDriver task can be used here
-                    "ociDriverPackageName": "Oci driver installer package name"
-                }
-    examples:
-        - name: Create a service-level task which checks if the currently installed OCI driver supports
-          text: >
-            az dms task create -g myresourcegroup --service-name mydms -n checkocitask1 --task-options-json "{\"serverVersion\": \"12.2.0.1\"}" --task-type CheckOciDriver
-"""
-
 helps['dms task delete'] = """
     type: command
     short-summary: Delete a service-level Task.
@@ -88,9 +44,6 @@ helps['dms task list'] = """
         - name: List all Tasks within a DMS instance.
           text: >
             az dms task list -g myresourcegroup -n mydms
-        - name: List only the tasks that check the OCI driver compatibility within a DMS instance.
-          text: >
-            az dms task list -g myresourcegroup -n mydms --task-type Service.Check.OCI
 """
 
 helps['dms task show'] = """
@@ -255,44 +208,6 @@ helps['dms project task create'] = """
                   }
               }
 
-            For Oracle to PostgreSQL, the format of the database options JSON object.
-              [
-                  {
-                      // "Preserve" or "ToLower". Not valid when providing "tableMap".
-                      "caseManipulation": "",
-                      // When provided, copies all tables within this schema, preserving the casing of the source object names,
-                      // or using the value of "caseManipulation" if provided.
-                      // Not valid if providing "tableMap".
-                      "schemaName": "",
-                      // Defines custom mapping of schemas and tables. As seen, offers freedom for mapping tables to different schemas, changing schema and table names, and modifying object name casing.
-                      // Not valid if providing "schemaName".
-                      "tableMap": {
-                          "SCHEMA1.TABLE1": "SCHEMA1.TABLE1",
-                          "SCHEMA2.TABLE2": "SCHEMA1.TABLE2",
-                          "SCHEMA2.TABLE3": "schema2.OtherTableName
-                          ...n
-                      },
-                      "targetDatabaseName": "database_name",
-                      // Used for manipulating the underlying migration engine.
-                      // Only provide if instructed to do so or if you really know what you are doing.
-                      "migrationSetting": {
-                          "setting1": "value1",
-                          ...n
-                      },
-                      // Used for manipulating the underlying migration engine.
-                      // Only provide if instructed to do so or if you really know what you are doing.
-                      "sourceSetting": {
-                          "setting1": "value1",
-                          ...n
-                      },
-                      // Used for manipulating the underlying migration engine.
-                      // Only provide if instructed to do so or if you really know what you are doing.
-                      "targetSetting": {
-                          "setting1": "value1",
-                          ...n
-                      }
-                  }
-              ]
         - name: --source-connection-json
           type: string
           short-summary: >
@@ -334,12 +249,6 @@ helps['dms project task create'] = """
                   "connectionString": "mongodb://hostOrIp:port"
               }
 
-            The format of the connection JSON object for Oracle connections.
-              {
-                  "userName": null,   // if this is missing or null, you will be prompted
-                  "password": null,   // if this is missing or null (highly recommended) you will be prompted
-                  "dataSource": "//hostOrIp:port/serviceName"   // accepts EZConnect or Tnsnames formats
-              }
         - name: --target-connection-json
           type: string
           short-summary: >
