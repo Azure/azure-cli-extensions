@@ -293,8 +293,7 @@ class ProjectTaskProperties(Model):
     ConnectToSourceSqlServerSyncTaskProperties,
     ConnectToSourceSqlServerTaskProperties, ConnectToMongoDbTaskProperties,
     ConnectToSourceMySqlTaskProperties,
-    MigrateSchemaSqlServerSqlDbTaskProperties, CheckOCIDriverTaskProperties,
-    UploadOCIDriverTaskProperties, InstallOCIDriverTaskProperties
+    MigrateSchemaSqlServerSqlDbTaskProperties
 
     Variables are only populated by the server, and will be ignored when
     sending a request.
@@ -333,7 +332,7 @@ class ProjectTaskProperties(Model):
     }
 
     _subtype_map = {
-        'task_type': {'Migrate.Ssis': 'MigrateSsisTaskProperties', 'GetTDECertificates.Sql': 'GetTdeCertificatesSqlTaskProperties', 'Validate.MongoDb': 'ValidateMongoDbTaskProperties', 'ValidateMigrationInput.SqlServer.AzureSqlDbMI.Sync.LRS': 'ValidateMigrationInputSqlServerSqlMISyncTaskProperties', 'ValidateMigrationInput.SqlServer.AzureSqlDbMI': 'ValidateMigrationInputSqlServerSqlMITaskProperties', 'ValidateMigrationInput.SqlServer.SqlDb.Sync': 'ValidateMigrationInputSqlServerSqlDbSyncTaskProperties', 'Migrate.PostgreSql.AzureDbForPostgreSql.SyncV2': 'MigratePostgreSqlAzureDbForPostgreSqlSyncTaskProperties', 'Migrate.MySql.AzureDbForMySql.Sync': 'MigrateMySqlAzureDbForMySqlSyncTaskProperties', 'Migrate.SqlServer.AzureSqlDb.Sync': 'MigrateSqlServerSqlDbSyncTaskProperties', 'Migrate.SqlServer.SqlDb': 'MigrateSqlServerSqlDbTaskProperties', 'Migrate.SqlServer.AzureSqlDbMI.Sync.LRS': 'MigrateSqlServerSqlMISyncTaskProperties', 'Migrate.SqlServer.AzureSqlDbMI': 'MigrateSqlServerSqlMITaskProperties', 'Migrate.MongoDb': 'MigrateMongoDbTaskProperties', 'ConnectToTarget.AzureDbForMySql': 'ConnectToTargetAzureDbForMySqlTaskProperties', 'ConnectToTarget.AzureSqlDbMI.Sync.LRS': 'ConnectToTargetSqlMISyncTaskProperties', 'ConnectToTarget.AzureSqlDbMI': 'ConnectToTargetSqlMITaskProperties', 'GetUserTablesPostgreSql': 'GetUserTablesPostgreSqlTaskProperties', 'GetUserTables.AzureSqlDb.Sync': 'GetUserTablesSqlSyncTaskProperties', 'GetUserTables.Sql': 'GetUserTablesSqlTaskProperties', 'ConnectToTarget.AzureDbForPostgreSql.Sync': 'ConnectToTargetAzureDbForPostgreSqlSyncTaskProperties', 'ConnectToTarget.SqlDb.Sync': 'ConnectToTargetSqlSqlDbSyncTaskProperties', 'ConnectToTarget.SqlDb': 'ConnectToTargetSqlDbTaskProperties', 'ConnectToSource.PostgreSql.Sync': 'ConnectToSourcePostgreSqlSyncTaskProperties', 'ConnectToSource.SqlServer.Sync': 'ConnectToSourceSqlServerSyncTaskProperties', 'ConnectToSource.SqlServer': 'ConnectToSourceSqlServerTaskProperties', 'Connect.MongoDb': 'ConnectToMongoDbTaskProperties', 'ConnectToSource.MySql': 'ConnectToSourceMySqlTaskProperties', 'MigrateSchemaSqlServerSqlDb': 'MigrateSchemaSqlServerSqlDbTaskProperties', 'Service.Check.OCI': 'CheckOCIDriverTaskProperties', 'Service.Upload.OCI': 'UploadOCIDriverTaskProperties', 'Service.Install.OCI': 'InstallOCIDriverTaskProperties'}
+        'task_type': {'Migrate.Ssis': 'MigrateSsisTaskProperties', 'GetTDECertificates.Sql': 'GetTdeCertificatesSqlTaskProperties', 'Validate.MongoDb': 'ValidateMongoDbTaskProperties', 'ValidateMigrationInput.SqlServer.AzureSqlDbMI.Sync.LRS': 'ValidateMigrationInputSqlServerSqlMISyncTaskProperties', 'ValidateMigrationInput.SqlServer.AzureSqlDbMI': 'ValidateMigrationInputSqlServerSqlMITaskProperties', 'ValidateMigrationInput.SqlServer.SqlDb.Sync': 'ValidateMigrationInputSqlServerSqlDbSyncTaskProperties', 'Migrate.PostgreSql.AzureDbForPostgreSql.SyncV2': 'MigratePostgreSqlAzureDbForPostgreSqlSyncTaskProperties', 'Migrate.MySql.AzureDbForMySql.Sync': 'MigrateMySqlAzureDbForMySqlSyncTaskProperties', 'Migrate.SqlServer.AzureSqlDb.Sync': 'MigrateSqlServerSqlDbSyncTaskProperties', 'Migrate.SqlServer.SqlDb': 'MigrateSqlServerSqlDbTaskProperties', 'Migrate.SqlServer.AzureSqlDbMI.Sync.LRS': 'MigrateSqlServerSqlMISyncTaskProperties', 'Migrate.SqlServer.AzureSqlDbMI': 'MigrateSqlServerSqlMITaskProperties', 'Migrate.MongoDb': 'MigrateMongoDbTaskProperties', 'ConnectToTarget.AzureDbForMySql': 'ConnectToTargetAzureDbForMySqlTaskProperties', 'ConnectToTarget.AzureSqlDbMI.Sync.LRS': 'ConnectToTargetSqlMISyncTaskProperties', 'ConnectToTarget.AzureSqlDbMI': 'ConnectToTargetSqlMITaskProperties', 'GetUserTablesPostgreSql': 'GetUserTablesPostgreSqlTaskProperties', 'GetUserTables.AzureSqlDb.Sync': 'GetUserTablesSqlSyncTaskProperties', 'GetUserTables.Sql': 'GetUserTablesSqlTaskProperties', 'ConnectToTarget.AzureDbForPostgreSql.Sync': 'ConnectToTargetAzureDbForPostgreSqlSyncTaskProperties', 'ConnectToTarget.SqlDb.Sync': 'ConnectToTargetSqlSqlDbSyncTaskProperties', 'ConnectToTarget.SqlDb': 'ConnectToTargetSqlDbTaskProperties', 'ConnectToSource.PostgreSql.Sync': 'ConnectToSourcePostgreSqlSyncTaskProperties', 'ConnectToSource.SqlServer.Sync': 'ConnectToSourceSqlServerSyncTaskProperties', 'ConnectToSource.SqlServer': 'ConnectToSourceSqlServerTaskProperties', 'Connect.MongoDb': 'ConnectToMongoDbTaskProperties', 'ConnectToSource.MySql': 'ConnectToSourceMySqlTaskProperties', 'MigrateSchemaSqlServerSqlDb': 'MigrateSchemaSqlServerSqlDbTaskProperties'}
     }
 
     def __init__(self, **kwargs):
@@ -343,60 +342,6 @@ class ProjectTaskProperties(Model):
         self.commands = None
         self.client_data = kwargs.get('client_data', None)
         self.task_type = None
-
-
-class CheckOCIDriverTaskProperties(ProjectTaskProperties):
-    """Properties for the task that checks for OCI drivers.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :ivar errors: Array of errors. This is ignored if submitted.
-    :vartype errors: list[~azure.mgmt.datamigration.models.ODataError]
-    :ivar state: The state of the task. This is ignored if submitted. Possible
-     values include: 'Unknown', 'Queued', 'Running', 'Canceled', 'Succeeded',
-     'Failed', 'FailedInputValidation', 'Faulted'
-    :vartype state: str or ~azure.mgmt.datamigration.models.TaskState
-    :ivar commands: Array of command properties.
-    :vartype commands:
-     list[~azure.mgmt.datamigration.models.CommandProperties]
-    :param client_data: Key value pairs of client data to attach meta data
-     information to task
-    :type client_data: dict[str, str]
-    :param task_type: Required. Constant filled by server.
-    :type task_type: str
-    :param input:
-    :type input: ~azure.mgmt.datamigration.models.CheckOCIDriverTaskInput
-    :ivar output: Task output. This is ignored if submitted.
-    :vartype output:
-     list[~azure.mgmt.datamigration.models.CheckOCIDriverTaskOutput]
-    """
-
-    _validation = {
-        'errors': {'readonly': True},
-        'state': {'readonly': True},
-        'commands': {'readonly': True},
-        'task_type': {'required': True},
-        'output': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'errors': {'key': 'errors', 'type': '[ODataError]'},
-        'state': {'key': 'state', 'type': 'str'},
-        'commands': {'key': 'commands', 'type': '[CommandProperties]'},
-        'client_data': {'key': 'clientData', 'type': '{str}'},
-        'task_type': {'key': 'taskType', 'type': 'str'},
-        'input': {'key': 'input', 'type': 'CheckOCIDriverTaskInput'},
-        'output': {'key': 'output', 'type': '[CheckOCIDriverTaskOutput]'},
-    }
-
-    def __init__(self, **kwargs):
-        super(CheckOCIDriverTaskProperties, self).__init__(**kwargs)
-        self.input = kwargs.get('input', None)
-        self.output = None
-        self.task_type = 'Service.Check.OCI'
 
 
 class CloudError(Model):
@@ -3373,101 +3318,6 @@ class GetUserTablesSqlTaskProperties(ProjectTaskProperties):
         self.input = kwargs.get('input', None)
         self.output = None
         self.task_type = 'GetUserTables.Sql'
-
-
-class InstallOCIDriverTaskInput(Model):
-    """Input for the service task to install an OCI driver.
-
-    :param driver_package_name: Name of the uploaded driver package to
-     install.
-    :type driver_package_name: str
-    """
-
-    _attribute_map = {
-        'driver_package_name': {'key': 'driverPackageName', 'type': 'str'},
-    }
-
-    def __init__(self, **kwargs):
-        super(InstallOCIDriverTaskInput, self).__init__(**kwargs)
-        self.driver_package_name = kwargs.get('driver_package_name', None)
-
-
-class InstallOCIDriverTaskOutput(Model):
-    """Output for the service task to install an OCI driver.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    :ivar validation_errors: Validation errors
-    :vartype validation_errors:
-     list[~azure.mgmt.datamigration.models.ReportableException]
-    """
-
-    _validation = {
-        'validation_errors': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'validation_errors': {'key': 'validationErrors', 'type': '[ReportableException]'},
-    }
-
-    def __init__(self, **kwargs):
-        super(InstallOCIDriverTaskOutput, self).__init__(**kwargs)
-        self.validation_errors = None
-
-
-class InstallOCIDriverTaskProperties(ProjectTaskProperties):
-    """Properties for the task that installs an OCI driver.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :ivar errors: Array of errors. This is ignored if submitted.
-    :vartype errors: list[~azure.mgmt.datamigration.models.ODataError]
-    :ivar state: The state of the task. This is ignored if submitted. Possible
-     values include: 'Unknown', 'Queued', 'Running', 'Canceled', 'Succeeded',
-     'Failed', 'FailedInputValidation', 'Faulted'
-    :vartype state: str or ~azure.mgmt.datamigration.models.TaskState
-    :ivar commands: Array of command properties.
-    :vartype commands:
-     list[~azure.mgmt.datamigration.models.CommandProperties]
-    :param client_data: Key value pairs of client data to attach meta data
-     information to task
-    :type client_data: dict[str, str]
-    :param task_type: Required. Constant filled by server.
-    :type task_type: str
-    :param input:
-    :type input: ~azure.mgmt.datamigration.models.InstallOCIDriverTaskInput
-    :ivar output: Task output. This is ignored if submitted.
-    :vartype output:
-     list[~azure.mgmt.datamigration.models.InstallOCIDriverTaskOutput]
-    """
-
-    _validation = {
-        'errors': {'readonly': True},
-        'state': {'readonly': True},
-        'commands': {'readonly': True},
-        'task_type': {'required': True},
-        'output': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'errors': {'key': 'errors', 'type': '[ODataError]'},
-        'state': {'key': 'state', 'type': 'str'},
-        'commands': {'key': 'commands', 'type': '[CommandProperties]'},
-        'client_data': {'key': 'clientData', 'type': '{str}'},
-        'task_type': {'key': 'taskType', 'type': 'str'},
-        'input': {'key': 'input', 'type': 'InstallOCIDriverTaskInput'},
-        'output': {'key': 'output', 'type': '[InstallOCIDriverTaskOutput]'},
-    }
-
-    def __init__(self, **kwargs):
-        super(InstallOCIDriverTaskProperties, self).__init__(**kwargs)
-        self.input = kwargs.get('input', None)
-        self.output = None
-        self.task_type = 'Service.Install.OCI'
 
 
 class MigrateMISyncCompleteCommandInput(Model):
@@ -10238,106 +10088,6 @@ class SyncMigrationDatabaseErrorEvent(Model):
         self.timestamp_string = None
         self.event_type_string = None
         self.event_text = None
-
-
-class UploadOCIDriverTaskInput(Model):
-    """Input for the service task to upload an OCI driver.
-
-    :param driver_share: File share information for the OCI driver archive.
-    :type driver_share: ~azure.mgmt.datamigration.models.FileShare
-    """
-
-    _attribute_map = {
-        'driver_share': {'key': 'driverShare', 'type': 'FileShare'},
-    }
-
-    def __init__(self, **kwargs):
-        super(UploadOCIDriverTaskInput, self).__init__(**kwargs)
-        self.driver_share = kwargs.get('driver_share', None)
-
-
-class UploadOCIDriverTaskOutput(Model):
-    """Output for the service task to upload an OCI driver.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    :ivar driver_package_name: The name of the driver package that was
-     validated and uploaded.
-    :vartype driver_package_name: str
-    :ivar validation_errors: Validation errors
-    :vartype validation_errors:
-     list[~azure.mgmt.datamigration.models.ReportableException]
-    """
-
-    _validation = {
-        'driver_package_name': {'readonly': True},
-        'validation_errors': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'driver_package_name': {'key': 'driverPackageName', 'type': 'str'},
-        'validation_errors': {'key': 'validationErrors', 'type': '[ReportableException]'},
-    }
-
-    def __init__(self, **kwargs):
-        super(UploadOCIDriverTaskOutput, self).__init__(**kwargs)
-        self.driver_package_name = None
-        self.validation_errors = None
-
-
-class UploadOCIDriverTaskProperties(ProjectTaskProperties):
-    """Properties for the task that uploads an OCI driver.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :ivar errors: Array of errors. This is ignored if submitted.
-    :vartype errors: list[~azure.mgmt.datamigration.models.ODataError]
-    :ivar state: The state of the task. This is ignored if submitted. Possible
-     values include: 'Unknown', 'Queued', 'Running', 'Canceled', 'Succeeded',
-     'Failed', 'FailedInputValidation', 'Faulted'
-    :vartype state: str or ~azure.mgmt.datamigration.models.TaskState
-    :ivar commands: Array of command properties.
-    :vartype commands:
-     list[~azure.mgmt.datamigration.models.CommandProperties]
-    :param client_data: Key value pairs of client data to attach meta data
-     information to task
-    :type client_data: dict[str, str]
-    :param task_type: Required. Constant filled by server.
-    :type task_type: str
-    :param input:
-    :type input: ~azure.mgmt.datamigration.models.UploadOCIDriverTaskInput
-    :ivar output: Task output. This is ignored if submitted.
-    :vartype output:
-     list[~azure.mgmt.datamigration.models.UploadOCIDriverTaskOutput]
-    """
-
-    _validation = {
-        'errors': {'readonly': True},
-        'state': {'readonly': True},
-        'commands': {'readonly': True},
-        'task_type': {'required': True},
-        'output': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'errors': {'key': 'errors', 'type': '[ODataError]'},
-        'state': {'key': 'state', 'type': 'str'},
-        'commands': {'key': 'commands', 'type': '[CommandProperties]'},
-        'client_data': {'key': 'clientData', 'type': '{str}'},
-        'task_type': {'key': 'taskType', 'type': 'str'},
-        'input': {'key': 'input', 'type': 'UploadOCIDriverTaskInput'},
-        'output': {'key': 'output', 'type': '[UploadOCIDriverTaskOutput]'},
-    }
-
-    def __init__(self, **kwargs):
-        super(UploadOCIDriverTaskProperties, self).__init__(**kwargs)
-        self.input = kwargs.get('input', None)
-        self.output = None
-        self.task_type = 'Service.Upload.OCI'
 
 
 class ValidateMigrationInputSqlServerSqlDbSyncTaskProperties(ProjectTaskProperties):
