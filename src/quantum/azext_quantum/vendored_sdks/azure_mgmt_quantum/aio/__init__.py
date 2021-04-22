@@ -8,9 +8,3 @@
 
 from ._azure_quantum_management_client import AzureQuantumManagementClient
 __all__ = ['AzureQuantumManagementClient']
-
-try:
-    from ._patch import patch_sdk  # type: ignore
-    patch_sdk()
-except ImportError:
-    pass
