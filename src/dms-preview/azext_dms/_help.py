@@ -5,58 +5,6 @@
 
 from knack.help_files import helps
 
-helps['dms task'] = """
-    type: group
-    short-summary: Manage service-level tasks for a Database Migration Service instance.
-    long-summary: |
-        Service-level tasks are non-migration tasks that are performed at the service level. This is usually for administrative and maintenance work which applies to the service's agent and VM.
-"""
-
-helps['dms task cancel'] = """
-    type: command
-    short-summary: Cancel a service-level Task if it's currently queued or running.
-
-    examples:
-        - name: Cancel a service-level task
-          text: >
-            az dms task cancel -g myresourcegroup --service-name mydms -n mytask
-"""
-
-helps['dms task delete'] = """
-    type: command
-    short-summary: Delete a service-level Task.
-    parameters:
-        - name: --delete-running-tasks
-          type: bool
-          short-summary: >
-            Delete the service-level Task even if the Task is currently running.
-"""
-
-helps['dms task list'] = """
-    type: command
-    short-summary: List the service-level Tasks within a DMS instance. Some tasks may have a status of Unknown, which indicates that an error occurred while querying the status of that task.
-    parameters:
-        - name: --task-type
-          type: string
-          short-summary: >
-            The type of task to be listed. For the list of possible types see "az dms check-status".
-    examples:
-        - name: List all Tasks within a DMS instance.
-          text: >
-            az dms task list -g myresourcegroup -n mydms
-"""
-
-helps['dms task show'] = """
-    type: command
-    short-summary: Show the details of a service-level Task. Use the "--expand" to get more details.
-    parameters:
-        - name: --expand
-          type: string
-          short-summary: >
-            Expand the response to provide more details. Use with "command" to see more details of the Task.
-            Use with "output" to see the results of the Task's migration.
-"""
-
 helps['dms project create'] = """
     type: command
     short-summary: Create a migration Project which can contain multiple Tasks.
