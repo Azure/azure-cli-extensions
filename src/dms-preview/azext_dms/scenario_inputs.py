@@ -73,6 +73,3 @@ def get_mongo_to_mongo_input(database_options_json,
                                     boost_rus=database_options_json.get('boostRUs', 0),
                                     replication=database_options_json['replication'],
                                     throttling=database_options_json.get('throttling', None))
-
-
-
