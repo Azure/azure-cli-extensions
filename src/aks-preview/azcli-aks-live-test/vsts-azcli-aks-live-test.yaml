@@ -23,9 +23,9 @@ jobs:
       condition: succeeded()
       displayName: "Clone GitHub Repo and Move Live Test Related Files"
     - bash: |
-        ./build_image.sh
+        ./prepare_image.sh
       condition: succeeded()
-      displayName: "Build Live Test Image"
+      displayName: "Prepare Live Test Image"
     - bash: |
         ./start_container.sh
       env:
