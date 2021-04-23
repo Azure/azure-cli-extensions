@@ -3408,6 +3408,10 @@ def aks_get_versions(cmd, client, location):    # pylint: disable=unused-argumen
     return client.list_orchestrators(location, resource_type='managedClusters')
 
 
+def aks_get_os_options(cmd, client, location):    # pylint: disable=unused-argument
+    return client.get_os_options(location, resource_type='managedClusters')
+
+
 def _print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name):
     """Merge an unencrypted kubeconfig into the file at the specified path, or print it to
     stdout if the path is "-".
