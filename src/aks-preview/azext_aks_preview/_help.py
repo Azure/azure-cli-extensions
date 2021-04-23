@@ -1043,6 +1043,15 @@ examples:
     crafted: true
 """
 
+helps['aks get-os-options'] = """
+type: command
+short-summary: Get the OS options available for creating a managed Kubernetes cluster.
+examples:
+  - name: Get the OS options available for creating a managed Kubernetes cluster
+    text: az aks get-os-options --location westus2
+    crafted: true
+"""
+
 helps['aks get-credentials'] = """
 type: command
 short-summary: Get access credentials for a managed Kubernetes cluster.
