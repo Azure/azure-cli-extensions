@@ -20,6 +20,7 @@ from .vendored_sdks.models import Scope
 from .partner_extensions.ContainerInsights import ContainerInsights
 from .partner_extensions.AzureDefender import AzureDefender
 from .partner_extensions.Cassandra import Cassandra
+from .partner_extensions.AzureMLKubernetes import AzureMLKubernetes
 from .partner_extensions.DefaultExtension import DefaultExtension
 from . import consts
 
@@ -33,6 +34,7 @@ def ExtensionFactory(extension_name):
     extension_map = {
         'microsoft.azuremonitor.containers': ContainerInsights,
         'microsoft.azuredefender.kubernetes': AzureDefender,
+        'microsoft.azureml.kubernetes': AzureMLKubernetes,
         'cassandradatacentersoperator': Cassandra,
     }
 
