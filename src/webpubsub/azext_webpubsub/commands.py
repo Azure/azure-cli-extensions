@@ -42,15 +42,15 @@ def load_command_table(self, _):
                                  custom_func_name='update_webpubsub')
 
     with self.command_group('webpubsub key', webpubsub_key_utils) as g:
-        g.command('show', 'webpubsub_key_list')
+        g.show_command('show', 'webpubsub_key_list')
         g.command('regenerate', 'webpubsub_key_regenerate')
 
     with self.command_group('webpubsub network-rule', webpubsub_network_utils) as g:
-        g.command('show', 'list_network_rules')
+        g.show_command('show', 'list_network_rules')
         g.command('update', 'update_network_rules')
 
     with self.command_group('webpubsub event-handler', webpubsub_eventhandler_utils) as g:
-        g.command('show', 'event_handler_list')
+        g.show_command('show', 'event_handler_list')
         g.command('update', 'event_handler_update')
         g.command('clear', 'event_handler_clear')
 
