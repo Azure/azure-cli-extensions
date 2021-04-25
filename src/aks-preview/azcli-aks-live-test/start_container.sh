@@ -4,7 +4,7 @@ set -eux
 pwd
 
 # transcribe environment variables
-./transcribe_env.sh
+source ./transcribe_env.sh
 
 # start container in backgroud with env.list as environment varialbes
 # mount current directory ($(Agent.BuildDirectory)/s) to /opt in container

@@ -1,11 +1,19 @@
 #!/bin/bash
 
+# clear
 cat /dev/null > env.list
+
+# tenant, sub, client
 echo "TENANT_ID=$TENANT_ID" >> env.list
 echo "AZCLI_ALT_SUBSCRIPTION_ID=$AZCLI_ALT_SUBSCRIPTION_ID" >> env.list
 echo "AZCLI_ALT_CLIENT_ID=$AZCLI_ALT_CLIENT_ID" >> env.list
 echo "AZCLI_ALT_CLIENT_SECRET=$MAPPED_AZCLI_ALT_CLIENT_SECRET" >> env.list
 
+# predefined variables 
+echo "BUILD_REASON=$(Build.Reason)" >> env.list
+echo "SYSTEM_PULLREQUEST_TARGETBRANCH=$(System.PullRequest.TargetBranch)" >> env.list
+
+# variables
 echo "PYTHON_VERSION=$PYTHON_VERSION" >> env.list
 echo "COVERAGE=$COVERAGE" >> env.list
 echo "TEST_MODE=$TEST_MODE" >> env.list

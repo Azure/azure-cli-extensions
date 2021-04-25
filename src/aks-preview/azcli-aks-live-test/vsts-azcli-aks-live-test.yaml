@@ -19,15 +19,15 @@ jobs:
         ls -alh
       displayName: "Move All Checkout Files to the Newly Created 'azure-cli-extensions' Directory"
     - bash: |
-        ./azure-cli-extensions/src/aks-preview/azcli-aks-live-test/clone_repo.sh
+        source ./azure-cli-extensions/src/aks-preview/azcli-aks-live-test/clone_repo.sh
       condition: succeeded()
       displayName: "Clone GitHub Repo and Move Live Test Related Files"
     - bash: |
-        ./prepare_image.sh
+        source ./prepare_image.sh
       condition: succeeded()
       displayName: "Prepare Live Test Image"
     - bash: |
-        ./start_container.sh
+        source ./start_container.sh
       env:
         MAPPED_AZCLI_ALT_CLIENT_SECRET: $(AZCLI_ALT_CLIENT_SECRET)
       condition: succeeded()
