@@ -14,7 +14,7 @@ interactions:
       - -n -g --vpn-client-root-certs --vpn-client-revoked-certs --radius-servers
         --radius-servers --aad-audience --aad-issuer --aad-tenant --auth-types
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.21 msrest_azure/0.6.3
         azure-mgmt-resource/12.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
       accept-language:
       - en-US
@@ -22,7 +22,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_vpn_server_config_multi_auth000001?api-version=2020-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_vpn_server_config_multi_auth000001","name":"test_azure_vpn_server_config_multi_auth000001","type":"Microsoft.Resources/resourceGroups","location":"westcentralus","tags":{"product":"azurecli","cause":"automation","date":"2021-03-29T07:51:13Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_vpn_server_config_multi_auth000001","name":"test_azure_vpn_server_config_multi_auth000001","type":"Microsoft.Resources/resourceGroups","location":"westcentralus","tags":{"product":"azurecli","cause":"automation","date":"2021-04-15T09:49:25Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -31,7 +31,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 29 Mar 2021 07:51:15 GMT
+      - Thu, 15 Apr 2021 09:49:31 GMT
       expires:
       - '-1'
       pragma:
@@ -67,21 +67,18 @@ interactions:
       Content-Length:
       - '1956'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - -n -g --vpn-client-root-certs --vpn-client-revoked-certs --radius-servers
         --radius-servers --aad-audience --aad-issuer --aad-tenant --auth-types
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.21.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_vpn_server_config_multi_auth000001/providers/Microsoft.Network/vpnServerConfigurations/clitestserverconfig?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestserverconfig\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_vpn_server_config_multi_auth000001/providers/Microsoft.Network/vpnServerConfigurations/clitestserverconfig\",\r\n
-        \ \"etag\": \"W/\\\"f3a81090-c991-4a7f-b2c5-9773d626042a\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"2b10de85-c3e8-496b-b7ce-eed073f7c390\\\"\",\r\n  \"type\":
         \"Microsoft.Network/vpnServerConfigurations\",\r\n  \"location\": \"westcentralus\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"vpnProtocols\":
         [\r\n      \"OpenVPN\",\r\n      \"IkeV2\"\r\n    ],\r\n    \"vpnAuthenticationTypes\":
@@ -101,8 +98,10 @@ interactions:
         \"https://sts.windows.net/0ab2c4f4-81e6-44cc-a0b2-b3a47a1443f4/\"\r\n    },\r\n
         \   \"vpnClientIpsecPolicies\": []\r\n  }\r\n}"
     headers:
+      azure-asyncnotification:
+      - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westcentralus/operations/b757d12d-a049-484a-8935-d648b7b55291?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westcentralus/operations/1b1082a4-68b0-4b09-a956-7d600c29b95c?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -110,7 +109,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 29 Mar 2021 07:51:24 GMT
+      - Thu, 15 Apr 2021 09:49:40 GMT
       expires:
       - '-1'
       pragma:
@@ -123,9 +122,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - b0d3fc3b-5e24-4b91-a60e-ac7e7e965627
+      - e19432ed-f3a8-4c48-a3b5-4596f4098dc4
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1196'
     status:
       code: 201
       message: Created
@@ -133,7 +132,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -144,10 +143,9 @@ interactions:
       - -n -g --vpn-client-root-certs --vpn-client-revoked-certs --radius-servers
         --radius-servers --aad-audience --aad-issuer --aad-tenant --auth-types
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
+      - AZURECLI/2.21.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westcentralus/operations/b757d12d-a049-484a-8935-d648b7b55291?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westcentralus/operations/1b1082a4-68b0-4b09-a956-7d600c29b95c?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -159,7 +157,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 29 Mar 2021 07:51:35 GMT
+      - Thu, 15 Apr 2021 09:49:51 GMT
       expires:
       - '-1'
       pragma:
@@ -176,7 +174,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 64eac6d1-ed72-4f98-bae0-2a79253d772b
+      - 9a5910c8-adef-403c-be5c-5ff4799ae686
     status:
       code: 200
       message: OK
@@ -184,7 +182,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -195,14 +193,13 @@ interactions:
       - -n -g --vpn-client-root-certs --vpn-client-revoked-certs --radius-servers
         --radius-servers --aad-audience --aad-issuer --aad-tenant --auth-types
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
+      - AZURECLI/2.21.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_vpn_server_config_multi_auth000001/providers/Microsoft.Network/vpnServerConfigurations/clitestserverconfig?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestserverconfig\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_vpn_server_config_multi_auth000001/providers/Microsoft.Network/vpnServerConfigurations/clitestserverconfig\",\r\n
-        \ \"etag\": \"W/\\\"88572cfc-2c9d-45b3-a77c-7924b3043dc0\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"a1e41a9e-fb2e-434d-96ba-4bbc0dd9b0a1\\\"\",\r\n  \"type\":
         \"Microsoft.Network/vpnServerConfigurations\",\r\n  \"location\": \"westcentralus\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"vpnProtocols\":
         [\r\n      \"OpenVPN\",\r\n      \"IkeV2\"\r\n    ],\r\n    \"vpnAuthenticationTypes\":
@@ -229,9 +226,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 29 Mar 2021 07:51:35 GMT
+      - Thu, 15 Apr 2021 09:49:51 GMT
       etag:
-      - W/"88572cfc-2c9d-45b3-a77c-7924b3043dc0"
+      - W/"a1e41a9e-fb2e-434d-96ba-4bbc0dd9b0a1"
       expires:
       - '-1'
       pragma:
@@ -248,7 +245,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 2180b3da-52a2-4489-afb4-b5f3077bd1de
+      - 5e287582-f6c1-416b-bec9-a8c549be859a
     status:
       code: 200
       message: OK
@@ -266,7 +263,7 @@ interactions:
       ParameterSetName:
       - -n -g --vpn-client-root-certs --vpn-client-revoked-certs
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.21 msrest_azure/0.6.3
         azure-mgmt-resource/12.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
       accept-language:
       - en-US
@@ -274,7 +271,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_vpn_server_config_multi_auth000001?api-version=2020-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_vpn_server_config_multi_auth000001","name":"test_azure_vpn_server_config_multi_auth000001","type":"Microsoft.Resources/resourceGroups","location":"westcentralus","tags":{"product":"azurecli","cause":"automation","date":"2021-03-29T07:51:13Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_vpn_server_config_multi_auth000001","name":"test_azure_vpn_server_config_multi_auth000001","type":"Microsoft.Resources/resourceGroups","location":"westcentralus","tags":{"product":"azurecli","cause":"automation","date":"2021-04-15T09:49:25Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -283,7 +280,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 29 Mar 2021 07:51:35 GMT
+      - Thu, 15 Apr 2021 09:49:53 GMT
       expires:
       - '-1'
       pragma:
@@ -315,20 +312,17 @@ interactions:
       Content-Length:
       - '1475'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - -n -g --vpn-client-root-certs --vpn-client-revoked-certs
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.21.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_vpn_server_config_multi_auth000001/providers/Microsoft.Network/vpnServerConfigurations/clitestserverconfig1?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestserverconfig1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_vpn_server_config_multi_auth000001/providers/Microsoft.Network/vpnServerConfigurations/clitestserverconfig1\",\r\n
-        \ \"etag\": \"W/\\\"04b1e7d3-ebcb-4ca9-98be-70dd9c2aba2f\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"05ff7c8c-97b3-476a-9bb9-cd37f72e11c6\\\"\",\r\n  \"type\":
         \"Microsoft.Network/vpnServerConfigurations\",\r\n  \"location\": \"westcentralus\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"vpnProtocols\":
         [\r\n      \"OpenVPN\",\r\n      \"IkeV2\"\r\n    ],\r\n    \"vpnAuthenticationTypes\":
@@ -342,8 +336,10 @@ interactions:
         [],\r\n    \"aadAuthenticationParameters\": {},\r\n    \"vpnClientIpsecPolicies\":
         []\r\n  }\r\n}"
     headers:
+      azure-asyncnotification:
+      - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westcentralus/operations/061abac6-870a-4c9e-b94c-14f73d4d9e0f?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westcentralus/operations/220a55ab-c4bd-4676-af82-3c4b915ed2da?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -351,7 +347,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 29 Mar 2021 07:51:44 GMT
+      - Thu, 15 Apr 2021 09:49:58 GMT
       expires:
       - '-1'
       pragma:
@@ -364,9 +360,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f685ce16-bc45-4882-91c9-5032d2137442
+      - af46be1b-f6ad-4c08-a7c1-95b7870ce066
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1196'
     status:
       code: 201
       message: Created
@@ -374,7 +370,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -384,10 +380,9 @@ interactions:
       ParameterSetName:
       - -n -g --vpn-client-root-certs --vpn-client-revoked-certs
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
+      - AZURECLI/2.21.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westcentralus/operations/061abac6-870a-4c9e-b94c-14f73d4d9e0f?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westcentralus/operations/220a55ab-c4bd-4676-af82-3c4b915ed2da?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -399,7 +394,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 29 Mar 2021 07:51:54 GMT
+      - Thu, 15 Apr 2021 09:50:08 GMT
       expires:
       - '-1'
       pragma:
@@ -416,7 +411,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - a6f9324d-0130-42bf-aee4-db7544b2f716
+      - d9a99c8a-2c59-492f-a63d-6782f7c628ca
     status:
       code: 200
       message: OK
@@ -424,7 +419,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -434,14 +429,13 @@ interactions:
       ParameterSetName:
       - -n -g --vpn-client-root-certs --vpn-client-revoked-certs
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
+      - AZURECLI/2.21.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_vpn_server_config_multi_auth000001/providers/Microsoft.Network/vpnServerConfigurations/clitestserverconfig1?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestserverconfig1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_vpn_server_config_multi_auth000001/providers/Microsoft.Network/vpnServerConfigurations/clitestserverconfig1\",\r\n
-        \ \"etag\": \"W/\\\"189bd2e8-f193-4650-a0d6-16a75bd6628c\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"63d61ca3-30b2-4d03-9027-5c5b840cfd6d\\\"\",\r\n  \"type\":
         \"Microsoft.Network/vpnServerConfigurations\",\r\n  \"location\": \"westcentralus\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"vpnProtocols\":
         [\r\n      \"OpenVPN\",\r\n      \"IkeV2\"\r\n    ],\r\n    \"vpnAuthenticationTypes\":
@@ -462,9 +456,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 29 Mar 2021 07:51:54 GMT
+      - Thu, 15 Apr 2021 09:50:10 GMT
       etag:
-      - W/"189bd2e8-f193-4650-a0d6-16a75bd6628c"
+      - W/"63d61ca3-30b2-4d03-9027-5c5b840cfd6d"
       expires:
       - '-1'
       pragma:
@@ -481,7 +475,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 362f6c47-9903-48ee-a760-27ad19dbf7a6
+      - 508173ee-0777-4e58-ba57-ee7239ecbebf
     status:
       code: 200
       message: OK
@@ -500,7 +494,7 @@ interactions:
       - -n -g --vpn-client-root-certs --vpn-client-revoked-certs --radius-servers
         --radius-servers --aad-audience --aad-issuer --aad-tenant --auth-types
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+      - python/3.8.3 (Windows-10-10.0.18362-SP0) msrest/0.6.21 msrest_azure/0.6.3
         azure-mgmt-resource/12.0.0 Azure-SDK-For-Python AZURECLI/2.21.0
       accept-language:
       - en-US
@@ -508,7 +502,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_vpn_server_config_multi_auth000001?api-version=2020-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_vpn_server_config_multi_auth000001","name":"test_azure_vpn_server_config_multi_auth000001","type":"Microsoft.Resources/resourceGroups","location":"westcentralus","tags":{"product":"azurecli","cause":"automation","date":"2021-03-29T07:51:13Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_vpn_server_config_multi_auth000001","name":"test_azure_vpn_server_config_multi_auth000001","type":"Microsoft.Resources/resourceGroups","location":"westcentralus","tags":{"product":"azurecli","cause":"automation","date":"2021-04-15T09:49:25Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -517,7 +511,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 29 Mar 2021 07:51:55 GMT
+      - Thu, 15 Apr 2021 09:50:11 GMT
       expires:
       - '-1'
       pragma:
@@ -553,21 +547,18 @@ interactions:
       Content-Length:
       - '1956'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - -n -g --vpn-client-root-certs --vpn-client-revoked-certs --radius-servers
         --radius-servers --aad-audience --aad-issuer --aad-tenant --auth-types
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.21.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_vpn_server_config_multi_auth000001/providers/Microsoft.Network/vpnServerConfigurations/clitestserverconfig1?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestserverconfig1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_vpn_server_config_multi_auth000001/providers/Microsoft.Network/vpnServerConfigurations/clitestserverconfig1\",\r\n
-        \ \"etag\": \"W/\\\"2450d0e7-0e0f-40cd-977d-10ab7563407d\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"922893ab-a198-4170-8dca-6a87a097b6d9\\\"\",\r\n  \"type\":
         \"Microsoft.Network/vpnServerConfigurations\",\r\n  \"location\": \"westcentralus\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"vpnProtocols\":
         [\r\n      \"OpenVPN\",\r\n      \"IkeV2\"\r\n    ],\r\n    \"vpnAuthenticationTypes\":
@@ -588,7 +579,7 @@ interactions:
         \   \"vpnClientIpsecPolicies\": []\r\n  }\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westcentralus/operations/3bc31078-c717-48a5-a61b-1c47c39238f0?api-version=2020-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westcentralus/operations/2781a7f5-095c-4827-bbee-97f39c66bc52?api-version=2020-05-01
       cache-control:
       - no-cache
       content-length:
@@ -596,7 +587,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 29 Mar 2021 07:51:56 GMT
+      - Thu, 15 Apr 2021 09:50:14 GMT
       expires:
       - '-1'
       pragma:
@@ -613,9 +604,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 70dea5dd-f142-4110-aeac-b9aa08bf9895
+      - 692c2368-319e-490c-b1d8-cf0b3ca77bac
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1196'
     status:
       code: 200
       message: OK
@@ -623,7 +614,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -634,10 +625,9 @@ interactions:
       - -n -g --vpn-client-root-certs --vpn-client-revoked-certs --radius-servers
         --radius-servers --aad-audience --aad-issuer --aad-tenant --auth-types
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
+      - AZURECLI/2.21.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westcentralus/operations/3bc31078-c717-48a5-a61b-1c47c39238f0?api-version=2020-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westcentralus/operations/2781a7f5-095c-4827-bbee-97f39c66bc52?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -649,7 +639,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 29 Mar 2021 07:52:06 GMT
+      - Thu, 15 Apr 2021 09:50:25 GMT
       expires:
       - '-1'
       pragma:
@@ -666,7 +656,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 70f2dcd0-a7f5-41a7-a5da-76d5804b4c73
+      - 0afb925c-710a-4938-9e7e-021f37cb4670
     status:
       code: 200
       message: OK
@@ -674,7 +664,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -685,14 +675,13 @@ interactions:
       - -n -g --vpn-client-root-certs --vpn-client-revoked-certs --radius-servers
         --radius-servers --aad-audience --aad-issuer --aad-tenant --auth-types
       User-Agent:
-      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
-        azure-mgmt-network/10.2.0 Azure-SDK-For-Python AZURECLI/2.21.0
+      - AZURECLI/2.21.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.8.3 (Windows-10-10.0.18362-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_vpn_server_config_multi_auth000001/providers/Microsoft.Network/vpnServerConfigurations/clitestserverconfig1?api-version=2020-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"clitestserverconfig1\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_vpn_server_config_multi_auth000001/providers/Microsoft.Network/vpnServerConfigurations/clitestserverconfig1\",\r\n
-        \ \"etag\": \"W/\\\"e8614908-0f40-4941-858d-133c5ed3902b\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"98bbd58e-8d06-44f7-896b-f38c42582eee\\\"\",\r\n  \"type\":
         \"Microsoft.Network/vpnServerConfigurations\",\r\n  \"location\": \"westcentralus\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"vpnProtocols\":
         [\r\n      \"OpenVPN\",\r\n      \"IkeV2\"\r\n    ],\r\n    \"vpnAuthenticationTypes\":
@@ -719,9 +708,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 29 Mar 2021 07:52:07 GMT
+      - Thu, 15 Apr 2021 09:50:25 GMT
       etag:
-      - W/"e8614908-0f40-4941-858d-133c5ed3902b"
+      - W/"98bbd58e-8d06-44f7-896b-f38c42582eee"
       expires:
       - '-1'
       pragma:
@@ -738,7 +727,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 148bbe50-b5df-4c9f-8a6e-9320b4016484
+      - 97f7ec73-2e5e-4679-8eef-59d74756572c
     status:
       code: 200
       message: OK
