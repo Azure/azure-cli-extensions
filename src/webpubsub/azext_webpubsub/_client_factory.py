@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+
 def _webpubsub_client_factory(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from .vendored_sdks.azure.mgmt.webpubsub import WebPubSubManagementClient
