@@ -19,3 +19,4 @@ echo "BUILD_IMAGE=$BUILD_IMAGE" >> env.list
 echo "IMAGE_PREFIX=$IMAGE_PREFIX" >> env.list
 echo "IMAGE_NAME=$IMAGE_NAME" >> env.list
 echo "IMAGE_TAG=$IMAGE_TAG" >> env.list
+echo "TEST_DIFF=$TEST_DIFF" >> env.list
