@@ -30,6 +30,8 @@ jobs:
         source ./start_container.sh
       env:
         MAPPED_AZCLI_ALT_CLIENT_SECRET: $(AZCLI_ALT_CLIENT_SECRET)
+        BUILD_REASON: $(Build.Reason)
+        SYSTEM_PULLREQUEST_TARGETBRANCH: $(System.PullRequest.TargetBranch)
       condition: succeeded()
       displayName: "Start Container"
     - bash: |

@@ -10,8 +10,8 @@ echo "AZCLI_ALT_CLIENT_ID=$AZCLI_ALT_CLIENT_ID" >> env.list
 echo "AZCLI_ALT_CLIENT_SECRET=$MAPPED_AZCLI_ALT_CLIENT_SECRET" >> env.list
 
 # predefined variables 
-echo "BUILD_REASON=$(Build.Reason)" >> env.list
-echo "SYSTEM_PULLREQUEST_TARGETBRANCH=$(System.PullRequest.TargetBranch)" >> env.list
+echo "BUILD_REASON=$BUILD_REASON" >> env.list
+echo "SYSTEM_PULLREQUEST_TARGETBRANCH=$SYSTEM_PULLREQUEST_TARGETBRANCH" >> env.list
 
 # variables
 echo "PYTHON_VERSION=$PYTHON_VERSION" >> env.list
