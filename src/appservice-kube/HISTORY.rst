@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.14
+++++++
+* Stop using webapp list in creates - temporary fix for demo
+
 0.1.13
 ++++++
 * az webapp/functionapp create without --plan for k8se apps

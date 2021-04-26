@@ -331,11 +331,11 @@ def _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, 
     return plan_kube_env_id.lower() == custom_location_kube_env_id.lower()
 
 
-def _should_create_new_appservice_plan_for_k8se(cmd, name, custom_location, plan):
+def _should_create_new_appservice_plan_for_k8se(cmd, name, custom_location, plan, resource_group_name):
     if custom_location and plan:
         return False
     elif custom_location:
-        existing_app_details = get_app_details(cmd, name)
+        existing_app_details = get_app_details(cmd, name, resource_group_name)
         if not existing_app_details:
             return True
         else:
@@ -367,7 +367,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
         if name_validation.reason == 'Invalid':
             raise CLIError(name_validation.message)
         logger.warning("Webapp '%s' already exists. The command will use the existing app's settings.", name)
-        app_details = get_app_details(cmd, name)
+        app_details = get_app_details(cmd, name, resource_group_name)
         if app_details is None:
             raise CLIError("Unable to retrieve details of the existing app '{}'. Please check that "
                            "the app is a part of the current subscription".format(name))
@@ -385,7 +385,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
     else:
         site_config = SiteConfig(app_settings=[])
 
-    _should_create_new_plan = _should_create_new_appservice_plan_for_k8se(cmd, name, custom_location, plan)
+    _should_create_new_plan = _should_create_new_appservice_plan_for_k8se(cmd, name, custom_location, plan, resource_group_name)
     if _should_create_new_plan:
         plan = generate_default_app_service_plan_name(name)
         logger.warning("Plan not specified. Creating Plan '%s' with sku '%s'", plan, KUBE_DEFAULT_SKU)
@@ -396,7 +396,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
         if not _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, custom_location, plan):
             raise ValidationError("Custom location's kube environment and App Service Plan's kube environment don't match")
     elif custom_location and not plan:
-        app_details = get_app_details(cmd, name)
+        app_details = get_app_details(cmd, name, resource_group_name)
         if app_details is not None:
             plan = app_details.server_farm_id
 
@@ -587,7 +587,7 @@ def webapp_up(cmd, name, resource_group_name=None, plan=None, location=None, sku
     if not _create_new_app:  # App exists
         # Get the ASP & RG info, if the ASP & RG parameters are provided we use those else we need to find those
         logger.warning("Webapp %s already exists. The command will deploy contents to the existing app.", name)
-        app_details = get_app_details(cmd, name)
+        app_details = get_app_details(cmd, name, resource_group_name)
         if app_details is None:
             raise CLIError("Unable to retrieve details of the existing app {}. Please check that the app is a part of "
                            "the current subscription".format(name))
@@ -785,7 +785,7 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
         is_linux = os_type and os_type.lower() == 'linux'
 
     else:  # apps with SKU based plan
-        _should_create_new_plan = _should_create_new_appservice_plan_for_k8se(cmd, name, custom_location, plan)
+        _should_create_new_plan = _should_create_new_appservice_plan_for_k8se(cmd, name, custom_location, plan, resource_group_name)
         if _should_create_new_plan:
             plan = generate_default_app_service_plan_name(name)
             logger.warning("Plan not specified. Creating Plan '%s' with sku '%s'", plan, KUBE_DEFAULT_SKU)
@@ -796,7 +796,7 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
             if not _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, custom_location, plan):
                 raise ValidationError("Custom location's kube environment and App Service Plan's kube environment don't match")
         elif custom_location and not plan:
-            app_details = get_app_details(cmd, name)
+            app_details = get_app_details(cmd, name, resource_group_name)
             if app_details is not None:
                 plan = app_details.server_farm_id
 
