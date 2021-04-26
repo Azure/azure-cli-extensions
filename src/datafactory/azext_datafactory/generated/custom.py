@@ -179,14 +179,12 @@ def datafactory_integration_runtime_managed_create(client,
                                                    integration_runtime_name,
                                                    if_match=None,
                                                    description=None,
-                                                   managed_virtual_network=None,
                                                    compute_properties=None,
                                                    ssis_properties=None):
     integration_runtime = {}
     integration_runtime['properties'] = {}
     integration_runtime['properties']['type'] = 'Managed'
     integration_runtime['properties']['description'] = description
-    integration_runtime['properties']['managed_virtual_network'] = managed_virtual_network
     integration_runtime['properties']['compute_properties'] = compute_properties
     integration_runtime['properties']['ssis_properties'] = ssis_properties
     return client.create_or_update(resource_group_name=resource_group_name,

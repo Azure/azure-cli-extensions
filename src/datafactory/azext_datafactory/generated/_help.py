@@ -206,13 +206,6 @@ helps['datafactory integration-runtime managed'] = """
 helps['datafactory integration-runtime managed create'] = """
     type: command
     short-summary: "Create an integration runtime."
-    parameters:
-      - name: --managed-virtual-network
-        short-summary: "Managed Virtual Network reference."
-        long-summary: |
-            Usage: --managed-virtual-network reference-name=XX
-
-            reference-name: Required. Reference ManagedVirtualNetwork name.
 """
 
 helps['datafactory integration-runtime self-hosted'] = """

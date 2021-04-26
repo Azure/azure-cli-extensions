@@ -423,7 +423,6 @@ az datafactory integration-runtime linked-integration-runtime create --name "bfa
 |**--integration-runtime-name**|string|The integration runtime name.|integration_runtime_name|integrationRuntimeName|
 |**--if-match**|string|ETag of the integration runtime entity. Should only be specified for update, for which it should match existing entity or can be * for unconditional update.|if_match|If-Match|
 |**--description**|string|Integration runtime description.|managed_description|description|
-|**--managed-virtual-network**|object|Managed Virtual Network reference.|managed_managed_virtual_network|managedVirtualNetwork|
 |**--compute-properties**|object|The compute resource for managed integration runtime.|managed_compute_properties|computeProperties|
 |**--ssis-properties**|object|SSIS properties for managed integration runtime.|managed_ssis_properties|ssisProperties|
 

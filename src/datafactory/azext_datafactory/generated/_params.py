@@ -24,7 +24,6 @@ from azure.cli.core.commands.validators import (
 from azext_datafactory.action import (
     AddFactoryVstsConfiguration,
     AddFactoryGitHubConfiguration,
-    AddManagedVirtualNetwork,
     AddFolder,
     AddFilters,
     AddOrderBy
@@ -134,8 +133,6 @@ def load_arguments(self, _):
         c.argument('if_match', type=str, help='ETag of the integration runtime entity. Should only be specified for '
                    'update, for which it should match existing entity or can be * for unconditional update.')
         c.argument('description', type=str, help='Integration runtime description.')
-        c.argument('managed_virtual_network', action=AddManagedVirtualNetwork, nargs='+', help='Managed Virtual '
-                   'Network reference.')
         c.argument('compute_properties', type=validate_file_or_dict, help='The compute resource for managed '
                    'integration runtime. Expected value: json-string/@json-file.', arg_group='Type Properties')
         c.argument('ssis_properties', type=validate_file_or_dict, help='SSIS properties for managed integration '
