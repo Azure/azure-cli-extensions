@@ -137,7 +137,7 @@ class AddFolder(argparse.Action):
                 d['name'] = v[0]
             else:
                 raise CLIError('Unsupported Key {} is provided for parameter folder. All possible keys are: name'.
-                format(k))
+                               format(k))
         return d
 
 
