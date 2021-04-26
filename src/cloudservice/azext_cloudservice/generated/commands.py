@@ -36,7 +36,7 @@ def load_command_table(self, _):
         g.custom_command('restart', 'cloud_service_role_instance_restart', supports_no_wait=True)
         g.custom_command('show-instance-view', 'cloud_service_role_instance_show_instance_view')
         g.custom_command('show-remote-desktop-file', 'cloud_service_role_instance_show_remote_desktop_file')
-        g.custom_wait_command('wait', 'cloud_service_role_instance_show')
+        # g.custom_wait_command('wait', 'cloud_service_role_instance_show')
 
     from azext_cloudservice.generated._client_factory import cf_cloud_service_role
 
