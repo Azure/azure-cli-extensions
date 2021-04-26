@@ -824,7 +824,7 @@ et\\"}],\\"outputs\\":[{\\"type\\":\\"DatasetReference\\",\\"parameters\\":{\\"M
 "typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"type\\":\\"Bl\
 obSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.\
 OutputBlobNameList\\"}}}]" --parameters "{\\"OutputBlobNameList\\":{\\"type\\":\\"Array\\"}}" --duration "0.00:10:00" \
---pipeline-name "examplePipeline" --resource-group "exampleResourceGroup"
+--name "examplePipeline" --resource-group "exampleResourceGroup"
 ```
 ##### <a name="ParametersPipelinesCreateOrUpdate#Update">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -841,7 +841,7 @@ OutputBlobNameList\\"}}}]" --parameters "{\\"OutputBlobNameList\\":{\\"type\\":\
 |**--annotations**|array|List of tags that can be used for describing the Pipeline.|annotations|annotations|
 |**--run-dimensions**|dictionary|Dimensions emitted by Pipeline.|run_dimensions|runDimensions|
 |**--duration**|any|TimeSpan value, after which an Azure Monitoring Metric is fired.|duration|duration|
-|**--name**|string|The name of the folder that this Pipeline is in.|name|name|
+|**--folder-name**|string|The name of the folder that this Pipeline is in.|folder_name|name|
 
 #### <a name="PipelinesDelete">Command `az datafactory pipeline delete`</a>
 

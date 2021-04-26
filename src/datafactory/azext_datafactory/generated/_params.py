@@ -389,7 +389,8 @@ def load_arguments(self, _):
     with self.argument_context('datafactory pipeline update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('factory_name', type=str, help='The factory name.', id_part='name')
-        c.argument('pipeline_name', type=str, help='The pipeline name.', id_part='child_name_1')
+        c.argument('pipeline_name', options_list=['--name', '-n', '--pipeline-name'], type=str, help='The pipeline '
+                   'name.', id_part='child_name_1')
         c.argument('if_match', type=str, help='ETag of the pipeline entity.  Should only be specified for update, for '
                    'which it should match existing entity or can be * for unconditional update.')
         c.argument('description', type=str, help='The description of the pipeline.')
@@ -406,7 +407,8 @@ def load_arguments(self, _):
                    'json-string/@json-file.')
         c.argument('duration', type=validate_file_or_dict, help='TimeSpan value, after which an Azure Monitoring '
                    'Metric is fired. Expected value: json-string/@json-file.', arg_group='Policy Elapsed Time Metric')
-        c.argument('name', type=str, help='The name of the folder that this Pipeline is in.', arg_group='Folder')
+        c.argument('folder_name', type=str, help='The name of the folder that this Pipeline is in.',
+                   arg_group='Folder')
         c.ignore('pipeline')
 
     with self.argument_context('datafactory pipeline delete') as c:

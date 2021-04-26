@@ -579,7 +579,7 @@ def step_pipeline_update(test, rg, checks=None):
              'ipeline().parameters.OutputBlobNameList\\"}}}}}}]" '
              '--parameters "{{\\"OutputBlobNameList\\":{{\\"type\\":\\"Array\\"}}}}" '
              '--duration "0.00:10:00" '
-             '--pipeline-name "{myPipeline}" '
+             '--name "{myPipeline}" '
              '--resource-group "{rg}"',
              checks=checks)
 

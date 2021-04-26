@@ -568,7 +568,7 @@ def datafactory_pipeline_update(instance,
                                 annotations=None,
                                 run_dimensions=None,
                                 duration=None,
-                                name=None):
+                                folder_name=None):
     if description is not None:
         instance.description = description
     if activities is not None:
@@ -585,8 +585,8 @@ def datafactory_pipeline_update(instance,
         instance.run_dimensions = run_dimensions
     if duration is not None:
         instance.elapsed_time_metric.duration = duration
-    if name is not None:
-        instance.folder.name = name
+    if folder_name is not None:
+        instance.folder.name = folder_name
     return instance
 
 
