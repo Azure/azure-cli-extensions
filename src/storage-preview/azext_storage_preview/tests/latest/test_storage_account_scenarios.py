@@ -288,3 +288,38 @@ class FileServicePropertiesTests(StorageScenarioMixin, ScenarioTest):
         self.cmd(
             '{cmd} update --enable-smb-multichannel true -n {sa} -g {rg}').assert_with_checks(
             JMESPathCheck('protocolSettings.smb.multichannel.enabled', True))
+
+    @api_version_constraint(CUSTOM_MGMT_PREVIEW_STORAGE, min_api='2020-08-01-preview')
+    @ResourceGroupPreparer(name_prefix='cli_file_smb')
+    @StorageAccountPreparer(name_prefix='filesmb', kind='FileStorage', sku='Premium_LRS', location='centraluseuap')
+    def test_storage_account_file_secured_smb(self, resource_group, storage_account):
+        self.kwargs.update({
+            'sa': storage_account,
+            'rg': resource_group,
+            'cmd': 'storage account file-service-properties'
+        })
+
+        self.cmd('{cmd} show -n {sa} -g {rg}').assert_with_checks(
+            JMESPathCheck('shareDeleteRetentionPolicy', None),
+            JMESPathCheck('protocolSettings.smb.multichannel.enabled', False),
+            JMESPathCheck('protocolSettings.smb.authenticationMethods', None),
+            JMESPathCheck('protocolSettings.smb.channelEncryption', None),
+            JMESPathCheck('protocolSettings.smb.kerberosTicketEncryption', None),
+            JMESPathCheck('protocolSettings.smb.versions', None))
+
+        self.cmd(
+            '{cmd} update --versions "SMB2.1;SMB3.0;SMB3.1.1" --auth-methods "NTLMv2;Kerberos" '
+            '--kerb-ticket-encryption "RC4-HMAC;AES-256" --channel-encryption "AES-CCM-128;AES-GCM-128;AES-GCM-256"'
+            ' -n {sa} -g {rg}').assert_with_checks(
+            JMESPathCheck('protocolSettings.smb.authenticationMethods', "NTLMv2;Kerberos"),
+            JMESPathCheck('protocolSettings.smb.channelEncryption', "AES-CCM-128;AES-GCM-128;AES-GCM-256"),
+            JMESPathCheck('protocolSettings.smb.kerberosTicketEncryption', "RC4-HMAC;AES-256"),
+            JMESPathCheck('protocolSettings.smb.versions', "SMB2.1;SMB3.0;SMB3.1.1"))
+
+        self.cmd('{cmd} show -n {sa} -g {rg}').assert_with_checks(
+            JMESPathCheck('shareDeleteRetentionPolicy', None),
+            JMESPathCheck('protocolSettings.smb.multichannel.enabled', False),
+            JMESPathCheck('protocolSettings.smb.authenticationMethods', "NTLMv2;Kerberos"),
+            JMESPathCheck('protocolSettings.smb.channelEncryption', "AES-CCM-128;AES-GCM-128;AES-GCM-256"),
+            JMESPathCheck('protocolSettings.smb.kerberosTicketEncryption', "RC4-HMAC;AES-256"),
+            JMESPathCheck('protocolSettings.smb.versions', "SMB2.1;SMB3.0;SMB3.1.1"))

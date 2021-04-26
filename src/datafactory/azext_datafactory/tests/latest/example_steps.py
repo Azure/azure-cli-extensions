@@ -8,6 +8,8 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
+# pylint: disable=unused-argument
+
 
 from .. import try_manual
 
@@ -818,4 +820,3 @@ def step_delete(test, rg, checks=None):
              '--name "{myFactory}" '
              '--resource-group "{rg}"',
              checks=checks)
-

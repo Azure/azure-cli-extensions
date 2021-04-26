@@ -242,13 +242,13 @@ class AzureVWanVHubScenario(ScenarioTest):
         self.cmd('az network p2s-vpn-gateway update -g {rg} -n {vp2sgateway} --scale-unit 3 '
                  '--vpn-server-config {vserverconfig2} --address-space 13.0.0.0/24 12.0.0.0/24 --labels x1 x2 x3',
                  checks=self.check(
-                     'length(p2SconnectionConfigurations[0].routingConfiguration.propagatedRouteTables.labels)', 3))
+                     'length(p2SConnectionConfigurations[0].routingConfiguration.propagatedRouteTables.labels)', 3))
         self.cmd('az network p2s-vpn-gateway list -g {rg}', checks=[
             self.check('length(@)', 1)
         ])
         self.cmd('az network p2s-vpn-gateway list', checks=[])
         self.cmd('az network p2s-vpn-gateway show -g {rg} -n {vp2sgateway}', checks=[
-            self.check('length(p2SconnectionConfigurations[0].vpnClientAddressPool.addressPrefixes)', 2),
+            self.check('length(p2SConnectionConfigurations[0].vpnClientAddressPool.addressPrefixes)', 2),
             self.check('vpnGatewayScaleUnit', 3)
         ])
         self.cmd('az network p2s-vpn-gateway delete -g {rg} -n {vp2sgateway} -y')
@@ -393,14 +393,14 @@ class AzureVWanVHubScenario(ScenarioTest):
                  checks=[
                      self.check('provisioningState', 'Succeeded'),
                      self.check('name', self.kwargs['gateway']),
-                     self.check('p2SconnectionConfigurations[0].name', self.kwargs['connection_config']),
-                     self.check('p2SconnectionConfigurations[0].routingConfiguration.associatedRouteTable.id', self.kwargs['route_table1']),
-                     self.check('length(p2SconnectionConfigurations[0].routingConfiguration.propagatedRouteTables.ids)', 2),
-                     self.check('p2SconnectionConfigurations[0].routingConfiguration.propagatedRouteTables.ids[0].id', self.kwargs['route_table1']),
-                     self.check('p2SconnectionConfigurations[0].routingConfiguration.propagatedRouteTables.ids[1].id', self.kwargs['route_table2']),
-                     self.check('length(p2SconnectionConfigurations[0].routingConfiguration.propagatedRouteTables.labels)', 2),
-                     self.check('p2SconnectionConfigurations[0].routingConfiguration.propagatedRouteTables.labels[0]', 'label1'),
-                     self.check('p2SconnectionConfigurations[0].routingConfiguration.propagatedRouteTables.labels[1]', 'label2')
+                     self.check('p2SConnectionConfigurations[0].name', self.kwargs['connection_config']),
+                     self.check('p2SConnectionConfigurations[0].routingConfiguration.associatedRouteTable.id', self.kwargs['route_table1']),
+                     self.check('length(p2SConnectionConfigurations[0].routingConfiguration.propagatedRouteTables.ids)', 2),
+                     self.check('p2SConnectionConfigurations[0].routingConfiguration.propagatedRouteTables.ids[0].id', self.kwargs['route_table1']),
+                     self.check('p2SConnectionConfigurations[0].routingConfiguration.propagatedRouteTables.ids[1].id', self.kwargs['route_table2']),
+                     self.check('length(p2SConnectionConfigurations[0].routingConfiguration.propagatedRouteTables.labels)', 2),
+                     self.check('p2SConnectionConfigurations[0].routingConfiguration.propagatedRouteTables.labels[0]', 'label1'),
+                     self.check('p2SConnectionConfigurations[0].routingConfiguration.propagatedRouteTables.labels[1]', 'label2')
                  ])
 
         self.cmd('network p2s-vpn-gateway connection show '

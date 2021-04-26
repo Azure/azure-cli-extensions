@@ -176,10 +176,8 @@ class DatafactoryScenarioTest(ScenarioTest):
             'myTrigger': self.create_random_name(prefix='exampleTrigger'[:7], length=14),
         })
 
-
     @ResourceGroupPreparer(name_prefix='clitestdatafactory_exampleResourceGroup'[:7], key='rg', parameter_name='rg')
     def test_datafactory_Scenario(self, rg):
         call_scenario(self, rg)
         calc_coverage(__file__)
         raise_if()
-

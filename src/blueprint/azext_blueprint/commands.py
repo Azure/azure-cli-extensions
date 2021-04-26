@@ -26,6 +26,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'get_blueprint')
         g.custom_command('list', 'list_blueprint')
         g.custom_command('import', 'import_blueprint_with_artifacts', confirmation="This operation will overwrite any unpublished changes if the blueprint already exists.")
+        g.custom_command('export', 'export_blueprint_with_artifacts')
 
     with self.command_group('blueprint resource-group', blueprint_blueprints, client_factory=cf_blueprints) as g:
         g.custom_command('add', 'add_blueprint_resource_group')
