@@ -94,18 +94,6 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.custom_command('list', 'list_network_rules')
         g.custom_command('remove', 'remove_network_rule')
 
-    base_blob_sdk = CliCommandType(
-        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage.blob.baseblobservice#BaseBlobService.{}',
-        client_factory=blob_data_service_factory,
-        resource_type=CUSTOM_DATA_STORAGE)
-
-    with self.command_group('storage blob service-properties', command_type=base_blob_sdk) as g:
-        g.storage_command_oauth('show', 'get_blob_service_properties', exception_handler=show_exception_handler)
-        g.storage_command_oauth('update', generic_update=True, getter_name='get_blob_service_properties',
-                                setter_type=get_custom_sdk('blob', cf_blob_data_gen_update),
-                                setter_name='set_service_properties',
-                                client_factory=cf_blob_data_gen_update)
-
     block_blob_sdk = CliCommandType(
         operations_tmpl='azure.multiapi.storage.blob.blockblobservice#BlockBlobService.{}',
         client_factory=blob_data_service_factory,

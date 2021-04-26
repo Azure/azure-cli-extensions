@@ -16,7 +16,7 @@ from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
 import azure.cli.core.keys as keys
 
-from .vendored_sdks.azure_mgmt_preview_aks.v2021_02_01.models import ManagedClusterPropertiesAutoScalerProfile
+from .vendored_sdks.azure_mgmt_preview_aks.v2021_03_01.models import ManagedClusterPropertiesAutoScalerProfile
 
 from ._helpers import (_fuzzy_match)
 
@@ -468,3 +468,12 @@ def validate_pod_identity_resource_namespace(namespace):
     if not namespace_value:
         # namespace cannot be empty
         raise CLIError('--namespace is required')
+
+
+def validate_assign_kubelet_identity(namespace):
+    if namespace.assign_kubelet_identity is not None:
+        if namespace.assign_kubelet_identity == '':
+            return
+        from msrestazure.tools import is_valid_resource_id
+        if not is_valid_resource_id(namespace.assign_kubelet_identity):
+            raise CLIError("--assign-kubelet-identity is not a valid Azure resource ID.")
