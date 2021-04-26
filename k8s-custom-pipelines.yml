@@ -1,10 +1,3 @@
-resources:
-  repositories:
-  - repository: K8sPartnerExtensionTest
-    type: git
-    endpoint: AzureReposConnection
-    name: One/compute-HybridMgmt-K8sPartnerExtensionTest
-
 trigger:
   batch: true
   branches:
@@ -21,8 +14,8 @@ stages:
 - stage: BuildTestPublishExtension
   displayName: "Build, Test, and Publish Extension"
   variables:
-    K8S_EXTENSION_REPO_PATH: $(Agent.BuildDirectory)/s/compute-HybridMgmt-K8sPartnerExtensionTest
-    CLI_REPO_PATH: $(Agent.BuildDirectory)/s/azure-cli-extensions
+    TEST_PATH: $(Agent.BuildDirectory)/s/testing
+    CLI_REPO_PATH: $(Agent.BuildDirectory)/s
     SUBSCRIPTION_ID: "15c06b1b-01d6-407b-bb21-740b8617dea3"
     RESOURCE_GROUP: "K8sPartnerExtensionTest"
     BASE_CLUSTER_NAME: "k8s-extension-cluster"
@@ -37,7 +30,6 @@ stages:
       vmImage: 'ubuntu-16.04'
     steps:
       - checkout: self
-      - checkout: K8sPartnerExtensionTest
       - bash: |
           echo "Installing helm3"
           curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
@@ -78,7 +70,7 @@ stages:
       - bash: |
           K8S_EXTENSION_VERSION=$(ls ${EXTENSION_FILE_NAME}* | cut -d "-" -f2)
           echo "##vso[task.setvariable variable=K8S_EXTENSION_VERSION]$K8S_EXTENSION_VERSION"
-          cp * $(K8S_EXTENSION_REPO_PATH)/bin
+          cp * $(TEST_PATH)/bin
         workingDirectory: $(CLI_REPO_PATH)/dist
         displayName: "Copy the Built .whl to Extension Test Path"
 
@@ -96,7 +88,7 @@ stages:
                           '{subscriptionId: $SUB_ID, resourceGroup: $RG, aksClusterName: $AKS_CLUSTER_NAME, arcClusterName: $ARC_CLUSTER_NAME, extensionVersion: {"k8s-extension": $K8S_EXTENSION_VERSION, connectedk8s: "1.0.0"}}')
           echo $JSON_STRING > settings.json
           cat settings.json
-        workingDirectory: $(K8S_EXTENSION_REPO_PATH)
+        workingDirectory: $(TEST_PATH)
         displayName: "Generate a settings.json file"
 
       - bash : |
@@ -114,7 +106,7 @@ stages:
           scriptLocation: inlineScript
           inlineScript: |
             .\Bootstrap.ps1 -CI
-          workingDirectory: $(K8S_EXTENSION_REPO_PATH)
+          workingDirectory: $(TEST_PATH)
       
       - task: AzureCLI@2
         displayName: Run the Test Suite Public Extensions Only
@@ -124,7 +116,7 @@ stages:
           scriptLocation: inlineScript
           inlineScript: |
             .\Test.ps1 -CI -ExtensionType Public -OnlyPublicTests
-          workingDirectory: $(K8S_EXTENSION_REPO_PATH)
+          workingDirectory: $(TEST_PATH)
         continueOnError: true
         condition: and(succeeded(), eq(variables['IS_PRIVATE_BRANCH'], 'False'))
       
@@ -136,7 +128,7 @@ stages:
           scriptLocation: inlineScript
           inlineScript: |
             .\Test.ps1 -CI -ExtensionType Public
-          workingDirectory: $(K8S_EXTENSION_REPO_PATH)
+          workingDirectory: $(TEST_PATH)
         continueOnError: true
         condition: and(succeeded(), eq(variables['IS_PRIVATE_BRANCH'], 'True'))
 
@@ -155,7 +147,7 @@ stages:
           scriptLocation: inlineScript
           inlineScript: |
             .\Cleanup.ps1 -CI
-          workingDirectory: $(K8S_EXTENSION_REPO_PATH)
+          workingDirectory: $(TEST_PATH)
         condition: succeededOrFailed()
 
   - job: BuildPublishExtension
