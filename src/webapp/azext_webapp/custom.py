@@ -21,7 +21,10 @@ from azure.cli.command_modules.appservice.custom import (
     create_webapp,
     get_sku_name,
     _check_zip_deployment_status,
-    get_app_settings)
+    get_app_settings,
+    config_source_control,
+    delete_source_control,
+    show_source_control)
 from azure.cli.command_modules.appservice._appservice_utils import _generic_site_operation
 from azure.cli.command_modules.appservice._create_util import (
     should_create_new_rg,
@@ -508,7 +511,7 @@ def _make_onedeploy_request(params):
     # check the status of async deployment
     if response.status_code == 202:
         if poll_async_deployment_for_debugging:
-            logger.info('Polloing the status of async deployment')
+            logger.info('Polling the status of async deployment')
             response_body = _check_zip_deployment_status(params.cmd, params.resource_group_name, params.webapp_name, deployment_status_url, headers, params.timeout)
             logger.info('Async deployment complete. Server response: %s', response_body)
         return
@@ -547,7 +550,7 @@ def _perform_onedeploy_internal(params):
 
 def add_github_actions(cmd, resource_group, name, repo, runtime=None, token=None, slot=None, branch='master', force=False):
     if not token:
-        token = get_github_access_token()
+        token = get_github_access_token(cmd, ['admin:repo_hook', 'repo', 'workflow'])
         if not token:
             raise CLIError("Could not authenticate to the repository. Please create a Personal Access Token and use the --token argument. Run 'az webapp deployment github-actions add --help' for more information.")
 
@@ -630,7 +633,7 @@ def add_github_actions(cmd, resource_group, name, repo, runtime=None, token=None
     # Check if workflow exists in repo, otherwise push
     file_name = "{}_{}({}).yml".format(branch.replace('/', '-'), name.lower(), slot) if slot else "{}_{}.yml".format(branch.replace('/', '-'), name.lower())
     dir_path = "{}/{}".format('.github', 'workflows')
-    file_path = "{}/{}".format(dir_path, file_name)
+    file_path = "/{}/{}".format(dir_path, file_name)
     try:
         existing_workflow_file = github_repo.get_contents(path=file_path, ref=branch)
         existing_publish_profile_name = _get_publish_profile_from_workflow_file(workflow_file=str(existing_workflow_file.decoded_content))
@@ -665,7 +668,7 @@ def add_github_actions(cmd, resource_group, name, repo, runtime=None, token=None
                                    github_actions_secret_name=publish_profile_name, slot=slot)
 
     # Set site source control properties
-    _set_site_source_control_properties(cmd=cmd, resource_group=resource_group, name=name, repo=repo, branch=branch, slot=slot)
+    _update_site_source_control_properties_for_gh_action(cmd=cmd, resource_group=resource_group, name=name, token=token, repo=repo, branch=branch, slot=slot)
 
     github_actions_url = "https://github.com/{}/actions".format(repo)
     return github_actions_url
@@ -673,7 +676,7 @@ def add_github_actions(cmd, resource_group, name, repo, runtime=None, token=None
 
 def remove_github_actions(cmd, resource_group, name, repo, token=None, slot=None, branch='master'):
     if not token:
-        token = get_github_access_token()
+        token = get_github_access_token(cmd, ['admin:repo_hook', 'repo', 'workflow'])
         if not token:
             raise CLIError("Could not authenticate to the repository. Please create a Personal Access Token and use the --token argument. Run 'az webapp deployment github-actions add --help' for more information.")
 
@@ -721,7 +724,7 @@ def remove_github_actions(cmd, resource_group, name, repo, token=None, slot=None
     # Check if workflow exists in repo and remove
     file_name = "{}_{}({}).yml".format(branch.replace('/', '-'), name.lower(), slot) if slot else "{}_{}.yml".format(branch.replace('/', '-'), name.lower())
     dir_path = "{}/{}".format('.github', 'workflows')
-    file_path = "{}/{}".format(dir_path, file_name)
+    file_path = "/{}/{}".format(dir_path, file_name)
     existing_publish_profile_name = None
     try:
         existing_workflow_file = github_repo.get_contents(path=file_path, ref=branch)
@@ -742,7 +745,10 @@ def remove_github_actions(cmd, resource_group, name, repo, token=None, slot=None
                                             github_actions_secret_name=existing_publish_profile_name, slot=slot)
 
     # Remove site source control properties
-    _set_site_source_control_properties(cmd=cmd, resource_group=resource_group, name=name, repo=None, branch=None, slot=slot)
+    delete_source_control(cmd=cmd,
+                          resource_group_name=resource_group,
+                          name=name,
+                          slot=slot)
 
     return "Disconnected successfully."
 
@@ -761,29 +767,33 @@ def _get_publish_profile_from_workflow_file(workflow_file):
     return None
 
 
-def _set_site_source_control_properties(cmd, resource_group, name, repo=None, branch="master", slot=None):
+def _update_site_source_control_properties_for_gh_action(cmd, resource_group, name, token, repo=None, branch="master", slot=None):
     if repo:
         repo_url = 'https://github.com/' + repo
     else:
         repo_url = None
 
-    site_source_control = _generic_site_operation(cmd.cli_ctx, resource_group, name, 'get_source_control', slot)
-    if not site_source_control:
-        site_source_control = SiteSourceControl(repo_url=repo_url, branch=branch)
-    else:
-        site_source_control.branch = branch
-        site_source_control.repo_url = repo_url
+    site_source_control = show_source_control(cmd=cmd,
+                                              resource_group_name=resource_group,
+                                              name=name,
+                                              slot=slot)
+    if site_source_control:
+        if not repo_url:
+            repo_url = site_source_control.repo_url
 
-    # TODO calcha: Set is_github_action when new SDK is in and source control object has this property
-    # TODO calcha: Test create or update. If changing to new github repo works, then we can remove delete_source_control
-    _generic_site_operation(cmd.cli_ctx, resource_group, name, 'delete_source_control', slot=slot)
-
-    if repo and branch:
-        logger.warning('Set site source control properties')
-        _generic_site_operation(cmd.cli_ctx, resource_group, name, 'create_or_update_source_control',
-                                slot=slot, extra_parameter=site_source_control)
-    else:
-        logger.warning('Remove site source control properties')
+    delete_source_control(cmd=cmd,
+                          resource_group_name=resource_group,
+                          name=name,
+                          slot=slot)
+    config_source_control(cmd=cmd,
+                          resource_group_name=resource_group,
+                          name=name,
+                          repo_url=repo_url,
+                          repository_type='github',
+                          github_action=True,
+                          branch=branch,
+                          git_token=token,
+                          slot=slot)
 
 
 def _get_workflow_template(github, runtime_string, is_linux):
@@ -852,7 +862,7 @@ def _get_template_file_path(runtime_string, is_linux):
 def _add_publish_profile_to_github(cmd, resource_group, name, repo, token, github_actions_secret_name, slot=None):
     # Get publish profile with secrets
     logger.warning("Fetching publish profile with secrets for the app '%s'", name)
-    publish_profile_bytes= _generic_site_operation(cmd.cli_ctx, resource_group, name, 'list_publishing_profile_xml_with_secrets', slot)
+    publish_profile_bytes= _generic_site_operation(cmd.cli_ctx, resource_group, name, 'list_publishing_profile_xml_with_secrets', slot, {"format": "WebDeploy"})
     publish_profile = [x for x in publish_profile_bytes]
     if publish_profile:
         publish_profile = publish_profile[0].decode('ascii')
