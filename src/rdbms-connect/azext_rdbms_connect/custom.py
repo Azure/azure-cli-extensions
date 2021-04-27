@@ -10,7 +10,7 @@ from knack.log import get_logger
 import psycopg2
 import pymysql
 from pymysql.constants import CLIENT
-from azure.cli.core.azclierror import RequiredArgumentMissingError, AzureConnectionError
+from azure.cli.core.azclierror import RequiredArgumentMissingError, AzureConnectionError, ArgumentUsageError
 from azure.cli.core.extension import EXTENSIONS_DIR
 
 
@@ -20,7 +20,9 @@ DEFAULT_PG_DB_NAME = 'postgres'
 
 
 def connect_to_flexible_server_mysql(cmd, server_name, administrator_login, administrator_login_password=None,
-                                     database_name=None, interactive_mode=None):
+                                     database_name=None, interactive_mode=None, querytext=None):
+    if querytext:
+        raise ArgumentUsageError("Use az mysql flexible-server execute command for query execution")
     mysql_server_endpoint = cmd.cli_ctx.cloud.suffixes.mysql_server_endpoint
     return connect_to_server_helper(server_type="mysql",
                                     endpoint=mysql_server_endpoint,
@@ -33,7 +35,9 @@ def connect_to_flexible_server_mysql(cmd, server_name, administrator_login, admi
 
 
 def connect_to_flexible_server_postgres(cmd, server_name, administrator_login, administrator_login_password=None,
-                                        database_name=None, interactive_mode=None):
+                                        database_name=None, interactive_mode=None, querytext=None):
+    if querytext:
+        raise ArgumentUsageError("Use az postgres flexible-server execute command for query execution")
     postgresql_server_endpoint = cmd.cli_ctx.cloud.suffixes.postgresql_server_endpoint
     return connect_to_server_helper(server_type="postgres",
                                     endpoint=postgresql_server_endpoint,

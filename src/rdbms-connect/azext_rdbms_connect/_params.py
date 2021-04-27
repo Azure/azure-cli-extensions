@@ -29,6 +29,7 @@ def load_arguments(self, _):
                        help='The login password of the administrator.')
             c.argument('database_name', arg_type=database_name_arg_type, options_list=['--database-name', '-d'], help='The name of a database.')
             c.argument('interactive_mode', options_list=['--interactive'], action='store_true', help='Pass this parameter to connect to database in interactive mode.')
+            c.argument('querytext', options_list=['--querytext', '-q'], deprecate_info=c.deprecate(redirect='execute'), help='A query to run against the flexible server.')
 
         with self.argument_context('{} flexible-server execute'.format(command_group)) as c:
             c.argument('server_name', id_part=None, options_list=['--name', '-n'], arg_type=server_name_arg_type)

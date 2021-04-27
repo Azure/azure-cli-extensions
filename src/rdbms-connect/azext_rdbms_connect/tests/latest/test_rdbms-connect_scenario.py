@@ -98,7 +98,7 @@ class RdbmsConnectMgmtScenarioTest(ScenarioTest):
         self.cmd('{} flexible-server execute -n {} -u {} -p {} -d {} -q {}'
                  .format(database_engine, server_name, username_wrong, generated_password, default_database, simple_query),
                  expect_failure=True)
-        
+
         # test file execution
         file_path = "./test.sql"
         with open(file_path, "w") as sql_file:
