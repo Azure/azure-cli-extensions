@@ -171,11 +171,41 @@ class AzureMLKubernetes(PartnerExtensionModel):
                 "for Machine Learning training or inference by specifying "
                 f"'--configuration-settings {self.ENABLE_TRAINING}=true' or '--configuration-settings {self.ENABLE_INFERENCE}=true'")
 
+        self.__validate_scoring_fe_settings(configuration_settings, configuration_protected_settings)
+
         configuration_settings[self.ENABLE_TRAINING] = configuration_settings.get(self.ENABLE_TRAINING, enable_training)
         configuration_settings[self.ENABLE_INFERENCE] = configuration_settings.get(
             self.ENABLE_INFERENCE, enable_inference)
         configuration_protected_settings.pop(self.ENABLE_TRAINING, None)
         configuration_protected_settings.pop(self.ENABLE_INFERENCE, None)
+
+    def __validate_scoring_fe_settings(self, configuration_settings, configuration_protected_settings):
+        clusterPurpose = _get_value_from_config_protected_config(
+            'clusterPurpose', configuration_settings, configuration_protected_settings)
+        if clusterPurpose and clusterPurpose not in ["DevTest", "FastProd"]:
+            raise InvalidArgumentValueError(
+                "Accepted values for '--configuration-settings clusterPurpose' "
+                "are 'DevTest' and 'FastProd'")
+
+        feSslCert = _get_value_from_config_protected_config(
+            'scoringFe.sslCert', configuration_settings, configuration_protected_settings)
+        sslKey = _get_value_from_config_protected_config(
+            'scoringFe.sslKey', configuration_settings, configuration_protected_settings)
+        allowInsecureConnections = _get_value_from_config_protected_config(
+            'allowInsecureConnections', configuration_settings, configuration_protected_settings)
+        allowInsecureConnections = str(allowInsecureConnections).lower() == 'true'
+        if (not feSslCert or not sslKey) and not allowInsecureConnections:
+            raise InvalidArgumentValueError(
+                "Provide ssl certificate and key. "
+                "Otherwise explicitly allow insecure connection by specifying "
+                "'--configuration-settings allowInsecureConnections=true'")
+
+        feIsInternalLoadBalancer = _get_value_from_config_protected_config(
+            'scoringFe.serviceType.internalLoadBalancer', configuration_settings, configuration_protected_settings)
+        feIsInternalLoadBalancer = str(feIsInternalLoadBalancer).lower() == 'true'
+        if feIsInternalLoadBalancer:
+            logger.warn(
+                'Internal load balancer only supported on AKS and AKS Engine Clusters.')
 
     def __create_required_resource(
             self, cmd, configuration_settings, configuration_protected_settings, subscription_id, resource_group_name,

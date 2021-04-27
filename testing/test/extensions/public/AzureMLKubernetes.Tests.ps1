@@ -10,7 +10,7 @@ Describe 'AzureML Kubernetes Testing' {
     }
 
     It 'Creates the extension and checks that it onboards correctly' {
-        $output = az k8s-extension create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type connectedClusters --extension-type $extensionType --name $extensionName --release-train preview --config enableTraining=true
+        $output = az k8s-extension create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type connectedClusters --extension-type $extensionType --name $extensionName --release-train preview --config enableTraining=true allowInsecureConnections=true
         $? | Should -BeTrue
 
         $output = az k8s-extension show -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type connectedClusters --name $extensionName
