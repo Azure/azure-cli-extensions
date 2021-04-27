@@ -19,6 +19,7 @@ WEBPUBSUB_KEY_TYPE = ['primary', 'secondary']
 SKU_TYPE = ['Standard_S1', 'Free_F1']
 NETWORK_RULE_TYPE = []
 
+
 def load_arguments(self, _):
     from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
