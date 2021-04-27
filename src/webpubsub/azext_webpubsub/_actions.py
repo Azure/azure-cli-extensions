@@ -7,7 +7,7 @@
 import argparse
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from knack.log import get_logger
-from .vendored_sdks.azure.mgmt.webpubsub.models import EventHandlerTemplate
+from .vendored_sdks.azure_mgmt_webpubsub.models import EventHandlerTemplate
 
 logger = get_logger(__name__)
 

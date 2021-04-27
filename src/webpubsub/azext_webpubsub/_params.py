@@ -10,7 +10,7 @@ from azure.cli.core.commands.parameters import (
     get_three_state_flag,
     get_enum_type
 )
-from .vendored_sdks.azure.mgmt.webpubsub.models import WebPubSubRequestType
+from .vendored_sdks.azure_mgmt_webpubsub.models import WebPubSubRequestType
 from ._actions import (
     EventHandlerTemplateUpdateAction
 )

@@ -5,7 +5,7 @@
 # pylint: disable=line-too-long
 
 import json
-from .vendored_sdks.azure.mgmt.webpubsub.models import (
+from .vendored_sdks.azure_mgmt_webpubsub.models import (
     WebPubSubResource,
     EventHandlerSettings
 )

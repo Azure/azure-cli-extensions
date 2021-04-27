@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from .vendored_sdks.azure.mgmt.webpubsub.models import (
+from .vendored_sdks.azure_mgmt_webpubsub.models import (
     RegenerateKeyParameters
 )
 

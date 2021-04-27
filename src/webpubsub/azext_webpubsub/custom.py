@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from .vendored_sdks.azure.mgmt.webpubsub.models import (
+from .vendored_sdks.azure_mgmt_webpubsub.models import (
     ResourceSku,
     WebPubSubResource
 )

@@ -6,7 +6,7 @@
 
 def _webpubsub_client_factory(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from .vendored_sdks.azure.mgmt.webpubsub import WebPubSubManagementClient
+    from .vendored_sdks.azure_mgmt_webpubsub import WebPubSubManagementClient
     return get_mgmt_service_client(cli_ctx, WebPubSubManagementClient)
 
 
