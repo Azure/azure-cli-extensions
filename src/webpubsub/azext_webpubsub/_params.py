@@ -31,7 +31,7 @@ def load_arguments(self, _):
         c.argument('webpubsub_name', webpubsub_name_type, options_list=['--name', '-n'])
 
     with self.argument_context('webpubsub create') as c:
-        c.argument('sku', help='The sku name of the signalr service. E.g. Standard_S1, Free_F1')
+        c.argument('sku', arg_type=get_enum_type(SKU_TYPE), help='The sku name of the signalr service.')
         c.argument('unit_count', help='The number of signalr service unit count', type=int)
 
     with self.argument_context('webpubsub update') as c:
