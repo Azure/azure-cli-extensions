@@ -1537,7 +1537,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not tags and \
        not windows_admin_password and \
        not enable_local_accounts and \
-       not disable_local_accounts :
+       not disable_local_accounts:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
