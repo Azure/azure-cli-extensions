@@ -165,7 +165,9 @@ class AzureMLKubernetes(PartnerExtensionModel):
             self.ENABLE_INFERENCE, configuration_settings, configuration_protected_settings)
         enable_inference = str(enable_inference).lower() == 'true'
 
-        if not (enable_training or enable_inference):
+        if enable_inference:
+            logger.warn("The installed AzureML extension for AML inference is experimental and not covered by customer support. Please use with discretion.")
+        elif not (enable_training or enable_inference):
             raise InvalidArgumentValueError(
                 "Please create Microsoft.AzureML.Kubernetes extension instance either "
                 "for Machine Learning training or inference by specifying "
