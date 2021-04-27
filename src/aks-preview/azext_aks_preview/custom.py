@@ -1535,7 +1535,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not enable_secret_rotation and \
        not disable_secret_rotation and \
        not tags and \
-       not windows_admin_password:
+       not windows_admin_password and \
+       not enable_local_accounts and \
+       not disable_local_accounts :
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1562,7 +1564,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--enable-secret-rotation" or '
                        '"--disable-secret-rotation" or '
                        '"--tags" or '
-                       '"--windows-admin-password"')
+                       '"--windows-admin-password" or '
+                       '"--enable-local-accounts" or '
+                       '"--disable-local-accounts"')
 
     instance = client.get(resource_group_name, name)
 
