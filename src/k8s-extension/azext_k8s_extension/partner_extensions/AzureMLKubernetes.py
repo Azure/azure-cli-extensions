@@ -153,8 +153,8 @@ class AzureMLKubernetes(PartnerExtensionModel):
         dup_keys = set(config_keys) & set(config_protected_keys)
         if len(dup_keys) > 0:
             for key in dup_keys:
-                logger.warn(
-                    f'Duplicate keys found in both configuration settings and configuration protected setttings: {key}')
+                logger.warning(
+                    'Duplicate keys found in both configuration settings and configuration protected setttings: %s', key)
             raise InvalidArgumentValueError("Duplicate keys found.")
 
         enable_training = _get_value_from_config_protected_config(
@@ -166,7 +166,7 @@ class AzureMLKubernetes(PartnerExtensionModel):
         enable_inference = str(enable_inference).lower() == 'true'
 
         if enable_inference:
-            logger.warn("The installed AzureML extension for AML inference is experimental and not covered by customer support. Please use with discretion.")
+            logger.warning("The installed AzureML extension for AML inference is experimental and not covered by customer support. Please use with discretion.")
         elif not (enable_training or enable_inference):
             raise InvalidArgumentValueError(
                 "Please create Microsoft.AzureML.Kubernetes extension instance either "
@@ -206,7 +206,7 @@ class AzureMLKubernetes(PartnerExtensionModel):
             'scoringFe.serviceType.internalLoadBalancer', configuration_settings, configuration_protected_settings)
         feIsInternalLoadBalancer = str(feIsInternalLoadBalancer).lower() == 'true'
         if feIsInternalLoadBalancer:
-            logger.warn(
+            logger.warning(
                 'Internal load balancer only supported on AKS and AKS Engine Clusters.')
 
     def __create_required_resource(
