@@ -115,7 +115,7 @@ stages:
           scriptType: pscore
           scriptLocation: inlineScript
           inlineScript: |
-            .\Test.ps1 -CI -ExtensionType Public -OnlyPublicTests
+            .\Test.ps1 -CI -ExtensionType Public -OnlyPublicTests -Type k8s-extension
           workingDirectory: $(TEST_PATH)
         continueOnError: true
         condition: and(succeeded(), eq(variables['IS_PRIVATE_BRANCH'], 'False'))
@@ -127,7 +127,7 @@ stages:
           scriptType: pscore
           scriptLocation: inlineScript
           inlineScript: |
-            .\Test.ps1 -CI -ExtensionType Public
+            .\Test.ps1 -CI -ExtensionType Public -Type k8s-extension
           workingDirectory: $(TEST_PATH)
         continueOnError: true
         condition: and(succeeded(), eq(variables['IS_PRIVATE_BRANCH'], 'True'))

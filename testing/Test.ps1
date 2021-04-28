@@ -6,7 +6,11 @@ param (
 
     [Parameter(Mandatory=$True)]
     [ValidateSet('Public','Private')]
-    [string]$ExtensionType
+    [string]$ExtensionType,
+
+    [Parameter(Mandatory=$True)]
+    [ValidateSet('k8s-extension','k8s-configuration')]
+    [string]$Type
 )
 
 # Disable confirm prompt for script
@@ -18,7 +22,7 @@ az account set --subscription $ENVCONFIG.subscriptionId
 
 $Env:KUBECONFIG="$PSScriptRoot/tmp/KUBECONFIG"
 
-if ($Type -eq 'Extension') {
+if ($Type -eq 'k8s-extension') {
     if ($ExtensionType -eq "Public") {
         $k8sExtensionVersion = $ENVCONFIG.extensionVersion.'k8s-extension'
         $Env:K8sExtensionName = "k8s-extension"
@@ -55,7 +59,7 @@ if ($Type -eq 'Extension') {
     }
 }
 
-if ($Type -eq 'Configuration') {
+if ($Type -eq 'k8s-configuration') {
     $k8sConfigurationVersion = $ENVCONFIG.extensionVersion.'k8s-configuration'
     if (!$SkipInstall) {
         Write-Host "Removing the old k8s-configuration extension..."
