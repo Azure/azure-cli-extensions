@@ -81,8 +81,8 @@ def execute_query(client, graph_query, first, skip, subscriptions, include):
                 # Otherwise, response.data is a dict like: ['rows':[], 'columns': [[r1,r2..],[r1,r2]]]
                 data = []
                 for r in response.data['rows']:
-                    ret = map(lambda a,b: {a['name']: b or {}}, response.data['columns'], r)
-                    ret = reduce(lambda a,b: {**a, **b}, list(ret))
+                    ret = map(lambda a, b: {a['name']: b or {}}, response.data['columns'], r)
+                    ret = reduce(lambda a, b: {**a, **b}, list(ret))
                     data.append(ret)
                 results.extend(data)
 
