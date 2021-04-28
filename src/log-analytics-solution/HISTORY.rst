@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.2
+++++++
+* GA log-analytics-solution extension
+
 0.1.1
 +++++++++++++++
 * deprecate --plan-publisher, --name, --plan-product and add --solution-type for create

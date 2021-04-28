@@ -18,7 +18,7 @@ def load_command_table(self, _):
         client_factory=cf_solutions)
 
     with self.command_group('monitor log-analytics solution', log_analytics_solution_solutions,
-                            client_factory=cf_solutions, is_experimental=True) as g:
+                            client_factory=cf_solutions) as g:
         g.custom_command('create', 'create_monitor_log_analytics_solution', supports_no_wait=True)
         g.custom_command('update', 'update_monitor_log_analytics_solution', supports_no_wait=True)
         g.custom_command('delete', 'delete_monitor_log_analytics_solution', supports_no_wait=True, confirmation=True)
