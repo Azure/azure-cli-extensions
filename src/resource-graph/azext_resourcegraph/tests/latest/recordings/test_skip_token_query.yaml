@@ -29,8 +29,8 @@ interactions:
       "2145a411-d149-4010-84d4-40fe8a55db44", "ac6bcfb5-3dc1-491f-95a6-646b89bf3e88",
       "687abe80-e1f1-4262-bb51-2f4a83d163ae", "b73008f1-9052-46bd-9c73-0d7128ac181c",
       "00c06639-6ee4-454e-8058-8d8b1703bd87", "e78961ba-36fe-4739-9212-e3031b4c8db7"],
-      "query": "where where", "options": {"$top": 100, "$skip": 0, "resultFormat":
-      "objectArray", "allowPartialScopes": false}}'
+      "query": "project id", "options": {"$skipToken": "ew0KICAiJGlkIjogIjEiLA0KICAiTWF4Um93cyI6IDMsDQogICJSb3dzVG9Ta2lwIjogNSwNCiAgIkt1c3RvQ2x1c3RlclVybCI6ICJodHRwczovL2FyZy13dXMyLXRocmVlLXNmLmFyZy5jb3JlLndpbmRvd3MubmV0Ig0KfQ==",
+      "resultFormat": "objectArray", "allowPartialScopes": false}}'
     headers:
       Accept:
       - application/json
@@ -41,31 +41,27 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2461'
+      - '2625'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -q
+      - -q --skip-token
       User-Agent:
       - AZURECLI/2.21.0 azsdk-python-mgmt-resourcegraph/8.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: POST
     uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
   response:
     body:
-      string: "{\"error\":{\"code\":\"BadRequest\",\"message\":\"Please provide below
-        info when asking for support: timestamp = 2021-04-01T08:01:45.5776189Z, correlationId
-        = 361761ad-d830-46c9-9f1a-9cf001653d41.\",\"details\":[{\"code\":\"InvalidQuery\",\"message\":\"Query
-        is invalid. Please refer to the documentation for the Azure Resource Graph
-        service and fix the error before retrying.\"},{\"code\":\"ParserFailure\",\"message\":\"ParserFailure\",\"line\":1,\"characterPositionInLine\":11,\"token\":\"<EOF>\",\"expectedToken\":\"\u01CF\"}]}}"
+      string: '{"totalRecords":2876,"count":3,"data":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AmirMGTests/providers/Microsoft.ServiceBus/namespaces/test44561234567"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AmirMGTests/providers/Microsoft.Storage/storageAccounts/mgtests"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/AzSecPackAutoConfigRG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/AzSecPackAutoConfigUA-westus"}],"facets":[],"resultTruncated":"false","$skipToken":"ew0KICAiJGlkIjogIjEiLA0KICAiTWF4Um93cyI6IDMsDQogICJSb3dzVG9Ta2lwIjogOCwNCiAgIkt1c3RvQ2x1c3RlclVybCI6ICJodHRwczovL2FyZy13dXMyLXRocmVlLXNmLmFyZy5jb3JlLndpbmRvd3MubmV0Ig0KfQ=="}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '488'
+      - '738'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 01 Apr 2021 08:01:45 GMT
+      - Thu, 01 Apr 2021 08:01:44 GMT
       expires:
       - '-1'
       pragma:
@@ -74,15 +70,19 @@ interactions:
       - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-tenant-resource-requests:
-      - '12'
+      - '14'
       x-ms-user-quota-remaining:
-      - '12'
+      - '14'
       x-ms-user-quota-resets-after:
       - 00:00:05
     status:
-      code: 400
-      message: Bad Request
+      code: 200
+      message: OK
 version: 1
