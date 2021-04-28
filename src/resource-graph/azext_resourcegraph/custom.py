@@ -24,11 +24,8 @@ from .vendored_sdks.resourcegraph import ResourceGraphClient
 from .vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions, QueryResponse, ResultFormat, ErrorResponse, Error
 
-__ROWS_PER_PAGE = 1000
 __SUBSCRIPTION_LIMIT = 1000
 __MANAGEMENT_GROUP_LIMIT = 10
-__FIRST = 100
-__SKIP = 0
 __logger = get_logger(__name__)
 
 
@@ -56,17 +53,9 @@ def execute_query(client, graph_query, first, skip, subscriptions, management_gr
                               "https://aka.ms/arg-error-toomanysubs".format(__SUBSCRIPTION_LIMIT)
             __logger.warning(warning_message)
 
-    results = []
+    response = None
     try:
         result_truncated = False
-
-        if first is not None:
-            first = min(first, __ROWS_PER_PAGE)
-        elif skip_token is None:
-            first = __FIRST
-
-        if skip is None and skip_token is None:
-            skip = __SKIP
 
         request_options = QueryRequestOptions(
             top=first,
@@ -85,24 +74,19 @@ def execute_query(client, graph_query, first, skip, subscriptions, management_gr
         if response.result_truncated == ResultTruncated.true:
             result_truncated = True
 
-        results.extend(response.data)
-
-        if hasattr(response, 'skip_token'):
-            skip_token = response.skip_token
-
-        if result_truncated and len(results) < first:
+        if result_truncated and first is not None and len(response.data) < first:
             __logger.warning("Unable to paginate the results of the query. "
                              "Some resources may be missing from the results. "
                              "To rewrite the query and enable paging, "
                              "see the docs for an example: https://aka.ms/arg-results-truncated")
 
     except HttpResponseError as ex:
-        raise CLIError(json.dumps(_to_dict(ex.model.error), indent=4))
+        if ex.model.error.code == 'BadRequest':
+            raise BadRequestError(json.dumps(_to_dict(ex.model.error), indent=4))
 
-    result_dict = dict()
-    result_dict['data'] = results
-    result_dict['skip_token'] = skip_token
-    return result_dict
+        raise AzureInternalError(json.dumps(_to_dict(ex.model.error), indent=4))
+
+    return response
 
 
 def _get_cached_subscriptions():
