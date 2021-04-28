@@ -9,8 +9,10 @@ import json
 import os
 from collections import OrderedDict
 from datetime import datetime, timedelta
+from functools import reduce
 
 import requests
+from azure.core.exceptions import HttpResponseError as ErrorResponseException
 from azure.cli.core._config import GLOBAL_CONFIG_DIR
 from azure.cli.core._profile import Profile
 from azure.cli.core._session import SESSION
@@ -20,8 +22,12 @@ from knack.util import todict, CLIError, ensure_dir
 from azext_resourcegraph.resource_graph_enums import IncludeOptionsEnum
 from azext_resourcegraph.vendored_sdks.resourcegraph.models import ResultTruncated
 from .vendored_sdks.resourcegraph import ResourceGraphClient
-from .vendored_sdks.resourcegraph.models import \
-    QueryRequest, QueryRequestOptions, QueryResponse, ResultFormat, ErrorResponseException, ErrorResponse
+from .vendored_sdks.resourcegraph.models import (
+    QueryRequest,
+    QueryRequestOptions,
+    QueryResponse,
+    ErrorResponse
+)
 
 __ROWS_PER_PAGE = 1000
 __CACHE_FILE_NAME = ".azgraphcache"
@@ -60,8 +66,7 @@ def execute_query(client, graph_query, first, skip, subscriptions, include):
             request_options = QueryRequestOptions(
                 top=min(first - len(results), __ROWS_PER_PAGE),
                 skip=skip + len(results),
-                skip_token=skip_token,
-                result_format=ResultFormat.object_array
+                skip_token=skip_token
             )
 
             request = QueryRequest(query=full_query, subscriptions=subs_list, options=request_options)
@@ -70,7 +75,16 @@ def execute_query(client, graph_query, first, skip, subscriptions, include):
                 result_truncated = True
 
             skip_token = response.skip_token
-            results.extend(response.data)
+            if isinstance(response.data, list):
+                results.extend(response.data)
+            else:
+                # Otherwise, response.data is a dict like: ['rows':[], 'columns': [[r1,r2..],[r1,r2]]]
+                data = []
+                for r in response.data['rows']:
+                    ret = map(lambda a,b: {a['name']: b or {}}, response.data['columns'], r)
+                    ret = reduce(lambda a,b: {**a, **b}, list(ret))
+                    data.append(ret)
+                results.extend(data)
 
             if len(results) >= first or skip_token is None:
                 break
@@ -82,7 +96,7 @@ def execute_query(client, graph_query, first, skip, subscriptions, include):
                              "see the docs for an example: https://aka.ms/arg-results-truncated")
 
     except ErrorResponseException as ex:
-        raise CLIError(json.dumps(_to_dict(ex.error), indent=4))
+        raise CLIError(json.dumps(_to_dict(ex.model), indent=4))
 
     return results
 

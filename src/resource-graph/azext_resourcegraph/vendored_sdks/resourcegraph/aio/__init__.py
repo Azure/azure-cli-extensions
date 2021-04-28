@@ -6,12 +6,5 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._resource_graph_client_operations import ResourceGraphClientOperationsMixin
-from ._operations import Operations
-from ._graph_query_operations import GraphQueryOperations
-
-__all__ = [
-    'ResourceGraphClientOperationsMixin',
-    'Operations',
-    'GraphQueryOperations',
-]
+from ._resource_graph_client import ResourceGraphClient
+__all__ = ['ResourceGraphClient']
