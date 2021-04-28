@@ -16,8 +16,9 @@ from azure.cli.core._profile import Profile
 from azure.cli.core._session import SESSION
 from azure.core.exceptions import HttpResponseError
 from azure.mgmt.core.exceptions import ARMErrorFormat
+from azure.cli.core.azclierror import BadRequestError, AzureInternalError
 from knack.log import get_logger
-from knack.util import todict, CLIError, ensure_dir
+from knack.util import todict
 
 from azext_resourcegraph.vendored_sdks.resourcegraph.models import ResultTruncated
 from .vendored_sdks.resourcegraph import ResourceGraphClient
@@ -82,11 +83,17 @@ def execute_query(client, graph_query, first, skip, subscriptions, management_gr
 
     except HttpResponseError as ex:
         if ex.model.error.code == 'BadRequest':
-            raise BadRequestError(json.dumps(_to_dict(ex.model.error), indent=4))
+            raise BadRequestError(json.dumps(_to_dict(ex.model.error), indent=4)) from ex
 
-        raise AzureInternalError(json.dumps(_to_dict(ex.model.error), indent=4))
+        raise AzureInternalError(json.dumps(_to_dict(ex.model.error), indent=4)) from ex
 
-    return response
+    result_dict = dict()
+    result_dict['data'] = response.data
+    result_dict['count'] = response.count
+    result_dict['total_records'] = response.total_records
+    result_dict['skip_token'] = response.skip_token
+
+    return result_dict
 
 
 def _get_cached_subscriptions():

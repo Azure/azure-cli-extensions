@@ -5,9 +5,11 @@
 
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
+
 __ROWS_PER_PAGE = 1000
 __FIRST = 100
 __SKIP = 0
+
 
 def validate_query_args(namespace):
     if namespace.first and not 1 <= namespace.first <= 1000:
@@ -20,9 +22,9 @@ def validate_query_args(namespace):
         error_msg = 'Both --subscriptions and --management-groups cannot be passed together at the same time.'
         recommendation = 'Try to pass --subscriptions param only or --management-groups param only.'
         raise InvalidArgumentValueError(error_msg, recommendation)
-    
+
     if namespace.first is not None:
-        namespace.first = min(first, __ROWS_PER_PAGE)
+        namespace.first = min(namespace.first, __ROWS_PER_PAGE)
     elif namespace.skip_token is None:
         namespace.first = __FIRST
 

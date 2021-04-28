@@ -17,12 +17,14 @@ class ResourceGraphTests(ScenarioTest):
         response = self.cmd(command).get_output_in_json()
 
         self.assertIsInstance(response, dict)
-        self.assertTrue(len(response) == 2)  # first element is data, second element is skip_token (or None)
+        self.assertTrue(len(response) == 4)  # first element is data, second element is skip_token (or None)
 
         data = response['data']
         skip_token = response['skip_token']
         self.assertTrue(data is not None)
         self.assertTrue(skip_token is None)
+        self.assertTrue(response['count'] == 2)
+        self.assertTrue(response['total_records'] == 2)
 
         self.assertIsInstance(data, list)
         self.assertTrue(len(data[0]) == 4)  # resourceGroup is auto-added after output
@@ -44,7 +46,7 @@ class ResourceGraphTests(ScenarioTest):
         response = self.cmd(command).get_output_in_json()
 
         self.assertIsInstance(response, dict)
-        self.assertTrue(len(response) == 2)  # first element is data, second element is skip_token (or None)
+        self.assertTrue(len(response) == 4)  # first element is data, second element is skip_token (or None)
 
         data = response['data']
         skip_token = response['skip_token']
@@ -74,7 +76,7 @@ class ResourceGraphTests(ScenarioTest):
         response = self.cmd(command).get_output_in_json()
 
         self.assertIsInstance(response, dict)
-        self.assertTrue(len(response) == 2)  # first element is data, second element is skip_token (or None)
+        self.assertTrue(len(response) == 4)  # first element is data, second element is skip_token (or None)
 
         data = response['data']
         skip_token = response['skip_token']
@@ -100,11 +102,11 @@ class ResourceGraphTests(ScenarioTest):
         self.assertTrue("management" in data[1]['type'])
 
     def test_skip_token_query(self):
-        command = 'az graph query -q "project id" --skip-token ew0KICAiJGlkIjogIjEiLA0KICAiTWF4Um93cyI6IDMsDQogICJSb3dzVG9Ta2lwIjogNSwNCiAgIkt1c3RvQ2x1c3RlclVybCI6ICJodHRwczovL2FyZy13dXMyLXRocmVlLXNmLmFyZy5jb3JlLndpbmRvd3MubmV0Ig0KfQ=='
+        command = 'az graph query -q "project id" --skip-token ew0KICAiJGlkIjogIjEiLA0KICAiTWF4Um93cyI6IDMsDQogICJSb3dzVG9Ta2lwIjogNSwNCiAgIkt1c3RvQ2x1c3RlclVybCI6ICJodHRwczovL2FyZy13ZXUtZm91ci1zZi5hcmcuY29yZS53aW5kb3dzLm5ldCINCn0='
         response = self.cmd(command).get_output_in_json()
 
         self.assertIsInstance(response, dict)
-        self.assertTrue(len(response) == 2)  # first element is data, second element is skip_token (or None)
+        self.assertTrue(len(response) == 4)  # first element is data, second element is skip_token (or None)
 
         data = response['data']
         skip_token = response['skip_token']
