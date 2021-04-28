@@ -77,6 +77,9 @@ class OperationsScenarioTest(ScenarioTest):
                          self.check('plan.product', 'OMSGallery/Containers'),
                          self.check('tags', {'key2': 'value2'})])
 
+        self.cmd('az monitor log-analytics solution list --query "value[?name==\'{solution_name}\']"',
+                 checks=[self.check('length([])', 1)])
+
         self.kwargs['workspace_name2'] = self.create_random_name('workspace', 20)
         self.cmd('resource create -g {rg2} -n {workspace_name2} -l {loc} --resource-type '
                  'Microsoft.OperationalInsights/workspaces -p @"{la_prop_path}"').get_output_in_json()
@@ -88,9 +91,6 @@ class OperationsScenarioTest(ScenarioTest):
                  '--workspace "{workspace_name2}" '
                  '--tags key3=value3',
                  checks=[self.check('name', '{solution_name2}')])
-
-        self.cmd('az monitor log-analytics solution list --query "value[?name==\'{solution_name}\']"',
-                 checks=[self.check('length([])', 1)])
 
         self.cmd('az monitor log-analytics solution list --resource-group {rg2} '
                  '--query "value[?name==\'{solution_name2}\']" ',
