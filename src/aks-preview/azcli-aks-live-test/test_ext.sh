@@ -24,7 +24,7 @@ source azEnv/bin/activate
 # Ensure that the command index is updated by calling a specific command in aks-preview, so that all the commands defined in aks-preview are loaded correctly
 # Otherwise, cold boot execution of azdev test may use the api version adopted by the acs command group in azure-cli (which may diverge from the api version used in current aks-preview)
 retry_count=0
-while ! az aks command invoke --help --debug && [[ $retry_count < 3 ]]
+while ! az aks command invoke --help && [[ $retry_count < 3 ]]
 do
     retry_count=`expr $retry_count + 1`
     echo $retry_count"th retry to install aks-preview..." 
@@ -49,7 +49,6 @@ if [[ $TEST_MODE == "record" || $TEST_MODE == "all" ]]; then
     run_flags+=" --json-report-file=ext_report.json"
     echo "run flags: ${run_flags}"
     echo ${run_flags} | xargs python -u az_aks_tool/main.py 
-    # azdev test aks-preview --no-exitfirst --xml-path ext_test.xml --discover -a "-n $PARALLELISM --json-report --json-report-file=ext_report.json --reruns 3 --capture=sys"
 fi
 
 if [[ $TEST_MODE == "live" || $TEST_MODE == "all" ]]; then
@@ -60,9 +59,4 @@ if [[ $TEST_MODE == "live" || $TEST_MODE == "all" ]]; then
     run_flags+=" -l --json-report-file=ext_live_report.json"
     echo "run flags: ${run_flags}"
     echo ${run_flags} | xargs python -u az_aks_tool/main.py 
-    # if [[ $TEST_DIFF == true && $BUILD_REASON == "PullRequest" ]]; then
-    #     azdev test aks-preview --live --no-exitfirst --repo=azure-cli-extensions/ --src=HEAD --tgt=origin/$SYSTEM_PULLREQUEST_TARGETBRANCH --cli-ci --xml-path ext_live_test.xml --discover -a "-n $PARALLELISM --json-report --json-report-file=ext_live_report.json --reruns 3 --capture=sys"
-    # else
-    #     azdev test aks-preview --live --no-exitfirst --xml-path ext_live_test.xml --discover -a "-n $PARALLELISM --json-report --json-report-file=ext_live_report.json --reruns 3 --capture=sys"
-    # fi
 fi

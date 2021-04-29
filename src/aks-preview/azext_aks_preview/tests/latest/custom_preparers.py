@@ -1,11 +1,18 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 import os
 from datetime import datetime
 
-from azure.cli.testsdk import ResourceGroupPreparer, CliTestError
+from azure.cli.testsdk import CliTestError
+from azure.cli.testsdk.preparers import NoTrafficRecordingPreparer
+from azure_devtools.scenario_tests import SingleValueReplacer
 from azure.cli.testsdk.reverse_dependency import get_dummy_cli
 
 
-class AKSCustomResourceGroupPreparer(ResourceGroupPreparer):
+class AKSCustomResourceGroupPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
     def __init__(self, name_prefix='clitest.rg',
                  parameter_name='resource_group',
                  parameter_name_for_location='resource_group_location', location='westus',
