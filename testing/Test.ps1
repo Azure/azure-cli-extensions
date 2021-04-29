@@ -5,10 +5,6 @@ param (
     [switch] $OnlyPublicTests,
 
     [Parameter(Mandatory=$True)]
-    [ValidateSet('Public','Private')]
-    [string]$ExtensionType,
-
-    [Parameter(Mandatory=$True)]
     [ValidateSet('k8s-extension','k8s-configuration', 'k8s-extension-private')]
     [string]$Type
 )
