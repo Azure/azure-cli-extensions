@@ -8,7 +8,7 @@
 
 from codecs import open
 from setuptools import setup, find_packages
-import azext_k8s_extension._consts as consts
+
 try:
     from azure_bdist_wheel import cmdclass
 except ImportError:
@@ -32,14 +32,16 @@ CLASSIFIERS = [
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = []
 
+VERSION = "0.3.0"
+
 with open('README.rst', 'r', encoding='utf-8') as f:
     README = f.read()
 with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name=consts.EXTENSION_NAME,
-    version=consts.VERSION,
+    name="k8s-extension",
+    version=VERSION,
     description='Microsoft Azure Command-Line Tools K8s-extension Extension',
     # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
