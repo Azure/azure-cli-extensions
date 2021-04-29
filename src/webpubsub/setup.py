@@ -34,7 +34,7 @@ CLASSIFIERS = [
 
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
-    'websockets'，
+    'websockets',
     'azure.messaging.webpubsubservice'
 ]
 

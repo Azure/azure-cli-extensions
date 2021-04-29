@@ -31,6 +31,7 @@ event <event-name> <message>        : Send event to event handler
         while True:
             print(await ws.recv())
 
+
 def start_client(client, resource_group_name, webpubsub_name, hub_name):
     keys = client.list_keys(resource_group_name, webpubsub_name)
     connection_string = keys.primary_connection_string
@@ -67,7 +68,7 @@ class Publisher(threading.Thread):
                 payload = json.dumps({
                     'type': 'joinGroup',
                     'group': group,
-                    'ackId' : self._get_ack_id()
+                    'ackId': self._get_ack_id()
                 })
                 await self.ws.send(payload)
 
@@ -76,7 +77,7 @@ class Publisher(threading.Thread):
                 payload = json.dumps({
                     'type': 'leaveGroup',
                     'group': group,
-                    'ackId' : self._get_ack_id()
+                    'ackId': self._get_ack_id()
                 })
                 await self.ws.send(payload)
 
@@ -88,7 +89,7 @@ class Publisher(threading.Thread):
                     'type': 'sendToGroup',
                     'group': group,
                     'data': data,
-                    'ackId' : self._get_ack_id()
+                    'ackId': self._get_ack_id()
                 })
                 await self.ws.send(payload)
 

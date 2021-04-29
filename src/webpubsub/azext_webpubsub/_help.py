@@ -186,7 +186,7 @@ helps['webpubsub event-handler hub update'] = """
 
 helps['webpubsub client start'] = """
     type: command
-    short-summary: Start a interactive client connection. 
+    short-summary: Start a interactive client connection.
 """
 
 helps['webpubsub service broadcast'] = """
