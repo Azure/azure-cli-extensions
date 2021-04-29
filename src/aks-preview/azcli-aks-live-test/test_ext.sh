@@ -35,10 +35,21 @@ do
     source azEnv/bin/activate
 done
 
+# prepare run flags
+run_flags="-em ext_matrix_default.json --no-exitfirst --discover --json-report-path ./ --reruns 3 --capture=sys"
+if [ $PARALLELISM -ge 2 ]; then
+    run_flags+=" -n $PARALLELISM"
+else
+    run_flags+=" -s"
+fi
+
 # test ext
 if [[ $TEST_MODE == "record" || $TEST_MODE == "all" ]]; then
     echo "Test in record mode!"
-    azdev test aks-preview --no-exitfirst --xml-path ext_test.xml --discover -a "-n $PARALLELISM --json-report --json-report-file=ext_report.json --reruns 3 --capture=sys"
+    run_flags+=" --json-report-file=ext_report.json"
+    echo "run flags: ${run_flags}"
+    echo ${run_flags} | xargs python -u az-aks-tool/main.py 
+    # azdev test aks-preview --no-exitfirst --xml-path ext_test.xml --discover -a "-n $PARALLELISM --json-report --json-report-file=ext_report.json --reruns 3 --capture=sys"
 fi
 
 if [[ $TEST_MODE == "live" || $TEST_MODE == "all" ]]; then
@@ -46,9 +57,12 @@ if [[ $TEST_MODE == "live" || $TEST_MODE == "all" ]]; then
     az login --service-principal -u $AZCLI_ALT_CLIENT_ID -p $AZCLI_ALT_CLIENT_SECRET -t $TENANT_ID
     az account set -s $AZCLI_ALT_SUBSCRIPTION_ID
     az account show
-    if [[ $TEST_DIFF == true && $BUILD_REASON == "PullRequest" ]]; then
-        azdev test aks-preview --live --no-exitfirst --repo=azure-cli-extensions/ --src=HEAD --tgt=origin/$SYSTEM_PULLREQUEST_TARGETBRANCH --cli-ci --xml-path ext_live_test.xml --discover -a "-n $PARALLELISM --json-report --json-report-file=ext_live_report.json --reruns 3 --capture=sys"
-    else
-        azdev test aks-preview --live --no-exitfirst --xml-path ext_live_test.xml --discover -a "-n $PARALLELISM --json-report --json-report-file=ext_live_report.json --reruns 3 --capture=sys"
-    fi
+    run_flags+=" -l --json-report-file=ext_live_report.json"
+    echo "run flags: ${run_flags}"
+    echo ${run_flags} | xargs python -u az-aks-tool/main.py 
+    # if [[ $TEST_DIFF == true && $BUILD_REASON == "PullRequest" ]]; then
+    #     azdev test aks-preview --live --no-exitfirst --repo=azure-cli-extensions/ --src=HEAD --tgt=origin/$SYSTEM_PULLREQUEST_TARGETBRANCH --cli-ci --xml-path ext_live_test.xml --discover -a "-n $PARALLELISM --json-report --json-report-file=ext_live_report.json --reruns 3 --capture=sys"
+    # else
+    #     azdev test aks-preview --live --no-exitfirst --xml-path ext_live_test.xml --discover -a "-n $PARALLELISM --json-report --json-report-file=ext_live_report.json --reruns 3 --capture=sys"
+    # fi
 fi
