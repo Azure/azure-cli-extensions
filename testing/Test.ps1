@@ -62,7 +62,7 @@ if ($Type -eq 'k8s-extension') {
         Write-Host "Removing the old k8s-configuration extension..."
         az extension remove -n k8s-configuration
         Write-Host "Installing k8s-configuration version $k8sConfigurationVersion..."
-        az extension add --source ./extensions/k8s_configuration-$k8sConfigurationVersion-py3-none-any.whl
+        az extension add --source ./bin/k8s_configuration-$k8sConfigurationVersion-py3-none-any.whl
     }
     $testFilePath = "$PSScriptRoot/test/configurations"
 }
