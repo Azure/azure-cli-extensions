@@ -34,8 +34,8 @@ CLASSIFIERS = [
 
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
-    'websockets',
-    'azure.messaging.webpubsubservice'
+    'websockets~=8.1',
+    'azure.messaging.webpubsubservice~=1.0.0b1'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
