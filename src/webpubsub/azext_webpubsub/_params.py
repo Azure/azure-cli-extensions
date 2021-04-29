@@ -17,7 +17,7 @@ from ._actions import (
 
 WEBPUBSUB_KEY_TYPE = ['primary', 'secondary']
 SKU_TYPE = ['Standard_S1', 'Free_F1']
-NETWORK_RULE_TYPE = []
+PERMISSION_TYPE = ['joinLeaveGroup', 'sendToGroup']
 
 
 def load_arguments(self, _):
@@ -56,3 +56,38 @@ def load_arguments(self, _):
 
     with self.argument_context('webpubsub event-handler hub update') as c:
         c.argument('template', action=EventHandlerTemplateUpdateAction, nargs='+', help='Template item for event handler settings. Use key=value pattern to set properties. Supported keys are "url-template", "user-event-pattern", "system-event-pattern".')
+
+    with self.argument_context('webpubsub client') as c:
+        c.argument('hub_name', help='The hub which client connects to')
+
+    with self.argument_context('webpubsub service') as c:
+        c.argument('hub_name', help='The hub to manage.')
+
+    for scope in ['webpubsub service broadcast', 'webpubsub service connection send', 'webpubsub service group send', 'webpubsub service user send']:
+        with self.argument_context(scope) as c:
+            c.argument('payload', help='A string payload to send.')
+
+    for scope in ['webpubsub service connection',
+                  'webpubsub service group add-connection',
+                  'webpubsub service group remove-connection',
+                  'webpubsub service permission grant',
+                  'webpubsub service permission revoke',
+                  'webpubsub service permission check']:
+        with self.argument_context(scope) as c:
+            c.argument('connection_id', help='The connection id.')
+
+    for scope in ['webpubsub service group',
+                  'webpubsub service permission grant',
+                  'webpubsub service permission revoke',
+                  'webpubsub service permission check']:
+        with self.argument_context(scope) as c:
+            c.argument('group_name', help='The group name.')
+
+    for scope in ['webpubsub service group add-user',
+                  'webpubsub service group remove-user',
+                  'webpubsub service user']:
+        with self.argument_context(scope) as c:
+            c.argument('user_id', help='The user id.')
+
+    with self.argument_context('webpubsub service permission') as c:
+        c.argument('permission', arg_type=get_enum_type(PERMISSION_TYPE), help='The permission')
