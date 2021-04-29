@@ -1,7 +1,8 @@
 import os
 from datetime import datetime
 
-from azure.cli.testsdk import ResourceGroupPreparer, CliTestError, get_dummy_cli
+from azure.cli.testsdk import ResourceGroupPreparer, CliTestError
+from azure.cli.testsdk.reverse_dependency import get_dummy_cli
 
 
 class AKSCustomResourceGroupPreparer(ResourceGroupPreparer):
