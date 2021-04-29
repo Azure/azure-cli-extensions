@@ -19,8 +19,8 @@ export AZURE_CORE_COLLECT_TELEMETRY=False
 sleep 360
 
 output=$(az extension list-available --query [].name -otsv)
-# azure-cli-iot-ext is the deprecated old versions of the renamed azure-iot extension
-blocklist=("azure-cli-iot-ext")
+# azure-cli-ml is replaced by ml
+blocklist=("azure-cli-ml")
 
 rm -f ~/.azure/extCmdTreeToUpload.json
 
