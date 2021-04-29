@@ -7,8 +7,8 @@ import unittest
 import os
 from .recording_processors import KeyReplacer
 
-from azure.cli.testsdk import (
-    ResourceGroupPreparer, RoleBasedServicePrincipalPreparer, ScenarioTest, live_only)
+from .custom_preparers import AKSCustomResourceGroupPreparer
+from azure.cli.testsdk import (RoleBasedServicePrincipalPreparer, ScenarioTest, live_only)
 from azure_devtools.scenario_tests import AllowLargeResponse
 
 
@@ -45,7 +45,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
     @live_only()
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_and_update_with_managed_aad(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -78,7 +78,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
     @live_only()
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='canadacentral')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='canadacentral')
     def test_aks_create_aadv1_and_update_with_managed_aad(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -120,7 +120,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
     @live_only()
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='canadacentral')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='canadacentral')
     def test_aks_create_nonaad_and_update_with_managed_aad(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -152,7 +152,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
     @live_only()
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_and_update_with_managed_aad_enable_azure_rbac(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -185,7 +185,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_ingress_appgw_addon(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -203,7 +203,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_ingress_appgw_addon_with_deprecated_subet_prefix(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -222,7 +222,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @live_only()
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_byo_subnet_with_ingress_appgw_addon(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         vnet_name = self.create_random_name('cliakstest', 16)
@@ -274,7 +274,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @live_only()
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_byo_appgw_with_ingress_appgw_addon(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         vnet_name = self.create_random_name('cliakstest', 16)
@@ -345,7 +345,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         })
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_openservicemesh_addon(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -361,7 +361,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_enable_addon_with_openservicemesh(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -382,7 +382,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_disable_addon_openservicemesh(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -405,7 +405,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_azurekeyvaultsecretsprovider_addon(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -430,7 +430,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_addon_with_azurekeyvaultsecretsprovider_with_secret_rotation(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -455,7 +455,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_enable_addon_with_azurekeyvaultsecretsprovider(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -503,7 +503,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_update_azurekeyvaultsecretsprovider_with_secret_rotation(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -546,7 +546,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_confcom_addon(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -564,7 +564,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_confcom_addon_helper_enabled(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -582,7 +582,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_enable_addons_confcom_addon(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -606,7 +606,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_disable_addons_confcom_addon(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -632,7 +632,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @live_only()
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_virtual_node_addon(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         vnet_name = self.create_random_name('cliakstest', 16)
@@ -686,7 +686,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @live_only()
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_stop_and_start(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -706,7 +706,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(start_cmd)
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_managed_disk(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -723,7 +723,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_ephemeral_disk(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -741,7 +741,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_nodepool_get_upgrades(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         node_pool_name = self.create_random_name('c', 6)
@@ -776,7 +776,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_upgrade_node_image_only_cluster(self, resource_group, resource_group_location):
         # kwargs for string formatting
         aks_name = self.create_random_name('cliakstest', 16)
@@ -807,7 +807,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_upgrade_node_image_only_nodepool(self, resource_group, resource_group_location):
         # kwargs for string formatting
         aks_name = self.create_random_name('cliakstest', 16)
@@ -844,7 +844,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_windows(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
@@ -893,7 +893,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus2euap')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus2euap')
     def test_aks_create_with_fips(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
@@ -927,7 +927,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_ahub(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
@@ -978,7 +978,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @live_only()
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westeurope')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westeurope')
     def test_aks_update_to_msi_cluster(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -1003,7 +1003,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @live_only()  # without live only fails with need az login
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
     def test_aks_create_with_gitops_addon(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -1019,7 +1019,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @live_only()  # without live only fails with need az login
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
     def test_aks_enable_addon_with_gitops(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -1041,7 +1041,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @live_only()  # without live only fails with need az login
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus')
     def test_aks_disable_addon_gitops(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -1064,7 +1064,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @live_only()
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westeurope')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westeurope')
     def test_aks_update_to_msi_cluster_with_addons(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -1088,7 +1088,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_auto_upgrade_channel(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -1117,7 +1117,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_node_config(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -1150,7 +1150,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_none_private_dns_zone(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
@@ -1178,7 +1178,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @live_only()
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_fqdn_subdomain(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
@@ -1241,7 +1241,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_pod_identity_enabled(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -1322,7 +1322,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_using_azurecni_with_pod_identity_enabled(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -1404,7 +1404,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     # for this case we cannot use recording to capture the fixture, therefore we need to mark it as live_only
     @live_only()
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_pod_identity_usage(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         identity_name = self.create_random_name('id', 6)
@@ -1494,7 +1494,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_update_with_windows_password(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
@@ -1540,7 +1540,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @live_only()
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_custom_kubelet_identity(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         control_plane_identity_name = self.create_random_name('cliakstest', 16)

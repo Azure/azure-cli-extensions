@@ -12,23 +12,31 @@ echo "AZCLI_ALT_CLIENT_SECRET=$MAPPED_AZCLI_ALT_CLIENT_SECRET" >> env.list
 # azdev env
 echo "AZURE_CLI_TEST_DEV_SP_NAME=$AZCLI_ALT_CLIENT_ID" >> env.list
 echo "AZURE_CLI_TEST_DEV_SP_PASSWORD=$MAPPED_AZCLI_ALT_CLIENT_SECRET" >> env.list
+echo "AZURE_CLI_TEST_DEV_RESOURCE_GROUP_LOCATION=$TEST_LOCATION" >> env.list
 
 # predefined variables 
 echo "BUILD_REASON=$BUILD_REASON" >> env.list
 echo "SYSTEM_PULLREQUEST_TARGETBRANCH=$SYSTEM_PULLREQUEST_TARGETBRANCH" >> env.list
 
-# variables
-echo "PYTHON_VERSION=$PYTHON_VERSION" >> env.list
+# test
 echo "COVERAGE=$COVERAGE" >> env.list
 echo "TEST_MODE=$TEST_MODE" >> env.list
 echo "PARALLELISM=$PARALLELISM" >> env.list
+echo "TEST_CASES=$TEST_CASES" >> env.list
+
+# repo
 echo "CLI_REPO=$CLI_REPO" >> env.list
 echo "CLI_BRANCH=$CLI_BRANCH" >> env.list
 echo "MANUAL_EXT=$MANUAL_EXT" >> env.list
 echo "EXT_REPO=$EXT_REPO" >> env.list
 echo "EXT_BRANCH=$EXT_BRANCH" >> env.list
+
+# image
 echo "BUILD_IMAGE=$BUILD_IMAGE" >> env.list
 echo "IMAGE_PREFIX=$IMAGE_PREFIX" >> env.list
 echo "IMAGE_NAME=$IMAGE_NAME" >> env.list
+echo "IMAGE_SUFFIX=$IMAGE_SUFFIX" >> env.list
 echo "IMAGE_TAG=$IMAGE_TAG" >> env.list
-echo "TEST_DIFF=$TEST_DIFF" >> env.list
+
+# misc
+echo "PYTHON_VERSION=$PYTHON_VERSION" >> env.list

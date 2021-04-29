@@ -1,6 +1,7 @@
 import argparse
 import glob
 import os
+import sys
 from azdev.operations.testtool import _discover_module_tests, run_tests
 from azdev.utilities import EXTENSION_PREFIX, get_path_table, get_name_index
 
@@ -101,20 +102,16 @@ def get_ext_filted_test_cases(ext_test_cases, ext_exclude_test_cases):
 
 
 def main():
+    print("args: {}".format(sys.argv))
     args = init_argparse()
-
-    import sys
-    print(sys.argv)
-    print(args)
-    print(os.getcwd())
 
     # test cases
     test_cases = args.tests
     ext_matrix_file_path = args.ext_matrix
     cli_matrix_file_path = args.cli_matrix
     if not test_cases and not check_file_existence(ext_matrix_file_path) and not check_file_existence(cli_matrix_file_path):
-        print("At least one of 'tests', 'cli_matrix' and 'ext_matrix' must be provided!")
-        exit(-1)
+        sys.exit(
+            "At least one of 'tests', 'cli_matrix' and 'ext_matrix' must be provided!")
 
     # report file
     report_file_full_path = os.path.realpath(os.path.join(

@@ -48,7 +48,7 @@ if [[ $TEST_MODE == "record" || $TEST_MODE == "all" ]]; then
     echo "Test in record mode!"
     run_flags+=" --json-report-file=ext_report.json"
     echo "run flags: ${run_flags}"
-    echo ${run_flags} | xargs python -u az-aks-tool/main.py 
+    echo ${run_flags} | xargs python -u az_aks_tool/main.py 
     # azdev test aks-preview --no-exitfirst --xml-path ext_test.xml --discover -a "-n $PARALLELISM --json-report --json-report-file=ext_report.json --reruns 3 --capture=sys"
 fi
 
@@ -59,7 +59,7 @@ if [[ $TEST_MODE == "live" || $TEST_MODE == "all" ]]; then
     az account show
     run_flags+=" -l --json-report-file=ext_live_report.json"
     echo "run flags: ${run_flags}"
-    echo ${run_flags} | xargs python -u az-aks-tool/main.py 
+    echo ${run_flags} | xargs python -u az_aks_tool/main.py 
     # if [[ $TEST_DIFF == true && $BUILD_REASON == "PullRequest" ]]; then
     #     azdev test aks-preview --live --no-exitfirst --repo=azure-cli-extensions/ --src=HEAD --tgt=origin/$SYSTEM_PULLREQUEST_TARGETBRANCH --cli-ci --xml-path ext_live_test.xml --discover -a "-n $PARALLELISM --json-report --json-report-file=ext_live_report.json --reruns 3 --capture=sys"
     # else

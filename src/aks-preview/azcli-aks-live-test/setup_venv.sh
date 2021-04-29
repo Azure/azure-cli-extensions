@@ -11,7 +11,8 @@ rm -rf azEnv || true
 python$PYTHON_VERSION -m venv azEnv
 source azEnv/bin/activate
 python -m pip install -U pip
-pip install azdev
+# fixed azdev version to avoid call failure in az_aks_tool
+pip install azdev==0.1.32
 pip install pytest-json-report pytest-rerunfailures --upgrade
 # pip install pytest-html --upgrade
 
