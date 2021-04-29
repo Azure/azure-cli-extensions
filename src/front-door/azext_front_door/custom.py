@@ -13,6 +13,9 @@ from azure.cli.core.util import sdk_no_wait
 
 from knack.log import get_logger
 
+from azext_front_door.vendored_sdks.models import (RulesEngine, CheckNameAvailabilityInput, PurgeParameters,
+                                                   ValidateCustomDomainInput)
+
 from ._client_factory import (cf_frontdoor, cf_waf_policies, cf_waf_managed_rules,
                               cf_fd_frontend_endpoints, cf_fd_rules_engines)
 
@@ -54,7 +57,7 @@ def _upsert_frontdoor_subresource(cmd, resource_group_name, front_door_name, col
         logger.warning("Item '%s' already exists. Replacing with new values.", item_name)
         collection.remove(match)
     collection.append(obj_to_add)
-    result = client.create_or_update(resource_group_name, front_door_name, frontdoor).result()
+    result = client.begin_create_or_update(resource_group_name, front_door_name, frontdoor).result()
     collection = getattr(result, collection_name)
     item = next(x for x in collection if getattr(x, key_name) == item_name)
     return item
@@ -104,9 +107,11 @@ def delete_frontdoor_resource_property_entry(resource, prop):
         with UpdateContext(item) as c:
             c.update_param(prop, keep_items, False)
         if no_wait:
-            sdk_no_wait(no_wait, client.create_or_update, resource_group_name, resource_name, item)
+            sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, resource_name, item)
         else:
-            result = sdk_no_wait(no_wait, client.create_or_update, resource_group_name, resource_name, item).result()
+            result = sdk_no_wait(no_wait,
+                                 client.begin_create_or_update,
+                                 resource_group_name, resource_name, item).result()
             if next((x for x in getattr(result, prop) if x.name.lower() == item_name.lower()), None):
                 from knack.util import CLIError
                 raise CLIError("Failed to delete '{}' on '{}'".format(item_name, resource_name))
@@ -226,7 +231,7 @@ def create_front_door(cmd, resource_group_name, front_door_name, backend_address
         backend_pools_settings=BackendPoolsSettings(enforce_certificate_name_check=enforce_certificate_name_check,
                                                     send_recv_timeout_seconds=send_recv_timeout)
     )
-    return sdk_no_wait(no_wait, cf_frontdoor(cmd.cli_ctx, None).create_or_update,
+    return sdk_no_wait(no_wait, cf_frontdoor(cmd.cli_ctx, None).begin_create_or_update,
                        resource_group_name, front_door_name, front_door)
 
 
@@ -247,8 +252,34 @@ def list_front_doors(cmd, resource_group_name=None):
     return client.list()
 
 
+def purge_endpoint(client,
+                   resource_group_name,
+                   front_door_name,
+                   content_paths):
+    """Removes a content from Front Door.
+    """
+
+    purge_paramter = PurgeParameters(content_paths=content_paths)
+    return client.begin_purge_content(resource_group_name, front_door_name, purge_paramter)
+
+
 def check_front_door_name_availability(client, name, resource_type):
-    return client.check(name, resource_type)
+    availability_input = CheckNameAvailabilityInput(name=name, type=resource_type)
+    return client.check(availability_input)
+
+
+def validate_custom_domain(client,
+                           resource_group_name,
+                           front_door_name,
+                           host_name):
+    """Validates the custom domain mapping to ensure it maps to the correct Front Door endpoint in DNS.
+
+    :param host_name: Required. The host name of the custom domain. Must be a domain name.
+    :type host_name: str
+    """
+
+    validate_input = ValidateCustomDomainInput(host_name=host_name)
+    return client.validate_custom_domain(resource_group_name, front_door_name, validate_input)
 
 
 def list_fd_frontend_endpoints(cmd, resource_group_name, resource_name):
@@ -288,22 +319,23 @@ def create_fd_frontend_endpoints(cmd, resource_group_name, front_door_name, item
 
 
 def configure_fd_frontend_endpoint_disable_https(cmd, resource_group_name, front_door_name, item_name):
-    return cf_fd_frontend_endpoints(cmd.cli_ctx, None).disable_https(resource_group_name, front_door_name,
-                                                                     item_name)
+    return sdk_no_wait(True, cf_fd_frontend_endpoints(cmd.cli_ctx, None).begin_disable_https,
+                       resource_group_name, front_door_name,
+                       item_name)
 
 
 def configure_fd_frontend_endpoint_enable_https(cmd, resource_group_name, front_door_name, item_name,
                                                 secret_name=None, secret_version=None,
                                                 certificate_source='FrontDoor', vault_id=None,
                                                 minimum_tls_version='1.2'):
-    keyvault_usage = ('usage error: --certificate-source AzureKeyVault --vault-id ID '
-                      '--secret-name NAME --secret-version VERSION')
+    from knack.util import CLIError
     if certificate_source != 'AzureKeyVault' and any([vault_id, secret_name, secret_version]):
-        from knack.util import CLIError
-        raise CLIError(keyvault_usage)
-    if certificate_source == 'AzureKeyVault' and not all([vault_id, secret_name, secret_version]):
-        from knack.util import CLIError
-        raise CLIError(keyvault_usage)
+        raise CLIError("usage error: no need to specify --vault-id, --secret-name and --secret-version "
+                       "for Front Door managed certificate source.")
+
+    if certificate_source == 'AzureKeyVault' and not all([vault_id, secret_name]):
+        raise CLIError("usage error: at least --vault-id and --secret-name are rquired for "
+                       "Azure Key Vault certificate source.")
 
     # if not being disabled, then must be enabled
     if certificate_source == 'FrontDoor':
@@ -328,8 +360,12 @@ def configure_fd_frontend_endpoint_https_frontdoor(cmd, resource_group_name, fro
         certificate_type="Dedicated",
         minimum_tls_version=minimum_tls_version
     )
-    cf_fd_frontend_endpoints(cmd.cli_ctx, None).enable_https(resource_group_name, front_door_name,
-                                                             item_name, config)
+
+    sdk_no_wait(True,
+                cf_fd_frontend_endpoints(cmd.cli_ctx, None).begin_enable_https,
+                resource_group_name, front_door_name,
+                item_name, config)
+
     return get_fd_frontend_endpoints(cmd, resource_group_name, front_door_name, item_name)
 
 
@@ -345,8 +381,12 @@ def configure_fd_frontend_endpoint_https_keyvault(cmd, resource_group_name, fron
         certificate_type=None,
         minimum_tls_version=minimum_tls_version
     )
-    cf_fd_frontend_endpoints(cmd.cli_ctx, None).enable_https(resource_group_name, front_door_name,
-                                                             item_name, config)
+
+    sdk_no_wait(True,
+                cf_fd_frontend_endpoints(cmd.cli_ctx, None).begin_enable_https,
+                resource_group_name, front_door_name,
+                item_name, config)
+
     return get_fd_frontend_endpoints(cmd, resource_group_name, front_door_name, item_name)
 
 
@@ -410,7 +450,7 @@ def add_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name,
         raise CLIError("Backend pool '{}' could not be found on frontdoor '{}'".format(
             backend_pool_name, front_door_name))
     backend_pool.backends.append(backend)
-    client.create_or_update(resource_group_name, front_door_name, frontdoor).result()
+    client.begin_create_or_update(resource_group_name, front_door_name, frontdoor).result()
     return backend
 
 
@@ -442,7 +482,7 @@ def remove_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_na
             raise CLIError('invalid index. Index can range from 1 to {}'.format(len(backend_pool.backends)))
     except IndexError:
         raise CLIError('invalid index. Index can range from 1 to {}'.format(len(backend_pool.backends)))
-    client.create_or_update(resource_group_name, front_door_name, frontdoor).result()
+    client.begin_create_or_update(resource_group_name, front_door_name, frontdoor).result()
 
 
 def create_fd_health_probe_settings(cmd, resource_group_name, front_door_name, item_name, probe_path, probe_interval,
@@ -481,7 +521,7 @@ def update_fd_health_probe_settings(cmd, resource_group_name, front_door_name, i
     if enabled:
         probe_setting.enabled_state = enabled
 
-    client.create_or_update(resource_group_name, front_door_name, frontdoor).result()
+    client.begin_create_or_update(resource_group_name, front_door_name, frontdoor).result()
     return probe_setting
 
 
@@ -670,7 +710,7 @@ def create_waf_policy(cmd, resource_group_name, policy_name,
         custom_rules=CustomRuleList(rules=[]),
         managed_rules=ManagedRuleSetList(rule_sets=[])
     )
-    return client.create_or_update(resource_group_name, policy_name, policy)
+    return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
 def update_waf_policy(instance, tags=None, mode=None, redirect_url=None,
@@ -714,7 +754,7 @@ def add_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_t
         if not found:
             policy_rule_sets.append(rule_set)
 
-    return client.create_or_update(resource_group_name, policy_name, policy)
+    return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
 def list_azure_managed_rule_set(cmd, resource_group_name, policy_name):
@@ -730,7 +770,7 @@ def remove_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_se
     policy.managed_rules.managed_rule_sets = [x for x in policy.managed_rules.managed_rule_sets
                                               if x.rule_set_type.upper() != rule_set_type.upper()]
 
-    return client.create_or_update(resource_group_name, policy_name, policy)
+    return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
 def add_override_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
@@ -773,7 +813,7 @@ def add_override_azure_managed_rule_set(cmd, resource_group_name, policy_name, r
     if not setRule:
         from knack.util import CLIError
         raise CLIError("type '{}' not found".format(rule_set_type))
-    return client.create_or_update(resource_group_name, policy_name, policy)
+    return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
 def remove_override_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
@@ -803,7 +843,7 @@ def remove_override_azure_managed_rule_set(cmd, resource_group_name, policy_name
     if not removedRule:
         from knack.util import CLIError
         raise CLIError("rule '{}' not found".format(rule_id))
-    return client.create_or_update(resource_group_name, policy_name, policy)
+    return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
 def list_override_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type):
@@ -891,7 +931,7 @@ def add_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, 
                            .format(rule_id, rule_group_id, rule_set_type))
         raise CLIError("group {} within type '{}' not found".format(rule_group_id, rule_set_type))
 
-    return client.create_or_update(resource_group_name, policy_name, policy)
+    return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
 def remove_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
@@ -947,7 +987,7 @@ def remove_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_nam
                 exclusion.selector_match_operator == operator and exclusion.selector == value):
             del exclusions[i]
 
-    return client.create_or_update(resource_group_name, policy_name, policy)
+    return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
 def list_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, rule_set_type,
@@ -1028,7 +1068,7 @@ def create_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name, prio
         enabled_state='Enabled' if not disabled else 'Disabled'
     )
     policy.custom_rules.rules.append(rule)
-    return cached_put(cmd, client.create_or_update, policy, resource_group_name, policy_name).result()
+    return cached_put(cmd, client.begin_create_or_update, policy, resource_group_name, policy_name).result()
 
 
 def update_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name, priority=None, action=None,
@@ -1051,14 +1091,14 @@ def update_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name, prio
         from knack.util import CLIError
         raise CLIError("rule '{}' not found".format(rule_name))
 
-    return cached_put(cmd, client.create_or_update, policy, resource_group_name, policy_name).result()
+    return cached_put(cmd, client.begin_create_or_update, policy, resource_group_name, policy_name).result()
 
 
 def delete_wp_custom_rule(cmd, resource_group_name, policy_name, rule_name):
     client = cf_waf_policies(cmd.cli_ctx, None)
     policy = client.get(resource_group_name, policy_name)
     policy.custom_rules.rules = [x for x in policy.custom_rules.rules if x.name.lower() != rule_name.lower()]
-    return client.create_or_update(resource_group_name, policy_name, policy)
+    return client.begin_create_or_update(resource_group_name, policy_name, policy)
 
 
 def list_wp_custom_rules(cmd, resource_group_name, policy_name):
@@ -1097,7 +1137,7 @@ def remove_custom_rule_match_condition(cmd, resource_group_name, policy_name, ru
         from knack.util import CLIError
         raise CLIError("rule '{}' not found".format(rule_name))
 
-    return cached_put(cmd, client.create_or_update, policy, resource_group_name, policy_name).result()
+    return cached_put(cmd, client.begin_create_or_update, policy, resource_group_name, policy_name).result()
 
 
 def add_custom_rule_match_condition(cmd, resource_group_name, policy_name, rule_name,
@@ -1130,7 +1170,7 @@ def add_custom_rule_match_condition(cmd, resource_group_name, policy_name, rule_
         from knack.util import CLIError
         raise CLIError("rule '{}' not found".format(rule_name))
 
-    return cached_put(cmd, client.create_or_update, policy, resource_group_name, policy_name).result()
+    return cached_put(cmd, client.begin_create_or_update, policy, resource_group_name, policy_name).result()
 
 
 def list_custom_rule_match_conditions(cmd, resource_group_name, policy_name, rule_name):
@@ -1155,9 +1195,11 @@ def create_rules_engine_rule(cmd, resource_group_name, front_door_name, rules_en
                              header_value=None, match_variable=None, operator=None, match_values=None,
                              selector=None, negate_condition=None, transforms=None,
                              match_processing_behavior=None):
-    from azext_front_door.vendored_sdks.models import (ErrorResponseException, RulesEngineRule,
+    from azext_front_door.vendored_sdks.models import (RulesEngineRule,
                                                        RulesEngineAction, HeaderAction,
                                                        RulesEngineMatchCondition)
+    from azure.core.exceptions import (ResourceNotFoundError)
+
     client = cf_fd_rules_engines(cmd.cli_ctx, None)
 
     match_conditions = []
@@ -1197,14 +1239,14 @@ def create_rules_engine_rule(cmd, resource_group_name, front_door_name, rules_en
         rules_engine = client.get(resource_group_name, front_door_name, rules_engine_name)
         rules_engine.rules.append(rule)
         rules_list = rules_engine.rules
-    except ErrorResponseException as e:
-        if e.response.status_code == 404:
-            rules_list = [rule]
-        else:
-            # If the error isn't a 404, rethrow it.
-            raise e
+    except ResourceNotFoundError:
+        rules_list = [rule]
 
-    return client.create_or_update(resource_group_name, front_door_name, rules_engine_name, rules_list)
+    rules_engine_parameters = RulesEngine(rules=rules_list)
+    return client.begin_create_or_update(resource_group_name,
+                                         front_door_name,
+                                         rules_engine_name,
+                                         rules_engine_parameters)
 
 
 def delete_rules_engine_rule(cmd, resource_group_name, front_door_name, rules_engine_name, rule_name):
@@ -1215,7 +1257,11 @@ def delete_rules_engine_rule(cmd, resource_group_name, front_door_name, rules_en
         from knack.util import CLIError
         raise CLIError("Rules Engine must at least contain one rule")
 
-    return client.create_or_update(resource_group_name, front_door_name, rules_engine_name, rules=rules_engine.rules)
+    rules_engine_parameters = RulesEngine(rules=rules_engine.rules)
+    return client.begin_create_or_update(resource_group_name,
+                                         front_door_name,
+                                         rules_engine_name,
+                                         rules_engine_parameters)
 
 
 def show_rules_engine_rule(cmd, resource_group_name, front_door_name, rules_engine_name, rule_name):
@@ -1253,7 +1299,11 @@ def update_rules_engine_rule(cmd, resource_group_name, front_door_name,
         from knack.util import CLIError
         raise CLIError("rule '{}' not found".format(rule_name))
 
-    return client.create_or_update(resource_group_name, front_door_name, rules_engine_name, rules=rules_engine.rules)
+    rules_engine_parameters = RulesEngine(rules=rules_engine.rules)
+    return client.begin_create_or_update(resource_group_name,
+                                         front_door_name,
+                                         rules_engine_name,
+                                         rules_engine_parameters)
 
 
 def add_rules_engine_condition(cmd, resource_group_name, front_door_name, rules_engine_name,
@@ -1281,7 +1331,11 @@ def add_rules_engine_condition(cmd, resource_group_name, front_door_name, rules_
         from knack.util import CLIError
         raise CLIError("rule '{}' not found".format(rule_name))
 
-    return client.create_or_update(resource_group_name, front_door_name, rules_engine_name, rules=rules_engine.rules)
+    rules_engine_parameters = RulesEngine(rules=rules_engine.rules)
+    return client.begin_create_or_update(resource_group_name,
+                                         front_door_name,
+                                         rules_engine_name,
+                                         rules_engine_parameters)
 
 
 def remove_rules_engine_condition(cmd, resource_group_name,
@@ -1305,7 +1359,11 @@ def remove_rules_engine_condition(cmd, resource_group_name,
         from knack.util import CLIError
         raise CLIError("rule '{}' not found".format(rule_name))
 
-    return client.create_or_update(resource_group_name, front_door_name, rules_engine_name, rules=rules_engine.rules)
+    rules_engine_parameters = RulesEngine(rules=rules_engine.rules)
+    return client.begin_create_or_update(resource_group_name,
+                                         front_door_name,
+                                         rules_engine_name,
+                                         rules_engine_parameters)
 
 
 def list_rules_engine_condition(cmd, resource_group_name,
@@ -1388,7 +1446,11 @@ def add_rules_engine_action(cmd, resource_group_name, front_door_name, rules_eng
         from knack.util import CLIError
         raise CLIError("rule '{}' not found".format(rule_name))
 
-    return client.create_or_update(resource_group_name, front_door_name, rules_engine_name, rules=rules_engine.rules)
+    rules_engine_parameters = RulesEngine(rules=rules_engine.rules)
+    return client.begin_create_or_update(resource_group_name,
+                                         front_door_name,
+                                         rules_engine_name,
+                                         rules_engine_parameters)
 
 
 def remove_rules_engine_action(cmd, resource_group_name, front_door_name, rules_engine_name,
@@ -1431,7 +1493,11 @@ def remove_rules_engine_action(cmd, resource_group_name, front_door_name, rules_
         from knack.util import CLIError
         raise CLIError("rule '{}' not found".format(rule_name))
 
-    return client.create_or_update(resource_group_name, front_door_name, rules_engine_name, rules=rules_engine.rules)
+    rules_engine_parameters = RulesEngine(rules=rules_engine.rules)
+    return client.begin_create_or_update(resource_group_name,
+                                         front_door_name,
+                                         rules_engine_name,
+                                         rules_engine_parameters)
 
 
 def list_rules_engine_action(cmd, resource_group_name,

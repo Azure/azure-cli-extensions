@@ -81,7 +81,7 @@ helps['aks create'] = """
           short-summary: User account password to use on windows node VMs.
           long-summary: |-
             Rules for windows-admin-password:
-                - Minimum-length: 8 characters
+                - Minimum-length: 14 characters
                 - Max-length: 123 characters
                 - Complexity requirements: 3 out of 4 conditions below need to be fulfilled
                   * Has lower characters
@@ -213,6 +213,9 @@ helps['aks create'] = """
         - name: --ppg
           type: string
           short-summary: The ID of a PPG.
+        - name: --enable-fips-image
+          type: bool
+          short-summary: Use FIPS-enabled OS on agent nodes.
         - name: --workspace-resource-id
           type: string
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
@@ -265,7 +268,10 @@ helps['aks create'] = """
           short-summary: Using managed identity to manage cluster resource group. Default value is true, you can explicitly specify "--client-id" and "--secret" to disable managed identity.
         - name: --assign-identity
           type: string
-          short-summary: (PREVIEW) Specify an existing user assigned identity to manage cluster resource group.
+          short-summary: Specify an existing user assigned identity to manage cluster resource group.
+        - name: --assign-kubelet-identity
+          type: string
+          short-summary: Specify an existing user assigned identity for kubelet's usage, which is typically used to pull image from ACR.
         - name: --api-server-authorized-ip-ranges
           type: string
           short-summary: Comma seperated list of authorized apiserver IP ranges. Set to 0.0.0.0/32 to restrict apiserver traffic to node pools.
@@ -359,6 +365,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --tags "foo=bar" "baz=qux"
         - name: Create a kubernetes cluster with EncryptionAtHost enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-encryption-at-host
+        - name: Create a kubernetes cluster with custom control plane identity and kubelet identity.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --assign-identity <control-plane-identity-resource-id> --assign-kubelet-identity <kubelet-identity-resource-id>
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -500,6 +508,20 @@ helps['aks update'] = """
         - name: --tags
           type: string
           short-summary: The tags of the managed cluster. The managed cluster instance and all resources managed by the cloud provider will be tagged.
+        - name: --windows-admin-password
+          type: string
+          short-summary: User account password to use on windows node VMs.
+          long-summary: |-
+            Rules for windows-admin-password:
+                - Minimum-length: 14 characters
+                - Max-length: 123 characters
+                - Complexity requirements: 3 out of 4 conditions below need to be fulfilled
+                  * Has lower characters
+                  * Has upper characters
+                  * Has a digit
+                  * Has a special character (Regex match [\\W_])
+                - Disallowed values:  "abc@123", "P@$$w0rd", "P@ssw0rd", "P@ssword123", "Pa$$word", "pass@word1", "Password!", "Password1", "Password22", "iloveyou!"
+            Reference: https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.management.compute.models.virtualmachinescalesetosprofile.adminpassword?view=azure-dotnet
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -543,6 +565,8 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-pod-identity
       - name: Update the tags of a kubernetes cluster
         text: az aks update -g MyResourceGroup -n MyManagedCLuster --tags "foo=bar" "baz=qux"
+      - name: Update Windows password of a kubernetes cluster
+        text: az aks update -g MyResourceGroup -n MyManagedCLuster --windows-admin-password "Repl@cePassw0rd12345678"
 """
 
 helps['aks kollect'] = """
@@ -596,6 +620,32 @@ helps['aks kollect'] = """
 helps['aks kanalyze'] = """
     type: command
     short-summary: Display diagnostic results for the Kubernetes cluster after kollect is done.
+"""
+
+helps['aks command'] = """
+    type: group
+    short-summary: see detail usage in 'az aks command invoke', 'az aks command result'.
+"""
+
+helps['aks command invoke'] = """
+    type: command
+    short-summary: run a shell command (with kubectl, helm) on your aks cluster, support attaching files as well.
+    parameters:
+        - name: --command -c
+          type: string
+          short-summary: command or shell script you want run.
+        - name: --file -f
+          type: string
+          short-summary: files will be used by the command, use '.' to attach the current folder.
+"""
+
+helps['aks command result'] = """
+    type: command
+    short-summary: fetch result from previously triggered 'aks command invoke'.
+    parameters:
+        - name: --command-id -i
+          type: string
+          short-summary: commandId returned from 'aks command invoke'.
 """
 
 helps['aks maintenanceconfiguration'] = """
@@ -787,6 +837,9 @@ helps['aks nodepool add'] = """
         - name: --os-type
           type: string
           short-summary: The OS Type. Linux or Windows.
+        - name: --enable-fips-image
+          type: bool
+          short-summary: Use FIPS-enabled OS on agent nodes.
         - name: --enable-cluster-autoscaler -e
           type: bool
           short-summary: Enable cluster autoscaler.
@@ -987,6 +1040,15 @@ short-summary: Get the versions available for creating a managed Kubernetes clus
 examples:
   - name: Get the versions available for creating a managed Kubernetes cluster
     text: az aks get-versions --location westus2
+    crafted: true
+"""
+
+helps['aks get-os-options'] = """
+type: command
+short-summary: Get the OS options available for creating a managed Kubernetes cluster.
+examples:
+  - name: Get the OS options available for creating a managed Kubernetes cluster
+    text: az aks get-os-options --location westus2
     crafted: true
 """
 

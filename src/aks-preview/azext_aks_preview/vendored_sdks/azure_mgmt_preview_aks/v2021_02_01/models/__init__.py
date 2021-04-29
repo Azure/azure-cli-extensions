@@ -65,6 +65,8 @@ try:
     from ._models_py3 import PrivateLinkServiceConnectionState
     from ._models_py3 import Resource
     from ._models_py3 import ResourceReference
+    from ._models_py3 import RunCommandRequest
+    from ._models_py3 import RunCommandResult
     from ._models_py3 import SubResource
     from ._models_py3 import SysctlConfig
     from ._models_py3 import SystemData
@@ -128,6 +130,8 @@ except (SyntaxError, ImportError):
     from ._models import PrivateLinkServiceConnectionState
     from ._models import Resource
     from ._models import ResourceReference
+    from ._models import RunCommandRequest
+    from ._models import RunCommandResult
     from ._models import SubResource
     from ._models import SysctlConfig
     from ._models import SystemData
@@ -224,6 +228,8 @@ __all__ = [
     'PrivateLinkServiceConnectionState',
     'Resource',
     'ResourceReference',
+    'RunCommandRequest',
+    'RunCommandResult',
     'SubResource',
     'SysctlConfig',
     'SystemData',
