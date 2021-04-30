@@ -189,13 +189,13 @@ def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, p
 
     if custom_location:
         if not per_site_scaling:
-            raise ArgumentUsageError('Per Site Scaling must be true when using Custom Location')
+            raise ArgumentUsageError('Per Site Scaling must be true when using Custom Location. Please re-run with --per-site-scaling flag')
         if app_service_environment:
             raise ArgumentUsageError('App Service Environment is not supported with using Custom Location')
         if hyper_v:
             raise ArgumentUsageError('Hyper V is not supported with using Custom Location')
         if not is_linux:
-            raise ArgumentUsageError('Only Linux is supported with using Custom Location')
+            raise ArgumentUsageError('Only Linux is supported with using Custom Location. Please re-run with --is-linux flag.')
 
     return create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling, custom_location,
         app_service_environment, sku, number_of_workers, location, tags, no_wait)

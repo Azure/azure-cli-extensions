@@ -25,7 +25,8 @@ examples:
   - name: Create an app service plan for a kubernetes environment.
     text: >
         az appservice plan create -g MyResourceGroup -n MyPlan \\
-            --custom-location /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.ExtendedLocation/customLocations/<name> --sku ANY
+            --custom-location /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.ExtendedLocation/customLocations/<name> \\
+            --per-site-scaling --is-linux --sku ANY
 """
 
 helps['appservice plan update'] = """
