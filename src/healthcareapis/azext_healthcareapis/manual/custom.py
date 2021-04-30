@@ -4,7 +4,6 @@
 # license information.
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
-# pylint: disable=bare-except
 
 from azure.cli.core.util import sdk_no_wait
 
