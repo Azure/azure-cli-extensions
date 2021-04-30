@@ -159,11 +159,9 @@ def load_arguments(self, _):
 
     # App Service on Kubernetes Commands
     with self.argument_context('appservice kube create') as c:
-        c.argument('kube_name', arg_type=name_arg_type, help='Name of the kubernetes environment.')
+        c.argument('name', arg_type=name_arg_type, help='Name of the kubernetes environment.')
         c.argument('custom_location', options_list=['--custom-location', '-c'], help="ID of the custom location")
-        c.argument('internal_load_balancing', arg_type=get_three_state_flag(), help='Whether the Kube Environment is only visible within Vnet/Subnet.')
         c.argument('tags', arg_type=tags_type)
-        c.argument('aks', help='AKS name or resource ID')
         c.argument('static_ip', help='Static IP Address. This is required if an AKS resource ID is specified.')
         c.argument('no_wait', help='Do not wait for the create to complete, and return immediately after queuing the create.')
 

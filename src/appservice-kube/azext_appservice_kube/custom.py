@@ -96,25 +96,17 @@ logger = get_logger(__name__)
 
 # pylint: disable=too-many-locals,too-many-lines
 
-def create_kube_environment(cmd, client, kube_name, resource_group_name, custom_location, aks=None, static_ip=None,
-                              location=None, internal_load_balancing=False, tags=None, no_wait=False):
+def create_kube_environment(cmd, client, name, resource_group_name, custom_location, static_ip,
+                              location=None, tags=None, no_wait=False):
     KubeEnvironment, ExtendedLocation, ArcConfiguration, FrontEndConfiguration = cmd.get_models('KubeEnvironment',
         'ExtendedLocation', 'ArcConfiguration', 'FrontEndConfiguration')
 
     if not is_valid_resource_id(custom_location):
         raise CLIError('Invalid custom location')
 
-    if not internal_load_balancing and not static_ip:
-        raise CLIError('Usage error: --static-ip must be specified when not using --internal_load_balancing')
-
     parsed_custom_location = parse_resource_id(custom_location)
     if parsed_custom_location['resource_type'].lower() != 'customlocations':
         raise CLIError('Invalid custom location')
-
-    if aks is not None:
-        aks_id = validate_aks_id(cmd.cli_ctx, aks, resource_group_name)
-    else:
-        aks_id = None
 
     if not location:
         location = _get_location_from_resource_group(cmd.cli_ctx, parsed_custom_location['resource_group'])
@@ -123,17 +115,16 @@ def create_kube_environment(cmd, client, kube_name, resource_group_name, custom_
     arc_configuration = ArcConfiguration(
         artifacts_storage_type="NetworkFileSystem", artifact_storage_class_name="default", front_end_service_configuration=front_end_configuration)
     kube_environment = KubeEnvironment(
-        name=kube_name,
+        name=name,
         location=location,
         kind="null",
         tags=tags,
         plan=None,
         extended_location=extended_location,
         static_ip=static_ip,
-        aks_resource_id=aks_id,
         arc_configuration=arc_configuration)
 
-    return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name, name=kube_name, kube_environment_envelope=kube_environment)
+    return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name, name=name, kube_environment_envelope=kube_environment)
 
 
 def list_kube_environments(client, resource_group_name=None):

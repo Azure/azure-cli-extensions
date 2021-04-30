@@ -51,14 +51,9 @@ helps['appservice kube create'] = """
     type: command
     short-summary: Create a Kubernetes Environment.
     examples:
-    - name: Create Kubernetes Environment on existing AKS cluster in the same resource group.
+    - name: Create Kubernetes Environment
       text: |
-          az appservice kube create -n MyKubeEnvironment -g MyResourceGroup --aks MyAks --static-ip 0.0.0.0
-    - name: Create Kubernetes Environment with default values.
-      text: |
-          az appservice kube create -n MyKubeEnvironment -g MyResourceGroup \\
-              --client-id MyServicePrincipalClientId \\
-              --client-secret MyServicePrincipalClientSecret
+          az appservice kube create -n MyKubeEnvironment -g MyResourceGroup --static-ip 0.0.0.0
 """
 
 helps['appservice kube show'] = """
