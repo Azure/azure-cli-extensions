@@ -12,6 +12,7 @@ from azure.cli.testsdk import StorageAccountPreparer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 # Env setup
 @try_manual
 def setup(test, rg):
@@ -26,45 +27,43 @@ def step_healthcareapiscreateminimalparameters(test, rg):
              '--kind "fhir-Stu3" '
              '--location "{testingLocation}" ',
              checks=[
-                test.check("name", "{minimalParams}", case_sensitive=False),
-                test.check("location", "{testingLocation}", case_sensitive=False),
-                test.check("kind", "fhir-Stu3", case_sensitive=False),
-                test.check("properties.authenticationConfiguration.smartProxyEnabled", False),
-                test.check("properties.corsConfiguration.allowCredentials", False),
-                test.check("properties.cosmosDbConfiguration.offerThroughput", 1000),
-                test.check("properties.provisioningState", "Succeeded"),
-                test.check("properties.publicNetworkAccess", "Enabled", case_sensitive=False),
+                 test.check("name", "{minimalParams}", case_sensitive=False),
+                 test.check("location", "{testingLocation}", case_sensitive=False),
+                 test.check("kind", "fhir-Stu3", case_sensitive=False),
+                 test.check("properties.authenticationConfiguration.smartProxyEnabled", False),
+                 test.check("properties.corsConfiguration.allowCredentials", False),
+                 test.check("properties.cosmosDbConfiguration.offerThroughput", 1000),
+                 test.check("properties.provisioningState", "Succeeded"),
+                 test.check("properties.publicNetworkAccess", "Enabled", case_sensitive=False),
              ])
 
 
 @try_manual
 def step_healthcareapiscreatemaximumparameters(test, rg):
-    #Need to add keyvault key uri
-    #need to add access policies
     testFhir = test.cmd('az healthcareapis service create '
-             '--resource-group "{rg}" '
-             '--resource-name "{maximumParams}" '
-             '--identity-type "SystemAssigned" '
-             '--kind "{fhirr4}" '
-             '--location "{testingLocation}" '
-             '--authentication-configuration authority="https://login.microsoftonline.com/6c4a34fb-44bb-4cc7-bf56-9b4e264f1891" audience="https://{maximumParams}.azurehealthcareapis.com" smart-proxy-enabled=false '
-             '--cors-configuration allow-credentials=false headers="*" max-age=1440 methods="DELETE" methods="GET" methods="OPTIONS" methods="PATCH" methods="POST" methods="PUT" origins="*" '
-             '--cosmos-db-configuration offer-throughput=1500 '
-             '--export-configuration-storage-account-name "{sg}" '
-             '--public-network-access "Disabled" ',
-             checks=[
-                test.check("identity.type", "SystemAssigned", case_sensitive=False),
-                test.check("kind", "{fhirr4}"),
-                test.check("location", "{testingLocation}", case_sensitive=False),
-                test.check("name", "{maximumParams}", case_sensitive=False),
-                test.check("properties.authenticationConfiguration.smartProxyEnabled", False),
-                test.check("properties.corsConfiguration.allowCredentials", False),
-                test.check("properties.corsConfiguration.maxAge", 1440),
-                test.check("properties.cosmosDbConfiguration.offerThroughput", 1500),
-                test.check("properties.exportConfiguration.storageAccountName", "{sg}", case_sensitive=False),
-                test.check("properties.provisioningState", "Succeeded"),
-                test.check("properties.publicNetworkAccess", "Disabled", case_sensitive=False),
-             ]).get_output_in_json()
+                        '--resource-group "{rg}" '
+                        '--resource-name "{maximumParams}" '
+                        '--identity-type "SystemAssigned" '
+                        '--kind "{fhirr4}" '
+                        '--location "{testingLocation}" '
+                        '--authentication-configuration authority="https://login.microsoftonline.com/6c4a34fb-44bb-4cc7-bf56-9b4e264f1891" audience="https://{maximumParams}.azurehealthcareapis.com" smart-proxy-enabled=false '
+                        '--cors-configuration allow-credentials=false headers="*" max-age=1440 methods="DELETE" methods="GET" methods="OPTIONS" methods="PATCH" methods="POST" methods="PUT" origins="*" '
+                        '--cosmos-db-configuration offer-throughput=1500 '
+                        '--export-configuration-storage-account-name "{sg}" '
+                        '--public-network-access "Disabled" ',
+                        checks=[
+                            test.check("identity.type", "SystemAssigned", case_sensitive=False),
+                            test.check("kind", "{fhirr4}"),
+                            test.check("location", "{testingLocation}", case_sensitive=False),
+                            test.check("name", "{maximumParams}", case_sensitive=False),
+                            test.check("properties.authenticationConfiguration.smartProxyEnabled", False),
+                            test.check("properties.corsConfiguration.allowCredentials", False),
+                            test.check("properties.corsConfiguration.maxAge", 1440),
+                            test.check("properties.cosmosDbConfiguration.offerThroughput", 1500),
+                            test.check("properties.exportConfiguration.storageAccountName", "{sg}", case_sensitive=False),
+                            test.check("properties.provisioningState", "Succeeded"),
+                            test.check("properties.publicNetworkAccess", "Disabled", case_sensitive=False),
+                        ]).get_output_in_json()
 
     corsConfiguration = testFhir['properties']['corsConfiguration']
     assert len(corsConfiguration['headers']) == 1
@@ -84,25 +83,25 @@ def step_healthcareapiscreatemaximumparameters(test, rg):
 def step_healthcareapisupdatemaximumparameters(test, rg):
 
     testFhir = test.cmd('az healthcareapis service create '
-             '--resource-group "{rg}" '
-             '--resource-name "{maximumParams}" '
-             '--identity-type "None" '
-             '--kind "{fhirr4}" '
-             '--location "{testingLocation}" ',
-             checks=[
-                test.check("identity.type", "None", case_sensitive=False),
-                test.check("kind", "{fhirr4}"),
-                test.check("location", "{testingLocation}", case_sensitive=False),
-                test.check("name", "{maximumParams}", case_sensitive=False),
-                test.check("properties.authenticationConfiguration.smartProxyEnabled", False),
-                test.check("properties.corsConfiguration.allowCredentials", False),
-                test.check("properties.corsConfiguration.maxAge", None),
-                test.check("properties.cosmosDbConfiguration.offerThroughput", 1000),
-                test.check("properties.exportConfiguration.storageAccountName", None),
-                test.check("properties.provisioningState", "Succeeded"),
-                test.check("properties.publicNetworkAccess", "Enabled", case_sensitive=False),
-                test.check("properties.secondaryLocations", None),
-             ]).get_output_in_json()
+                        '--resource-group "{rg}" '
+                        '--resource-name "{maximumParams}" '
+                        '--identity-type "None" '
+                        '--kind "{fhirr4}" '
+                        '--location "{testingLocation}" ',
+                        checks=[
+                            test.check("identity.type", "None", case_sensitive=False),
+                            test.check("kind", "{fhirr4}"),
+                            test.check("location", "{testingLocation}", case_sensitive=False),
+                            test.check("name", "{maximumParams}", case_sensitive=False),
+                            test.check("properties.authenticationConfiguration.smartProxyEnabled", False),
+                            test.check("properties.corsConfiguration.allowCredentials", False),
+                            test.check("properties.corsConfiguration.maxAge", None),
+                            test.check("properties.cosmosDbConfiguration.offerThroughput", 1000),
+                            test.check("properties.exportConfiguration.storageAccountName", None),
+                            test.check("properties.provisioningState", "Succeeded"),
+                            test.check("properties.publicNetworkAccess", "Enabled", case_sensitive=False),
+                            test.check("properties.secondaryLocations", None),
+                        ]).get_output_in_json()
 
     corsConfiguration = testFhir['properties']['corsConfiguration']
     assert len(corsConfiguration['headers']) == 0
@@ -119,25 +118,25 @@ def step_healthcareapisupdatemaximumparameters(test, rg):
     assert len(acrConfiguration) == 0
 
     testFhir = test.cmd('az healthcareapis service create '
-             '--resource-group "{rg}" '
-             '--resource-name "{maximumParams}" '
-             '--public-network-access "Disabled" '
-             '--kind "{fhirr4}" '
-             '--location "{testingLocation}" ',
-             checks=[
-                test.check("identity.type", "None", case_sensitive=False),
-                test.check("kind", "{fhirr4}"),
-                test.check("location", "{testingLocation}", case_sensitive=False),
-                test.check("name", "{maximumParams}", case_sensitive=False),
-                test.check("properties.authenticationConfiguration.smartProxyEnabled", False),
-                test.check("properties.corsConfiguration.allowCredentials", False),
-                test.check("properties.corsConfiguration.maxAge", None),
-                test.check("properties.cosmosDbConfiguration.offerThroughput", 1000),
-                test.check("properties.exportConfiguration.storageAccountName", None),
-                test.check("properties.provisioningState", "Succeeded"),
-                test.check("properties.publicNetworkAccess", "Disabled", case_sensitive=False),
-                test.check("properties.secondaryLocations", None),
-             ]).get_output_in_json()
+                        '--resource-group "{rg}" '
+                        '--resource-name "{maximumParams}" '
+                        '--public-network-access "Disabled" '
+                        '--kind "{fhirr4}" '
+                        '--location "{testingLocation}" ',
+                        checks=[
+                            test.check("identity.type", "None", case_sensitive=False),
+                            test.check("kind", "{fhirr4}"),
+                            test.check("location", "{testingLocation}", case_sensitive=False),
+                            test.check("name", "{maximumParams}", case_sensitive=False),
+                            test.check("properties.authenticationConfiguration.smartProxyEnabled", False),
+                            test.check("properties.corsConfiguration.allowCredentials", False),
+                            test.check("properties.corsConfiguration.maxAge", None),
+                            test.check("properties.cosmosDbConfiguration.offerThroughput", 1000),
+                            test.check("properties.exportConfiguration.storageAccountName", None),
+                            test.check("properties.provisioningState", "Succeeded"),
+                            test.check("properties.publicNetworkAccess", "Disabled", case_sensitive=False),
+                            test.check("properties.secondaryLocations", None),
+                        ]).get_output_in_json()
 
     corsConfiguration = testFhir['properties']['corsConfiguration']
     assert len(corsConfiguration['headers']) == 0
@@ -152,45 +151,44 @@ def step_healthcareapisupdatemaximumparameters(test, rg):
 
     acrConfiguration = testFhir['properties']['acrConfiguration']['loginServers']
     assert len(acrConfiguration) == 0
-    
+
 
 @try_manual
 def step_servicelist(test, rg):
     test.cmd('az healthcareapis service list ',
-    checks=[
-    ])
+             checks=[])
     pass
 
 
 @try_manual
 def step_serviceget(test, rg):
-    test.cmd('az healthcareapis service show --resource-group "{rg}" --resource-name "{maximumParams}"',
-    checks=[
-        test.check("name", "{maximumParams}", case_sensitive=False),
-        test.check("location", "{testingLocation}", case_sensitive=False),
-        test.check("kind", "{fhirr4}"),
-        test.check("properties.corsConfiguration.allowCredentials", False),
-    ])
-    
+    test.cmd('az healthcareapis service show '
+             '--resource-group "{rg}" '
+             '--resource-name "{maximumParams}"',
+             checks=[
+                 test.check("name", "{maximumParams}", case_sensitive=False),
+                 test.check("location", "{testingLocation}", case_sensitive=False),
+                 test.check("kind", "{fhirr4}"),
+                 test.check("properties.corsConfiguration.allowCredentials", False),
+             ])
     pass
 
 
 @try_manual
 def step_servicelistbyresourcegroup(test, rg):
-    test.cmd('az healthcareapis service list --resource-group "{rg}"',
-    checks=[
-    ])
+    test.cmd('az healthcareapis service list '
+             '--resource-group "{rg}"',
+             checks=[])
     pass
 
 
 @try_manual
 def step_servicedelete(test, rg):
     test.cmd('az healthcareapis service delete '
-    '--resource-group "{rg}" '
-    '--resource-name "{minimalParams}" '
-    '--yes ',
-    checks=[
-    ])
+             '--resource-group "{rg}" '
+             '--resource-name "{minimalParams}" '
+             '--yes ',
+             checks=[])
     pass
 
 

@@ -8,11 +8,13 @@
 
 from azure.cli.core.util import sdk_no_wait
 
+
 def healthcareapis_service_show(client,
                                 resource_group_name,
                                 resource_name):
     return client.get(resource_group_name=resource_group_name,
                       resource_name=resource_name)
+
 
 # we use this as a create or update
 def healthcareapis_service_create(client,
@@ -52,7 +54,7 @@ def healthcareapis_service_create(client,
         'location': location,
         'etag': etag,
         'properties': properties,
-        'tags' : tags
+        'tags': tags
     }
 
     if identity_type is not None:
