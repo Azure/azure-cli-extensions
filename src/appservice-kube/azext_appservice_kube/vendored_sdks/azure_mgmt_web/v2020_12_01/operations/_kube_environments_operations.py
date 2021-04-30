@@ -26,7 +26,7 @@ class KubeEnvironmentsOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: API Version. Constant value: "2020-06-01".
+    :ivar api_version: API Version. Constant value: "2020-12-01".
     """
 
     models = models
@@ -36,7 +36,7 @@ class KubeEnvironmentsOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2020-06-01"
+        self.api_version = "2020-12-01"
 
         self.config = config
 
@@ -53,9 +53,9 @@ class KubeEnvironmentsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of KubeEnvironment
         :rtype:
-         ~azure.mgmt.web.v2020_06_01.models.KubeEnvironmentPaged[~azure.mgmt.web.v2020_06_01.models.KubeEnvironment]
+         ~azure.mgmt.web.v2020_12_01.models.KubeEnvironmentPaged[~azure.mgmt.web.v2020_12_01.models.KubeEnvironment]
         :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.web.v2020_06_01.models.DefaultErrorResponseException>`
+         :class:`DefaultErrorResponseException<azure.mgmt.web.v2020_12_01.models.DefaultErrorResponseException>`
         """
         def prepare_request(next_link=None):
             if not next_link:
@@ -124,9 +124,9 @@ class KubeEnvironmentsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of KubeEnvironment
         :rtype:
-         ~azure.mgmt.web.v2020_06_01.models.KubeEnvironmentPaged[~azure.mgmt.web.v2020_06_01.models.KubeEnvironment]
+         ~azure.mgmt.web.v2020_12_01.models.KubeEnvironmentPaged[~azure.mgmt.web.v2020_12_01.models.KubeEnvironment]
         :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.web.v2020_06_01.models.DefaultErrorResponseException>`
+         :class:`DefaultErrorResponseException<azure.mgmt.web.v2020_12_01.models.DefaultErrorResponseException>`
         """
         def prepare_request(next_link=None):
             if not next_link:
@@ -196,10 +196,10 @@ class KubeEnvironmentsOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: KubeEnvironment or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.web.v2020_06_01.models.KubeEnvironment or
+        :rtype: ~azure.mgmt.web.v2020_12_01.models.KubeEnvironment or
          ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.web.v2020_06_01.models.DefaultErrorResponseException>`
+         :class:`DefaultErrorResponseException<azure.mgmt.web.v2020_12_01.models.DefaultErrorResponseException>`
         """
         # Construct URL
         url = self.get.metadata['url']
@@ -306,7 +306,7 @@ class KubeEnvironmentsOperations(object):
         :param kube_environment_envelope: Configuration details of the
          Kubernetes Environment.
         :type kube_environment_envelope:
-         ~azure.mgmt.web.v2020_06_01.models.KubeEnvironment
+         ~azure.mgmt.web.v2020_12_01.models.KubeEnvironment
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -315,11 +315,11 @@ class KubeEnvironmentsOperations(object):
         :return: An instance of LROPoller that returns KubeEnvironment or
          ClientRawResponse<KubeEnvironment> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.web.v2020_06_01.models.KubeEnvironment]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.web.v2020_12_01.models.KubeEnvironment]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.web.v2020_06_01.models.KubeEnvironment]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.web.v2020_12_01.models.KubeEnvironment]]
         :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.web.v2020_06_01.models.DefaultErrorResponseException>`
+         :class:`DefaultErrorResponseException<azure.mgmt.web.v2020_12_01.models.DefaultErrorResponseException>`
         """
         raw_result = self._create_initial(
             resource_group_name=resource_group_name,
@@ -350,7 +350,7 @@ class KubeEnvironmentsOperations(object):
 
 
     def _delete_initial(
-            self, resource_group_name, name, force_delete=None, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, name, custom_headers=None, raw=False, **operation_config):
         # Construct URL
         url = self.delete.metadata['url']
         path_format_arguments = {
@@ -362,8 +362,6 @@ class KubeEnvironmentsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        if force_delete is not None:
-            query_parameters['forceDelete'] = self._serialize.query("force_delete", force_delete, 'bool')
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
@@ -387,7 +385,7 @@ class KubeEnvironmentsOperations(object):
             return client_raw_response
 
     def delete(
-            self, resource_group_name, name, force_delete=None, custom_headers=None, raw=False, polling=True, **operation_config):
+            self, resource_group_name, name, custom_headers=None, raw=False, polling=True, **operation_config):
         """Delete a Kubernetes Environment.
 
         Description for Delete a Kubernetes Environment.
@@ -397,10 +395,6 @@ class KubeEnvironmentsOperations(object):
         :type resource_group_name: str
         :param name: Name of the Kubernetes Environment.
         :type name: str
-        :param force_delete: Specify <code>true</code> to force the deletion
-         even if the Kubernetes Environment contains resources. The default is
-         <code>false</code>.
-        :type force_delete: bool
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -411,12 +405,11 @@ class KubeEnvironmentsOperations(object):
         :rtype: ~msrestazure.azure_operation.AzureOperationPoller[None] or
          ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[None]]
         :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.web.v2020_06_01.models.DefaultErrorResponseException>`
+         :class:`DefaultErrorResponseException<azure.mgmt.web.v2020_12_01.models.DefaultErrorResponseException>`
         """
         raw_result = self._delete_initial(
             resource_group_name=resource_group_name,
             name=name,
-            force_delete=force_delete,
             custom_headers=custom_headers,
             raw=True,
             **operation_config
@@ -450,17 +443,17 @@ class KubeEnvironmentsOperations(object):
         :param kube_environment_envelope: Configuration details of the
          Kubernetes Environment.
         :type kube_environment_envelope:
-         ~azure.mgmt.web.v2020_06_01.models.KubeEnvironment
+         ~azure.mgmt.web.v2020_12_01.models.KubeEnvironment
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: KubeEnvironment or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.web.v2020_06_01.models.KubeEnvironment or
+        :rtype: ~azure.mgmt.web.v2020_12_01.models.KubeEnvironment or
          ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.web.v2020_06_01.models.DefaultErrorResponseException>`
+         :class:`DefaultErrorResponseException<azure.mgmt.web.v2020_12_01.models.DefaultErrorResponseException>`
         """
         # Construct URL
         url = self.update.metadata['url']

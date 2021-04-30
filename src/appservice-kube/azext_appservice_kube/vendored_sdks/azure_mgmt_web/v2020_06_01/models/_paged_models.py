@@ -194,19 +194,6 @@ class DetectorDefinitionPaged(Paged):
     def __init__(self, *args, **kwargs):
 
         super(DetectorDefinitionPaged, self).__init__(*args, **kwargs)
-class KubeEnvironmentPaged(Paged):
-    """
-    A paging container for iterating over a list of :class:`KubeEnvironment <azure.mgmt.web.v2020_06_01.models.KubeEnvironment>` object
-    """
-
-    _attribute_map = {
-        'next_link': {'key': 'nextLink', 'type': 'str'},
-        'current_page': {'key': 'value', 'type': '[KubeEnvironment]'}
-    }
-
-    def __init__(self, *args, **kwargs):
-
-        super(KubeEnvironmentPaged, self).__init__(*args, **kwargs)
 class ApplicationStackResourcePaged(Paged):
     """
     A paging container for iterating over a list of :class:`ApplicationStackResource <azure.mgmt.web.v2020_06_01.models.ApplicationStackResource>` object

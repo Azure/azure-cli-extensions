@@ -21,7 +21,6 @@ try:
     from ._models_py3 import ApplicationLogsConfig
     from ._models_py3 import ApplicationStack
     from ._models_py3 import ApplicationStackResource
-    from ._models_py3 import AppLogsConfiguration
     from ._models_py3 import AppRegistration
     from ._models_py3 import AppServiceCertificate
     from ._models_py3 import AppServiceCertificateOrder
@@ -33,7 +32,6 @@ try:
     from ._models_py3 import AppServiceEnvironmentResource
     from ._models_py3 import AppServicePlan
     from ._models_py3 import AppServicePlanPatchResource
-    from ._models_py3 import ArcConfiguration
     from ._models_py3 import ArmIdWrapper
     from ._models_py3 import AuthPlatform
     from ._models_py3 import AutoHealActions
@@ -121,13 +119,11 @@ try:
     from ._models_py3 import EndpointDetail
     from ._models_py3 import ErrorEntity
     from ._models_py3 import Experiments
-    from ._models_py3 import ExtendedLocation
     from ._models_py3 import Facebook
     from ._models_py3 import FileSystemApplicationLogsConfig
     from ._models_py3 import FileSystemHttpLogsConfig
     from ._models_py3 import FileSystemTokenStore
     from ._models_py3 import ForwardProxy
-    from ._models_py3 import FrontEndConfiguration
     from ._models_py3 import FunctionEnvelope
     from ._models_py3 import FunctionSecrets
     from ._models_py3 import GeoRegion
@@ -155,10 +151,7 @@ try:
     from ._models_py3 import IpSecurityRestriction
     from ._models_py3 import JwtClaimChecks
     from ._models_py3 import KeyInfo
-    from ._models_py3 import KubeEnvironment
-    from ._models_py3 import KubeEnvironmentProfile
     from ._models_py3 import LocalizableString
-    from ._models_py3 import LogAnalyticsConfiguration
     from ._models_py3 import Login
     from ._models_py3 import LoginRoutes
     from ._models_py3 import LoginScopes
@@ -314,7 +307,6 @@ except (SyntaxError, ImportError):
     from ._models import ApplicationLogsConfig
     from ._models import ApplicationStack
     from ._models import ApplicationStackResource
-    from ._models import AppLogsConfiguration
     from ._models import AppRegistration
     from ._models import AppServiceCertificate
     from ._models import AppServiceCertificateOrder
@@ -326,7 +318,6 @@ except (SyntaxError, ImportError):
     from ._models import AppServiceEnvironmentResource
     from ._models import AppServicePlan
     from ._models import AppServicePlanPatchResource
-    from ._models import ArcConfiguration
     from ._models import ArmIdWrapper
     from ._models import AuthPlatform
     from ._models import AutoHealActions
@@ -414,13 +405,11 @@ except (SyntaxError, ImportError):
     from ._models import EndpointDetail
     from ._models import ErrorEntity
     from ._models import Experiments
-    from ._models import ExtendedLocation
     from ._models import Facebook
     from ._models import FileSystemApplicationLogsConfig
     from ._models import FileSystemHttpLogsConfig
     from ._models import FileSystemTokenStore
     from ._models import ForwardProxy
-    from ._models import FrontEndConfiguration
     from ._models import FunctionEnvelope
     from ._models import FunctionSecrets
     from ._models import GeoRegion
@@ -448,10 +437,7 @@ except (SyntaxError, ImportError):
     from ._models import IpSecurityRestriction
     from ._models import JwtClaimChecks
     from ._models import KeyInfo
-    from ._models import KubeEnvironment
-    from ._models import KubeEnvironmentProfile
     from ._models import LocalizableString
-    from ._models import LogAnalyticsConfiguration
     from ._models import Login
     from ._models import LoginRoutes
     from ._models import LoginScopes
@@ -620,7 +606,6 @@ from ._paged_models import HostNameBindingPaged
 from ._paged_models import HybridConnectionPaged
 from ._paged_models import IdentifierPaged
 from ._paged_models import InboundEnvironmentEndpointPaged
-from ._paged_models import KubeEnvironmentPaged
 from ._paged_models import NameIdentifierPaged
 from ._paged_models import OutboundEnvironmentEndpointPaged
 from ._paged_models import PerfMonResponsePaged
@@ -693,9 +678,6 @@ from ._web_site_management_client_enums import (
     IssueType,
     SolutionType,
     RenderingType,
-    StorageType,
-    FrontEndServiceType,
-    KubeEnvironmentProvisioningState,
     ResourceScopeType,
     NotificationLevel,
     Channels,
@@ -745,7 +727,6 @@ __all__ = [
     'ApplicationLogsConfig',
     'ApplicationStack',
     'ApplicationStackResource',
-    'AppLogsConfiguration',
     'AppRegistration',
     'AppServiceCertificate',
     'AppServiceCertificateOrder',
@@ -757,7 +738,6 @@ __all__ = [
     'AppServiceEnvironmentResource',
     'AppServicePlan',
     'AppServicePlanPatchResource',
-    'ArcConfiguration',
     'ArmIdWrapper',
     'AuthPlatform',
     'AutoHealActions',
@@ -845,13 +825,11 @@ __all__ = [
     'EndpointDetail',
     'ErrorEntity',
     'Experiments',
-    'ExtendedLocation',
     'Facebook',
     'FileSystemApplicationLogsConfig',
     'FileSystemHttpLogsConfig',
     'FileSystemTokenStore',
     'ForwardProxy',
-    'FrontEndConfiguration',
     'FunctionEnvelope',
     'FunctionSecrets',
     'GeoRegion',
@@ -879,10 +857,7 @@ __all__ = [
     'IpSecurityRestriction',
     'JwtClaimChecks',
     'KeyInfo',
-    'KubeEnvironment',
-    'KubeEnvironmentProfile',
     'LocalizableString',
-    'LogAnalyticsConfiguration',
     'Login',
     'LoginRoutes',
     'LoginScopes',
@@ -1040,7 +1015,6 @@ __all__ = [
     'DiagnosticCategoryPaged',
     'AnalysisDefinitionPaged',
     'DetectorDefinitionPaged',
-    'KubeEnvironmentPaged',
     'ApplicationStackResourcePaged',
     'RecommendationPaged',
     'SourceControlPaged',
@@ -1123,9 +1097,6 @@ __all__ = [
     'IssueType',
     'SolutionType',
     'RenderingType',
-    'StorageType',
-    'FrontEndServiceType',
-    'KubeEnvironmentProvisioningState',
     'ResourceScopeType',
     'NotificationLevel',
     'Channels',

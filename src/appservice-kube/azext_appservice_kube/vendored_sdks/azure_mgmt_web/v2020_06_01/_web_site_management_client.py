@@ -22,7 +22,6 @@ from .operations import DomainRegistrationProviderOperations
 from .operations import CertificatesOperations
 from .operations import DeletedWebAppsOperations
 from .operations import DiagnosticsOperations
-from .operations import KubeEnvironmentsOperations
 from .operations import ProviderOperations
 from .operations import RecommendationsOperations
 from .operations import WebAppsOperations
@@ -55,8 +54,6 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, SDKClient)
     :vartype deleted_web_apps: azure.mgmt.web.v2020_06_01.operations.DeletedWebAppsOperations
     :ivar diagnostics: Diagnostics operations
     :vartype diagnostics: azure.mgmt.web.v2020_06_01.operations.DiagnosticsOperations
-    :ivar kube_environments: KubeEnvironments operations
-    :vartype kube_environments: azure.mgmt.web.v2020_06_01.operations.KubeEnvironmentsOperations
     :ivar provider: Provider operations
     :vartype provider: azure.mgmt.web.v2020_06_01.operations.ProviderOperations
     :ivar recommendations: Recommendations operations
@@ -107,8 +104,6 @@ class WebSiteManagementClient(WebSiteManagementClientOperationsMixin, SDKClient)
         self.deleted_web_apps = DeletedWebAppsOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.diagnostics = DiagnosticsOperations(
-            self._client, self.config, self._serialize, self._deserialize)
-        self.kube_environments = KubeEnvironmentsOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.provider = ProviderOperations(
             self._client, self.config, self._serialize, self._deserialize)

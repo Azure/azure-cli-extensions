@@ -345,32 +345,6 @@ class RenderingType(str, Enum):
     time_series_per_instance = "TimeSeriesPerInstance"
 
 
-class StorageType(str, Enum):
-
-    local_node = "LocalNode"
-    network_file_system = "NetworkFileSystem"
-
-
-class FrontEndServiceType(str, Enum):
-
-    node_port = "NodePort"
-    load_balancer = "LoadBalancer"
-
-
-class KubeEnvironmentProvisioningState(str, Enum):
-
-    succeeded = "Succeeded"
-    failed = "Failed"
-    canceled = "Canceled"
-    waiting = "Waiting"
-    initialization_in_progress = "InitializationInProgress"
-    infrastructure_setup_in_progress = "InfrastructureSetupInProgress"
-    infrastructure_setup_complete = "InfrastructureSetupComplete"
-    scheduled_for_delete = "ScheduledForDelete"
-    upgrade_requested = "UpgradeRequested"
-    upgrade_failed = "UpgradeFailed"
-
-
 class ResourceScopeType(str, Enum):
 
     server_farm = "ServerFarm"

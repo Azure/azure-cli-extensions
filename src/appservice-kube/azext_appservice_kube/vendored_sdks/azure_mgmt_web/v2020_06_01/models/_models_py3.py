@@ -437,27 +437,6 @@ class ApplicationStackResource(ProxyOnlyResource):
         self.frameworks = frameworks
 
 
-class AppLogsConfiguration(Model):
-    """AppLogsConfiguration.
-
-    :param destination:
-    :type destination: str
-    :param log_analytics_configuration:
-    :type log_analytics_configuration:
-     ~azure.mgmt.web.v2020_06_01.models.LogAnalyticsConfiguration
-    """
-
-    _attribute_map = {
-        'destination': {'key': 'destination', 'type': 'str'},
-        'log_analytics_configuration': {'key': 'logAnalyticsConfiguration', 'type': 'LogAnalyticsConfiguration'},
-    }
-
-    def __init__(self, *, destination: str=None, log_analytics_configuration=None, **kwargs) -> None:
-        super(AppLogsConfiguration, self).__init__(**kwargs)
-        self.destination = destination
-        self.log_analytics_configuration = log_analytics_configuration
-
-
 class AppRegistration(ProxyOnlyResource):
     """AppRegistration.
 
@@ -1819,10 +1798,6 @@ class AppServicePlan(Resource):
      'InProgress', 'Deleting'
     :vartype provisioning_state: str or
      ~azure.mgmt.web.v2020_06_01.models.ProvisioningState
-    :param kube_environment_profile: Specification for the Kubernetes
-     Environment to use for the App Service plan.
-    :type kube_environment_profile:
-     ~azure.mgmt.web.v2020_06_01.models.KubeEnvironmentProfile
     :param sku:
     :type sku: ~azure.mgmt.web.v2020_06_01.models.SkuDescription
     """
@@ -1867,11 +1842,10 @@ class AppServicePlan(Resource):
         'target_worker_count': {'key': 'properties.targetWorkerCount', 'type': 'int'},
         'target_worker_size_id': {'key': 'properties.targetWorkerSizeId', 'type': 'int'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'ProvisioningState'},
-        'kube_environment_profile': {'key': 'properties.kubeEnvironmentProfile', 'type': 'KubeEnvironmentProfile'},
         'sku': {'key': 'sku', 'type': 'SkuDescription'},
     }
 
-    def __init__(self, *, location: str, kind: str=None, tags=None, worker_tier_name: str=None, hosting_environment_profile=None, per_site_scaling: bool=False, maximum_elastic_worker_count: int=None, is_spot: bool=None, spot_expiration_time=None, free_offer_expiration_time=None, reserved: bool=False, is_xenon: bool=False, hyper_v: bool=False, target_worker_count: int=None, target_worker_size_id: int=None, kube_environment_profile=None, sku=None, **kwargs) -> None:
+    def __init__(self, *, location: str, kind: str=None, tags=None, worker_tier_name: str=None, hosting_environment_profile=None, per_site_scaling: bool=False, maximum_elastic_worker_count: int=None, is_spot: bool=None, spot_expiration_time=None, free_offer_expiration_time=None, reserved: bool=False, is_xenon: bool=False, hyper_v: bool=False, target_worker_count: int=None, target_worker_size_id: int=None, sku=None, **kwargs) -> None:
         super(AppServicePlan, self).__init__(kind=kind, location=location, tags=tags, **kwargs)
         self.worker_tier_name = worker_tier_name
         self.status = None
@@ -1892,7 +1866,6 @@ class AppServicePlan(Resource):
         self.target_worker_count = target_worker_count
         self.target_worker_size_id = target_worker_size_id
         self.provisioning_state = None
-        self.kube_environment_profile = kube_environment_profile
         self.sku = sku
 
 
@@ -1948,8 +1921,10 @@ class AppServicePlanPatchResource(ProxyOnlyResource):
     :type free_offer_expiration_time: datetime
     :ivar resource_group: Resource group of the App Service plan.
     :vartype resource_group: str
-    :param reserved: If Linux app service plan <code>true</code>,
-     <code>false</code> otherwise. Default value: False .
+    :param reserved: This needs to set to <code>true</code> when creating a
+     Linux App Service Plan, along with <code>kind</code> set to
+     <code>Linux</code>. It should be <code>false</code> otherwise. Default
+     value: False .
     :type reserved: bool
     :param is_xenon: Obsolete: If Hyper-V container app service plan
      <code>true</code>, <code>false</code> otherwise. Default value: False .
@@ -1961,15 +1936,11 @@ class AppServicePlanPatchResource(ProxyOnlyResource):
     :type target_worker_count: int
     :param target_worker_size_id: Scaling worker size ID.
     :type target_worker_size_id: int
-    :ivar provisioning_state: Provisioning state of the App Service Plan.
-     Possible values include: 'Succeeded', 'Failed', 'Canceled', 'InProgress',
-     'Deleting'
+    :ivar provisioning_state: Provisioning state of the App Service
+     Environment. Possible values include: 'Succeeded', 'Failed', 'Canceled',
+     'InProgress', 'Deleting'
     :vartype provisioning_state: str or
      ~azure.mgmt.web.v2020_06_01.models.ProvisioningState
-    :param kube_environment_profile: Specification for the Kubernetes
-     Environment to use for the App Service plan.
-    :type kube_environment_profile:
-     ~azure.mgmt.web.v2020_06_01.models.KubeEnvironmentProfile
     """
 
     _validation = {
@@ -2009,10 +1980,9 @@ class AppServicePlanPatchResource(ProxyOnlyResource):
         'target_worker_count': {'key': 'properties.targetWorkerCount', 'type': 'int'},
         'target_worker_size_id': {'key': 'properties.targetWorkerSizeId', 'type': 'int'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'ProvisioningState'},
-        'kube_environment_profile': {'key': 'properties.kubeEnvironmentProfile', 'type': 'KubeEnvironmentProfile'},
     }
 
-    def __init__(self, *, kind: str=None, worker_tier_name: str=None, hosting_environment_profile=None, per_site_scaling: bool=False, maximum_elastic_worker_count: int=None, is_spot: bool=None, spot_expiration_time=None, free_offer_expiration_time=None, reserved: bool=False, is_xenon: bool=False, hyper_v: bool=False, target_worker_count: int=None, target_worker_size_id: int=None, kube_environment_profile=None, **kwargs) -> None:
+    def __init__(self, *, kind: str=None, worker_tier_name: str=None, hosting_environment_profile=None, per_site_scaling: bool=False, maximum_elastic_worker_count: int=None, is_spot: bool=None, spot_expiration_time=None, free_offer_expiration_time=None, reserved: bool=False, is_xenon: bool=False, hyper_v: bool=False, target_worker_count: int=None, target_worker_size_id: int=None, **kwargs) -> None:
         super(AppServicePlanPatchResource, self).__init__(kind=kind, **kwargs)
         self.worker_tier_name = worker_tier_name
         self.status = None
@@ -2033,55 +2003,6 @@ class AppServicePlanPatchResource(ProxyOnlyResource):
         self.target_worker_count = target_worker_count
         self.target_worker_size_id = target_worker_size_id
         self.provisioning_state = None
-        self.kube_environment_profile = kube_environment_profile
-
-
-class ArcConfiguration(Model):
-    """ArcConfiguration.
-
-    :param artifacts_storage_type: Possible values include: 'LocalNode',
-     'NetworkFileSystem'
-    :type artifacts_storage_type: str or
-     ~azure.mgmt.web.v2020_06_01.models.StorageType
-    :param artifact_storage_class_name:
-    :type artifact_storage_class_name: str
-    :param artifact_storage_mount_path:
-    :type artifact_storage_mount_path: str
-    :param artifact_storage_node_name:
-    :type artifact_storage_node_name: str
-    :param artifact_storage_access_mode:
-    :type artifact_storage_access_mode: str
-    :param front_end_service_configuration:
-    :type front_end_service_configuration:
-     ~azure.mgmt.web.v2020_06_01.models.FrontEndConfiguration
-    :param app_logs_configuration:
-    :type app_logs_configuration:
-     ~azure.mgmt.web.v2020_06_01.models.AppLogsConfiguration
-    :param kube_config:
-    :type kube_config: str
-    """
-
-    _attribute_map = {
-        'artifacts_storage_type': {'key': 'artifactsStorageType', 'type': 'StorageType'},
-        'artifact_storage_class_name': {'key': 'artifactStorageClassName', 'type': 'str'},
-        'artifact_storage_mount_path': {'key': 'artifactStorageMountPath', 'type': 'str'},
-        'artifact_storage_node_name': {'key': 'artifactStorageNodeName', 'type': 'str'},
-        'artifact_storage_access_mode': {'key': 'artifactStorageAccessMode', 'type': 'str'},
-        'front_end_service_configuration': {'key': 'frontEndServiceConfiguration', 'type': 'FrontEndConfiguration'},
-        'app_logs_configuration': {'key': 'appLogsConfiguration', 'type': 'AppLogsConfiguration'},
-        'kube_config': {'key': 'kubeConfig', 'type': 'str'},
-    }
-
-    def __init__(self, *, artifacts_storage_type=None, artifact_storage_class_name: str=None, artifact_storage_mount_path: str=None, artifact_storage_node_name: str=None, artifact_storage_access_mode: str=None, front_end_service_configuration=None, app_logs_configuration=None, kube_config: str=None, **kwargs) -> None:
-        super(ArcConfiguration, self).__init__(**kwargs)
-        self.artifacts_storage_type = artifacts_storage_type
-        self.artifact_storage_class_name = artifact_storage_class_name
-        self.artifact_storage_mount_path = artifact_storage_mount_path
-        self.artifact_storage_node_name = artifact_storage_node_name
-        self.artifact_storage_access_mode = artifact_storage_access_mode
-        self.front_end_service_configuration = front_end_service_configuration
-        self.app_logs_configuration = app_logs_configuration
-        self.kube_config = kube_config
 
 
 class ArmIdWrapper(Model):
@@ -5963,22 +5884,6 @@ class Experiments(Model):
         self.ramp_up_rules = ramp_up_rules
 
 
-class ExtendedLocation(Model):
-    """ExtendedLocation.
-
-    :param custom_location:
-    :type custom_location: str
-    """
-
-    _attribute_map = {
-        'custom_location': {'key': 'customLocation', 'type': 'str'},
-    }
-
-    def __init__(self, *, custom_location: str=None, **kwargs) -> None:
-        super(ExtendedLocation, self).__init__(**kwargs)
-        self.custom_location = custom_location
-
-
 class Facebook(ProxyOnlyResource):
     """Facebook.
 
@@ -6161,22 +6066,6 @@ class ForwardProxy(ProxyOnlyResource):
         self.convention = convention
         self.custom_host_header_name = custom_host_header_name
         self.custom_proto_header_name = custom_proto_header_name
-
-
-class FrontEndConfiguration(Model):
-    """FrontEndConfiguration.
-
-    :param kind: Possible values include: 'NodePort', 'LoadBalancer'
-    :type kind: str or ~azure.mgmt.web.v2020_06_01.models.FrontEndServiceType
-    """
-
-    _attribute_map = {
-        'kind': {'key': 'kind', 'type': 'FrontEndServiceType'},
-    }
-
-    def __init__(self, *, kind=None, **kwargs) -> None:
-        super(FrontEndConfiguration, self).__init__(**kwargs)
-        self.kind = kind
 
 
 class FunctionEnvelope(ProxyOnlyResource):
@@ -7336,125 +7225,6 @@ class KeyInfo(Model):
         self.value = value
 
 
-class KubeEnvironment(Resource):
-    """A Kubernetes cluster specialized for web workloads by Azure App Service.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :ivar id: Resource Id.
-    :vartype id: str
-    :ivar name: Resource Name.
-    :vartype name: str
-    :param kind: Kind of resource.
-    :type kind: str
-    :param location: Required. Resource Location.
-    :type location: str
-    :ivar type: Resource type.
-    :vartype type: str
-    :param tags: Resource tags.
-    :type tags: dict[str, str]
-    :param extended_location:
-    :type extended_location:
-     ~azure.mgmt.web.v2020_06_01.models.ExtendedLocation
-    :ivar provisioning_state: Provisioning state of the Kubernetes
-     Environment. Possible values include: 'Succeeded', 'Failed', 'Canceled',
-     'Waiting', 'InitializationInProgress', 'InfrastructureSetupInProgress',
-     'InfrastructureSetupComplete', 'ScheduledForDelete', 'UpgradeRequested',
-     'UpgradeFailed'
-    :vartype provisioning_state: str or
-     ~azure.mgmt.web.v2020_06_01.models.KubeEnvironmentProvisioningState
-    :ivar deployment_errors: Any errors that occurred during deployment or
-     deployment validation
-    :vartype deployment_errors: str
-    :param internal_load_balancer_enabled: Only visible within Vnet/Subnet
-    :type internal_load_balancer_enabled: bool
-    :param static_ip: Static IP of the KubeEnvironment
-    :type static_ip: str
-    :param namespace:
-    :type namespace: str
-    :param arc_configuration: Cluster configuration which determines the ARC
-     cluster
-     components types. Eg: Choosing between BuildService kind,
-     FrontEnd Service ArtifactsStorageType etc.
-    :type arc_configuration:
-     ~azure.mgmt.web.v2020_06_01.models.ArcConfiguration
-    :param aks_resource_id:
-    :type aks_resource_id: str
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'location': {'required': True},
-        'type': {'readonly': True},
-        'provisioning_state': {'readonly': True},
-        'deployment_errors': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'kind': {'key': 'kind', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'extended_location': {'key': 'properties.extendedLocation', 'type': 'ExtendedLocation'},
-        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'KubeEnvironmentProvisioningState'},
-        'deployment_errors': {'key': 'properties.deploymentErrors', 'type': 'str'},
-        'internal_load_balancer_enabled': {'key': 'properties.internalLoadBalancerEnabled', 'type': 'bool'},
-        'static_ip': {'key': 'properties.staticIp', 'type': 'str'},
-        'namespace': {'key': 'properties.namespace', 'type': 'str'},
-        'arc_configuration': {'key': 'properties.arcConfiguration', 'type': 'ArcConfiguration'},
-        'aks_resource_id': {'key': 'properties.aksResourceID', 'type': 'str'},
-    }
-
-    def __init__(self, *, location: str, kind: str=None, tags=None, extended_location=None, internal_load_balancer_enabled: bool=None, static_ip: str=None, namespace: str=None, arc_configuration=None, aks_resource_id: str=None, **kwargs) -> None:
-        super(KubeEnvironment, self).__init__(kind=kind, location=location, tags=tags, **kwargs)
-        self.extended_location = extended_location
-        self.provisioning_state = None
-        self.deployment_errors = None
-        self.internal_load_balancer_enabled = internal_load_balancer_enabled
-        self.static_ip = static_ip
-        self.namespace = namespace
-        self.arc_configuration = arc_configuration
-        self.aks_resource_id = aks_resource_id
-
-
-class KubeEnvironmentProfile(Model):
-    """Specification for a Kubernetes Environment to use for this resource.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    :param id: Resource ID of the Kubernetes Environment.
-    :type id: str
-    :ivar name: Name of the Kubernetes Environment.
-    :vartype name: str
-    :ivar type: Resource type of the Kubernetes Environment.
-    :vartype type: str
-    """
-
-    _validation = {
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-    }
-
-    def __init__(self, *, id: str=None, **kwargs) -> None:
-        super(KubeEnvironmentProfile, self).__init__(**kwargs)
-        self.id = id
-        self.name = None
-        self.type = None
-
-
 class LocalizableString(Model):
     """Localizable string object containing the name and a localized value.
 
@@ -7473,26 +7243,6 @@ class LocalizableString(Model):
         super(LocalizableString, self).__init__(**kwargs)
         self.value = value
         self.localized_value = localized_value
-
-
-class LogAnalyticsConfiguration(Model):
-    """LogAnalyticsConfiguration.
-
-    :param customer_id:
-    :type customer_id: str
-    :param shared_key:
-    :type shared_key: str
-    """
-
-    _attribute_map = {
-        'customer_id': {'key': 'customerId', 'type': 'str'},
-        'shared_key': {'key': 'sharedKey', 'type': 'str'},
-    }
-
-    def __init__(self, *, customer_id: str=None, shared_key: str=None, **kwargs) -> None:
-        super(LogAnalyticsConfiguration, self).__init__(**kwargs)
-        self.customer_id = customer_id
-        self.shared_key = shared_key
 
 
 class Login(ProxyOnlyResource):

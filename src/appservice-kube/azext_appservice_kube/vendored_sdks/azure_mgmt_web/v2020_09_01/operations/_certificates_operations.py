@@ -11,14 +11,12 @@
 
 import uuid
 from msrest.pipeline import ClientRawResponse
-from msrest.polling import LROPoller, NoPolling
-from msrestazure.polling.arm_polling import ARMPolling
 
 from .. import models
 
 
-class KubeEnvironmentsOperations(object):
-    """KubeEnvironmentsOperations operations.
+class CertificatesOperations(object):
+    """CertificatesOperations operations.
 
     You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
 
@@ -26,7 +24,7 @@ class KubeEnvironmentsOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: API Version. Constant value: "2019-08-01".
+    :ivar api_version: API Version. Constant value: "2020-09-01".
     """
 
     models = models
@@ -36,31 +34,31 @@ class KubeEnvironmentsOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2019-08-01"
+        self.api_version = "2020-09-01"
 
         self.config = config
 
-    def list_by_subscription(
+    def list(
             self, custom_headers=None, raw=False, **operation_config):
-        """Get all Kubernetes Environments for a subscription.
+        """Get all certificates for a subscription.
 
-        Description for Get all Kubernetes Environments for a subscription.
+        Description for Get all certificates for a subscription.
 
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of KubeEnvironment
+        :return: An iterator like instance of Certificate
         :rtype:
-         ~azure.mgmt.web.v2019_08_01.models.KubeEnvironmentPaged[~azure.mgmt.web.v2019_08_01.models.KubeEnvironment]
+         ~azure.mgmt.web.v2020_09_01.models.CertificatePaged[~azure.mgmt.web.v2020_09_01.models.Certificate]
         :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.web.v2019_08_01.models.DefaultErrorResponseException>`
+         :class:`DefaultErrorResponseException<azure.mgmt.web.v2020_09_01.models.DefaultErrorResponseException>`
         """
         def prepare_request(next_link=None):
             if not next_link:
                 # Construct URL
-                url = self.list_by_subscription.metadata['url']
+                url = self.list.metadata['url']
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
                 }
@@ -102,17 +100,16 @@ class KubeEnvironmentsOperations(object):
         header_dict = None
         if raw:
             header_dict = {}
-        deserialized = models.KubeEnvironmentPaged(internal_paging, self._deserialize.dependencies, header_dict)
+        deserialized = models.CertificatePaged(internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
-    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Web/kubeEnvironments'}
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.Web/certificates'}
 
     def list_by_resource_group(
             self, resource_group_name, custom_headers=None, raw=False, **operation_config):
-        """Get all the Kubernetes Environments in a resource group.
+        """Get all certificates in a resource group.
 
-        Description for Get all the Kubernetes Environments in a resource
-        group.
+        Description for Get all certificates in a resource group.
 
         :param resource_group_name: Name of the resource group to which the
          resource belongs.
@@ -122,11 +119,11 @@ class KubeEnvironmentsOperations(object):
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of KubeEnvironment
+        :return: An iterator like instance of Certificate
         :rtype:
-         ~azure.mgmt.web.v2019_08_01.models.KubeEnvironmentPaged[~azure.mgmt.web.v2019_08_01.models.KubeEnvironment]
+         ~azure.mgmt.web.v2020_09_01.models.CertificatePaged[~azure.mgmt.web.v2020_09_01.models.Certificate]
         :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.web.v2019_08_01.models.DefaultErrorResponseException>`
+         :class:`DefaultErrorResponseException<azure.mgmt.web.v2020_09_01.models.DefaultErrorResponseException>`
         """
         def prepare_request(next_link=None):
             if not next_link:
@@ -174,32 +171,32 @@ class KubeEnvironmentsOperations(object):
         header_dict = None
         if raw:
             header_dict = {}
-        deserialized = models.KubeEnvironmentPaged(internal_paging, self._deserialize.dependencies, header_dict)
+        deserialized = models.CertificatePaged(internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
-    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/kubeEnvironments'}
+    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/certificates'}
 
     def get(
             self, resource_group_name, name, custom_headers=None, raw=False, **operation_config):
-        """Get the properties of a Kubernetes Environment.
+        """Get a certificate.
 
-        Description for Get the properties of a Kubernetes Environment.
+        Description for Get a certificate.
 
         :param resource_group_name: Name of the resource group to which the
          resource belongs.
         :type resource_group_name: str
-        :param name: Name of the Kubernetes Environment.
+        :param name: Name of the certificate.
         :type name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: KubeEnvironment or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.web.v2019_08_01.models.KubeEnvironment or
+        :return: Certificate or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.web.v2020_09_01.models.Certificate or
          ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.web.v2019_08_01.models.DefaultErrorResponseException>`
+         :class:`DefaultErrorResponseException<azure.mgmt.web.v2020_09_01.models.DefaultErrorResponseException>`
         """
         # Construct URL
         url = self.get.metadata['url']
@@ -233,20 +230,43 @@ class KubeEnvironmentsOperations(object):
 
         deserialized = None
         if response.status_code == 200:
-            deserialized = self._deserialize('KubeEnvironment', response)
+            deserialized = self._deserialize('Certificate', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/kubeEnvironments/{name}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/certificates/{name}'}
 
+    def create_or_update(
+            self, resource_group_name, name, certificate_envelope, custom_headers=None, raw=False, **operation_config):
+        """Create or update a certificate.
 
-    def _create_initial(
-            self, resource_group_name, name, kube_environment_envelope, custom_headers=None, raw=False, **operation_config):
+        Description for Create or update a certificate.
+
+        :param resource_group_name: Name of the resource group to which the
+         resource belongs.
+        :type resource_group_name: str
+        :param name: Name of the certificate.
+        :type name: str
+        :param certificate_envelope: Details of certificate, if it exists
+         already.
+        :type certificate_envelope:
+         ~azure.mgmt.web.v2020_09_01.models.Certificate
+        :param dict custom_headers: headers that will be added to the request
+        :param bool raw: returns the direct response alongside the
+         deserialized response
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
+        :return: Certificate or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.web.v2020_09_01.models.Certificate or
+         ~msrest.pipeline.ClientRawResponse
+        :raises:
+         :class:`DefaultErrorResponseException<azure.mgmt.web.v2020_09_01.models.DefaultErrorResponseException>`
+        """
         # Construct URL
-        url = self.create.metadata['url']
+        url = self.create_or_update.metadata['url']
         path_format_arguments = {
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+[^\.]$'),
             'name': self._serialize.url("name", name, 'str'),
@@ -270,87 +290,47 @@ class KubeEnvironmentsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        body_content = self._serialize.body(kube_environment_envelope, 'KubeEnvironment')
+        body_content = self._serialize.body(certificate_envelope, 'Certificate')
 
         # Construct and send request
         request = self._client.put(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
-        if response.status_code not in [200, 201]:
+        if response.status_code not in [200]:
             raise models.DefaultErrorResponseException(self._deserialize, response)
 
         deserialized = None
-
         if response.status_code == 200:
-            deserialized = self._deserialize('KubeEnvironment', response)
-        if response.status_code == 201:
-            deserialized = self._deserialize('KubeEnvironment', response)
+            deserialized = self._deserialize('Certificate', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/certificates/{name}'}
 
-    def create(
-            self, resource_group_name, name, kube_environment_envelope, custom_headers=None, raw=False, polling=True, **operation_config):
-        """Create a Kubernetes Environment.
+    def delete(
+            self, resource_group_name, name, custom_headers=None, raw=False, **operation_config):
+        """Delete a certificate.
 
-        Description for Create a Kubernetes Environment.
+        Description for Delete a certificate.
 
         :param resource_group_name: Name of the resource group to which the
          resource belongs.
         :type resource_group_name: str
-        :param name: Name of the Kubernetes Environment.
+        :param name: Name of the certificate.
         :type name: str
-        :param kube_environment_envelope: Configuration details of the
-         Kubernetes Environment.
-        :type kube_environment_envelope:
-         ~azure.mgmt.web.v2019_08_01.models.KubeEnvironment
         :param dict custom_headers: headers that will be added to the request
-        :param bool raw: The poller return type is ClientRawResponse, the
-         direct response alongside the deserialized response
-        :param polling: True for ARMPolling, False for no polling, or a
-         polling object for personal polling strategy
-        :return: An instance of LROPoller that returns KubeEnvironment or
-         ClientRawResponse<KubeEnvironment> if raw==True
-        :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.web.v2019_08_01.models.KubeEnvironment]
-         or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.web.v2019_08_01.models.KubeEnvironment]]
+        :param bool raw: returns the direct response alongside the
+         deserialized response
+        :param operation_config: :ref:`Operation configuration
+         overrides<msrest:optionsforoperations>`.
+        :return: None or ClientRawResponse if raw=true
+        :rtype: None or ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.web.v2019_08_01.models.DefaultErrorResponseException>`
+         :class:`DefaultErrorResponseException<azure.mgmt.web.v2020_09_01.models.DefaultErrorResponseException>`
         """
-        raw_result = self._create_initial(
-            resource_group_name=resource_group_name,
-            name=name,
-            kube_environment_envelope=kube_environment_envelope,
-            custom_headers=custom_headers,
-            raw=True,
-            **operation_config
-        )
-
-        def get_long_running_output(response):
-            deserialized = self._deserialize('KubeEnvironment', response)
-
-            if raw:
-                client_raw_response = ClientRawResponse(deserialized, response)
-                return client_raw_response
-
-            return deserialized
-
-        lro_delay = operation_config.get(
-            'long_running_operation_timeout',
-            self.config.long_running_operation_timeout)
-        if polling is True: polling_method = ARMPolling(lro_delay, **operation_config)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/kubeEnvironments/{name}'}
-
-
-    def _delete_initial(
-            self, resource_group_name, name, force_delete=None, custom_headers=None, raw=False, **operation_config):
         # Construct URL
         url = self.delete.metadata['url']
         path_format_arguments = {
@@ -362,8 +342,6 @@ class KubeEnvironmentsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        if force_delete is not None:
-            query_parameters['forceDelete'] = self._serialize.query("force_delete", force_delete, 'bool')
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
@@ -379,88 +357,39 @@ class KubeEnvironmentsOperations(object):
         request = self._client.delete(url, query_parameters, header_parameters)
         response = self._client.send(request, stream=False, **operation_config)
 
-        if response.status_code not in [202, 204]:
+        if response.status_code not in [200, 204]:
             raise models.DefaultErrorResponseException(self._deserialize, response)
 
         if raw:
             client_raw_response = ClientRawResponse(None, response)
             return client_raw_response
-
-    def delete(
-            self, resource_group_name, name, force_delete=None, custom_headers=None, raw=False, polling=True, **operation_config):
-        """Delete a Kubernetes Environment.
-
-        Description for Delete a Kubernetes Environment.
-
-        :param resource_group_name: Name of the resource group to which the
-         resource belongs.
-        :type resource_group_name: str
-        :param name: Name of the Kubernetes Environment.
-        :type name: str
-        :param force_delete: Specify <code>true</code> to force the deletion
-         even if the Kubernetes Environment contains resources. The default is
-         <code>false</code>.
-        :type force_delete: bool
-        :param dict custom_headers: headers that will be added to the request
-        :param bool raw: The poller return type is ClientRawResponse, the
-         direct response alongside the deserialized response
-        :param polling: True for ARMPolling, False for no polling, or a
-         polling object for personal polling strategy
-        :return: An instance of LROPoller that returns None or
-         ClientRawResponse<None> if raw==True
-        :rtype: ~msrestazure.azure_operation.AzureOperationPoller[None] or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[None]]
-        :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.web.v2019_08_01.models.DefaultErrorResponseException>`
-        """
-        raw_result = self._delete_initial(
-            resource_group_name=resource_group_name,
-            name=name,
-            force_delete=force_delete,
-            custom_headers=custom_headers,
-            raw=True,
-            **operation_config
-        )
-
-        def get_long_running_output(response):
-            if raw:
-                client_raw_response = ClientRawResponse(None, response)
-                return client_raw_response
-
-        lro_delay = operation_config.get(
-            'long_running_operation_timeout',
-            self.config.long_running_operation_timeout)
-        if polling is True: polling_method = ARMPolling(lro_delay, **operation_config)
-        elif polling is False: polling_method = NoPolling()
-        else: polling_method = polling
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/kubeEnvironments/{name}'}
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/certificates/{name}'}
 
     def update(
-            self, resource_group_name, name, kube_environment_envelope, custom_headers=None, raw=False, **operation_config):
-        """Updates a Kubernetes Environment.
+            self, resource_group_name, name, certificate_envelope, custom_headers=None, raw=False, **operation_config):
+        """Create or update a certificate.
 
-        Description for Updates a Kubernetes Environment.
+        Description for Create or update a certificate.
 
         :param resource_group_name: Name of the resource group to which the
          resource belongs.
         :type resource_group_name: str
-        :param name: Name of the Kubernetes Environment.
+        :param name: Name of the certificate.
         :type name: str
-        :param kube_environment_envelope: Configuration details of the
-         Kubernetes Environment.
-        :type kube_environment_envelope:
-         ~azure.mgmt.web.v2019_08_01.models.KubeEnvironment
+        :param certificate_envelope: Details of certificate, if it exists
+         already.
+        :type certificate_envelope:
+         ~azure.mgmt.web.v2020_09_01.models.CertificatePatchResource
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: KubeEnvironment or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.web.v2019_08_01.models.KubeEnvironment or
+        :return: Certificate or ClientRawResponse if raw=true
+        :rtype: ~azure.mgmt.web.v2020_09_01.models.Certificate or
          ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.web.v2019_08_01.models.DefaultErrorResponseException>`
+         :class:`DefaultErrorResponseException<azure.mgmt.web.v2020_09_01.models.DefaultErrorResponseException>`
         """
         # Construct URL
         url = self.update.metadata['url']
@@ -487,7 +416,7 @@ class KubeEnvironmentsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        body_content = self._serialize.body(kube_environment_envelope, 'KubeEnvironment')
+        body_content = self._serialize.body(certificate_envelope, 'CertificatePatchResource')
 
         # Construct and send request
         request = self._client.patch(url, query_parameters, header_parameters, body_content)
@@ -498,79 +427,11 @@ class KubeEnvironmentsOperations(object):
 
         deserialized = None
         if response.status_code == 200:
-            deserialized = self._deserialize('KubeEnvironment', response)
+            deserialized = self._deserialize('Certificate', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/kubeEnvironments/{name}'}
-
-    def get_operation(
-            self, resource_group_name, name, operation_id, custom_headers=None, raw=False, **operation_config):
-        """Get status of a Kubernetes Environment operation.
-
-        Description for Get status of a Kubernetes Environment operation.
-
-        :param resource_group_name: Name of the resource group to which the
-         resource belongs.
-        :type resource_group_name: str
-        :param name: Name of the Kubernetes Environment.
-        :type name: str
-        :param operation_id: ID of the operation.
-        :type operation_id: str
-        :param dict custom_headers: headers that will be added to the request
-        :param bool raw: returns the direct response alongside the
-         deserialized response
-        :param operation_config: :ref:`Operation configuration
-         overrides<msrest:optionsforoperations>`.
-        :return: Operation or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.web.v2019_08_01.models.Operation or
-         ~msrest.pipeline.ClientRawResponse
-        :raises:
-         :class:`DefaultErrorResponseException<azure.mgmt.web.v2019_08_01.models.DefaultErrorResponseException>`
-        """
-        # Construct URL
-        url = self.get_operation.metadata['url']
-        path_format_arguments = {
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+[^\.]$'),
-            'name': self._serialize.url("name", name, 'str'),
-            'operationId': self._serialize.url("operation_id", operation_id, 'str'),
-            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str')
-        }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
-
-        # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
-        if self.config.generate_client_request_id:
-            header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
-        if custom_headers:
-            header_parameters.update(custom_headers)
-        if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
-
-        # Construct and send request
-        request = self._client.get(url, query_parameters, header_parameters)
-        response = self._client.send(request, stream=False, **operation_config)
-
-        if response.status_code not in [200, 202, 404, 500]:
-            raise models.DefaultErrorResponseException(self._deserialize, response)
-
-        deserialized = None
-        if response.status_code == 200:
-            deserialized = self._deserialize('Operation', response)
-        if response.status_code == 202:
-            deserialized = self._deserialize('Operation', response)
-
-        if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
-
-        return deserialized
-    get_operation.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/kubeEnvironments/{name}/operations/{operationId}'}
+    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/certificates/{name}'}
