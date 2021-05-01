@@ -3,15 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from knack.util import CLIError
-from knack.prompting import prompt, prompt_pass
 from azext_dms.vendored_sdks.datamigration.models import (MigrateMySqlAzureDbForMySqlSyncDatabaseInput,
                                                           MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseInput,
                                                           MigratePostgreSqlAzureDbForPostgreSqlSyncDatabaseTableInput,
                                                           MigrateMySqlAzureDbForMySqlSyncTaskInput,
                                                           MigratePostgreSqlAzureDbForPostgreSqlSyncTaskInput,
-                                                          MongoDbMigrationSettings,
-                                                          FileShare)
+                                                          MongoDbMigrationSettings)
 
 
 def get_migrate_mysql_to_azuredbformysql_sync_input(database_options_json,

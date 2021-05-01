@@ -7,8 +7,7 @@ from azure.cli.core.commands import CliCommandType
 
 from azext_dms._client_factory import (dms_client_factory,
                                        dms_cf_projects,
-                                       dms_cf_tasks,
-                                       dms_cf_service_tasks)
+                                       dms_cf_tasks)
 
 
 def load_command_table(self, _):

@@ -306,29 +306,6 @@ To cancel this task do not supply the object-name parameter.")
 # endregion
 
 
-# region Service Task
-def create_service_task(
-        client,
-        resource_group_name,
-        service_name,
-        task_name,
-        task_type,
-        task_options_json):
-
-    task_type = task_type.lower()
-
-    task_options_json = get_file_or_parse_json(task_options_json, "task-options-json")
-
-    task_properties = get_service_task_properties(task_options_json,
-                                                  task_type)
-
-    return client.create_or_update(group_name=resource_group_name,
-                                   service_name=service_name,
-                                   task_name=task_name,
-                                   properties=task_properties)
-# endregion
-
-
 # region Helper Methods
 def get_project_platforms(cmd, project_name, service_name, resource_group_name):
     client = dms_cf_projects(cmd.cli_ctx)
@@ -370,15 +347,15 @@ def transform_json_inputs(
     return (source_connection_info, target_connection_info, database_options_json)
 
 
-def get_file_or_parse_json(value, value_type):
+def get_file_or_parse_json(value, vtype):
     if os.path.exists(value):
         return get_file_json(value)
 
     # Test if provided value is a valid json
     try:
         json_parse = shell_safe_json_parse(value)
-    except:
-        raise CLIError("The supplied input for '" + value_type + "' is not a valid file path or a valid json object.")
+    except Exception as e:
+        raise CLIError("The supplied input for '" + vtype + "' is not a valid file path or a valid json object.") from e
     else:
         return json_parse
 
@@ -472,12 +449,6 @@ def get_task_validation_properties(
                                database_options_json,
                                source_connection_info,
                                target_connection_info)
-
-
-def get_service_task_properties(
-        task_options_json,
-        task_type):
-    raise CLIError("The supplied service task type is not supported.")
 
 
 def get_task_properties(input_func,
