@@ -9,14 +9,5 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .workspaces_operations import WorkspacesOperations
-from .offerings_operations import OfferingsOperations
-from .operations import Operations
-from .workspace_operations import WorkspaceOperations
+VERSION = "2019-11-04-preview"
 
-__all__ = [
-    'WorkspacesOperations',
-    'OfferingsOperations',
-    'Operations',
-    'WorkspaceOperations',
-]
