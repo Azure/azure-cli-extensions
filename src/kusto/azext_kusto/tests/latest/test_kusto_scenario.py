@@ -50,6 +50,7 @@ from .. import (
     raise_if,
     calc_coverage
 )
+from azure_devtools.scenario_tests import AllowLargeResponse
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -190,19 +191,16 @@ class KustoScenarioTest(ScenarioTest):
         })
 
         self.kwargs.update({
-            'myCluster4': 'default',
-            'myAttachedDatabaseConfiguration3': 'default',
-            'myCluster2': 'leader4',
-            'myCluster3': 'KustoClusterLeader',
-            'myCluster': 'kustoclusterrptest4',
-            'myScript': 'kustoScript1',
-            'myAttachedDatabaseConfiguration': 'myAttachedDatabaseConfiguration',
-            'myAttachedDatabaseConfiguration2': 'attachedDatabaseConfigurations1',
-            'myDataConnection': 'DataConnections8',
-            'myDataConnection2': 'kustoeventhubconnection1',
+            'Clusters_2': 'clitestcluster0f',
+            'Clusters_3': 'clitestcluster0l',
+            'attachedDatabaseConfigurations_1': 'attachedDatabaseConfigurations2',
+            'DataConnections8': 'DataConnections8',
+            'eventhub_name': 'kustoclitesteh',
+            'eventhub_namespace': 'ADX-EG-astauben',
+            'eventhub_resource_id': '/subscriptions/fbccad30-f0ed-4ac4-9497-93bf6141062f/resourceGroups/astauben-tests/providers/Microsoft.EventHub/namespaces/ADX-EG-astauben/eventhubs/kustoclitesteh'
         })
 
-
+    @AllowLargeResponse(size_kb=5000)
     @ResourceGroupPreparer(name_prefix='clitestkusto_kustorptest'[:7], key='rg', parameter_name='rg')
     def test_kusto_Scenario(self, rg):
         call_scenario(self, rg)

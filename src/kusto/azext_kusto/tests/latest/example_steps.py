@@ -66,19 +66,19 @@ def step_cluster_create(test, rg, checks=None):
     if checks is None:
         checks = []
     test.cmd('az kusto cluster create '
-             '--name "{myCluster}" '
-             '--type "SystemAssigned" '
-             '--location "westus" '
-             '--enable-double-encryption false '
+             '--cluster-name "{Clusters_3}" '
+             '--identity-type "SystemAssigned" '
+             '--location "southcentralus" '
              '--enable-purge true '
              '--enable-streaming-ingest true '
-             '--sku name="Standard_L8s" capacity=2 tier="Standard" '
+             '--key-vault-properties key-name="" key-vault-uri="" key-version="" '
+             '--sku name="Standard_D11_v2" capacity=2 tier="Standard" '
              '--resource-group "{rg}"',
              checks=[])
     test.cmd('az kusto cluster wait --created '
-             '--name "{myCluster}" '
+             '--cluster-name "{Clusters_3}" '
              '--resource-group "{rg}"',
-             checks=checks)
+             checks=[])
 
 
 # EXAMPLE: /Clusters/get/KustoClustersGet

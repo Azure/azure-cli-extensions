@@ -26,7 +26,7 @@ def step_kustoclusterscreateorupdate2(test, rg):
 
     test.cmd('az kusto cluster create '
              '--cluster-name "{Clusters_2}" '
-             '--identity-type "SystemAssigned" '
+             '--type "SystemAssigned" '
              '--location "southcentralus" '
              '--enable-purge true '
              '--enable-streaming-ingest true '
@@ -45,7 +45,7 @@ def step_kustoclusterscreateorupdate2(test, rg):
 def step_kustoclusterscreateorupdate(test, rg):
     test.cmd('az kusto cluster create '
              '--cluster-name "{Clusters_3}" '
-             '--identity-type "SystemAssigned" '
+             '--type "SystemAssigned" '
              '--location "southcentralus" '
              '--enable-purge true '
              '--enable-streaming-ingest true '
@@ -118,8 +118,9 @@ def step_kustoclusterslistresourceskus(test, rg):
 
 
 # EXAMPLE: kustoclusterslistskus
-@try_manual
+@try_manual 
 def step_kustoclusterslistskus(test, rg):
+
     test.cmd('az kusto cluster list-sku',
              checks=[])
 
@@ -441,9 +442,10 @@ def call_scenario(test, rg):
     step_kustoclustersdelete(test, rg)
 
 
-@try_manual
+@try_manual 
 class KustoManagementClientScenarioTest(ScenarioTest):
 
+    @AllowLargeResponse(size_kb=5000)
     @ResourceGroupPreparer(name_prefix='clitestkusto_kustorptest'[:7], key='rg', parameter_name='rg')
     def test_kusto(self, rg):
 
@@ -460,5 +462,5 @@ class KustoManagementClientScenarioTest(ScenarioTest):
             'eventhub_namespace': 'ADX-EG-astauben',
             'eventhub_resource_id': '/subscriptions/fbccad30-f0ed-4ac4-9497-93bf6141062f/resourceGroups/astauben-tests/providers/Microsoft.EventHub/namespaces/ADX-EG-astauben/eventhubs/kustoclitesteh'
         })
-
+    
         call_scenario(self, rg)
