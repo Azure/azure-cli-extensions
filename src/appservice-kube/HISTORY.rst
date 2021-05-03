@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.1.15
+++++++
+* Clean up az kube create parameters
+* Update to 2020-12-01 SDK for k8se commands (removes --force parameter for az appservice kube delete)
+
 0.1.14
 ++++++
 * Stop using webapp list in creates - temporary fix for demo
