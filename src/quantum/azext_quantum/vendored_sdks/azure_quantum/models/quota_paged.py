@@ -9,14 +9,19 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .jobs_operations import JobsOperations
-from .providers_operations import ProvidersOperations
-from .storage_operations import StorageOperations
-from .quotas_operations import QuotasOperations
+from msrest.paging import Paged
 
-__all__ = [
-    'JobsOperations',
-    'ProvidersOperations',
-    'StorageOperations',
-    'QuotasOperations',
-]
+
+class QuotaPaged(Paged):
+    """
+    A paging container for iterating over a list of :class:`Quota <azure.quantum.models.Quota>` object
+    """
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'current_page': {'key': 'value', 'type': '[Quota]'}
+    }
+
+    def __init__(self, *args, **kwargs):
+
+        super(QuotaPaged, self).__init__(*args, **kwargs)
