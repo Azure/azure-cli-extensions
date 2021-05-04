@@ -266,9 +266,9 @@ def step_attached_database_configuration_create(test, rg):
              'sters/{Clusters_3}" '
              '--database-name "Kustodatabase8" '
              '--default-principals-modification-kind "Union" '
-             '--table-level-sharing-properties external-tables-to-exclude="ExternalTable2"'
+             '--table-level-sharing-properties external-tables-to-exclude="ExternalTable2" '
              '--resource-group "{rg}"',
-             checks=[])
+             checks=[]) 
     test.cmd('az kusto attached-database-configuration wait --created '
              '--cluster-name "{Clusters_2}" '
              '--attached-database-configuration-name "{attachedDatabaseConfigurations_1}" '
@@ -407,22 +407,17 @@ def step_kusto_data_connections_delete(test, rg):
 
 # EXAMPLE: /Scripts/put/KustoScriptsCreateOrUpdate
 @try_manual
-def step_script_create(test, rg, checks=None):
+def step_script_create(test, rg):
     test.cmd('az kusto script create '
              '--cluster-name "{Clusters_3}" '
              '--database-name "KustoDatabase8" '
              '--continue-on-errors true '
              '--script-url "https://testclients.blob.core.windows.net/testclientscontainer/script.txt" '
-             '--script-url-sas-token "sp=r&st=2021-05-03T13:21:53Z&se=2021-05-03T21:21:53Z&spr=https&sv=2020-02-10&sr=b'
-             '&sig=fTlp1SnDZtzu2n4g4ndCKH6FWFvBD%2Bep3ysPOkQIaiY%3D" '
+             '--script-url-sas-token "sp=r&st=2021-05-04T12:59:36Z&se=2021-05-05T20:59:36Z&spr=https&sv=2020-02-10'
+             '&sr=b&sig=5gVV%2FgLgt0dDwVIWrWgES2eagG7duUkG0y90RqDK1kY%3D" '
              '--resource-group "{rg}" '
              '--name "testscript"',
              checks=[])
-    test.cmd('az kusto script wait --created '
-             '--resource-group "{rg}" '
-             '--name "{myScript}"',
-             checks=[])
-
 
 # EXAMPLE: /Scripts/get/KustoScriptsGet
 @try_manual
@@ -453,8 +448,8 @@ def step_script_update(test, rg, checks=None):
              '--database-name "KustoDatabase8" '
              '--continue-on-errors true '
              '--script-url "https://testclients.blob.core.windows.net/testclientscontainer/script.txt" '
-             '--script-url-sas-token "sp=r&st=2021-05-03T13:21:53Z&se=2021-05-03T21:21:53Z&spr=https&sv=2020-02-10&sr=b'
-             '&sig=fTlp1SnDZtzu2n4g4ndCKH6FWFvBD%2Bep3ysPOkQIaiY%3D" '
+             '--script-url-sas-token "sp=r&st=2021-05-04T12:59:36Z&se=2021-05-05T20:59:36Z&spr=https&sv=2020-02-10'
+             '&sr=b&sig=5gVV%2FgLgt0dDwVIWrWgES2eagG7duUkG0y90RqDK1kY%3D" '
              '--resource-group "{rg}" '
              '--name "testscript"',
              checks=[])
@@ -463,8 +458,11 @@ def step_script_update(test, rg, checks=None):
 def call_scenario(test, rg):
 
     step_kusto_clusters_create_or_update(test, rg)
-    step_kusto_clusters_create_or_update2(test, rg)
     step_kusto_databases_create_or_update(test, rg)
+    step_script_create(test, rg)
+    step_kusto_clusters_create_or_update2(test, rg)
+    step_attached_database_configuration_create(test, rg)
+    step_attached_database_configurations_get(test, rg)
     step_kusto_clusters_check_name_availability(test, rg)
     step_kusto_clusters_get(test, rg)
     step_kusto_clusters_list(test, rg)
@@ -482,8 +480,6 @@ def call_scenario(test, rg):
     step_kusto_database_principal_assignments_delete(test, rg)
     step_kusto_cluster_principal_assignments_create_or_update(test, rg)
     step_kusto_cluster_principal_assignments_get(test, rg)
-    step_attached_database_configuration_create(test, rg)
-    step_attached_database_configurations_get(test, rg)
     step_kusto_attached_database_configurations_list_by_cluster(test, rg)
     step_kusto_cluster_list_follower_databases(test, rg)
     step_kusto_cluster_detach_follower_databases(test, rg)
@@ -493,6 +489,10 @@ def call_scenario(test, rg):
     step_kusto_data_connections_update(test, rg)
     step_kusto_data_connections_delete(test, rg)
     step_kusto_operations_list(test, rg)
+    step_script_create(test, rg)
+    step_script_show(test, rg)
+    step_script_list(test, rg)
+    step_script_update(test, rg)
     step_kusto_databases_delete(test, rg)
     step_kusto_clusters_delete(test, rg)
 
@@ -509,8 +509,8 @@ class KustoManagementClientScenarioTest(ScenarioTest):
         })
 
         self.kwargs.update({
-            'Clusters_2': 'clitestcluster0f',
-            'Clusters_3': 'clitestcluster0l',
+            'Clusters_2': 'clitestcluster0f33',
+            'Clusters_3': 'clitestcluster0l33',
             'attachedDatabaseConfigurations_1': 'attachedDatabaseConfigurations2',
             'DataConnections8': 'DataConnections8',
             'eventhub_name': 'kustoclitesteh',
