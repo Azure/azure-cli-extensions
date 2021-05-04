@@ -206,4 +206,3 @@ class KustoScenarioTest(ScenarioTest):
         call_scenario(self, rg)
         calc_coverage(__file__)
         raise_if()
-

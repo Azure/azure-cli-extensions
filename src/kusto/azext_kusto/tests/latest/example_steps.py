@@ -659,4 +659,3 @@ def step_script_delete(test, rg, checks=None):
              '--resource-group "{rg}" '
              '--name "{myScript}"',
              checks=checks)
-

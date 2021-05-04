@@ -118,7 +118,7 @@ def step_kusto_clusters_list_resource_skus(test, rg):
 
 
 # EXAMPLE: kustoclusterslistskus
-@try_manual 
+@try_manual
 def step_kusto_clusters_list_skus(test, rg):
 
     test.cmd('az kusto cluster list-sku',
@@ -268,7 +268,7 @@ def step_attached_database_configuration_create(test, rg):
              '--default-principals-modification-kind "Union" '
              '--table-level-sharing-properties external-tables-to-exclude="ExternalTable2" '
              '--resource-group "{rg}"',
-             checks=[]) 
+             checks=[])
     test.cmd('az kusto attached-database-configuration wait --created '
              '--cluster-name "{Clusters_2}" '
              '--attached-database-configuration-name "{attachedDatabaseConfigurations_1}" '
@@ -419,6 +419,7 @@ def step_script_create(test, rg):
              '--name "testscript"',
              checks=[])
 
+
 # EXAMPLE: /Scripts/get/KustoScriptsGet
 @try_manual
 def step_script_show(test, rg, checks=None):
@@ -453,6 +454,7 @@ def step_script_update(test, rg, checks=None):
              '--resource-group "{rg}" '
              '--name "testscript"',
              checks=[])
+
 
 @try_manual
 def call_scenario(test, rg):
@@ -497,7 +499,7 @@ def call_scenario(test, rg):
     step_kusto_clusters_delete(test, rg)
 
 
-@try_manual 
+@try_manual
 class KustoManagementClientScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(size_kb=5000)
@@ -517,5 +519,5 @@ class KustoManagementClientScenarioTest(ScenarioTest):
             'eventhub_namespace': 'ADX-EG-astauben',
             'eventhub_resource_id': '/subscriptions/fbccad30-f0ed-4ac4-9497-93bf6141062f/resourceGroups/astauben-tests/providers/Microsoft.EventHub/namespaces/ADX-EG-astauben/eventhubs/kustoclitesteh'
         })
-    
+
         call_scenario(self, rg)
