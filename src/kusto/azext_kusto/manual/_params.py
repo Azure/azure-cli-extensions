@@ -428,7 +428,7 @@ def load_arguments(self, _):
                    'like to attach reside.')
         c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']),
                    help='The default principals modification kind')
-        c.argument('table_level_sharing_properties',, options_list=['--tls','--table-level-sharing-properties'],
+        c.argument('table_level_sharing_properties', options_list=['--tls','--table-level-sharing-properties'],
                   action=AddTableLevelSharingProperties, nargs='+', help='Table '
                    'level sharing specifications')
 
@@ -446,7 +446,7 @@ def load_arguments(self, _):
                    'like to attach reside.')
         c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']),
                    help='The default principals modification kind')
-        c.argument('table_level_sharing_properties',, options_list=['--tls','--table-level-sharing-properties'],
+        c.argument('table_level_sharing_properties', options_list=['--tls','--table-level-sharing-properties'],
         action=AddTableLevelSharingProperties, nargs='+', help='Table '
                    'level sharing specifications')
         c.ignore('parameters')
