@@ -4,8 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 
-KUBE_DEFAULT_SKU = "ANY"
-KUBE_SKUS = ['ANY', 'ELASTICANY']
+KUBE_DEFAULT_SKU = "K1"
 KUBE_ASP_KIND = "linux,kubernetes"
 KUBE_APP_KIND = "linux,kubernetes,app"
 KUBE_CONTAINER_APP_KIND = 'linux,kubernetes,app,container'

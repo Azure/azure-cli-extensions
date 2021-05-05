@@ -141,8 +141,7 @@ def load_arguments(self, _):
                    help="Name or ID of the app service environment")
         c.argument('custom_location', options_list=['--custom-location', '-c'], help="Name or ID of the custom location")
         c.argument('sku',
-                   help='The pricing tiers, e.g., F1(Free), D1(Shared), B1(Basic Small), B2(Basic Medium), B3(Basic Large), S1(Standard Small), P1V2(Premium V2 Small), PC2 (Premium Container Small), PC3 (Premium Container Medium), PC4 (Premium Container Large), I1 (Isolated Small), I2 (Isolated Medium), I3 (Isolated Large), Any, ElasticAny')
-        c.argument('kube_sku', required=False, help='VM size or ANY', default=KUBE_DEFAULT_SKU, completer=get_kube_sku_completion_list, is_preview=True)
+                   help='The pricing tiers, e.g., F1(Free), D1(Shared), B1(Basic Small), B2(Basic Medium), B3(Basic Large), S1(Standard Small), P1V2(Premium V2 Small), PC2 (Premium Container Small), PC3 (Premium Container Medium), PC4 (Premium Container Large), I1 (Isolated Small), I2 (Isolated Medium), I3 (Isolated Large), K1 (Kubernetes)')
         c.argument('is_linux', action='store_true', required=False, help='host web app on Linux worker')
         c.argument('hyper_v', action='store_true', required=False, help='Host web app on Windows container', is_preview=True)
         c.argument('per_site_scaling', action='store_true', required=False, help='Enable per-app scaling at the '
@@ -153,7 +152,7 @@ def load_arguments(self, _):
 
     with self.argument_context('appservice plan update') as c:
         c.argument('sku',
-            help='The pricing tiers, e.g., F1(Free), D1(Shared), B1(Basic Small), B2(Basic Medium), B3(Basic Large), S1(Standard Small), P1V2(Premium V2 Small), PC2 (Premium Container Small), PC3 (Premium Container Medium), PC4 (Premium Container Large), I1 (Isolated Small), I2 (Isolated Medium), I3 (Isolated Large), Any, ElasticAny',
+            help='The pricing tiers, e.g., F1(Free), D1(Shared), B1(Basic Small), B2(Basic Medium), B3(Basic Large), S1(Standard Small), P1V2(Premium V2 Small), PC2 (Premium Container Small), PC3 (Premium Container Medium), PC4 (Premium Container Large), I1 (Isolated Small), I2 (Isolated Medium), I3 (Isolated Large), K1 (Kubernetes)',
             arg_type=sku_arg_type)
         c.ignore('allow_pending_state')
 

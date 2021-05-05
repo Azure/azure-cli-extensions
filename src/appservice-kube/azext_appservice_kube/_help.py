@@ -26,7 +26,7 @@ examples:
     text: >
         az appservice plan create -g MyResourceGroup -n MyPlan \\
             --custom-location /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.ExtendedLocation/customLocations/<name> \\
-            --per-site-scaling --is-linux --sku ANY
+            --per-site-scaling --is-linux --sku K1
 """
 
 helps['appservice plan update'] = """
