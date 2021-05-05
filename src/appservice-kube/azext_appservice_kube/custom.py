@@ -457,6 +457,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
             if not match:
                 raise CLIError("Linux Runtime '{}' is not supported."
                                "Please invoke 'list-runtimes' to cross check".format(runtime))
+            match['setter'](cmd=cmd, stack=match, site_config=site_config)
         elif deployment_container_image_name:
             site_config.linux_fx_version = _format_fx_version(deployment_container_image_name)
             if name_validation.name_available:
