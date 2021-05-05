@@ -81,7 +81,7 @@ def load_arguments(self, _):
                    help='The type of managed identity used. The type \'SystemAssigned, UserAssigned\' includes both an '
                    'implicitly created identity and a set of user-assigned identities. The type \'None\' will remove '
                    'all identities.', arg_group='Identity')
-        c.argument('user_assigned_identities', options_list=['--uai, --user-assigned-identities'], type=validate_file_or_dict, help='The list of user identities '
+        c.argument('user_assigned_identities', options_list=['-uai, --user-assigned-identities'], type=validate_file_or_dict, help='The list of user identities '
                    'associated with the Kusto cluster. The user identity dictionary key references will be ARM '
                    'resource ids in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/prov'
                    'iders/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}\'. Expected value: '
@@ -120,12 +120,11 @@ def load_arguments(self, _):
                    help='The type of managed identity used. The type \'SystemAssigned, UserAssigned\' includes both an '
                    'implicitly created identity and a set of user-assigned identities. The type \'None\' will remove '
                    'all identities.', arg_group='Identity')
-        c.argument('user_assigned_identities', options_list=['--uai, --user-assigned-identities'], type=validate_file_or_dict,
-                    help='The list of user identities '
-                   'associated with the Kusto cluster. The user identity dictionary key references will be ARM '
-                   'resource ids in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/prov'
-                   'iders/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}\'. Expected value: '
-                   'json-string/@json-file.', arg_group='Identity')
+        c.argument('user_assigned_identities', options_list=['-uai, --user-assigned-identities'], type=validate_file_or_dict,
+                    help='The list of user identities associated with the Kusto cluster. The user identity dictionary '
+                   'key references will be ARM resource ids in the form: \'/subscriptions/{subscriptionId}/resourceGrou'
+                   'ps/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}\'.'
+                   'Expected value: json-string/@json-file.', arg_group='Identity')
 
     with self.argument_context('kusto cluster delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -429,8 +428,9 @@ def load_arguments(self, _):
                    'like to attach reside.')
         c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']),
                    help='The default principals modification kind')
-        c.argument('table_level_sharing_properties', options_list=['--tls','--table-level-sharing-properties'],
-                  action=AddTableLevelSharingProperties, nargs='+', help='Table level sharing specifications')
+        c.argument('table_level_sharing_properties', options_list=['--tls','--table-level-sharing-properties'], 
+                  action=AddTableLevelSharingProperties, nargs='+', 
+                  help='Table level sharing specifications')
 
     with self.argument_context('kusto attached-database-configuration update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -446,7 +446,7 @@ def load_arguments(self, _):
                    'like to attach reside.')
         c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']),
                    help='The default principals modification kind')
-        c.argument('table_level_sharing_properties', options_list=['--tls','--table-level-sharing-properties'],
+        c.argument('table_level_sharing_properties', options_list=['--tls','--table-level-sharing-properties'], 
                    action=AddTableLevelSharingProperties, nargs='+', help='Table level sharing specifications')
         c.ignore('parameters')
 
