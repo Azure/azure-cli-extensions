@@ -7,12 +7,13 @@
 
 from knack.log import get_logger
 
+from msrestazure.azure_exceptions import CloudError
 from azext_k8s_extension.vendored_sdks.models import ExtensionInstance
 from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceUpdate
 from azext_k8s_extension.vendored_sdks.models import ScopeCluster
 from azext_k8s_extension.vendored_sdks.models import Scope
 from azure.cli.core.commands.client_factory import get_subscription_id
-from msrestazure.azure_exceptions import CloudError
+
 from pyhelm.chartbuilder import ChartBuilder
 from packaging import version
 import yaml
@@ -70,10 +71,12 @@ class Openservicemesh(PartnerExtensionModel):
             version=version
         )
 
+
 def _validate_tested_distro(cmd, cluster_resource_group_name, cluster_name, extension_version):
 
     if version.parse(str(extension_version)) <= version.parse("0.8.3"):
-        logger.warning(f'\"testedDistros\" field unavailable for version {extension_version} of osm-arc, cannot determine if this kubernetes distribution has been tested for osm-arc')
+        logger.warning(f'\"testedDistros\" field unavailable for version {extension_version} of osm-arc, '
+            'cannot determine if this kubernetes distribution has been tested for osm-arc')
         return
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
@@ -84,31 +87,39 @@ def _validate_tested_distro(cmd, cluster_resource_group_name, cluster_name, exte
     try:
         resource = resources.get_by_id(cluster_resource_id, '2020-01-01-preview')
         cluster_distro = resource.distribution.lower()
-        cluster_location = resource.location.lower()
     except CloudError as ex:
         raise ex
 
-    if cluster_distro == "general": 
-        logger.warning('kubernetes distribution is \"general\", cannot determine if this kubernetes distribution has been tested for osm-arc')
+    if cluster_distro == "general":
+        logger.warning('kubernetes distribution is \"general\", cannot determine if this kubernetes '
+            'distribution has been tested for osm-arc')
         return
 
     tested_distros = _get_tested_distros(extension_version)
 
     if tested_distros is None:
-        logger.warning(f'\"testedDistros\" field unavailable for version {extension_version} of osm-arc, cannot determine if this kubernetes distribution has been tested for osm-arc')    
+        logger.warning(f'\"testedDistros\" field unavailable for version {extension_version} of osm-arc, '
+            'cannot determine if this kubernetes distribution has been tested for osm-arc')
     elif cluster_distro in tested_distros.split():
         logger.info(f'{cluster_distro} is a tested kubernetes distribution for osm-arc')
     else:
         logger.warning(f'{cluster_distro} is not a tested kubernetes distribution for osm-arc')
-    
-    
+
 
 def _get_tested_distros(version):
-    chart_arc = ChartBuilder({"name": "osm-arc", "version": str(version), "source": {"type": "repo", "location": "https://azure.github.io/osm-azure"}})
+
+    chart_arc = ChartBuilder({
+        "name": "osm-arc",
+        "version": str(version),
+        "source": {
+            "type": "repo",
+            "location": "https://azure.github.io/osm-azure"
+        }
+    })
     values = chart_arc.get_values()
     values_yaml = yaml.load(values.raw)
 
-    try: 
+    try:
         return values_yaml['OpenServiceMesh']['testedDistros']
-    except KeyError as exc:
+    except KeyError:
         return None
