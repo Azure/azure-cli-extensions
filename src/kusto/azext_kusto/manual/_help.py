@@ -429,10 +429,11 @@ TimeSpan.
             location: Resource location.
             kind: Required. Kind of the database
     examples:
-      - name: KustoDatabasesUpdate
+      - name: Kusto ReadWrite database create or update
         text: |-
                az kusto database create --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" \
---resource-group "kustorptest"
+--read-write-database location="westus" soft-delete-period="P1D" --resource-group \
+"kustorptest"
 """
 
 helps['kusto database delete'] = """
