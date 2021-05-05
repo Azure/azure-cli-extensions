@@ -21,6 +21,7 @@ from .partner_extensions.ContainerInsights import ContainerInsights
 from .partner_extensions.AzureDefender import AzureDefender
 from .partner_extensions.Cassandra import Cassandra
 from .partner_extensions.AzureMLKubernetes import AzureMLKubernetes
+from .partner_extensions.Openservicemesh import Openservicemesh
 from .partner_extensions.DefaultExtension import DefaultExtension
 from . import consts
 
@@ -36,6 +37,7 @@ def ExtensionFactory(extension_name):
         'microsoft.azuredefender.kubernetes': AzureDefender,
         'microsoft.azureml.kubernetes': AzureMLKubernetes,
         'cassandradatacentersoperator': Cassandra,
+        'microsoft.openservicemesh': Openservicemesh
     }
 
     # Return the extension if we find it in the map, else return the default
