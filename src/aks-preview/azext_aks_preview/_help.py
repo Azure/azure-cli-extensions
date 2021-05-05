@@ -1036,7 +1036,7 @@ examples:
     text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons open-service-mesh
     crafted: true
   - name: Enable azure-defender addon with workspace resourceId.
-    text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons azure-defender --appgw-subnet-cidr 10.2.0.0/16 --workspace-resource-id WorkspaceResourceId
+    text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons azure-defender --workspace-resource-id WorkspaceResourceId
     crafted: true
 """
 
