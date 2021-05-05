@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.16
+++++++
+* Change k8se app sku to "K1" instead of "ANY", "ELASTICANY"
+
 0.1.15
 ++++++
 * Clean up az kube create parameters
