@@ -17,7 +17,7 @@ from msrestazure.azure_exceptions import CloudError
 import time
 
 DEFAULT_WORKSPACE_LOCATION = 'westus'
-POLLING_TIME_DURATION = 3 # Seconds
+POLLING_TIME_DURATION = 3  # Seconds
 MAX_RETRIES_ROLE_ASSIGNMENT = 20
 
 
@@ -136,7 +136,7 @@ def _create_role_assignment(cmd, quantum_workspace):
     if (retry_attempts > 0):
         print()  # To end the line of the waiting indicators.
     if (retry_attempts == MAX_RETRIES_ROLE_ASSIGNMENT):
-        max_time_in_seconds = MAX_RETRIES_ROLE_ASSIGNMENT*POLLING_TIME_DURATION
+        max_time_in_seconds = MAX_RETRIES_ROLE_ASSIGNMENT * POLLING_TIME_DURATION
         raise CLIError(f"Role assignment could not be added to storage account {quantum_workspace.storage_account} within {max_time_in_seconds} seconds.")
     return quantum_workspace
 

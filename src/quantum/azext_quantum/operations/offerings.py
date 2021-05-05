@@ -84,4 +84,3 @@ def accept_terms(cmd, provider_id=None, sku=None, location=None):
     term = _get_terms_from_marketplace(cmd, publisher_id, offer_id, sku)
     term.accepted = True
     return _set_terms_from_marketplace(cmd, publisher_id, offer_id, sku, term)
-
