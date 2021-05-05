@@ -72,7 +72,7 @@ from six.moves.urllib.request import urlopen
 
 from ._constants import (FUNCTIONS_VERSION_TO_DEFAULT_RUNTIME_VERSION, FUNCTIONS_VERSION_TO_DEFAULT_NODE_VERSION,
                          FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS, NODE_VERSION_DEFAULT, NODE_EXACT_VERSION_DEFAULT,
-                         DOTNET_RUNTIME_VERSION_TO_DOTNET_LINUX_FX_VERSION, KUBE_DEFAULT_SKU, KUBE_SKUS,
+                         DOTNET_RUNTIME_VERSION_TO_DOTNET_LINUX_FX_VERSION, KUBE_DEFAULT_SKU,
                          KUBE_ASP_KIND, KUBE_APP_KIND, KUBE_FUNCTION_APP_KIND, KUBE_FUNCTION_CONTAINER_APP_KIND, KUBE_CONTAINER_APP_KIND,
                          LINUX_RUNTIMES, WINDOWS_RUNTIMES, MULTI_CONTAINER_TYPES,CONTAINER_APPSETTING_NAMES, APPSETTINGS_TO_MASK)
 
@@ -156,7 +156,7 @@ def list_app_service_plans(cmd, resource_group_name=None):
 
 def _validate_asp_sku(app_service_environment, custom_location, sku):
     # Isolated SKU is supported only for ASE
-    if sku.upper() not in ['F1', 'FREE', 'D1', 'SHARED', 'B1', 'B2', 'B3', 'S1', 'S2', 'S3', 'P1V2', 'P2V2', 'P3V2', 'PC2', 'PC3', 'PC4', 'I1', 'I2', 'I3', 'ANY', 'ELASTICANY']:
+    if sku.upper() not in ['F1', 'FREE', 'D1', 'SHARED', 'B1', 'B2', 'B3', 'S1', 'S2', 'S3', 'P1V2', 'P2V2', 'P3V2', 'PC2', 'PC3', 'PC4', 'I1', 'I2', 'I3', 'K1']:
         raise CLIError('Invalid sku entered: {}', sku)
 
     if sku.upper() in ['I1', 'I2', 'I3', 'I1V2', 'I2V2', 'I3V2']:
@@ -167,13 +167,13 @@ def _validate_asp_sku(app_service_environment, custom_location, sku):
         raise CLIError("Only pricing tier 'Isolated' is allowed in this app service plan. Use this link to "
                         "learn more: https://docs.microsoft.com/en-us/azure/app-service/overview-hosting-plans")
     elif custom_location:
-        # Custom Location only supports Any and ElasticAny
-        if sku.upper() not in KUBE_SKUS:
-            raise CLIError("Only pricing tier 'Any' or 'ElasticAny' is allowed for this type of app service plan.")
+        # Custom Location only supports K1
+        if sku.upper() != 'K1':
+            raise CLIError("Only pricing tier 'K1' is allowed for this type of app service plan.")
 
 
 def create_app_service_plan(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False, custom_location=None,
-                            app_service_environment=None, sku=None, kube_sku=KUBE_DEFAULT_SKU,
+                            app_service_environment=None, sku=None,
                             number_of_workers=None, location=None, tags=None, no_wait=False):
     if not sku:
         sku = 'B1' if not custom_location else KUBE_DEFAULT_SKU
@@ -274,11 +274,8 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
     if location is None:
         location = _get_location_from_resource_group(cmd.cli_ctx, resource_group_name)
 
-    if kube_environment:
-        sku_def = SkuDescription(tier=get_sku_name(sku), name=sku, capacity=number_of_workers)
-    else:
-        # the api is odd on parameter naming, have to live with it for now
-        sku_def = SkuDescription(tier=get_sku_name(sku), name=sku, capacity=number_of_workers)
+    # the api is odd on parameter naming, have to live with it for now
+    sku_def = SkuDescription(tier=get_sku_name(sku), name=sku, capacity=number_of_workers)
 
     plan_def = AppServicePlan(location=location, tags=tags, sku=sku_def, kind=kind,
                               reserved=(is_linux or None), hyper_v=(hyper_v or None), name=name,
@@ -406,7 +403,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
         sku_tier = None
         if isinstance(plan_info.sku, SkuDescription):
             sku_tier = plan_info.sku.tier
-        _validate_asp_sku(app_service_environment=None, custom_location=custom_location, sku=plan_info.sku.tier)
+        _validate_asp_sku(app_service_environment=None, custom_location=custom_location, sku=plan_info.sku.name)
 
     is_linux = plan_info.reserved
     node_default_version = NODE_EXACT_VERSION_DEFAULT
@@ -419,7 +416,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
                       https_only=using_webapp_up)
 
     is_kube = False
-    if custom_location or plan_info.kind.upper() == KUBE_ASP_KIND.upper() or (isinstance(plan_info.sku, SkuDescription) and plan_info.sku.tier.upper() in KUBE_SKUS):
+    if custom_location or plan_info.kind.upper() == KUBE_ASP_KIND.upper() or (isinstance(plan_info.sku, SkuDescription) and plan_info.sku.name.upper() == KUBE_DEFAULT_SKU):
         if deployment_container_image_name:
             webapp_def.kind = KUBE_CONTAINER_APP_KIND
         else:
@@ -805,7 +802,7 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
         functionapp_def.location = location
 
     is_kube = False
-    if custom_location or plan_info.kind.upper() == KUBE_ASP_KIND.upper() or (isinstance(plan_info.sku, SkuDescription) and plan_info.sku.tier.upper() in KUBE_SKUS):
+    if custom_location or plan_info.kind.upper() == KUBE_ASP_KIND.upper() or (isinstance(plan_info.sku, SkuDescription) and plan_info.sku.name.upper() == KUBE_DEFAULT_SKU):
         is_kube = True
 
     if is_kube:
