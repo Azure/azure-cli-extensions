@@ -431,7 +431,7 @@ TimeSpan.
     examples:
       - name: Kusto ReadWrite database create or update
         text: |-
-               az kusto database create --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" \
+               az kusto database update --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" \
 --read-write-database location="westus" soft-delete-period="P1D" --resource-group \
 "kustorptest"
 """
