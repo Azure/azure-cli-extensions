@@ -9,6 +9,8 @@ import subprocess
 from subprocess import Popen, PIPE
 import time
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 import json
 
 from knack.util import CLIError
@@ -23,9 +25,7 @@ from kubernetes.client.rest import ApiException
 from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
-
+from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError, ValidationError
 
 logger = get_logger(__name__)
 
@@ -60,12 +60,10 @@ def validate_location(cmd, location):
         if resourceTypes.resource_type == 'connectedClusters':
             rp_locations = [location.replace(" ", "").lower() for location in resourceTypes.locations]
             if location.lower() not in rp_locations:
-                telemetry.set_user_fault()
                 telemetry.set_exception(exception='Location not supported', fault_type=consts.Invalid_Location_Fault_Type,
                                         summary='Provided location is not supported for creating connected clusters')
-                raise CLIError("Connected cluster resource creation is supported only in the following locations: " +
-                               ', '.join(map(str, rp_locations)) +
-                               ". Use the --location flag to specify one of these locations.")
+                raise ArgumentUsageError("Connected cluster resource creation is supported only in the following locations: " +
+                                         ', '.join(map(str, rp_locations)), recommendation="Use the --location flag to specify one of these locations.")
             break
 
 
@@ -100,7 +98,7 @@ def pull_helm_chart(registry_path, kube_config, kube_context):
     if response_helm_chart_pull.returncode != 0:
         telemetry.set_exception(exception=error_helm_chart_pull.decode("ascii"), fault_type=consts.Pull_HelmChart_Fault_Type,
                                 summary='Unable to pull helm chart from the registry')
-        raise CLIError("Unable to pull helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_pull.decode("ascii"))
+        raise CLIInternalError("Unable to pull helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_pull.decode("ascii"))
 
 
 def export_helm_chart(registry_path, chart_export_path, kube_config, kube_context):
@@ -114,7 +112,7 @@ def export_helm_chart(registry_path, chart_export_path, kube_config, kube_contex
     if response_helm_chart_export.returncode != 0:
         telemetry.set_exception(exception=error_helm_chart_export.decode("ascii"), fault_type=consts.Export_HelmChart_Fault_Type,
                                 summary='Unable to export helm chart from the registry')
-        raise CLIError("Unable to export helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_export.decode("ascii"))
+        raise CLIInternalError("Unable to export helm chart from the registry '{}': ".format(registry_path) + error_helm_chart_export.decode("ascii"))
 
 
 def add_helm_repo(kube_config, kube_context):
@@ -130,7 +128,7 @@ def add_helm_repo(kube_config, kube_context):
     if response_helm_repo.returncode != 0:
         telemetry.set_exception(exception=error_helm_repo.decode("ascii"), fault_type=consts.Add_HelmRepo_Fault_Type,
                                 summary='Failed to add helm repository')
-        raise CLIError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
+        raise CLIInternalError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
 
 def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release_train_dogfood=None):
@@ -150,30 +148,28 @@ def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
                                 summary='Error while fetching helm chart registry path')
-        raise CLIError("Error while fetching helm chart registry path: " + str(e))
+        raise CLIInternalError("Error while fetching helm chart registry path: " + str(e))
     if r.content:
         try:
             return r.json().get('repositoryPath')
         except Exception as e:
             telemetry.set_exception(exception=e, fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
                                     summary='Error while fetching helm chart registry path')
-            raise CLIError("Error while fetching helm chart registry path from JSON response: " + str(e))
+            raise CLIInternalError("Error while fetching helm chart registry path from JSON response: " + str(e))
     else:
         telemetry.set_exception(exception='No content in response', fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
                                 summary='No content in acr path response')
-        raise CLIError("No content was found in helm registry path response.")
+        raise CLIInternalError("No content was found in helm registry path response.")
 
 
 def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
     if isinstance(ex, AuthenticationError):
-        telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        raise CLIError("Authentication error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise AzureResponseError("Authentication error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     if isinstance(ex, TokenExpiredError):
-        telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        raise CLIError("Token expiration error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise AzureResponseError("Token expiration error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     if isinstance(ex, HttpOperationError):
         status_code = ex.response.status_code
@@ -182,12 +178,13 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
         if status_code // 100 == 4:
             telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        raise CLIError("Http operation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        if status_code // 100 == 5:
+            raise AzureInternalError("Http operation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise AzureResponseError("Http operation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     if isinstance(ex, ValidationError):
-        telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        raise CLIError("Validation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise AzureResponseError("Validation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     if isinstance(ex, CloudError):
         status_code = ex.status_code
@@ -196,10 +193,12 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
         if status_code // 100 == 4:
             telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        raise CLIError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        if status_code // 100 == 5:
+            raise AzureInternalError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise AzureResponseError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-    raise CLIError("Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+    raise ClientRequestError("Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
 
 def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error occured while connecting to the kubernetes cluster: ',
@@ -210,15 +209,19 @@ def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error o
         status_code = ex.status
         if status_code == 403:
             logger.warning(message_for_unauthorized_request)
-        if status_code == 404:
+        elif status_code == 404:
             logger.warning(message_for_not_found)
+        else:
+            logger.debug("Kubernetes Exception: " + str(ex))
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-            raise CLIError(error_message + "\nError Response: " + str(ex.body))
+            raise ValidationError(error_message + "\nError Response: " + str(ex.body))
     else:
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-            raise CLIError(error_message + "\nError: " + str(ex))
+            raise ValidationError(error_message + "\nError: " + str(ex))
+        else:
+            logger.debug("Kubernetes Exception: " + str(ex))
 
 
 def validate_infrastructure_type(infra):
@@ -257,7 +260,7 @@ def ensure_namespace_cleanup(configuration):
                 return
             time.sleep(5)
         except Exception as e:  # pylint: disable=broad-except
-            logger.warning("Error while retrieving namespace information.")
+            logger.warning("Error while retrieving namespace information: " + str(e))
             kubernetes_exception_handler(e, consts.Get_Kubernetes_Namespace_Fault_Type, 'Unable to fetch kubernetes namespace',
                                          raise_error=False)
 
@@ -275,9 +278,9 @@ def delete_arc_agents(release_namespace, kube_config, kube_context, configuratio
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_delete.decode("ascii"), fault_type=consts.Delete_HelmRelease_Fault_Type,
                                 summary='Unable to delete helm release')
-        raise CLIError("Error occured while cleaning up arc agents. " +
-                       "Helm release deletion failed: " + error_helm_delete.decode("ascii") +
-                       " Please run 'helm delete azure-arc' to ensure that the release is deleted.")
+        raise CLIInternalError("Error occured while cleaning up arc agents. " +
+                               "Helm release deletion failed: " + error_helm_delete.decode("ascii") +
+                               " Please run 'helm delete azure-arc' to ensure that the release is deleted.")
     ensure_namespace_cleanup(configuration)
 
 
@@ -330,7 +333,7 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
         telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
         logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state. A possible cause for pods stuck in pending state could be insufficient resources on the kubernetes cluster to onboard to arc.")
-        raise CLIError("Unable to install helm release: " + error_helm_install.decode("ascii"))
+        raise CLIInternalError("Unable to install helm release: " + error_helm_install.decode("ascii"))
 
 
 def flatten(dd, separator='.', prefix=''):
@@ -342,7 +345,7 @@ def flatten(dd, separator='.', prefix=''):
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Error_Flattening_User_Supplied_Value_Dict,
                                 summary='Error while flattening the user supplied helm values dict')
-        raise CLIError("Error while flattening the user supplied helm values dict")
+        raise CLIInternalError("Error while flattening the user supplied helm values dict")
 
 
 def check_features_to_update(features_to_update):
@@ -362,9 +365,9 @@ def user_confirmation(message, yes=False):
         return
     try:
         if not prompt_y_n(message):
-            raise CLIError('Operation cancelled.')
+            raise ManualInterrupt('Operation cancelled.')
     except NoTTYException:
-        raise CLIError('Unable to prompt for confirmation as no tty available. Use --yes.')
+        raise CLIInternalError('Unable to prompt for confirmation as no tty available. Use --yes.')
 
 
 def is_guid(guid):
@@ -374,3 +377,15 @@ def is_guid(guid):
         return True
     except ValueError:
         return False
+
+
+def try_list_node_fix():
+    try:
+        from kubernetes.client.models.v1_container_image import V1ContainerImage
+
+        def names(self, names):
+            self._names = names
+
+        V1ContainerImage.names = V1ContainerImage.names.setter(names)
+    except Exception as ex:
+        logger.debug("Error while trying to monkey patch the fix for list_node(): {}".format(str(ex)))

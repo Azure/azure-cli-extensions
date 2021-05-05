@@ -35,8 +35,8 @@ def _get_data_credentials(cli_ctx, subscription_id=None):
 
 def cf_quantum_mgmt(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from .vendored_sdks.azure_mgmt_quantum import QuantumManagementClient
-    return get_mgmt_service_client(cli_ctx, QuantumManagementClient)
+    from .vendored_sdks.azure_mgmt_quantum import AzureQuantumManagementClient
+    return get_mgmt_service_client(cli_ctx, AzureQuantumManagementClient)
 
 
 def cf_workspaces(cli_ctx, *_):

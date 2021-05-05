@@ -7,13 +7,13 @@
 
 from knack.log import get_logger
 
-from azext_k8s_extension.vendored_sdks.models import ExtensionInstance
-from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceUpdate
-from azext_k8s_extension.vendored_sdks.models import ScopeCluster
-from azext_k8s_extension.vendored_sdks.models import Scope
+from ..vendored_sdks.models import ExtensionInstance
+from ..vendored_sdks.models import ExtensionInstanceUpdate
+from ..vendored_sdks.models import ScopeCluster
+from ..vendored_sdks.models import Scope
 
-from azext_k8s_extension.partner_extensions.PartnerExtensionModel import PartnerExtensionModel
-from azext_k8s_extension.partner_extensions.ContainerInsights import _get_container_insights_settings
+from .PartnerExtensionModel import PartnerExtensionModel
+from .ContainerInsights import _get_container_insights_settings
 
 logger = get_logger(__name__)
 
@@ -41,7 +41,8 @@ class AzureDefender(PartnerExtensionModel):
         is_ci_extension_type = False
 
         logger.warning('Ignoring name, release-namespace and scope parameters since %s '
-                       'only supports cluster scope and single instance of this extension', extension_type)
+                       'only supports cluster scope and single instance of this extension.', extension_type)
+        logger.warning("Defaulting to extension name '%s' and release-namespace '%s'", name, release_namespace)
 
         _get_container_insights_settings(cmd, resource_group_name, cluster_name, configuration_settings,
                                          configuration_protected_settings, is_ci_extension_type)

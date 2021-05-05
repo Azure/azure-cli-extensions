@@ -5,7 +5,7 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.help_files import helps  # pylint: disable=unused-import
-import azext_k8s_extension._consts as consts
+from . import consts
 
 
 helps[f'{consts.EXTENSION_NAME}'] = """
@@ -31,9 +31,4 @@ helps[f'{consts.EXTENSION_NAME} delete'] = """
 helps[f'{consts.EXTENSION_NAME} show'] = """
     type: command
     short-summary: Show details of a K8s-extension.
-"""
-
-helps[f'{consts.EXTENSION_NAME} update'] = """
-    type: command
-    short-summary: Update a K8s-extension.
 """

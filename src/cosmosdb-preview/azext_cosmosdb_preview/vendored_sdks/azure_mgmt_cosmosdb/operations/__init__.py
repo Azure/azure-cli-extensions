@@ -35,10 +35,12 @@ from ._restorable_sql_resources_operations import RestorableSqlResourcesOperatio
 from ._restorable_mongodb_databases_operations import RestorableMongodbDatabasesOperations
 from ._restorable_mongodb_collections_operations import RestorableMongodbCollectionsOperations
 from ._restorable_mongodb_resources_operations import RestorableMongodbResourcesOperations
+from ._cassandra_clusters_operations import CassandraClustersOperations
+from ._cassandra_data_centers_operations import CassandraDataCentersOperations
 from ._private_link_resources_operations import PrivateLinkResourcesOperations
 from ._private_endpoint_connections_operations import PrivateEndpointConnectionsOperations
-from ._cassandra_cluster_operations import CassandraClusterOperations
-from ._cassandra_data_center_operations import CassandraDataCenterOperations
+from ._cassandra_clusters_operations import CassandraClustersOperations
+from ._cassandra_data_centers_operations import CassandraDataCentersOperations
 
 __all__ = [
     'DatabaseAccountsOperations',
@@ -67,8 +69,10 @@ __all__ = [
     'RestorableMongodbDatabasesOperations',
     'RestorableMongodbCollectionsOperations',
     'RestorableMongodbResourcesOperations',
+    'CassandraClustersOperations',
+    'CassandraDataCentersOperations',
     'PrivateLinkResourcesOperations',
     'PrivateEndpointConnectionsOperations',
-    'CassandraClusterOperations',
-    'CassandraDataCenterOperations',
+    'CassandraClustersOperations',
+    'CassandraDataCentersOperations'
 ]

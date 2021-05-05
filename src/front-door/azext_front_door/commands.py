@@ -62,19 +62,23 @@ def load_command_table(self, _):
         client_factory=cf_waf_policies
     )
 
+    fd_frontdoor_custom_sdk = CliCommandType(
+        operations_tmpl='azext_front_door.custom#{}',
+        client_factory=cf_fd_endpoints)
+
     # region Frontdoors
     with self.command_group('network front-door', frontdoor_sdk) as g:
         g.show_command('show')
         g.custom_command('create', 'create_front_door', supports_no_wait=True)
-        g.command('delete', 'delete', supports_no_wait=True)
+        g.command('delete', 'begin_delete', supports_no_wait=True)
         g.custom_command('list', 'list_front_doors')
-        g.generic_update_command('update', custom_func_name='update_front_door', setter_arg_name='front_door_parameters')
-        g.command('check-custom-domain', 'validate_custom_domain')
+        g.generic_update_command('update', custom_func_name='update_front_door', setter_arg_name='front_door_parameters', setter_name="begin_create_or_update")
+        g.custom_command('check-custom-domain', 'validate_custom_domain', client_factory=cf_frontdoor)
         g.custom_command('check-name-availability', 'check_front_door_name_availability', client_factory=cf_front_door_name_availability)
         g.wait_command('wait')
 
     with self.command_group('network front-door', fd_endpoint_sdk) as g:
-        g.command('purge-endpoint', 'purge_content')
+        g.custom_command('purge-endpoint', 'purge_endpoint', client_factory=cf_fd_endpoints)
 
     property_map = {
         'backend_pools': 'backend-pool',
@@ -95,6 +99,7 @@ def load_command_table(self, _):
 
     with self.command_group('network front-door load-balancing', frontdoor_sdk) as g:
         g.generic_update_command('update', custom_func_name='update_fd_load_balancing_settings',
+                                 setter_name="begin_create_or_update",
                                  setter_arg_name='front_door_parameters',
                                  child_collection_prop_name='load_balancing_settings')
 
@@ -111,8 +116,11 @@ def load_command_table(self, _):
         g.custom_command('disable-https', 'configure_fd_frontend_endpoint_disable_https')
         g.custom_command('enable-https', 'configure_fd_frontend_endpoint_enable_https')
 
+        g.wait_command('wait', getter_name="get_fd_frontend_endpoints", getter_type=fd_frontdoor_custom_sdk)
+
     with self.command_group('network front-door routing-rule', frontdoor_sdk) as g:
         g.generic_update_command('update', custom_func_name='update_fd_routing_rule',
+                                 setter_name="begin_create_or_update",
                                  setter_arg_name='front_door_parameters',
                                  child_collection_prop_name='routing_rules')
 
@@ -141,10 +149,10 @@ def load_command_table(self, _):
     # region WafPolicy
     with self.command_group('network front-door waf-policy', waf_policy_sdk) as g:
         g.custom_command('create', 'create_waf_policy')
-        g.command('delete', 'delete')
+        g.command('delete', 'begin_delete')
         g.command('list', 'list')
         g.show_command('show')
-        g.generic_update_command('update', custom_func_name='update_waf_policy')
+        g.generic_update_command('update', custom_func_name='update_waf_policy', setter_name="begin_create_or_update")
 
     with self.command_group('network front-door waf-policy managed-rules', waf_policy_sdk) as g:
         g.custom_command('add', 'add_azure_managed_rule_set')
@@ -182,7 +190,7 @@ def load_command_table(self, _):
     with self.command_group('network front-door rules-engine', rules_engine_sdk) as g:
         g.show_command('show', 'get')
         g.command('list', 'list_by_front_door')
-        g.command('delete', 'delete')
+        g.command('delete', 'begin_delete')
 
     with self.command_group('network front-door rules-engine rule', rules_engine_sdk) as g:
         g.custom_command('create', 'create_rules_engine_rule')
