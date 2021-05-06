@@ -378,7 +378,7 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
         plan = generate_default_app_service_plan_name(name)
         logger.warning("Plan not specified. Creating Plan '%s' with sku '%s'", plan, KUBE_DEFAULT_SKU)
         create_app_service_plan(cmd=cmd, resource_group_name=resource_group_name,
-            name=plan, is_linux=True, hyper_v=False, custom_location=custom_location, per_site_scaling=True)
+            name=plan, is_linux=True, hyper_v=False, custom_location=custom_location, per_site_scaling=True, number_of_workers=1)
 
     if custom_location and plan:
         if not _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, custom_location, plan):
@@ -779,7 +779,7 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
             plan = generate_default_app_service_plan_name(name)
             logger.warning("Plan not specified. Creating Plan '%s' with sku '%s'", plan, KUBE_DEFAULT_SKU)
             create_app_service_plan(cmd=cmd, resource_group_name=resource_group_name,
-                name=plan, is_linux=True, hyper_v=False, custom_location=custom_location, per_site_scaling=True)
+                name=plan, is_linux=True, hyper_v=False, custom_location=custom_location, per_site_scaling=True, number_of_workers=1)
 
         if custom_location and plan:
             if not _validate_asp_and_custom_location_kube_envs_match(cmd, resource_group_name, custom_location, plan):
