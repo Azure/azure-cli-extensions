@@ -4,16 +4,15 @@
 # --------------------------------------------------------------------------------------------
 
 import argparse
-import glob
 import os
 import sys
-from azdev.operations.testtool import _discover_module_tests, run_tests
-from azdev.utilities import EXTENSION_PREFIX, get_path_table, get_name_index
+from azdev.operations.testtool import run_tests
+from azdev.utilities import EXTENSION_PREFIX
 
-from utils import get_test_matrix, decorate_qualified_prefix, check_file_existence
+import ext
+import utils
 
 # const
-EXTENSION_NAME = "aks-preview"
 AKS_PREVIEW_MOD_NAME = EXTENSION_PREFIX + "aks_preview"  # azext_aks_preview
 
 
@@ -21,11 +20,17 @@ def init_argparse():
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--tests", nargs='+', help="test case names")
     parser.add_argument("-cm", "--cli-matrix",  type=str,
-                        help="cli test matrix")
+                        help="full path to cli test matrix")
+    parser.add_argument("-cc", "--cli-coverage", nargs="+",
+                        help="cli test extra coverage")
+    parser.add_argument("-cf", "--cli-filter", nargs="+",
+                        help="cli test filter")
     parser.add_argument("-em", "--ext-matrix",  type=str,
-                        help="extension test matrix")
-    parser.add_argument("-emf", "--ext-matrix-filter", nargs="+",
-                        help="extension test matrix")
+                        help="full path to extension test matrix")
+    parser.add_argument("-ec", "--ext-coverage", nargs="+",
+                        help="extension test extra coverage")
+    parser.add_argument("-ef", "--ext-filter", nargs="+",
+                        help="extension test filter")
     parser.add_argument("-s", "--series", action="store_true",
                         default=False, help="series test")
     parser.add_argument("-l", "--live", action="store_true",
@@ -52,60 +57,6 @@ def init_argparse():
     return args
 
 
-def get_ext_test_index():
-    # path table & name index
-    path_table = get_path_table()
-    command_modules = path_table['mod']
-    extensions = path_table["ext"]
-    inverse_name_table = get_name_index(invert=True)
-
-    # import_name & mod_data
-    aks_preview_mod_path = extensions[AKS_PREVIEW_MOD_NAME]
-    glob_pattern = os.path.normcase(
-        os.path.join("{}*".format(EXTENSION_PREFIX)))
-    file_path = glob.glob(os.path.join(aks_preview_mod_path, glob_pattern))[0]
-    import_name = os.path.basename(file_path)
-    mod_data = {
-        "alt_name": inverse_name_table[AKS_PREVIEW_MOD_NAME],
-        "filepath": os.path.join(file_path, "tests", "latest"),
-        "base_path": "{}.tests.{}".format(import_name, "latest"),
-        "files": {}
-    }
-
-    # azdev hook
-    ext_test = _discover_module_tests(import_name, mod_data)
-    ext_test_index = ext_test["files"]
-    return ext_test_index
-
-
-def get_ext_test_cases(ext_test_index, ext_matrix):
-    ext_test_cases = []
-    ext_coverage = ext_matrix["coverage"]
-    for fileName, className in ext_coverage.items():
-        for c in className:
-            ext_test_cases.extend(ext_test_index[fileName][c])
-    return ext_test_cases
-
-
-def get_ext_exclude_test_cases(ext_matrix, ext_matrix_filter):
-    ext_exclude_test_cases = []
-    ext_exclude = ext_matrix["exclude"]
-    if not ext_matrix_filter or "all" in ext_matrix_filter:
-        for k, v in ext_exclude.items():
-            ext_exclude_test_cases.extend(v)
-    else:
-        for k, v in ext_exclude.items():
-            if k in ext_matrix_filter:
-                ext_exclude_test_cases.extend(v)
-    return ext_exclude_test_cases
-
-
-def get_ext_filted_test_cases(ext_test_cases, ext_exclude_test_cases):
-    ext_filtered_test_cases = [
-        x for x in ext_test_cases if x not in ext_exclude_test_cases]
-    return ext_filtered_test_cases
-
-
 def main():
     print("args: {}".format(sys.argv))
     args = init_argparse()
@@ -114,7 +65,7 @@ def main():
     test_cases = args.tests
     ext_matrix_file_path = args.ext_matrix
     cli_matrix_file_path = args.cli_matrix
-    if not test_cases and not check_file_existence(ext_matrix_file_path) and not check_file_existence(cli_matrix_file_path):
+    if not test_cases and not utils.check_file_existence(ext_matrix_file_path) and not utils.check_file_existence(cli_matrix_file_path):
         sys.exit(
             "At least one of 'tests', 'cli_matrix' and 'ext_matrix' must be provided!")
 
@@ -136,25 +87,26 @@ def main():
     print()
 
     # ext matrix
-    if check_file_existence(ext_matrix_file_path):
-        ext_test_index = get_ext_test_index()
-        ext_matrix = get_test_matrix(ext_matrix_file_path)
-        ext_test_cases = get_ext_test_cases(ext_test_index, ext_matrix)
-        ext_exclude_test_cases = get_ext_exclude_test_cases(
-            ext_matrix, args.ext_matrix_filter)
-        ext_filtered_test_cases = get_ext_filted_test_cases(
+    if utils.check_file_existence(ext_matrix_file_path):
+        ext_test_index = ext.get_ext_test_index(AKS_PREVIEW_MOD_NAME)
+        ext_matrix = utils.get_test_matrix(ext_matrix_file_path)
+        ext_test_cases = ext.get_ext_test_cases(
+            ext_test_index, ext_matrix, args.ext_coverage)
+        ext_exclude_test_cases = ext.get_ext_exclude_test_cases(ext_test_index,
+                                                                ext_matrix, args.ext_filter)
+        ext_filtered_test_cases = ext.get_ext_filted_test_cases(
             ext_test_cases, ext_exclude_test_cases)
         # add prefix
-        ext_qualified_test_cases = decorate_qualified_prefix(
+        ext_qualified_test_cases = utils.decorate_qualified_prefix(
             ext_filtered_test_cases, AKS_PREVIEW_MOD_NAME)
-        print("According to 'ext_matrix', we get {} cases, need to exclude {} cases, finally get {} cases".format(
+        print("According to 'ext_matrix' and filters, we get {} cases, need to exclude {} cases, finally get {} cases!".format(
             len(ext_test_cases), len(ext_exclude_test_cases), len(ext_filtered_test_cases)))
         print("Perform following tests: {}".format(ext_qualified_test_cases))
         run_tests(ext_qualified_test_cases, xml_path=args.xml_path, discover=args.discover, in_series=args.series,
                   run_live=args.live, no_exit_first=args.no_exitfirst, pytest_args=pytest_args)
 
     # cli matrix
-    if check_file_existence(cli_matrix_file_path):
+    if utils.check_file_existence(cli_matrix_file_path):
         print("Currently not support!")
         pass
 
