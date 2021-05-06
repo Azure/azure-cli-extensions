@@ -23,6 +23,8 @@ echo "COVERAGE=$COVERAGE" >> env.list
 echo "TEST_MODE=$TEST_MODE" >> env.list
 echo "PARALLELISM=$PARALLELISM" >> env.list
 echo "TEST_CASES=$TEST_CASES" >> env.list
+echo "EXT_TEST_FILTER=$EXT_TEST_FILTER" >> env.list
+echo "EXT_TEST_COVERAGE=$EXT_TEST_COVERAGE" >> env.list
 
 # repo
 echo "CLI_REPO=$CLI_REPO" >> env.list
