@@ -81,6 +81,9 @@ def load_arguments(self, _):
         c.argument('environment', help="Name of the kube environment, if app is to be deployed to a k8 cluster", options_list=['--environment', '-e'])
     '''
 
+    with self.argument_context('webapp scale') as c:
+        c.argument('number_of_workers', help='Number of workers to be allocated.', type=int, default=1)
+
     with self.argument_context('webapp show') as c:
         c.argument('name', arg_type=webapp_name_arg_type)
 

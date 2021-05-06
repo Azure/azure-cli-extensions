@@ -157,7 +157,7 @@ def list_app_service_plans(cmd, resource_group_name=None):
 def _validate_asp_sku(app_service_environment, custom_location, sku):
     # Isolated SKU is supported only for ASE
     if sku.upper() not in ['F1', 'FREE', 'D1', 'SHARED', 'B1', 'B2', 'B3', 'S1', 'S2', 'S3', 'P1V2', 'P2V2', 'P3V2', 'PC2', 'PC3', 'PC4', 'I1', 'I2', 'I3', 'K1']:
-        raise CLIError('Invalid sku entered: {}', sku)
+        raise CLIError('Invalid sku entered: {}'.format(sku))
 
     if sku.upper() in ['I1', 'I2', 'I3', 'I1V2', 'I2V2', 'I3V2']:
         if not app_service_environment:
@@ -534,6 +534,10 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
         webapp.identity = identity
 
     return webapp
+
+def scale_webapp(cmd, resource_group_name, name, number_of_workers, slot=None):
+    return update_site_configs(cmd, resource_group_name, name,
+                               number_of_workers=number_of_workers, slot=slot)
 
 def webapp_up(cmd, name, resource_group_name=None, plan=None, location=None, sku=None, dryrun=False, logs=False,  # pylint: disable=too-many-statements,
         launch_browser=False, html=False, environment=None):
