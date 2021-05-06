@@ -33,6 +33,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('orchestrators[0].orchestratorType', 'Kubernetes')
         ])
 
+    @live_only()  # without live only fails with need az login
+    @AllowLargeResponse()
+    def test_get_os_options(self):
+        osOptions_cmd = 'aks get-os-options -l westus2'
+        self.cmd(osOptions_cmd, checks=[
+            self.check(
+                'type', 'Microsoft.ContainerService/locations/osOptions')
+        ])
+
     # without live only fails with needs .ssh fails (maybe generate-ssh-keys would fix) and maybe az login.
     @live_only()
     @AllowLargeResponse()

@@ -10,7 +10,7 @@ from ._validators import (get_datetime_type, validate_metadata,
                           validate_azcopy_upload_destination_url, validate_azcopy_download_source_url,
                           validate_azcopy_target_url, validate_included_datasets,
                           validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url,
-                          validate_storage_data_plane_list, validate_delete_retention_days, process_resource_group,
+                          validate_storage_data_plane_list,
                           process_resource_group, add_upload_progress_callback)
 
 from .profiles import CUSTOM_MGMT_PREVIEW_STORAGE
@@ -118,12 +118,13 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage account file-service-properties update',
                                resource_type=CUSTOM_MGMT_PREVIEW_STORAGE) as c:
+        from azure.cli.command_modules.storage._validators import validate_file_delete_retention_days
         c.argument('account_name', acct_name_type, id_part=None)
         c.argument('resource_group_name', required=False, validator=process_resource_group)
         c.argument('enable_delete_retention', arg_type=get_three_state_flag(), arg_group='Delete Retention Policy',
                    min_api='2019-06-01', help='Enable file service properties for share soft delete.')
         c.argument('delete_retention_days', type=int, arg_group='Delete Retention Policy',
-                   validator=validate_delete_retention_days, min_api='2019-06-01',
+                   validator=validate_file_delete_retention_days, min_api='2019-06-01',
                    help=' Indicate the number of days that the deleted item should be retained. The minimum specified '
                         'value can be 1 and the maximum value can be 365.')
         c.argument('enable_smb_multichannel', options_list=['--enable-smb-multichannel', '--mc'],

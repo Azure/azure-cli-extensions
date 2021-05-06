@@ -5,15 +5,15 @@
 
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
-from azext_k8s_extension._client_factory import (cf_k8s_extension, cf_k8s_extension_operation)
-from azext_k8s_extension._format import k8s_extension_list_table_format, k8s_extension_show_table_format
-import azext_k8s_extension._consts as consts
+from ._client_factory import (cf_k8s_extension, cf_k8s_extension_operation)
+from ._format import k8s_extension_list_table_format, k8s_extension_show_table_format
+from . import consts
 
 
 def load_command_table(self, _):
 
     k8s_extension_sdk = CliCommandType(
-        operations_tmpl='azext_k8s_extension.vendored_sdks.operations#K8sExtensionsOperations.{}',
+        operations_tmpl=consts.EXTENSION_PACKAGE_NAME + '.vendored_sdks.operations#K8sExtensionsOperations.{}',
         client_factory=cf_k8s_extension)
 
     with self.command_group(consts.EXTENSION_NAME, k8s_extension_sdk, client_factory=cf_k8s_extension_operation,
