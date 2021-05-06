@@ -1,0 +1,22 @@
+{
+    "coverage": {
+        "test_validators": [
+            "TestValidateIPRanges",
+            "TestClusterAutoscalerParamsValidators"
+        ]
+    },
+    "exclude": {
+        "iprange": [
+            "test_simultaneous_allow_and_disallow_with_spaces",
+            "test_simultaneous_enable_and_disable_with_spaces",
+            "test_disable_authorized_ip_ranges"
+        ],
+        "test_local_ip_address": [
+            "test_aks_create_and_update_with_managed_aad_enable_azure_rbac",
+            "test_aks_create_with_virtual_node_addon"
+        ],
+        "test_validators": [
+            "TestClusterAutoscalerParamsValidators"
+        ]
+    }
+}

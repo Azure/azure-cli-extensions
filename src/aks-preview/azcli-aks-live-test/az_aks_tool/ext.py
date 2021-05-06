@@ -62,8 +62,19 @@ def get_ext_exclude_test_cases(ext_test_index, ext_matrix, ext_filter):
     ext_exclude_test_cases = []
     ext_exclude = ext_matrix["exclude"]
     if not ext_filter:
+        matrix_test_cases = []
+        matrix_file_class_pairs = []
         for k, v in ext_exclude.items():
-            ext_exclude_test_cases.extend(v)
+            # method 1: reason -> test cases
+            matrix_test_cases.extend(v)
+            # method 2: fileName -> className
+            matrix_file_class_pairs.extend((k, x) for x in v)
+        # method 1: reason -> test cases
+        ext_exclude_test_cases.extend(utils.filter_valid_test_cases(matrix_test_cases, ext_test_index))
+        # method 2: fileName -> className
+        valid_matrix_file_class_pairs = utils.filter_valid_file_class_pairs(matrix_file_class_pairs, ext_test_index)
+        for valid_matrix_pair in valid_matrix_file_class_pairs:
+            ext_exclude_test_cases.extend(ext_test_index[valid_matrix_pair[0]][valid_matrix_pair[1]])
     else:
         # method 1: matrix exclude key
         for k, v in ext_exclude.items():

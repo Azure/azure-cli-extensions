@@ -94,7 +94,7 @@ def main():
             ext_test_index, ext_matrix, args.ext_coverage)
         ext_exclude_test_cases = ext.get_ext_exclude_test_cases(ext_test_index,
                                                                 ext_matrix, args.ext_filter)
-        ext_filtered_test_cases = ext.get_ext_filted_test_cases(
+        ext_filtered_test_cases = utils.get_filted_test_cases(
             ext_test_cases, ext_exclude_test_cases)
         # add prefix
         ext_qualified_test_cases = utils.decorate_qualified_prefix(

@@ -74,3 +74,9 @@ def filter_valid_test_cases(test_cases, test_index):
         else:
             print("Invalid test case: '{}'".format(test_case))
     return valid_test_cases
+
+
+def get_filted_test_cases(test_cases, exclude_test_cases):
+    filtered_test_cases = [
+        x for x in test_cases if x not in exclude_test_cases]
+    return filtered_test_cases
