@@ -36,19 +36,19 @@ helps['connectedk8s update'] = """
     - name: Update proxy values for the agents
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName  --proxy-cert /path/to/crt --proxy-https https://proxy-url --proxy-http http://proxy-url --proxy-skip-range excludedIP,excludedCIDR,exampleCIDRfollowed,10.0.0.0/24
     - name: Disable proxy settings for agents
-      text: az connectedk8s update --disable-proxy
+      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --disable-proxy
     - name: Disable auto-upgrade of agents
-      text: az connectedk8s update --auto-upgrade false
+      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --auto-upgrade false
 """
 
 helps['connectedk8s upgrade'] = """
     type: command
-    short-summary: Upgrade onboarded agents to the specific version or default to the latest version.
+    short-summary: Atomically upgrade onboarded agents to the specific version or default to the latest version.
     examples:
     - name: Upgrade the agents to the latest version
       text: az connectedk8s upgrade -g resourceGroupName -n connectedClusterName
     - name: Upgrade the agents to a specific version
-      text: az connectedk8s upgrade -g resourceGroupName -n connectedClusterName --agent-version 0.2.28
+      text: az connectedk8s upgrade -g resourceGroupName -n connectedClusterName --agent-version 0.2.62
 """
 
 helps['connectedk8s list'] = """
@@ -78,4 +78,42 @@ helps['connectedk8s show'] = """
     examples:
     - name: Show the details for a connected kubernetes cluster
       text: az connectedk8s show -g resourceGroupName -n connectedClusterName
+"""
+
+helps['connectedk8s proxy'] = """
+  type: command
+  short-summary: Get access to a connected kubernetes cluster.
+  examples:
+  - name: Get access to a connected kubernetes cluster.
+    text: az connectedk8s proxy -n clusterName -g resourceGroupName
+  - name: Get access to a connected kubernetes cluster with custom port
+    text: az connectedk8s proxy -n clusterName -g resourceGroupName --port portValue
+  - name: Get access to a connected kubernetes cluster with service account token
+    text: az connectedk8s proxy -n clusterName -g resourceGroupName --token tokenValue
+  - name: Get access to a connected kubernetes cluster by specifying custom kubeconfig location
+    text: az connectedk8s proxy -n clusterName -g resourceGroupName -f path/to/kubeconfig
+  - name: Get access to a connected kubernetes cluster by specifying custom context
+    text: az connectedk8s proxy -n clusterName -g resourceGroupName --kube-context contextName
+"""
+
+helps['connectedk8s enable-features'] = """
+  type: command
+  short-summary: Enables the selective features on the connected cluster.
+  examples:
+  - name: Enables the Cluster-Connect feature.
+    text: az connectedk8s enable-features -n clusterName -g resourceGroupName --features cluster-connect
+  - name: Enable Azure RBAC feature.
+    text: az connectedk8s enable-features -n clusterName -g resourceGroupName --features azure-rbac --app-id appID --app-secret="appSecret" --skip-azure-rbac-list "user1@domain.com,spn_oid"
+  - name: Enable multiple features.
+    text: az connectedk8s enable-features -n clusterName -g resourceGroupName --features cluster-connect custom-locations
+"""
+
+helps['connectedk8s disable-features'] = """
+  type: command
+  short-summary: Disables the selective features on the connected cluster.
+  examples:
+  - name: Disables the azure-rbac feature.
+    text: az connectedk8s disable-features -n clusterName -g resourceGroupName --features azure-rbac
+  - name: Disable multiple features.
+    text: az connectedk8s disable-features -n clusterName -g resourceGroupName --features custom-locations azure-rbac
 """

@@ -2,6 +2,25 @@
 
 Release History
 ===============
+0.5.10
++++++
+* Add `--binding-selector` to AAD pod identity add sub command
+* Support using custom kubelet identity
+* Support updating Windows password
+* Add FIPS support to CLI extension
+
+0.5.9
++++++
+* Display result better for `az aks command invoke`, while still honor output option
+* Fix the bug that checking the addon profile whether it exists
+
+0.5.8
++++++
+* Update to use 2021-03-01 api-version
+
+0.5.7
++++++
+* Add command invoke for run-command feature
 
 0.5.6
 +++++
