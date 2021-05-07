@@ -2,6 +2,14 @@
 
 Release History
 ===============
+0.2.5
+++++++
+* Migrate to Track2 SDK.
+
+0.2.4
+++++++
+* `az network vhub connection`: Support command `update`
+* `az network vpn-gateway connection`: Support command `update`
 
 0.2.3
 ++++++

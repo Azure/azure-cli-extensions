@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.3.1'
+VERSION = '0.3.2'
 try:
     from azext_healthcareapis.manual.version import VERSION
 except ImportError:
