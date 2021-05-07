@@ -4,6 +4,7 @@ Describe 'AzureML Kubernetes Testing' {
         $extensionName = "azureml-kubernetes-connector"
         $extensionAgentNamespace = "azureml"
         $relayResourceIDKey = "relayserver.hybridConnectionResourceID"
+        $serviceBusResourceIDKey = "servicebus.resourceID"
 
         . $PSScriptRoot/../../helper/Constants.ps1
         . $PSScriptRoot/../../helper/Helper.ps1
@@ -78,6 +79,14 @@ Describe 'AzureML Kubernetes Testing' {
     }
 
     It "Deletes the extension from the cluster" {
+        # cleanup the relay and servicebus
+        $relayResourceID = Get-ExtensionConfigurationSettings $extensionName $relayResourceIDKey
+        $serviceBusResourceID = Get-ExtensionConfigurationSettings $extensionName $serviceBusResourceIDKey
+        $relayNamespaceName = $relayResourceID.split("/")[8]
+        $serviceBusNamespaceName = $serviceBusResourceID.split("/")[8]
+        az relay namespace delete --resource-group $ENVCONFIG.resourceGroup --name $relayNamespaceName
+        az servicebus namespace delete --resource-group $ENVCONFIG.resourceGroup --name $serviceBusNamespaceName
+
         az k8s-extension delete --cluster-name $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type connectedClusters --name $extensionName
         $? | Should -BeTrue
 
