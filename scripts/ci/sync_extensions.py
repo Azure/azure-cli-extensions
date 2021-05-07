@@ -22,8 +22,8 @@ def _get_updated_extension_filenames():
     cmd = 'git --no-pager diff --diff-filter=ACMRT HEAD~{} -- src/index.json'.format(COMMIT_NUM)
     updated_content = check_output(cmd.split()).decode('utf-8')
     FILENAME_REGEX = r'"filename":\s+"(.*?)"'
-    added_ext_filenames = [re.findall(FILENAME_REGEX, line)[0] for line in updated_content.splitlines() if line.startswith('+') and not line.startswith('+++') and 'filename' in line]
-    deleted_ext_filenames = [re.findall(FILENAME_REGEX, line)[0] for line in updated_content.splitlines() if line.startswith('-') and not line.startswith('---') and 'filename' in line]
+    added_ext_filenames = {re.findall(FILENAME_REGEX, line)[0] for line in updated_content.splitlines() if line.startswith('+') and not line.startswith('+++') and 'filename' in line}
+    deleted_ext_filenames = {re.findall(FILENAME_REGEX, line)[0] for line in updated_content.splitlines() if line.startswith('-') and not line.startswith('---') and 'filename' in line}
     return added_ext_filenames, deleted_ext_filenames
 
 
@@ -111,7 +111,12 @@ def main():
     sync_all = (os.getenv('AZURE_SYNC_ALL_EXTENSIONS') and os.getenv('AZURE_SYNC_ALL_EXTENSIONS').lower() == 'true')
     if not sync_all:
         added_ext_filenames, deleted_ext_filenames = _get_updated_extension_filenames()
-        if not added_ext_filenames and not deleted_ext_filenames:
+        # when there are large amount of changes, for instance deleting a lot of old versions of extensions,
+        # git may not accurately recognize the right changes, so we need to compare added filenames and deleted filenames
+        # to get the real changed ones.
+        net_added_ext_filenames = added_ext_filenames - deleted_ext_filenames
+        net_deleted_ext_filenames = deleted_ext_filenames - added_ext_filenames
+        if not net_added_ext_filenames and not net_deleted_ext_filenames:
             print('index.json not changed. End task.')
             return
     temp_dir = tempfile.mkdtemp()
@@ -147,7 +152,7 @@ def main():
                 _sync_wheel(ext, updated_indexes, failed_urls, client, True, temp_dir)
     else:
         NAME_REGEX = r'^(.*?)-\d+.\d+.\d+'
-        for filename in added_ext_filenames:
+        for filename in net_added_ext_filenames:
             extension_name = re.findall(NAME_REGEX, filename)[0].replace('_', '-')
             print('Uploading {}'.format(filename))
             ext = current_extensions[extension_name][-1]
@@ -157,12 +162,13 @@ def main():
                 _sync_wheel(ext, updated_indexes, failed_urls, client, True, temp_dir)
 
     print("")
-    _update_target_extension_index(updated_indexes, deleted_ext_filenames, target_index_path)
+    _update_target_extension_index(updated_indexes, net_deleted_ext_filenames, target_index_path)
     index_name = f'{BLOB_PREFIX}/index.json' if BLOB_PREFIX else 'index.json'
     client.create_blob_from_path(container_name=STORAGE_CONTAINER, blob_name=index_name,
                                  file_path=os.path.abspath(target_index_path))
+    print("\nSync finished.")
     if updated_indexes:
-        print("\nSync finished, extensions available in:")
+        print("New extensions available in:")
     for updated_index in updated_indexes:
         print(updated_index['downloadUrl'])
     shutil.rmtree(temp_dir)
