@@ -15,6 +15,7 @@ STORAGE_ACCOUNT_KEY = os.getenv('AZURE_EXTENSION_TARGET_STORAGE_ACCOUNT_KEY')
 STORAGE_ACCOUNT = os.getenv('AZURE_EXTENSION_TARGET_STORAGE_ACCOUNT')
 STORAGE_CONTAINER = os.getenv('AZURE_EXTENSION_TARGET_STORAGE_CONTAINER')
 COMMIT_NUM = os.getenv('AZURE_EXTENSION_COMMIT_NUM') or 1
+BLOB_PREFIX = os.getenv('AZURE_EXTENSION_BLOB_PREFIX')
 
 
 def _get_updated_extension_filenames():
@@ -53,19 +54,20 @@ def _sync_wheel(ext, updated_indexes, failed_urls, client, overwrite, temp_dir):
     download_url = ext['downloadUrl']
     whl_file = download_url.split('/')[-1]
     whl_path = os.path.join(temp_dir, whl_file)
+    blob_name = f'{BLOB_PREFIX}/{whl_file}' if BLOB_PREFIX else whl_file
     try:
         download_file(download_url, whl_path)
     except Exception:
         failed_urls.append(download_url)
         return
     if not overwrite:
-        exists = client.exists(container_name=STORAGE_CONTAINER, blob_name=whl_file)
+        exists = client.exists(container_name=STORAGE_CONTAINER, blob_name=blob_name)
         if exists:
             print("Skipping '{}' as it already exists...".format(whl_file))
             return
-    client.create_blob_from_path(container_name=STORAGE_CONTAINER, blob_name=whl_file,
+    client.create_blob_from_path(container_name=STORAGE_CONTAINER, blob_name=blob_name,
                                  file_path=os.path.abspath(whl_path))
-    url = client.make_blob_url(container_name=STORAGE_CONTAINER, blob_name=whl_file)
+    url = client.make_blob_url(container_name=STORAGE_CONTAINER, blob_name=blob_name)
     updated_index = ext
     updated_index['downloadUrl'] = url
     updated_indexes.append(updated_index)
@@ -119,18 +121,26 @@ def main():
     target_index = DEFAULT_TARGET_INDEX_URL
     os.mkdir(os.path.join(temp_dir, 'target'))
     target_index_path = os.path.join(temp_dir, 'target', 'index.json')
-    download_file(target_index, target_index_path)
-
+    try:
+        download_file(target_index, target_index_path)
+    except Exception as ex:
+        if sync_all and '404' in str(ex):
+            initial_index = {"extensions": {}, "formatVersion": "1"}
+            open(target_index_path, 'w').write(json.dumps(initial_index, indent=4, sort_keys=True))
+        else:
+            raise
     client = BlockBlobService(account_name=STORAGE_ACCOUNT, account_key=STORAGE_ACCOUNT_KEY)
     updated_indexes = []
     failed_urls = []
     if sync_all:
         print('Syncing all extensions...\n')
         # backup the old index.json
-        client.create_blob_from_path(container_name=STORAGE_CONTAINER, blob_name='index.json.sav',
+        backup_index_name = f'{BLOB_PREFIX}/index.json.sav' if BLOB_PREFIX else 'index.json.sav'
+        client.create_blob_from_path(container_name=STORAGE_CONTAINER, blob_name=backup_index_name,
                                      file_path=os.path.abspath(target_index_path))
-        inital_index = {"extensions": {}, "formatVersion": "1"}
-        open(target_index_path, 'w').write(json.dumps(inital_index, indent=4, sort_keys=True))
+        # start with an empty index.json to sync all extensions
+        initial_index = {"extensions": {}, "formatVersion": "1"}
+        open(target_index_path, 'w').write(json.dumps(initial_index, indent=4, sort_keys=True))
         for extension_name in current_extensions.keys():
             for ext in current_extensions[extension_name]:
                 print('Uploading {}'.format(ext['filename']))
@@ -148,7 +158,8 @@ def main():
 
     print("")
     _update_target_extension_index(updated_indexes, deleted_ext_filenames, target_index_path)
-    client.create_blob_from_path(container_name=STORAGE_CONTAINER, blob_name='index.json',
+    index_name = f'{BLOB_PREFIX}/index.json' if BLOB_PREFIX else 'index.json'
+    client.create_blob_from_path(container_name=STORAGE_CONTAINER, blob_name=index_name,
                                  file_path=os.path.abspath(target_index_path))
     if updated_indexes:
         print("\nSync finished, extensions available in:")
@@ -157,7 +168,7 @@ def main():
     shutil.rmtree(temp_dir)
 
     if failed_urls:
-        print("\nFailed to donwload and sync the following files. They are skipped:")
+        print("\nFailed to download and sync the following files. They are skipped:")
         for url in failed_urls:
             print(url)
         print("")
