@@ -3,13 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from azure.cli.core.commands.client_factory import get_subscription_id
+from msrestazure.tools import is_valid_resource_id, resource_id
+
 
 def example_name_or_id_validator(cmd, namespace):
     # This is an example validator , we can write our validators using this pattern as needed.
     # Example of a storage account name or ID validator.
-    # See: https://github.com/Azure/azure-cli/blob/dev/doc/authoring_command_modules/authoring_commands.md#supporting-name-or-id-parameters
-    from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import is_valid_resource_id, resource_id
+    # See: https://github.com/Azure/azure-cli/blob/dev/doc/authoring_command_modules/authoring_commands.md#supporting-name-or-id-parameters  # pylint: disable=C0301
 
     if namespace.storage_account:
         if not is_valid_resource_id(namespace.RESOURCE):

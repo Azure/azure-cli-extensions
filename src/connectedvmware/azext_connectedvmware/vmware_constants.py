@@ -5,7 +5,6 @@
 
 VMWARE_NAMESPACE = "Microsoft.ConnectedVmwarevSphere"
 VCENTER_RESOURCE_TYPE = "VCenters"
-ARCZONE_RESOURCE_TYPE = "arczones"
 RESOURCEPOOL_RESOURCE_TYPE = "resourcepools"
 VMTEMPLATE_RESOURCE_TYPE = "virtualmachinetemplates"
 VIRTUALNETWORK_RESOURCE_TYPE = "virtualnetworks"
@@ -16,10 +15,6 @@ EXTENDED_LOCATION_NAMESPACE = "Microsoft.ExtendedLocation"
 CUSTOM_LOCATION_RESOURCE_TYPE = "CustomLocations"
 EXTENDED_LOCATION_TYPE = "CustomLocation"
 INVENTORY_ITEM_TYPE = "InventoryItems"
-
-# TODO (subbart): check how to get these constants from container service sdk itself.
-CONTAINER_SERVICE_NAMESPACE = "Microsoft.ContainerService"
-MANAGED_CLUSTERS_RESOURCE_TYPE = "managedClusters"
 
 NAME_PARAMETER = "name"
 DEVICE_KEY = "device-key"

@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.util import CLIError
+from azure.cli.core.commands.client_factory import get_subscription_id
+from msrestazure.tools import is_valid_resource_id, resource_id
 
 
 def get_resource_id(
@@ -18,12 +20,11 @@ def get_resource_id(
     """
     Gets the resource id for the resource if name is given.
     """
-    from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import is_valid_resource_id, resource_id
 
     if not is_valid_resource_id(resource):
+        resource_ids = None
         if child_type_1 and child_name_1:
-            return resource_id(
+            resource_ids = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx),
                 resource_group=resource_group_name,
                 namespace=provider_name_space,
@@ -33,15 +34,18 @@ def get_resource_id(
                 child_name_1=child_name_1,
             )
         else:
-            return resource_id(
+            resource_ids = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx),
                 resource_group=resource_group_name,
                 namespace=provider_name_space,
                 type=resource_type,
                 name=resource,
             )
+
     else:
-        return resource
+        resource_ids = resource
+
+    return resource_ids
 
 
 def create_dictionary_from_arg_string(values, option_string=None):
@@ -53,8 +57,8 @@ def create_dictionary_from_arg_string(values, option_string=None):
         try:
             key, value = item.split('=', 1)
             params_dict[key.lower()] = value
-        except ValueError:
+        except ValueError as item_no_exist:
             raise CLIError(
                 'usage error: {} KEY=VALUE [KEY=VALUE ...]'.format(option_string)
-            )
+            ) from item_no_exist
     return params_dict

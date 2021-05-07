@@ -10,7 +10,7 @@ import argparse
 from azext_connectedvmware.vmware_utils import create_dictionary_from_arg_string
 
 
-class VmNicAddAction(argparse._AppendAction):
+class VmNicAddAction(argparse._AppendAction):  # pylint: disable=W0212, R0903
     """
     Action for parsing the nic arguments.
     """
@@ -23,7 +23,7 @@ class VmNicAddAction(argparse._AppendAction):
             namespace.nics = [nic_params_dict]
 
 
-class VmDiskAddAction(argparse._AppendAction):
+class VmDiskAddAction(argparse._AppendAction):  # pylint: disable=W0212, R0903
     """
     Action for parsing the disk arguments.
     """

@@ -3,14 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+# Client factory for vmware clients.
+from .vendored_sdks import AzureArcVMwareManagementServiceAPI
+
 
 def cf_connectedvmware(cli_ctx, *_):
-
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-
-    # Client factory for vmware clients.
-    from .vendored_sdks import AzureArcVMwareManagementServiceAPI
-
     return get_mgmt_service_client(cli_ctx, AzureArcVMwareManagementServiceAPI)
 
 

@@ -3,14 +3,37 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=C0302
 from knack.util import CLIError
-from azext_connectedvmware.vmware_constants import *
 from azext_connectedvmware.vmware_utils import get_resource_id
 from azure.cli.core.util import sdk_no_wait
 from .vmware_constants import (
+    VMWARE_NAMESPACE,
+    VCENTER_RESOURCE_TYPE,
+    RESOURCEPOOL_RESOURCE_TYPE,
+    VMTEMPLATE_RESOURCE_TYPE,
+    VIRTUALNETWORK_RESOURCE_TYPE,
+    DEFAULT_VCENTER_PORT,
+    EXTENDED_LOCATION_NAMESPACE,
     CUSTOM_LOCATION_RESOURCE_TYPE,
     EXTENDED_LOCATION_TYPE,
+    INVENTORY_ITEM_TYPE,
+    NAME_PARAMETER,
+    DEVICE_KEY,
+    NETWORK,
+    NIC_TYPE,
+    POWER_ON_BOOT,
+    ALLOCATION_METHOD,
+    IP_ADDRESS,
+    SUBNET_MASK,
+    GATEWAY,
+    GATEWAY_SEPERATOR,
+    DISK_SIZE,
+    DISK_MODE,
+    CONTROLLER_KEY,
+    UNIT_NUMBER
 )
+
 from .vendored_sdks.models import (
     DiskMode,
     HardwareProfile,
@@ -62,7 +85,6 @@ def connect_vcenter(
     username=None,
     password=None,
     port=DEFAULT_VCENTER_PORT,
-    tags=None,
     no_wait=False,
 ):
 
@@ -97,7 +119,6 @@ def connect_vcenter(
 
 
 def delete_vcenter(
-    cmd,
     client: VCentersOperations,
     resource_group_name,
     resource_name,
@@ -110,12 +131,12 @@ def delete_vcenter(
     )
 
 
-def show_vcenter(cmd, client: VCentersOperations, resource_group_name, resource_name):
+def show_vcenter(client: VCentersOperations, resource_group_name, resource_name):
 
     return client.get(resource_group_name, resource_name)
 
 
-def list_vcenter(cmd, client: VCentersOperations, resource_group_name=None):
+def list_vcenter(client: VCentersOperations, resource_group_name=None):
 
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name)
@@ -137,7 +158,6 @@ def create_resource_pool(
     vcenter=None,
     mo_ref_id=None,
     inventory_item=None,
-    tags=None,
     no_wait=False,
 ):
 
@@ -173,9 +193,7 @@ def create_resource_pool(
         )
     else:
         if vcenter is None:
-            raise CLIError(
-                "Missing parameter, provide vcenter name or id."
-            )
+            raise CLIError("Missing parameter, provide vcenter name or id.")
 
         vcenter_id = get_resource_id(
             cmd, resource_group_name, VMWARE_NAMESPACE, VCENTER_RESOURCE_TYPE, vcenter
@@ -201,7 +219,6 @@ def create_resource_pool(
 
 
 def delete_resource_pool(
-    cmd,
     client: ResourcePoolsOperations,
     resource_group_name,
     resource_name,
@@ -215,13 +232,13 @@ def delete_resource_pool(
 
 
 def show_resource_pool(
-    cmd, client: ResourcePoolsOperations, resource_group_name, resource_name
+    client: ResourcePoolsOperations, resource_group_name, resource_name
 ):
 
     return client.get(resource_group_name, resource_name)
 
 
-def list_resource_pool(cmd, client: ResourcePoolsOperations, resource_group_name=None):
+def list_resource_pool(client: ResourcePoolsOperations, resource_group_name=None):
 
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name)
@@ -243,7 +260,6 @@ def create_virtual_network(
     vcenter=None,
     mo_ref_id=None,
     inventory_item=None,
-    tags=None,
     no_wait=False,
 ):
 
@@ -279,9 +295,7 @@ def create_virtual_network(
         )
     else:
         if vcenter is None:
-            raise CLIError(
-                "Missing parameter, provide vcenter name or id."
-            )
+            raise CLIError("Missing parameter, provide vcenter name or id.")
 
         vcenter_id = get_resource_id(
             cmd, resource_group_name, VMWARE_NAMESPACE, VCENTER_RESOURCE_TYPE, vcenter
@@ -311,7 +325,6 @@ def create_virtual_network(
 
 
 def delete_virtual_network(
-    cmd,
     client: VirtualNetworksOperations,
     resource_group_name,
     resource_name,
@@ -325,14 +338,14 @@ def delete_virtual_network(
 
 
 def show_virtual_network(
-    cmd, client: VirtualNetworksOperations, resource_group_name, resource_name
+    client: VirtualNetworksOperations, resource_group_name, resource_name
 ):
 
     return client.get(resource_group_name, resource_name)
 
 
 def list_virtual_network(
-    cmd, client: VirtualNetworksOperations, resource_group_name=None
+    client: VirtualNetworksOperations, resource_group_name=None
 ):
 
     if resource_group_name:
@@ -355,7 +368,6 @@ def create_vm_template(
     vcenter=None,
     mo_ref_id=None,
     inventory_item=None,
-    tags=None,
     no_wait=True,
 ):
 
@@ -391,9 +403,7 @@ def create_vm_template(
         )
     else:
         if vcenter is None:
-            raise CLIError(
-                "Missing parameter, provide vcenter name or id."
-            )
+            raise CLIError("Missing parameter, provide vcenter name or id.")
 
         vcenter_id = get_resource_id(
             cmd, resource_group_name, VMWARE_NAMESPACE, VCENTER_RESOURCE_TYPE, vcenter
@@ -419,7 +429,6 @@ def create_vm_template(
 
 
 def delete_vm_template(
-    cmd,
     client: VirtualMachineTemplatesOperations,
     resource_group_name,
     resource_name,
@@ -433,14 +442,14 @@ def delete_vm_template(
 
 
 def show_vm_template(
-    cmd, client: VirtualMachineTemplatesOperations, resource_group_name, resource_name
+    client: VirtualMachineTemplatesOperations, resource_group_name, resource_name
 ):
 
     return client.get(resource_group_name, resource_name)
 
 
 def list_vm_template(
-    cmd, client: VirtualMachineTemplatesOperations, resource_group_name=None
+    client: VirtualMachineTemplatesOperations, resource_group_name=None
 ):
 
     if resource_group_name:
@@ -448,9 +457,11 @@ def list_vm_template(
     return client.list()
 
 
+# endregion
+
 # region VirtualMachines
 
-
+# pylint: disable=R0914
 def create_vm(
     cmd,
     client: VirtualMachinesOperations,
@@ -469,7 +480,6 @@ def create_vm(
     memory_size=None,
     nics=None,
     disks=None,
-    tags=None,
     no_wait=False,
 ):
 
@@ -498,13 +508,13 @@ def create_vm(
     if nics is not None:
         network_profile = NetworkProfile(
             network_interfaces=get_network_interfaces(
-                cmd, client, resource_group_name, nics
+                cmd, resource_group_name, nics
             )
         )
 
     if disks is not None:
         storage_profile = StorageProfile(
-            disks=get_disks(cmd, client, resource_group_name, disks)
+            disks=get_disks(disks)
         )
 
     custom_location_id = get_resource_id(
@@ -536,9 +546,7 @@ def create_vm(
         )
     else:
         if vcenter is None:
-            raise CLIError(
-                "Missing parameter, provide vcenter name or id."
-            )
+            raise CLIError("Missing parameter, provide vcenter name or id.")
 
         vcenter_id = get_resource_id(
             cmd, resource_group_name, VMWARE_NAMESPACE, VCENTER_RESOURCE_TYPE, vcenter
@@ -591,7 +599,6 @@ def create_vm(
 
 
 def update_vm(
-    cmd,
     client: VirtualMachinesOperations,
     resource_group_name,
     resource_name,
@@ -605,17 +612,17 @@ def update_vm(
     hardware_profile = None
 
     if (
-        num_CPUs is None
-        and num_cores_per_socket is None
-        and memory_size is None
-        and tags is None
+        num_CPUs is None and
+        num_cores_per_socket is None and
+        memory_size is None and
+        tags is None
     ):
         raise CLIError("No inputs were given to update the vm.")
 
     if (
-        num_CPUs is not None
-        or num_cores_per_socket is not None
-        or memory_size is not None
+        num_CPUs is not None or
+        num_cores_per_socket is not None or
+        memory_size is not None
     ):
         hardware_profile = HardwareProfile(
             memory_size_mb=memory_size,
@@ -635,7 +642,6 @@ def update_vm(
 
 
 def delete_vm(
-    cmd,
     client: VirtualMachinesOperations,
     resource_group_name,
     resource_name,
@@ -648,12 +654,12 @@ def delete_vm(
     )
 
 
-def show_vm(cmd, client: VirtualMachinesOperations, resource_group_name, resource_name):
+def show_vm(client: VirtualMachinesOperations, resource_group_name, resource_name):
 
     return client.get(resource_group_name, resource_name)
 
 
-def list_vm(cmd, client: VirtualMachinesOperations, resource_group_name=None):
+def list_vm(client: VirtualMachinesOperations, resource_group_name=None):
 
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name)
@@ -661,7 +667,6 @@ def list_vm(cmd, client: VirtualMachinesOperations, resource_group_name=None):
 
 
 def start_vm(
-    cmd,
     client: VirtualMachinesOperations,
     resource_group_name,
     resource_name,
@@ -672,7 +677,6 @@ def start_vm(
 
 
 def stop_vm(
-    cmd,
     client: VirtualMachinesOperations,
     resource_group_name,
     resource_name,
@@ -690,7 +694,6 @@ def stop_vm(
 
 
 def restart_vm(
-    cmd,
     client: VirtualMachinesOperations,
     resource_group_name,
     resource_name,
@@ -703,7 +706,7 @@ def restart_vm(
 
 
 def get_network_interfaces(
-    cmd, client: VirtualMachinesOperations, resource_group_name, input_nics
+    cmd, resource_group_name, input_nics
 ):
     """
     Gets network interfaces from the given input.
@@ -753,7 +756,7 @@ def get_network_interfaces(
     return nics
 
 
-def get_disks(cmd, client: VirtualMachinesOperations, resource_group_name, input_disks):
+def get_disks(input_disks):
     """
     Gets disks from the given input.
     """
@@ -820,8 +823,8 @@ def add_nic(
     nics_update = []
     vm = client.get(resource_group_name, vm_name)
     if (
-        vm.network_profile is not None
-        and vm.network_profile.network_interfaces is not None
+        vm.network_profile is not None and
+        vm.network_profile.network_interfaces is not None
     ):
         for nic in vm.network_profile.network_interfaces:
             nic_update = NetworkInterfaceUpdate(
@@ -876,8 +879,8 @@ def update_nic(
     nic_found = False
     vm = client.get(resource_group_name, vm_name)
     if (
-        vm.network_profile is not None
-        and vm.network_profile.network_interfaces is not None
+        vm.network_profile is not None and
+        vm.network_profile.network_interfaces is not None
     ):
         for nic in vm.network_profile.network_interfaces:
             nic_update = NetworkInterfaceUpdate(
@@ -895,17 +898,17 @@ def update_nic(
                 # Validate nic name is matching with the expected device key if both were given in
                 # the input when name is already assigned to the nic.
                 if (
-                    nic_name is not None
-                    and nic.name is not None
-                    and nic.name != nic_name
+                    nic_name is not None and
+                    nic.name is not None and
+                    nic.name != nic_name
                 ) or (device_key is not None and nic.device_key != device_key):
                     raise CLIError(
-                        "Incorrect nic-name and device-key combination, Expected "
-                        + "nic-name: "
-                        + nic.name
-                        + ", device-key: "
-                        + str(nic.device_key)
-                        + "."
+                        "Incorrect nic-name and device-key combination, Expected " +
+                        "nic-name: " +
+                        nic.name +
+                        ", device-key: " +
+                        str(nic.device_key) +
+                        "."
                     )
 
                 nic_found = True
@@ -947,8 +950,8 @@ def show_nic(client: VirtualMachinesOperations, resource_group_name, vm_name, ni
 
     vm = client.get(resource_group_name, vm_name)
     if (
-        vm.network_profile is not None
-        and vm.network_profile.network_interfaces is not None
+        vm.network_profile is not None and
+        vm.network_profile.network_interfaces is not None
     ):
         for nic in vm.network_profile.network_interfaces:
             if nic.name == nic_name:
@@ -975,8 +978,8 @@ def delete_nics(
     nics_update = []
     vm = client.get(resource_group_name, vm_name)
     if (
-        vm.network_profile is not None
-        and vm.network_profile.network_interfaces is not None
+        vm.network_profile is not None and
+        vm.network_profile.network_interfaces is not None
     ):
         for nic in vm.network_profile.network_interfaces:
             if nic.name in nics_to_delete:
@@ -997,9 +1000,9 @@ def delete_nics(
             not_found_nics = not_found_nics + nic_name + ", "
     if not_found_nics != "":
         raise CLIError(
-            "Nics with name "
-            + not_found_nics
-            + 'not present in the given virtual machine.'
+            "Nics with name " +
+            not_found_nics +
+            'not present in the given virtual machine.'
         )
 
     network_profile = NetworkProfileUpdate(network_interfaces=nics_update)
@@ -1016,7 +1019,6 @@ def delete_nics(
 
 
 def add_disk(
-    cmd,
     client: VirtualMachinesOperations,
     resource_group_name,
     vm_name,
@@ -1063,7 +1065,6 @@ def add_disk(
 
 
 def update_disk(
-    cmd,
     client: VirtualMachinesOperations,
     resource_group_name,
     vm_name,
@@ -1105,17 +1106,17 @@ def update_disk(
                 # Validate disk name is matching with the expected device key if both were given in
                 # the input when name is already assigned to the disk.
                 if (
-                    disk_name is not None
-                    and disk.name is not None
-                    and disk.name != disk_name
+                    disk_name is not None and
+                    disk.name is not None and
+                    disk.name != disk_name
                 ) or (device_key is not None and disk.device_key != device_key):
                     raise CLIError(
                         "Incorrect disk-name and device-key combination, Expected "
-                        + "disk-name: "
-                        + disk.name
-                        + ", device-key: "
-                        + str(disk.device_key)
-                        + "."
+                        "disk-name: " +
+                        disk.name +
+                        ", device-key: " +
+                        str(disk.device_key) +
+                        "."
                     )
 
                 disk_found = True
@@ -1208,9 +1209,9 @@ def delete_disks(
             not_found_disks = not_found_disks + disk_name + ", "
     if not_found_disks != "":
         raise CLIError(
-            "Disks with name "
-            + not_found_disks
-            + "not present in the given virtual machine."
+            "Disks with name " +
+            not_found_disks +
+            "not present in the given virtual machine."
         )
 
     storage_profile = StorageProfileUpdate(disks=disks_update)
@@ -1223,11 +1224,10 @@ def delete_disks(
 
 # endregion
 
-# endregion
+# region InventoryItems
 
 
 def show_inventory_item(
-    cmd,
     client: InventoryItemsOperations,
     resource_group_name,
     vcenter_name,
@@ -1238,7 +1238,7 @@ def show_inventory_item(
 
 
 def list_inventory_item(
-    cmd, client: InventoryItemsOperations, resource_group_name, vcenter_name
+    client: InventoryItemsOperations, resource_group_name, vcenter_name
 ):
 
     return client.list_by_v_center(resource_group_name, vcenter_name)

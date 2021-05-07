@@ -59,14 +59,14 @@ helps[
 """
 
 helps[
-    'connectedvmware resource-pool show'
+    'connectedvmware resource-pool show_command'
 ] = """
     type: command
     short-summary: "Get details of a resource pool by id, resource-group, resource pool name, or subscription"
     examples:
       - name: Get details of a resource pool
         text: |-
-               az connectedvmware resource-pool show --ids "resource id" --name "resource pool name" \
+               az connectedvmware resource-pool show_command --ids "resource id" --name "resource pool name" \
                --resource-group "resource group name" --subscription "subscription id"
 """
 
@@ -74,7 +74,7 @@ helps[
     'connectedvmware vcenter'
 ] = """
     type: group
-    short-summary: Create, Get and Delete vcenter resource
+    short-summary: Vcenter resource.
 """
 
 helps[
@@ -88,7 +88,7 @@ helps[
                az connectedvmware vcenter connect --custom-location "custom location name" \
                --fqdn "vcenter fqdn/ip" --username "vcenter user name" --password "vcenter password" \
                --resource-group "resource group name" --subscription "subscription id" \
-               --name "vcenter name" --inventory-item "inventory item name or id"    
+               --name "vcenter name" --inventory-item "inventory item name or id"
 """
 
 helps[
@@ -115,14 +115,14 @@ helps[
 """
 
 helps[
-    'connectedvmware vcenter show'
+    'connectedvmware vcenter show_command'
 ] = """
     type: command
     short-summary: "Get details of a vcenter resource by id, resource-group, vcenter name or subscription"
     examples:
       - name: Get details of a vcenter resource
         text: |-
-               az connectedvmware vcenter show --ids "resource id" --name "vcenter name" \
+               az connectedvmware vcenter show_command --ids "resource id" --name "vcenter name" \
                    --resource-group "resource group name" --subscription "subscription id"
 """
 
@@ -171,14 +171,14 @@ helps[
 """
 
 helps[
-    'connectedvmware virtual-network show'
+    'connectedvmware virtual-network show_command'
 ] = """
     type: command
     short-summary: "Get details of a virtual network by id, resource-group, reource pool name or subscription"
     examples:
       - name: Get details of a virtual-network
         text: |-
-               az connectedvmware virtual-network show --ids "resource id" --name "virtual network name" \
+               az connectedvmware virtual-network show_command --ids "resource id" --name "virtual network name" \
                --resource-group "resource group name" --subscription "subscription id"
 """
 
@@ -238,14 +238,14 @@ helps[
 """
 
 helps[
-    'connectedvmware vm show'
+    'connectedvmware vm show_command'
 ] = """
     type: command
     short-summary: "Get details of a vm by id, resource-group, reource pool name or subscription"
     examples:
       - name: Get details of a vm resource
         text: |-
-               az connectedvmware vm show --ids "resource id" --name "vm template name" \
+               az connectedvmware vm show_command --ids "resource id" --name "vm template name" \
                --resource-group "resource group name" --subscription "subscription id"
 """
 
@@ -331,16 +331,17 @@ helps[
 """
 
 helps[
-    'connectedvmware vm-template show'
+    'connectedvmware vm-template show_command'
 ] = """
     type: command
     short-summary: "Get details of a vm template by id, resource-group, reource pool name or subscription"
     examples:
       - name: Get details of a vm template
         text: |-
-               az connectedvmware vm-template show --ids "resource id" --name "vm template name" \
+               az connectedvmware vm-template show_command --ids "resource id" --name "vm template name" \
                --resource-group "resource group name" --subscription "subscription id"
 """
+
 helps[
     'connectedvmware inventory-item'
 ] = """
@@ -357,17 +358,17 @@ helps[
       - name: Retrieve a list of inventory item
         text: |-
                az connectedvmware inventory-item list --resource-group "resource group name" \
-               --vcenter-name "name of the vcenter"   
+               --vcenter-name "name of the vcenter"
 """
 
 helps[
-    'connectedvmware inventory-item show'
+    'connectedvmware inventory-item show_command'
 ] = """
     type: command
     short-summary: "Get details of a inventory item by inventory item, resource-group and vcenter name."
     examples:
       - name: Get details of a vm template
         text: |-
-               az connectedvmware inventory-item show --inventory-item-name "name of the inventory item" \
+               az connectedvmware inventory-item show_command --inventory-item-name "name of the inventory item" \
                --resource-group "resource group name" --vcenter-name "name of the vcenter"
 """
