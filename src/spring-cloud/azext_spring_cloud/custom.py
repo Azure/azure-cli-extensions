@@ -32,6 +32,8 @@ from six.moves.urllib import parse
 from threading import Thread
 from threading import Timer
 import sys
+import json
+from collections import defaultdict
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
@@ -530,7 +532,8 @@ def app_get_build_log(cmd, client, resource_group, service, name, deployment=Non
     return stream_logs(client.deployments, resource_group, service, name, deployment)
 
 
-def app_tail_log(cmd, client, resource_group, service, name, deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048):
+def app_tail_log(cmd, client, resource_group, service, name,
+                 deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048, format_json=None):
     if not instance:
         if deployment is None:
             deployment = client.apps.get(
@@ -574,7 +577,7 @@ def app_tail_log(cmd, client, resource_group, service, name, deployment=None, in
     exceptions = []
     streaming_url += "?{}".format(parse.urlencode(params)) if params else ""
     t = Thread(target=_get_app_log, args=(
-        streaming_url, "primary", primary_key, exceptions))
+        streaming_url, "primary", primary_key, format_json, exceptions))
     t.daemon = True
     t.start()
 
@@ -1344,18 +1347,64 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
                        resource_group, service, app, name, properties=properties, sku=sku)
 
 
-def _get_app_log(url, user_name, password, exceptions):
+def _get_app_log(url, user_name, password, format_json, exceptions):
+    def iter_lines(response, limit=2**20):
+        '''
+        Return a line iterator from the response content. If no line ending was found and the buffered content size is
+        large than the limit, the buffer will be yielded directly.
+        '''
+        buffer = []
+        total = 0
+        for content in response.iter_content(chunk_size=None):
+            if not content:
+                if len(buffer) > 0:
+                    yield b''.join(buffer)
+                break
+
+            start = 0
+            while start < len(content):
+                line_end = content.find(b'\n', start)
+                should_print = False
+                if line_end < 0:
+                    next = (start == 0 and content or content[start:])
+                    buffer.append(next)
+                    total += len(next)
+                    start = len(content)
+                    should_print = total >= limit
+                else:
+                    buffer.append(content[start:line_end+1])
+                    start = line_end + 1
+                    should_print = True
+
+                if should_print:
+                    yield b''.join(buffer)
+                    buffer.clear()
+                    total = 0
+
+    def write_line(line):
+        '''
+        Output formatted output from JSON if applicable, otherwise the line directly.
+        '''
+        if format_json is not None and len(format_json) > 0:
+            try:
+                log = json.loads(line)
+                print(format_json.format_map(defaultdict(str, **log)))
+            except:
+                print(line, end='')
+        else:
+            print(line, end='')
+
     with requests.get(url, stream=True, auth=HTTPBasicAuth(user_name, password)) as response:
         try:
             if response.status_code != 200:
                 raise CLIError("Failed to connect to the server with status code '{}' and reason '{}'".format(
                     response.status_code, response.reason))
             std_encoding = sys.stdout.encoding
-            for content in response.iter_content():
-                if content:
-                    sys.stdout.write(content.decode(encoding='utf-8', errors='replace')
-                                     .encode(std_encoding, errors='replace')
-                                     .decode(std_encoding, errors='replace'))
+
+            for line in iter_lines(response):
+                decoded = line.decode(encoding='utf-8', errors='replace').encode(std_encoding, errors='replace').decode(std_encoding, errors='replace')
+                write_line(decoded)
+
         except CLIError as e:
             exceptions.append(e)
 
