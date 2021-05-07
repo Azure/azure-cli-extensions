@@ -84,7 +84,7 @@ helps['cloud-service role show'] = """
 
 helps['cloud-service'] = """
     type: group
-    short-summary: Manage cloud service (extended support). All commands in this extension are extended support.
+    short-summary: Manage cloud service (extended support).
 """
 
 helps['cloud-service list'] = """
