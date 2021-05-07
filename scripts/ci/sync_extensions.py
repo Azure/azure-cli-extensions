@@ -106,8 +106,8 @@ def main():
     import tempfile
     from azure.storage.blob import BlockBlobService
 
-    added_ext_filenames = []
-    deleted_ext_filenames = []
+    net_added_ext_filenames = []
+    net_deleted_ext_filenames = []
     sync_all = (os.getenv('AZURE_SYNC_ALL_EXTENSIONS') and os.getenv('AZURE_SYNC_ALL_EXTENSIONS').lower() == 'true')
     if not sync_all:
         added_ext_filenames, deleted_ext_filenames = _get_updated_extension_filenames()
