@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.3.1
+++++++++++++++++++
+
+* Add provider registration to check to validations
+
 0.3.0
 ++++++++++++++++++
 
