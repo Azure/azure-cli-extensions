@@ -1,5 +1,10 @@
 Release History
 ===============
+
+2.4.0
+-----
+* Add support for 0.5 core, 512 Mi resource requests in app deployment
+
 2.3.1
 -----
 * Fix disable-ssl in redis binding.
