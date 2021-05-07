@@ -4,10 +4,10 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from azure.messaging.webpubsubservice import (
+from .vendored_sdks.azure_messaging_webpubsubservice import (
     WebPubSubServiceClient
 )
-from azure.messaging.webpubsubservice.rest import (
+from .vendored_sdks.azure_messaging_webpubsubservice.rest import (
     build_send_to_all_request,
     build_connection_exists_request,
     build_close_client_connection_request,

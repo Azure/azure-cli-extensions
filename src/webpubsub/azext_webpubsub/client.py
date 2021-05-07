@@ -9,7 +9,7 @@ import sys
 import threading
 import json
 import websockets
-from azure.messaging.webpubsubservice import (
+from .vendored_sdks.azure_messaging_webpubsubservice import (
     build_authentication_token
 )
 
