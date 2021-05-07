@@ -13,6 +13,29 @@ from msrest.serialization import Model
 from msrest.exceptions import HttpOperationError
 
 
+class ApplicationInsightsAgentVersions(Model):
+    """Application Insights agent versions properties payload.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar java: Indicates the version of application insight java agent
+    :vartype java: str
+    """
+
+    _validation = {
+        'java': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'java': {'key': 'java', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(ApplicationInsightsAgentVersions, self).__init__(**kwargs)
+        self.java = None
+
+
 class Resource(Model):
     """The core properties of ARM resources.
 
@@ -91,10 +114,10 @@ class AppResource(ProxyResource):
     :vartype type: str
     :param properties: Properties of the App resource
     :type properties:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.AppResourceProperties
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.AppResourceProperties
     :param identity: The Managed Identity type of the app resource
     :type identity:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ManagedIdentityProperties
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.ManagedIdentityProperties
     :param location: The GEO location of the application, always the same with
      its parent resource
     :type location: str
@@ -133,9 +156,9 @@ class AppResourceProperties(Model):
     :ivar url: URL of the App
     :vartype url: str
     :ivar provisioning_state: Provisioning state of the App. Possible values
-     include: 'Succeeded', 'Failed', 'Creating', 'Updating', 'Deleting'
+     include: 'Succeeded', 'Failed', 'Creating', 'Updating'
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.AppResourceProvisioningState
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.AppResourceProvisioningState
     :param active_deployment_name: Name of the active deployment of the App
     :type active_deployment_name: str
     :param fqdn: Fully qualified dns Name.
@@ -146,10 +169,12 @@ class AppResourceProperties(Model):
     :vartype created_time: datetime
     :param temporary_disk: Temporary disk settings
     :type temporary_disk:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.TemporaryDisk
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.TemporaryDisk
     :param persistent_disk: Persistent disk settings
     :type persistent_disk:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.PersistentDisk
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.PersistentDisk
+    :param enable_end_to_end_tls: Indicate if end to end TLS is enabled.
+    :type enable_end_to_end_tls: bool
     """
 
     _validation = {
@@ -168,6 +193,7 @@ class AppResourceProperties(Model):
         'created_time': {'key': 'createdTime', 'type': 'iso-8601'},
         'temporary_disk': {'key': 'temporaryDisk', 'type': 'TemporaryDisk'},
         'persistent_disk': {'key': 'persistentDisk', 'type': 'PersistentDisk'},
+        'enable_end_to_end_tls': {'key': 'enableEndToEndTLS', 'type': 'bool'},
     }
 
     def __init__(self, **kwargs):
@@ -181,6 +207,7 @@ class AppResourceProperties(Model):
         self.created_time = None
         self.temporary_disk = kwargs.get('temporary_disk', None)
         self.persistent_disk = kwargs.get('persistent_disk', None)
+        self.enable_end_to_end_tls = kwargs.get('enable_end_to_end_tls', None)
 
 
 class AvailableRuntimeVersions(Model):
@@ -191,7 +218,7 @@ class AvailableRuntimeVersions(Model):
 
     :ivar value: A list of all supported runtime versions.
     :vartype value:
-     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.SupportedRuntimeVersion]
+     list[~azure.mgmt.appplatform.v2021_03_03_preview.models.SupportedRuntimeVersion]
     """
 
     _validation = {
@@ -221,7 +248,7 @@ class BindingResource(ProxyResource):
     :vartype type: str
     :param properties: Properties of the Binding resource
     :type properties:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.BindingResourceProperties
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.BindingResourceProperties
     """
 
     _validation = {
@@ -382,7 +409,7 @@ class CertificateResource(ProxyResource):
     :vartype type: str
     :param properties: Properties of the certificate resource payload.
     :type properties:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.CertificateProperties
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.CertificateProperties
     """
 
     _validation = {
@@ -406,9 +433,9 @@ class CertificateResource(ProxyResource):
 class CloudError(Model):
     """An error response from the service.
 
-    :param error:
+    :param error: An error response from the service.
     :type error:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.CloudErrorBody
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.CloudErrorBody
     """
 
     _attribute_map = {
@@ -446,7 +473,7 @@ class CloudErrorBody(Model):
     :type target: str
     :param details: A list of additional details about the error.
     :type details:
-     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.CloudErrorBody]
+     list[~azure.mgmt.appplatform.v2021_03_03_preview.models.CloudErrorBody]
     """
 
     _attribute_map = {
@@ -474,17 +501,10 @@ class ClusterResourceProperties(Model):
      values include: 'Creating', 'Updating', 'Deleting', 'Deleted',
      'Succeeded', 'Failed', 'Moving', 'Moved', 'MoveFailed'
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ProvisioningState
-    :param config_server_properties: Config server git properties of the
-     Service
-    :type config_server_properties:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ConfigServerProperties
-    :param trace: Trace properties of the Service
-    :type trace:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.TraceProperties
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.ProvisioningState
     :param network_profile: Network profile of the Service
     :type network_profile:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.NetworkProfile
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.NetworkProfile
     :ivar version: Version of the Service
     :vartype version: int
     :ivar service_id: ServiceInstanceEntity GUID which uniquely identifies a
@@ -500,8 +520,6 @@ class ClusterResourceProperties(Model):
 
     _attribute_map = {
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
-        'config_server_properties': {'key': 'configServerProperties', 'type': 'ConfigServerProperties'},
-        'trace': {'key': 'trace', 'type': 'TraceProperties'},
         'network_profile': {'key': 'networkProfile', 'type': 'NetworkProfile'},
         'version': {'key': 'version', 'type': 'int'},
         'service_id': {'key': 'serviceId', 'type': 'str'},
@@ -510,8 +528,6 @@ class ClusterResourceProperties(Model):
     def __init__(self, **kwargs):
         super(ClusterResourceProperties, self).__init__(**kwargs)
         self.provisioning_state = None
-        self.config_server_properties = kwargs.get('config_server_properties', None)
-        self.trace = kwargs.get('trace', None)
         self.network_profile = kwargs.get('network_profile', None)
         self.version = None
         self.service_id = None
@@ -524,7 +540,7 @@ class ConfigServerGitProperty(Model):
 
     :param repositories: Repositories of git.
     :type repositories:
-     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.GitPatternRepository]
+     list[~azure.mgmt.appplatform.v2021_03_03_preview.models.GitPatternRepository]
     :param uri: Required. URI of the repository
     :type uri: str
     :param label: Label of the repository
@@ -582,32 +598,67 @@ class ConfigServerProperties(Model):
     Variables are only populated by the server, and will be ignored when
     sending a request.
 
-    :ivar state: State of the config server. Possible values include:
-     'NotAvailable', 'Deleted', 'Failed', 'Succeeded', 'Updating'
-    :vartype state: str or
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ConfigServerState
+    :ivar provisioning_state: State of the config server. Possible values
+     include: 'NotAvailable', 'Deleted', 'Failed', 'Succeeded', 'Updating'
+    :vartype provisioning_state: str or
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.ConfigServerState
     :param error: Error when apply config server settings.
-    :type error: ~azure.mgmt.appplatform.v2019_05_01_preview.models.Error
+    :type error: ~azure.mgmt.appplatform.v2021_03_03_preview.models.Error
     :param config_server: Settings of config server.
     :type config_server:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ConfigServerSettings
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.ConfigServerSettings
     """
 
     _validation = {
-        'state': {'readonly': True},
+        'provisioning_state': {'readonly': True},
     }
 
     _attribute_map = {
-        'state': {'key': 'state', 'type': 'str'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
         'error': {'key': 'error', 'type': 'Error'},
         'config_server': {'key': 'configServer', 'type': 'ConfigServerSettings'},
     }
 
     def __init__(self, **kwargs):
         super(ConfigServerProperties, self).__init__(**kwargs)
-        self.state = None
+        self.provisioning_state = None
         self.error = kwargs.get('error', None)
         self.config_server = kwargs.get('config_server', None)
+
+
+class ConfigServerResource(ProxyResource):
+    """Config Server resource.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource.
+    :vartype type: str
+    :param properties: Properties of the Config Server resource
+    :type properties:
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.ConfigServerProperties
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'properties': {'key': 'properties', 'type': 'ConfigServerProperties'},
+    }
+
+    def __init__(self, **kwargs):
+        super(ConfigServerResource, self).__init__(**kwargs)
+        self.properties = kwargs.get('properties', None)
 
 
 class ConfigServerSettings(Model):
@@ -615,7 +666,7 @@ class ConfigServerSettings(Model):
 
     :param git_property: Property of git environment.
     :type git_property:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ConfigServerGitProperty
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.ConfigServerGitProperty
     """
 
     _attribute_map = {
@@ -625,6 +676,51 @@ class ConfigServerSettings(Model):
     def __init__(self, **kwargs):
         super(ConfigServerSettings, self).__init__(**kwargs)
         self.git_property = kwargs.get('git_property', None)
+
+
+class ConfigServerSettingsErrorRecord(Model):
+    """Error record of the config server settings.
+
+    :param name: The name of the config server settings error record
+    :type name: str
+    :param uri: The uri of the config server settings error record
+    :type uri: str
+    :param messages: The detail error messages of the record
+    :type messages: list[str]
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'uri': {'key': 'uri', 'type': 'str'},
+        'messages': {'key': 'messages', 'type': '[str]'},
+    }
+
+    def __init__(self, **kwargs):
+        super(ConfigServerSettingsErrorRecord, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
+        self.uri = kwargs.get('uri', None)
+        self.messages = kwargs.get('messages', None)
+
+
+class ConfigServerSettingsValidateResult(Model):
+    """Validation result for config server settings.
+
+    :param is_valid: Indicate if the config server settings are valid
+    :type is_valid: bool
+    :param details: The detail validation results
+    :type details:
+     list[~azure.mgmt.appplatform.v2021_03_03_preview.models.ConfigServerSettingsErrorRecord]
+    """
+
+    _attribute_map = {
+        'is_valid': {'key': 'isValid', 'type': 'bool'},
+        'details': {'key': 'details', 'type': '[ConfigServerSettingsErrorRecord]'},
+    }
+
+    def __init__(self, **kwargs):
+        super(ConfigServerSettingsValidateResult, self).__init__(**kwargs)
+        self.is_valid = kwargs.get('is_valid', None)
+        self.details = kwargs.get('details', None)
 
 
 class CustomDomainProperties(Model):
@@ -672,7 +768,7 @@ class CustomDomainResource(ProxyResource):
     :vartype type: str
     :param properties: Properties of the custom domain resource.
     :type properties:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.CustomDomainProperties
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.CustomDomainProperties
     """
 
     _validation = {
@@ -792,9 +888,9 @@ class DeploymentResource(ProxyResource):
     :vartype type: str
     :param properties: Properties of the Deployment resource
     :type properties:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentResourceProperties
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.DeploymentResourceProperties
     :param sku: Sku of the Deployment resource
-    :type sku: ~azure.mgmt.appplatform.v2019_05_01_preview.models.Sku
+    :type sku: ~azure.mgmt.appplatform.v2021_03_03_preview.models.Sku
     """
 
     _validation = {
@@ -825,28 +921,28 @@ class DeploymentResourceProperties(Model):
 
     :param source: Uploaded source information of the deployment.
     :type source:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.UserSourceInfo
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.UserSourceInfo
     :ivar app_name: App name of the deployment
     :vartype app_name: str
     :param deployment_settings: Deployment settings of the Deployment
     :type deployment_settings:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentSettings
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.DeploymentSettings
     :ivar provisioning_state: Provisioning state of the Deployment. Possible
-     values include: 'Creating', 'Updating', 'Succeeded', 'Failed', 'Deleting'
+     values include: 'Creating', 'Updating', 'Succeeded', 'Failed'
     :vartype provisioning_state: str or
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentResourceProvisioningState
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.DeploymentResourceProvisioningState
     :ivar status: Status of the Deployment. Possible values include:
      'Unknown', 'Stopped', 'Running', 'Failed', 'Allocating', 'Upgrading',
      'Compiling'
     :vartype status: str or
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentResourceStatus
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.DeploymentResourceStatus
     :ivar active: Indicates whether the Deployment is active
     :vartype active: bool
     :ivar created_time: Date time when the resource is created
     :vartype created_time: datetime
     :ivar instances: Collection of instances belong to the Deployment
     :vartype instances:
-     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.DeploymentInstance]
+     list[~azure.mgmt.appplatform.v2021_03_03_preview.models.DeploymentInstance]
     """
 
     _validation = {
@@ -884,34 +980,41 @@ class DeploymentResourceProperties(Model):
 class DeploymentSettings(Model):
     """Deployment settings payload.
 
-    :param cpu: Required CPU, basic tier should be 1, standard tier should be
-     in range (1, 4). Default value: 1 .
+    :param cpu: Required CPU. This should be 1 for Basic tier, and in range
+     [1, 4] for Standard tier. This is deprecated starting from API version
+     2020-03-03-preview. Please use the resourceRequests field to set the CPU
+     size. Default value: 1 .
     :type cpu: int
-    :param memory_in_gb: Required Memory size in GB, basic tier should be in
-     range (1, 2), standard tier should be in range (1, 8). Default value: 1 .
+    :param memory_in_gb: Required Memory size in GB. This should be in range
+     [1, 2] for Basic tier, and in range [1, 8] for Standard tier. This is
+     deprecated starting from API version 2020-03-03-preview. Please use the
+     resourceRequests field to set the the memory size. Default value: 1 .
     :type memory_in_gb: int
+    :param resource_requests: The requested resource quantity for required CPU
+     and Memory. It is recommended that using this field to represent the
+     required CPU and Memory, the old field cpu and memoryInGB will be
+     deprecated later.
+    :type resource_requests:
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.ResourceRequests
     :param jvm_options: JVM parameter
     :type jvm_options: str
     :param net_core_main_entry_path: The path to the .NET executable relative
      to zip root
     :type net_core_main_entry_path: str
-    :param instance_count: Instance count, basic tier should be in range (1,
-     25), standard tier should be in range (1, 500). Default value: 1 .
-    :type instance_count: int
     :param environment_variables: Collection of environment variables
     :type environment_variables: dict[str, str]
     :param runtime_version: Runtime version. Possible values include:
      'Java_8', 'Java_11', 'NetCore_31'
     :type runtime_version: str or
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.RuntimeVersion
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.RuntimeVersion
     """
 
     _attribute_map = {
         'cpu': {'key': 'cpu', 'type': 'int'},
         'memory_in_gb': {'key': 'memoryInGB', 'type': 'int'},
+        'resource_requests': {'key': 'resourceRequests', 'type': 'ResourceRequests'},
         'jvm_options': {'key': 'jvmOptions', 'type': 'str'},
         'net_core_main_entry_path': {'key': 'netCoreMainEntryPath', 'type': 'str'},
-        'instance_count': {'key': 'instanceCount', 'type': 'int'},
         'environment_variables': {'key': 'environmentVariables', 'type': '{str}'},
         'runtime_version': {'key': 'runtimeVersion', 'type': 'str'},
     }
@@ -920,9 +1023,9 @@ class DeploymentSettings(Model):
         super(DeploymentSettings, self).__init__(**kwargs)
         self.cpu = kwargs.get('cpu', 1)
         self.memory_in_gb = kwargs.get('memory_in_gb', 1)
+        self.resource_requests = kwargs.get('resource_requests', None)
         self.jvm_options = kwargs.get('jvm_options', None)
         self.net_core_main_entry_path = kwargs.get('net_core_main_entry_path', None)
-        self.instance_count = kwargs.get('instance_count', 1)
         self.environment_variables = kwargs.get('environment_variables', None)
         self.runtime_version = kwargs.get('runtime_version', None)
 
@@ -1059,13 +1162,13 @@ class LogSpecification(Model):
 class ManagedIdentityProperties(Model):
     """Managed identity properties retrieved from ARM request headers.
 
-    :param type: Possible values include: 'None', 'SystemAssigned',
-     'UserAssigned', 'SystemAssigned,UserAssigned'
+    :param type: Type of the managed identity. Possible values include:
+     'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned'
     :type type: str or
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ManagedIdentityType
-    :param principal_id:
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.ManagedIdentityType
+    :param principal_id: Principal Id
     :type principal_id: str
-    :param tenant_id:
+    :param tenant_id: Tenant Id
     :type tenant_id: str
     """
 
@@ -1089,22 +1192,17 @@ class MetricDimension(Model):
     :type name: str
     :param display_name: Localized friendly display name of the dimension
     :type display_name: str
-    :param to_be_exported_for_shoebox: Whether this dimension should be
-     included for the Shoebox export scenario
-    :type to_be_exported_for_shoebox: bool
     """
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
         'display_name': {'key': 'displayName', 'type': 'str'},
-        'to_be_exported_for_shoebox': {'key': 'toBeExportedForShoebox', 'type': 'bool'},
     }
 
     def __init__(self, **kwargs):
         super(MetricDimension, self).__init__(**kwargs)
         self.name = kwargs.get('name', None)
         self.display_name = kwargs.get('display_name', None)
-        self.to_be_exported_for_shoebox = kwargs.get('to_be_exported_for_shoebox', None)
 
 
 class MetricSpecification(Model):
@@ -1133,7 +1231,7 @@ class MetricSpecification(Model):
     :type fill_gap_with_zero: bool
     :param dimensions: Dimensions of the metric
     :type dimensions:
-     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.MetricDimension]
+     list[~azure.mgmt.appplatform.v2021_03_03_preview.models.MetricDimension]
     """
 
     _attribute_map = {
@@ -1161,6 +1259,95 @@ class MetricSpecification(Model):
         self.supported_time_grain_types = kwargs.get('supported_time_grain_types', None)
         self.fill_gap_with_zero = kwargs.get('fill_gap_with_zero', None)
         self.dimensions = kwargs.get('dimensions', None)
+
+
+class MonitoringSettingProperties(Model):
+    """Monitoring Setting properties payload.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar provisioning_state: State of the Monitoring Setting. Possible values
+     include: 'NotAvailable', 'Failed', 'Succeeded', 'Updating'
+    :vartype provisioning_state: str or
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.MonitoringSettingState
+    :param error: Error when apply Monitoring Setting changes.
+    :type error: ~azure.mgmt.appplatform.v2021_03_03_preview.models.Error
+    :param trace_enabled: Indicates whether enable the trace functionality,
+     which will be deprecated since api version 2021-03-03-preview. Please
+     leverage appInsightsInstrumentationKey to indicate if monitoringSettings
+     enabled or not
+    :type trace_enabled: bool
+    :param app_insights_instrumentation_key: Target application insight
+     instrumentation key, null or whitespace include empty will disable
+     monitoringSettings
+    :type app_insights_instrumentation_key: str
+    :param app_insights_sampling_rate: Indicates the sampling rate of
+     application insight agent, should be in range [0.0, 100.0]
+    :type app_insights_sampling_rate: float
+    :param app_insights_agent_versions: Indicates the versions of application
+     insight agent
+    :type app_insights_agent_versions:
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.ApplicationInsightsAgentVersions
+    """
+
+    _validation = {
+        'provisioning_state': {'readonly': True},
+        'app_insights_sampling_rate': {'maximum': 100, 'minimum': 0},
+    }
+
+    _attribute_map = {
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'error': {'key': 'error', 'type': 'Error'},
+        'trace_enabled': {'key': 'traceEnabled', 'type': 'bool'},
+        'app_insights_instrumentation_key': {'key': 'appInsightsInstrumentationKey', 'type': 'str'},
+        'app_insights_sampling_rate': {'key': 'appInsightsSamplingRate', 'type': 'float'},
+        'app_insights_agent_versions': {'key': 'appInsightsAgentVersions', 'type': 'ApplicationInsightsAgentVersions'},
+    }
+
+    def __init__(self, **kwargs):
+        super(MonitoringSettingProperties, self).__init__(**kwargs)
+        self.provisioning_state = None
+        self.error = kwargs.get('error', None)
+        self.trace_enabled = kwargs.get('trace_enabled', None)
+        self.app_insights_instrumentation_key = kwargs.get('app_insights_instrumentation_key', None)
+        self.app_insights_sampling_rate = kwargs.get('app_insights_sampling_rate', None)
+        self.app_insights_agent_versions = kwargs.get('app_insights_agent_versions', None)
+
+
+class MonitoringSettingResource(ProxyResource):
+    """Monitoring Setting resource.
+
+    Variables are only populated by the server, and will be ignored when
+    sending a request.
+
+    :ivar id: Fully qualified resource Id for the resource.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource.
+    :vartype type: str
+    :param properties: Properties of the Monitoring Setting resource
+    :type properties:
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.MonitoringSettingProperties
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'properties': {'key': 'properties', 'type': 'MonitoringSettingProperties'},
+    }
+
+    def __init__(self, **kwargs):
+        super(MonitoringSettingResource, self).__init__(**kwargs)
+        self.properties = kwargs.get('properties', None)
 
 
 class NameAvailability(Model):
@@ -1237,11 +1424,11 @@ class NetworkProfile(Model):
     :ivar outbound_ips: Desired outbound IP resources for Azure Spring Cloud
      instance.
     :vartype outbound_ips:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.NetworkProfileOutboundIPs
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.NetworkProfileOutboundIPs
     :ivar required_traffics: Required inbound or outbound traffics for Azure
      Spring Cloud instance.
     :vartype required_traffics:
-     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.RequiredTraffic]
+     list[~azure.mgmt.appplatform.v2021_03_03_preview.models.RequiredTraffic]
     """
 
     _validation = {
@@ -1302,12 +1489,12 @@ class OperationDetail(Model):
     :type is_data_action: bool
     :param display: Display of the operation
     :type display:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.OperationDisplay
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.OperationDisplay
     :param origin: Origin of the operation
     :type origin: str
     :param properties: Properties of the operation
     :type properties:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.OperationProperties
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.OperationProperties
     """
 
     _attribute_map = {
@@ -1360,7 +1547,7 @@ class OperationProperties(Model):
 
     :param service_specification: Service specifications of the operation
     :type service_specification:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ServiceSpecification
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.ServiceSpecification
     """
 
     _attribute_map = {
@@ -1412,7 +1599,7 @@ class RegenerateTestKeyRequestPayload(Model):
     :param key_type: Required. Type of the test key. Possible values include:
      'Primary', 'Secondary'
     :type key_type: str or
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.TestKeyType
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.TestKeyType
     """
 
     _validation = {
@@ -1445,7 +1632,7 @@ class RequiredTraffic(Model):
     :ivar direction: The direction of required traffic. Possible values
      include: 'Inbound', 'Outbound'
     :vartype direction: str or
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.TrafficDirection
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.TrafficDirection
     """
 
     _validation = {
@@ -1473,6 +1660,30 @@ class RequiredTraffic(Model):
         self.direction = None
 
 
+class ResourceRequests(Model):
+    """Deployment resource request payload.
+
+    :param cpu: Required CPU. 1 core can be represented by 1 or 1000m. This
+     should be 500m or 1 for Basic tier, and {500m, 1, 2, 3, 4} for Standard
+     tier.
+    :type cpu: str
+    :param memory: Required memory. 1 GB can be represented by 1Gi or 1024Mi.
+     This should be {512Mi, 1Gi, 2Gi} for Basic tier, and {512Mi, 1Gi, 2Gi,
+     ..., 8Gi} for Standard tier.
+    :type memory: str
+    """
+
+    _attribute_map = {
+        'cpu': {'key': 'cpu', 'type': 'str'},
+        'memory': {'key': 'memory', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(ResourceRequests, self).__init__(**kwargs)
+        self.cpu = kwargs.get('cpu', None)
+        self.memory = kwargs.get('memory', None)
+
+
 class ResourceSku(Model):
     """Describes an available Azure Spring Cloud SKU.
 
@@ -1484,18 +1695,18 @@ class ResourceSku(Model):
     :type tier: str
     :param capacity: Gets the capacity of SKU.
     :type capacity:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.SkuCapacity
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.SkuCapacity
     :param locations: Gets the set of locations that the SKU is available.
     :type locations: list[str]
     :param location_info: Gets a list of locations and availability zones in
      those locations where the SKU is available.
     :type location_info:
-     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.ResourceSkuLocationInfo]
+     list[~azure.mgmt.appplatform.v2021_03_03_preview.models.ResourceSkuLocationInfo]
     :param restrictions: Gets the restrictions because of which SKU cannot be
      used. This is
      empty if there are no restrictions.
     :type restrictions:
-     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.ResourceSkuRestrictions]
+     list[~azure.mgmt.appplatform.v2021_03_03_preview.models.ResourceSkuRestrictions]
     """
 
     _attribute_map = {
@@ -1540,7 +1751,7 @@ class ResourceSkuCapabilities(Model):
 
 
 class ResourceSkuLocationInfo(Model):
-    """ResourceSkuLocationInfo.
+    """Locations and availability zones where the SKU is available.
 
     :param location: Gets location of the SKU
     :type location: str
@@ -1549,7 +1760,7 @@ class ResourceSkuLocationInfo(Model):
     :param zone_details: Gets details of capabilities available to a SKU in
      specific zones.
     :type zone_details:
-     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.ResourceSkuZoneDetails]
+     list[~azure.mgmt.appplatform.v2021_03_03_preview.models.ResourceSkuZoneDetails]
     """
 
     _attribute_map = {
@@ -1566,7 +1777,7 @@ class ResourceSkuLocationInfo(Model):
 
 
 class ResourceSkuRestrictionInfo(Model):
-    """ResourceSkuRestrictionInfo.
+    """Information about the restriction where the SKU cannot be used.
 
     :param locations: Gets locations where the SKU is restricted
     :type locations: list[str]
@@ -1586,12 +1797,12 @@ class ResourceSkuRestrictionInfo(Model):
 
 
 class ResourceSkuRestrictions(Model):
-    """ResourceSkuRestrictions.
+    """Restrictions where the SKU cannot be used.
 
     :param type: Gets the type of restrictions. Possible values include:
      'Location', 'Zone'
     :type type: str or
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ResourceSkuRestrictionsType
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.ResourceSkuRestrictionsType
     :param values: Gets the value of restrictions. If the restriction type is
      set to
      location. This would be different locations where the SKU is restricted.
@@ -1599,11 +1810,11 @@ class ResourceSkuRestrictions(Model):
     :param restriction_info: Gets the information about the restriction where
      the SKU cannot be used.
     :type restriction_info:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ResourceSkuRestrictionInfo
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.ResourceSkuRestrictionInfo
     :param reason_code: Gets the reason for restriction. Possible values
      include: 'QuotaId', 'NotAvailableForSubscription'
     :type reason_code: str or
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ResourceSkuRestrictionsReasonCode
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.ResourceSkuRestrictionsReasonCode
     """
 
     _attribute_map = {
@@ -1622,7 +1833,7 @@ class ResourceSkuRestrictions(Model):
 
 
 class ResourceSkuZoneDetails(Model):
-    """ResourceSkuZoneDetails.
+    """Details of capabilities available to a SKU in specific zones.
 
     :param name: Gets the set of zones that the SKU is available in with the
      specified capabilities.
@@ -1631,7 +1842,7 @@ class ResourceSkuZoneDetails(Model):
      the SKU in the
      specified list of zones.
     :type capabilities:
-     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.ResourceSkuCapabilities]
+     list[~azure.mgmt.appplatform.v2021_03_03_preview.models.ResourceSkuCapabilities]
     """
 
     _attribute_map = {
@@ -1723,9 +1934,9 @@ class ServiceResource(TrackedResource):
     :type tags: dict[str, str]
     :param properties: Properties of the Service resource
     :type properties:
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.ClusterResourceProperties
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.ClusterResourceProperties
     :param sku: Sku of the Service resource
-    :type sku: ~azure.mgmt.appplatform.v2019_05_01_preview.models.Sku
+    :type sku: ~azure.mgmt.appplatform.v2021_03_03_preview.models.Sku
     """
 
     _validation = {
@@ -1755,11 +1966,11 @@ class ServiceSpecification(Model):
 
     :param log_specifications: Specifications of the Log for Azure Monitoring
     :type log_specifications:
-     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.LogSpecification]
+     list[~azure.mgmt.appplatform.v2021_03_03_preview.models.LogSpecification]
     :param metric_specifications: Specifications of the Metrics for Azure
      Monitoring
     :type metric_specifications:
-     list[~azure.mgmt.appplatform.v2019_05_01_preview.models.MetricSpecification]
+     list[~azure.mgmt.appplatform.v2021_03_03_preview.models.MetricSpecification]
     """
 
     _attribute_map = {
@@ -1811,7 +2022,7 @@ class SkuCapacity(Model):
     :param scale_type: Gets or sets the type of the scale. Possible values
      include: 'None', 'Manual', 'Automatic'
     :type scale_type: str or
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.SkuScaleType
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.SkuScaleType
     """
 
     _validation = {
@@ -1839,11 +2050,11 @@ class SupportedRuntimeVersion(Model):
     :param value: The raw value which could be passed to deployment CRUD
      operations. Possible values include: 'Java_8', 'Java_11', 'NetCore_31'
     :type value: str or
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.SupportedRuntimeValue
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.SupportedRuntimeValue
     :param platform: The platform of this runtime version (possible values:
      "Java" or ".NET"). Possible values include: 'Java', '.NET Core'
     :type platform: str or
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.SupportedRuntimePlatform
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.SupportedRuntimePlatform
     :param version: The detailed version (major.minor) of the platform.
     :type version: str
     """
@@ -1917,51 +2128,13 @@ class TestKeys(Model):
         self.enabled = kwargs.get('enabled', None)
 
 
-class TraceProperties(Model):
-    """Trace properties payload.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    :ivar state: State of the trace proxy. Possible values include:
-     'NotAvailable', 'Failed', 'Succeeded', 'Updating'
-    :vartype state: str or
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.TraceProxyState
-    :param error: Error when apply trace proxy changes.
-    :type error: ~azure.mgmt.appplatform.v2019_05_01_preview.models.Error
-    :param enabled: Indicates whether enable the tracing functionality
-    :type enabled: bool
-    :param app_insight_instrumentation_key: Target application insight
-     instrumentation key
-    :type app_insight_instrumentation_key: str
-    """
-
-    _validation = {
-        'state': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'state': {'key': 'state', 'type': 'str'},
-        'error': {'key': 'error', 'type': 'Error'},
-        'enabled': {'key': 'enabled', 'type': 'bool'},
-        'app_insight_instrumentation_key': {'key': 'appInsightInstrumentationKey', 'type': 'str'},
-    }
-
-    def __init__(self, **kwargs):
-        super(TraceProperties, self).__init__(**kwargs)
-        self.state = None
-        self.error = kwargs.get('error', None)
-        self.enabled = kwargs.get('enabled', None)
-        self.app_insight_instrumentation_key = kwargs.get('app_insight_instrumentation_key', None)
-
-
 class UserSourceInfo(Model):
     """Source information for a deployment.
 
     :param type: Type of the source uploaded. Possible values include: 'Jar',
      'NetCoreZip', 'Source'
     :type type: str or
-     ~azure.mgmt.appplatform.v2019_05_01_preview.models.UserSourceType
+     ~azure.mgmt.appplatform.v2021_03_03_preview.models.UserSourceType
     :param relative_path: Relative path of the storage which stores the source
     :type relative_path: str
     :param version: Version of the source
