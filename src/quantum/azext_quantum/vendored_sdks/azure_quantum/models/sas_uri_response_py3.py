@@ -9,10 +9,21 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .quantum_client import QuantumClient
-from .version import VERSION
+from msrest.serialization import Model
 
-__all__ = ['QuantumClient']
 
-__version__ = VERSION
+class SasUriResponse(Model):
+    """Get SAS URL operation response.
 
+    :param sas_uri: A URL with a SAS token to upload a blob for execution in
+     the given workspace.
+    :type sas_uri: str
+    """
+
+    _attribute_map = {
+        'sas_uri': {'key': 'sasUri', 'type': 'str'},
+    }
+
+    def __init__(self, *, sas_uri: str=None, **kwargs) -> None:
+        super(SasUriResponse, self).__init__(**kwargs)
+        self.sas_uri = sas_uri

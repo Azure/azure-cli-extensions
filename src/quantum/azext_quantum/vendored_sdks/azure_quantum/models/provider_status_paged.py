@@ -9,14 +9,19 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from .workspaces_operations import WorkspacesOperations
-from .offerings_operations import OfferingsOperations
-from .operations import Operations
-from .workspace_operations import WorkspaceOperations
+from msrest.paging import Paged
 
-__all__ = [
-    'WorkspacesOperations',
-    'OfferingsOperations',
-    'Operations',
-    'WorkspaceOperations',
-]
+
+class ProviderStatusPaged(Paged):
+    """
+    A paging container for iterating over a list of :class:`ProviderStatus <azure.quantum.models.ProviderStatus>` object
+    """
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'current_page': {'key': 'value', 'type': '[ProviderStatus]'}
+    }
+
+    def __init__(self, *args, **kwargs):
+
+        super(ProviderStatusPaged, self).__init__(*args, **kwargs)
