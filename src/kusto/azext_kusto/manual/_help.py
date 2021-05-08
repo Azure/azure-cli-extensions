@@ -738,20 +738,6 @@ materialized-views-to-include="MaterializedViewTable1" tables-to-exclude="Table2
 helps['kusto attached-database-configuration update'] = """
     type: command
     short-summary: "Update an attached database configuration."
-    parameters:
-      - name: AttachedDatabaseConfigurationsCreateOrUpdate
-        short-summary: "Table level sharing specifications"
-        long-summary: |
-            Usage: --tls tables-to-include=XX tables-to-exclude=XX \
-external-tables-to-include=XX external-tables-to-exclude=XX materialized-views-to-include=XX \
-materialized-views-to-exclude=XX
-
-            tables-to-include: List of tables to include in the follower database
-            tables-to-exclude: List of tables to exclude from the follower database
-            external-tables-to-include: List of external tables to include in the follower database
-            external-tables-to-exclude: List of external tables exclude from the follower database
-            materialized-views-to-include: List of materialized views to include in the follower database
-            materialized-views-to-exclude: List of materialized views exclude from the follower database
 """
 
 helps['kusto attached-database-configuration delete'] = """
