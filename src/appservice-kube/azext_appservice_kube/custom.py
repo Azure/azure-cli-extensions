@@ -535,9 +535,9 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
 
     return webapp
 
-def scale_webapp(cmd, resource_group_name, name, number_of_workers, slot=None):
+def scale_webapp(cmd, resource_group_name, name, instance_count, slot=None):
     return update_site_configs(cmd, resource_group_name, name,
-                               number_of_workers=number_of_workers, slot=slot)
+                               number_of_workers=instance_count, slot=slot)
 
 def webapp_up(cmd, name, resource_group_name=None, plan=None, location=None, sku=None, dryrun=False, logs=False,  # pylint: disable=too-many-statements,
         launch_browser=False, html=False, environment=None):

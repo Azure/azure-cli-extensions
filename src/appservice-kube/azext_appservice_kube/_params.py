@@ -82,7 +82,7 @@ def load_arguments(self, _):
     '''
 
     with self.argument_context('webapp scale') as c:
-        c.argument('number_of_workers', help='Number of workers to be allocated.', type=int, default=1)
+        c.argument('instance_count', help='Number of instances', type=int, default=1)
 
     with self.argument_context('webapp show') as c:
         c.argument('name', arg_type=webapp_name_arg_type)
