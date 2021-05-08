@@ -710,7 +710,7 @@ helps['kusto attached-database-configuration create'] = """
     type: command
     short-summary: "Create an attached database configuration."
     parameters:
-      - name: --table-level-sharing-properties
+      - name: AttachedDatabaseConfigurationsCreateOrUpdate
         short-summary: "Table level sharing specifications"
         long-summary: |
             Usage: --tls tables-to-include=XX tables-to-exclude=XX \
@@ -739,7 +739,7 @@ helps['kusto attached-database-configuration update'] = """
     type: command
     short-summary: "Update an attached database configuration."
     parameters:
-      - name: --tls
+      - name: AttachedDatabaseConfigurationsCreateOrUpdate
         short-summary: "Table level sharing specifications"
         long-summary: |
             Usage: --tls tables-to-include=XX tables-to-exclude=XX \
