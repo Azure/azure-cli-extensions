@@ -35,6 +35,39 @@ do
     source azEnv/bin/activate
 done
 
+# unit test & coverage report
+# azcli_aks_live_test
+azcli_aks_live_test_unit_test_result=""
+pushd azure-cli-extensions/src/aks-preview/azcli_aks_live_test/
+# clean existing coverage report
+(coverage combine || true) && (coverage erase || true)
+if ! coverage run --source=. --omit=*/tests/* -p -m unittest ; then
+    azcli_aks_live_test_unit_test_result="error"
+fi
+# currently no test written in pytest format under 'azcli_aks_live_test/'
+# coverage run --source=. --omit=*/tests/* -p -m pytest
+coverage combine && coverage json -o coverage_azcli_aks_live_test.json
+coverage report -m
+popd
+
+# azext_aks_preview
+azext_aks_preview_unit_test_result=""
+pushd azure-cli-extensions/src/aks-preview/azext_aks_preview
+# clean existing coverage report
+(coverage combine || true) && (coverage erase || true)
+# currently test using module 'unittest' is the same as module 'pytest', and test using 'pytest' is just recording test
+if ! coverage run --source=. --omit=*/vendored_sdks/*,*/tests/* -p -m unittest || coverage run --source=. --omit=*/vendored_sdks/*,*/tests/* -p -m pytest; then
+    azext_aks_preview_unit_test_result="error"
+fi
+coverage combine && coverage json -o coverage_azext_aks_preview.json
+coverage report -m
+popd
+
+if [[ $azcli_aks_live_test_unit_test_result == "error" || $azext_aks_preview_unit_test_result == "error" ]]; then
+    echo "Unit test failed!"
+    exit 1
+fi
+
 # prepare run flags
 run_flags="-em ext_matrix_default.json --no-exitfirst --discover --json-report-path ./ --reruns 3 --capture=sys"
 # parallel
@@ -52,7 +85,7 @@ if [[ $EXT_TEST_COVERAGE ]]; then
     run_flags+=" -ec $EXT_TEST_COVERAGE"
 fi
 
-# test ext
+# recording test
 if [[ $TEST_MODE == "record" || $TEST_MODE == "all" ]]; then
     echo "Test in record mode!"
     run_flags+=" --json-report-file=ext_report.json"
@@ -60,6 +93,7 @@ if [[ $TEST_MODE == "record" || $TEST_MODE == "all" ]]; then
     echo ${run_flags} | xargs python -u az_aks_tool/main.py 
 fi
 
+# live test
 if [[ $TEST_MODE == "live" || $TEST_MODE == "all" ]]; then
     echo "Test in live mode!"
     az login --service-principal -u $AZCLI_ALT_CLIENT_ID -p $AZCLI_ALT_CLIENT_SECRET -t $TENANT_ID

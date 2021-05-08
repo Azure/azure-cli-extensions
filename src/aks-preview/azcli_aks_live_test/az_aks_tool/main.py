@@ -6,17 +6,19 @@
 import argparse
 import os
 import sys
+import logging
 from azdev.operations.testtool import run_tests
 from azdev.utilities import EXTENSION_PREFIX
 
-import ext
-import utils
+import azcli_aks_live_test.az_aks_tool.utils as utils
+import azcli_aks_live_test.az_aks_tool.ext as ext
+from azcli_aks_live_test.az_aks_tool.log import setup_logging
 
 # const
 AKS_PREVIEW_MOD_NAME = EXTENSION_PREFIX + "aks_preview"  # azext_aks_preview
 
 
-def init_argparse():
+def init_argparse(args):
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--tests", nargs='+', help="test case names")
     parser.add_argument("-cm", "--cli-matrix",  type=str,
@@ -53,14 +55,19 @@ def init_argparse():
                         default="sys", help="test capture")
     # parser.add_argument("-a", "--pytest-args",
     #                     nargs=argparse.REMAINDER, help="pytest args")
-    args = parser.parse_args()
+    args = parser.parse_args(args)
     return args
 
 
 def main():
-    print("args: {}".format(sys.argv))
-    args = init_argparse()
+    # setup logger
+    setup_logging()
+    logger = logging.getLogger(__name__)
 
+    # parse args
+    logger.info("raw args: {}".format(sys.argv))
+    args = init_argparse(sys.argv[1:])
+    
     # test cases
     test_cases = args.tests
     ext_matrix_file_path = args.ext_matrix
@@ -72,7 +79,7 @@ def main():
     # report file
     report_file_full_path = os.path.realpath(os.path.join(
         args.json_report_path, args.json_report_file))
-    print("report file full path: {}".format(report_file_full_path))
+    logger.info("report file full path: {}".format(report_file_full_path))
 
     # pytest args
     pytest_args = []
@@ -83,8 +90,7 @@ def main():
     pytest_args.append("--reruns {}".format(args.reruns))
     pytest_args.append("--capture {}".format(args.capture))
     pytest_args = [" ".join(pytest_args)]
-    print("pytest_args: {}".format(pytest_args))
-    print()
+    logger.info("pytest_args: {}".format(pytest_args))
 
     # ext matrix
     if utils.check_file_existence(ext_matrix_file_path):
@@ -99,21 +105,21 @@ def main():
         # add prefix
         ext_qualified_test_cases = utils.decorate_qualified_prefix(
             ext_filtered_test_cases, AKS_PREVIEW_MOD_NAME)
-        print("According to 'ext_matrix' and filters, we get {} cases, need to exclude {} cases, finally get {} cases!".format(
+        logger.info("According to 'ext_matrix' and filters, we get {} cases, need to exclude {} cases, finally get {} cases!".format(
             len(ext_test_cases), len(ext_exclude_test_cases), len(ext_filtered_test_cases)))
-        print("Perform following tests: {}".format(ext_qualified_test_cases))
+        logger.info("Perform following tests: {}".format(ext_qualified_test_cases))
         run_tests(ext_qualified_test_cases, xml_path=args.xml_path, discover=args.discover, in_series=args.series,
                   run_live=args.live, no_exit_first=args.no_exitfirst, pytest_args=pytest_args)
 
     # cli matrix
     if utils.check_file_existence(cli_matrix_file_path):
-        print("Currently not support!")
+        logger.warning("Currently not support!")
         pass
 
     # tests
     if test_cases:
-        print("Accroding to 'tests', we get {} cases".format(len(test_cases)))
-        print("Perform following tets: {}".format(test_cases))
+        logger.info("Accroding to 'tests', we get {} cases".format(len(test_cases)))
+        logger.info("Perform following tets: {}".format(test_cases))
         run_tests(test_cases, xml_path=args.xml_path, discover=args.discover, in_series=args.series,
                   run_live=args.live, no_exit_first=args.no_exitfirst, pytest_args=pytest_args)
 

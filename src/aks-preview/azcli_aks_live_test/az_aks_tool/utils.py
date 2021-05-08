@@ -6,6 +6,8 @@
 from collections import Iterable
 import json
 import os
+import logging
+logger = logging.getLogger(__name__)
 
 
 def check_file_existence(file_path):
@@ -40,9 +42,9 @@ def filter_valid_file_class_pairs(pairs, test_index):
     for pair in pairs:
         if pair[0] in test_index and pair[1] in test_index[pair[0]]:
             valid_pairs.append(pair)
-            print("Find valid file & class pair: '{}'".format(pair))
+            logger.info("Valid file & class pair: '{}'".format(pair))
         else:
-            print("Invalid file & class pair: '{}'".format(pair))
+            logger.info("Invalid file & class pair: '{}'".format(pair))
     return valid_pairs
 
 
@@ -70,9 +72,9 @@ def filter_valid_test_cases(test_cases, test_index):
     for test_case in test_cases:
         if test_case in falttened_test_cases:
             valid_test_cases.append(test_case)
-            print("Find valid test case: '{}'".format(test_case))
+            logger.info("Valid test case: '{}'".format(test_case))
         else:
-            print("Invalid test case: '{}'".format(test_case))
+            logger.info("Invalid test case: '{}'".format(test_case))
     return valid_test_cases
 
 
