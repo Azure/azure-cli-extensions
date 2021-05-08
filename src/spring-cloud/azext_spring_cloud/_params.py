@@ -112,7 +112,7 @@ def load_arguments(self, _):
         c.argument('limit', type=int, help='Maximum kilobytes of logs to return. Ceiling number is 2048.', validator=validate_log_limit)
         c.argument('deployment', options_list=[
             '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)
-        c.argument('format_json', nargs='?', const='{timestamp} {level:>5} [{thread:>15.15}] {logger}: {message}\n{stackTrace}',
+        c.argument('format_json', nargs='?', const='{timestamp} {level:>5} [{thread:>15.15}] {logger{39}:<40.40}: {message}\n{stackTrace}',
                    help='Format JSON logs if structured log is enabled')
 
     with self.argument_context('spring-cloud app log tail') as c:
