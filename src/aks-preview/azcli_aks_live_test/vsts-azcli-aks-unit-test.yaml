@@ -27,7 +27,7 @@ jobs:
       condition: succeeded()
       displayName: "Prepare Test Image"
     - bash: |
-        source ./start_container.sh
+        source ./start_container.sh "azcli-aks-unit-test-container"
       env:
         MAPPED_AZCLI_ALT_CLIENT_SECRET: $(AZCLI_ALT_CLIENT_SECRET)
         BUILD_REASON: $(Build.Reason)
@@ -35,15 +35,15 @@ jobs:
       condition: succeeded()
       displayName: "Start Container"
     - bash: |
-        docker exec "azcli-aks-live-test-container" /opt/setup_venv.sh
+        docker exec "azcli-aks-unit-test-container" /opt/setup_venv.sh
       condition: succeeded()
       displayName: "Set up Virtual Environment"
     - bash: |
-        docker exec "azcli-aks-live-test-container" /opt/test_cli_unit.sh
+        docker exec "azcli-aks-unit-test-container" /opt/test_cli_unit.sh
       condition: and(succeeded(), in(variables['COVERAGE'], 'cli', 'all'))
       displayName: Perform Unit Test for CLI
     - bash: |
-        docker exec "azcli-aks-live-test-container" /opt/test_ext_unit.sh
+        docker exec "azcli-aks-unit-test-container" /opt/test_ext_unit.sh
       condition: and(succeededOrFailed(), in(variables['COVERAGE'], 'ext', 'all'))
       displayName: Perform Unit Test for EXT
     - task: CopyFiles@2

@@ -7,11 +7,9 @@ cat /dev/null > env.list
 echo "TENANT_ID=$TENANT_ID" >> env.list
 echo "AZCLI_ALT_SUBSCRIPTION_ID=$AZCLI_ALT_SUBSCRIPTION_ID" >> env.list
 echo "AZCLI_ALT_CLIENT_ID=$AZCLI_ALT_CLIENT_ID" >> env.list
-echo "AZCLI_ALT_CLIENT_SECRET=$MAPPED_AZCLI_ALT_CLIENT_SECRET" >> env.list
 
 # azdev env
 echo "AZURE_CLI_TEST_DEV_SP_NAME=$AZCLI_ALT_CLIENT_ID" >> env.list
-echo "AZURE_CLI_TEST_DEV_SP_PASSWORD=$MAPPED_AZCLI_ALT_CLIENT_SECRET" >> env.list
 echo "AZURE_CLI_TEST_DEV_RESOURCE_GROUP_LOCATION=$TEST_LOCATION" >> env.list
 
 # predefined variables 
