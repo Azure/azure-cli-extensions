@@ -439,17 +439,17 @@ def step_script_list(test, rg, checks=None):
              '--resource-group "testgroupyefkpv"',
              checks=[])
 
-             
+
 def kusto_manual_setup(test):
-    
+
     # Get sas-token for 'script' resource tests.
     # Please update the '--expiry' with the relevant date
     sas = test.cmd(
         'storage blob generate-sas -n script --account-name testclients -c testclientscontainer --account-key "U+BSedrT9wGu3XDT4nvcJDZyU7jyEjcWMqPgQQU5oyYk3g1FxLNPdpA6o8X08UQCCeXmhC2DaoAxsdWwBgvhxg==" --permissions r --expiry 2021-05-11 --start 2021-05-08').output.strip()
-        
+
     print(sas)
-    
-    # Set parameters for tests. 
+
+    # Set parameters for tests.
     test.kwargs.update({
         'Clusters_2': 'clitestcluster0f77',
         'Clusters_3': 'clitestcluster977',
@@ -464,10 +464,10 @@ def kusto_manual_setup(test):
 
 @try_manual
 def call_scenario(test, rg):
-    
+
     # Set manual data for tests.
     kusto_manual_setup(test)
-    step_script_create(test, rg)  
+    step_script_create(test, rg)
     step_kusto_clusters_create_or_update(test, rg)
     step_kusto_databases_create_or_update(test, rg)
     step_kusto_clusters_create_or_update2(test, rg)
@@ -504,7 +504,7 @@ def call_scenario(test, rg):
     step_script_list(test, rg)
     step_kusto_databases_delete(test, rg)
     step_kusto_clusters_delete(test, rg)
-    
+
 
 @try_manual
 class KustoManagementClientScenarioTest(ScenarioTest):
@@ -516,5 +516,5 @@ class KustoManagementClientScenarioTest(ScenarioTest):
         self.kwargs.update({
             'subscription_id': self.get_subscription_id()
         })
-        
+
         call_scenario(self, rg)

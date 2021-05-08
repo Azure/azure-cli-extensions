@@ -713,7 +713,7 @@ helps['kusto attached-database-configuration create'] = """
       - name: --table-level-sharing-properties
         short-summary: "Table level sharing specifications"
         long-summary: |
-            Usage: --table-level-sharing-properties tables-to-include=XX tables-to-exclude=XX \
+            Usage: --tls tables-to-include=XX tables-to-exclude=XX \
 external-tables-to-include=XX external-tables-to-exclude=XX materialized-views-to-include=XX \
 materialized-views-to-exclude=XX
 
@@ -729,7 +729,7 @@ materialized-views-to-exclude=XX
                az kusto attached-database-configuration create --name "attachedDatabaseConfigurations1" --cluster-name \
 "kustoclusterrptest4" --location "westus" --cluster-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/re\
 sourceGroups/kustorptest/providers/Microsoft.Kusto/Clusters/KustoClusterLeader" --database-name "kustodatabase" \
---default-principals-modification-kind "Union" --table-level-sharing-properties external-tables-to-exclude="ExternalTab\
+--default-principals-modification-kind "Union" --tls external-tables-to-exclude="ExternalTab\
 le2" external-tables-to-include="ExternalTable1" materialized-views-to-exclude="MaterializedViewTable2" \
 materialized-views-to-include="MaterializedViewTable1" tables-to-exclude="Table2" tables-to-include="Table1" \
 --resource-group "kustorptest"
@@ -739,10 +739,10 @@ helps['kusto attached-database-configuration update'] = """
     type: command
     short-summary: "Update an attached database configuration."
     parameters:
-      - name: --table-level-sharing-properties
+      - name: --tls
         short-summary: "Table level sharing specifications"
         long-summary: |
-            Usage: --table-level-sharing-properties tables-to-include=XX tables-to-exclude=XX \
+            Usage: --tls tables-to-include=XX tables-to-exclude=XX \
 external-tables-to-include=XX external-tables-to-exclude=XX materialized-views-to-include=XX \
 materialized-views-to-exclude=XX
 

@@ -690,8 +690,9 @@ def load_arguments(self, _):
         c.argument('event_system_properties', nargs='+', help='System properties of the event hub')
         c.argument('compression', arg_type=get_enum_type(['None', 'GZip']), help='The event hub messages compression '
                    'type')
-        c.argument('managed_identity_resource_id', type=str, help='The resource ID of a managed identity (system or '
-                   'user assigned) to be used to authenticate with event hub.')
+        c.argument('managed_identity_resource_id', options_list=['--managed-identity-resource-id', '--mi-rid'],
+                   type=str, help='The resource ID of a managed identity (system or user assigned) to be used to '
+                   'authenticate with event hub.')
 
     with self.argument_context('kusto data-connection iot-hub data-connection-validation') as c:
         c.argument('resource_group_name', resource_group_name_type)

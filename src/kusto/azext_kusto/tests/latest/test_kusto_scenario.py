@@ -192,7 +192,7 @@ class KustoScenarioTest(ScenarioTest):
         """
         sas = self.cmd(
             'storage blob generate-sas -n script --account-name testclients -c testclientscontainer --account-key "U+BSedrT9wGu3XDT4nvcJDZyU7jyEjcWMqPgQQU5oyYk3g1FxLNPdpA6o8X08UQCCeXmhC2DaoAxsdWwBgvhxg==" --permissions acrwd --expiry 2021-05-08 -otsv').output.strip()
-            
+
         self.kwargs.update({
             'Clusters_2': 'clitestcluster0f99',
             'Clusters_3': 'clitestcluster99',
@@ -204,7 +204,6 @@ class KustoScenarioTest(ScenarioTest):
             'sas': sas
         })
         """
-
 
     @AllowLargeResponse(size_kb=5000)
     @ResourceGroupPreparer(name_prefix='clitestkusto_kustorptest'[:7], key='rg', parameter_name='rg')
