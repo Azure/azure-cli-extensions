@@ -108,7 +108,7 @@ def create_hpc_cache_blob_storage_target(client,
     body['target_type'] = 'clfs'  # str
     body.setdefault('clfs', {})['target'] = clfs_target  # str
     return client.begin_create_or_update(resource_group_name=resource_group_name, cache_name=cache_name,
-                                   storage_target_name=name, storagetarget=body)
+                                         storage_target_name=name, storagetarget=body)
 
 
 def create_hpc_cache_nfs_storage_target(client,
@@ -124,7 +124,7 @@ def create_hpc_cache_nfs_storage_target(client,
     body.setdefault('nfs3', {})['target'] = nfs3_target  # str
     body.setdefault('nfs3', {})['usage_model'] = nfs3_usage_model  # str
     return client.begin_create_or_update(resource_group_name=resource_group_name, cache_name=cache_name,
-                                   storage_target_name=name, storagetarget=body)
+                                         storage_target_name=name, storagetarget=body)
 
 
 def update_hpc_cache_blob_storage_target(client,
@@ -140,7 +140,7 @@ def update_hpc_cache_blob_storage_target(client,
     if clfs_target is not None:
         body.setdefault('clfs', {})['target'] = clfs_target  # str
     return client.begin_create_or_update(resource_group_name=resource_group_name, cache_name=cache_name,
-                                   storage_target_name=name, storagetarget=body)
+                                         storage_target_name=name, storagetarget=body)
 
 
 def update_hpc_cache_nfs_storage_target(client,
@@ -156,7 +156,7 @@ def update_hpc_cache_nfs_storage_target(client,
     body.setdefault('nfs3', {})['target'] = nfs3_target  # str
     body.setdefault('nfs3', {})['usage_model'] = nfs3_usage_model  # str
     return client.begin_create_or_update(resource_group_name=resource_group_name, cache_name=cache_name,
-                                   storage_target_name=name, storagetarget=body)
+                                         storage_target_name=name, storagetarget=body)
 
 
 def delete_hpc_cache_storage_target(client,
