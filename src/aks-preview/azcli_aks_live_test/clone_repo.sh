@@ -30,5 +30,5 @@ git log -10
 popd
 
 # move live test related files to the same level as the checkout directory ($(Agent.BuildDirectory)/s)
-mv azure-cli-extensions/src/aks-preview/azcli-aks-live-test/* ./
+mv azure-cli-extensions/src/aks-preview/azcli_aks_live_test/* ./
 ls -alh
