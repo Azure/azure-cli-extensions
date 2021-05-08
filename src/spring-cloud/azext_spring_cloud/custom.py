@@ -1388,7 +1388,7 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
         if format_json is not None and len(format_json) > 0:
             try:
                 log = json.loads(line)
-                print(format_json.format_map(defaultdict(str, **log)))
+                print(format_json.format_map(defaultdict(str, **log)), end='')
             except:
                 print(line, end='')
         else:
