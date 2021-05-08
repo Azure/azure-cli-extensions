@@ -8,7 +8,7 @@ from azure.cli.core.profiles import ResourceType
 
 
 def cf_k8s_extension(cli_ctx, *_):
-    from azext_k8s_extension.vendored_sdks import SourceControlConfigurationClient
+    from .vendored_sdks import SourceControlConfigurationClient
     return get_mgmt_service_client(cli_ctx, SourceControlConfigurationClient)
 
 

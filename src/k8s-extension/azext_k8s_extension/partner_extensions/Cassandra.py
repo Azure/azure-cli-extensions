@@ -5,13 +5,13 @@
 
 # pylint: disable=unused-argument
 
-from azext_k8s_extension.vendored_sdks.models import ExtensionInstance
-from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceUpdate
-from azext_k8s_extension.vendored_sdks.models import ScopeCluster
-from azext_k8s_extension.vendored_sdks.models import ScopeNamespace
-from azext_k8s_extension.vendored_sdks.models import Scope
+from ..vendored_sdks.models import ExtensionInstance
+from ..vendored_sdks.models import ExtensionInstanceUpdate
+from ..vendored_sdks.models import ScopeCluster
+from ..vendored_sdks.models import ScopeNamespace
+from ..vendored_sdks.models import Scope
 
-from azext_k8s_extension.partner_extensions.PartnerExtensionModel import PartnerExtensionModel
+from .PartnerExtensionModel import PartnerExtensionModel
 
 
 class Cassandra(PartnerExtensionModel):
