@@ -1,17 +1,26 @@
 import logging
 import sys
 
+
+def parse_module_name(levels=1):
+    module_name = None
+    module_levels = __name__.split(".")
+    if len(module_levels) < levels:
+        print("Failed to parse {}-level module name from '{}'".format(levels, __name__))
+    else:
+        module_name = ".".join(module_levels[:levels])
+    return module_name
+
+
 def setup_logging(root_logger_name="", log_path="az_aks_tool.log"):
     if root_logger_name == "":
-        try:
-            root_logger_name = __name__.split(".")[0]
-        except Exception as e:
-            print("Failed to parse module name from '{}', error: {}".format(__name__, e))
+        root_logger_name = parse_module_name()
     logger = logging.getLogger(root_logger_name)
     logger.setLevel(level=logging.DEBUG)
 
     # Formatter
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     # FileHandler
     file_handler = logging.FileHandler(filename=log_path, mode="w")

@@ -3,11 +3,11 @@ name: $(Date:yyyyMMdd)$(Rev:.r)_Python$(PYTHON_VERSION)_Coverage-$(COVERAGE)_Mod
 trigger: none
 
 jobs:
-- job: LiveTest
+- job: UnitTest
   pool:
     vmImage: 'ubuntu-16.04'
   timeoutInMinutes: 360
-  displayName: "Live Test with Python"
+  displayName: "Unit Test with Python"
   steps:
     - bash: |
         pwd
@@ -21,11 +21,11 @@ jobs:
     - bash: |
         source ./azure-cli-extensions/src/aks-preview/azcli_aks_live_test/clone_repo.sh
       condition: succeeded()
-      displayName: "Clone GitHub Repo and Move Live Test Related Files"
+      displayName: "Clone GitHub Repo and Move Test Related Files"
     - bash: |
         source ./prepare_image.sh
       condition: succeeded()
-      displayName: "Prepare Live Test Image"
+      displayName: "Prepare Test Image"
     - bash: |
         source ./start_container.sh
       env:
@@ -39,13 +39,13 @@ jobs:
       condition: succeeded()
       displayName: "Set up Virtual Environment"
     - bash: |
-        docker exec "azcli-aks-live-test-container" /opt/test_cli_live.sh
+        docker exec "azcli-aks-live-test-container" /opt/test_cli_unit.sh
       condition: and(succeeded(), in(variables['COVERAGE'], 'cli', 'all'))
-      displayName: Perform Live Test for CLI
+      displayName: Perform Unit Test for CLI
     - bash: |
-        docker exec "azcli-aks-live-test-container" /opt/test_ext_live.sh
+        docker exec "azcli-aks-live-test-container" /opt/test_ext_unit.sh
       condition: and(succeededOrFailed(), in(variables['COVERAGE'], 'ext', 'all'))
-      displayName: Perform Live Test for EXT
+      displayName: Perform Unit Test for EXT
     - task: CopyFiles@2
       inputs:
         contents: 'reports/**'
@@ -53,4 +53,4 @@ jobs:
     - task: PublishBuildArtifacts@1
       inputs:
         pathToPublish: $(Build.ArtifactStagingDirectory)
-        artifactName: 'live test reports'
+        artifactName: 'unit test reports'

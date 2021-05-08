@@ -16,6 +16,14 @@ PARENT_DIR = os.path.dirname(THIS_DIR)
 
 class LogTestCase(unittest.TestCase):
 
+    def test_parse_module_name(self):
+        root_module_name = log.parse_module_name(levels=1)
+        current_module_name = log.parse_module_name(levels=2)
+        error_module_name = log.parse_module_name(levels=5)
+        self.assertEqual(root_module_name, "azcli_aks_live_test")
+        self.assertEqual(current_module_name, "azcli_aks_live_test.az_aks_tool")
+        self.assertEqual(error_module_name, None)
+
     def test_setup_logging(self):
         log.setup_logging("unittest", "unittest_log.log")
         logger = logging.getLogger("unittest.test_setup_logging")

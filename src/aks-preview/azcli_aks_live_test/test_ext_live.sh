@@ -35,41 +35,6 @@ do
     source azEnv/bin/activate
 done
 
-# unit test & coverage report
-# azcli_aks_live_test
-azcli_aks_live_test_unit_test_result=""
-pushd azure-cli-extensions/src/aks-preview/azcli_aks_live_test/
-# clean existing coverage report
-(coverage combine || true) && (coverage erase || true)
-if ! coverage run --source=. --omit=*/tests/* -p -m unittest discover; then
-    azcli_aks_live_test_unit_test_result="error"
-fi
-# currently no test written in pytest format under 'azcli_aks_live_test/'
-# coverage run --source=. --omit=*/tests/* -p -m pytest
-coverage combine && coverage json -o coverage_azcli_aks_live_test.json
-coverage report -m
-popd
-cp azure-cli-extensions/src/aks-preview/azcli_aks_live_test/coverage_azcli_aks_live_test.json reports/
-
-# azext_aks_preview
-azext_aks_preview_unit_test_result=""
-pushd azure-cli-extensions/src/aks-preview/azext_aks_preview
-# clean existing coverage report
-(coverage combine || true) && (coverage erase || true)
-# currently test using module 'unittest' is the same as module 'pytest', and test using 'pytest' is just recording test
-if ! coverage run --source=. --omit=*/vendored_sdks/*,*/tests/* -p -m unittest discover || ! coverage run --source=. --omit=*/vendored_sdks/*,*/tests/* -p -m pytest; then
-    azext_aks_preview_unit_test_result="error"
-fi
-coverage combine && coverage json -o coverage_azext_aks_preview.json
-coverage report -m
-popd
-cp azure-cli-extensions/src/aks-preview/azext_aks_preview/coverage_azext_aks_preview.json reports/
-
-if [[ $azcli_aks_live_test_unit_test_result == "error" || $azext_aks_preview_unit_test_result == "error" ]]; then
-    echo "Unit test failed!"
-    exit 1
-fi
-
 # prepare run flags
 run_flags="-em ext_matrix_default.json --no-exitfirst --discover --report-path ./ --reruns 3 --capture=sys"
 # parallel

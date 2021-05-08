@@ -12,7 +12,7 @@ from azdev.utilities import EXTENSION_PREFIX
 
 import azcli_aks_live_test.az_aks_tool.utils as utils
 import azcli_aks_live_test.az_aks_tool.ext as ext
-from azcli_aks_live_test.az_aks_tool.log import setup_logging
+import azcli_aks_live_test.az_aks_tool.log as log
 
 # const
 AKS_PREVIEW_MOD_NAME = EXTENSION_PREFIX + "aks_preview"  # azext_aks_preview
@@ -61,8 +61,10 @@ def init_argparse(args):
 
 def main():
     # setup logger
-    setup_logging()
-    logger = logging.getLogger(__name__)
+    root_module_name = log.parse_module_name(levels=1)
+    log.setup_logging(root_module_name)
+    current_module_name = log.parse_module_name(levels=2)
+    logger = logging.getLogger("{}.{}".format(current_module_name, __name__))
 
     # parse args
     logger.info("raw args: {}".format(sys.argv))
@@ -109,9 +111,12 @@ def main():
             ext_filtered_test_cases, AKS_PREVIEW_MOD_NAME)
         logger.info("According to 'ext_matrix' and filters, we get {} cases, need to exclude {} cases, finally get {} cases!".format(
             len(ext_test_cases), len(ext_exclude_test_cases), len(ext_filtered_test_cases)))
-        logger.info("Perform following tests: {}".format(ext_qualified_test_cases))
-        run_tests(ext_qualified_test_cases, xml_path=xml_path, discover=args.discover, in_series=args.series,
-                  run_live=args.live, no_exit_first=args.no_exitfirst, pytest_args=pytest_args)
+        if len(ext_qualified_test_cases) == 0:
+            logger.warning("No test case! Skipping!")
+        else:
+            logger.info("Perform following tests: {}".format(ext_qualified_test_cases))
+            run_tests(ext_qualified_test_cases, xml_path=xml_path, discover=args.discover, in_series=args.series,
+                    run_live=args.live, no_exit_first=args.no_exitfirst, pytest_args=pytest_args)
 
     # cli matrix
     if utils.check_file_existence(cli_matrix_file_path):
