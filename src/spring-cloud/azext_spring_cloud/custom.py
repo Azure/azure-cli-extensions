@@ -1365,6 +1365,65 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
 
 
 def _get_app_log(url, user_name, password, format_json, exceptions):
+    logger_seg_regex = re.compile(r'([^\.])[^\.]+\.')
+
+    def shorten_logger(record, length):
+        '''
+        Try shorten the logger property to the specified length before feeding it to the formatter.
+        '''
+        if length <= 0:
+            raise CLIError('Logger length in `logger{length}` should be positive')
+        logger = record.get('logger', None)
+        if logger is None:
+            return record
+
+        # first, try to shorten the package name to one letter, e.g.,
+        #     org.springframework.cloud.netflix.eureka.config.DiscoveryClientOptionalArgsConfiguration
+        # to: o.s.c.n.e.c.DiscoveryClientOptionalArgsConfiguration
+        while len(logger) > length:
+            logger, count = logger_seg_regex.subn(r'\1.', logger, 1)
+            if count < 1:
+                break
+
+        # then, cut off the leading packages if necessary
+        logger = logger[-length:]
+        record['logger'] = logger
+        return record
+
+    def build_formatter():
+        '''
+        Build the log line formatter based on the format_json argument.
+        '''
+        nonlocal format_json
+        if format_json is None or len(format_json) == 0:
+            return lambda line: line
+
+        logger_regex = re.compile(r'\blogger\{(\d+)\}')
+        match = logger_regex.search(format_json)
+        pre_processor = lambda x: x
+        if match:
+            length = int(match[1])
+            pre_processor = lambda log: shorten_logger(log, length)
+            format_json = logger_regex.sub('logger', format_json, 1)
+
+        first_exception = True
+
+        def format_line(line):
+            nonlocal first_exception
+            try:
+                log_record = json.loads(line)
+                # Add n=\n so that in Windows CMD it's easy to specify customized format with line ending
+                # e.g., "{timestamp} {message}{n}"
+                # (Windows CMD does not escape \n in string literal.)
+                return format_json.format_map(pre_processor(defaultdict(str, n="\n", **log_record)))
+            except:
+                if first_exception:
+                    logger.exception(f"Failed to format log line '{line}'")
+                    first_exception = False
+                return line
+
+        return format_line
+
     def iter_lines(response, limit=2**20):
         '''
         Return a line iterator from the response content. If no line ending was found and the buffered content size is
@@ -1398,19 +1457,6 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
                     buffer.clear()
                     total = 0
 
-    def write_line(line):
-        '''
-        Output formatted output from JSON if applicable, otherwise the line directly.
-        '''
-        if format_json is not None and len(format_json) > 0:
-            try:
-                log = json.loads(line)
-                print(format_json.format_map(defaultdict(str, **log)), end='')
-            except:
-                print(line, end='')
-        else:
-            print(line, end='')
-
     with requests.get(url, stream=True, auth=HTTPBasicAuth(user_name, password)) as response:
         try:
             if response.status_code != 200:
@@ -1418,9 +1464,13 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
                     response.status_code, response.reason))
             std_encoding = sys.stdout.encoding
 
+            formatter = build_formatter()
+
             for line in iter_lines(response):
-                decoded = line.decode(encoding='utf-8', errors='replace').encode(std_encoding, errors='replace').decode(std_encoding, errors='replace')
-                write_line(decoded)
+                decoded = (line.decode(encoding='utf-8', errors='replace')
+                           .encode(std_encoding, errors='replace')
+                           .decode(std_encoding, errors='replace'))
+                print(formatter(decoded), end='')
 
         except CLIError as e:
             exceptions.append(e)
