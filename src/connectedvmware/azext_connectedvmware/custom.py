@@ -1231,7 +1231,7 @@ def show_inventory_item(
     client: InventoryItemsOperations,
     resource_group_name,
     vcenter_name,
-    inventory_item_name,
+    inventory_item_name
 ):
 
     return client.get(resource_group_name, vcenter_name, inventory_item_name)

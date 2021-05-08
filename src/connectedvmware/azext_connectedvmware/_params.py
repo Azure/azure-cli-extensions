@@ -135,6 +135,11 @@ def load_arguments(self, _):
             help="Name or ID of the Arc zone to deploy the vm.",
         )
         c.argument(
+            'custom_location',
+            options_list=['--custom-location'],
+            help="Name or ID of the custom location that will manage this vm.",
+        )
+        c.argument(
             'vcenter',
             options_list=['--vcenter'],
             help="Name or ID of the vCenter to deploy the vm.",
@@ -261,7 +266,7 @@ def load_arguments(self, _):
             'nic_names', options_list=['--nics'], nargs='+', help="Names of the NICs."
         )
 
-    with self.argument_context('connectedvmware vm disk') as c:
+    with self.argument_context('connectedvmware vm disk add') as c:
         c.argument('disk_name', options_list=['--name', '-n'], help="Name of the Disk.")
         c.argument(
             'vm_name', options_list=['--vm-name'], help="Name of the virtual machine."
@@ -300,17 +305,71 @@ def load_arguments(self, _):
             help="Names of the Disks.",
         )
 
+    with self.argument_context('connectedvmware vm disk delete') as c:
+        c.argument(
+            'vm_name', options_list=['--vm-name'], help="Name of the virtual machine."
+        )
+        c.argument(
+            'disk_names',
+            options_list=['--disks'],
+            nargs='+',
+            help="Names of the Disks.",
+        )
+
+    with self.argument_context('connectedvmware vm disk list') as c:
+        c.argument(
+            'vm_name', options_list=['--vm-name'], help="Name of the virtual machine."
+        )
+
+    with self.argument_context('connectedvmware vm disk show_command') as c:
+        c.argument('disk_name', options_list=['--name', '-n'], help="Name of the Disk.")
+        c.argument(
+            'vm_name', options_list=['--vm-name'], help="Name of the virtual machine."
+        )
+
+    with self.argument_context('connectedvmware vm disk update') as c:
+        c.argument('disk_name', options_list=['--name', '-n'], help="Name of the Disk.")
+        c.argument(
+            'vm_name', options_list=['--vm-name'], help="Name of the virtual machine."
+        )
+        c.argument(
+            'disk_size',
+            type=int,
+            options_list=['--disk-size'],
+            help="The disk size in GBs.",
+        )
+        c.argument(
+            'disk_mode', options_list=['--disk-mode'], help="The mode of the disk."
+        )
+        c.argument(
+            'controller_key',
+            type=int,
+            options_list=['--controller-key'],
+            help="The controller key of the disk.",
+        )
+        c.argument(
+            'unit_number',
+            type=int,
+            options_list=['--unit-number'],
+            help="The unit number of the disk.",
+        )
+        c.argument(
+            'device_key',
+            type=int,
+            options_list=['--device-key'],
+            help="The device key for the disk.",
+        )
+
     with self.argument_context('connectedvmware inventory-item list') as c:
         c.argument(
             'vcenter_name', options_list=['--vcenter-name'], help="Name of the vCenter."
         )
 
-    with self.argument_context('connectedvmware inventory-item show') as c:
-        c.argument(
-            'vcenter_name', options_list=['--vcenter-name'], help="Name of the vCenter."
-        )
+    with self.argument_context('connectedvmware inventory-item show_command') as c:
         c.argument(
             'inventory_item_name',
-            options_list=['--inventory-item-name'],
-            help="Name of the inventory item.",
+            options_list=['--inventory-item-name'], help="Name of the inventory item.",
+        )
+        c.argument(
+            'vcenter_name', options_list=['--vcenter-name'], help="Name of the vCenter.",
         )
