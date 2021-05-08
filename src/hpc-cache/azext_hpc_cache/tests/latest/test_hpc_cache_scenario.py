@@ -26,6 +26,7 @@ class StorageCacheScenarioTest(ScenarioTest):
             'storage_name': self.create_random_name(prefix='storagename', length=24),
             'container_name': self.create_random_name(prefix='containername', length=24)
         })
+        principal_id = os.environ.get('AZURE_CLIENT_ID', '8a95323f-4a83-4a69-903f-7d2c69349c3c')
 
         storage_id = self.cmd('az storage account create -n {storage_name} -g {rg} -l {loc} '
                               '--sku Standard_LRS --https-only').get_output_in_json()['id']
@@ -34,8 +35,8 @@ class StorageCacheScenarioTest(ScenarioTest):
         self.cmd('az storage container create -n {container_name} --account-name {storage_name}')
 
         with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
-            self.cmd('az role assignment create --assignee  677a61e9-086e-4f13-986a-11aaedc31416 '
-                     '--role "Storage Account Contributor" --scope {}'.format(storage_id))
+            self.cmd('az role assignment create --assignee  {} '
+                     '--role "Storage Account Contributor" --scope {}'.format(principal_id, storage_id))
 
         vnet_id = self.cmd('az network vnet create -g {rg} -n {vnet_name} -l {loc} --address-prefix 10.7.0.0/16 '
                            '--subnet-name default --subnet-prefix 10.7.0.0/24').get_output_in_json()['newVNet']['id']
@@ -56,8 +57,8 @@ class StorageCacheScenarioTest(ScenarioTest):
 
         self.cmd('az hpc-cache upgrade-firmware --resource-group {rg} --name {cache_name}', checks=[])
 
-        from msrestazure.azure_exceptions import CloudError
-        with self.assertRaisesRegexp(CloudError, 'ResourceNotFound'):
+        from azure.core.exceptions import ResourceNotFoundError
+        with self.assertRaisesRegexp(ResourceNotFoundError, 'ResourceNotFound'):
             self.cmd('az hpc-cache update '
                      '--resource-group {rg} '
                      '--name "{cache_name}123" '
@@ -89,13 +90,13 @@ class StorageCacheScenarioTest(ScenarioTest):
                  checks=[self.check("length(@) != '0'", True)])
 
         self.cmd('az hpc-cache flush --resource-group {rg} --name {cache_name}',
-                 checks=[self.check('status', 'Succeeded')])
+                 checks=[self.check('@', 'success')])
 
         self.cmd('az hpc-cache stop --resource-group {rg} --name {cache_name}',
-                 checks=[self.check('status', 'Succeeded')])
+                 checks=[self.check('@', 'success')])
 
         self.cmd('az hpc-cache start --resource-group {rg} --name {cache_name}',
-                 checks=[self.check('status', 'Succeeded')])
+                 checks=[self.check('@', 'success')])
 
         self.cmd('az hpc-cache delete --resource-group {rg} --name {cache_name}',
                  checks=[self.check('status', 'Succeeded')])
@@ -115,6 +116,7 @@ class StorageCacheScenarioTest(ScenarioTest):
             'container_name': self.create_random_name(prefix='containername', length=24),
             'blob_target_name': self.create_random_name(prefix='blobtarget', length=24)
         })
+        principal_id = os.environ.get('AZURE_CLIENT_ID', '8a95323f-4a83-4a69-903f-7d2c69349c3c')
 
         storage_id = self.cmd('az storage account create -n {storage_name} -g {rg} -l {loc} '
                               '--sku Standard_LRS --https-only').get_output_in_json()['id']
@@ -123,8 +125,8 @@ class StorageCacheScenarioTest(ScenarioTest):
         self.cmd('az storage container create -n {container_name} --account-name {storage_name}')
 
         with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
-            self.cmd('az role assignment create --assignee  677a61e9-086e-4f13-986a-11aaedc31416 '
-                     '--role "Storage Account Contributor" --scope {}'.format(storage_id))
+            self.cmd('az role assignment create --assignee  {} '
+                     '--role "Storage Account Contributor" --scope {}'.format(principal_id, storage_id))
 
         vnet_id = self.cmd('az network vnet create -g {rg} -n {vnet_name} -l {loc} --address-prefix 10.7.0.0/16 '
                            '--subnet-name default --subnet-prefix 10.7.0.0/24').get_output_in_json()['newVNet']['id']

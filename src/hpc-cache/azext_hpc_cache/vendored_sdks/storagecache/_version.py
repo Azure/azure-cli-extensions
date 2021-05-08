@@ -6,14 +6,4 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._storage_cache_management_client import StorageCacheManagementClient
-from ._version import VERSION
-
-__version__ = VERSION
-__all__ = ['StorageCacheManagementClient']
-
-try:
-    from ._patch import patch_sdk  # type: ignore
-    patch_sdk()
-except ImportError:
-    pass
+VERSION = "0.1.0"
