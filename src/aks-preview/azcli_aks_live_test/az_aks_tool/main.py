@@ -41,12 +41,12 @@ def init_argparse(args):
                         default=False, help="discover test index")
     parser.add_argument("--no-exitfirst", action="store_true",
                         default=False, help="no exit first")
-    parser.add_argument("--xml-path", type=str,
-                        default="azcli_aks_runner.xml", help="junit log path")
+    parser.add_argument("--xml-file", type=str,
+                        default="azcli_aks_runner.xml", help="junit/xml report filename")
     parser.add_argument("-n", "--parallelism", type=str,
                         default="8", help="test parallelism")
-    parser.add_argument("-p", "--json-report-path", type=str,
-                        required=True, help="json report path")
+    parser.add_argument("-p", "--report-path", type=str,
+                        required=True, help="report path")
     parser.add_argument("-f", "--json-report-file", type=str,
                         default="azcli_aks_runner_report.json", help="json report filename")
     parser.add_argument("-r", "--reruns", type=str,
@@ -77,16 +77,18 @@ def main():
             "At least one of 'tests', 'cli_matrix' and 'ext_matrix' must be provided!")
 
     # report file
-    report_file_full_path = os.path.realpath(os.path.join(
-        args.json_report_path, args.json_report_file))
-    logger.info("report file full path: {}".format(report_file_full_path))
+    json_report_file_full_path = os.path.realpath(os.path.join(
+        args.report_path, args.json_report_file))
+    logger.info("json report file full path: {}".format(json_report_file_full_path))
+    xml_path = os.path.realpath(os.path.join(args.report_path, args.xml_file))
+    logger.info("junit/xml report file full path: {}".format(xml_path))
 
     # pytest args
     pytest_args = []
     if not args.series and args.parallelism:
         pytest_args.append("-n {}".format(args.parallelism))
     pytest_args.append("--json-report")
-    pytest_args.append("--json-report-file {}".format(report_file_full_path))
+    pytest_args.append("--json-report-file {}".format(json_report_file_full_path))
     pytest_args.append("--reruns {}".format(args.reruns))
     pytest_args.append("--capture {}".format(args.capture))
     pytest_args = [" ".join(pytest_args)]
@@ -108,7 +110,7 @@ def main():
         logger.info("According to 'ext_matrix' and filters, we get {} cases, need to exclude {} cases, finally get {} cases!".format(
             len(ext_test_cases), len(ext_exclude_test_cases), len(ext_filtered_test_cases)))
         logger.info("Perform following tests: {}".format(ext_qualified_test_cases))
-        run_tests(ext_qualified_test_cases, xml_path=args.xml_path, discover=args.discover, in_series=args.series,
+        run_tests(ext_qualified_test_cases, xml_path=xml_path, discover=args.discover, in_series=args.series,
                   run_live=args.live, no_exit_first=args.no_exitfirst, pytest_args=pytest_args)
 
     # cli matrix
@@ -120,7 +122,7 @@ def main():
     if test_cases:
         logger.info("Accroding to 'tests', we get {} cases".format(len(test_cases)))
         logger.info("Perform following tets: {}".format(test_cases))
-        run_tests(test_cases, xml_path=args.xml_path, discover=args.discover, in_series=args.series,
+        run_tests(test_cases, xml_path=xml_path, discover=args.discover, in_series=args.series,
                   run_live=args.live, no_exit_first=args.no_exitfirst, pytest_args=pytest_args)
 
 

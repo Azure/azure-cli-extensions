@@ -46,31 +46,11 @@ jobs:
         docker exec "azcli-aks-live-test-container" /opt/test_ext.sh
       condition: and(succeededOrFailed(), in(variables['COVERAGE'], 'ext', 'all'))
       displayName: Perform Test for EXT
-    - task: PublishBuildArtifacts@1
+    - task: CopyFiles@2
       inputs:
-        PathtoPublish: 'cli_report.json'
-        ArtifactName: 'cli_report.json'
-        publishLocation: 'Container'
-      condition: and(succeededOrFailed(), in(variables['COVERAGE'], 'cli', 'all'), in(variables['TEST_MODE'], 'record', 'all'))
-      displayName: Publish CLI Record Test Report
+        contents: 'reports/**'
+        targetFolder: $(Build.ArtifactStagingDirectory)
     - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: 'cli_live_report.json'
-        ArtifactName: 'cli_live_report.json'
-        publishLocation: 'Container'
-      condition: and(succeededOrFailed(), in(variables['COVERAGE'], 'cli', 'all'), in(variables['TEST_MODE'], 'live', 'all'))
-      displayName: Publish CLI Live Test Report
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: 'ext_report.json'
-        ArtifactName: 'ext_report.json'
-        publishLocation: 'Container'
-      condition: and(succeededOrFailed(), in(variables['COVERAGE'], 'ext', 'all'), in(variables['TEST_MODE'], 'record', 'all'))
-      displayName: Publish EXT Record Test Report
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: 'ext_live_report.json'
-        ArtifactName: 'ext_live_report.json'
-        publishLocation: 'Container'
-      condition: and(succeededOrFailed(), in(variables['COVERAGE'], 'ext', 'all'), in(variables['TEST_MODE'], 'live', 'all'))
-      displayName: Publish EXT Live Test Report
+    inputs:
+      pathToPublish: $(Build.ArtifactStagingDirectory)
+      artifactName: 'reports'

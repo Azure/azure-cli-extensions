@@ -18,4 +18,4 @@ class MainTestCase(unittest.TestCase):
 
     def test_init_argparse(self):
         args = main.init_argparse(["-p", "./"])
-        self.assertEqual(args.json_report_path, "./")
+        self.assertEqual(args.report_path, "./")

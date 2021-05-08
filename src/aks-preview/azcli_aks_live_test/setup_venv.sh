@@ -19,14 +19,17 @@ pip install pytest-json-report pytest-rerunfailures --upgrade
 # module for measuring code coverage
 pip install coverage
 
-# check existing az 
+# pre-install: check existing az 
 which az || az version || az extension list || true
 
-# install latest az
-azdev setup -c azure-cli -r azure-cli-extensions
+# install az from cloned repos with azdev
+azdev setup -c azure-cli/ -r azure-cli-extensions/
 deactivate
 source azEnv/bin/activate
 
-# check installation result
+# post-install: check installation result
 which az
 az version
+
+# mkdir to store reports
+mkdir -p reports/

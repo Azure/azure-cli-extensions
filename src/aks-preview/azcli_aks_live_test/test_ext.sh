@@ -49,6 +49,7 @@ fi
 coverage combine && coverage json -o coverage_azcli_aks_live_test.json
 coverage report -m
 popd
+cp azure-cli-extensions/src/aks-preview/azcli_aks_live_test/coverage_azcli_aks_live_test.json reports/
 
 # azext_aks_preview
 azext_aks_preview_unit_test_result=""
@@ -62,6 +63,7 @@ fi
 coverage combine && coverage json -o coverage_azext_aks_preview.json
 coverage report -m
 popd
+cp azure-cli-extensions/src/aks-preview/azext_aks_preview/coverage_azext_aks_preview.json reports/
 
 if [[ $azcli_aks_live_test_unit_test_result == "error" || $azext_aks_preview_unit_test_result == "error" ]]; then
     echo "Unit test failed!"
@@ -69,7 +71,7 @@ if [[ $azcli_aks_live_test_unit_test_result == "error" || $azext_aks_preview_uni
 fi
 
 # prepare run flags
-run_flags="-em ext_matrix_default.json --no-exitfirst --discover --json-report-path ./ --reruns 3 --capture=sys"
+run_flags="-em ext_matrix_default.json --no-exitfirst --discover --report-path ./ --reruns 3 --capture=sys"
 # parallel
 if [ $PARALLELISM -ge 2 ]; then
     run_flags+=" -n $PARALLELISM"
@@ -89,8 +91,10 @@ fi
 if [[ $TEST_MODE == "record" || $TEST_MODE == "all" ]]; then
     echo "Test in record mode!"
     run_flags+=" --json-report-file=ext_report.json"
+    run_flags+=" --xml-file=ext_result.xml"
     echo "run flags: ${run_flags}"
-    echo ${run_flags} | xargs python -u az_aks_tool/main.py 
+    echo ${run_flags} | xargs python -u az_aks_tool/main.py
+    cp ext_report.json ext_result.xml reports/
 fi
 
 # live test
@@ -100,6 +104,8 @@ if [[ $TEST_MODE == "live" || $TEST_MODE == "all" ]]; then
     az account set -s $AZCLI_ALT_SUBSCRIPTION_ID
     az account show
     run_flags+=" -l --json-report-file=ext_live_report.json"
+    run_flags+=" --xml-file=ext_live_result.xml"
     echo "run flags: ${run_flags}"
     echo ${run_flags} | xargs python -u az_aks_tool/main.py 
+    cp ext_live_report.json ext_live_result.xml reports/
 fi
