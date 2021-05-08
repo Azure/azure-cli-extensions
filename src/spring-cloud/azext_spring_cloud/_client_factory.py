@@ -5,8 +5,13 @@
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
 from .vendored_sdks.appplatform.v2020_07_01 import AppPlatformManagementClient
-from .vendored_sdks.appplatform.v2020_11_01_preview import AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
-from .vendored_sdks.appplatform.v2021_03_03_preview import AppPlatformManagementClient as AppPlatformManagementClient_20210303preview
+from .vendored_sdks.appplatform.v2020_11_01_preview import (
+    AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
+)
+from .vendored_sdks.appplatform.v2021_03_03_preview import (
+    AppPlatformManagementClient as AppPlatformManagementClient_20210303preview
+)
+
 
 def cf_spring_cloud(cli_ctx, *_):
     return get_mgmt_service_client(cli_ctx, AppPlatformManagementClient)

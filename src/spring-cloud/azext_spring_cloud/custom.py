@@ -18,7 +18,9 @@ from .vendored_sdks.appplatform.v2020_07_01 import models
 from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
 from .vendored_sdks.appplatform.v2021_03_03_preview import models as models_20210303preview
 from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
-from .vendored_sdks.appplatform.v2020_11_01_preview import AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
+from .vendored_sdks.appplatform.v2020_11_01_preview import (
+    AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
+)
 from knack.log import get_logger
 from .azure_storage_file import FileService
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -1259,6 +1261,7 @@ def _get_all_apps(client, resource_group, service):
     apps = (app.name for app in apps)
     return apps
 
+
 def _unify_memory(memory):
     if memory is None:
         return None
@@ -1269,6 +1272,7 @@ def _unify_memory(memory):
         return memory + "Gi"
     except ValueError:
         return memory
+
 
 # pylint: disable=too-many-locals, no-member
 def _app_deploy(client, resource_group, service, app, name, version, path, runtime_version, jvm_options, cpu, memory,
@@ -1363,47 +1367,54 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
     return sdk_no_wait(no_wait, client.deployments.create_or_update,
                        resource_group, service, app, name, properties=properties, sku=sku)
 
-
+# pylint: disable=bare-except, too-many-statements
 def _get_app_log(url, user_name, password, format_json, exceptions):
     logger_seg_regex = re.compile(r'([^\.])[^\.]+\.')
 
-    def shorten_logger(record, length):
-        '''
-        Try shorten the logger property to the specified length before feeding it to the formatter.
-        '''
+    def build_log_shortener(length):
         if length <= 0:
             raise CLIError('Logger length in `logger{length}` should be positive')
-        logger = record.get('logger', None)
-        if logger is None:
+        def shortener(record):
+            '''
+            Try shorten the logger property to the specified length before feeding it to the formatter.
+            '''
+            logger_name = record.get('logger', None)
+            if logger_name is None:
+                return record
+
+            # first, try to shorten the package name to one letter, e.g.,
+            #     org.springframework.cloud.netflix.eureka.config.DiscoveryClientOptionalArgsConfiguration
+            # to: o.s.c.n.e.c.DiscoveryClientOptionalArgsConfiguration
+            while len(logger_name) > length:
+                logger_name, count = logger_seg_regex.subn(r'\1.', logger_name, 1)
+                if count < 1:
+                    break
+
+            # then, cut off the leading packages if necessary
+            logger_name = logger_name[-length:]
+            record['logger'] = logger_name
             return record
 
-        # first, try to shorten the package name to one letter, e.g.,
-        #     org.springframework.cloud.netflix.eureka.config.DiscoveryClientOptionalArgsConfiguration
-        # to: o.s.c.n.e.c.DiscoveryClientOptionalArgsConfiguration
-        while len(logger) > length:
-            logger, count = logger_seg_regex.subn(r'\1.', logger, 1)
-            if count < 1:
-                break
-
-        # then, cut off the leading packages if necessary
-        logger = logger[-length:]
-        record['logger'] = logger
-        return record
+        return shortener
 
     def build_formatter():
         '''
         Build the log line formatter based on the format_json argument.
         '''
         nonlocal format_json
+
+        def identity(o):
+            return o
+
         if format_json is None or len(format_json) == 0:
-            return lambda line: line
+            return identity
 
         logger_regex = re.compile(r'\blogger\{(\d+)\}')
         match = logger_regex.search(format_json)
-        pre_processor = lambda x: x
+        pre_processor = identity
         if match:
             length = int(match[1])
-            pre_processor = lambda log: shorten_logger(log, length)
+            pre_processor = build_log_shortener(length)
             format_json = logger_regex.sub('logger', format_json, 1)
 
         first_exception = True
@@ -1418,7 +1429,7 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
                 return format_json.format_map(pre_processor(defaultdict(str, n="\n", **log_record)))
             except:
                 if first_exception:
-                    logger.exception(f"Failed to format log line '{line}'")
+                    logger.exception("Failed to format log line '{}'".format(line))
                     first_exception = False
                 return line
 
@@ -1442,13 +1453,13 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
                 line_end = content.find(b'\n', start)
                 should_print = False
                 if line_end < 0:
-                    next = (start == 0 and content or content[start:])
+                    next = (content if start == 0 else content[start:])
                     buffer.append(next)
                     total += len(next)
                     start = len(content)
                     should_print = total >= limit
                 else:
-                    buffer.append(content[start:line_end+1])
+                    buffer.append(content[start:line_end + 1])
                     start = line_end + 1
                     should_print = True
 
