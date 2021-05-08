@@ -34,7 +34,6 @@ echo "EXT_REPO=$EXT_REPO" >> env.list
 echo "EXT_BRANCH=$EXT_BRANCH" >> env.list
 
 # image
-echo "BUILD_IMAGE=$BUILD_IMAGE" >> env.list
 echo "IMAGE_PREFIX=$IMAGE_PREFIX" >> env.list
 echo "IMAGE_NAME=$IMAGE_NAME" >> env.list
 echo "IMAGE_TAG=$IMAGE_TAG" >> env.list
