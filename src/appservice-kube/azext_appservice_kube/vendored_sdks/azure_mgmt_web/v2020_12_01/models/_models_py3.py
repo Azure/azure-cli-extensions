@@ -1699,6 +1699,9 @@ class AppServicePlan(Resource):
      ~azure.mgmt.web.v2020_12_01.models.KubeEnvironmentProfile
     :param sku:
     :type sku: ~azure.mgmt.web.v2020_12_01.models.SkuDescription
+    :param extended_location: Extended location Envelope
+    :type extended_location:
+    ~azure.mgmt.web.v2020_12_01.models.ExtendedLocationEnvelope
     """
 
     _validation = {
@@ -1720,6 +1723,7 @@ class AppServicePlan(Resource):
         'name': {'key': 'name', 'type': 'str'},
         'kind': {'key': 'kind', 'type': 'str'},
         'location': {'key': 'location', 'type': 'str'},
+        'extended_location': {'key': 'extendedLocation', 'type': 'ExtendedLocationEnvelope'}
         'type': {'key': 'type', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
         'worker_tier_name': {'key': 'properties.workerTierName', 'type': 'str'},
@@ -1745,7 +1749,7 @@ class AppServicePlan(Resource):
         'sku': {'key': 'sku', 'type': 'SkuDescription'},
     }
 
-    def __init__(self, *, location: str, kind: str=None, tags=None, worker_tier_name: str=None, hosting_environment_profile=None, per_site_scaling: bool=False, maximum_elastic_worker_count: int=None, is_spot: bool=None, spot_expiration_time=None, free_offer_expiration_time=None, reserved: bool=False, is_xenon: bool=False, hyper_v: bool=False, target_worker_count: int=None, target_worker_size_id: int=None, kube_environment_profile=None, sku=None, **kwargs) -> None:
+    def __init__(self, *, location: str, kind: str=None, tags=None, worker_tier_name: str=None, hosting_environment_profile=None, per_site_scaling: bool=False, maximum_elastic_worker_count: int=None, is_spot: bool=None, spot_expiration_time=None, free_offer_expiration_time=None, reserved: bool=False, is_xenon: bool=False, hyper_v: bool=False, target_worker_count: int=None, target_worker_size_id: int=None, kube_environment_profile=None, extended_location=None, sku=None, **kwargs) -> None:
         super(AppServicePlan, self).__init__(kind=kind, location=location, tags=tags, **kwargs)
         self.worker_tier_name = worker_tier_name
         self.status = None
@@ -1767,6 +1771,7 @@ class AppServicePlan(Resource):
         self.target_worker_size_id = target_worker_size_id
         self.provisioning_state = None
         self.kube_environment_profile = kube_environment_profile
+        self.extended_location = extended_location
         self.sku = sku
 
 
@@ -6045,6 +6050,26 @@ class Experiments(Model):
     def __init__(self, *, ramp_up_rules=None, **kwargs) -> None:
         super(Experiments, self).__init__(**kwargs)
         self.ramp_up_rules = ramp_up_rules
+
+
+class ExtendedLocationEnvelope(Model):
+    """ExtendedLocationEnvelope.
+
+    :ivar name: Resource Name.
+    :vartype name: str
+    :ivar type: Resource type.
+    :vartype type: str
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'}, =
+    }
+
+    def __init__(self, *, name: str, type: str, **kwargs) -> None:
+        super(ExtendedLocationEnvelope, self).__init__(**kwargs)
+        self.name = name
+        self.type = type
 
 
 class ExtendedLocation(Model):
@@ -11271,6 +11296,9 @@ class Site(Resource):
     :type storage_account_required: bool
     :param identity:
     :type identity: ~azure.mgmt.web.v2020_12_01.models.ManagedServiceIdentity
+    :param extended_location: Extended location Envelope
+    :type extended_location:
+    ~azure.mgmt.web.v2020_12_01.models.ExtendedLocationEnvelope
     """
 
     _validation = {
@@ -11346,9 +11374,10 @@ class Site(Resource):
         'in_progress_operation_id': {'key': 'properties.inProgressOperationId', 'type': 'str'},
         'storage_account_required': {'key': 'properties.storageAccountRequired', 'type': 'bool'},
         'identity': {'key': 'identity', 'type': 'ManagedServiceIdentity'},
+        'extended_location': {'key': 'extendedLocation', 'type': 'ExtendedLocationEnvelope'}
     }
 
-    def __init__(self, *, location: str, kind: str=None, tags=None, enabled: bool=None, host_name_ssl_states=None, server_farm_id: str=None, reserved: bool=False, is_xenon: bool=False, hyper_v: bool=False, site_config=None, scm_site_also_stopped: bool=False, hosting_environment_profile=None, client_affinity_enabled: bool=None, client_cert_enabled: bool=None, client_cert_mode=None, client_cert_exclusion_paths: str=None, host_names_disabled: bool=None, custom_domain_verification_id: str=None, container_size: int=None, daily_memory_time_quota: int=None, cloning_info=None, key_vault_reference_identity: str=None, https_only: bool=None, redundancy_mode=None, storage_account_required: bool=None, identity=None, **kwargs) -> None:
+    def __init__(self, *, location: str, kind: str=None, tags=None, enabled: bool=None, host_name_ssl_states=None, server_farm_id: str=None, reserved: bool=False, is_xenon: bool=False, hyper_v: bool=False, site_config=None, scm_site_also_stopped: bool=False, hosting_environment_profile=None, client_affinity_enabled: bool=None, client_cert_enabled: bool=None, client_cert_mode=None, client_cert_exclusion_paths: str=None, host_names_disabled: bool=None, custom_domain_verification_id: str=None, container_size: int=None, daily_memory_time_quota: int=None, cloning_info=None, key_vault_reference_identity: str=None, https_only: bool=None, redundancy_mode=None, storage_account_required: bool=None, identity=None, extended_location=None, **kwargs) -> None:
         super(Site, self).__init__(kind=kind, location=location, tags=tags, **kwargs)
         self.state = None
         self.host_names = None
@@ -11391,6 +11420,7 @@ class Site(Resource):
         self.in_progress_operation_id = None
         self.storage_account_required = storage_account_required
         self.identity = identity
+        self.extended_location = extended_location
 
 
 class SiteAuthSettings(ProxyOnlyResource):

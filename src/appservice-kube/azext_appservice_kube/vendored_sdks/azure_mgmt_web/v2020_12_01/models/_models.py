@@ -1699,6 +1699,9 @@ class AppServicePlan(Resource):
      ~azure.mgmt.web.v2020_12_01.models.KubeEnvironmentProfile
     :param sku:
     :type sku: ~azure.mgmt.web.v2020_12_01.models.SkuDescription
+    :param extended_location: Extended location Envelope
+    :type extended_location:
+    ~azure.mgmt.web.v2020_12_01.models.ExtendedLocationEnvelope
     """
 
     _validation = {
@@ -1722,6 +1725,7 @@ class AppServicePlan(Resource):
         'location': {'key': 'location', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'tags': {'key': 'tags', 'type': '{str}'},
+        'extended_location': {'key': 'extendedLocation', 'type': 'ExtendedLocationEnvelope'},
         'worker_tier_name': {'key': 'properties.workerTierName', 'type': 'str'},
         'status': {'key': 'properties.status', 'type': 'StatusOptions'},
         'subscription': {'key': 'properties.subscription', 'type': 'str'},
@@ -1767,6 +1771,7 @@ class AppServicePlan(Resource):
         self.target_worker_size_id = kwargs.get('target_worker_size_id', None)
         self.provisioning_state = None
         self.kube_environment_profile = kwargs.get('kube_environment_profile', None)
+        self.extended_location = kwargs.get('extended_location', None)
         self.sku = kwargs.get('sku', None)
 
 
@@ -6045,6 +6050,26 @@ class Experiments(Model):
     def __init__(self, **kwargs):
         super(Experiments, self).__init__(**kwargs)
         self.ramp_up_rules = kwargs.get('ramp_up_rules', None)
+
+
+class ExtendedLocationEnvelope(Model):
+    """ExtendedLocationEnvelope.
+
+    :ivar name: Resource Name.
+    :vartype name: str
+    :ivar type: Resource type.
+    :vartype type: str
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(ExtendedLocationEnvelope, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
+        self.type = kwargs.get('type', None)
 
 
 class ExtendedLocation(Model):
@@ -11271,6 +11296,9 @@ class Site(Resource):
     :type storage_account_required: bool
     :param identity:
     :type identity: ~azure.mgmt.web.v2020_12_01.models.ManagedServiceIdentity
+    :param extended_location: Extended location Envelope
+    :type extended_location:
+    ~azure.mgmt.web.v2020_12_01.models.ExtendedLocationEnvelope
     """
 
     _validation = {
@@ -11346,6 +11374,7 @@ class Site(Resource):
         'in_progress_operation_id': {'key': 'properties.inProgressOperationId', 'type': 'str'},
         'storage_account_required': {'key': 'properties.storageAccountRequired', 'type': 'bool'},
         'identity': {'key': 'identity', 'type': 'ManagedServiceIdentity'},
+        'extended_location': {'key': 'extendedLocation', 'type': 'ExtendedLocationEnvelope'},
     }
 
     def __init__(self, **kwargs):
@@ -11391,6 +11420,7 @@ class Site(Resource):
         self.in_progress_operation_id = None
         self.storage_account_required = kwargs.get('storage_account_required', None)
         self.identity = kwargs.get('identity', None)
+        self.extended_location = kwargs.get('extended_location', None)
 
 
 class SiteAuthSettings(ProxyOnlyResource):

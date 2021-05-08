@@ -132,6 +132,7 @@ try:
     from ._models_py3 import ErrorEntity
     from ._models_py3 import Experiments
     from ._models_py3 import ExtendedLocation
+    from ._models_py3 import ExtendedLocationEnvelope
     from ._models_py3 import Facebook
     from ._models_py3 import FileSystemApplicationLogsConfig
     from ._models_py3 import FileSystemHttpLogsConfig
@@ -465,6 +466,7 @@ except (SyntaxError, ImportError):
     from ._models import ErrorEntity
     from ._models import Experiments
     from ._models import ExtendedLocation
+    from ._models import ExtendedLocationEnvelope
     from ._models import Facebook
     from ._models import FileSystemApplicationLogsConfig
     from ._models import FileSystemHttpLogsConfig
@@ -946,6 +948,7 @@ __all__ = [
     'ErrorEntity',
     'Experiments',
     'ExtendedLocation',
+    'ExtendedLocationEnvelope',
     'Facebook',
     'FileSystemApplicationLogsConfig',
     'FileSystemHttpLogsConfig',
