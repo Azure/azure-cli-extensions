@@ -709,30 +709,6 @@ helps['kusto attached-database-configuration show'] = """
 helps['kusto attached-database-configuration create'] = """
     type: command
     short-summary: "Create an attached database configuration."
-    parameters:
-      - name: AttachedDatabaseConfigurationsCreateOrUpdate
-        short-summary: "Table level sharing specifications"
-        long-summary: |
-            Usage: --tls tables-to-include=XX tables-to-exclude=XX \
-external-tables-to-include=XX external-tables-to-exclude=XX materialized-views-to-include=XX \
-materialized-views-to-exclude=XX
-
-            tables-to-include: List of tables to include in the follower database
-            tables-to-exclude: List of tables to exclude from the follower database
-            external-tables-to-include: List of external tables to include in the follower database
-            external-tables-to-exclude: List of external tables exclude from the follower database
-            materialized-views-to-include: List of materialized views to include in the follower database
-            materialized-views-to-exclude: List of materialized views exclude from the follower database
-    examples:
-      - name: AttachedDatabaseConfigurationsCreateOrUpdate
-        text: |-
-               az kusto attached-database-configuration create --name "attachedDatabaseConfigurations1" --cluster-name \
-"kustoclusterrptest4" --location "westus" --cluster-resource-id "/subscriptions/12345678-1234-1234-1234-123456789098/re\
-sourceGroups/kustorptest/providers/Microsoft.Kusto/Clusters/KustoClusterLeader" --database-name "kustodatabase" \
---default-principals-modification-kind "Union" --tls external-tables-to-exclude="ExternalTab\
-le2" external-tables-to-include="ExternalTable1" materialized-views-to-exclude="MaterializedViewTable2" \
-materialized-views-to-include="MaterializedViewTable1" tables-to-exclude="Table2" tables-to-include="Table1" \
---resource-group "kustorptest"
 """
 
 helps['kusto attached-database-configuration update'] = """
