@@ -5,7 +5,7 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.help_files import helps  # pylint: disable=unused-import
-import azext_k8s_extension._consts as consts
+from . import consts
 
 
 helps[f'{consts.EXTENSION_NAME}'] = """
