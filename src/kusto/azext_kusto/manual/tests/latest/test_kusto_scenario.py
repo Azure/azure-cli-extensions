@@ -451,8 +451,8 @@ def kusto_manual_setup(test):
 
     # Set parameters for tests.
     test.kwargs.update({
-        'Clusters_2': 'clitestcluster0f77',
-        'Clusters_3': 'clitestcluster977',
+        'Clusters_2': 'clitestcluster0f327',
+        'Clusters_3': 'clitestcluster327',
         'attachedDatabaseConfigurations_1': 'attachedDatabaseConfigurations2',
         'DataConnections8': 'DataConnections8',
         'eventhub_name': 'kustoclitesteh',
