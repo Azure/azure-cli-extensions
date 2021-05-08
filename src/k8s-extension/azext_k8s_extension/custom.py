@@ -13,15 +13,16 @@ from msrestazure.azure_exceptions import CloudError
 from azure.cli.core.azclierror import ResourceNotFoundError, MutuallyExclusiveArgumentError, \
     InvalidArgumentValueError, CommandNotFoundError, RequiredArgumentMissingError
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azext_k8s_extension.vendored_sdks.models import ConfigurationIdentity
-from azext_k8s_extension.vendored_sdks.models import ErrorResponseException
-from azext_k8s_extension.vendored_sdks.models import Scope
+from .vendored_sdks.models import ConfigurationIdentity
+from .vendored_sdks.models import ErrorResponseException
+from .vendored_sdks.models import Scope
 
-from azext_k8s_extension.partner_extensions.ContainerInsights import ContainerInsights
-from azext_k8s_extension.partner_extensions.AzureDefender import AzureDefender
-from azext_k8s_extension.partner_extensions.Cassandra import Cassandra
-from azext_k8s_extension.partner_extensions.DefaultExtension import DefaultExtension
-import azext_k8s_extension._consts as consts
+from .partner_extensions.ContainerInsights import ContainerInsights
+from .partner_extensions.AzureDefender import AzureDefender
+from .partner_extensions.Cassandra import Cassandra
+from .partner_extensions.AzureMLKubernetes import AzureMLKubernetes
+from .partner_extensions.DefaultExtension import DefaultExtension
+from . import consts
 
 from ._client_factory import cf_resources
 
@@ -33,7 +34,8 @@ def ExtensionFactory(extension_name):
     extension_map = {
         'microsoft.azuremonitor.containers': ContainerInsights,
         'microsoft.azuredefender.kubernetes': AzureDefender,
-        'cassandradatacentersoperator': Cassandra
+        'microsoft.azureml.kubernetes': AzureMLKubernetes,
+        'cassandradatacentersoperator': Cassandra,
     }
 
     # Return the extension if we find it in the map, else return the default
