@@ -41,7 +41,7 @@ azcli_aks_live_test_unit_test_result=""
 pushd azure-cli-extensions/src/aks-preview/azcli_aks_live_test/
 # clean existing coverage report
 (coverage combine || true) && (coverage erase || true)
-if ! coverage run --source=. --omit=*/tests/* -p -m unittest ; then
+if ! coverage run --source=. --omit=*/tests/* -p -m unittest discover; then
     azcli_aks_live_test_unit_test_result="error"
 fi
 # currently no test written in pytest format under 'azcli_aks_live_test/'
@@ -57,7 +57,7 @@ pushd azure-cli-extensions/src/aks-preview/azext_aks_preview
 # clean existing coverage report
 (coverage combine || true) && (coverage erase || true)
 # currently test using module 'unittest' is the same as module 'pytest', and test using 'pytest' is just recording test
-if ! coverage run --source=. --omit=*/vendored_sdks/*,*/tests/* -p -m unittest || coverage run --source=. --omit=*/vendored_sdks/*,*/tests/* -p -m pytest; then
+if ! coverage run --source=. --omit=*/vendored_sdks/*,*/tests/* -p -m unittest discover || coverage run --source=. --omit=*/vendored_sdks/*,*/tests/* -p -m pytest; then
     azext_aks_preview_unit_test_result="error"
 fi
 coverage combine && coverage json -o coverage_azext_aks_preview.json
