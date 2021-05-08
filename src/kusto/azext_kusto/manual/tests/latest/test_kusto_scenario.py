@@ -409,13 +409,12 @@ def step_kusto_data_connections_delete(test, rg):
 @try_manual
 def step_script_create(test, rg):
     test.cmd('az kusto script create '
-             '--cluster-name "{Clusters_3}" '
-             '--database-name "KustoDatabase8" '
+             '--cluster-name "blablab123" '
+             '--database-name "test00" '
              '--continue-on-errors true '
              '--script-url "https://testclients.blob.core.windows.net/testclientscontainer/script.txt" '
-             '--script-url-sas-token "sp=r&st=2021-05-04T12:59:36Z&se=2021-05-05T20:59:36Z&spr=https&sv=2020-02-10'
-             '&sr=b&sig=5gVV%2FgLgt0dDwVIWrWgES2eagG7duUkG0y90RqDK1kY%3D" '
-             '--resource-group "{rg}" '
+             '--script-url-sas-token "{sas}" '
+             '--resource-group "testgroupyefkpv" '
              '--name "testscript"',
              checks=[])
 
@@ -424,9 +423,9 @@ def step_script_create(test, rg):
 @try_manual
 def step_script_show(test, rg, checks=None):
     test.cmd('az kusto script show '
-             '--cluster-name "{Clusters_3}" '
-             '--database-name "Kustodatabase8" '
-             '--resource-group "{rg}" '
+             '--cluster-name "blablab123" '
+             '--database-name "test00" '
+             '--resource-group "testgroupyefkpv" '
              '--name "testscript"',
              checks=[])
 
@@ -435,33 +434,42 @@ def step_script_show(test, rg, checks=None):
 @try_manual
 def step_script_list(test, rg, checks=None):
     test.cmd('az kusto script list '
-             '--cluster-name "{Clusters_3}" '
-             '--database-name "Kustodatabase8" '
-             '--resource-group "{rg}"',
+             '--cluster-name "blablab123" '
+             '--database-name "test00" '
+             '--resource-group "testgroupyefkpv"',
              checks=[])
 
-
-# EXAMPLE: /Scripts/patch/KustoScriptsUpdate
-@try_manual
-def step_script_update(test, rg, checks=None):
-    test.cmd('az kusto script update '
-             '--cluster-name "{Clusters_3}" '
-             '--database-name "KustoDatabase8" '
-             '--continue-on-errors true '
-             '--script-url "https://testclients.blob.core.windows.net/testclientscontainer/script.txt" '
-             '--script-url-sas-token "sp=r&st=2021-05-04T12:59:36Z&se=2021-05-05T20:59:36Z&spr=https&sv=2020-02-10'
-             '&sr=b&sig=5gVV%2FgLgt0dDwVIWrWgES2eagG7duUkG0y90RqDK1kY%3D" '
-             '--resource-group "{rg}" '
-             '--name "testscript"',
-             checks=[])
+             
+def kusto_manual_setup(test):
+    
+    # Get sas-token for 'script' resource tests.
+    # Please update the '--expiry' with the relevant date
+    sas = test.cmd(
+        'storage blob generate-sas -n script --account-name testclients -c testclientscontainer --account-key "U+BSedrT9wGu3XDT4nvcJDZyU7jyEjcWMqPgQQU5oyYk3g1FxLNPdpA6o8X08UQCCeXmhC2DaoAxsdWwBgvhxg==" --permissions r --expiry 2021-05-11 --start 2021-05-08').output.strip()
+        
+    print(sas)
+    
+    # Set parameters for tests. 
+    test.kwargs.update({
+        'Clusters_2': 'clitestcluster0f77',
+        'Clusters_3': 'clitestcluster977',
+        'attachedDatabaseConfigurations_1': 'attachedDatabaseConfigurations2',
+        'DataConnections8': 'DataConnections8',
+        'eventhub_name': 'kustoclitesteh',
+        'eventhub_namespace': 'ADX-EG-astauben',
+        'eventhub_resource_id': '/subscriptions/fbccad30-f0ed-4ac4-9497-93bf6141062f/resourceGroups/astauben-tests/providers/Microsoft.EventHub/namespaces/ADX-EG-astauben/eventhubs/kustoclitesteh',
+        'sas': sas
+    })
 
 
 @try_manual
 def call_scenario(test, rg):
-
+    
+    # Set manual data for tests.
+    kusto_manual_setup(test)
+    step_script_create(test, rg)  
     step_kusto_clusters_create_or_update(test, rg)
     step_kusto_databases_create_or_update(test, rg)
-    step_script_create(test, rg)
     step_kusto_clusters_create_or_update2(test, rg)
     step_attached_database_configuration_create(test, rg)
     step_attached_database_configurations_get(test, rg)
@@ -494,10 +502,9 @@ def call_scenario(test, rg):
     step_script_create(test, rg)
     step_script_show(test, rg)
     step_script_list(test, rg)
-    step_script_update(test, rg)
     step_kusto_databases_delete(test, rg)
     step_kusto_clusters_delete(test, rg)
-
+    
 
 @try_manual
 class KustoManagementClientScenarioTest(ScenarioTest):
@@ -509,15 +516,5 @@ class KustoManagementClientScenarioTest(ScenarioTest):
         self.kwargs.update({
             'subscription_id': self.get_subscription_id()
         })
-
-        self.kwargs.update({
-            'Clusters_2': 'clitestcluster0f33',
-            'Clusters_3': 'clitestcluster0l33',
-            'attachedDatabaseConfigurations_1': 'attachedDatabaseConfigurations2',
-            'DataConnections8': 'DataConnections8',
-            'eventhub_name': 'kustoclitesteh',
-            'eventhub_namespace': 'ADX-EG-astauben',
-            'eventhub_resource_id': '/subscriptions/fbccad30-f0ed-4ac4-9497-93bf6141062f/resourceGroups/astauben-tests/providers/Microsoft.EventHub/namespaces/ADX-EG-astauben/eventhubs/kustoclitesteh'
-        })
-
+        
         call_scenario(self, rg)

@@ -402,7 +402,7 @@ TimeSpan.
       - name: Kusto ReadWrite database create or update
         text: |-
                az kusto database create --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" \
---read-write-database location="westus" soft-delete-period="P1D" --resource-group \
+--parameters "{\\"location\\":\\"westus\\",\\"properties\\":{\\"softDeletePeriod\\":\\"P1D\\"}}" --resource-group \
 "kustorptest"
 """
 
@@ -432,8 +432,7 @@ TimeSpan.
       - name: KustoDatabasesUpdate
         text: |-
                az kusto database update --cluster-name "kustoclusterrptest4" --database-name "KustoDatabase8" \
---read-write-database location="westus" soft-delete-period="P1D" --resource-group \
-"kustorptest"
+--parameters "{\\"properties\\":{\\"hotCachePeriod\\":\\"P1D\\"}}" --resource-group "kustorptest"
 """
 
 helps['kusto database delete'] = """
@@ -710,7 +709,7 @@ helps['kusto attached-database-configuration create'] = """
     type: command
     short-summary: "Create an attached database configuration."
     parameters:
-      - name: --table-level-sharing-properties
+      - name: --table-level-sharing-properties --tls
         short-summary: "Table level sharing specifications"
         long-summary: |
             Usage: --table-level-sharing-properties tables-to-include=XX tables-to-exclude=XX \
@@ -739,7 +738,7 @@ helps['kusto attached-database-configuration update'] = """
     type: command
     short-summary: "Update an attached database configuration."
     parameters:
-      - name: --table-level-sharing-properties
+      - name: --table-level-sharing-properties --tls
         short-summary: "Table level sharing specifications"
         long-summary: |
             Usage: --table-level-sharing-properties tables-to-include=XX tables-to-exclude=XX \

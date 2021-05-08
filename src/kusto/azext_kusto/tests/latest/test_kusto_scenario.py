@@ -189,16 +189,22 @@ class KustoScenarioTest(ScenarioTest):
         self.kwargs.update({
             'subscription_id': self.get_subscription_id()
         })
-
+        """
+        sas = self.cmd(
+            'storage blob generate-sas -n script --account-name testclients -c testclientscontainer --account-key "U+BSedrT9wGu3XDT4nvcJDZyU7jyEjcWMqPgQQU5oyYk3g1FxLNPdpA6o8X08UQCCeXmhC2DaoAxsdWwBgvhxg==" --permissions acrwd --expiry 2021-05-08 -otsv').output.strip()
+            
         self.kwargs.update({
-            'Clusters_2': 'clitestcluster0f',
-            'Clusters_3': 'clitestcluster0l',
+            'Clusters_2': 'clitestcluster0f99',
+            'Clusters_3': 'clitestcluster99',
             'attachedDatabaseConfigurations_1': 'attachedDatabaseConfigurations2',
             'DataConnections8': 'DataConnections8',
             'eventhub_name': 'kustoclitesteh',
             'eventhub_namespace': 'ADX-EG-astauben',
-            'eventhub_resource_id': '/subscriptions/fbccad30-f0ed-4ac4-9497-93bf6141062f/resourceGroups/astauben-tests/providers/Microsoft.EventHub/namespaces/ADX-EG-astauben/eventhubs/kustoclitesteh'
+            'eventhub_resource_id': '/subscriptions/fbccad30-f0ed-4ac4-9497-93bf6141062f/resourceGroups/astauben-tests/providers/Microsoft.EventHub/namespaces/ADX-EG-astauben/eventhubs/kustoclitesteh',
+            'sas': sas
         })
+        """
+
 
     @AllowLargeResponse(size_kb=5000)
     @ResourceGroupPreparer(name_prefix='clitestkusto_kustorptest'[:7], key='rg', parameter_name='rg')
