@@ -447,8 +447,6 @@ def kusto_manual_setup(test):
     sas = test.cmd(
         'storage blob generate-sas -n script --account-name testclients -c testclientscontainer --permissions r --expiry 2021-05-11 --start 2021-05-08 --auth-mode login --as-user').output.strip()
 
-    print(sas)
-
     # Set parameters for tests.
     test.kwargs.update({
         'Clusters_2': 'clitestcluster0f327',
