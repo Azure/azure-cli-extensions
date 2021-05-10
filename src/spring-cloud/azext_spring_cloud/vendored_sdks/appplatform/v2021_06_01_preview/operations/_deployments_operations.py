@@ -27,7 +27,7 @@ class DeploymentsOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The API version to use for this operation. Constant value: "2021-03-03-preview".
+    :ivar api_version: The API version to use for this operation. Constant value: "2021-06-01-preview".
     """
 
     models = models
@@ -37,7 +37,7 @@ class DeploymentsOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2021-03-03-preview"
+        self.api_version = "2021-06-01-preview"
 
         self.config = config
 
@@ -62,7 +62,7 @@ class DeploymentsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: DeploymentResource or ClientRawResponse if raw=true
         :rtype:
-         ~azure.mgmt.appplatform.v2021_03_03_preview.models.DeploymentResource
+         ~azure.mgmt.appplatform.v2021_06_01_preview.models.DeploymentResource
          or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
@@ -185,9 +185,9 @@ class DeploymentsOperations(object):
         :type deployment_name: str
         :param properties: Properties of the Deployment resource
         :type properties:
-         ~azure.mgmt.appplatform.v2021_03_03_preview.models.DeploymentResourceProperties
+         ~azure.mgmt.appplatform.v2021_06_01_preview.models.DeploymentResourceProperties
         :param sku: Sku of the Deployment resource
-        :type sku: ~azure.mgmt.appplatform.v2021_03_03_preview.models.Sku
+        :type sku: ~azure.mgmt.appplatform.v2021_06_01_preview.models.Sku
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -196,9 +196,9 @@ class DeploymentsOperations(object):
         :return: An instance of LROPoller that returns DeploymentResource or
          ClientRawResponse<DeploymentResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2021_03_03_preview.models.DeploymentResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2021_06_01_preview.models.DeploymentResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2021_03_03_preview.models.DeploymentResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2021_06_01_preview.models.DeploymentResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._create_or_update_initial(
@@ -392,9 +392,9 @@ class DeploymentsOperations(object):
         :type deployment_name: str
         :param properties: Properties of the Deployment resource
         :type properties:
-         ~azure.mgmt.appplatform.v2021_03_03_preview.models.DeploymentResourceProperties
+         ~azure.mgmt.appplatform.v2021_06_01_preview.models.DeploymentResourceProperties
         :param sku: Sku of the Deployment resource
-        :type sku: ~azure.mgmt.appplatform.v2021_03_03_preview.models.Sku
+        :type sku: ~azure.mgmt.appplatform.v2021_06_01_preview.models.Sku
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -403,9 +403,9 @@ class DeploymentsOperations(object):
         :return: An instance of LROPoller that returns DeploymentResource or
          ClientRawResponse<DeploymentResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2021_03_03_preview.models.DeploymentResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2021_06_01_preview.models.DeploymentResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2021_03_03_preview.models.DeploymentResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2021_06_01_preview.models.DeploymentResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._update_initial(
@@ -459,7 +459,7 @@ class DeploymentsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of DeploymentResource
         :rtype:
-         ~azure.mgmt.appplatform.v2021_03_03_preview.models.DeploymentResourcePaged[~azure.mgmt.appplatform.v2021_03_03_preview.models.DeploymentResource]
+         ~azure.mgmt.appplatform.v2021_06_01_preview.models.DeploymentResourcePaged[~azure.mgmt.appplatform.v2021_06_01_preview.models.DeploymentResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
@@ -538,7 +538,7 @@ class DeploymentsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of DeploymentResource
         :rtype:
-         ~azure.mgmt.appplatform.v2021_03_03_preview.models.DeploymentResourcePaged[~azure.mgmt.appplatform.v2021_03_03_preview.models.DeploymentResource]
+         ~azure.mgmt.appplatform.v2021_06_01_preview.models.DeploymentResourcePaged[~azure.mgmt.appplatform.v2021_06_01_preview.models.DeploymentResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
@@ -885,7 +885,7 @@ class DeploymentsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: LogFileUrlResponse or ClientRawResponse if raw=true
         :rtype:
-         ~azure.mgmt.appplatform.v2021_03_03_preview.models.LogFileUrlResponse
+         ~azure.mgmt.appplatform.v2021_06_01_preview.models.LogFileUrlResponse
          or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """

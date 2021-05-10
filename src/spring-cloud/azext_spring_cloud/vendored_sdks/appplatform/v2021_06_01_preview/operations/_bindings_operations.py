@@ -18,8 +18,8 @@ from msrestazure.polling.arm_polling import ARMPolling
 from .. import models
 
 
-class AppsOperations(object):
-    """AppsOperations operations.
+class BindingsOperations(object):
+    """BindingsOperations operations.
 
     You should not instantiate directly this class, but create a Client instance that will create it for you and attach it as attribute.
 
@@ -27,7 +27,7 @@ class AppsOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The API version to use for this operation. Constant value: "2021-03-03-preview".
+    :ivar api_version: The API version to use for this operation. Constant value: "2021-06-01-preview".
     """
 
     models = models
@@ -37,13 +37,13 @@ class AppsOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2021-03-03-preview"
+        self.api_version = "2021-06-01-preview"
 
         self.config = config
 
     def get(
-            self, resource_group_name, service_name, app_name, sync_status=None, custom_headers=None, raw=False, **operation_config):
-        """Get an App and its properties.
+            self, resource_group_name, service_name, app_name, binding_name, custom_headers=None, raw=False, **operation_config):
+        """Get a Binding and its properties.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
@@ -53,16 +53,17 @@ class AppsOperations(object):
         :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
-        :param sync_status: Indicates whether sync status
-        :type sync_status: str
+        :param binding_name: The name of the Binding resource.
+        :type binding_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: AppResource or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.appplatform.v2021_03_03_preview.models.AppResource
-         or ~msrest.pipeline.ClientRawResponse
+        :return: BindingResource or ClientRawResponse if raw=true
+        :rtype:
+         ~azure.mgmt.appplatform.v2021_06_01_preview.models.BindingResource or
+         ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         # Construct URL
@@ -71,15 +72,14 @@ class AppsOperations(object):
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'serviceName': self._serialize.url("service_name", service_name, 'str'),
-            'appName': self._serialize.url("app_name", app_name, 'str')
+            'appName': self._serialize.url("app_name", app_name, 'str'),
+            'bindingName': self._serialize.url("binding_name", binding_name, 'str')
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
         query_parameters = {}
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
-        if sync_status is not None:
-            query_parameters['syncStatus'] = self._serialize.query("sync_status", sync_status, 'str')
 
         # Construct headers
         header_parameters = {}
@@ -102,25 +102,28 @@ class AppsOperations(object):
 
         deserialized = None
         if response.status_code == 200:
-            deserialized = self._deserialize('AppResource', response)
+            deserialized = self._deserialize('BindingResource', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
             return client_raw_response
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}'}
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings/{bindingName}'}
 
 
     def _create_or_update_initial(
-            self, resource_group_name, service_name, app_name, app_resource, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, service_name, app_name, binding_name, properties=None, custom_headers=None, raw=False, **operation_config):
+        binding_resource = models.BindingResource(properties=properties)
+
         # Construct URL
         url = self.create_or_update.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'serviceName': self._serialize.url("service_name", service_name, 'str'),
-            'appName': self._serialize.url("app_name", app_name, 'str')
+            'appName': self._serialize.url("app_name", app_name, 'str'),
+            'bindingName': self._serialize.url("binding_name", binding_name, 'str')
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -140,7 +143,7 @@ class AppsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        body_content = self._serialize.body(app_resource, 'AppResource')
+        body_content = self._serialize.body(binding_resource, 'BindingResource')
 
         # Construct and send request
         request = self._client.put(url, query_parameters, header_parameters, body_content)
@@ -154,11 +157,11 @@ class AppsOperations(object):
         deserialized = None
 
         if response.status_code == 200:
-            deserialized = self._deserialize('AppResource', response)
+            deserialized = self._deserialize('BindingResource', response)
         if response.status_code == 201:
-            deserialized = self._deserialize('AppResource', response)
+            deserialized = self._deserialize('BindingResource', response)
         if response.status_code == 202:
-            deserialized = self._deserialize('AppResource', response)
+            deserialized = self._deserialize('BindingResource', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
@@ -167,8 +170,8 @@ class AppsOperations(object):
         return deserialized
 
     def create_or_update(
-            self, resource_group_name, service_name, app_name, app_resource, custom_headers=None, raw=False, polling=True, **operation_config):
-        """Create a new App or update an exiting App.
+            self, resource_group_name, service_name, app_name, binding_name, properties=None, custom_headers=None, raw=False, polling=True, **operation_config):
+        """Create a new Binding or update an exiting Binding.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
@@ -178,34 +181,37 @@ class AppsOperations(object):
         :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
-        :param app_resource: Parameters for the create or update operation
-        :type app_resource:
-         ~azure.mgmt.appplatform.v2021_03_03_preview.models.AppResource
+        :param binding_name: The name of the Binding resource.
+        :type binding_name: str
+        :param properties: Properties of the Binding resource
+        :type properties:
+         ~azure.mgmt.appplatform.v2021_06_01_preview.models.BindingResourceProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
         :param polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
-        :return: An instance of LROPoller that returns AppResource or
-         ClientRawResponse<AppResource> if raw==True
+        :return: An instance of LROPoller that returns BindingResource or
+         ClientRawResponse<BindingResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2021_03_03_preview.models.AppResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2021_06_01_preview.models.BindingResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2021_03_03_preview.models.AppResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2021_06_01_preview.models.BindingResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._create_or_update_initial(
             resource_group_name=resource_group_name,
             service_name=service_name,
             app_name=app_name,
-            app_resource=app_resource,
+            binding_name=binding_name,
+            properties=properties,
             custom_headers=custom_headers,
             raw=True,
             **operation_config
         )
 
         def get_long_running_output(response):
-            deserialized = self._deserialize('AppResource', response)
+            deserialized = self._deserialize('BindingResource', response)
 
             if raw:
                 client_raw_response = ClientRawResponse(deserialized, response)
@@ -220,18 +226,19 @@ class AppsOperations(object):
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}'}
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings/{bindingName}'}
 
 
     def _delete_initial(
-            self, resource_group_name, service_name, app_name, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, service_name, app_name, binding_name, custom_headers=None, raw=False, **operation_config):
         # Construct URL
         url = self.delete.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'serviceName': self._serialize.url("service_name", service_name, 'str'),
-            'appName': self._serialize.url("app_name", app_name, 'str')
+            'appName': self._serialize.url("app_name", app_name, 'str'),
+            'bindingName': self._serialize.url("binding_name", binding_name, 'str')
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -262,8 +269,8 @@ class AppsOperations(object):
             return client_raw_response
 
     def delete(
-            self, resource_group_name, service_name, app_name, custom_headers=None, raw=False, polling=True, **operation_config):
-        """Operation to delete an App.
+            self, resource_group_name, service_name, app_name, binding_name, custom_headers=None, raw=False, polling=True, **operation_config):
+        """Operation to delete a Binding.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
@@ -273,6 +280,8 @@ class AppsOperations(object):
         :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
+        :param binding_name: The name of the Binding resource.
+        :type binding_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -288,6 +297,7 @@ class AppsOperations(object):
             resource_group_name=resource_group_name,
             service_name=service_name,
             app_name=app_name,
+            binding_name=binding_name,
             custom_headers=custom_headers,
             raw=True,
             **operation_config
@@ -305,18 +315,21 @@ class AppsOperations(object):
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}'}
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings/{bindingName}'}
 
 
     def _update_initial(
-            self, resource_group_name, service_name, app_name, app_resource, custom_headers=None, raw=False, **operation_config):
+            self, resource_group_name, service_name, app_name, binding_name, properties=None, custom_headers=None, raw=False, **operation_config):
+        binding_resource = models.BindingResource(properties=properties)
+
         # Construct URL
         url = self.update.metadata['url']
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
             'serviceName': self._serialize.url("service_name", service_name, 'str'),
-            'appName': self._serialize.url("app_name", app_name, 'str')
+            'appName': self._serialize.url("app_name", app_name, 'str'),
+            'bindingName': self._serialize.url("binding_name", binding_name, 'str')
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -336,7 +349,7 @@ class AppsOperations(object):
             header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
 
         # Construct body
-        body_content = self._serialize.body(app_resource, 'AppResource')
+        body_content = self._serialize.body(binding_resource, 'BindingResource')
 
         # Construct and send request
         request = self._client.patch(url, query_parameters, header_parameters, body_content)
@@ -350,9 +363,9 @@ class AppsOperations(object):
         deserialized = None
 
         if response.status_code == 200:
-            deserialized = self._deserialize('AppResource', response)
+            deserialized = self._deserialize('BindingResource', response)
         if response.status_code == 202:
-            deserialized = self._deserialize('AppResource', response)
+            deserialized = self._deserialize('BindingResource', response)
 
         if raw:
             client_raw_response = ClientRawResponse(deserialized, response)
@@ -361,8 +374,8 @@ class AppsOperations(object):
         return deserialized
 
     def update(
-            self, resource_group_name, service_name, app_name, app_resource, custom_headers=None, raw=False, polling=True, **operation_config):
-        """Operation to update an exiting App.
+            self, resource_group_name, service_name, app_name, binding_name, properties=None, custom_headers=None, raw=False, polling=True, **operation_config):
+        """Operation to update an exiting Binding.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
@@ -372,34 +385,37 @@ class AppsOperations(object):
         :type service_name: str
         :param app_name: The name of the App resource.
         :type app_name: str
-        :param app_resource: Parameters for the update operation
-        :type app_resource:
-         ~azure.mgmt.appplatform.v2021_03_03_preview.models.AppResource
+        :param binding_name: The name of the Binding resource.
+        :type binding_name: str
+        :param properties: Properties of the Binding resource
+        :type properties:
+         ~azure.mgmt.appplatform.v2021_06_01_preview.models.BindingResourceProperties
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
         :param polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
-        :return: An instance of LROPoller that returns AppResource or
-         ClientRawResponse<AppResource> if raw==True
+        :return: An instance of LROPoller that returns BindingResource or
+         ClientRawResponse<BindingResource> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2021_03_03_preview.models.AppResource]
+         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.appplatform.v2021_06_01_preview.models.BindingResource]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2021_03_03_preview.models.AppResource]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.appplatform.v2021_06_01_preview.models.BindingResource]]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         raw_result = self._update_initial(
             resource_group_name=resource_group_name,
             service_name=service_name,
             app_name=app_name,
-            app_resource=app_resource,
+            binding_name=binding_name,
+            properties=properties,
             custom_headers=custom_headers,
             raw=True,
             **operation_config
         )
 
         def get_long_running_output(response):
-            deserialized = self._deserialize('AppResource', response)
+            deserialized = self._deserialize('BindingResource', response)
 
             if raw:
                 client_raw_response = ClientRawResponse(deserialized, response)
@@ -414,11 +430,11 @@ class AppsOperations(object):
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}'}
+    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings/{bindingName}'}
 
     def list(
-            self, resource_group_name, service_name, custom_headers=None, raw=False, **operation_config):
-        """Handles requests to list all resources in a Service.
+            self, resource_group_name, service_name, app_name, custom_headers=None, raw=False, **operation_config):
+        """Handles requests to list all resources in an App.
 
         :param resource_group_name: The name of the resource group that
          contains the resource. You can obtain this value from the Azure
@@ -426,14 +442,16 @@ class AppsOperations(object):
         :type resource_group_name: str
         :param service_name: The name of the Service resource.
         :type service_name: str
+        :param app_name: The name of the App resource.
+        :type app_name: str
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: returns the direct response alongside the
          deserialized response
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
-        :return: An iterator like instance of AppResource
+        :return: An iterator like instance of BindingResource
         :rtype:
-         ~azure.mgmt.appplatform.v2021_03_03_preview.models.AppResourcePaged[~azure.mgmt.appplatform.v2021_03_03_preview.models.AppResource]
+         ~azure.mgmt.appplatform.v2021_06_01_preview.models.BindingResourcePaged[~azure.mgmt.appplatform.v2021_06_01_preview.models.BindingResource]
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
         def prepare_request(next_link=None):
@@ -443,7 +461,8 @@ class AppsOperations(object):
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-                    'serviceName': self._serialize.url("service_name", service_name, 'str')
+                    'serviceName': self._serialize.url("service_name", service_name, 'str'),
+                    'appName': self._serialize.url("app_name", app_name, 'str')
                 }
                 url = self._client.format_url(url, **path_format_arguments)
 
@@ -485,150 +504,7 @@ class AppsOperations(object):
         header_dict = None
         if raw:
             header_dict = {}
-        deserialized = models.AppResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
+        deserialized = models.BindingResourcePaged(internal_paging, self._deserialize.dependencies, header_dict)
 
         return deserialized
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps'}
-
-    def get_resource_upload_url(
-            self, resource_group_name, service_name, app_name, custom_headers=None, raw=False, **operation_config):
-        """Get an resource upload URL for an App, which may be artifacts or source
-        archive.
-
-        :param resource_group_name: The name of the resource group that
-         contains the resource. You can obtain this value from the Azure
-         Resource Manager API or the portal.
-        :type resource_group_name: str
-        :param service_name: The name of the Service resource.
-        :type service_name: str
-        :param app_name: The name of the App resource.
-        :type app_name: str
-        :param dict custom_headers: headers that will be added to the request
-        :param bool raw: returns the direct response alongside the
-         deserialized response
-        :param operation_config: :ref:`Operation configuration
-         overrides<msrest:optionsforoperations>`.
-        :return: ResourceUploadDefinition or ClientRawResponse if raw=true
-        :rtype:
-         ~azure.mgmt.appplatform.v2021_03_03_preview.models.ResourceUploadDefinition
-         or ~msrest.pipeline.ClientRawResponse
-        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
-        """
-        # Construct URL
-        url = self.get_resource_upload_url.metadata['url']
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'serviceName': self._serialize.url("service_name", service_name, 'str'),
-            'appName': self._serialize.url("app_name", app_name, 'str')
-        }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
-
-        # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
-        if self.config.generate_client_request_id:
-            header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
-        if custom_headers:
-            header_parameters.update(custom_headers)
-        if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
-
-        # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters)
-        response = self._client.send(request, stream=False, **operation_config)
-
-        if response.status_code not in [200]:
-            exp = CloudError(response)
-            exp.request_id = response.headers.get('x-ms-request-id')
-            raise exp
-
-        deserialized = None
-        if response.status_code == 200:
-            deserialized = self._deserialize('ResourceUploadDefinition', response)
-
-        if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
-
-        return deserialized
-    get_resource_upload_url.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/getResourceUploadUrl'}
-
-    def validate_domain(
-            self, resource_group_name, service_name, app_name, name, custom_headers=None, raw=False, **operation_config):
-        """Check the resource name is valid as well as not in use.
-
-        :param resource_group_name: The name of the resource group that
-         contains the resource. You can obtain this value from the Azure
-         Resource Manager API or the portal.
-        :type resource_group_name: str
-        :param service_name: The name of the Service resource.
-        :type service_name: str
-        :param app_name: The name of the App resource.
-        :type app_name: str
-        :param name: Name to be validated
-        :type name: str
-        :param dict custom_headers: headers that will be added to the request
-        :param bool raw: returns the direct response alongside the
-         deserialized response
-        :param operation_config: :ref:`Operation configuration
-         overrides<msrest:optionsforoperations>`.
-        :return: CustomDomainValidateResult or ClientRawResponse if raw=true
-        :rtype:
-         ~azure.mgmt.appplatform.v2021_03_03_preview.models.CustomDomainValidateResult
-         or ~msrest.pipeline.ClientRawResponse
-        :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
-        """
-        validate_payload = models.CustomDomainValidatePayload(name=name)
-
-        # Construct URL
-        url = self.validate_domain.metadata['url']
-        path_format_arguments = {
-            'subscriptionId': self._serialize.url("self.config.subscription_id", self.config.subscription_id, 'str'),
-            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str'),
-            'serviceName': self._serialize.url("service_name", service_name, 'str'),
-            'appName': self._serialize.url("app_name", app_name, 'str')
-        }
-        url = self._client.format_url(url, **path_format_arguments)
-
-        # Construct parameters
-        query_parameters = {}
-        query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str', min_length=1)
-
-        # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
-        if self.config.generate_client_request_id:
-            header_parameters['x-ms-client-request-id'] = str(uuid.uuid1())
-        if custom_headers:
-            header_parameters.update(custom_headers)
-        if self.config.accept_language is not None:
-            header_parameters['accept-language'] = self._serialize.header("self.config.accept_language", self.config.accept_language, 'str')
-
-        # Construct body
-        body_content = self._serialize.body(validate_payload, 'CustomDomainValidatePayload')
-
-        # Construct and send request
-        request = self._client.post(url, query_parameters, header_parameters, body_content)
-        response = self._client.send(request, stream=False, **operation_config)
-
-        if response.status_code not in [200]:
-            exp = CloudError(response)
-            exp.request_id = response.headers.get('x-ms-request-id')
-            raise exp
-
-        deserialized = None
-        if response.status_code == 200:
-            deserialized = self._deserialize('CustomDomainValidateResult', response)
-
-        if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
-
-        return deserialized
-    validate_domain.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/validateDomain'}
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings'}

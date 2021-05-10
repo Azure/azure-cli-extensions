@@ -34,27 +34,27 @@ class AppPlatformManagementClient(SDKClient):
     :vartype config: AppPlatformManagementClientConfiguration
 
     :ivar services: Services operations
-    :vartype services: azure.mgmt.appplatform.v2021_03_03_preview.operations.ServicesOperations
+    :vartype services: azure.mgmt.appplatform.v2021_06_01_preview.operations.ServicesOperations
     :ivar config_servers: ConfigServers operations
-    :vartype config_servers: azure.mgmt.appplatform.v2021_03_03_preview.operations.ConfigServersOperations
+    :vartype config_servers: azure.mgmt.appplatform.v2021_06_01_preview.operations.ConfigServersOperations
     :ivar monitoring_settings: MonitoringSettings operations
-    :vartype monitoring_settings: azure.mgmt.appplatform.v2021_03_03_preview.operations.MonitoringSettingsOperations
+    :vartype monitoring_settings: azure.mgmt.appplatform.v2021_06_01_preview.operations.MonitoringSettingsOperations
     :ivar apps: Apps operations
-    :vartype apps: azure.mgmt.appplatform.v2021_03_03_preview.operations.AppsOperations
+    :vartype apps: azure.mgmt.appplatform.v2021_06_01_preview.operations.AppsOperations
     :ivar bindings: Bindings operations
-    :vartype bindings: azure.mgmt.appplatform.v2021_03_03_preview.operations.BindingsOperations
+    :vartype bindings: azure.mgmt.appplatform.v2021_06_01_preview.operations.BindingsOperations
     :ivar certificates: Certificates operations
-    :vartype certificates: azure.mgmt.appplatform.v2021_03_03_preview.operations.CertificatesOperations
+    :vartype certificates: azure.mgmt.appplatform.v2021_06_01_preview.operations.CertificatesOperations
     :ivar custom_domains: CustomDomains operations
-    :vartype custom_domains: azure.mgmt.appplatform.v2021_03_03_preview.operations.CustomDomainsOperations
+    :vartype custom_domains: azure.mgmt.appplatform.v2021_06_01_preview.operations.CustomDomainsOperations
     :ivar deployments: Deployments operations
-    :vartype deployments: azure.mgmt.appplatform.v2021_03_03_preview.operations.DeploymentsOperations
+    :vartype deployments: azure.mgmt.appplatform.v2021_06_01_preview.operations.DeploymentsOperations
     :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.appplatform.v2021_03_03_preview.operations.Operations
+    :vartype operations: azure.mgmt.appplatform.v2021_06_01_preview.operations.Operations
     :ivar runtime_versions: RuntimeVersions operations
-    :vartype runtime_versions: azure.mgmt.appplatform.v2021_03_03_preview.operations.RuntimeVersionsOperations
+    :vartype runtime_versions: azure.mgmt.appplatform.v2021_06_01_preview.operations.RuntimeVersionsOperations
     :ivar skus: Skus operations
-    :vartype skus: azure.mgmt.appplatform.v2021_03_03_preview.operations.SkusOperations
+    :vartype skus: azure.mgmt.appplatform.v2021_06_01_preview.operations.SkusOperations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials
@@ -73,7 +73,7 @@ class AppPlatformManagementClient(SDKClient):
         super(AppPlatformManagementClient, self).__init__(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
-        self.api_version = '2021-03-03-preview'
+        self.api_version = '2021-06-01-preview'
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 

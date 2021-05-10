@@ -25,7 +25,7 @@ class RuntimeVersionsOperations(object):
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
     :param deserializer: An object model deserializer.
-    :ivar api_version: The API version to use for this operation. Constant value: "2021-03-03-preview".
+    :ivar api_version: The API version to use for this operation. Constant value: "2021-06-01-preview".
     """
 
     models = models
@@ -35,7 +35,7 @@ class RuntimeVersionsOperations(object):
         self._client = client
         self._serialize = serializer
         self._deserialize = deserializer
-        self.api_version = "2021-03-03-preview"
+        self.api_version = "2021-06-01-preview"
 
         self.config = config
 
@@ -51,7 +51,7 @@ class RuntimeVersionsOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: AvailableRuntimeVersions or ClientRawResponse if raw=true
         :rtype:
-         ~azure.mgmt.appplatform.v2021_03_03_preview.models.AvailableRuntimeVersions
+         ~azure.mgmt.appplatform.v2021_06_01_preview.models.AvailableRuntimeVersions
          or ~msrest.pipeline.ClientRawResponse
         :raises: :class:`CloudError<msrestazure.azure_exceptions.CloudError>`
         """
