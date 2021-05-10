@@ -1510,7 +1510,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                                                           load_balancer_outbound_ports,
                                                           load_balancer_idle_timeout)
     update_aad_profile = not (
-        aad_tenant_id is None and aad_admin_group_object_ids is None)
+        aad_tenant_id is None and aad_admin_group_object_ids is None and not enable_azure_rbac and not disable_azure_rbac)
     # pylint: disable=too-many-boolean-expressions
     if not update_autoscaler and \
        cluster_autoscaler_profile is None and \
@@ -1533,9 +1533,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not enable_secret_rotation and \
        not disable_secret_rotation and \
        not tags and \
-       not windows_admin_password and \
-       not enable_azure_rbac and \
-       not disable_azure_rbac:
+       not windows_admin_password:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1564,7 +1562,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--tags" or '
                        '"--windows-admin-password" or '
                        '"--enable-azure-rbac" or '
-                       '"--disable-azure-rbac" or ')
+                       '"--disable-azure-rbac"')
 
     instance = client.get(resource_group_name, name)
 
@@ -1698,7 +1696,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.aad_profile = ManagedClusterAADProfile(
             managed=True
         )
-    if update_aad_profile or enable_azure_rbac or disable_azure_rbac:
+    if update_aad_profile:
         if instance.aad_profile is None or not instance.aad_profile.managed:
             raise CLIError('Cannot specify "--aad-tenant-id/--aad-admin-group-object-ids/--enable-azure-rbac/--disable-azure-rbac"'
                            ' if managed AAD is not enabled')
