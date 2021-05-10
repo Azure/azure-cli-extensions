@@ -1,11 +1,9 @@
-# Azure CLI AKS Live Test Pipeline
+# Azure CLI AKS Live Test Pipeline & Azure CLI AKS Unit Test Pipeline
 
-This is a pipeline to test newly added aks commands in aks-preview/acs.
+These pipelines are used to test newly added aks commands in module aks-preview (azure-cli-extensions) / acs (azure-cli, not covered by default).
 
 ## How to use
 
-**By default**, this pipeline will be **triggered** when submitting a **PR** to the master branch of the official repo which involves modifying the file under src/aks-preview and test the acs command group in azure-cli and the aks-preview command group in azure-cli-extensions. If the variables of the pipeline are not modified, the test will be executed based on the latest commit of the dev branch in the offical repo of azure-cli. The test will be performed in record mode first, and then in live mode. After the test, you can get the test results from the pipeline artifact (for different modes (record/live) and different modules (cli/ext)).
+**By default**, these pipelines will be **triggered** when submitting a **PR** to the master branch of the official repo which involves modifying the files under src/aks-preview. Then they will test the aks-preview command group in azure-cli-extensions. For live test pipeline, the test will be performed in record mode first, and then in live mode. Due to some specific [reasons](https://dev.azure.com/msazure/CloudNativeCompute/_wiki/wikis/CloudNativeCompute.wiki/157433/Live-Test-Failures-in-aks-preview-(with-bare-sub)), some test cases would fail. These test cases have been filtered out by file 'ext_matrix_default.json'. For unit test pipeline, the test will be perfomed with 'unittest' and 'pytest' modules. A code coverage report will be generated after the unit tests. You can find test reports and coverage report from pipeline artifacts.
 
-You can also trigger this pipeline **manually**. In this way, you **must** set the variable *MANUAL_EXT* to true before running the pipeline, and provide the your *EXT_REPO/CLI_REPO* url and *EXT_BRANCH/CLI_BRANCH* name at the same time.
-
-For more details, you may refer to this [wiki](https://dev.azure.com/msazure/CloudNativeCompute/_wiki/wikis/CloudNativeCompute.wiki/156735/Azure-CLI-AKS-Live-Test-Pipeline).
+You can also trigger this pipeline **manually**. For more details, you may refer to this [wiki](https://dev.azure.com/msazure/CloudNativeCompute/_wiki/wikis/CloudNativeCompute.wiki/156735/Azure-CLI-AKS-Live-Test-Pipeline).

@@ -43,12 +43,16 @@ if [ $PARALLELISM -ge 2 ]; then
 else
     run_flags+=" -s"
 fi
-# ext filter
+# test cases
+if [[ -n $TEST_CASES ]]; then
+    run_flags+=" -t $TEST_CASES"
+fi
+# ext extra filter
 if [[ -n $EXT_TEST_FILTER ]]; then
     run_flags+=" -ef $EXT_TEST_FILTER"
 fi
 # ext extra coverage
-if [[ $EXT_TEST_COVERAGE ]]; then
+if [[ -n $EXT_TEST_COVERAGE ]]; then
     run_flags+=" -ec $EXT_TEST_COVERAGE"
 fi
 
