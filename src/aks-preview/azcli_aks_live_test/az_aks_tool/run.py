@@ -128,8 +128,12 @@ def run_tests(tests, test_index, mode, base_path, xml_file, json_file, in_series
     heading('Run Tests')
 
     # process file path
-    xml_path = os.path.realpath(os.path.join(base_path, mode + "_" + xml_file))
-    json_path = os.path.realpath(os.path.join(base_path, mode + "_" + json_file))
+    if not xml_file.startswith(mode):
+        xml_file = "{}_{}".format(mode, xml_file)
+    if not json_file.startswith(mode):
+        json_file = "{}_{}".format(mode, json_file)
+    xml_path = os.path.realpath(os.path.join(base_path, xml_file))
+    json_path = os.path.realpath(os.path.join(base_path, json_file))
     pytest_args.append("--json-report-file {}".format(json_path))
     logger.info("junit/xml report file full path: {}".format(xml_path))
     logger.info("json report file full path: {}".format(json_path))

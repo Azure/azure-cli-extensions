@@ -59,7 +59,7 @@ if [[ $TEST_MODE == "record" || $TEST_MODE == "all" ]]; then
     run_flags+=" --xml-file=ext_result.xml"
     echo "run flags: ${run_flags}"
     echo ${run_flags} | xargs python -u az_aks_tool/main.py
-    cp ext_report.json ext_result.xml reports/
+    cp *ext_report.json *ext_result.xml reports/
 fi
 
 # live test
@@ -72,5 +72,5 @@ if [[ $TEST_MODE == "live" || $TEST_MODE == "all" ]]; then
     run_flags+=" --xml-file=ext_live_result.xml"
     echo "run flags: ${run_flags}"
     echo ${run_flags} | xargs python -u az_aks_tool/main.py 
-    cp ext_live_report.json ext_live_result.xml reports/
+    cp *ext_live_report.json *ext_live_result.xml reports/
 fi
