@@ -30,7 +30,7 @@ __all__ = [
 from typing import TYPE_CHECKING
 from msrest import Serializer
 from azure.core.pipeline.transport._base import _format_url_section
-from azure.messaging.webpubsubservice.core.rest import HttpRequest
+from .core.rest import HttpRequest
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
