@@ -11,7 +11,7 @@ import traceback
 from knack.util import CommandResultItem
 
 from azcli_aks_live_test.az_aks_tool.const import IS_WINDOWS
-from azcli_aks_live_test.az_aks_tool.utils import heading, display
+from azcli_aks_live_test.az_aks_tool.utils import heading
 logger = logging.getLogger(__name__)
 
 

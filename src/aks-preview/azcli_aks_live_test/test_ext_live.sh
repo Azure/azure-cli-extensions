@@ -36,7 +36,7 @@ do
 done
 
 # prepare run flags
-run_flags="-em ext_matrix_default.json --no-exitfirst --discover --report-path ./ --reruns 3 --capture=sys"
+run_flags="-m ext -em ext_matrix_default.json --no-exitfirst --report-path ./ --reruns 3 --capture=sys"
 # parallel
 if [ $PARALLELISM -ge 2 ]; then
     run_flags+=" -n $PARALLELISM"

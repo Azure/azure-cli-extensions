@@ -7,16 +7,27 @@ import os
 import unittest
 
 import azcli_aks_live_test.az_aks_tool.utils as utils
-import azcli_aks_live_test.az_aks_tool.ext as ext
+import azcli_aks_live_test.az_aks_tool.cli as cli
 
 THIS_FILE = os.path.abspath(__file__)
 THIS_DIR = os.path.dirname(THIS_FILE)
 PARENT_DIR = os.path.dirname(THIS_DIR)
 
-class ExtTestCase(unittest.TestCase):
+class RunTestCase(unittest.TestCase):
 
-    def test_get_ext_module_data(self):
+    def test_current_profile(self):
         pass
 
-    def test_get_ext_test_index(self):
+    def test_call(self):
         pass
+
+    def test_cmd(self):
+        pass
+
+    def test_get_test_runner(self):
+        pass
+
+    def run_tests(self):
+        pass
+    
+

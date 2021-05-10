@@ -56,17 +56,12 @@ def get_fully_qualified_test_cases(test_index, matrix_file_path, mod_name, extra
     return qualified_test_cases
 
 
-def display(txt):
-    """ Output to stderr """
-    print(txt, file=sys.stderr)
-
-
 def heading(txt):
     """ Create standard heading to stderr """
     line_len = len(txt) + 4
-    display('\n' + '=' * line_len)
-    display('| {} |'.format(txt))
-    display('=' * line_len + '\n')
+    print('\n' + '=' * line_len, file=sys.stderr)
+    print('| {} |'.format(txt), file=sys.stderr)
+    print('=' * line_len + '\n', file=sys.stderr)
 
 
 def extract_module_name(path):
