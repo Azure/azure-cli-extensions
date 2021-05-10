@@ -7,20 +7,21 @@ import argparse
 import os
 import sys
 import logging
-from azdev.operations.testtool import run_tests
-from azdev.utilities import EXTENSION_PREFIX
 
-import azcli_aks_live_test.az_aks_tool.utils as utils
-import azcli_aks_live_test.az_aks_tool.ext as ext
+import azcli_aks_live_test.az_aks_tool.const as const
 import azcli_aks_live_test.az_aks_tool.log as log
-
-# const
-AKS_PREVIEW_MOD_NAME = EXTENSION_PREFIX + "aks_preview"  # azext_aks_preview
+import azcli_aks_live_test.az_aks_tool.utils as utils
+import azcli_aks_live_test.az_aks_tool.cli as cli
+import azcli_aks_live_test.az_aks_tool.ext as ext
+import azcli_aks_live_test.az_aks_tool.index as index
+import azcli_aks_live_test.az_aks_tool.run as run
 
 
 def init_argparse(args):
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--tests", nargs='+', help="test case names")
+    parser.add_argument("-m", "--mode", type=str, default="all",
+                        help="test mode ('cli', 'ext', 'all')")
     parser.add_argument("-cm", "--cli-matrix",  type=str,
                         help="full path to cli test matrix")
     parser.add_argument("-cc", "--cli-coverage", nargs="+",
@@ -37,8 +38,6 @@ def init_argparse(args):
                         default=False, help="series test")
     parser.add_argument("-l", "--live", action="store_true",
                         default=False, help="live test")
-    parser.add_argument("-d", "--discover", action="store_true",
-                        default=False, help="discover test index")
     parser.add_argument("--no-exitfirst", action="store_true",
                         default=False, help="no exit first")
     parser.add_argument("--xml-file", type=str,
@@ -53,24 +52,25 @@ def init_argparse(args):
                         default="3", help="rerun times")
     parser.add_argument("-c", "--capture", type=str,
                         default="sys", help="test capture")
-    # parser.add_argument("-a", "--pytest-args",
-    #                     nargs=argparse.REMAINDER, help="pytest args")
+    parser.add_argument("--log-file", type=str,
+                        default="az_aks_tool.log", help="log filename")
     args = parser.parse_args(args)
     return args
 
 
 def main():
+    # parse args
+    print("raw args: {}".format(sys.argv))
+    args = init_argparse(sys.argv[1:])
+
     # setup logger
     root_module_name = log.parse_module_name(levels=1)
-    log.setup_logging(root_module_name)
+    log.setup_logging(root_module_name, os.path.join(
+        args.report_path, args.log_file))
     current_module_name = log.parse_module_name(levels=2)
     logger = logging.getLogger("{}.{}".format(current_module_name, __name__))
 
-    # parse args
-    logger.info("raw args: {}".format(sys.argv))
-    args = init_argparse(sys.argv[1:])
-    
-    # test cases
+    # check test cases
     test_cases = args.tests
     ext_matrix_file_path = args.ext_matrix
     cli_matrix_file_path = args.cli_matrix
@@ -78,57 +78,65 @@ def main():
         sys.exit(
             "At least one of 'tests', 'cli_matrix' and 'ext_matrix' must be provided!")
 
-    # report file
-    json_report_file_full_path = os.path.realpath(os.path.join(
-        args.report_path, args.json_report_file))
-    logger.info("json report file full path: {}".format(json_report_file_full_path))
-    xml_path = os.path.realpath(os.path.join(args.report_path, args.xml_file))
-    logger.info("junit/xml report file full path: {}".format(xml_path))
-
-    # pytest args
+    # prepare pytest args
     pytest_args = []
     if not args.series and args.parallelism:
         pytest_args.append("-n {}".format(args.parallelism))
     pytest_args.append("--json-report")
-    pytest_args.append("--json-report-file {}".format(json_report_file_full_path))
     pytest_args.append("--reruns {}".format(args.reruns))
     pytest_args.append("--capture {}".format(args.capture))
     pytest_args = [" ".join(pytest_args)]
     logger.info("pytest_args: {}".format(pytest_args))
 
-    # ext matrix
-    if utils.check_file_existence(ext_matrix_file_path):
-        ext_test_index = ext.get_ext_test_index(AKS_PREVIEW_MOD_NAME)
-        ext_matrix = utils.get_test_matrix(ext_matrix_file_path)
-        ext_test_cases = ext.get_ext_test_cases(
-            ext_test_index, ext_matrix, args.ext_coverage)
-        ext_exclude_test_cases = ext.get_ext_exclude_test_cases(ext_test_index,
-                                                                ext_matrix, args.ext_filter)
-        ext_filtered_test_cases = utils.get_filted_test_cases(
-            ext_test_cases, ext_exclude_test_cases)
-        # add prefix
-        ext_qualified_test_cases = utils.decorate_qualified_prefix(
-            ext_filtered_test_cases, AKS_PREVIEW_MOD_NAME)
-        logger.info("According to 'ext_matrix' and filters, we get {} cases, need to exclude {} cases, finally get {} cases!".format(
-            len(ext_test_cases), len(ext_exclude_test_cases), len(ext_filtered_test_cases)))
-        if len(ext_qualified_test_cases) == 0:
-            logger.warning("No test case! Skipping!")
-        else:
-            logger.info("Perform following tests: {}".format(ext_qualified_test_cases))
-            run_tests(ext_qualified_test_cases, xml_path=xml_path, discover=args.discover, in_series=args.series,
-                    run_live=args.live, no_exit_first=args.no_exitfirst, pytest_args=pytest_args)
+    # check mode & collect module data
+    enable_cli = False
+    enable_ext = False
+    module_data = {}
+    if args.mode == "cli" or args.mode == "all":
+        enable_cli = True
+        module_data[const.ACS_MOD_NAME] = cli.get_cli_module_data()
+        cli_test_index = cli.get_cli_test_index(
+            module_data[const.ACS_MOD_NAME])
 
-    # cli matrix
-    if utils.check_file_existence(cli_matrix_file_path):
-        logger.warning("Currently not support!")
-        pass
+    if args.mode == "ext" or args.mode == "all":
+        enable_ext = True
+        module_data[const.AKS_PREVIEW_MOD_NAME] = ext.get_ext_module_data()
+        ext_test_index = ext.get_ext_test_index(
+            module_data[const.AKS_PREVIEW_MOD_NAME])
 
-    # tests
-    if test_cases:
-        logger.info("Accroding to 'tests', we get {} cases".format(len(test_cases)))
-        logger.info("Perform following tets: {}".format(test_cases))
-        run_tests(test_cases, xml_path=xml_path, discover=args.discover, in_series=args.series,
-                  run_live=args.live, no_exit_first=args.no_exitfirst, pytest_args=pytest_args)
+    # build test index
+    logger.info("Building test index...")
+    test_index = index.build_test_index(module_data)
+
+    # cli matrix test
+    if enable_cli:
+        cli_qualified_test_cases = utils.get_fully_qualified_test_cases(
+            cli_test_index, cli_matrix_file_path, const.ACS_MOD_NAME, args.cli_coverage, args.cli_filter)
+        logger.info("Perform following cli tests: {}".format(
+            cli_qualified_test_cases))
+        exit_code = run.run_tests(cli_qualified_test_cases, test_index, mode="cli", base_path=args.report_path, xml_file=args.xml_file, json_file=args.json_report_file, in_series=args.series,
+                                  run_live=args.live, no_exit_first=args.no_exitfirst, pytest_args=pytest_args)
+        if exit_code != 0:
+            sys.exit("CLI test failed!")
+
+    # ext matrix test
+    if enable_ext:
+        ext_qualified_test_cases = utils.get_fully_qualified_test_cases(
+            ext_test_index, ext_matrix_file_path, const.AKS_PREVIEW_MOD_NAME, args.ext_coverage, args.ext_filter)
+        logger.info("Perform following ext tests: {}".format(
+            ext_qualified_test_cases))
+        exit_code = run.run_tests(ext_qualified_test_cases, test_index, mode="ext", base_path=args.report_path, xml_file=args.xml_file, json_file=args.json_report_file, in_series=args.series,
+                                  run_live=args.live, no_exit_first=args.no_exitfirst, pytest_args=pytest_args)
+        if exit_code != 0:
+            sys.exit("EXT test failed!")
+
+    # raw tests
+    if test_cases and len(test_cases) > 0:
+        logger.info("Perform following raw tets: {}".format(test_cases))
+        exit_code = run_tests(test_cases, test_index, mode="raw", base_path=args.report_path, xml_file=args.xml_file, json_file=args.json_report_file, in_series=args.series,
+                              run_live=args.live, no_exit_first=args.no_exitfirst, pytest_args=pytest_args)
+        if exit_code != 0:
+            sys.exit("Raw test failed!")
 
 
 if __name__ == "__main__":

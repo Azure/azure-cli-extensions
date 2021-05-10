@@ -12,33 +12,29 @@ import azcli_aks_live_test.az_aks_tool.index as index
 logger = logging.getLogger(__name__)
 
 
-def get_ext_module_data(mod_name=const.AKS_PREVIEW_MOD_NAME, profile="latest"):
+def get_cli_module_data(mod_name=const.ACS_MOD_NAME, profile="latest"):
     profile_split = profile.split('-')
     profile_namespace = '_'.join([profile_split[-1]] + profile_split[:-1])
 
     # key value pairs of all modules(in azcli & extention) and its absolute path, used later to find test indexes
     path_table = index.get_path_table()
-    extensions = path_table["ext"]
+    command_modules = path_table["mod"]
     inverse_name_table = index.get_name_index(invert=True)
 
     # construct 'import_name' & mod_data', used later to find test indexes
-    aks_preview_mod_path = extensions[mod_name]
-    glob_pattern = os.path.normcase(
-        os.path.join("{}*".format(const.EXTENSION_PREFIX)))
-    file_path = glob.glob(os.path.join(aks_preview_mod_path, glob_pattern))[0]
-    import_name = os.path.basename(file_path)
+    acs_mod_path = command_modules[mod_name]
     mod_data = {
-        "alt_name": inverse_name_table[mod_name],
-        "filepath": os.path.join(file_path, "tests", profile_namespace),
-        "base_path": "{}.tests.{}".format(import_name, profile_namespace),
+        "alt_name": "{}{}".format(const.COMMAND_MODULE_PREFIX, mod_name),
+        "filepath": os.path.join(acs_mod_path, "tests", profile_namespace),
+        "base_path": "azure.cli.command_modules.{}.tests.{}".format(mod_name, profile_namespace),
         "files": {}
     }
 
-    ext_test = index.discover_module_tests(import_name, mod_data)
-    return ext_test
+    cli_test = index.discover_module_tests(mod_name, mod_data)
+    return cli_test
 
 
-def get_ext_test_index(module_data=None, mod_name=const.AKS_PREVIEW_MOD_NAME, profile="latest"):
+def get_cli_test_index(module_data=None, mod_name=const.ACS_MOD_NAME, profile="latest"):
     if not module_data:
-        module_data = get_ext_module_data(mod_name=mod_name, profile=profile)
+        module_data = get_cli_module_data(mod_name=mod_name, profile=profile)
     return module_data["files"]
