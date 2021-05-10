@@ -1,0 +1,48 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vcenter list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/santosh-rg/providers/Microsoft.ConnectedVMwarevSphere/vcenters?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/santosh-rg/providers/Microsoft.ConnectedVMwarevSphere/vcenters/santosh-test-vcenter-onperm","name":"santosh-test-vcenter-onperm","type":"microsoft.connectedvmwarevsphere/vcenters","kind":"VMware","location":"eastus2euap","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/santosh-rg/providers/microsoft.extendedlocation/customlocations/santosh-test-cl-onperm"},"systemData":{"createdBy":"sanmishra@microsoft.com","createdByType":"User","createdAt":"2021-04-23T16:02:14.8484378Z","lastModifiedBy":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","lastModifiedByType":"Application","lastModifiedAt":"2021-04-23T16:02:45.3494224Z"},"properties":{"credentials":{"username":"administrator@vsphere.local"},"fqdn":"arcvmw-vcenter.fareast.corp.microsoft.com","port":443,"provisioningState":"Succeeded","customResourceName":"b580832e-95c8-449a-b0c9-df9c3b5aa1d6","uuid":"b580832e-95c8-449a-b0c9-df9c3b5aa1d6","version":"6.7.0","instanceUuid":"87315321-c3ed-486b-842b-96832ce6de46","connectionStatus":"Connected"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1148'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 May 2021 17:31:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+version: 1

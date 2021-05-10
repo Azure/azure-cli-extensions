@@ -15,9 +15,13 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ConnectedvmwareScenarioTest(ScenarioTest):
-    @ResourceGroupPreparer(name_prefix='cli_test_connectedvmware')
-    def test_connectedvmware_vcenter(self, resource_group):
+    
+    def test_connectedvmware_vcenter(self):  
+        resource_group = "santosh-rg" 
+        location = ""
+        custom_loc = ""
 
-        self.kwargs.update({'name': 'test1'})
-
-        # raise CLIError('TODO')
+        # count the list of vcenter resources in this resource group
+        count = len(self.cmd('az connectedvmware vcenter list --resource-group santosh-rg').get_output_in_json())
+        # vcenter count list should report 1
+        self.assertEqual(count, 1, 'cluster count expected to be 1')
