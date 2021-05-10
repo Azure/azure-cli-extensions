@@ -1498,7 +1498,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                disable_secret_rotation=False,
                yes=False,
                tags=None,
-               windows_admin_password=None):
+               windows_admin_password=None,
+               enable_azure_rbac=False,
+               disable_azure_rbac=False):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1531,7 +1533,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not enable_secret_rotation and \
        not disable_secret_rotation and \
        not tags and \
-       not windows_admin_password:
+       not windows_admin_password and \
+       not enable_azure_rbac and \
+       not disable_azure_rbac:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1558,7 +1562,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--enable-secret-rotation" or '
                        '"--disable-secret-rotation" or '
                        '"--tags" or '
-                       '"--windows-admin-password"')
+                       '"--windows-admin-password" or '
+                       '"--enable-azure-rbac" or '
+                       '"--disable-azure-rbac" or ')
 
     instance = client.get(resource_group_name, name)
 
@@ -1692,15 +1698,22 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.aad_profile = ManagedClusterAADProfile(
             managed=True
         )
-    if update_aad_profile:
+    if update_aad_profile or enable_azure_rbac or disable_azure_rbac:
         if instance.aad_profile is None or not instance.aad_profile.managed:
-            raise CLIError('Cannot specify "--aad-tenant-id/--aad-admin-group-object-ids"'
+            raise CLIError('Cannot specify "--aad-tenant-id/--aad-admin-group-object-ids/--enable-azure-rbac/--disable-azure-rbac"'
                            ' if managed AAD is not enabled')
         if aad_tenant_id is not None:
             instance.aad_profile.tenant_id = aad_tenant_id
         if aad_admin_group_object_ids is not None:
             instance.aad_profile.admin_group_object_ids = _parse_comma_separated_list(
                 aad_admin_group_object_ids)
+        if enable_azure_rbac and disable_azure_rbac:
+            raise CLIError(
+                'Cannot specify "--enable-azure-rbac" and "--disable-azure-rbac" at the same time')
+        if enable_azure_rbac:
+            instance.aad_profile.enable_azure_rbac = True
+        if disable_azure_rbac:
+            instance.aad_profile.enable_azure_rbac = False
 
     if enable_ahub and disable_ahub:
         raise CLIError(

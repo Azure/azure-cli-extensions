@@ -522,6 +522,12 @@ helps['aks update'] = """
                   * Has a special character (Regex match [\\W_])
                 - Disallowed values:  "abc@123", "P@$$w0rd", "P@ssw0rd", "P@ssword123", "Pa$$word", "pass@word1", "Password!", "Password1", "Password22", "iloveyou!"
             Reference: https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.management.compute.models.virtualmachinescalesetosprofile.adminpassword?view=azure-dotnet
+        - name: --enable-azure-rbac
+          type: bool
+          short-summary: Whether to enable Azure RBAC for Kubernetes authorization.
+        - name: --disable-azure-rbac
+          type: bool
+          short-summary: Whether to disable Azure RBAC for Kubernetes authorization.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -567,6 +573,10 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCLuster --tags "foo=bar" "baz=qux"
       - name: Update Windows password of a kubernetes cluster
         text: az aks update -g MyResourceGroup -n MyManagedCLuster --windows-admin-password "Repl@cePassw0rd12345678"
+      - name: Update a managed AAD kubernetes cluster to use Azure RBAC
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-azure-rbac
+      - name: Disable Azure RBAC in a managed AAD kubernetes cluster
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-azure-rbac
 """
 
 helps['aks kollect'] = """
