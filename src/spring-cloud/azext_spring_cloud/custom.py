@@ -16,7 +16,7 @@ from ._utils import _get_upload_local_file, _get_persistent_disk_size, get_porta
 from knack.util import CLIError
 from .vendored_sdks.appplatform.v2020_07_01 import models
 from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
-from .vendored_sdks.appplatform.v2021_03_03_preview import models as models_20210303preview
+from .vendored_sdks.appplatform.v2021_06_01_preview import models as models_20210601preview
 from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
 from .vendored_sdks.appplatform.v2020_11_01_preview import (
     AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
@@ -229,27 +229,27 @@ def app_create(cmd, client, resource_group, service, name,
     if name in apps:
         raise CLIError("App '{}' already exists.".format(name))
     logger.warning("[1/4] Creating app with name '{}'".format(name))
-    properties = models_20210303preview.AppResourceProperties()
-    properties.temporary_disk = models_20210303preview.TemporaryDisk(
+    properties = models_20210601preview.AppResourceProperties()
+    properties.temporary_disk = models_20210601preview.TemporaryDisk(
         size_in_gb=5, mount_path="/tmp")
     resource = client.services.get(resource_group, service)
 
     _validate_instance_count(resource.sku.tier, instance_count)
 
-    app_resource = models_20210303preview.AppResource()
+    app_resource = models_20210601preview.AppResource()
     app_resource.properties = properties
     app_resource.location = resource.location
     if assign_identity is True:
-        app_resource.identity = models_20210303preview.ManagedIdentityProperties(type="systemassigned")
+        app_resource.identity = models_20210601preview.ManagedIdentityProperties(type="systemassigned")
 
     poller = client.apps.create_or_update(
         resource_group, service, name, app_resource)
     while poller.done() is False:
         sleep(APP_CREATE_OR_UPDATE_SLEEP_INTERVAL)
 
-    resource_requests = models_20210303preview.ResourceRequests(cpu=cpu, memory=memory)
+    resource_requests = models_20210601preview.ResourceRequests(cpu=cpu, memory=memory)
 
-    deployment_settings = models_20210303preview.DeploymentSettings(
+    deployment_settings = models_20210601preview.DeploymentSettings(
         resource_requests=resource_requests,
         environment_variables=env,
         jvm_options=jvm_options,
@@ -258,29 +258,29 @@ def app_create(cmd, client, resource_group, service, name,
 
     file_type = "NetCoreZip" if runtime_version == AppPlatformEnums.RuntimeVersion.net_core_31 else "Jar"
 
-    user_source_info = models_20210303preview.UserSourceInfo(
+    user_source_info = models_20210601preview.UserSourceInfo(
         relative_path='<default>', type=file_type)
-    properties = models_20210303preview.DeploymentResourceProperties(
+    properties = models_20210601preview.DeploymentResourceProperties(
         deployment_settings=deployment_settings,
         source=user_source_info)
 
     # create default deployment
     logger.warning(
         "[2/4] Creating default deployment with name '{}'".format(DEFAULT_DEPLOYMENT_NAME))
-    sku = models_20210303preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
+    sku = models_20210601preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
     poller = client.deployments.create_or_update(resource_group, service, name, DEFAULT_DEPLOYMENT_NAME,
                                                  properties=properties,
                                                  sku=sku)
 
     logger.warning("[3/4] Setting default deployment to production")
-    properties = models_20210303preview.AppResourceProperties(
+    properties = models_20210601preview.AppResourceProperties(
         active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=assign_endpoint)
 
     if enable_persistent_storage:
-        properties.persistent_disk = models_20210303preview.PersistentDisk(
+        properties.persistent_disk = models_20210601preview.PersistentDisk(
             size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
     else:
-        properties.persistent_disk = models_20210303preview.PersistentDisk(
+        properties.persistent_disk = models_20210601preview.PersistentDisk(
             size_in_gb=0, mount_path="/persistent")
 
     app_resource.properties = properties
@@ -320,15 +320,15 @@ def app_update(cmd, client, resource_group, service, name,
     resource = client.services.get(resource_group, service)
     location = resource.location
 
-    properties = models_20210303preview.AppResourceProperties(public=assign_endpoint, https_only=https_only,
+    properties = models_20210601preview.AppResourceProperties(public=assign_endpoint, https_only=https_only,
                                                               enable_end_to_end_tls=enable_end_to_end_tls)
     if enable_persistent_storage is True:
-        properties.persistent_disk = models_20210303preview.PersistentDisk(
+        properties.persistent_disk = models_20210601preview.PersistentDisk(
             size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
     if enable_persistent_storage is False:
-        properties.persistent_disk = models_20210303preview.PersistentDisk(size_in_gb=0)
+        properties.persistent_disk = models_20210601preview.PersistentDisk(size_in_gb=0)
 
-    app_resource = models_20210303preview.AppResource()
+    app_resource = models_20210601preview.AppResource()
     app_resource.properties = properties
     app_resource.location = location
 
@@ -350,12 +350,12 @@ def app_update(cmd, client, resource_group, service, name,
             return app_updated
 
     logger.warning("[2/2] Updating deployment '{}'".format(deployment))
-    deployment_settings = models_20210303preview.DeploymentSettings(
+    deployment_settings = models_20210601preview.DeploymentSettings(
         environment_variables=env,
         jvm_options=jvm_options,
         net_core_main_entry_path=main_entry,
         runtime_version=runtime_version,)
-    properties = models_20210303preview.DeploymentResourceProperties(
+    properties = models_20210601preview.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
     poller = client.deployments.update(
         resource_group, service, name, deployment, properties)
@@ -514,12 +514,12 @@ def app_scale(cmd, client, resource_group, service, name,
     resource = client.services.get(resource_group, service)
     _validate_instance_count(resource.sku.tier, instance_count)
 
-    resource_requests = models_20210303preview.ResourceRequests(cpu=cpu, memory=memory)
+    resource_requests = models_20210601preview.ResourceRequests(cpu=cpu, memory=memory)
 
-    deployment_settings = models_20210303preview.DeploymentSettings(resource_requests=resource_requests)
-    properties = models_20210303preview.DeploymentResourceProperties(
+    deployment_settings = models_20210601preview.DeploymentSettings(resource_requests=resource_requests)
+    properties = models_20210601preview.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
-    sku = models_20210303preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
+    sku = models_20210601preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
     return sdk_no_wait(no_wait, client.deployments.update,
                        resource_group, service, name, deployment, properties=properties, sku=sku)
 
@@ -595,9 +595,9 @@ def app_tail_log(cmd, client, resource_group, service, name,
 
 def app_identity_assign(cmd, client, resource_group, service, name, role=None, scope=None):
     _check_active_deployment_exist(client, resource_group, service, name)
-    app_resource = models_20210303preview.AppResource()
-    identity = models_20210303preview.ManagedIdentityProperties(type="systemassigned")
-    properties = models_20210303preview.AppResourceProperties()
+    app_resource = models_20210601preview.AppResource()
+    identity = models_20210601preview.ManagedIdentityProperties(type="systemassigned")
+    properties = models_20210601preview.AppResourceProperties()
     resource = client.services.get(resource_group, service)
     location = resource.location
 
@@ -639,9 +639,9 @@ def app_identity_assign(cmd, client, resource_group, service, name, role=None, s
 
 
 def app_identity_remove(cmd, client, resource_group, service, name):
-    app_resource = models_20210303preview.AppResource()
-    identity = models_20210303preview.ManagedIdentityProperties(type="none")
-    properties = models_20210303preview.AppResourceProperties()
+    app_resource = models_20210601preview.AppResource()
+    identity = models_20210601preview.ManagedIdentityProperties(type="none")
+    properties = models_20210601preview.AppResourceProperties()
     resource = client.services.get(resource_group, service)
     location = resource.location
 
@@ -667,13 +667,13 @@ def app_set_deployment(cmd, client, resource_group, service, name, deployment):
     if deployment not in deployments:
         raise CLIError("Deployment '" + deployment +
                        "' not found, please use 'az spring-cloud app deployment create' to create the new deployment")
-    properties = models_20210303preview.AppResourceProperties(
+    properties = models_20210601preview.AppResourceProperties(
         active_deployment_name=deployment)
 
     resource = client.services.get(resource_group, service)
     location = resource.location
 
-    app_resource = models_20210303preview.AppResource()
+    app_resource = models_20210601preview.AppResource()
     app_resource.properties = properties
     app_resource.location = location
 
@@ -687,12 +687,12 @@ def app_unset_deployment(cmd, client, resource_group, service, name):
         raise CLIError(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
 
     # It's designed to use empty string for active_deployment_name to unset active deployment
-    properties = models_20210303preview.AppResourceProperties(active_deployment_name="")
+    properties = models_20210601preview.AppResourceProperties(active_deployment_name="")
 
     resource = client.services.get(resource_group, service)
     location = resource.location
 
-    app_resource = models_20210303preview.AppResource()
+    app_resource = models_20210601preview.AppResource()
     app_resource.properties = properties
     app_resource.location = location
 
@@ -1301,21 +1301,21 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
 
     resource_requests = None
     if cpu is not None or memory is not None:
-        resource_requests = models_20210303preview.ResourceRequests(cpu=cpu, memory=memory)
+        resource_requests = models_20210601preview.ResourceRequests(cpu=cpu, memory=memory)
 
-    deployment_settings = models_20210303preview.DeploymentSettings(
+    deployment_settings = models_20210601preview.DeploymentSettings(
         resource_requests=resource_requests,
         environment_variables=env,
         jvm_options=jvm_options,
         net_core_main_entry_path=main_entry,
         runtime_version=runtime_version)
-    sku = models_20210303preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
-    user_source_info = models_20210303preview.UserSourceInfo(
+    sku = models_20210601preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
+    user_source_info = models_20210601preview.UserSourceInfo(
         version=version,
         relative_path=relative_path,
         type=file_type,
         artifact_selector=target_module)
-    properties = models_20210303preview.DeploymentResourceProperties(
+    properties = models_20210601preview.DeploymentResourceProperties(
         deployment_settings=deployment_settings,
         source=user_source_info)
 
