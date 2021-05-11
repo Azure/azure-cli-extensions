@@ -12,12 +12,12 @@ logger = get_logger(__name__)
 
 
 # pylint: disable=broad-except
-def _validate_cc_registration(cmd):
+def validate_cc_registration(cmd):
     try:
         rp_client = _resource_providers_client(cmd.cli_ctx)
         registration_state = rp_client.get(consts.PROVIDER_NAMESPACE).registration_state
 
-        if registration_state != "Registered":
+        if registration_state.lower() != consts.REGISTERED.lower():
             logger.warning("'Extensions' cannot be used because '%s' provider has not been registered."
                            "More details for registering this provider can be found here - "
                            "https://aka.ms/RegisterKubernetesConfigurationProvider", consts.PROVIDER_NAMESPACE)
