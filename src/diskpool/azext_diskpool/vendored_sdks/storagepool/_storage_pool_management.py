@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 from ._configuration import StoragePoolManagementConfiguration
 from .operations import Operations
 from .operations import DiskPoolsOperations
+from .operations import DiskPoolZonesOperations
 from .operations import IscsiTargetsOperations
 from . import models
 
@@ -31,6 +32,8 @@ class StoragePoolManagement(object):
     :vartype operations: storage_pool_management.operations.Operations
     :ivar disk_pools: DiskPoolsOperations operations
     :vartype disk_pools: storage_pool_management.operations.DiskPoolsOperations
+    :ivar disk_pool_zones: DiskPoolZonesOperations operations
+    :vartype disk_pool_zones: storage_pool_management.operations.DiskPoolZonesOperations
     :ivar iscsi_targets: IscsiTargetsOperations operations
     :vartype iscsi_targets: storage_pool_management.operations.IscsiTargetsOperations
     :param credential: Credential needed for the client to connect to Azure.
@@ -62,6 +65,8 @@ class StoragePoolManagement(object):
         self.operations = Operations(
             self._client, self._config, self._serialize, self._deserialize)
         self.disk_pools = DiskPoolsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.disk_pool_zones = DiskPoolZonesOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.iscsi_targets = IscsiTargetsOperations(
             self._client, self._config, self._serialize, self._deserialize)

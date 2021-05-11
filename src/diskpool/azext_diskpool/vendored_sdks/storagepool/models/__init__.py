@@ -8,16 +8,25 @@
 
 try:
     from ._models_py3 import Acl
-    from ._models_py3 import Attributes
     from ._models_py3 import Disk
     from ._models_py3 import DiskPool
+    from ._models_py3 import DiskPoolCreate
     from ._models_py3 import DiskPoolListResult
+    from ._models_py3 import DiskPoolUpdate
+    from ._models_py3 import DiskPoolZoneInfo
+    from ._models_py3 import DiskPoolZoneListResult
+    from ._models_py3 import EndpointDependency
+    from ._models_py3 import EndpointDetail
     from ._models_py3 import Error
     from ._models_py3 import ErrorAdditionalInfo
     from ._models_py3 import ErrorResponse
     from ._models_py3 import IscsiLun
     from ._models_py3 import IscsiTarget
+    from ._models_py3 import IscsiTargetCreate
     from ._models_py3 import IscsiTargetList
+    from ._models_py3 import IscsiTargetUpdate
+    from ._models_py3 import OutboundEnvironmentEndpoint
+    from ._models_py3 import OutboundEnvironmentEndpointList
     from ._models_py3 import ProxyResource
     from ._models_py3 import Resource
     from ._models_py3 import Sku
@@ -25,20 +34,28 @@ try:
     from ._models_py3 import StoragePoolOperationListResult
     from ._models_py3 import StoragePoolRpOperation
     from ._models_py3 import SystemMetadata
-    from ._models_py3 import TargetPortalGroup
     from ._models_py3 import TrackedResource
 except (SyntaxError, ImportError):
     from ._models import Acl  # type: ignore
-    from ._models import Attributes  # type: ignore
     from ._models import Disk  # type: ignore
     from ._models import DiskPool  # type: ignore
+    from ._models import DiskPoolCreate  # type: ignore
     from ._models import DiskPoolListResult  # type: ignore
+    from ._models import DiskPoolUpdate  # type: ignore
+    from ._models import DiskPoolZoneInfo  # type: ignore
+    from ._models import DiskPoolZoneListResult  # type: ignore
+    from ._models import EndpointDependency  # type: ignore
+    from ._models import EndpointDetail  # type: ignore
     from ._models import Error  # type: ignore
     from ._models import ErrorAdditionalInfo  # type: ignore
     from ._models import ErrorResponse  # type: ignore
     from ._models import IscsiLun  # type: ignore
     from ._models import IscsiTarget  # type: ignore
+    from ._models import IscsiTargetCreate  # type: ignore
     from ._models import IscsiTargetList  # type: ignore
+    from ._models import IscsiTargetUpdate  # type: ignore
+    from ._models import OutboundEnvironmentEndpoint  # type: ignore
+    from ._models import OutboundEnvironmentEndpointList  # type: ignore
     from ._models import ProxyResource  # type: ignore
     from ._models import Resource  # type: ignore
     from ._models import Sku  # type: ignore
@@ -46,27 +63,37 @@ except (SyntaxError, ImportError):
     from ._models import StoragePoolOperationListResult  # type: ignore
     from ._models import StoragePoolRpOperation  # type: ignore
     from ._models import SystemMetadata  # type: ignore
-    from ._models import TargetPortalGroup  # type: ignore
     from ._models import TrackedResource  # type: ignore
 
 from ._storage_pool_management_enums import (
+    CreatedByType,
+    DiskPoolTier,
+    IscsiTargetAclMode,
     OperationalStatus,
     ProvisioningStates,
-    SkuTier,
 )
 
 __all__ = [
     'Acl',
-    'Attributes',
     'Disk',
     'DiskPool',
+    'DiskPoolCreate',
     'DiskPoolListResult',
+    'DiskPoolUpdate',
+    'DiskPoolZoneInfo',
+    'DiskPoolZoneListResult',
+    'EndpointDependency',
+    'EndpointDetail',
     'Error',
     'ErrorAdditionalInfo',
     'ErrorResponse',
     'IscsiLun',
     'IscsiTarget',
+    'IscsiTargetCreate',
     'IscsiTargetList',
+    'IscsiTargetUpdate',
+    'OutboundEnvironmentEndpoint',
+    'OutboundEnvironmentEndpointList',
     'ProxyResource',
     'Resource',
     'Sku',
@@ -74,9 +101,10 @@ __all__ = [
     'StoragePoolOperationListResult',
     'StoragePoolRpOperation',
     'SystemMetadata',
-    'TargetPortalGroup',
     'TrackedResource',
+    'CreatedByType',
+    'DiskPoolTier',
+    'IscsiTargetAclMode',
     'OperationalStatus',
     'ProvisioningStates',
-    'SkuTier',
 ]

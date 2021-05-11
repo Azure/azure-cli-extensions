@@ -35,23 +35,17 @@ class AddSku(argparse.Action):
                 d['name'] = v[0]
             elif kl == 'tier':
                 d['tier'] = v[0]
-            elif kl == 'size':
-                d['size'] = v[0]
-            elif kl == 'family':
-                d['family'] = v[0]
-            elif kl == 'capacity':
-                d['capacity'] = v[0]
             else:
-                raise CLIError('Unsupported Key {} is provided for parameter sku. All possible keys are: name, tier, '
-                               'size, family, capacity'.format(k))
+                raise CLIError('Unsupported Key {} is provided for parameter sku. All possible keys are: name, tier'.
+                format(k))
         return d
 
 
-class AddDisks(argparse._AppendAction):
+class AddDiskPoolCreateDisks(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         for item in action:
-            super(AddDisks, self).__call__(parser, namespace, item, option_string)
+            super(AddDiskPoolCreateDisks, self).__call__(parser, namespace, item, option_string)
 
     def get_action(self, values, option_string=None):
         try:
@@ -67,3 +61,133 @@ class AddDisks(argparse._AppendAction):
             return value_list
         except ValueError:
             raise CLIError('usage error: {} NAME METRIC OPERATION VALUE'.format(option_string))
+
+
+class AddDiskPoolUpdateDisks(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        for item in action:
+            super(AddDiskPoolUpdateDisks, self).__call__(parser, namespace, item, option_string)
+
+    def get_action(self, values, option_string=None):
+        try:
+            value_chunk_list = [values[x:x+1] for x in range(0, len(values), 1)]
+            value_list = []
+            for chunk in value_chunk_list:
+                id, = chunk
+                value_list.append(
+                    {
+                        'id': id
+                    }
+                )
+            return value_list
+        except ValueError:
+            raise CLIError('usage error: {} NAME METRIC OPERATION VALUE'.format(option_string))
+
+
+class AddDiskPoolIscsiTargetCreateStaticAcls(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddDiskPoolIscsiTargetCreateStaticAcls, self).__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'initiator-iqn':
+                d['initiator_iqn'] = v[0]
+            elif kl == 'mapped-luns':
+                d['mapped_luns'] = v
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter static_acls. All possible keys are: '
+                               'initiator-iqn, mapped-luns'.format(k))
+        return d
+
+
+class AddDiskPoolIscsiTargetCreateLuns(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddDiskPoolIscsiTargetCreateLuns, self).__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'name':
+                d['name'] = v[0]
+            elif kl == 'managed-disk-azure-resource-id':
+                d['managed_disk_azure_resource_id'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter luns. All possible keys are: name, '
+                               'managed-disk-azure-resource-id'.format(k))
+        return d
+
+
+class AddDiskPoolIscsiTargetUpdateStaticAcls(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddDiskPoolIscsiTargetUpdateStaticAcls, self).__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'initiator-iqn':
+                d['initiator_iqn'] = v[0]
+            elif kl == 'mapped-luns':
+                d['mapped_luns'] = v
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter static_acls. All possible keys are: '
+                               'initiator-iqn, mapped-luns'.format(k))
+        return d
+
+
+class AddDiskPoolIscsiTargetUpdateLuns(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddDiskPoolIscsiTargetUpdateLuns, self).__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):  # pylint: disable=no-self-use
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+            if kl == 'name':
+                d['name'] = v[0]
+            elif kl == 'managed-disk-azure-resource-id':
+                d['managed_disk_azure_resource_id'] = v[0]
+            else:
+                raise CLIError('Unsupported Key {} is provided for parameter luns. All possible keys are: name, '
+                               'managed-disk-azure-resource-id'.format(k))
+        return d

@@ -47,7 +47,7 @@ class StoragePoolManagementConfiguration(Configuration):
 
         self.credential = credential
         self.subscription_id = subscription_id
-        self.api_version = "2020-03-15-preview"
+        self.api_version = "2021-04-01-preview"
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
         kwargs.setdefault('sdk_moniker', 'storagepoolmanagement/{}'.format(VERSION))
         self._configure(**kwargs)

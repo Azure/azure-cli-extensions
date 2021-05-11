@@ -23,8 +23,8 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class Operations(object):
-    """Operations operations.
+class DiskPoolZonesOperations(object):
+    """DiskPoolZonesOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -47,17 +47,20 @@ class Operations(object):
 
     def list(
         self,
+        location,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["models.StoragePoolOperationListResult"]
-        """Gets a list of StoragePool operations.
+        # type: (...) -> Iterable["models.DiskPoolZoneListResult"]
+        """Lists available Disk Pool Skus in an Azure location.
 
+        :param location: The location of the resource.
+        :type location: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either StoragePoolOperationListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~storage_pool_management.models.StoragePoolOperationListResult]
+        :return: An iterator like instance of either DiskPoolZoneListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~storage_pool_management.models.DiskPoolZoneListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.StoragePoolOperationListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DiskPoolZoneListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -73,6 +76,11 @@ class Operations(object):
             if not next_link:
                 # Construct URL
                 url = self.list.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+                    'location': self._serialize.url("location", location, 'str'),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
@@ -85,11 +93,11 @@ class Operations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('StoragePoolOperationListResult', pipeline_response)
+            deserialized = self._deserialize('DiskPoolZoneListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
-            return None, iter(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -107,4 +115,4 @@ class Operations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/providers/Microsoft.StoragePool/operations'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.StoragePool/locations/{location}/diskPoolZones'}  # type: ignore
