@@ -47,6 +47,20 @@ class ScheduleQueryConditionAction(argparse._AppendAction):
                                                            option_string)
 
 
+class ScheduleQueryConditionQueryAction(argparse.Action):
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        condition_query = getattr(namespace, self.dest, None)
+        if condition_query is None:
+            condition_query = dict()
+        for x in values:
+            k, v = x.split('=', 1)
+            if k in condition_query:
+                raise CLIError('Repeated definition of query placeholder "{}"'.format(k))
+            condition_query[k] = v
+        setattr(namespace, self.dest, condition_query)
+
+
 # pylint: disable=protected-access, too-few-public-methods
 class ScheduleQueryAddAction(argparse._AppendAction):
 
