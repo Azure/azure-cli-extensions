@@ -9,19 +9,23 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
+# pylint: disable=bad-continuation
 
 from azure.cli.core.commands import CliCommandType
+from azext_windowsiot.generated._client_factory import cf_service
+
+
+windows_iot_services_service = CliCommandType(
+    operations_tmpl='azext_windowsiot.vendored_sdks.windowsiot.operations._services_operations#ServicesOperations.{}',
+    client_factory=cf_service,
+)
 
 
 def load_command_table(self, _):
 
-    from azext_windowsiot.generated._client_factory import cf_service
-    windows_iot_services_service = CliCommandType(
-        operations_tmpl='azext_windowsiot.vendored_sdks.windowsiot.operations._services_operations#servicesOperations.{'
-        '}',
-        client_factory=cf_service)
-    with self.command_group('windows-iot-services', windows_iot_services_service, client_factory=cf_service,
-                            is_experimental=True) as g:
+    with self.command_group(
+        'windows-iot-services', windows_iot_services_service, client_factory=cf_service, is_experimental=True
+    ) as g:
         g.custom_command('list', 'windows_iot_services_list')
         g.custom_show_command('show', 'windows_iot_services_show')
         g.custom_command('create', 'windows_iot_services_create')

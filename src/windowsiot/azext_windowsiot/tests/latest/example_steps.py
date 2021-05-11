@@ -14,7 +14,7 @@ from .. import try_manual
 
 # EXAMPLE: /Services/put/Service_Create
 @try_manual
-def step_create(test, rg, rg_2, rg_3, rg_4, checks=None):
+def step_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az windows-iot-services create '
@@ -30,7 +30,7 @@ def step_create(test, rg, rg_2, rg_3, rg_4, checks=None):
 
 # EXAMPLE: /Services/get/Service_List
 @try_manual
-def step_list(test, rg, rg_2, rg_3, rg_4, checks=None):
+def step_list(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az windows-iot-services list '
@@ -40,7 +40,7 @@ def step_list(test, rg, rg_2, rg_3, rg_4, checks=None):
 
 # EXAMPLE: /Services/get/Service_ListByResourceGroup
 @try_manual
-def step_list2(test, rg, rg_2, rg_3, rg_4, checks=None):
+def step_list2(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az windows-iot-services list '
@@ -50,7 +50,7 @@ def step_list2(test, rg, rg_2, rg_3, rg_4, checks=None):
 
 # EXAMPLE: /Services/get/Services_GetProperties
 @try_manual
-def step_show(test, rg, rg_2, rg_3, rg_4, checks=None):
+def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az windows-iot-services show '
@@ -61,12 +61,11 @@ def step_show(test, rg, rg_2, rg_3, rg_4, checks=None):
 
 # EXAMPLE: /Services/patch/Service_Update
 @try_manual
-def step_update(test, rg, rg_2, rg_3, rg_4, checks=None):
+def step_update(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az windows-iot-services update '
              '--name "{wiot}" '
-             '--location "East US" '
              '--admin-domain-name "{domain}" '
              '--billing-domain-name "{domain}" '
              '--notes "new notes" '
@@ -77,7 +76,7 @@ def step_update(test, rg, rg_2, rg_3, rg_4, checks=None):
 
 # EXAMPLE: /Services/delete/Service_Delete
 @try_manual
-def step_delete(test, rg, rg_2, rg_3, rg_4, checks=None):
+def step_delete(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az windows-iot-services delete -y '

@@ -8,7 +8,7 @@
 
 from typing import TYPE_CHECKING
 
-from azure.core import PipelineClient
+from azure.mgmt.core import ARMPipelineClient
 from msrest import Deserializer, Serializer
 
 if TYPE_CHECKING:
@@ -18,18 +18,18 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
 
 from ._configuration import DeviceServicesConfiguration
-from .operations import operationsOperations
-from .operations import servicesOperations
+from .operations import Operations
+from .operations import ServicesOperations
 from . import models
 
 
 class DeviceServices(object):
     """Use this API to manage the Windows IoT device services in your Azure subscription.
 
-    :ivar operations: operationsOperations operations
-    :vartype operations: device_services.operations.operationsOperations
-    :ivar services: servicesOperations operations
-    :vartype services: device_services.operations.servicesOperations
+    :ivar operations: Operations operations
+    :vartype operations: device_services.operations.Operations
+    :ivar services: ServicesOperations operations
+    :vartype services: device_services.operations.ServicesOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The subscription identifier.
@@ -48,16 +48,16 @@ class DeviceServices(object):
         if not base_url:
             base_url = 'https://management.azure.com'
         self._config = DeviceServicesConfiguration(credential, subscription_id, **kwargs)
-        self._client = PipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
         self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
-        self.operations = operationsOperations(
+        self.operations = Operations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.services = servicesOperations(
+        self.services = ServicesOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):

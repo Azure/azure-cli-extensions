@@ -12,6 +12,7 @@ from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, 
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
+from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from .. import models
 
@@ -22,8 +23,8 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class servicesOperations(object):
-    """servicesOperations operations.
+class ServicesOperations(object):
+    """ServicesOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -50,7 +51,7 @@ class servicesOperations(object):
         device_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.deviceservice"
+        # type: (...) -> "models.DeviceService"
         """Get the non-security related metadata of a Windows IoT Device Service.
 
         :param resource_group_name: The name of the resource group that contains the Windows IoT Device
@@ -59,11 +60,11 @@ class servicesOperations(object):
         :param device_name: The name of the Windows IoT Device Service.
         :type device_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: deviceservice, or the result of cls(response)
-        :rtype: ~device_services.models.deviceservice
+        :return: DeviceService, or the result of cls(response)
+        :rtype: ~device_services.models.DeviceService
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.deviceservice"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DeviceService"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -94,10 +95,10 @@ class servicesOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.errordetails, response)
-            raise HttpResponseError(response=response, model=error)
+            error = self._deserialize(models.ErrorDetails, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('deviceservice', pipeline_response)
+        deserialized = self._deserialize('DeviceService', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -109,11 +110,11 @@ class servicesOperations(object):
         self,
         resource_group_name,  # type: str
         device_name,  # type: str
-        device_service,  # type: "models.deviceservice"
+        device_service,  # type: "models.DeviceService"
         if_match=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.deviceservice"
+        # type: (...) -> "models.DeviceService"
         """Create or update the metadata of a Windows IoT Device Service.
 
         Create or update the metadata of a Windows IoT Device Service. The usual pattern to modify a
@@ -126,16 +127,16 @@ class servicesOperations(object):
         :param device_name: The name of the Windows IoT Device Service.
         :type device_name: str
         :param device_service: The Windows IoT Device Service metadata and security metadata.
-        :type device_service: ~device_services.models.deviceservice
+        :type device_service: ~device_services.models.DeviceService
         :param if_match: ETag of the Windows IoT Device Service. Do not specify for creating a new
          Windows IoT Device Service. Required to update an existing Windows IoT Device Service.
         :type if_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: deviceservice, or the result of cls(response)
-        :rtype: ~device_services.models.deviceservice
+        :return: DeviceService, or the result of cls(response)
+        :rtype: ~device_services.models.DeviceService
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.deviceservice"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DeviceService"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -165,7 +166,7 @@ class servicesOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(device_service, 'deviceservice')
+        body_content = self._serialize.body(device_service, 'DeviceService')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -173,14 +174,14 @@ class servicesOperations(object):
 
         if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.errordetails, response)
-            raise HttpResponseError(response=response, model=error)
+            error = self._deserialize(models.ErrorDetails, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
-            deserialized = self._deserialize('deviceservice', pipeline_response)
+            deserialized = self._deserialize('DeviceService', pipeline_response)
 
         if response.status_code == 201:
-            deserialized = self._deserialize('deviceservice', pipeline_response)
+            deserialized = self._deserialize('DeviceService', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -192,11 +193,11 @@ class servicesOperations(object):
         self,
         resource_group_name,  # type: str
         device_name,  # type: str
-        device_service,  # type: "models.deviceservice"
+        device_service,  # type: "models.DeviceService"
         if_match=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.deviceservice"
+        # type: (...) -> "models.DeviceService"
         """Updates the metadata of a Windows IoT Device Service.
 
         Updates the metadata of a Windows IoT Device Service. The usual pattern to modify a property is
@@ -209,16 +210,16 @@ class servicesOperations(object):
         :param device_name: The name of the Windows IoT Device Service.
         :type device_name: str
         :param device_service: The Windows IoT Device Service metadata and security metadata.
-        :type device_service: ~device_services.models.deviceservice
+        :type device_service: ~device_services.models.DeviceService
         :param if_match: ETag of the Windows IoT Device Service. Do not specify for creating a brand
          new Windows IoT Device Service. Required to update an existing Windows IoT Device Service.
         :type if_match: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: deviceservice, or the result of cls(response)
-        :rtype: ~device_services.models.deviceservice
+        :return: DeviceService, or the result of cls(response)
+        :rtype: ~device_services.models.DeviceService
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.deviceservice"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DeviceService"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -248,7 +249,7 @@ class servicesOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(device_service, 'deviceservice')
+        body_content = self._serialize.body(device_service, 'DeviceService')
         body_content_kwargs['content'] = body_content
         request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -256,10 +257,10 @@ class servicesOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.errordetails, response)
-            raise HttpResponseError(response=response, model=error)
+            error = self._deserialize(models.ErrorDetails, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('deviceservice', pipeline_response)
+        deserialized = self._deserialize('DeviceService', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -273,7 +274,7 @@ class servicesOperations(object):
         device_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.deviceservice"
+        # type: (...) -> "models.DeviceService"
         """Delete a Windows IoT Device Service.
 
         :param resource_group_name: The name of the resource group that contains the Windows IoT Device
@@ -282,11 +283,11 @@ class servicesOperations(object):
         :param device_name: The name of the Windows IoT Device Service.
         :type device_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: deviceservice, or the result of cls(response)
-        :rtype: ~device_services.models.deviceservice
+        :return: DeviceService, or the result of cls(response)
+        :rtype: ~device_services.models.DeviceService
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.deviceservice"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DeviceService"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -317,14 +318,14 @@ class servicesOperations(object):
 
         if response.status_code not in [200, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.errordetails, response)
-            raise HttpResponseError(response=response, model=error)
+            error = self._deserialize(models.ErrorDetails, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
-            deserialized = self._deserialize('deviceservice', pipeline_response)
+            deserialized = self._deserialize('DeviceService', pipeline_response)
 
         if response.status_code == 204:
-            deserialized = self._deserialize('deviceservice', pipeline_response)
+            deserialized = self._deserialize('DeviceService', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -337,18 +338,18 @@ class servicesOperations(object):
         resource_group_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["models.deviceservicedescriptionlistresult"]
+        # type: (...) -> Iterable["models.DeviceServiceDescriptionListResult"]
         """Get all the IoT hubs in a resource group.
 
         :param resource_group_name: The name of the resource group that contains the Windows IoT Device
          Service.
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either deviceservicedescriptionlistresult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~device_services.models.deviceservicedescriptionlistresult]
+        :return: An iterator like instance of either DeviceServiceDescriptionListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~device_services.models.DeviceServiceDescriptionListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.deviceservicedescriptionlistresult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DeviceServiceDescriptionListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -381,7 +382,7 @@ class servicesOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('deviceservicedescriptionlistresult', pipeline_response)
+            deserialized = self._deserialize('DeviceServiceDescriptionListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -394,9 +395,9 @@ class servicesOperations(object):
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                error = self._deserialize(models.errordetails, response)
+                error = self._deserialize(models.ErrorDetails, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -409,15 +410,15 @@ class servicesOperations(object):
         self,
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["models.deviceservicedescriptionlistresult"]
+        # type: (...) -> Iterable["models.DeviceServiceDescriptionListResult"]
         """Get all the IoT hubs in a subscription.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either deviceservicedescriptionlistresult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~device_services.models.deviceservicedescriptionlistresult]
+        :return: An iterator like instance of either DeviceServiceDescriptionListResult or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~device_services.models.DeviceServiceDescriptionListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.deviceservicedescriptionlistresult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DeviceServiceDescriptionListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -449,7 +450,7 @@ class servicesOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('deviceservicedescriptionlistresult', pipeline_response)
+            deserialized = self._deserialize('DeviceServiceDescriptionListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -462,9 +463,9 @@ class servicesOperations(object):
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                error = self._deserialize(models.errordetails, response)
+                error = self._deserialize(models.ErrorDetails, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
@@ -475,22 +476,22 @@ class servicesOperations(object):
 
     def check_device_service_name_availability(
         self,
-        device_service_check_name_availability_parameters,  # type: "models.deviceservicechecknameavailabilityparameters"
+        device_service_check_name_availability_parameters,  # type: "models.DeviceServiceCheckNameAvailabilityParameters"
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.deviceservicenameavailabilityinfo"
+        # type: (...) -> "models.DeviceServiceNameAvailabilityInfo"
         """Check if a Windows IoT Device Service name is available.
 
         :param device_service_check_name_availability_parameters: Set the name parameter in the
          DeviceServiceCheckNameAvailabilityParameters structure to the name of the Windows IoT Device
          Service to check.
-        :type device_service_check_name_availability_parameters: ~device_services.models.deviceservicechecknameavailabilityparameters
+        :type device_service_check_name_availability_parameters: ~device_services.models.DeviceServiceCheckNameAvailabilityParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: deviceservicenameavailabilityinfo, or the result of cls(response)
-        :rtype: ~device_services.models.deviceservicenameavailabilityinfo
+        :return: DeviceServiceNameAvailabilityInfo, or the result of cls(response)
+        :rtype: ~device_services.models.DeviceServiceNameAvailabilityInfo
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.deviceservicenameavailabilityinfo"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DeviceServiceNameAvailabilityInfo"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -516,7 +517,7 @@ class servicesOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(device_service_check_name_availability_parameters, 'deviceservicechecknameavailabilityparameters')
+        body_content = self._serialize.body(device_service_check_name_availability_parameters, 'DeviceServiceCheckNameAvailabilityParameters')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -524,10 +525,10 @@ class servicesOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.errordetails, response)
-            raise HttpResponseError(response=response, model=error)
+            error = self._deserialize(models.ErrorDetails, response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('deviceservicenameavailabilityinfo', pipeline_response)
+        deserialized = self._deserialize('DeviceServiceNameAvailabilityInfo', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})

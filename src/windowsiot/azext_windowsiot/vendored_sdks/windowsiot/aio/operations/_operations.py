@@ -12,14 +12,15 @@ from azure.core.async_paging import AsyncItemPaged, AsyncList
 from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
+from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models
 
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class operationsOperations:
-    """operationsOperations async operations.
+class Operations:
+    """Operations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -43,15 +44,15 @@ class operationsOperations:
     def list(
         self,
         **kwargs
-    ) -> AsyncIterable["models.operationlistresult"]:
+    ) -> AsyncIterable["models.OperationListResult"]:
         """Lists all of the available Windows IoT Services REST API operations.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either operationlistresult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~device_services.models.operationlistresult]
+        :return: An iterator like instance of either OperationListResult or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~device_services.models.OperationListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.operationlistresult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -79,7 +80,7 @@ class operationsOperations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize('operationlistresult', pipeline_response)
+            deserialized = self._deserialize('OperationListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -92,9 +93,9 @@ class operationsOperations:
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                error = self._deserialize(models.errordetails, response)
+                error = self._deserialize(models.ErrorDetails, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 

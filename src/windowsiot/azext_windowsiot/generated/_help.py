@@ -12,6 +12,11 @@
 from knack.help_files import helps
 
 
+helps['windows-iot-services'] = '''
+    type: group
+    short-summary: Manage Device Services
+'''
+
 helps['windows-iot-services'] = """
     type: group
     short-summary: Manage service with windows iot services
@@ -58,8 +63,8 @@ in a new body to update the Windows IoT Device Service."
     examples:
       - name: Service_Update
         text: |-
-               az windows-iot-services update --name "service8596" --location "East US" --admin-domain-name "d.e.f" \
---billing-domain-name "a.b.c" --notes "blah" --quantity 1000000 --resource-group "res9407"
+               az windows-iot-services update --name "service8596" --admin-domain-name "d.e.f" --billing-domain-name \
+"a.b.c" --notes "blah" --quantity 1000000 --resource-group "res9407"
 """
 
 helps['windows-iot-services delete'] = """

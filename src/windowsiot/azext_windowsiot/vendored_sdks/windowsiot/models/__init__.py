@@ -7,48 +7,48 @@
 # --------------------------------------------------------------------------
 
 try:
-    from ._models_py3 import deviceservice
-    from ._models_py3 import deviceservicechecknameavailabilityparameters
-    from ._models_py3 import deviceservicedescriptionlistresult
-    from ._models_py3 import deviceservicenameavailabilityinfo
-    from ._models_py3 import errordetails
-    from ._models_py3 import errordetailserror
-    from ._models_py3 import operationdisplayinfo
-    from ._models_py3 import operationentity
-    from ._models_py3 import operationlistresult
-    from ._models_py3 import proxyresource
-    from ._models_py3 import resource
-    from ._models_py3 import trackedresource
+    from ._models_py3 import DeviceService
+    from ._models_py3 import DeviceServiceCheckNameAvailabilityParameters
+    from ._models_py3 import DeviceServiceDescriptionListResult
+    from ._models_py3 import DeviceServiceNameAvailabilityInfo
+    from ._models_py3 import ErrorDetails
+    from ._models_py3 import ErrorDetailsError
+    from ._models_py3 import OperationDisplayInfo
+    from ._models_py3 import OperationEntity
+    from ._models_py3 import OperationListResult
+    from ._models_py3 import ProxyResource
+    from ._models_py3 import Resource
+    from ._models_py3 import TrackedResource
 except (SyntaxError, ImportError):
-    from ._models import deviceservice  # type: ignore
-    from ._models import deviceservicechecknameavailabilityparameters  # type: ignore
-    from ._models import deviceservicedescriptionlistresult  # type: ignore
-    from ._models import deviceservicenameavailabilityinfo  # type: ignore
-    from ._models import errordetails  # type: ignore
-    from ._models import errordetailserror  # type: ignore
-    from ._models import operationdisplayinfo  # type: ignore
-    from ._models import operationentity  # type: ignore
-    from ._models import operationlistresult  # type: ignore
-    from ._models import proxyresource  # type: ignore
-    from ._models import resource  # type: ignore
-    from ._models import trackedresource  # type: ignore
+    from ._models import DeviceService  # type: ignore
+    from ._models import DeviceServiceCheckNameAvailabilityParameters  # type: ignore
+    from ._models import DeviceServiceDescriptionListResult  # type: ignore
+    from ._models import DeviceServiceNameAvailabilityInfo  # type: ignore
+    from ._models import ErrorDetails  # type: ignore
+    from ._models import ErrorDetailsError  # type: ignore
+    from ._models import OperationDisplayInfo  # type: ignore
+    from ._models import OperationEntity  # type: ignore
+    from ._models import OperationListResult  # type: ignore
+    from ._models import ProxyResource  # type: ignore
+    from ._models import Resource  # type: ignore
+    from ._models import TrackedResource  # type: ignore
 
 from ._device_services_enums import (
-    Servicenameunavailabilityreason,
+    ServiceNameUnavailabilityReason,
 )
 
 __all__ = [
-    'deviceservice',
-    'deviceservicechecknameavailabilityparameters',
-    'deviceservicedescriptionlistresult',
-    'deviceservicenameavailabilityinfo',
-    'errordetails',
-    'errordetailserror',
-    'operationdisplayinfo',
-    'operationentity',
-    'operationlistresult',
-    'proxyresource',
-    'resource',
-    'trackedresource',
-    'Servicenameunavailabilityreason',
+    'DeviceService',
+    'DeviceServiceCheckNameAvailabilityParameters',
+    'DeviceServiceDescriptionListResult',
+    'DeviceServiceNameAvailabilityInfo',
+    'ErrorDetails',
+    'ErrorDetailsError',
+    'OperationDisplayInfo',
+    'OperationEntity',
+    'OperationListResult',
+    'ProxyResource',
+    'Resource',
+    'TrackedResource',
+    'ServiceNameUnavailabilityReason',
 ]

@@ -47,13 +47,11 @@ def windows_iot_services_create(client,
 def windows_iot_services_update(client,
                                 resource_group_name,
                                 device_name,
-                                location=None,
                                 notes=None,
                                 quantity=None,
                                 billing_domain_name=None,
                                 admin_domain_name=None):
     device_service = {}
-    device_service['location'] = location
     device_service['notes'] = notes
     device_service['quantity'] = quantity
     device_service['billing_domain_name'] = billing_domain_name

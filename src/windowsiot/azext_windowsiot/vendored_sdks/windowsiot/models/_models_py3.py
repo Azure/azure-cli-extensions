@@ -12,7 +12,7 @@ from azure.core.exceptions import HttpResponseError
 import msrest.serialization
 
 
-class resource(msrest.serialization.Model):
+class Resource(msrest.serialization.Model):
     """The core properties of ARM resources.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -41,13 +41,13 @@ class resource(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        super(resource, self).__init__(**kwargs)
+        super(Resource, self).__init__(**kwargs)
         self.id = None
         self.name = None
         self.type = None
 
 
-class trackedresource(resource):
+class TrackedResource(Resource):
     """The resource model definition for a ARM tracked top level resource.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -85,12 +85,12 @@ class trackedresource(resource):
         location: Optional[str] = None,
         **kwargs
     ):
-        super(trackedresource, self).__init__(**kwargs)
+        super(TrackedResource, self).__init__(**kwargs)
         self.tags = tags
         self.location = location
 
 
-class deviceservice(trackedresource):
+class DeviceService(TrackedResource):
     """The description of the Windows IoT Device Service.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -153,7 +153,7 @@ class deviceservice(trackedresource):
         admin_domain_name: Optional[str] = None,
         **kwargs
     ):
-        super(deviceservice, self).__init__(tags=tags, location=location, **kwargs)
+        super(DeviceService, self).__init__(tags=tags, location=location, **kwargs)
         self.etag = etag
         self.notes = notes
         self.start_date = None
@@ -162,7 +162,7 @@ class deviceservice(trackedresource):
         self.admin_domain_name = admin_domain_name
 
 
-class deviceservicechecknameavailabilityparameters(msrest.serialization.Model):
+class DeviceServiceCheckNameAvailabilityParameters(msrest.serialization.Model):
     """Input values.
 
     All required parameters must be populated in order to send to Azure.
@@ -185,17 +185,17 @@ class deviceservicechecknameavailabilityparameters(msrest.serialization.Model):
         name: str,
         **kwargs
     ):
-        super(deviceservicechecknameavailabilityparameters, self).__init__(**kwargs)
+        super(DeviceServiceCheckNameAvailabilityParameters, self).__init__(**kwargs)
         self.name = name
 
 
-class deviceservicedescriptionlistresult(msrest.serialization.Model):
+class DeviceServiceDescriptionListResult(msrest.serialization.Model):
     """The JSON-serialized array of DeviceService objects with a next link.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param value: The array of DeviceService objects.
-    :type value: list[~device_services.models.deviceservice]
+    :type value: list[~device_services.models.DeviceService]
     :ivar next_link: The next link.
     :vartype next_link: str
     """
@@ -205,22 +205,22 @@ class deviceservicedescriptionlistresult(msrest.serialization.Model):
     }
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[deviceservice]'},
+        'value': {'key': 'value', 'type': '[DeviceService]'},
         'next_link': {'key': 'nextLink', 'type': 'str'},
     }
 
     def __init__(
         self,
         *,
-        value: Optional[List["deviceservice"]] = None,
+        value: Optional[List["DeviceService"]] = None,
         **kwargs
     ):
-        super(deviceservicedescriptionlistresult, self).__init__(**kwargs)
+        super(DeviceServiceDescriptionListResult, self).__init__(**kwargs)
         self.value = value
         self.next_link = None
 
 
-class deviceservicenameavailabilityinfo(msrest.serialization.Model):
+class DeviceServiceNameAvailabilityInfo(msrest.serialization.Model):
     """The properties indicating whether a given Windows IoT Device Service name is available.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -229,7 +229,7 @@ class deviceservicenameavailabilityinfo(msrest.serialization.Model):
     :vartype name_available: bool
     :ivar reason: The reason for unavailability. Possible values include: "Invalid",
      "AlreadyExists".
-    :vartype reason: str or ~device_services.models.Servicenameunavailabilityreason
+    :vartype reason: str or ~device_services.models.ServiceNameUnavailabilityReason
     :param message: The detailed reason message.
     :type message: str
     """
@@ -251,34 +251,34 @@ class deviceservicenameavailabilityinfo(msrest.serialization.Model):
         message: Optional[str] = None,
         **kwargs
     ):
-        super(deviceservicenameavailabilityinfo, self).__init__(**kwargs)
+        super(DeviceServiceNameAvailabilityInfo, self).__init__(**kwargs)
         self.name_available = None
         self.reason = None
         self.message = message
 
 
-class errordetails(msrest.serialization.Model):
+class ErrorDetails(msrest.serialization.Model):
     """The details of the error.
 
     :param error: The error object.
-    :type error: ~device_services.models.errordetailserror
+    :type error: ~device_services.models.ErrorDetailsError
     """
 
     _attribute_map = {
-        'error': {'key': 'error', 'type': 'errordetailserror'},
+        'error': {'key': 'error', 'type': 'ErrorDetailsError'},
     }
 
     def __init__(
         self,
         *,
-        error: Optional["errordetailserror"] = None,
+        error: Optional["ErrorDetailsError"] = None,
         **kwargs
     ):
-        super(errordetails, self).__init__(**kwargs)
+        super(ErrorDetails, self).__init__(**kwargs)
         self.error = error
 
 
-class errordetailserror(msrest.serialization.Model):
+class ErrorDetailsError(msrest.serialization.Model):
     """The error object.
 
     :param code: One of a server-defined set of error codes.
@@ -307,14 +307,14 @@ class errordetailserror(msrest.serialization.Model):
         details: Optional[str] = None,
         **kwargs
     ):
-        super(errordetailserror, self).__init__(**kwargs)
+        super(ErrorDetailsError, self).__init__(**kwargs)
         self.code = code
         self.message = message
         self.target = target
         self.details = details
 
 
-class operationdisplayinfo(msrest.serialization.Model):
+class OperationDisplayInfo(msrest.serialization.Model):
     """The operation supported by Azure Data Catalog Service.
 
     :param description: The description of the operation.
@@ -343,27 +343,27 @@ class operationdisplayinfo(msrest.serialization.Model):
         resource: Optional[str] = None,
         **kwargs
     ):
-        super(operationdisplayinfo, self).__init__(**kwargs)
+        super(OperationDisplayInfo, self).__init__(**kwargs)
         self.description = description
         self.operation = operation
         self.provider = provider
         self.resource = resource
 
 
-class operationentity(msrest.serialization.Model):
+class OperationEntity(msrest.serialization.Model):
     """The operation supported by Azure Data Catalog Service.
 
     :param name: Operation name: {provider}/{resource}/{operation}.
     :type name: str
     :param display: The operation supported by Azure Data Catalog Service.
-    :type display: ~device_services.models.operationdisplayinfo
+    :type display: ~device_services.models.OperationDisplayInfo
     :param is_data_action: Indicates whether the operation is a data action.
     :type is_data_action: bool
     """
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
-        'display': {'key': 'display', 'type': 'operationdisplayinfo'},
+        'display': {'key': 'display', 'type': 'OperationDisplayInfo'},
         'is_data_action': {'key': 'isDataAction', 'type': 'bool'},
     }
 
@@ -371,24 +371,24 @@ class operationentity(msrest.serialization.Model):
         self,
         *,
         name: Optional[str] = None,
-        display: Optional["operationdisplayinfo"] = None,
+        display: Optional["OperationDisplayInfo"] = None,
         is_data_action: Optional[bool] = None,
         **kwargs
     ):
-        super(operationentity, self).__init__(**kwargs)
+        super(OperationEntity, self).__init__(**kwargs)
         self.name = name
         self.display = display
         self.is_data_action = is_data_action
 
 
-class operationlistresult(msrest.serialization.Model):
+class OperationListResult(msrest.serialization.Model):
     """Result of the request to list Windows IoT Device Service operations. It contains a list of operations and a URL link to get the next set of results.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar value: List of Windows IoT Device Service operations supported by the
      Microsoft.WindowsIoT resource provider.
-    :vartype value: list[~device_services.models.operationentity]
+    :vartype value: list[~device_services.models.OperationEntity]
     :ivar next_link: URL to get the next set of operation list results if there are any.
     :vartype next_link: str
     """
@@ -399,7 +399,7 @@ class operationlistresult(msrest.serialization.Model):
     }
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[operationentity]'},
+        'value': {'key': 'value', 'type': '[OperationEntity]'},
         'next_link': {'key': 'nextLink', 'type': 'str'},
     }
 
@@ -407,12 +407,12 @@ class operationlistresult(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        super(operationlistresult, self).__init__(**kwargs)
+        super(OperationListResult, self).__init__(**kwargs)
         self.value = None
         self.next_link = None
 
 
-class proxyresource(resource):
+class ProxyResource(Resource):
     """The resource model definition for a ARM proxy resource. It will have everything other than required location and tags.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -441,4 +441,4 @@ class proxyresource(resource):
         self,
         **kwargs
     ):
-        super(proxyresource, self).__init__(**kwargs)
+        super(ProxyResource, self).__init__(**kwargs)

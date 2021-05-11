@@ -42,8 +42,6 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('device_name', options_list=['--name', '-n'], type=str, help='The name of the Windows IoT Device '
                    'Service.', id_part='name')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
-                   validator=get_default_location_from_resource_group)
         c.argument('notes', type=str, help='Windows IoT Device Service notes.')
         c.argument('quantity', type=int, help='Windows IoT Device Service device allocation.')
         c.argument('billing_domain_name', type=str, help='Windows IoT Device Service ODM AAD domain')

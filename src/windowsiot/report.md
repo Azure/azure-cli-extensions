@@ -80,15 +80,14 @@ az windows-iot-services create --name "service4445" --location "East US" --admin
 
 ##### <a name="ExamplesServicesUpdate">Example</a>
 ```
-az windows-iot-services update --name "service8596" --location "East US" --admin-domain-name "d.e.f" \
---billing-domain-name "a.b.c" --notes "blah" --quantity 1000000 --resource-group "res9407"
+az windows-iot-services update --name "service8596" --admin-domain-name "d.e.f" --billing-domain-name "a.b.c" --notes \
+"blah" --quantity 1000000 --resource-group "res9407"
 ```
 ##### <a name="ParametersServicesUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group that contains the Windows IoT Device Service.|resource_group_name|resourceGroupName|
 |**--device-name**|string|The name of the Windows IoT Device Service.|device_name|deviceName|
-|**--location**|string|The Azure Region where the resource lives|location|location|
 |**--notes**|string|Windows IoT Device Service notes.|notes|notes|
 |**--quantity**|integer|Windows IoT Device Service device allocation.|quantity|quantity|
 |**--billing-domain-name**|string|Windows IoT Device Service ODM AAD domain|billing_domain_name|billingDomainName|

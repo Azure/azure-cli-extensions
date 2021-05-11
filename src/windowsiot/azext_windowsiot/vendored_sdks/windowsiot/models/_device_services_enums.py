@@ -26,9 +26,9 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
-class Servicenameunavailabilityreason(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+class ServiceNameUnavailabilityReason(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The reason for unavailability.
     """
 
     INVALID = "Invalid"
-    ALREADYEXISTS = "AlreadyExists"
+    ALREADY_EXISTS = "AlreadyExists"
