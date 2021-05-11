@@ -1759,8 +1759,12 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             )
 
     if enable_pod_identity:
-        _update_addon_pod_identity(
-            instance, enable=True, allow_kubenet_consent=enable_pod_identity_with_kubenet)
+        if not _is_pod_identity_addon_enabled(instance):
+            # we only rebuild the pod identity profile if it's disabled before
+            _update_addon_pod_identity(
+                instance, enable=True,
+                allow_kubenet_consent=enable_pod_identity_with_kubenet,
+            )
 
     if disable_pod_identity:
         _update_addon_pod_identity(instance, enable=False)
@@ -3879,11 +3883,16 @@ def _get_linux_os_config(file_path):
     return config_object
 
 
+def _is_pod_identity_addon_enabled(instance):
+    if not instance:
+        return False
+    if not instance.pod_identity_profile:
+        return False
+    return bool(instance.pod_identity_profile.enabled)
+
+
 def _ensure_pod_identity_addon_is_enabled(instance):
-    addon_enabled = False
-    if instance and instance.pod_identity_profile:
-        addon_enabled = instance.pod_identity_profile.enabled
-    if not addon_enabled:
+    if not _is_pod_identity_addon_enabled(instance):
         raise CLIError('The pod identity addon is not enabled for this managed cluster yet.\n'
                        'To enable, run "az aks update --enable-pod-identity')
 
