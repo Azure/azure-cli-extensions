@@ -9,6 +9,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=import-outside-toplevel
+# pylint: disable=inconsistent-return-statements
 
 import inspect
 import logging
