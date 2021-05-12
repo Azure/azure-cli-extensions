@@ -98,7 +98,7 @@ helps['aks create'] = """
           short-summary: Enable managed AAD feature for cluster.
         - name: --enable-azure-rbac
           type: bool
-          short-summary: Enable Azure role assignments to control authorization checks on cluster.
+          short-summary: Enable Azure RBAC to control authorization checks on cluster.
         - name: --aad-admin-group-object-ids
           type: string
           short-summary: Comma seperated list of aad group object IDs that will be set as cluster admin.
@@ -526,10 +526,10 @@ helps['aks update'] = """
             Reference: https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.management.compute.models.virtualmachinescalesetosprofile.adminpassword?view=azure-dotnet
         - name: --enable-azure-rbac
           type: bool
-          short-summary: Enable Azure role assignments to control authorization checks on cluster.
+          short-summary: Enable Azure RBAC to control authorization checks on cluster.
         - name: --disable-azure-rbac
           type: bool
-          short-summary: Disable Azure role assignments to control authorization checks on cluster.
+          short-summary: Disable Azure RBAC to control authorization checks on cluster.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
