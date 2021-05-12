@@ -445,7 +445,7 @@ def kusto_manual_setup(test):
     # Get sas-token for 'script' resource tests.
     # Please update the '--expiry' with the relevant date
     sas = test.cmd(
-        'storage blob generate-sas -n script --account-name testclients -c testclientscontainer --permissions r --expiry 2021-05-20 --start 2021-05-08 --auth-mode login --as-user').output.strip()
+        'storage blob generate-sas -n script --account-name testclients -c testclientscontainer --permissions r --expiry 2021-05-18 --start 2021-05-08 --auth-mode login --as-user').output.strip()
 
     # Set parameters for tests.
     test.kwargs.update({
