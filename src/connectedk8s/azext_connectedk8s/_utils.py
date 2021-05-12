@@ -9,6 +9,8 @@ import subprocess
 from subprocess import Popen, PIPE
 import time
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 import json
 
 from knack.util import CLIError
@@ -23,10 +25,7 @@ from kubernetes.client.rest import ApiException
 from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
-from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt
-
+from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError, ValidationError
 
 logger = get_logger(__name__)
 
@@ -166,11 +165,11 @@ def get_helm_registry(cmd, config_dp_endpoint, dp_endpoint_dogfood=None, release
 def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
     if isinstance(ex, AuthenticationError):
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        raise ClientRequestError("Authentication error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise AzureResponseError("Authentication error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     if isinstance(ex, TokenExpiredError):
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        raise ClientRequestError("Token expiration error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise AzureResponseError("Token expiration error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     if isinstance(ex, HttpOperationError):
         status_code = ex.response.status_code
@@ -179,11 +178,13 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
         if status_code // 100 == 4:
             telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        raise ClientRequestError("Http operation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        if status_code // 100 == 5:
+            raise AzureInternalError("Http operation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise AzureResponseError("Http operation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     if isinstance(ex, ValidationError):
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        raise ClientRequestError("Validation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise AzureResponseError("Validation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     if isinstance(ex, CloudError):
         status_code = ex.status_code
@@ -192,7 +193,9 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
         if status_code // 100 == 4:
             telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        raise ClientRequestError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        if status_code // 100 == 5:
+            raise AzureInternalError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise AzureResponseError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
     raise ClientRequestError("Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
@@ -206,15 +209,19 @@ def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error o
         status_code = ex.status
         if status_code == 403:
             logger.warning(message_for_unauthorized_request)
-        if status_code == 404:
+        elif status_code == 404:
             logger.warning(message_for_not_found)
+        else:
+            logger.debug("Kubernetes Exception: " + str(ex))
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-            raise CLIInternalError(error_message + "\nError Response: " + str(ex.body))
+            raise ValidationError(error_message + "\nError Response: " + str(ex.body))
     else:
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-            raise CLIInternalError(error_message + "\nError: " + str(ex))
+            raise ValidationError(error_message + "\nError: " + str(ex))
+        else:
+            logger.debug("Kubernetes Exception: " + str(ex))
 
 
 def validate_infrastructure_type(infra):
@@ -253,7 +260,7 @@ def ensure_namespace_cleanup(configuration):
                 return
             time.sleep(5)
         except Exception as e:  # pylint: disable=broad-except
-            logger.warning("Error while retrieving namespace information.")
+            logger.warning("Error while retrieving namespace information: " + str(e))
             kubernetes_exception_handler(e, consts.Get_Kubernetes_Namespace_Fault_Type, 'Unable to fetch kubernetes namespace',
                                          raise_error=False)
 
@@ -370,3 +377,15 @@ def is_guid(guid):
         return True
     except ValueError:
         return False
+
+
+def try_list_node_fix():
+    try:
+        from kubernetes.client.models.v1_container_image import V1ContainerImage
+
+        def names(self, names):
+            self._names = names
+
+        V1ContainerImage.names = V1ContainerImage.names.setter(names)
+    except Exception as ex:
+        logger.debug("Error while trying to monkey patch the fix for list_node(): {}".format(str(ex)))

@@ -2,6 +2,17 @@
 
 Release History
 ===============
+0.5.11
++++++
+* Add get OS options support
+* Fix wrong behavior when enabling pod identity addon for cluster with addon enabled
+
+0.5.10
++++++
+* Add `--binding-selector` to AAD pod identity add sub command
+* Support using custom kubelet identity
+* Support updating Windows password
+* Add FIPS support to CLI extension
 
 0.5.9
 +++++

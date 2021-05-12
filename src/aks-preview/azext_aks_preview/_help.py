@@ -213,6 +213,9 @@ helps['aks create'] = """
         - name: --ppg
           type: string
           short-summary: The ID of a PPG.
+        - name: --enable-fips-image
+          type: bool
+          short-summary: Use FIPS-enabled OS on agent nodes.
         - name: --workspace-resource-id
           type: string
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
@@ -834,6 +837,9 @@ helps['aks nodepool add'] = """
         - name: --os-type
           type: string
           short-summary: The OS Type. Linux or Windows.
+        - name: --enable-fips-image
+          type: bool
+          short-summary: Use FIPS-enabled OS on agent nodes.
         - name: --enable-cluster-autoscaler -e
           type: bool
           short-summary: Enable cluster autoscaler.
@@ -1034,6 +1040,15 @@ short-summary: Get the versions available for creating a managed Kubernetes clus
 examples:
   - name: Get the versions available for creating a managed Kubernetes cluster
     text: az aks get-versions --location westus2
+    crafted: true
+"""
+
+helps['aks get-os-options'] = """
+type: command
+short-summary: Get the OS options available for creating a managed Kubernetes cluster.
+examples:
+  - name: Get the OS options available for creating a managed Kubernetes cluster
+    text: az aks get-os-options --location westus2
     crafted: true
 """
 

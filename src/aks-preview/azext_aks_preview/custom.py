@@ -971,6 +971,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_vmss=None,
                vm_set_type=None,
                skip_subnet_role_assignment=False,
+               enable_fips_image=False,
                enable_cluster_autoscaler=False,
                cluster_autoscaler_profile=None,
                network_plugin=None,
@@ -1087,6 +1088,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         proximity_placement_group_id=ppg,
         availability_zones=node_zones,
         enable_node_public_ip=enable_node_public_ip,
+        enable_fips=enable_fips_image,
         node_public_ip_prefix_id=node_public_ip_prefix_id,
         enable_encryption_at_host=enable_encryption_at_host,
         max_pods=int(max_pods) if max_pods else None,
@@ -1757,8 +1759,12 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             )
 
     if enable_pod_identity:
-        _update_addon_pod_identity(
-            instance, enable=True, allow_kubenet_consent=enable_pod_identity_with_kubenet)
+        if not _is_pod_identity_addon_enabled(instance):
+            # we only rebuild the pod identity profile if it's disabled before
+            _update_addon_pod_identity(
+                instance, enable=True,
+                allow_kubenet_consent=enable_pod_identity_with_kubenet,
+            )
 
     if disable_pod_identity:
         _update_addon_pod_identity(instance, enable=False)
@@ -2933,6 +2939,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       ppg=None,
                       max_pods=0,
                       os_type="Linux",
+                      enable_fips_image=False,
                       min_count=None,
                       max_count=None,
                       enable_cluster_autoscaler=False,
@@ -2982,6 +2989,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         count=int(node_count),
         vm_size=node_vm_size,
         os_type=os_type,
+        enable_fips=enable_fips_image,
         storage_profile=ContainerServiceStorageProfileTypes.managed_disks,
         vnet_subnet_id=vnet_subnet_id,
         pod_subnet_id=pod_subnet_id,
@@ -3402,6 +3410,10 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
 def aks_get_versions(cmd, client, location):    # pylint: disable=unused-argument
     return client.list_orchestrators(location, resource_type='managedClusters')
+
+
+def aks_get_os_options(cmd, client, location):    # pylint: disable=unused-argument
+    return client.get_os_options(location, resource_type='managedClusters')
 
 
 def _print_or_merge_credentials(path, kubeconfig, overwrite_existing, context_name):
@@ -3871,11 +3883,16 @@ def _get_linux_os_config(file_path):
     return config_object
 
 
+def _is_pod_identity_addon_enabled(instance):
+    if not instance:
+        return False
+    if not instance.pod_identity_profile:
+        return False
+    return bool(instance.pod_identity_profile.enabled)
+
+
 def _ensure_pod_identity_addon_is_enabled(instance):
-    addon_enabled = False
-    if instance and instance.pod_identity_profile:
-        addon_enabled = instance.pod_identity_profile.enabled
-    if not addon_enabled:
+    if not _is_pod_identity_addon_enabled(instance):
         raise CLIError('The pod identity addon is not enabled for this managed cluster yet.\n'
                        'To enable, run "az aks update --enable-pod-identity')
 

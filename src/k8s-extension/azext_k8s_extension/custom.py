@@ -16,12 +16,14 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azext_k8s_extension.vendored_sdks.models import ConfigurationIdentity
 from azext_k8s_extension.vendored_sdks.models import ErrorResponseException
 from azext_k8s_extension.vendored_sdks.models import Scope
+from azext_k8s_extension._validators import _validate_cc_registration
 
-from azext_k8s_extension.partner_extensions.ContainerInsights import ContainerInsights
-from azext_k8s_extension.partner_extensions.AzureDefender import AzureDefender
-from azext_k8s_extension.partner_extensions.Cassandra import Cassandra
-from azext_k8s_extension.partner_extensions.DefaultExtension import DefaultExtension
-import azext_k8s_extension._consts as consts
+from .partner_extensions.ContainerInsights import ContainerInsights
+from .partner_extensions.AzureDefender import AzureDefender
+from .partner_extensions.Cassandra import Cassandra
+from .partner_extensions.AzureMLKubernetes import AzureMLKubernetes
+from .partner_extensions.DefaultExtension import DefaultExtension
+from . import consts
 
 from ._client_factory import cf_resources
 
@@ -33,7 +35,8 @@ def ExtensionFactory(extension_name):
     extension_map = {
         'microsoft.azuremonitor.containers': ContainerInsights,
         'microsoft.azuredefender.kubernetes': AzureDefender,
-        'cassandradatacentersoperator': Cassandra
+        'microsoft.azureml.kubernetes': AzureMLKubernetes,
+        'cassandradatacentersoperator': Cassandra,
     }
 
     # Return the extension if we find it in the map, else return the default
@@ -76,9 +79,8 @@ def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
     """Create a new Extension Instance.
 
     """
-    extension_type_lower = extension_type.lower()
 
-    # Determine ClusterRP
+    extension_type_lower = extension_type.lower()
     cluster_rp = __get_cluster_rp(cluster_type)
 
     # Configuration Settings & Configuration Protected Settings
@@ -132,6 +134,9 @@ def create_k8s_extension(cmd, client, resource_group_name, cluster_name, name, c
     # Common validations
     __validate_version_and_auto_upgrade(extension_instance.version, extension_instance.auto_upgrade_minor_version)
     __validate_scope_after_customization(extension_instance.scope)
+
+    # Check that registration has been done on Microsoft.KubernetesConfiguration for the subscription
+    _validate_cc_registration(cmd)
 
     # Create identity, if required
     if create_identity:
