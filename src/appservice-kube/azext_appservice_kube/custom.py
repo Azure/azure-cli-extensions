@@ -219,11 +219,24 @@ def _get_kube_env_from_custom_location(cmd, custom_location):
     return kube_environment_id
 
 
+def _get_custom_location_id_from_custom_location(cmd, custom_location_name):
+    if is_valid_resource_id(custom_location_name):
+        return custom_location_name
+
+    kube_envs = cf_kube_environments(cmd.cli_ctx).list_by_subscription()
+    for kube in kube_envs:
+        if kube.extended_location and kube.extended_location.custom_location:
+            parsed_custom_location = parse_resource_id(kube.extended_location.custom_location)
+            if parsed_custom_location.get("name").lower() == custom_location_name.lower():
+                return kube.extended_location.custom_location
+    return None
+
+
 def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hyper_v, per_site_scaling=False, custom_location=None,
                             app_service_environment=None, sku=None,
                             number_of_workers=None, location=None, tags=None, no_wait=False):
-    HostingEnvironmentProfile, SkuDescription, AppServicePlan, KubeEnvironmentProfile = cmd.get_models(
-        'HostingEnvironmentProfile', 'SkuDescription', 'AppServicePlan', 'KubeEnvironmentProfile')
+    HostingEnvironmentProfile, SkuDescription, AppServicePlan, KubeEnvironmentProfile, ExtendedLocationEnvelope = cmd.get_models(
+        'HostingEnvironmentProfile', 'SkuDescription', 'AppServicePlan', 'KubeEnvironmentProfile', 'ExtendedLocationEnvelope')
     sku = _normalize_sku(sku)
     _validate_asp_sku(app_service_environment, custom_location, sku)
 
@@ -255,6 +268,7 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
     else:  # Non-ASE
         ase_def = None
 
+    extended_location_envelope = None
     if kube_environment and ase_def is None:
         kube_id = _resolve_kube_environment_id(cmd.cli_ctx, kube_environment, resource_group_name)
         kube_def = KubeEnvironmentProfile(id=kube_id)
@@ -264,6 +278,7 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
         kube_rg = parsed_id.get("resource_group")
         if kube_name is not None and kube_rg is not None:
             kube_env = cf_kube_environments(cmd.cli_ctx).get(kube_rg, kube_name)
+            extended_location_envelope = ExtendedLocationEnvelope(name=kube_env.extended_location.custom_location, type="CustomLocation")
             if kube_env is not None:
                 location = kube_env.location
             else:
@@ -280,7 +295,7 @@ def create_app_service_plan_inner(cmd, resource_group_name, name, is_linux, hype
     plan_def = AppServicePlan(location=location, tags=tags, sku=sku_def, kind=kind,
                               reserved=(is_linux or None), hyper_v=(hyper_v or None), name=name,
                               per_site_scaling=per_site_scaling, hosting_environment_profile=ase_def,
-                              kube_environment_profile=kube_def)
+                              kube_environment_profile=kube_def, extended_location=extended_location_envelope)
     return sdk_no_wait(no_wait, client.app_service_plans.create_or_update, name=name,
                        resource_group_name=resource_group_name, app_service_plan=plan_def)
 
@@ -341,8 +356,8 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
                   multicontainer_config_type=None, multicontainer_config_file=None, tags=None,
                   using_webapp_up=False, language=None, assign_identities=None, role='Contributor', scope=None,
                   min_worker_count=None, max_worker_count=None):
-    SiteConfig, SkuDescription, Site, NameValuePair = cmd.get_models(
-        'SiteConfig', 'SkuDescription', 'Site', 'NameValuePair')
+    SiteConfig, SkuDescription, Site, NameValuePair, ExtendedLocationEnvelope = cmd.get_models(
+        'SiteConfig', 'SkuDescription', 'Site', 'NameValuePair', 'ExtendedLocationEnvelope')
     if deployment_source_url and deployment_local_git:
         raise CLIError('usage error: --deployment-source-url <url> | --deployment-local-git')
 
@@ -417,11 +432,18 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
 
     is_kube = False
     if custom_location or plan_info.kind.upper() == KUBE_ASP_KIND.upper() or (isinstance(plan_info.sku, SkuDescription) and plan_info.sku.name.upper() == KUBE_DEFAULT_SKU):
+        is_kube = True
         if deployment_container_image_name:
             webapp_def.kind = KUBE_CONTAINER_APP_KIND
         else:
             webapp_def.kind = KUBE_APP_KIND
-        is_kube = True
+
+        if custom_location:  # if Custom Location provided, use that for Extended Location Envelope. Otherwise, get Custom Location from ASP
+            custom_location_id = _get_custom_location_id_from_custom_location(cmd, custom_location)
+            if custom_location_id:
+                webapp_def.extended_location = ExtendedLocationEnvelope(name=custom_location_id, type="CustomLocation")
+        else:
+            webapp_def.extended_location = plan_info.extended_location
 
     if is_kube:
         if min_worker_count is not None:
@@ -757,7 +779,7 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
     if consumption_plan_location and plan:
         raise MutuallyExclusiveArgumentError("Consumption Plan and Plan cannot be used together")
 
-    SiteConfig, Site, NameValuePair = cmd.get_models('SiteConfig', 'Site', 'NameValuePair')
+    SiteConfig, Site, NameValuePair, ExtendedLocationEnvelope = cmd.get_models('SiteConfig', 'Site', 'NameValuePair', 'ExtendedLocationEnvelope')
     docker_registry_server_url = parse_docker_image_name(deployment_container_image_name)
 
     site_config = SiteConfig(app_settings=[])
@@ -849,6 +871,13 @@ def create_function(cmd, resource_group_name, name, storage_account, plan=None, 
     con_string = _validate_and_get_connection_string(cmd.cli_ctx, resource_group_name, storage_account)
 
     if is_kube:
+        if custom_location:  # if Custom Location provided, use that for Extended Location Envelope. Otherwise, get Custom Location from ASP
+            custom_location_id = _get_custom_location_id_from_custom_location(cmd, custom_location)
+            if custom_location_id:
+                functionapp_def.extended_location = ExtendedLocationEnvelope(name=custom_location_id, type="CustomLocation")
+        else:
+            functionapp_def.extended_location = plan_info.extended_location
+
         functionapp_def.kind = KUBE_FUNCTION_APP_KIND
         functionapp_def.reserved = True
         site_config.app_settings.append(NameValuePair(name='WEBSITES_PORT', value='80'))
