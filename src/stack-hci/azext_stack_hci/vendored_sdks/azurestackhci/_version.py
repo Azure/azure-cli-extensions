@@ -6,10 +6,5 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._operation_operations_async import OperationOperations
-from ._cluster_operations_async import ClusterOperations
+VERSION = "6.0.0b1"
 
-__all__ = [
-    'OperationOperations',
-    'ClusterOperations',
-]
