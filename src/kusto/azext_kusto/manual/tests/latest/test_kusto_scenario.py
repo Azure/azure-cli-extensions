@@ -447,6 +447,7 @@ class KustoManagementClientScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitestkusto_kustorptest'[:7], key='rg', parameter_name='rg')
     def test_kusto(self, rg):
 
+        # test
         self.kwargs.update({
             'subscription_id': self.get_subscription_id()
         })
