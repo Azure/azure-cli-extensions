@@ -41,14 +41,21 @@ def get_extensions():
         project_url = exts[0]['metadata']['extensions']['python.details']['project_urls']['Home']
         history_tmp = project_url + '/HISTORY.rst'
         history = project_url if str(requests.get(history_tmp).status_code) == '404' else history_tmp
+        if exts[0]['metadata'].get('azext.isPreview'):
+            status='Preview'
+        elif exts[0]['metadata'].get('azext.isExperimental'):
+            status='Experimental'
+        else:
+            status='GA'
 
         extensions.append({
             'name': exts[0]['metadata']['name'],
             'desc': exts[0]['metadata']['summary'],
-            'version': exts[0]['metadata']['azext.minCliCoreVersion'],
+            'min_cli_core_version': exts[0]['metadata']['azext.minCliCoreVersion'],
+            'version': exts[0]['metadata']['version'],
             'project_url': project_url,
             'history': history,
-            'preview': 'Yes' if exts[0]['metadata'].get('azext.isPreview') else ''
+            'status': status
         })
     return extensions
 

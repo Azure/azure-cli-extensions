@@ -21,6 +21,6 @@ The list of extensions is also available  from the CLI. To get it, run [az exten
 az extension list-available --output table
 ```
 
-| Reference | Extension | Minimum Version | Description | Preview |Release Notes |
+| Extension | Latest Version | Minimum CLI Version | Description | Status | Release Notes |
 |----|-----------|-----------------|-------------|---------|---------------|{% for extension in extensions %}
-|[{{ extension.name }}]({{ extension.project_url }}) | {{extension.name}} | {{ extension.version }} | {{ extension.desc }} | {{ extension.preview }} | [history]({{extension.history}}) |{% endfor %}
+|[{{ extension.name }}]({{ extension.project_url }}) | {{extension.version}} | {{ extension.min_cli_core_version }} | {{ extension.desc }} | {{ extension.status }} | [history]({{extension.history}}) |{% endfor %}
