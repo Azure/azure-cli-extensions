@@ -42,11 +42,11 @@ def get_extensions():
         history_tmp = project_url + '/HISTORY.rst'
         history = project_url if str(requests.get(history_tmp).status_code) == '404' else history_tmp
         if exts[0]['metadata'].get('azext.isPreview'):
-            status='Preview'
+            status = 'Preview'
         elif exts[0]['metadata'].get('azext.isExperimental'):
-            status='Experimental'
+            status = 'Experimental'
         else:
-            status='GA'
+            status = 'GA'
 
         extensions.append({
             'name': exts[0]['metadata']['name'],
