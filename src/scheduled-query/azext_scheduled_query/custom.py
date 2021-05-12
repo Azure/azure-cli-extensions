@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from knack.util import CLIError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 
 def _build_criteria(condition, condition_query):
@@ -21,7 +21,7 @@ def _build_criteria(condition, condition_query):
             )
         else:
             if cond.failing_periods.min_failing_periods_to_alert > cond.failing_periods.number_of_evaluation_periods:
-                raise CLIError('EvaluationPeriod must be greater than or equals to MinTimeToFail.')
+                raise InvalidArgumentValueError('EvaluationPeriod must be greater than or equals to MinTimeToFail.')
     return ScheduledQueryRuleCriteria(all_of=condition)
 
 
