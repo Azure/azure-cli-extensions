@@ -86,7 +86,7 @@ def _validate_tested_distro(cmd, cluster_resource_group_name, cluster_name, exte
         '/connectedClusters/{2}'.format(subscription_id, cluster_resource_group_name, cluster_name)
     try:
         resource = resources.get_by_id(cluster_resource_id, '2020-01-01-preview')
-        cluster_distro = resource.distribution.lower()
+        cluster_distro = resource.properties['distribution'].lower()
     except CloudError as ex:
         raise ex
 
@@ -101,7 +101,7 @@ def _validate_tested_distro(cmd, cluster_resource_group_name, cluster_name, exte
         logger.warning(f'\"testedDistros\" field unavailable for version {extension_version} of osm-arc, '
             'cannot determine if this kubernetes distribution has been tested for osm-arc')
     elif cluster_distro in tested_distros.split():
-        logger.info(f'{cluster_distro} is a tested kubernetes distribution for osm-arc')
+        logger.warning(f'{cluster_distro} is a tested kubernetes distribution for osm-arc')
     else:
         logger.warning(f'{cluster_distro} is not a tested kubernetes distribution for osm-arc')
 
@@ -117,7 +117,7 @@ def _get_tested_distros(version):
         }
     })
     values = chart_arc.get_values()
-    values_yaml = yaml.load(values.raw)
+    values_yaml = yaml.load(values.raw, Loader=yaml.FullLoader)
 
     try:
         return values_yaml['OpenServiceMesh']['testedDistros']
