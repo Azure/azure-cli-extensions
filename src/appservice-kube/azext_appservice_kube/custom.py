@@ -1573,6 +1573,10 @@ def _get_scm_url(cmd, resource_group_name, name, slot=None):
     raise ValueError('Failed to retrieve Scm Uri')
 
 
+def restart_webapp(cmd, resource_group_name, name, slot=None):
+    return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'restart', slot)
+
+
 def _check_zip_deployment_status(cmd, rg_name, name, deployment_status_url, authorization, timeout=None):
     import requests
     from azure.cli.core.util import should_disable_connection_verify

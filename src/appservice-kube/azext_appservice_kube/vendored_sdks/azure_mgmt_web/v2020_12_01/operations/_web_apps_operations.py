@@ -11268,7 +11268,7 @@ class WebAppsOperations(object):
         request = self._client.post(url, query_parameters, header_parameters)
         response = self._client.send(request, stream=False, **operation_config)
 
-        if response.status_code not in [200]:
+        if response.status_code not in [200, 202]:
             raise models.DefaultErrorResponseException(self._deserialize, response)
 
         if raw:
