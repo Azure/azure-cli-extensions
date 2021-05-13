@@ -15,25 +15,24 @@ if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials_async import AsyncTokenCredential
 
-from ._configuration_async import AzureStackHCIClientConfiguration
-from .operations_async import OperationOperations
-from .operations_async import ClusterOperations
+from ._configuration import AzureStackHCIClientConfiguration
+from .operations import Operations
+from .operations import ClustersOperations
 from .. import models
 
 
 class AzureStackHCIClient(object):
     """Azure Stack HCI management service.
 
-    :ivar operation: OperationOperations operations
-    :vartype operation: azure_stack_hci_client.aio.operations_async.OperationOperations
-    :ivar cluster: ClusterOperations operations
-    :vartype cluster: azure_stack_hci_client.aio.operations_async.ClusterOperations
+    :ivar operations: Operations operations
+    :vartype operations: azure.mgmt.azurestackhci.aio.operations.Operations
+    :ivar clusters: ClustersOperations operations
+    :vartype clusters: azure.mgmt.azurestackhci.aio.operations.ClustersOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The ID of the target subscription.
     :type subscription_id: str
     :param str base_url: Service URL
-    :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
     def __init__(
@@ -50,11 +49,12 @@ class AzureStackHCIClient(object):
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
+        self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
-        self.operation = OperationOperations(
+        self.operations = Operations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.cluster = ClusterOperations(
+        self.clusters = ClustersOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     async def close(self) -> None:
