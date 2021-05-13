@@ -1285,7 +1285,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         if any([aad_client_app_id, aad_server_app_id, aad_server_app_secret]):
             raise CLIError('"--enable-aad" cannot be used together with '
                            '"--aad-client-app-id/--aad-server-app-id/--aad-server-app-secret"')
-
+        if disable_rbac and enable_azure_rbac:
+            raise CLIError(
+                '"--enable-azure-rbac" can not be used together with "--disable-rbac"')
         aad_profile = ManagedClusterAADProfile(
             managed=True,
             enable_azure_rbac=enable_azure_rbac,
@@ -1502,7 +1504,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                enable_local_accounts=False,
                yes=False,
                tags=None,
-               windows_admin_password=None):
+               windows_admin_password=None,
+               enable_azure_rbac=False,
+               disable_azure_rbac=False):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1512,7 +1516,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                                                           load_balancer_outbound_ports,
                                                           load_balancer_idle_timeout)
     update_aad_profile = not (
-        aad_tenant_id is None and aad_admin_group_object_ids is None)
+        aad_tenant_id is None and aad_admin_group_object_ids is None and not enable_azure_rbac and not disable_azure_rbac)
     # pylint: disable=too-many-boolean-expressions
     if not update_autoscaler and \
        cluster_autoscaler_profile is None and \
@@ -1565,9 +1569,10 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--disable-secret-rotation" or '
                        '"--tags" or '
                        '"--windows-admin-password" or '
+                       '"--enable-azure-rbac" or '
+                       '"--disable-azure-rbac" or '
                        '"--enable-local-accounts" or '
                        '"--disable-local-accounts"')
-
     instance = client.get(resource_group_name, name)
 
     if update_autoscaler and len(instance.agent_pool_profiles) > 1:
@@ -1712,13 +1717,20 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         )
     if update_aad_profile:
         if instance.aad_profile is None or not instance.aad_profile.managed:
-            raise CLIError('Cannot specify "--aad-tenant-id/--aad-admin-group-object-ids"'
+            raise CLIError('Cannot specify "--aad-tenant-id/--aad-admin-group-object-ids/--enable-azure-rbac/--disable-azure-rbac"'
                            ' if managed AAD is not enabled')
         if aad_tenant_id is not None:
             instance.aad_profile.tenant_id = aad_tenant_id
         if aad_admin_group_object_ids is not None:
             instance.aad_profile.admin_group_object_ids = _parse_comma_separated_list(
                 aad_admin_group_object_ids)
+        if enable_azure_rbac and disable_azure_rbac:
+            raise CLIError(
+                'Cannot specify "--enable-azure-rbac" and "--disable-azure-rbac" at the same time')
+        if enable_azure_rbac:
+            instance.aad_profile.enable_azure_rbac = True
+        if disable_azure_rbac:
+            instance.aad_profile.enable_azure_rbac = False
 
     if enable_ahub and disable_ahub:
         raise CLIError(
