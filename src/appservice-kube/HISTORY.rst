@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.1.18
+++++++
+* Handle 202 response from webapp/functionapp restart (edited SDK manually)
+* Pass ExtendedLocationEnvelope in webapp/functionapp/plan/kube creates (edited SDK manually)
+
 0.1.17
 ++++++
 * az webapp scale command
