@@ -8,6 +8,8 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+# pylint: disable=import-outside-toplevel
+
 import inspect
 import logging
 import os
@@ -49,10 +51,10 @@ def try_manual(func):
             func_to_call = import_manual_function(func)
             logger.info("Found manual override for %s(...)", func.__name__)
         except (ImportError, AttributeError):
-            pass
+            pass  # pylint: disable=inconsistent-return-statements
         return func_to_call
 
-    def wrapper(*args, **kwargs):
+    def wrapper(*args, **kwargs):  # pylint: disable=inconsistent-return-statements
         func_to_call = get_func_to_call()
         logger.info("running %s()...", func.__name__)
         try:

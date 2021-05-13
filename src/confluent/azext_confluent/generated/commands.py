@@ -9,6 +9,7 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
+# pylint: disable=import-outside-toplevel
 
 from azure.cli.core.commands import CliCommandType
 

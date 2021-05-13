@@ -15,13 +15,13 @@ def confluent_organization_create(cmd,
                                   client,
                                   resource_group_name,
                                   organization_name,
+                                  plan_id,
+                                  plan_name,
+                                  term_unit,
                                   tags=None,
                                   location=None,
                                   publisher_id=None,
                                   offer_id=None,
-                                  plan_id=None,
-                                  plan_name=None,
-                                  term_unit=None,
                                   no_wait=False):
     import jwt
     from azure.cli.core._profile import Profile
@@ -74,22 +74,22 @@ def confluent_organization_delete(client,
                       f'- This will permanently delete \'{organization_name}\' and its Azure subscription.\n' \
                       '- Stop billing for the selected Confluent organization through Azure Marketplace.\n' \
                       'Do you want to proceed'
-        
+
         if org.offer_detail.plan_id.lower() == 'commit':
             user_confirmation('- The action cannot be undone and will permanently delete this resource.\n'
-                                '- Resource deletion is a permanent action. All the resources, contract purchased '
-                                'and its Azure integration will be permanently deleted and will unsubscribe you '
-                                'from this service.\n'
-                                '- If you delete the resource, you will not be able to restore the commit contract '
-                                'and create Confluent cloud resource once again with this contract.\n'
-                                '- If you are deleting the Confluent cloud resource after 14 days into the contract '
-                                'term, you will not get a refund for this service.\n'
-                                '- The resource is also associated with other non-dependent resources like clusters'
-                                ', environments, topics etc. Such associated resources on Confluent cloud will be '
-                                'scheduled for deletion. For more information on the Confluent Cloud cluster '
-                                'deletion process and timeline, please contact Confluent Support: '
-                                'https://support.confluent.io/\n'
-                                'Do you want to proceed')
+                              '- Resource deletion is a permanent action. All the resources, contract purchased '
+                              'and its Azure integration will be permanently deleted and will unsubscribe you '
+                              'from this service.\n'
+                              '- If you delete the resource, you will not be able to restore the commit contract '
+                              'and create Confluent cloud resource once again with this contract.\n'
+                              '- If you are deleting the Confluent cloud resource after 14 days into the contract '
+                              'term, you will not get a refund for this service.\n'
+                              '- The resource is also associated with other non-dependent resources like clusters'
+                              ', environments, topics etc. Such associated resources on Confluent cloud will be '
+                              'scheduled for deletion. For more information on the Confluent Cloud cluster '
+                              'deletion process and timeline, please contact Confluent Support: '
+                              'https://support.confluent.io/\n'
+                              'Do you want to proceed')
         else:
             user_confirmation(default_msg)
 
