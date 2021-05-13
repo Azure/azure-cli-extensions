@@ -20,6 +20,10 @@ def maintenance_public_configuration_show(client,
     return client.get(resource_name=resource_name)
 
 
+def maintenance_applyupdate_list(client):
+    return client.list()
+
+
 def maintenance_applyupdate_show(client,
                                  resource_group_name,
                                  provider_name,
@@ -40,7 +44,7 @@ def maintenance_applyupdate_create(client,
                                    resource_name,
                                    resource_parent_type=None,
                                    resource_parent_name=None):
-    if resource_group_name and all(v is not None for v in [provider_name, resource_parent_type, resource_parent_name, resource_type, resource_name]):
+    if resource_group_name and provider_name is not None and resource_parent_type is not None and resource_parent_name is not None and resource_type is not None and resource_name is not None:
         return client.create_or_update_parent(resource_group_name=resource_group_name,
                                               provider_name=provider_name,
                                               resource_parent_type=resource_parent_type,
@@ -64,14 +68,14 @@ def maintenance_applyupdate_update(client,
                                    resource_name=resource_name)
 
 
-def maintenance_applyupdate_get_parent(client,
-                                       resource_group_name,
-                                       resource_parent_type,
-                                       resource_parent_name,
-                                       provider_name,
-                                       resource_type,
-                                       resource_name,
-                                       apply_update_name):
+def maintenance_applyupdate_show_parent(client,
+                                        resource_group_name,
+                                        resource_parent_type,
+                                        resource_parent_name,
+                                        provider_name,
+                                        resource_type,
+                                        resource_name,
+                                        apply_update_name):
     return client.get_parent(resource_group_name=resource_group_name,
                              resource_parent_type=resource_parent_type,
                              resource_parent_name=resource_parent_name,
@@ -103,7 +107,15 @@ def maintenance_assignment_create(client,
                                   location=None,
                                   maintenance_configuration_id=None,
                                   resource_id=None):
-    if resource_group_name and all(v is not None for v in [provider_name, resource_parent_type, resource_parent_name, resource_type, resource_name, configuration_assignment_name]):
+    configuration_assignment = {}
+    configuration_assignment['location'] = location
+    configuration_assignment['maintenance_configuration_id'] = maintenance_configuration_id
+    configuration_assignment['resource_id'] = resource_id
+    configuration_assignment = {}
+    configuration_assignment['location'] = location
+    configuration_assignment['maintenance_configuration_id'] = maintenance_configuration_id
+    configuration_assignment['resource_id'] = resource_id
+    if resource_group_name and provider_name is not None and resource_parent_type is not None and resource_parent_name is not None and resource_type is not None and resource_name is not None and configuration_assignment_name is not None:
         return client.create_or_update_parent(resource_group_name=resource_group_name,
                                               provider_name=provider_name,
                                               resource_parent_type=resource_parent_type,
@@ -111,17 +123,13 @@ def maintenance_assignment_create(client,
                                               resource_type=resource_type,
                                               resource_name=resource_name,
                                               configuration_assignment_name=configuration_assignment_name,
-                                              location=location,
-                                              maintenance_configuration_id=maintenance_configuration_id,
-                                              resource_id=resource_id)
+                                              configuration_assignment=configuration_assignment)
     return client.create_or_update(resource_group_name=resource_group_name,
                                    provider_name=provider_name,
                                    resource_type=resource_type,
                                    resource_name=resource_name,
                                    configuration_assignment_name=configuration_assignment_name,
-                                   location=location,
-                                   maintenance_configuration_id=maintenance_configuration_id,
-                                   resource_id=resource_id)
+                                   configuration_assignment=configuration_assignment)
 
 
 def maintenance_assignment_update(client,
@@ -133,14 +141,16 @@ def maintenance_assignment_update(client,
                                   location=None,
                                   maintenance_configuration_id=None,
                                   resource_id=None):
+    configuration_assignment = {}
+    configuration_assignment['location'] = location
+    configuration_assignment['maintenance_configuration_id'] = maintenance_configuration_id
+    configuration_assignment['resource_id'] = resource_id
     return client.create_or_update(resource_group_name=resource_group_name,
                                    provider_name=provider_name,
                                    resource_type=resource_type,
                                    resource_name=resource_name,
                                    configuration_assignment_name=configuration_assignment_name,
-                                   location=location,
-                                   maintenance_configuration_id=maintenance_configuration_id,
-                                   resource_id=resource_id)
+                                   configuration_assignment=configuration_assignment)
 
 
 def maintenance_assignment_delete(client,
@@ -151,7 +161,7 @@ def maintenance_assignment_delete(client,
                                   configuration_assignment_name,
                                   resource_parent_type=None,
                                   resource_parent_name=None):
-    if resource_group_name and all(v is not None for v in [provider_name, resource_parent_type, resource_parent_name, resource_type, resource_name, configuration_assignment_name]):
+    if resource_group_name and provider_name is not None and resource_parent_type is not None and resource_parent_name is not None and resource_type is not None and resource_name is not None and configuration_assignment_name is not None:
         return client.delete_parent(resource_group_name=resource_group_name,
                                     provider_name=provider_name,
                                     resource_parent_type=resource_parent_type,
@@ -201,24 +211,26 @@ def maintenance_configuration_create(client,
                                      extension_properties=None,
                                      maintenance_scope=None,
                                      visibility=None,
-                                     maintenance_window_start_date_time=None,
-                                     maintenance_window_expiration_date_time=None,
-                                     maintenance_window_duration=None,
-                                     maintenance_window_time_zone=None,
-                                     maintenance_window_recur_every=None):
+                                     start_date_time=None,
+                                     expiration_date_time=None,
+                                     duration=None,
+                                     time_zone=None,
+                                     recur_every=None):
+    configuration = {}
+    configuration['location'] = location
+    configuration['tags'] = tags
+    configuration['namespace'] = namespace
+    configuration['extension_properties'] = extension_properties
+    configuration['maintenance_scope'] = maintenance_scope
+    configuration['visibility'] = visibility
+    configuration['start_date_time'] = start_date_time
+    configuration['expiration_date_time'] = expiration_date_time
+    configuration['duration'] = duration
+    configuration['time_zone'] = time_zone
+    configuration['recur_every'] = recur_every
     return client.create_or_update(resource_group_name=resource_group_name,
                                    resource_name=resource_name,
-                                   location=location,
-                                   tags=tags,
-                                   namespace=namespace,
-                                   extension_properties=extension_properties,
-                                   maintenance_scope=maintenance_scope,
-                                   visibility=visibility,
-                                   start_date_time=maintenance_window_start_date_time,
-                                   expiration_date_time=maintenance_window_expiration_date_time,
-                                   duration=maintenance_window_duration,
-                                   time_zone=maintenance_window_time_zone,
-                                   recur_every=maintenance_window_recur_every)
+                                   configuration=configuration)
 
 
 def maintenance_configuration_update(client,
@@ -230,24 +242,26 @@ def maintenance_configuration_update(client,
                                      extension_properties=None,
                                      maintenance_scope=None,
                                      visibility=None,
-                                     maintenance_window_start_date_time=None,
-                                     maintenance_window_expiration_date_time=None,
-                                     maintenance_window_duration=None,
-                                     maintenance_window_time_zone=None,
-                                     maintenance_window_recur_every=None):
+                                     start_date_time=None,
+                                     expiration_date_time=None,
+                                     duration=None,
+                                     time_zone=None,
+                                     recur_every=None):
+    configuration = {}
+    configuration['location'] = location
+    configuration['tags'] = tags
+    configuration['namespace'] = namespace
+    configuration['extension_properties'] = extension_properties
+    configuration['maintenance_scope'] = maintenance_scope
+    configuration['visibility'] = visibility
+    configuration['start_date_time'] = start_date_time
+    configuration['expiration_date_time'] = expiration_date_time
+    configuration['duration'] = duration
+    configuration['time_zone'] = time_zone
+    configuration['recur_every'] = recur_every
     return client.update(resource_group_name=resource_group_name,
                          resource_name=resource_name,
-                         location=location,
-                         tags=tags,
-                         namespace=namespace,
-                         extension_properties=extension_properties,
-                         maintenance_scope=maintenance_scope,
-                         visibility=visibility,
-                         start_date_time=maintenance_window_start_date_time,
-                         expiration_date_time=maintenance_window_expiration_date_time,
-                         duration=maintenance_window_duration,
-                         time_zone=maintenance_window_time_zone,
-                         recur_every=maintenance_window_recur_every)
+                         configuration=configuration)
 
 
 def maintenance_configuration_delete(client,
@@ -255,6 +269,16 @@ def maintenance_configuration_delete(client,
                                      resource_name):
     return client.delete(resource_group_name=resource_group_name,
                          resource_name=resource_name)
+
+
+def maintenance_configuration_for_resource_group_list(client,
+                                                      resource_group_name):
+    return client.list(resource_group_name=resource_group_name)
+
+
+def maintenance_applyupdate_for_resource_group_list(client,
+                                                    resource_group_name):
+    return client.list(resource_group_name=resource_group_name)
 
 
 def maintenance_update_list(client,
