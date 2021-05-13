@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+import unittest
 from knack.util import CLIError
 
 from azure_devtools.scenario_tests import AllowLargeResponse
@@ -14,9 +14,6 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
     def _prepare_vm(self, resource_group, vm):
         vm_create_cmd_tpl = 'vm create -g {rg} --name {vm} ' \
                             '--image UbuntuLTS ' \
-                            '--authentication-type password ' \
-                            '--admin-username deploy ' \
-                            '--admin-password PassPass10!) ' \
                             '--nsg {vm} '
         vm_info = self.cmd(vm_create_cmd_tpl.format(rg=resource_group, vm=vm)).get_output_in_json()
 
@@ -56,7 +53,7 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
                  '--protocol Tcp '
                  '--tcp-port 2048 ')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_nw_connection_monitor', location='westcentralus')
+    @ResourceGroupPreparer(name_prefix='cli_test_nw_connection_monitor', location='eastus')
     @AllowLargeResponse()
     def test_nw_connection_monitor_v1(self, resource_group, resource_group_location):
         """
@@ -74,9 +71,6 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
 
         self.cmd('vm create -g {rg} -n {vm2} '
                  '--image UbuntuLTS '
-                 '--authentication-type password '
-                 '--admin-username deploy '
-                 '--admin-password PassPass10!) '
                  '--nsg {vm2} ')
         self.cmd('vm extension set -g {rg} '
                  '--vm-name {vm2} '
@@ -84,9 +78,6 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
                  '--publisher Microsoft.Azure.NetworkWatcher')
         self.cmd('vm create -g {rg} -n {vm3} '
                  '--image UbuntuLTS '
-                 '--authentication-type password '
-                 '--admin-username deploy '
-                 '--admin-password PassPass10!) '
                  '--nsg {vm3}')
         self.cmd('vm extension set -g {rg} '
                  '--vm-name {vm3} '
@@ -184,7 +175,7 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
                  '--protocol Http '
                  '--frequency 90 '
                  '--http-method Get '
-                 '--http-path "/" '
+                #  '--http-path "/" '
                  '--http-valid-status-codes 200 301 '
                  '--http-request-header name=Host value=azure.com '
                  '--http-request-header name=UserAgent value=AzureCLITest ')
@@ -255,7 +246,7 @@ class ConnectionMonitorPreviewScenarioTest(ScenarioTest):
                  '--protocol Http '
                  '--frequency 90 '
                  '--http-method Get '
-                 '--http-path "/" '
+                #  '--http-path "/" '
                  '--http-valid-status-codes 200 301 '
                  '--http-request-header name=Host value=azure.com '
                  '--http-request-header name=UserAgent value=AzureCLITest ')
