@@ -39,3 +39,17 @@ helps['confluent organization delete'] = """
         text: |-
                az confluent organization delete --ids "/subscriptions/{SubID}/resourceGroups/{ResourceGroup}/providers/Microsoft.Confluent/organizations/{myOrganization}"
 """
+
+helps['confluent offer-detail'] = """
+    type: group
+    short-summary: Manage confluent offer details
+"""
+
+helps['confluent offer-detail show'] = """
+    type: command
+    short-summary: "Get the offer details for available offers."
+    examples:
+      - name: Show default offer details
+        text: |-
+               az confluent offer-detail show
+"""

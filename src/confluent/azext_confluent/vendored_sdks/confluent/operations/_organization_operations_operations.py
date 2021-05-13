@@ -23,14 +23,14 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class OrganizationOperationOperations(object):
-    """OrganizationOperationOperations operations.
+class OrganizationOperationsOperations(object):
+    """OrganizationOperationsOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~confluent_management_client.models
+    :type models: ~azure.mgmt.confluent.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -56,7 +56,7 @@ class OrganizationOperationOperations(object):
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either OperationListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~confluent_management_client.models.OperationListResult]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.confluent.models.OperationListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationListResult"]

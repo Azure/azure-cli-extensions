@@ -15,9 +15,10 @@ from .example_steps import step_terms_list
 from .example_steps import step_organization_create
 from .example_steps import step_organization_show
 from .example_steps import step_organization_list
-from .example_steps import step_organization_list
+from .example_steps import step_organization_list2
 from .example_steps import step_organization_update
 from .example_steps import step_organization_delete
+from azure_devtools.scenario_tests import AllowLargeResponse
 from .. import (
     try_manual,
     raise_if,
@@ -26,6 +27,15 @@ from .. import (
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+
+
+def step_offer_detail_show(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az confluent offer-detail show '
+             '--publisher-id confluentinc '
+             '--offer-id confluent-cloud-azure-stag',
+             checks=checks)
 
 
 # Env setup_scenario
@@ -47,18 +57,21 @@ def call_scenario(test, rg):
     step_terms_list(test, rg, checks=[
         test.greater_than('length(@)', 1)
     ])
+    step_offer_detail_show(test, rg, checks=[
+        test.greater_than('length(@)', 0)
+    ])
     step_organization_create(test, rg, checks=[
         test.check("location", "eastus2euap", case_sensitive=False),
-        test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
-        test.check("userDetail.firstName", "contoso", case_sensitive=False),
+        test.check("userDetail.emailAddress", "feng.zhou@microsoft.com", case_sensitive=False),
+        test.check("userDetail.firstName", "feng", case_sensitive=False),
         test.check("userDetail.lastName", "zhou", case_sensitive=False),
         test.check("tags.environment", "Dev", case_sensitive=False),
         test.check("name", "{myOrganization}", case_sensitive=False),
     ])
     step_organization_show(test, rg, checks=[
         test.check("location", "eastus2euap", case_sensitive=False),
-        test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
-        test.check("userDetail.firstName", "contoso", case_sensitive=False),
+        test.check("userDetail.emailAddress", "feng.zhou@microsoft.com", case_sensitive=False),
+        test.check("userDetail.firstName", "feng", case_sensitive=False),
         test.check("userDetail.lastName", "zhou", case_sensitive=False),
         test.check("tags.environment", "Dev", case_sensitive=False),
         test.check("name", "{myOrganization}", case_sensitive=False),
@@ -66,13 +79,13 @@ def call_scenario(test, rg):
     step_organization_list(test, rg, checks=[
         test.greater_than('length(@)', 0),
     ])
-    step_organization_list(test, "", checks=[
+    step_organization_list2(test, "", checks=[
         test.greater_than('length(@)', 0),
     ])
     step_organization_update(test, rg, checks=[
         test.check("location", "eastus2euap", case_sensitive=False),
-        test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
-        test.check("userDetail.firstName", "contoso", case_sensitive=False),
+        test.check("userDetail.emailAddress", "feng.zhou@microsoft.com", case_sensitive=False),
+        test.check("userDetail.firstName", "feng", case_sensitive=False),
         test.check("userDetail.lastName", "zhou", case_sensitive=False),
         test.check("name", "{myOrganization}", case_sensitive=False),
         test.check("tags.client", "dev-client", case_sensitive=False),
@@ -85,13 +98,15 @@ def call_scenario(test, rg):
 @try_manual
 class ConfluentScenarioTest(ScenarioTest):
 
-    @ResourceGroupPreparer(name_prefix='clitestconfluent_myResourceGroup'[:7], key='rg', parameter_name='rg')
-    def test_confluent_Scenario(self, rg):
-
+    def __init__(self, *args, **kwargs):
+        super(ConfluentScenarioTest, self).__init__(*args, **kwargs)
         self.kwargs.update({
-            'myOrganization': 'myOrganization',
+            'myOrganization': 'cliTestOrg',
         })
 
+    @ResourceGroupPreparer(name_prefix='clitestconfluent_myResourceGroup'[:7], key='rg', parameter_name='rg')
+    @AllowLargeResponse()
+    def test_confluent_Scenario(self, rg):
         call_scenario(self, rg)
         calc_coverage(__file__)
         raise_if()
