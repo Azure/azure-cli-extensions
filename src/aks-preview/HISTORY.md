@@ -2,6 +2,16 @@
 
 Release History
 ===============
+0.5.12
++++++
+* Add --enable-azure-rbac and --disable-azure-rbac in aks update
+* Support disabling local accounts
+
+0.5.11
++++++
+* Add get OS options support
+* Fix wrong behavior when enabling pod identity addon for cluster with addon enabled
+
 0.5.10
 +++++
 * Add `--binding-selector` to AAD pod identity add sub command

@@ -30,7 +30,8 @@ from azext_kusto.action import (
     AddClustersValue,
     AddReadWriteDatabase,
     AddReadOnlyFollowingDatabase,
-    AddDatabasesValue
+    AddDatabasesValue,
+    AddTableLevelSharingProperties
 )
 
 
@@ -48,72 +49,84 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', options_list=['--name', '-n', '--cluster-name'], type=str, help='The name of the '
                    'Kusto cluster.')
+        c.argument('if_match', type=str, help='The ETag of the cluster. Omit this value to always overwrite the '
+                   'current cluster. Specify the last-seen ETag value to prevent accidentally overwriting concurrent '
+                   'changes.')
+        c.argument('if_none_match', type=str, help='Set to \'*\' to allow a new cluster to be created, but to prevent '
+                   'updating an existing cluster. Other values will result in a 412 Pre-condition Failed response.')
         c.argument('tags', tags_type)
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('sku', action=AddSku, nargs='+', help='The SKU of the cluster.')
-        c.argument('zones', nargs='*', help='The availability zones of the cluster.')
-        c.argument('trusted_external_tenants', action=AddTrustedExternalTenants, nargs='*', help='The cluster\'s '
+        c.argument('zones', nargs='+', help='The availability zones of the cluster.')
+        c.argument('trusted_external_tenants', action=AddTrustedExternalTenants, nargs='+', help='The cluster\'s '
                    'external tenants.')
-        c.argument('optimized_autoscale', action=AddOptimizedAutoscale, nargs='*', help='Optimized auto scale '
+        c.argument('optimized_autoscale', action=AddOptimizedAutoscale, nargs='+', help='Optimized auto scale '
                    'definition.')
         c.argument('enable_disk_encryption', arg_type=get_three_state_flag(), help='A boolean value that indicates if '
                    'the cluster\'s disks are encrypted.')
         c.argument('enable_streaming_ingest', arg_type=get_three_state_flag(), help='A boolean value that indicates if '
                    'the streaming ingest is enabled.')
-        c.argument('virtual_network_configuration', action=AddVirtualNetworkConfiguration, nargs='*', help='Virtual '
+        c.argument('virtual_network_configuration', action=AddVirtualNetworkConfiguration, nargs='+', help='Virtual '
                    'network definition.')
-        c.argument('key_vault_properties', action=AddKeyVaultProperties, nargs='*', help='KeyVault properties for the '
+        c.argument('key_vault_properties', action=AddKeyVaultProperties, nargs='+', help='KeyVault properties for the '
                    'cluster encryption.')
         c.argument('enable_purge', arg_type=get_three_state_flag(), help='A boolean value that indicates if the purge '
                    'operations are enabled.')
         c.argument('enable_double_encryption', arg_type=get_three_state_flag(), help='A boolean value that indicates '
                    'if double encryption is enabled.')
         c.argument('engine_type', arg_type=get_enum_type(['V2', 'V3']), help='The engine type')
-        c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned, '
-                                                            'UserAssigned']), help='The type of managed identity used. '
-                   'The type \'SystemAssigned, UserAssigned\' includes both an implicitly created identity and a set '
-                   'of user-assigned identities. The type \'None\' will remove all identities.')
-        c.argument('identity_user_assigned_identities', type=validate_file_or_dict, help='The list of user identities '
-                   'associated with the Kusto cluster. The user identity dictionary key references will be ARM '
-                   'resource ids in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/prov'
-                   'iders/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}\'. Expected value: '
-                   'json-string/@json-file.')
+        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
+                                                                             'SystemAssigned, UserAssigned']),
+                   help='The type of managed identity used. The type \'SystemAssigned, UserAssigned\' includes both an '
+                   'implicitly created identity and a set of user-assigned identities. The type \'None\' will remove '
+                   'all identities.', arg_group='Identity')
+        c.argument('user_assigned_identities', options_list=['--user-assigned-identities', '--uai'],
+                   type=validate_file_or_dict, help='The list of user identities associated with the Kusto cluster. '
+                   'The user identity dictionary key references will be ARM resource ids in the form: '
+                   '\'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIde'
+                   'ntity/userAssignedIdentities/{identityName}\'. Expected value: json-string/@json-file.',
+                   arg_group='Identity')
 
     with self.argument_context('kusto cluster update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', options_list=['--name', '-n', '--cluster-name'], type=str, help='The name of the '
                    'Kusto cluster.', id_part='name')
+        c.argument('if_match', type=str, help='The ETag of the cluster. Omit this value to always overwrite the '
+                   'current cluster. Specify the last-seen ETag value to prevent accidentally overwriting concurrent '
+                   'changes.')
         c.argument('tags', tags_type)
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('sku', action=AddSku, nargs='*', help='The SKU of the cluster.')
-        c.argument('trusted_external_tenants', action=AddTrustedExternalTenants, nargs='*', help='The cluster\'s '
+        c.argument('sku', action=AddSku, nargs='+', help='The SKU of the cluster.')
+        c.argument('trusted_external_tenants', action=AddTrustedExternalTenants, nargs='+', help='The cluster\'s '
                    'external tenants.')
-        c.argument('optimized_autoscale', action=AddOptimizedAutoscale, nargs='*', help='Optimized auto scale '
+        c.argument('optimized_autoscale', action=AddOptimizedAutoscale, nargs='+', help='Optimized auto scale '
                    'definition.')
         c.argument('enable_disk_encryption', arg_type=get_three_state_flag(), help='A boolean value that indicates if '
                    'the cluster\'s disks are encrypted.')
         c.argument('enable_streaming_ingest', arg_type=get_three_state_flag(), help='A boolean value that indicates if '
                    'the streaming ingest is enabled.')
-        c.argument('virtual_network_configuration', action=AddVirtualNetworkConfiguration, nargs='*', help='Virtual '
+        c.argument('virtual_network_configuration', action=AddVirtualNetworkConfiguration, nargs='+', help='Virtual '
                    'network definition.')
-        c.argument('key_vault_properties', action=AddKeyVaultProperties, nargs='*', help='KeyVault properties for the '
+        c.argument('key_vault_properties', action=AddKeyVaultProperties, nargs='+', help='KeyVault properties for the '
                    'cluster encryption.')
         c.argument('enable_purge', arg_type=get_three_state_flag(), help='A boolean value that indicates if the purge '
                    'operations are enabled.')
         c.argument('enable_double_encryption', arg_type=get_three_state_flag(), help='A boolean value that indicates '
                    'if double encryption is enabled.')
         c.argument('engine_type', arg_type=get_enum_type(['V2', 'V3']), help='The engine type')
-        c.argument('identity_type', arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned, '
-                                                            'UserAssigned']), help='The type of managed identity used. '
-                   'The type \'SystemAssigned, UserAssigned\' includes both an implicitly created identity and a set '
-                   'of user-assigned identities. The type \'None\' will remove all identities.')
-        c.argument('identity_user_assigned_identities', type=validate_file_or_dict, help='The list of user identities '
-                   'associated with the Kusto cluster. The user identity dictionary key references will be ARM '
-                   'resource ids in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/prov'
-                   'iders/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}\'. Expected value: '
-                   'json-string/@json-file.')
+        c.argument('type_', options_list=['--type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned',
+                                                                             'SystemAssigned, UserAssigned']),
+                   help='The type of managed identity used. The type \'SystemAssigned, UserAssigned\' includes both an '
+                   'implicitly created identity and a set of user-assigned identities. The type \'None\' will remove '
+                   'all identities.', arg_group='Identity')
+        c.argument('user_assigned_identities', options_list=['--user-assigned-identities', '--uai'],
+                   type=validate_file_or_dict, help='The list of user identities associated with the Kusto cluster. '
+                   'The user identity dictionary key references will be ARM resource ids in the form: '
+                   '\'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIde'
+                   'ntity/userAssignedIdentities/{identityName}\'. Expected value: json-string/@json-file.',
+                   arg_group='Identity')
 
     with self.argument_context('kusto cluster delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -124,7 +137,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', options_list=['--name', '-n', '--cluster-name'], type=str, help='The name of the '
                    'Kusto cluster.', id_part='name')
-        c.argument('value', action=AddClustersValue, nargs='*', help='The list of language extensions.')
+        c.argument('value', action=AddClustersValue, nargs='+', help='The list of language extensions.')
 
     with self.argument_context('kusto cluster detach-follower-database') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -159,7 +172,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', options_list=['--name', '-n', '--cluster-name'], type=str, help='The name of the '
                    'Kusto cluster.', id_part='name')
-        c.argument('value', action=AddClustersValue, nargs='*', help='The list of language extensions.')
+        c.argument('value', action=AddClustersValue, nargs='+', help='The list of language extensions.')
 
     with self.argument_context('kusto cluster start') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -183,8 +196,8 @@ def load_arguments(self, _):
     with self.argument_context('kusto cluster-principal-assignment show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('principal_assignment_name', type=str, help='The name of the Kusto principalAssignment.', id_part=''
-                   'child_name_1')
+        c.argument('principal_assignment_name', type=str, help='The name of the Kusto principalAssignment.',
+                   id_part='child_name_1')
 
     with self.argument_context('kusto cluster-principal-assignment create') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -200,26 +213,27 @@ def load_arguments(self, _):
     with self.argument_context('kusto cluster-principal-assignment update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('principal_assignment_name', type=str, help='The name of the Kusto principalAssignment.', id_part=''
-                   'child_name_1')
+        c.argument('principal_assignment_name', type=str, help='The name of the Kusto principalAssignment.',
+                   id_part='child_name_1')
         c.argument('principal_id', type=str, help='The principal ID assigned to the cluster principal. It can be a '
                    'user email, application ID, or security group name.')
         c.argument('role', arg_type=get_enum_type(['AllDatabasesAdmin', 'AllDatabasesViewer']), help='Cluster '
                    'principal role.')
         c.argument('tenant_id', type=str, help='The tenant id of the principal')
         c.argument('principal_type', arg_type=get_enum_type(['App', 'Group', 'User']), help='Principal type.')
+        c.ignore('parameters')
 
     with self.argument_context('kusto cluster-principal-assignment delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('principal_assignment_name', type=str, help='The name of the Kusto principalAssignment.', id_part=''
-                   'child_name_1')
+        c.argument('principal_assignment_name', type=str, help='The name of the Kusto principalAssignment.',
+                   id_part='child_name_1')
 
     with self.argument_context('kusto cluster-principal-assignment wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('principal_assignment_name', type=str, help='The name of the Kusto principalAssignment.', id_part=''
-                   'child_name_1')
+        c.argument('principal_assignment_name', type=str, help='The name of the Kusto principalAssignment.',
+                   id_part='child_name_1')
 
     with self.argument_context('kusto database list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -228,40 +242,40 @@ def load_arguments(self, _):
     with self.argument_context('kusto database show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.', id_part=''
-                   'child_name_1')
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
 
     with self.argument_context('kusto database create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.')
         c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.')
-        c.argument('read_write_database', action=AddReadWriteDatabase, nargs='*', help='Class representing a read '
+        c.argument('read_write_database', action=AddReadWriteDatabase, nargs='+', help='Class representing a read '
                    'write database.', arg_group='Parameters')
-        c.argument('read_only_following_database', action=AddReadOnlyFollowingDatabase, nargs='*', help='Class '
+        c.argument('read_only_following_database', action=AddReadOnlyFollowingDatabase, nargs='+', help='Class '
                    'representing a read only following database.', arg_group='Parameters')
 
     with self.argument_context('kusto database update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.', id_part=''
-                   'child_name_1')
-        c.argument('read_write_database', action=AddReadWriteDatabase, nargs='*', help='Class representing a read '
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('read_write_database', action=AddReadWriteDatabase, nargs='+', help='Class representing a read '
                    'write database.', arg_group='Parameters')
-        c.argument('read_only_following_database', action=AddReadOnlyFollowingDatabase, nargs='*', help='Class '
+        c.argument('read_only_following_database', action=AddReadOnlyFollowingDatabase, nargs='+', help='Class '
                    'representing a read only following database.', arg_group='Parameters')
 
     with self.argument_context('kusto database delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.', id_part=''
-                   'child_name_1')
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
 
     with self.argument_context('kusto database add-principal') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.', id_part=''
-                   'child_name_1')
-        c.argument('value', action=AddDatabasesValue, nargs='*', help='The list of Kusto database principals.')
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('value', action=AddDatabasesValue, nargs='+', help='The list of Kusto database principals.')
 
     with self.argument_context('kusto database list-principal') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -271,15 +285,15 @@ def load_arguments(self, _):
     with self.argument_context('kusto database remove-principal') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.', id_part=''
-                   'child_name_1')
-        c.argument('value', action=AddDatabasesValue, nargs='*', help='The list of Kusto database principals.')
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('value', action=AddDatabasesValue, nargs='+', help='The list of Kusto database principals.')
 
     with self.argument_context('kusto database wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.', id_part=''
-                   'child_name_1')
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
 
     with self.argument_context('kusto database-principal-assignment list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -289,10 +303,10 @@ def load_arguments(self, _):
     with self.argument_context('kusto database-principal-assignment show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.', id_part=''
-                   'child_name_1')
-        c.argument('principal_assignment_name', type=str, help='The name of the Kusto principalAssignment.', id_part=''
-                   'child_name_2')
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('principal_assignment_name', type=str, help='The name of the Kusto principalAssignment.',
+                   id_part='child_name_2')
 
     with self.argument_context('kusto database-principal-assignment create') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -301,7 +315,7 @@ def load_arguments(self, _):
         c.argument('principal_assignment_name', type=str, help='The name of the Kusto principalAssignment.')
         c.argument('principal_id', type=str, help='The principal ID assigned to the database principal. It can be a '
                    'user email, application ID, or security group name.')
-        c.argument('role', arg_type=get_enum_type(['Admin', 'Ingestor', 'Monitor', 'User', 'UnrestrictedViewers', ''
+        c.argument('role', arg_type=get_enum_type(['Admin', 'Ingestor', 'Monitor', 'User', 'UnrestrictedViewer',
                                                    'Viewer']), help='Database principal role.')
         c.argument('tenant_id', type=str, help='The tenant id of the principal')
         c.argument('principal_type', arg_type=get_enum_type(['App', 'Group', 'User']), help='Principal type.')
@@ -309,32 +323,87 @@ def load_arguments(self, _):
     with self.argument_context('kusto database-principal-assignment update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.', id_part=''
-                   'child_name_1')
-        c.argument('principal_assignment_name', type=str, help='The name of the Kusto principalAssignment.', id_part=''
-                   'child_name_2')
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('principal_assignment_name', type=str, help='The name of the Kusto principalAssignment.',
+                   id_part='child_name_2')
         c.argument('principal_id', type=str, help='The principal ID assigned to the database principal. It can be a '
                    'user email, application ID, or security group name.')
-        c.argument('role', arg_type=get_enum_type(['Admin', 'Ingestor', 'Monitor', 'User', 'UnrestrictedViewers', ''
+        c.argument('role', arg_type=get_enum_type(['Admin', 'Ingestor', 'Monitor', 'User', 'UnrestrictedViewer',
                                                    'Viewer']), help='Database principal role.')
         c.argument('tenant_id', type=str, help='The tenant id of the principal')
         c.argument('principal_type', arg_type=get_enum_type(['App', 'Group', 'User']), help='Principal type.')
+        c.ignore('parameters')
 
     with self.argument_context('kusto database-principal-assignment delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.', id_part=''
-                   'child_name_1')
-        c.argument('principal_assignment_name', type=str, help='The name of the Kusto principalAssignment.', id_part=''
-                   'child_name_2')
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('principal_assignment_name', type=str, help='The name of the Kusto principalAssignment.',
+                   id_part='child_name_2')
 
     with self.argument_context('kusto database-principal-assignment wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.', id_part=''
-                   'child_name_1')
-        c.argument('principal_assignment_name', type=str, help='The name of the Kusto principalAssignment.', id_part=''
-                   'child_name_2')
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('principal_assignment_name', type=str, help='The name of the Kusto principalAssignment.',
+                   id_part='child_name_2')
+
+    with self.argument_context('kusto script list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.')
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.')
+
+    with self.argument_context('kusto script show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('script_name', options_list=['--name', '-n', '--script-name'], type=str, help='The name of the '
+                   'Kusto database script.', id_part='child_name_2')
+
+    with self.argument_context('kusto script create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.')
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.')
+        c.argument('script_name', options_list=['--name', '-n', '--script-name'], type=str, help='The name of the '
+                   'Kusto database script.')
+        c.argument('script_url', type=str, help='The url to the KQL script blob file.')
+        c.argument('script_url_sas_token', type=str, help='The SaS token.')
+        c.argument('force_update_tag', type=str, help='A unique string. If changed the script will be applied again.')
+        c.argument('continue_on_errors', arg_type=get_three_state_flag(), help='Flag that indicates whether to '
+                   'continue if one of the command fails.')
+
+    with self.argument_context('kusto script update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('script_name', options_list=['--name', '-n', '--script-name'], type=str, help='The name of the '
+                   'Kusto database script.', id_part='child_name_2')
+        c.argument('script_url', type=str, help='The url to the KQL script blob file.')
+        c.argument('script_url_sas_token', type=str, help='The SaS token.')
+        c.argument('force_update_tag', type=str, help='A unique string. If changed the script will be applied again.')
+        c.argument('continue_on_errors', arg_type=get_three_state_flag(), help='Flag that indicates whether to '
+                   'continue if one of the command fails.')
+
+    with self.argument_context('kusto script delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('script_name', options_list=['--name', '-n', '--script-name'], type=str, help='The name of the '
+                   'Kusto database script.', id_part='child_name_2')
+
+    with self.argument_context('kusto script wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('script_name', options_list=['--name', '-n', '--script-name'], type=str, help='The name of the '
+                   'Kusto database script.', id_part='child_name_2')
 
     with self.argument_context('kusto attached-database-configuration list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -343,51 +412,56 @@ def load_arguments(self, _):
     with self.argument_context('kusto attached-database-configuration show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('attached_database_configuration_name', options_list=['--name', '-n', ''
+        c.argument('attached_database_configuration_name', options_list=['--name', '-n',
                                                                          '--attached-database-configuration-name'],
                    type=str, help='The name of the attached database configuration.', id_part='child_name_1')
 
     with self.argument_context('kusto attached-database-configuration create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.')
-        c.argument('attached_database_configuration_name', options_list=['--name', '-n', ''
+        c.argument('attached_database_configuration_name', options_list=['--name', '-n',
                                                                          '--attached-database-configuration-name'],
                    type=str, help='The name of the attached database configuration.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('database_name', type=str, help='The name of the database which you would like to attach, use * if '
                    'you want to follow all current and future databases.')
         c.argument('cluster_resource_id', type=str, help='The resource id of the cluster where the databases you would '
                    'like to attach reside.')
-        c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']), help=''
-                   'The default principals modification kind')
+        c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']),
+                   help='The default principals modification kind')
+        c.argument('table_level_sharing_properties', options_list=['--table-level-sharing-properties', '--tls'],
+                   action=AddTableLevelSharingProperties, nargs='+', help='Table level sharing specifications')
 
     with self.argument_context('kusto attached-database-configuration update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('attached_database_configuration_name', options_list=['--name', '-n', ''
+        c.argument('attached_database_configuration_name', options_list=['--name', '-n',
                                                                          '--attached-database-configuration-name'],
                    type=str, help='The name of the attached database configuration.', id_part='child_name_1')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('database_name', type=str, help='The name of the database which you would like to attach, use * if '
                    'you want to follow all current and future databases.')
         c.argument('cluster_resource_id', type=str, help='The resource id of the cluster where the databases you would '
                    'like to attach reside.')
-        c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']), help=''
-                   'The default principals modification kind')
+        c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']),
+                   help='The default principals modification kind')
+        c.argument('table_level_sharing_properties', options_list=['--table-level-sharing-properties', '--tls'],
+                   action=AddTableLevelSharingProperties, nargs='+', help='Table level sharing specifications')
+        c.ignore('parameters')
 
     with self.argument_context('kusto attached-database-configuration delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('attached_database_configuration_name', options_list=['--name', '-n', ''
+        c.argument('attached_database_configuration_name', options_list=['--name', '-n',
                                                                          '--attached-database-configuration-name'],
                    type=str, help='The name of the attached database configuration.', id_part='child_name_1')
 
     with self.argument_context('kusto attached-database-configuration wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('attached_database_configuration_name', options_list=['--name', '-n', ''
+        c.argument('attached_database_configuration_name', options_list=['--name', '-n',
                                                                          '--attached-database-configuration-name'],
                    type=str, help='The name of the attached database configuration.', id_part='child_name_1')
 
@@ -399,18 +473,18 @@ def load_arguments(self, _):
     with self.argument_context('kusto data-connection show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.', id_part=''
-                   'child_name_1')
-        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str, help=''
-                   'The name of the data connection.', id_part='child_name_2')
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str,
+                   help='The name of the data connection.', id_part='child_name_2')
 
     with self.argument_context('kusto data-connection event-grid create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.')
         c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.')
-        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str, help=''
-                   'The name of the data connection.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str,
+                   help='The name of the data connection.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('storage_account_resource_id', type=str, help='The resource ID of the storage account where the '
                    'data resides.')
@@ -421,13 +495,13 @@ def load_arguments(self, _):
                    'information can be added to each message.')
         c.argument('mapping_rule_name', type=str, help='The mapping rule to be used to ingest the data. Optionally the '
                    'mapping information can be added to each message.')
-        c.argument('data_format', arg_type=get_enum_type(['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV', ''
+        c.argument('data_format', arg_type=get_enum_type(['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV',
                                                           'TXT', 'RAW', 'SINGLEJSON', 'AVRO', 'TSVE', 'PARQUET', 'ORC',
                                                           'APACHEAVRO', 'W3CLOGFILE']), help='The data format of the '
                    'message. Optionally the data format can be added to each message.')
         c.argument('ignore_first_record', arg_type=get_three_state_flag(), help='A Boolean value that, if set to true, '
                    'indicates that ingestion should ignore the first record of every file')
-        c.argument('blob_storage_event_type', arg_type=get_enum_type(['Microsoft.Storage.BlobCreated', ''
+        c.argument('blob_storage_event_type', arg_type=get_enum_type(['Microsoft.Storage.BlobCreated',
                                                                       'Microsoft.Storage.BlobRenamed']), help='The '
                    'name of blob storage event type to process.')
 
@@ -435,9 +509,9 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.')
         c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.')
-        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str, help=''
-                   'The name of the data connection.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str,
+                   help='The name of the data connection.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('event_hub_resource_id', type=str, help='The resource ID of the event hub to be used to create a '
                    'data connection.')
@@ -446,21 +520,24 @@ def load_arguments(self, _):
                    'information can be added to each message.')
         c.argument('mapping_rule_name', type=str, help='The mapping rule to be used to ingest the data. Optionally the '
                    'mapping information can be added to each message.')
-        c.argument('data_format', arg_type=get_enum_type(['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV', ''
+        c.argument('data_format', arg_type=get_enum_type(['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV',
                                                           'TXT', 'RAW', 'SINGLEJSON', 'AVRO', 'TSVE', 'PARQUET', 'ORC',
                                                           'APACHEAVRO', 'W3CLOGFILE']), help='The data format of the '
                    'message. Optionally the data format can be added to each message.')
-        c.argument('event_system_properties', nargs='*', help='System properties of the event hub')
+        c.argument('event_system_properties', nargs='+', help='System properties of the event hub')
         c.argument('compression', arg_type=get_enum_type(['None', 'GZip']), help='The event hub messages compression '
                    'type')
+        c.argument('managed_identity_resource_id', options_list=['--managed-identity-resource-id', '--mi-rid'],
+                   type=str, help='The resource ID of a managed identity (system or user assigned) to be used to '
+                   'authenticate with event hub.')
 
     with self.argument_context('kusto data-connection iot-hub create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.')
         c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.')
-        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str, help=''
-                   'The name of the data connection.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str,
+                   help='The name of the data connection.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('iot_hub_resource_id', type=str, help='The resource ID of the Iot hub to be used to create a data '
                    'connection.')
@@ -469,21 +546,21 @@ def load_arguments(self, _):
                    'information can be added to each message.')
         c.argument('mapping_rule_name', type=str, help='The mapping rule to be used to ingest the data. Optionally the '
                    'mapping information can be added to each message.')
-        c.argument('data_format', arg_type=get_enum_type(['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV', ''
+        c.argument('data_format', arg_type=get_enum_type(['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV',
                                                           'TXT', 'RAW', 'SINGLEJSON', 'AVRO', 'TSVE', 'PARQUET', 'ORC',
                                                           'APACHEAVRO', 'W3CLOGFILE']), help='The data format of the '
                    'message. Optionally the data format can be added to each message.')
-        c.argument('event_system_properties', nargs='*', help='System properties of the iot hub')
+        c.argument('event_system_properties', nargs='+', help='System properties of the iot hub')
         c.argument('shared_access_policy_name', type=str, help='The name of the share access policy')
 
     with self.argument_context('kusto data-connection event-grid update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.', id_part=''
-                   'child_name_1')
-        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str, help=''
-                   'The name of the data connection.', id_part='child_name_2')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str,
+                   help='The name of the data connection.', id_part='child_name_2')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('storage_account_resource_id', type=str, help='The resource ID of the storage account where the '
                    'data resides.')
@@ -494,24 +571,24 @@ def load_arguments(self, _):
                    'information can be added to each message.')
         c.argument('mapping_rule_name', type=str, help='The mapping rule to be used to ingest the data. Optionally the '
                    'mapping information can be added to each message.')
-        c.argument('data_format', arg_type=get_enum_type(['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV', ''
+        c.argument('data_format', arg_type=get_enum_type(['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV',
                                                           'TXT', 'RAW', 'SINGLEJSON', 'AVRO', 'TSVE', 'PARQUET', 'ORC',
                                                           'APACHEAVRO', 'W3CLOGFILE']), help='The data format of the '
                    'message. Optionally the data format can be added to each message.')
         c.argument('ignore_first_record', arg_type=get_three_state_flag(), help='A Boolean value that, if set to true, '
                    'indicates that ingestion should ignore the first record of every file')
-        c.argument('blob_storage_event_type', arg_type=get_enum_type(['Microsoft.Storage.BlobCreated', ''
+        c.argument('blob_storage_event_type', arg_type=get_enum_type(['Microsoft.Storage.BlobCreated',
                                                                       'Microsoft.Storage.BlobRenamed']), help='The '
                    'name of blob storage event type to process.')
 
     with self.argument_context('kusto data-connection event-hub update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.', id_part=''
-                   'child_name_1')
-        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str, help=''
-                   'The name of the data connection.', id_part='child_name_2')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str,
+                   help='The name of the data connection.', id_part='child_name_2')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('event_hub_resource_id', type=str, help='The resource ID of the event hub to be used to create a '
                    'data connection.')
@@ -520,22 +597,25 @@ def load_arguments(self, _):
                    'information can be added to each message.')
         c.argument('mapping_rule_name', type=str, help='The mapping rule to be used to ingest the data. Optionally the '
                    'mapping information can be added to each message.')
-        c.argument('data_format', arg_type=get_enum_type(['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV', ''
+        c.argument('data_format', arg_type=get_enum_type(['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV',
                                                           'TXT', 'RAW', 'SINGLEJSON', 'AVRO', 'TSVE', 'PARQUET', 'ORC',
                                                           'APACHEAVRO', 'W3CLOGFILE']), help='The data format of the '
                    'message. Optionally the data format can be added to each message.')
-        c.argument('event_system_properties', nargs='*', help='System properties of the event hub')
+        c.argument('event_system_properties', nargs='+', help='System properties of the event hub')
         c.argument('compression', arg_type=get_enum_type(['None', 'GZip']), help='The event hub messages compression '
                    'type')
+        c.argument('managed_identity_resource_id', options_list=['--managed-identity-resource-id', '--mi-rid'],
+                   type=str, help='The resource ID of a managed identity (system or user assigned) to be used to '
+                   'authenticate with event hub.')
 
     with self.argument_context('kusto data-connection iot-hub update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.', id_part=''
-                   'child_name_1')
-        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str, help=''
-                   'The name of the data connection.', id_part='child_name_2')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str,
+                   help='The name of the data connection.', id_part='child_name_2')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('iot_hub_resource_id', type=str, help='The resource ID of the Iot hub to be used to create a data '
                    'connection.')
@@ -544,29 +624,29 @@ def load_arguments(self, _):
                    'information can be added to each message.')
         c.argument('mapping_rule_name', type=str, help='The mapping rule to be used to ingest the data. Optionally the '
                    'mapping information can be added to each message.')
-        c.argument('data_format', arg_type=get_enum_type(['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV', ''
+        c.argument('data_format', arg_type=get_enum_type(['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV',
                                                           'TXT', 'RAW', 'SINGLEJSON', 'AVRO', 'TSVE', 'PARQUET', 'ORC',
                                                           'APACHEAVRO', 'W3CLOGFILE']), help='The data format of the '
                    'message. Optionally the data format can be added to each message.')
-        c.argument('event_system_properties', nargs='*', help='System properties of the iot hub')
+        c.argument('event_system_properties', nargs='+', help='System properties of the iot hub')
         c.argument('shared_access_policy_name', type=str, help='The name of the share access policy')
 
     with self.argument_context('kusto data-connection delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.', id_part=''
-                   'child_name_1')
-        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str, help=''
-                   'The name of the data connection.', id_part='child_name_2')
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str,
+                   help='The name of the data connection.', id_part='child_name_2')
 
     with self.argument_context('kusto data-connection event-grid data-connection-validation') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.', id_part=''
-                   'child_name_1')
-        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str, help=''
-                   'The name of the data connection.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str,
+                   help='The name of the data connection.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('storage_account_resource_id', type=str, help='The resource ID of the storage account where the '
                    'data resides.')
@@ -577,24 +657,24 @@ def load_arguments(self, _):
                    'information can be added to each message.')
         c.argument('mapping_rule_name', type=str, help='The mapping rule to be used to ingest the data. Optionally the '
                    'mapping information can be added to each message.')
-        c.argument('data_format', arg_type=get_enum_type(['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV', ''
+        c.argument('data_format', arg_type=get_enum_type(['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV',
                                                           'TXT', 'RAW', 'SINGLEJSON', 'AVRO', 'TSVE', 'PARQUET', 'ORC',
                                                           'APACHEAVRO', 'W3CLOGFILE']), help='The data format of the '
                    'message. Optionally the data format can be added to each message.')
         c.argument('ignore_first_record', arg_type=get_three_state_flag(), help='A Boolean value that, if set to true, '
                    'indicates that ingestion should ignore the first record of every file')
-        c.argument('blob_storage_event_type', arg_type=get_enum_type(['Microsoft.Storage.BlobCreated', ''
+        c.argument('blob_storage_event_type', arg_type=get_enum_type(['Microsoft.Storage.BlobCreated',
                                                                       'Microsoft.Storage.BlobRenamed']), help='The '
                    'name of blob storage event type to process.')
 
     with self.argument_context('kusto data-connection event-hub data-connection-validation') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.', id_part=''
-                   'child_name_1')
-        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str, help=''
-                   'The name of the data connection.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str,
+                   help='The name of the data connection.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('event_hub_resource_id', type=str, help='The resource ID of the event hub to be used to create a '
                    'data connection.')
@@ -603,22 +683,25 @@ def load_arguments(self, _):
                    'information can be added to each message.')
         c.argument('mapping_rule_name', type=str, help='The mapping rule to be used to ingest the data. Optionally the '
                    'mapping information can be added to each message.')
-        c.argument('data_format', arg_type=get_enum_type(['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV', ''
+        c.argument('data_format', arg_type=get_enum_type(['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV',
                                                           'TXT', 'RAW', 'SINGLEJSON', 'AVRO', 'TSVE', 'PARQUET', 'ORC',
                                                           'APACHEAVRO', 'W3CLOGFILE']), help='The data format of the '
                    'message. Optionally the data format can be added to each message.')
-        c.argument('event_system_properties', nargs='*', help='System properties of the event hub')
+        c.argument('event_system_properties', nargs='+', help='System properties of the event hub')
         c.argument('compression', arg_type=get_enum_type(['None', 'GZip']), help='The event hub messages compression '
                    'type')
+        c.argument('managed_identity_resource_id', options_list=['--managed-identity-resource-id', '--mi-rid'],
+                   type=str, help='The resource ID of a managed identity (system or user assigned) to be used to '
+                   'authenticate with event hub.')
 
     with self.argument_context('kusto data-connection iot-hub data-connection-validation') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.', id_part=''
-                   'child_name_1')
-        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str, help=''
-                   'The name of the data connection.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str,
+                   help='The name of the data connection.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('iot_hub_resource_id', type=str, help='The resource ID of the Iot hub to be used to create a data '
                    'connection.')
@@ -627,17 +710,21 @@ def load_arguments(self, _):
                    'information can be added to each message.')
         c.argument('mapping_rule_name', type=str, help='The mapping rule to be used to ingest the data. Optionally the '
                    'mapping information can be added to each message.')
-        c.argument('data_format', arg_type=get_enum_type(['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV', ''
+        c.argument('data_format', arg_type=get_enum_type(['MULTIJSON', 'JSON', 'CSV', 'TSV', 'SCSV', 'SOHSV', 'PSV',
                                                           'TXT', 'RAW', 'SINGLEJSON', 'AVRO', 'TSVE', 'PARQUET', 'ORC',
                                                           'APACHEAVRO', 'W3CLOGFILE']), help='The data format of the '
                    'message. Optionally the data format can be added to each message.')
-        c.argument('event_system_properties', nargs='*', help='System properties of the iot hub')
+        c.argument('event_system_properties', nargs='+', help='System properties of the iot hub')
         c.argument('shared_access_policy_name', type=str, help='The name of the share access policy')
 
     with self.argument_context('kusto data-connection wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', type=str, help='The name of the Kusto cluster.', id_part='name')
-        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.', id_part=''
-                   'child_name_1')
-        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str, help=''
-                   'The name of the data connection.', id_part='child_name_2')
+        c.argument('database_name', type=str, help='The name of the database in the Kusto cluster.',
+                   id_part='child_name_1')
+        c.argument('data_connection_name', options_list=['--name', '-n', '--data-connection-name'], type=str,
+                   help='The name of the data connection.', id_part='child_name_2')
+
+    with self.argument_context('kusto operation-result show') as c:
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), id_part='name')
+        c.argument('operation_id', type=str, help='The Guid of the operation ID', id_part='child_name_1')

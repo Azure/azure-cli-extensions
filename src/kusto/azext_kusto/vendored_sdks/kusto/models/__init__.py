@@ -43,6 +43,7 @@ try:
     from ._models_py3 import EventHubDataConnection
     from ._models_py3 import FollowerDatabaseDefinition
     from ._models_py3 import FollowerDatabaseListResult
+    from ._models_py3 import Identity
     from ._models_py3 import IotHubDataConnection
     from ._models_py3 import KeyVaultProperties
     from ._models_py3 import LanguageExtension
@@ -51,14 +52,20 @@ try:
     from ._models_py3 import Operation
     from ._models_py3 import OperationDisplay
     from ._models_py3 import OperationListResult
+    from ._models_py3 import OperationResult
     from ._models_py3 import OptimizedAutoscale
     from ._models_py3 import ProxyResource
     from ._models_py3 import ReadOnlyFollowingDatabase
     from ._models_py3 import ReadWriteDatabase
     from ._models_py3 import Resource
+    from ._models_py3 import Script
+    from ._models_py3 import ScriptCheckNameRequest
+    from ._models_py3 import ScriptListResult
     from ._models_py3 import SkuDescription
     from ._models_py3 import SkuDescriptionList
     from ._models_py3 import SkuLocationInfoItem
+    from ._models_py3 import SystemData
+    from ._models_py3 import TableLevelSharingProperties
     from ._models_py3 import TrackedResource
     from ._models_py3 import TrustedExternalTenant
     from ._models_py3 import VirtualNetworkConfiguration
@@ -99,6 +106,7 @@ except (SyntaxError, ImportError):
     from ._models import EventHubDataConnection  # type: ignore
     from ._models import FollowerDatabaseDefinition  # type: ignore
     from ._models import FollowerDatabaseListResult  # type: ignore
+    from ._models import Identity  # type: ignore
     from ._models import IotHubDataConnection  # type: ignore
     from ._models import KeyVaultProperties  # type: ignore
     from ._models import LanguageExtension  # type: ignore
@@ -107,14 +115,20 @@ except (SyntaxError, ImportError):
     from ._models import Operation  # type: ignore
     from ._models import OperationDisplay  # type: ignore
     from ._models import OperationListResult  # type: ignore
+    from ._models import OperationResult  # type: ignore
     from ._models import OptimizedAutoscale  # type: ignore
     from ._models import ProxyResource  # type: ignore
     from ._models import ReadOnlyFollowingDatabase  # type: ignore
     from ._models import ReadWriteDatabase  # type: ignore
     from ._models import Resource  # type: ignore
+    from ._models import Script  # type: ignore
+    from ._models import ScriptCheckNameRequest  # type: ignore
+    from ._models import ScriptListResult  # type: ignore
     from ._models import SkuDescription  # type: ignore
     from ._models import SkuDescriptionList  # type: ignore
     from ._models import SkuLocationInfoItem  # type: ignore
+    from ._models import SystemData  # type: ignore
+    from ._models import TableLevelSharingProperties  # type: ignore
     from ._models import TrackedResource  # type: ignore
     from ._models import TrustedExternalTenant  # type: ignore
     from ._models import VirtualNetworkConfiguration  # type: ignore
@@ -126,6 +140,8 @@ from ._kusto_management_client_enums import (
     BlobStorageEventType,
     ClusterPrincipalRole,
     Compression,
+    CreatedByType,
+    DataConnectionKind,
     DatabasePrincipalRole,
     DatabasePrincipalType,
     DefaultPrincipalsModificationKind,
@@ -141,6 +157,7 @@ from ._kusto_management_client_enums import (
     ProvisioningState,
     Reason,
     State,
+    Status,
     Type,
 )
 
@@ -181,6 +198,7 @@ __all__ = [
     'EventHubDataConnection',
     'FollowerDatabaseDefinition',
     'FollowerDatabaseListResult',
+    'Identity',
     'IotHubDataConnection',
     'KeyVaultProperties',
     'LanguageExtension',
@@ -189,14 +207,20 @@ __all__ = [
     'Operation',
     'OperationDisplay',
     'OperationListResult',
+    'OperationResult',
     'OptimizedAutoscale',
     'ProxyResource',
     'ReadOnlyFollowingDatabase',
     'ReadWriteDatabase',
     'Resource',
+    'Script',
+    'ScriptCheckNameRequest',
+    'ScriptListResult',
     'SkuDescription',
     'SkuDescriptionList',
     'SkuLocationInfoItem',
+    'SystemData',
+    'TableLevelSharingProperties',
     'TrackedResource',
     'TrustedExternalTenant',
     'VirtualNetworkConfiguration',
@@ -206,6 +230,8 @@ __all__ = [
     'BlobStorageEventType',
     'ClusterPrincipalRole',
     'Compression',
+    'CreatedByType',
+    'DataConnectionKind',
     'DatabasePrincipalRole',
     'DatabasePrincipalType',
     'DefaultPrincipalsModificationKind',
@@ -221,5 +247,6 @@ __all__ = [
     'ProvisioningState',
     'Reason',
     'State',
+    'Status',
     'Type',
 ]
