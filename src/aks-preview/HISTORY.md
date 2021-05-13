@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.5.12
++++++
+* Support disabling local accounts
+
 0.5.11
 +++++
 * Add get OS options support
