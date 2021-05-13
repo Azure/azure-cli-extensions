@@ -1,0 +1,57 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/santosh-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/santosh-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualMachines/testvm001","name":"testvm001","type":"microsoft.connectedvmwarevsphere/virtualmachines","kind":"VMware","location":"eastus2euap","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/santosh-rg/providers/microsoft.extendedlocation/customlocations/santosh-test-cl-onperm"},"systemData":{"createdBy":"sanmishra@microsoft.com","createdByType":"User","createdAt":"2021-04-23T19:53:04.0917074Z","lastModifiedBy":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","lastModifiedByType":"Application","lastModifiedAt":"2021-04-23T19:53:38.3705126Z"},"properties":{"inventoryItemId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/santosh-rg/providers/Microsoft.ConnectedVmwarevSphere/VCenters/santosh-test-vcenter-onperm/InventoryItems/vm-2146","vCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/santosh-rg/providers/Microsoft.ConnectedVmwarevSphere/VCenters/santosh-test-vcenter-onperm","provisioningState":"Succeeded","customResourceName":"f9b81181-b670-4b9a-990c-3fa2c030ab5e","uuid":"f9b81181-b670-4b9a-990c-3fa2c030ab5e","vmId":"f9b81181-b670-4b9a-990c-3fa2c030ab5e","networkProfile":{"networkInterfaces":[{"label":"Network
+        adapter 1","macAddress":"00:50:56:af:5e:eb","networkMoRefId":"network-12","networkMoName":"VM
+        Network","nicType":"vmxnet3","deviceKey":4000,"powerOnBoot":"enabled","ipSettings":{"allocationMethod":"unset","ipAddress":"10.150.172.216","subnetMask":"255.255.248.0","ipAddressInfo":[{"ipAddress":"10.150.172.216","subnetMask":"255.255.248.0"},{"ipAddress":"2404:f801:4800:18:250:56ff:feaf:5eeb","subnetMask":"ffff:ffff:ffff:ffff:0000:0000:0000:0000"},{"ipAddress":"fe80::250:56ff:feaf:5eeb","subnetMask":"ffff:ffff:ffff:ffff:0000:0000:0000:0000"}]}},{"label":"Network
+        adapter 2","macAddress":"00:50:56:af:56:69","networkMoRefId":"network-12","networkMoName":"VM
+        Network","nicType":"vmxnet3","deviceKey":4001,"powerOnBoot":"enabled","ipSettings":{"allocationMethod":"unset","ipAddress":"10.150.172.217","subnetMask":"255.255.248.0","ipAddressInfo":[{"ipAddress":"10.150.172.217","subnetMask":"255.255.248.0"},{"ipAddress":"2404:f801:4800:18:250:56ff:feaf:5669","subnetMask":"ffff:ffff:ffff:ffff:0000:0000:0000:0000"},{"ipAddress":"fe80::250:56ff:feaf:5669","subnetMask":"ffff:ffff:ffff:ffff:0000:0000:0000:0000"}]}}]},"storageProfile":{"disks":[{"diskObjectId":"9-2000","label":"Hard
+        disk 1","diskSizeGB":10,"deviceKey":2000,"diskMode":"persistent","controllerKey":1000,"unitNumber":0}],"scsiControllers":[{"type":"lsilogic","controllerKey":1000,"scsiCtlrUnitNumber":7,"sharing":"noSharing"}]},"osProfile":{"computerName":"niarodemo1","osType":"Linux","osName":"Ubuntu
+        Linux (64-bit)","toolsRunningStatus":"guestToolsNotRunning","toolsVersionStatus":"guestToolsUnmanaged","toolsVersion":"11269"},"hardwareProfile":{"memorySizeMB":1024,"numCPUs":1,"numCoresPerSocket":1,"cpuHotAddEnabled":false,"cpuHotRemoveEnabled":false,"memoryHotAddEnabled":false},"instanceUuid":"ba2fded7-1524-4e00-a183-bde472883510","moRefId":"vm-2146","moName":"niarodemo1","folderPath":"Datacenter","powerState":"poweredOff"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/santosh-rg/providers/Microsoft.ConnectedVMwarevSphere/VirtualMachines/vm-3461","name":"vm-3461","type":"microsoft.connectedvmwarevsphere/virtualmachines","kind":"VMware","location":"eastus2euap","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/santosh-rg/providers/microsoft.extendedlocation/customlocations/santosh-test-cl-onperm"},"systemData":{"createdBy":"sanmishra@microsoft.com","createdByType":"User","createdAt":"2021-05-04T08:29:26.1021939Z","lastModifiedBy":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","lastModifiedByType":"Application","lastModifiedAt":"2021-05-04T08:29:58.9859806Z"},"properties":{"inventoryItemId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/santosh-rg/providers/Microsoft.ConnectedVMwarevSphere/VCenters/santosh-test-vcenter-onperm/InventoryItems/vm-3461","vCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/santosh-rg/providers/Microsoft.ConnectedVMwarevSphere/VCenters/santosh-test-vcenter-onperm","provisioningState":"Succeeded","customResourceName":"00a45f80-0731-403c-9ebd-3bbb4ad7197e","uuid":"00a45f80-0731-403c-9ebd-3bbb4ad7197e","vmId":"00a45f80-0731-403c-9ebd-3bbb4ad7197e","networkProfile":{"networkInterfaces":[{"label":"Network
+        adapter 1","ipAddresses":["10.150.92.249","10.150.88.82","fe80::250:56ff:feaf:c97d"],"macAddress":"00:50:56:af:c9:7d","networkMoRefId":"network-51","networkMoName":"NIC2","nicType":"vmxnet3","deviceKey":4000,"powerOnBoot":"enabled","ipSettings":{"allocationMethod":"unset","gateway":["10.150.88.1"],"ipAddress":"10.150.92.249","subnetMask":"255.255.248.0","ipAddressInfo":[{"ipAddress":"10.150.92.249","subnetMask":"255.255.248.0"},{"ipAddress":"10.150.88.82","subnetMask":"255.255.255.255"},{"ipAddress":"fe80::250:56ff:feaf:c97d","subnetMask":"ffff:ffff:ffff:ffff:0000:0000:0000:0000"}]}}]},"storageProfile":{"disks":[{"diskObjectId":"2880-2000","label":"Hard
+        disk 1","diskSizeGB":97,"deviceKey":2000,"diskMode":"persistent","controllerKey":1000,"unitNumber":0}],"scsiControllers":[{"type":"lsilogicsas","controllerKey":1000,"scsiCtlrUnitNumber":7,"sharing":"noSharing"}]},"osProfile":{"computerName":"28cd668da43c8b6735991efc7fb825ceaa189dd5e84a5-control-plane-0","osType":"Linux","osName":"Other
+        4.x or later Linux (64-bit)","toolsRunningStatus":"guestToolsRunning","toolsVersionStatus":"guestToolsUnmanaged","toolsVersion":"11296"},"hardwareProfile":{"memorySizeMB":16384,"numCPUs":4,"numCoresPerSocket":2,"cpuHotAddEnabled":false,"cpuHotRemoveEnabled":false,"memoryHotAddEnabled":false},"instanceUuid":"422f5d77-2193-9786-f957-00b6be747055","moRefId":"vm-3461","moName":"28cd668da43c8b6735991efc7fb825ceaa189dd5e84a5-control-plane-0","folderPath":"Datacenter","powerState":"poweredOn"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '6131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 13 May 2021 07:23:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+version: 1
