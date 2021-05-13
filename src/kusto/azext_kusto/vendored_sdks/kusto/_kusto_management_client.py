@@ -18,33 +18,39 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
 
 from ._configuration import KustoManagementClientConfiguration
-from .operations import ClusterOperations
-from .operations import ClusterPrincipalAssignmentOperations
-from .operations import DatabaseOperations
-from .operations import DatabasePrincipalAssignmentOperations
-from .operations import AttachedDatabaseConfigurationOperations
-from .operations import DataConnectionOperations
-from .operations import OperationOperations
+from .operations import ClustersOperations
+from .operations import ClusterPrincipalAssignmentsOperations
+from .operations import DatabasesOperations
+from .operations import DatabasePrincipalAssignmentsOperations
+from .operations import ScriptsOperations
+from .operations import AttachedDatabaseConfigurationsOperations
+from .operations import DataConnectionsOperations
+from .operations import Operations
+from .operations import OperationsResultsOperations
 from . import models
 
 
 class KustoManagementClient(object):
     """The Azure Kusto management API provides a RESTful set of web services that interact with Azure Kusto services to manage your clusters and databases. The API enables you to create, update, and delete clusters and databases.
 
-    :ivar cluster: ClusterOperations operations
-    :vartype cluster: kusto_management_client.operations.ClusterOperations
-    :ivar cluster_principal_assignment: ClusterPrincipalAssignmentOperations operations
-    :vartype cluster_principal_assignment: kusto_management_client.operations.ClusterPrincipalAssignmentOperations
-    :ivar database: DatabaseOperations operations
-    :vartype database: kusto_management_client.operations.DatabaseOperations
-    :ivar database_principal_assignment: DatabasePrincipalAssignmentOperations operations
-    :vartype database_principal_assignment: kusto_management_client.operations.DatabasePrincipalAssignmentOperations
-    :ivar attached_database_configuration: AttachedDatabaseConfigurationOperations operations
-    :vartype attached_database_configuration: kusto_management_client.operations.AttachedDatabaseConfigurationOperations
-    :ivar data_connection: DataConnectionOperations operations
-    :vartype data_connection: kusto_management_client.operations.DataConnectionOperations
-    :ivar operation: OperationOperations operations
-    :vartype operation: kusto_management_client.operations.OperationOperations
+    :ivar clusters: ClustersOperations operations
+    :vartype clusters: kusto_management_client.operations.ClustersOperations
+    :ivar cluster_principal_assignments: ClusterPrincipalAssignmentsOperations operations
+    :vartype cluster_principal_assignments: kusto_management_client.operations.ClusterPrincipalAssignmentsOperations
+    :ivar databases: DatabasesOperations operations
+    :vartype databases: kusto_management_client.operations.DatabasesOperations
+    :ivar database_principal_assignments: DatabasePrincipalAssignmentsOperations operations
+    :vartype database_principal_assignments: kusto_management_client.operations.DatabasePrincipalAssignmentsOperations
+    :ivar scripts: ScriptsOperations operations
+    :vartype scripts: kusto_management_client.operations.ScriptsOperations
+    :ivar attached_database_configurations: AttachedDatabaseConfigurationsOperations operations
+    :vartype attached_database_configurations: kusto_management_client.operations.AttachedDatabaseConfigurationsOperations
+    :ivar data_connections: DataConnectionsOperations operations
+    :vartype data_connections: kusto_management_client.operations.DataConnectionsOperations
+    :ivar operations: Operations operations
+    :vartype operations: kusto_management_client.operations.Operations
+    :ivar operations_results: OperationsResultsOperations operations
+    :vartype operations_results: kusto_management_client.operations.OperationsResultsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: Gets subscription credentials which uniquely identify Microsoft Azure subscription. The subscription ID forms part of the URI for every service call.
@@ -70,19 +76,23 @@ class KustoManagementClient(object):
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
-        self.cluster = ClusterOperations(
+        self.clusters = ClustersOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.cluster_principal_assignment = ClusterPrincipalAssignmentOperations(
+        self.cluster_principal_assignments = ClusterPrincipalAssignmentsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.database = DatabaseOperations(
+        self.databases = DatabasesOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.database_principal_assignment = DatabasePrincipalAssignmentOperations(
+        self.database_principal_assignments = DatabasePrincipalAssignmentsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.attached_database_configuration = AttachedDatabaseConfigurationOperations(
+        self.scripts = ScriptsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.data_connection = DataConnectionOperations(
+        self.attached_database_configurations = AttachedDatabaseConfigurationsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.operation = OperationOperations(
+        self.data_connections = DataConnectionsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.operations = Operations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.operations_results = OperationsResultsOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):
