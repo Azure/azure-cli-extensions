@@ -31,25 +31,25 @@ class StorageADLSTests(StorageScenarioMixin, ScenarioTest):
                                               account_info, container).get_output_in_json()), 1)
 
         # set delete-policy to enable soft-delete
-        self.storage_cmd('storage fs service-properties delete-policy update --enable true --days-retained 2',
+        self.storage_cmd('storage fs service-properties update --delete-retention --delete-retention-period 2',
                          account_info)
-        self.storage_cmd('storage fs service-properties delete-policy show',
-                         account_info).assert_with_checks(JMESPathCheck('enabled', True),
-                                                          JMESPathCheck('days', 2))
+        self.storage_cmd('storage fs service-properties show',
+                         account_info).assert_with_checks(JMESPathCheck('delete_retention_policy.enabled', True),
+                                                          JMESPathCheck('delete_retention_policy.days', 2))
         time.sleep(10)
         # soft-delete and check
-        self.storage_cmd('storage fs file delete -f {} -p {}', account_info, container, file_name)
+        self.storage_cmd('storage fs file delete -f {} -p {} -y', account_info, container, file_name)
         self.assertEqual(len(self.storage_cmd('storage fs file list -f {}',
                                               account_info, container).get_output_in_json()), 0)
 
-        time.sleep(30)
+        time.sleep(60)
         result = self.storage_cmd('storage fs list-deleted-path -f {}', account_info, container)\
             .get_output_in_json()
         self.assertEqual(len(result), 1)
-        deleted_version = result["deleted_path_version"]
+        deleted_version = result[0]["deletionId"]
 
         # undelete and check
-        self.storage_cmd('storage fs undelete-path -f {} -p {} --deleted-version {}',
+        self.storage_cmd('storage fs undelete-path -f {} --deleted-path-name {} --deletion-id  {}',
                          account_info, container, file_name, deleted_version)
         self.assertEqual(len(self.storage_cmd('storage fs file list -f {}',
                                               account_info, container).get_output_in_json()), 1)
