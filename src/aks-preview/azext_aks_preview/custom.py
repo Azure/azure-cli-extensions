@@ -1033,6 +1033,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_pod_identity_with_kubenet=False,
                enable_encryption_at_host=False,
                enable_secret_rotation=False,
+               disable_local_accounts=False,
                no_wait=False,
                assign_kubelet_identity=None,
                yes=False):
@@ -1391,7 +1392,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         api_server_access_profile=api_server_access_profile,
         auto_upgrade_profile=auto_upgrade_profile,
         pod_identity_profile=pod_identity_profile,
-        identity_profile=identity_profile)
+        identity_profile=identity_profile,
+        disable_local_accounts=bool(disable_local_accounts))
 
     if node_resource_group:
         mc.node_resource_group = node_resource_group
@@ -1498,6 +1500,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                disable_pod_identity=False,
                enable_secret_rotation=False,
                disable_secret_rotation=False,
+               disable_local_accounts=False,
+               enable_local_accounts=False,
                yes=False,
                tags=None,
                windows_admin_password=None,
@@ -1535,7 +1539,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not enable_secret_rotation and \
        not disable_secret_rotation and \
        not tags and \
-       not windows_admin_password:
+       not windows_admin_password and \
+       not enable_local_accounts and \
+       not disable_local_accounts:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1564,8 +1570,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--tags" or '
                        '"--windows-admin-password" or '
                        '"--enable-azure-rbac" or '
-                       '"--disable-azure-rbac"')
-
+                       '"--disable-azure-rbac" or '
+                       '"--enable-local-accounts" or '
+                       '"--disable-local-accounts"')
     instance = client.get(resource_group_name, name)
 
     if update_autoscaler and len(instance.agent_pool_profiles) > 1:
@@ -1628,6 +1635,16 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     if disable_pod_security_policy:
         instance.enable_pod_security_policy = False
+
+    if disable_local_accounts and enable_local_accounts:
+        raise CLIError('Cannot specify --disable-local-accounts and --enable-local-accounts '
+                       'at the same time.')
+
+    if disable_local_accounts:
+        instance.disable_local_accounts = True
+
+    if enable_local_accounts:
+        instance.disable_local_accounts = False
 
     if update_lb_profile:
         instance.network_profile.load_balancer_profile = update_load_balancer_profile(

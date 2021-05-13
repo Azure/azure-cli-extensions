@@ -326,6 +326,9 @@ helps['aks create'] = """
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
+        - name: --disable-local-accounts
+          type: bool
+          short-summary: (Preview) If set to true, getting static credential will be disabled for this cluster.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -530,6 +533,12 @@ helps['aks update'] = """
         - name: --disable-azure-rbac
           type: bool
           short-summary: Disable Azure RBAC to control authorization checks on cluster.
+        - name: --disable-local-accounts
+          type: bool
+          short-summary: (Preview) If set to true, getting static credential will be disabled for this cluster.
+        - name: --enable-local-accounts
+          type: bool
+          short-summary: (Preview) If set to true, will enable getting static credential for this cluster.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
