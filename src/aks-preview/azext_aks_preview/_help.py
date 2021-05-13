@@ -330,6 +330,9 @@ helps['aks create'] = """
         - name: --disable-local-accounts
           type: bool
           short-summary: (Preview) If set to true, getting static credential will be disabled for this cluster.
+        - name: --ossku
+          type: string
+          short-summary: The ossku of the agent node pool.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -373,6 +376,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --assign-identity <control-plane-identity-resource-id> --assign-kubelet-identity <kubelet-identity-resource-id>
         - name: Create a kubernetes cluster with Azure RBAC enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-aad --enable-azure-rbac
+        - name: Create a kubernetes cluster with a specific ossku
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --ossku CBLMariner
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -910,11 +915,16 @@ helps['aks nodepool add'] = """
         - name: --enable-encryption-at-host
           type: bool
           short-summary: Enable EncryptionAtHost on agent node pool.
+        - name: --ossku
+          type: string
+          short-summary: The ossku of the agent node pool.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
         - name: Create a nodepool with EncryptionAtHost enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --enable-encryption-at-host
+        - name: Create a nodepool cluster with a specific ossku
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --ossku CBLMariner
 """
 
 helps['aks nodepool scale'] = """
