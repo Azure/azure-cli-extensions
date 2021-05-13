@@ -43,8 +43,6 @@ from msrestazure.azure_exceptions import CloudError
 import colorama  # pylint: disable=import-error
 from tabulate import tabulate  # pylint: disable=import-error
 from azure.cli.core.api import get_config_dir
-from azure.cli.core.azclierror import (ArgumentUsageError,
-                                       MutuallyExclusiveArgumentError)
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.keys import is_valid_ssh_rsa_public_key
 from azure.cli.core.util import get_file_json, in_cloud_console, shell_safe_json_parse, truncate_text, sdk_no_wait
@@ -1287,7 +1285,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             raise CLIError('"--enable-aad" cannot be used together with '
                            '"--aad-client-app-id/--aad-server-app-id/--aad-server-app-secret"')
         if disable_rbac and enable_azure_rbac:
-            raise ArgumentUsageError(
+            raise CLIError(
                 '"--enable-azure-rbac" can not be used together with "--disable-rbac"')
         aad_profile = ManagedClusterAADProfile(
             managed=True,
@@ -1302,7 +1300,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                 '"--admin-aad-object-id" can only be used together with "--enable-aad"')
 
         if enable_azure_rbac is True:
-            raise ArgumentUsageError(
+            raise CLIError(
                 '"--enable-azure-rbac" can only be used together with "--enable-aad"')
 
         if any([aad_client_app_id, aad_server_app_id, aad_server_app_secret]):
@@ -1710,7 +1708,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             instance.aad_profile.admin_group_object_ids = _parse_comma_separated_list(
                 aad_admin_group_object_ids)
         if enable_azure_rbac and disable_azure_rbac:
-            raise MutuallyExclusiveArgumentError(
+            raise CLIError(
                 'Cannot specify "--enable-azure-rbac" and "--disable-azure-rbac" at the same time')
         if enable_azure_rbac:
             instance.aad_profile.enable_azure_rbac = True
