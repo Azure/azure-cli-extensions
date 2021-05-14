@@ -5,11 +5,13 @@
 
 import unittest
 import os
-from .recording_processors import KeyReplacer
 
-from .custom_preparers import AKSCustomResourceGroupPreparer
-from azure.cli.testsdk import (RoleBasedServicePrincipalPreparer, ScenarioTest, live_only)
+from azure.cli.testsdk import (
+    ResourceGroupPreparer, RoleBasedServicePrincipalPreparer, ScenarioTest, live_only)
 from azure_devtools.scenario_tests import AllowLargeResponse
+
+from .recording_processors import KeyReplacer
+from .custom_preparers import AKSCustomResourceGroupPreparer
 
 
 def _get_test_data_file(filename):
