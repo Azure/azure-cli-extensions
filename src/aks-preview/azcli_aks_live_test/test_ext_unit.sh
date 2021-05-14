@@ -36,20 +36,20 @@ do
 done
 
 # unit test & coverage report
-# azcli_aks_live_test
-azcli_aks_live_test_unit_test_result=""
-pushd azure-cli-extensions/src/aks-preview/azcli_aks_live_test/
+# az_aks_tool
+az_aks_tool_unit_test_result=""
+pushd azure-cli-extensions/src/aks-preview/az_aks_tool/
 # clean existing coverage report
 (coverage combine || true) && (coverage erase || true)
 if ! coverage run --source=. --omit=*/tests/* -p -m unittest discover; then
-    azcli_aks_live_test_unit_test_result="error"
+    az_aks_tool_unit_test_result="error"
 fi
-# currently no test written in pytest format under 'azcli_aks_live_test/'
+# currently no test written in pytest format under 'az_aks_tool/'
 # coverage run --source=. --omit=*/tests/* -p -m pytest
-coverage combine && coverage json -o coverage_azcli_aks_live_test.json
+coverage combine && coverage json -o coverage_az_aks_tool.json
 coverage report -m
 popd
-cp azure-cli-extensions/src/aks-preview/azcli_aks_live_test/coverage_azcli_aks_live_test.json reports/
+cp azure-cli-extensions/src/aks-preview/az_aks_tool/coverage_az_aks_tool.json reports/
 
 # azext_aks_preview
 azext_aks_preview_unit_test_result=""
@@ -65,7 +65,7 @@ coverage report -m
 popd
 cp azure-cli-extensions/src/aks-preview/azext_aks_preview/coverage_azext_aks_preview.json reports/
 
-if [[ $azcli_aks_live_test_unit_test_result == "error" || $azext_aks_preview_unit_test_result == "error" ]]; then
+if [[ $az_aks_tool_unit_test_result == "error" || $azext_aks_preview_unit_test_result == "error" ]]; then
     echo "Unit test failed!"
     exit 1
 fi

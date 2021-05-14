@@ -6,28 +6,17 @@
 import os
 import unittest
 
-import azcli_aks_live_test.az_aks_tool.utils as utils
-import azcli_aks_live_test.az_aks_tool.cli as cli
+import az_aks_tool.utils as utils
+import az_aks_tool.cli as cli
 
 THIS_FILE = os.path.abspath(__file__)
 THIS_DIR = os.path.dirname(THIS_FILE)
 PARENT_DIR = os.path.dirname(THIS_DIR)
 
-class RunTestCase(unittest.TestCase):
+class CliTestCase(unittest.TestCase):
 
-    def test_current_profile(self):
+    def test_get_cli_mod_data(self):
         pass
 
-    def test_call(self):
+    def test_get_cli_test_index(self):
         pass
-
-    def test_cmd(self):
-        pass
-
-    def test_get_test_runner(self):
-        pass
-
-    def run_tests(self):
-        pass
-    
-

@@ -7,12 +7,12 @@ import glob
 import os
 import logging
 
-import azcli_aks_live_test.az_aks_tool.const as const
-import azcli_aks_live_test.az_aks_tool.index as index
+import az_aks_tool.const as const
+import az_aks_tool.index as index
 logger = logging.getLogger(__name__)
 
 
-def get_ext_module_data(mod_name=const.AKS_PREVIEW_MOD_NAME, profile="latest"):
+def get_ext_mod_data(mod_name=const.AKS_PREVIEW_MOD_NAME, profile="latest"):
     profile_split = profile.split('-')
     profile_namespace = '_'.join([profile_split[-1]] + profile_split[:-1])
 
@@ -39,6 +39,8 @@ def get_ext_module_data(mod_name=const.AKS_PREVIEW_MOD_NAME, profile="latest"):
 
 
 def get_ext_test_index(module_data=None, mod_name=const.AKS_PREVIEW_MOD_NAME, profile="latest"):
-    if not module_data:
-        module_data = get_ext_module_data(mod_name=mod_name, profile=profile)
-    return module_data["files"]
+    if mod_name in module_data:
+        mod_data = module_data[mod_name]
+    else:
+        mod_data = get_ext_mod_data(mod_name=mod_name, profile=profile)
+    return mod_data["files"]

@@ -6,7 +6,7 @@
 import os
 import unittest
 
-import azcli_aks_live_test.az_aks_tool.utils as utils
+import az_aks_tool.utils as utils
 
 THIS_FILE = os.path.abspath(__file__)
 THIS_DIR = os.path.dirname(THIS_FILE)

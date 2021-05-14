@@ -7,7 +7,7 @@ import logging
 import os
 import unittest
 
-import azcli_aks_live_test.az_aks_tool.log as log
+import az_aks_tool.log as log
 
 THIS_FILE = os.path.abspath(__file__)
 THIS_DIR = os.path.dirname(THIS_FILE)
@@ -18,10 +18,8 @@ class LogTestCase(unittest.TestCase):
 
     def test_parse_module_name(self):
         root_module_name = log.parse_module_name(levels=1)
-        current_module_name = log.parse_module_name(levels=2)
         error_module_name = log.parse_module_name(levels=5)
-        self.assertEqual(root_module_name, "azcli_aks_live_test")
-        self.assertEqual(current_module_name, "azcli_aks_live_test.az_aks_tool")
+        self.assertEqual(root_module_name, "az_aks_tool")
         self.assertEqual(error_module_name, None)
 
     def test_setup_logging(self):

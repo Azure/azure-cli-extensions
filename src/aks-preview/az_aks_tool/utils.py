@@ -9,8 +9,8 @@ import sys
 import re
 import logging
 
-import azcli_aks_live_test.az_aks_tool.const as const
-import azcli_aks_live_test.az_aks_tool.filter as custom_filter
+import az_aks_tool.const as const
+import az_aks_tool.filter as custom_filter
 logger = logging.getLogger(__name__)
 
 

@@ -8,11 +8,18 @@ import logging
 import os
 from importlib import import_module
 
-import azcli_aks_live_test.az_aks_tool.utils as utils
-import azcli_aks_live_test.az_aks_tool.const as const
+import az_aks_tool.utils as utils
+import az_aks_tool.const as const
 logger = logging.getLogger(__name__)
 
+
 def get_repo_path(repo_name, root_path=None):
+    # find cache from environment variable
+    repo_path = os.environ.get("{}_PATH".format(repo_name), "")
+    if os.path.isdir(repo_path):
+        logger.info("Find cached '{}' repo path: '{}'".format(repo_name, repo_path))
+        return repo_path
+    # search from root_path
     valid_repo_paths = []
     if root_path is None or not os.path.isdir(root_path):
         logger.warning("Invalid root path '{}', setting root path as current work dir '{}'".format(root_path, os.getcwd()))
@@ -25,9 +32,11 @@ def get_repo_path(repo_name, root_path=None):
         if len(valid_repo_paths) >= 2:
             logger.warning("Find {} '{}' repo paths: {}".format(len(valid_repo_paths), repo_name, valid_repo_paths))
         logger.info("Get '{}' repo path as '{}'".format(repo_name, repo_path))
+        os.environ["{}_PATH".format(repo_name)] = str(repo_path)
         return repo_path
     else:
-        raise Exception("Could not find valid path to repo '{}' from '{}'".format(repo_name, root_path))
+        logger.warning("Could not find valid path to repo '{}' from '{}'".format(repo_name, root_path))
+        return ""
 
 def find_files(root_paths, file_pattern):
     """ Returns the paths to all files that match a given pattern.

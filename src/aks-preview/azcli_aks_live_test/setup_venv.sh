@@ -33,3 +33,6 @@ az version
 
 # mkdir to store reports
 mkdir -p reports/
+
+# export PYTHONPATH
+export PYTHONPATH=$(pwd)

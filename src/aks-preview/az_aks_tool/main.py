@@ -8,20 +8,20 @@ import os
 import sys
 import logging
 
-import azcli_aks_live_test.az_aks_tool.const as const
-import azcli_aks_live_test.az_aks_tool.log as log
-import azcli_aks_live_test.az_aks_tool.utils as utils
-import azcli_aks_live_test.az_aks_tool.cli as cli
-import azcli_aks_live_test.az_aks_tool.ext as ext
-import azcli_aks_live_test.az_aks_tool.index as index
-import azcli_aks_live_test.az_aks_tool.run as run
+import az_aks_tool.const as const
+import az_aks_tool.log as log
+import az_aks_tool.utils as utils
+import az_aks_tool.cli as cli
+import az_aks_tool.ext as ext
+import az_aks_tool.index as index
+import az_aks_tool.run as run
 
 
 def init_argparse(args):
     parser = argparse.ArgumentParser()
-    parser.add_argument("-t", "--tests", nargs='+', help="test case names")
     parser.add_argument("-m", "--mode", type=str, default="all",
                         help="test mode ('cli', 'ext', 'all')")
+    parser.add_argument("-t", "--tests", nargs='+', help="test case names")
     parser.add_argument("-cm", "--cli-matrix",  type=str,
                         help="full path to cli test matrix")
     parser.add_argument("-cc", "--cli-coverage", nargs="+",
@@ -38,7 +38,7 @@ def init_argparse(args):
                         default=False, help="series test")
     parser.add_argument("-l", "--live", action="store_true",
                         default=False, help="live test")
-    parser.add_argument("--no-exitfirst", action="store_true",
+    parser.add_argument("-ne", "--no-exitfirst", action="store_true",
                         default=False, help="no exit first")
     parser.add_argument("--xml-file", type=str,
                         default="azcli_aks_runner.xml", help="junit/xml report filename")
@@ -67,8 +67,7 @@ def main():
     root_module_name = log.parse_module_name(levels=1)
     log.setup_logging(root_module_name, os.path.join(
         args.report_path, args.log_file))
-    current_module_name = log.parse_module_name(levels=2)
-    logger = logging.getLogger("{}.{}".format(current_module_name, __name__))
+    logger = logging.getLogger("{}.{}".format(root_module_name, __name__))
 
     # check test cases
     test_cases = args.tests
@@ -94,15 +93,13 @@ def main():
     module_data = {}
     if args.mode == "cli" or args.mode == "all":
         enable_cli = True
-        module_data[const.ACS_MOD_NAME] = cli.get_cli_module_data()
-        cli_test_index = cli.get_cli_test_index(
-            module_data[const.ACS_MOD_NAME])
+        module_data[const.ACS_MOD_NAME] = cli.get_cli_mod_data()
+        cli_test_index = cli.get_cli_test_index(module_data)
 
     if args.mode == "ext" or args.mode == "all":
         enable_ext = True
-        module_data[const.AKS_PREVIEW_MOD_NAME] = ext.get_ext_module_data()
-        ext_test_index = ext.get_ext_test_index(
-            module_data[const.AKS_PREVIEW_MOD_NAME])
+        module_data[const.AKS_PREVIEW_MOD_NAME] = ext.get_ext_mod_data()
+        ext_test_index = ext.get_ext_test_index(module_data)
 
     # build test index
     logger.info("Building test index...")
