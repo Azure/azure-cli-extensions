@@ -50,11 +50,13 @@ from azure.cli.command_modules.appservice.custom import (
     _get_url,
     _StackRuntimeHelper,
     upload_zip_to_storage,
-    is_plan_consumption)
+    is_plan_consumption,
+    _configure_default_logging,
+    assign_identity)
 
 from azure.cli.command_modules.appservice.utils import retryable_method
 
-from azure.cli.core.util import sdk_no_wait, shell_safe_json_parse, get_json_object, in_cloud_console
+from azure.cli.core.util import sdk_no_wait, shell_safe_json_parse, get_json_object, ConfiguredDefaultSetter
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands import LongRunningOperation
 
@@ -560,181 +562,6 @@ def create_webapp(cmd, resource_group_name, name, plan=None, runtime=None, custo
 def scale_webapp(cmd, resource_group_name, name, instance_count, slot=None):
     return update_site_configs(cmd, resource_group_name, name,
                                number_of_workers=instance_count, slot=slot)
-
-def webapp_up(cmd, name, resource_group_name=None, plan=None, location=None, sku=None, dryrun=False, logs=False,  # pylint: disable=too-many-statements,
-        launch_browser=False, html=False, environment=None):
-    import os
-    is_kube = False
-    kube_sku=KUBE_DEFAULT_SKU
-    KubeEnvironmentProfile = cmd.get_models('KubeEnvironmentProfile')
-    if environment is not None:
-        if resource_group_name is None:
-            raise CLIError("Must provide a resource group where Kube Environment '{}' exists".format(kube_environment))
-        kube_id = _resolve_kube_environment_id(cmd.cli_ctx, environment, resource_group_name)
-        is_kube = True
-        kube_def = KubeEnvironmentProfile(id=kube_id)
-        parsed_id = parse_resource_id(kube_id)
-        kube_name = parsed_id.get("name")
-        kube_rg = parsed_id.get("resource_group")
-        if kube_name is not None and kube_rg is not None:
-            kube_env = cf_kube_environments(cmd.cli_ctx).get(kube_rg, kube_name)
-            if kube_env is not None and  kube_env.location is not None:
-                location = kube_env.location.replace(" ", "")
-            else:
-                raise CLIError("Kube Environment '{}' not found in subscription.".format(kube_id))
-    AppServicePlan = cmd.get_models('AppServicePlan')
-    src_dir = os.getcwd()
-    _src_path_escaped = "{}".format(src_dir.replace(os.sep, os.sep + os.sep))
-    client = web_client_factory(cmd.cli_ctx)
-    user = get_profile_username()
-    _create_new_rg = False
-    _create_new_app = does_app_already_exist(cmd, name)
-    os_name = detect_os_form_src(src_dir, html)
-    lang_details = get_lang_from_content(src_dir, html)
-    language = lang_details.get('language')
-    # detect the version
-    data = get_runtime_version_details(lang_details.get('file_loc'), language, is_kube)
-    version_used_create = data.get('to_create')
-    detected_version = data.get('detected')
-    runtime_version = "{}|{}".format(language, version_used_create) if \
-        version_used_create != "-" else version_used_create
-    site_config = None
-    if not _create_new_app:  # App exists
-        # Get the ASP & RG info, if the ASP & RG parameters are provided we use those else we need to find those
-        logger.warning("Webapp %s already exists. The command will deploy contents to the existing app.", name)
-        app_details = get_app_details(cmd, name, resource_group_name)
-        if app_details is None:
-            raise CLIError("Unable to retrieve details of the existing app {}. Please check that the app is a part of "
-                           "the current subscription".format(name))
-        current_rg = app_details.resource_group
-        if resource_group_name is not None and (resource_group_name.lower() != current_rg.lower()):
-            raise CLIError("The webapp {} exists in ResourceGroup {} and does not match the value entered {}. Please "
-                           "re-run command with the correct parameters.". format(name, current_rg, resource_group_name))
-        rg_name = resource_group_name or current_rg
-        if location is None:
-            loc = app_details.location.replace(" ", "").lower()
-        else:
-            loc = location.replace(" ", "").lower()
-        plan_details = parse_resource_id(app_details.server_farm_id)
-        current_plan = plan_details['name']
-        if plan is not None and current_plan.lower() != plan.lower():
-            raise CLIError("The plan name entered {} does not match the plan name that the webapp is hosted in {}."
-                           "Please check if you have configured defaults for plan name and re-run command."
-                           .format(plan, current_plan))
-        plan = plan or plan_details['name']
-        plan_info = client.app_service_plans.get(rg_name, plan)
-        sku = plan_info.sku.name if isinstance(plan_info, AppServicePlan) else 'Free'
-        current_os = 'Linux' if plan_info.reserved else 'Windows'
-        # Raise error if current OS of the app is different from the current one
-        if current_os.lower() != os_name.lower():
-            raise CLIError("The webapp {} is a {} app. The code detected at '{}' will default to "
-                           "'{}'. "
-                           "Please create a new app to continue this operation.".format(name, current_os, src_dir, os))
-        _is_linux = plan_info.reserved
-        # for an existing app check if the runtime version needs to be updated
-        # Get site config to check the runtime version
-        site_config = client.web_apps.get_configuration(rg_name, name)
-    else:  # need to create new app, check if we need to use default RG or use user entered values
-        logger.warning("webapp %s doesn't exist", name)
-        sku = ""
-        if is_kube:
-            sku = kube_sku
-            loc = location
-            rg_name = kube_rg
-            _create_new_rg = False
-            _is_linux = False
-            plan = get_kube_plan_to_use(cmd, environment, loc, sku, rg_name, _create_new_rg, plan)
-            sku_name = kube_sku
-        else:
-            sku = get_sku_to_use(src_dir, html, sku)
-            loc = set_location(cmd, sku, location)
-            rg_name = get_rg_to_use(cmd, user, loc, os_name, resource_group_name)
-            _is_linux = os_name.lower() == 'linux'
-            _create_new_rg = should_create_new_rg(cmd, rg_name, _is_linux)
-            sku_name = get_sku_name(sku)
-            plan = get_plan_to_use(cmd, user, os_name, loc, sku_name, rg_name, _create_new_rg, plan)
-    dry_run_str = r""" {
-                "name" : "%s",
-                "appserviceplan" : "%s",
-                "resourcegroup" : "%s",
-                "sku": "%s",
-                "os": "%s",
-                "location" : "%s",
-                "src_path" : "%s",
-                "runtime_version_detected": "%s",
-                "runtime_version": "%s"
-                }
-                """ % (name, plan, rg_name, sku_name, os_name, loc, _src_path_escaped, detected_version,
-                       runtime_version)
-    create_json = json.loads(dry_run_str)
-
-    if dryrun:
-        logger.warning("Web app will be created with the below configuration,re-run command "
-                       "without the --dryrun flag to create & deploy a new app")
-        return create_json
-    if _create_new_rg:
-        logger.warning("Creating Resource group '%s' ...", rg_name)
-        create_resource_group(cmd, rg_name, location)
-        logger.warning("Resource group creation complete")
-        # create ASP
-        logger.warning("Creating AppServicePlan '%s' ...", plan)
-    if is_kube:
-        logger.warning("Creating AppServicePlan '%s' with 1 instance count on kube cluster '%s' ...", plan, environment)
-    else:
-        logger.warning("Creating AppServicePlan '%s' ...", plan)
-    # we will always call the ASP create or update API so that in case of re-deployment, if the SKU or plan setting are
-    # updated we update those
-    create_app_service_plan(cmd, rg_name, plan, _is_linux, hyper_v=False, per_site_scaling=False, sku=sku,
-                            number_of_workers=1 if _is_linux else None, location=location, kube_environment=environment)
-    logger.warning("Successfully AppServicePlan '%s' ...", plan)
-    if _create_new_app:
-        logger.warning("Creating webapp '%s' ...", name)
-        create_webapp(cmd, rg_name, name, plan, runtime_version if _is_linux or is_kube else None,
-                      using_webapp_up=True, language=language)
-        if not is_kube:
-            _configure_default_logging(cmd, rg_name, name)
-        else:
-            logger.warning("Successfully App '%s' on Kube Cluster '%s'...", plan, environment)
-    else:  # for existing app if we might need to update the stack runtime settings
-        if os_name.lower() == 'linux' and site_config.linux_fx_version != runtime_version:
-            logger.warning('Updating runtime version from %s to %s',
-                           site_config.linux_fx_version, runtime_version)
-            update_site_configs(cmd, rg_name, name, linux_fx_version=runtime_version)
-        elif os_name.lower() == 'windows' and site_config.windows_fx_version != runtime_version:
-            logger.warning('Updating runtime version from %s to %s',
-                           site_config.windows_fx_version, runtime_version)
-            update_site_configs(cmd, rg_name, name, windows_fx_version=runtime_version)
-        create_json['runtime_version'] = runtime_version
-    # Zip contents & Deploy
-    logger.warning("Creating zip with contents of dir %s ...", src_dir)
-    # zip contents & deploy
-    zip_file_path = zip_contents_from_dir(src_dir, language, is_kube)
-    enable_zip_deploy(cmd, rg_name, name, zip_file_path, is_kube=is_kube)
-    # Remove the file after deployment, handling exception if user removed the file manually
-    try:
-        os.remove(zip_file_path)
-    except OSError:
-        pass
-
-    if launch_browser:
-        logger.warning("Launching app using default browser")
-        view_in_browser(cmd, rg_name, name, None, logs)
-    else:
-        _url = _get_url(cmd, rg_name, name)
-        logger.warning("You can launch the app at %s", _url)
-        create_json.update({'URL': _url})
-    if logs:
-        if not is_kube:
-            _configure_default_logging(cmd, rg_name, name)
-            return get_streaming_log(cmd, rg_name, name)
-    if not is_kube:
-        with ConfiguredDefaultSetter(cmd.cli_ctx.config, True):
-            cmd.cli_ctx.config.set_value('defaults', 'group', rg_name)
-            cmd.cli_ctx.config.set_value('defaults', 'sku', sku)
-            cmd.cli_ctx.config.set_value('defaults', 'appserviceplan', plan)
-            cmd.cli_ctx.config.set_value('defaults', 'location', loc)
-            cmd.cli_ctx.config.set_value('defaults', 'web', name)
-    return create_json
 
 
 def show_webapp(cmd, resource_group_name, name, slot=None, app_instance=None):
