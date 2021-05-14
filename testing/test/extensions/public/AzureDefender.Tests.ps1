@@ -9,11 +9,11 @@ Describe 'Azure Defender Testing' {
     }
 
     It 'Creates the extension and checks that it onboards correctly' {
-        $output = az $Env:K8sExtensionName create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type connectedClusters --extension-type $extensionType -n $extensionName
-        $? | Should -BeTrue
+        Invoke-Expression "az $Env:K8sExtensionName create -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters --extension-type $extensionType -n $extensionName" -ErrorVariable badOut
+        $badOut | Should -BeNullOrEmpty        
 
-        $output = az $Env:K8sExtensionName show -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type connectedClusters -n $extensionName
-        $? | Should -BeTrue
+        $output = Invoke-Expression "az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName" -ErrorVariable badOut
+        $badOut | Should -BeNullOrEmpty
 
         $isAutoUpgradeMinorVersion = ($output | ConvertFrom-Json).autoUpgradeMinorVersion 
         $isAutoUpgradeMinorVersion.ToString() -eq "True" | Should -BeTrue
@@ -33,8 +33,8 @@ Describe 'Azure Defender Testing' {
     }
 
     It "Performs a show on the extension" {
-        $output = az $Env:K8sExtensionName show -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type connectedClusters -n $extensionName
-        $? | Should -BeTrue
+        $output = Invoke-Expression "az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName" -ErrorVariable badOut
+        $badOut | Should -BeNullOrEmpty
         $output | Should -Not -BeNullOrEmpty
     }
 
@@ -69,24 +69,29 @@ Describe 'Azure Defender Testing' {
     }
 
     It "Lists the extensions on the cluster" {
-        $output = az $Env:K8sExtensionName list -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type connectedClusters
-        $? | Should -BeTrue
+        $output = Invoke-Expression "az $Env:K8sExtensionName list -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters" -ErrorVariable badOut
+        $badOut | Should -BeNullOrEmpty
 
+        $output | Should -Not -BeNullOrEmpty
         $extensionExists = $output | ConvertFrom-Json | Where-Object { $_.extensionType -eq $extensionType }
         $extensionExists | Should -Not -BeNullOrEmpty
     }
 
     It "Deletes the extension from the cluster" {
-        az $Env:K8sExtensionName delete -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type connectedClusters -n $extensionName
-        $? | Should -BeTrue
+        $output = Invoke-Expression "az $Env:K8sExtensionName delete -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName" -ErrorVariable badOut
+        $badOut | Should -BeNullOrEmpty
 
         # Extension should not be found on the cluster
-        az $Env:K8sExtensionName show -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type connectedClusters -n $extensionName
-        $? | Should -BeFalse
+        $output = Invoke-Expression "az $Env:K8sExtensionName show -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters -n $extensionName" -ErrorVariable badOut
+        $badOut | Should -Not -BeNullOrEmpty
+        $output | Should -BeNullOrEmpty
     }
 
     It "Performs another list after the delete" {
-        $output = az $Env:K8sExtensionName list -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type connectedClusters
+        $output = Invoke-Expression "az $Env:K8sExtensionName list -c $($ENVCONFIG.arcClusterName) -g $($ENVCONFIG.resourceGroup) --cluster-type connectedClusters" -ErrorVariable badOut
+        $badOut | Should -BeNullOrEmpty
+        $output | Should -Not -BeNullOrEmpty
+        
         $extensionExists = $output | ConvertFrom-Json | Where-Object { $_.extensionType -eq $extensionName }
         $extensionExists | Should -BeNullOrEmpty
     }
