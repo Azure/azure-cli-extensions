@@ -8,6 +8,7 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
+
 def load_arguments(self, _):
     with self.argument_context('confluent organization create') as c:
         c.argument('publisher_id', type=str, help='Publisher Id', default='confluentinc', arg_group='Offer Detail')

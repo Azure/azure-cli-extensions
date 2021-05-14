@@ -8,11 +8,13 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
+import jwt
+import mock
 import os
+import azure.cli.command_modules.role.custom
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 from .example_steps import step_terms_list
-from .example_steps import step_organization_create
 from .example_steps import step_organization_show
 from .example_steps import step_organization_list
 from .example_steps import step_organization_list2
@@ -36,6 +38,53 @@ def step_offer_detail_show(test, rg, checks=None):
              '--publisher-id confluentinc '
              '--offer-id confluent-cloud-azure-stag',
              checks=checks)
+
+
+orig_decode = jwt.decode
+
+
+def mock_jwt_decode(jwt_str, **kwargs):
+    if jwt_str == 'top-secret-token-for-you':
+        return {
+            'given_name': 'contoso',
+            'family_name': 'zhou',
+            'email': 'contoso@microsoft.com',
+            'oid': '00000000-0000-0000-0000-000000000000'
+        }
+    else:
+        return orig_decode(jwt_str, **kwargs)
+
+
+orig_list_role = azure.cli.command_modules.role.custom.list_role_assignments
+
+
+def mock_list_role_assignments(cmd, **kwargs):
+    if kwargs['assignee'] == '00000000-0000-0000-0000-000000000000':
+        return [{}]  # mock it to pass non-empty check
+    else:
+        return orig_list_role(cmd, **kwargs)
+
+
+def step_organization_create(test, rg, checks=None):
+    if checks is None:
+        checks = []
+    with mock.patch('jwt.decode', mock_jwt_decode):
+        with mock.patch('azure.cli.command_modules.role.custom.list_role_assignments', mock_list_role_assignments):
+            test.cmd('az confluent organization create '
+                     '--location "eastus2euap" '
+                     '--offer-id "confluent-cloud-azure-stag" '
+                     '--plan-id "confluent-cloud-azure-payg-stag" '
+                     '--plan-name "Confluent Cloud - Pay as you Go" '
+                     '--publisher-id "confluentinc" '
+                     '--term-unit "P1M" '
+                     '--tags environment="Dev" '
+                     '--name "{myOrganization}" '
+                     '--resource-group "{rg}"',
+                     checks=checks)
+    test.cmd('az confluent organization wait --created '
+             '--name "{myOrganization}" '
+             '--resource-group "{rg}"',
+             checks=[])
 
 
 # Env setup_scenario
@@ -62,16 +111,18 @@ def call_scenario(test, rg):
     ])
     step_organization_create(test, rg, checks=[
         test.check("location", "eastus2euap", case_sensitive=False),
-        test.check("userDetail.emailAddress", "feng.zhou@microsoft.com", case_sensitive=False),
-        test.check("userDetail.firstName", "feng", case_sensitive=False),
+        # change to real values for userDetail in live tests
+        test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
+        test.check("userDetail.firstName", "contoso", case_sensitive=False),
         test.check("userDetail.lastName", "zhou", case_sensitive=False),
         test.check("tags.environment", "Dev", case_sensitive=False),
         test.check("name", "{myOrganization}", case_sensitive=False),
     ])
     step_organization_show(test, rg, checks=[
         test.check("location", "eastus2euap", case_sensitive=False),
-        test.check("userDetail.emailAddress", "feng.zhou@microsoft.com", case_sensitive=False),
-        test.check("userDetail.firstName", "feng", case_sensitive=False),
+        # change to real values for userDetail in live tests
+        test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
+        test.check("userDetail.firstName", "contoso", case_sensitive=False),
         test.check("userDetail.lastName", "zhou", case_sensitive=False),
         test.check("tags.environment", "Dev", case_sensitive=False),
         test.check("name", "{myOrganization}", case_sensitive=False),
@@ -84,8 +135,8 @@ def call_scenario(test, rg):
     ])
     step_organization_update(test, rg, checks=[
         test.check("location", "eastus2euap", case_sensitive=False),
-        test.check("userDetail.emailAddress", "feng.zhou@microsoft.com", case_sensitive=False),
-        test.check("userDetail.firstName", "feng", case_sensitive=False),
+        test.check("userDetail.emailAddress", "contoso@microsoft.com", case_sensitive=False),
+        test.check("userDetail.firstName", "contoso", case_sensitive=False),
         test.check("userDetail.lastName", "zhou", case_sensitive=False),
         test.check("name", "{myOrganization}", case_sensitive=False),
         test.check("tags.client", "dev-client", case_sensitive=False),
