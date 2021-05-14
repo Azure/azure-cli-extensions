@@ -52,7 +52,8 @@ from azure.cli.command_modules.appservice.custom import (
     upload_zip_to_storage,
     is_plan_consumption,
     _configure_default_logging,
-    assign_identity)
+    assign_identity,
+    delete_app_settings)
 
 from azure.cli.command_modules.appservice.utils import retryable_method
 
@@ -1010,28 +1011,6 @@ def update_site_configs(cmd, resource_group_name, name, slot=None, number_of_wor
         setattr(configs, 'ip_security_restrictions', None)
 
     return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'update_configuration', slot, configs)
-
-
-def delete_app_settings(cmd, resource_group_name, name, setting_names, slot=None):
-    app_settings = _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'list_application_settings', slot)
-    client = web_client_factory(cmd.cli_ctx)
-
-    slot_cfg_names = client.web_apps.list_slot_configuration_names(resource_group_name, name)
-    is_slot_settings = False
-    for setting_name in setting_names:
-        app_settings.properties.pop(setting_name, None)
-        if slot_cfg_names.app_setting_names and setting_name in slot_cfg_names.app_setting_names:
-            slot_cfg_names.app_setting_names.remove(setting_name)
-            is_slot_settings = True
-
-    if is_slot_settings:
-        client.web_apps.update_slot_configuration_names(resource_group_name, name, slot_cfg_names)
-
-    result = _generic_settings_operation(cmd.cli_ctx, resource_group_name, name,
-                                         'update_application_settings',
-                                         app_settings.properties, slot, client)
-
-    return _build_app_settings_output(result.properties, slot_cfg_names.app_setting_names)
 
 
 def config_source_control(cmd, resource_group_name, name, repo_url, repository_type='git', branch=None,  # pylint: disable=too-many-locals
