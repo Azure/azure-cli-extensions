@@ -46,8 +46,10 @@ class Serial(with_metaclass(_CaseInsensitiveEnumMeta, int, Enum)):
     """serial of key to be regenerated
     """
 
-    PRIMARY = 1  #: The Primary Key.
-    SECONDARY = 2  #: The Secondary Key.
+    #: The Primary Key.
+    PRIMARY = 1
+    #: The Secondary Key.
+    SECONDARY = 2
 
 class SkuTier(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """This field is required to be implemented by the Resource Provider if the service has more than
