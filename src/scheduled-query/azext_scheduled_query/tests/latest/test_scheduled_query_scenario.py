@@ -84,7 +84,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
             self.cmd('monitor scheduled-query show -g {rg} -n {name1}')
 
 
-class ScheduledQueryCondtionTest(unittest.TestCase):
+class ScheduledQueryConditionTest(unittest.TestCase):
 
     def _build_namespace(self, name_or_id=None, resource_group=None, provider_namespace=None, parent=None,
                          resource_type=None):

@@ -25,13 +25,16 @@ def _build_criteria(condition, condition_query):
     return ScheduledQueryRuleCriteria(all_of=condition)
 
 
-def create_scheduled_query(client, resource_group_name, rule_name, scopes, condition, condition_query=None,
-                           disabled=False, description=None, tags=None, location=None,
+def create_scheduled_query(client, resource_group_name, rule_name, scopes, condition, condition_query=None, kind=None,
+                           disabled=False, description=None, tags=None, location=None, display_name=None,
+                           auto_mitigate=False, skip_query_validation=False,
                            actions=None, severity=2, window_size='5m', evaluation_frequency='5m',
                            target_resource_type=None, mute_actions_duration='PT30M'):
     from .vendored_sdks.azure_mgmt_scheduled_query.models import ScheduledQueryRuleResource
     criteria = _build_criteria(condition, condition_query)
     kwargs = {
+        'kind': kind,
+        'display_name': display_name,
         'description': description,
         'severity': severity,
         'enabled': not disabled,
@@ -43,7 +46,9 @@ def create_scheduled_query(client, resource_group_name, rule_name, scopes, condi
         'actions': actions,
         'tags': tags,
         'location': location,
-        'mute_actions_duration': mute_actions_duration
+        'mute_actions_duration': mute_actions_duration,
+        'auto_mitigate': auto_mitigate,
+        'skip_query_validation': skip_query_validation,
     }
     return client.create_or_update(resource_group_name, rule_name, ScheduledQueryRuleResource(**kwargs))
 
