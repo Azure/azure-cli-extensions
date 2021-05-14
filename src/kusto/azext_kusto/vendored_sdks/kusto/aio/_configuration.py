@@ -10,6 +10,7 @@ from typing import Any, TYPE_CHECKING
 
 from azure.core.configuration import Configuration
 from azure.core.pipeline import policies
+from azure.mgmt.core.policies import ARMHttpLoggingPolicy
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
@@ -17,15 +18,15 @@ if TYPE_CHECKING:
 
 VERSION = "unknown"
 
-class AzureStackHCIClientConfiguration(Configuration):
-    """Configuration for AzureStackHCIClient.
+class KustoManagementClientConfiguration(Configuration):
+    """Configuration for KustoManagementClient.
 
     Note that all parameters used to create this instance are saved as instance
     attributes.
 
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
-    :param subscription_id: The ID of the target subscription.
+    :param subscription_id: Gets subscription credentials which uniquely identify Microsoft Azure subscription. The subscription ID forms part of the URI for every service call.
     :type subscription_id: str
     """
 
@@ -39,14 +40,13 @@ class AzureStackHCIClientConfiguration(Configuration):
             raise ValueError("Parameter 'credential' must not be None.")
         if subscription_id is None:
             raise ValueError("Parameter 'subscription_id' must not be None.")
-        super(AzureStackHCIClientConfiguration, self).__init__(**kwargs)
+        super(KustoManagementClientConfiguration, self).__init__(**kwargs)
 
         self.credential = credential
         self.subscription_id = subscription_id
-        self.api_version = "2020-03-01-preview"
-        self.credential_scopes = ['https://management.azure.com/.default']
-        self.credential_scopes.extend(kwargs.pop('credential_scopes', []))
-        kwargs.setdefault('sdk_moniker', 'azurestackhciclient/{}'.format(VERSION))
+        self.api_version = "2021-01-01"
+        self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
+        kwargs.setdefault('sdk_moniker', 'kustomanagementclient/{}'.format(VERSION))
         self._configure(**kwargs)
 
     def _configure(
@@ -57,6 +57,7 @@ class AzureStackHCIClientConfiguration(Configuration):
         self.headers_policy = kwargs.get('headers_policy') or policies.HeadersPolicy(**kwargs)
         self.proxy_policy = kwargs.get('proxy_policy') or policies.ProxyPolicy(**kwargs)
         self.logging_policy = kwargs.get('logging_policy') or policies.NetworkTraceLoggingPolicy(**kwargs)
+        self.http_logging_policy = kwargs.get('http_logging_policy') or ARMHttpLoggingPolicy(**kwargs)
         self.retry_policy = kwargs.get('retry_policy') or policies.AsyncRetryPolicy(**kwargs)
         self.custom_hook_policy = kwargs.get('custom_hook_policy') or policies.CustomHookPolicy(**kwargs)
         self.redirect_policy = kwargs.get('redirect_policy') or policies.AsyncRedirectPolicy(**kwargs)

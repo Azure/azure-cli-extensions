@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.5.12
++++++
+* Add --enable-azure-rbac and --disable-azure-rbac in aks update
+* Support disabling local accounts
+
 0.5.11
 +++++
 * Add get OS options support
