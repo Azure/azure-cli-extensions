@@ -90,6 +90,3 @@ def load_command_table(self, _):
     with self.command_group('maintenance update', maintenance_update, client_factory=cf_update) as g:
         g.custom_command('list', 'maintenance_update_list')
         g.custom_command('list-parent', 'maintenance_update_list_parent')
-
-    with self.command_group('maintenance', is_experimental=True):
-        pass
