@@ -31,6 +31,7 @@ from ast import literal_eval
 from azure.cli.core.commands import cached_put
 from ._utils import _get_rg_location
 from ._utils import _get_sku_name
+from ._resource_quantity import validate_cpu, validate_memory
 from six.moves.urllib import parse
 from threading import Thread
 from threading import Timer
@@ -224,7 +225,8 @@ def app_create(cmd, client, resource_group, service, name,
                env=None,
                enable_persistent_storage=None,
                assign_identity=None):
-    memory = _unify_memory(memory)
+    cpu = validate_cpu(cpu)
+    memory = validate_memory(memory)
     apps = _get_all_apps(client, resource_group, service)
     if name in apps:
         raise CLIError("App '{}' already exists.".format(name))
@@ -255,6 +257,8 @@ def app_create(cmd, client, resource_group, service, name,
         jvm_options=jvm_options,
         net_core_main_entry_path=None,
         runtime_version=runtime_version)
+    deployment_settings.cpu = None
+    deployment_settings.memory_in_gb = None
 
     file_type = "NetCoreZip" if runtime_version == AppPlatformEnums.RuntimeVersion.net_core_31 else "Jar"
 
@@ -503,7 +507,8 @@ def app_scale(cmd, client, resource_group, service, name,
               memory=None,
               instance_count=None,
               no_wait=False):
-    memory = _unify_memory(memory)
+    cpu = validate_cpu(cpu)
+    memory = validate_memory(memory)
     if deployment is None:
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
@@ -517,6 +522,8 @@ def app_scale(cmd, client, resource_group, service, name,
     resource_requests = models_20210601preview.ResourceRequests(cpu=cpu, memory=memory)
 
     deployment_settings = models_20210601preview.DeploymentSettings(resource_requests=resource_requests)
+    deployment_settings.cpu = None
+    deployment_settings.memory_in_gb = None
     properties = models_20210601preview.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
     sku = models_20210601preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
@@ -712,7 +719,8 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       instance_count=None,
                       env=None,
                       no_wait=False):
-    memory = _unify_memory(memory)
+    cpu = validate_cpu(cpu)
+    memory = validate_memory(memory)
     logger.warning(LOG_RUNNING_PROMPT)
     deployments = _get_all_deployments(client, resource_group, service, app)
     if name in deployments:
@@ -1262,18 +1270,6 @@ def _get_all_apps(client, resource_group, service):
     return apps
 
 
-def _unify_memory(memory):
-    if memory is None:
-        return None
-    try:
-        int(memory)
-        logger.warning("Memory resource quantity [--memory] should be specified with unit, such as 512Mi, 1Gi. "
-                       "Support for integer quantity will be dropped in future release.")
-        return memory + "Gi"
-    except ValueError:
-        return memory
-
-
 # pylint: disable=too-many-locals, no-member
 def _app_deploy(client, resource_group, service, app, name, version, path, runtime_version, jvm_options, cpu, memory,
                 instance_count,
@@ -1309,6 +1305,8 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
         jvm_options=jvm_options,
         net_core_main_entry_path=main_entry,
         runtime_version=runtime_version)
+    deployment_settings.cpu = None
+    deployment_settings.memory_in_gb = None
     sku = models_20210601preview.Sku(name="S0", tier="STANDARD", capacity=instance_count)
     user_source_info = models_20210601preview.UserSourceInfo(
         version=version,
