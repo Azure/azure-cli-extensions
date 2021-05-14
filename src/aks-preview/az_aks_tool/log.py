@@ -17,8 +17,8 @@ def parse_module_name(levels=1):
     return module_name
 
 
-def setup_logging(root_logger_name="", log_path="az_aks_tool.log"):
-    if root_logger_name == "":
+def setup_logging(root_logger_name=None, log_path="az_aks_tool.log"):
+    if root_logger_name == "" or root_logger_name.isspace():
         root_logger_name = parse_module_name()
     logger = logging.getLogger(root_logger_name)
     logger.setLevel(level=logging.DEBUG)

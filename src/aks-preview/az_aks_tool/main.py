@@ -19,8 +19,12 @@ import az_aks_tool.run as run
 
 def init_argparse(args):
     parser = argparse.ArgumentParser()
-    parser.add_argument("-m", "--mode", type=str, default="all",
-                        help="test mode ('cli', 'ext', 'all')")
+    parser.add_argument("-c", "--cli", action="store_true", default=False,
+                        help="enbale cli test")
+    parser.add_argument("-e", "--ext", action="store_true", default=False,
+                        help="enbale ext test")
+    parser.add_argument("-a", "--all", action="store_true", default=False,
+                        help="enbale all tests (cli & ext)")
     parser.add_argument("-t", "--tests", nargs='+', help="test case names")
     parser.add_argument("-cm", "--cli-matrix",  type=str,
                         help="full path to cli test matrix")
@@ -40,18 +44,18 @@ def init_argparse(args):
                         default=False, help="live test")
     parser.add_argument("-ne", "--no-exitfirst", action="store_true",
                         default=False, help="no exit first")
-    parser.add_argument("--xml-file", type=str,
-                        default="azcli_aks_runner.xml", help="junit/xml report filename")
-    parser.add_argument("-n", "--parallelism", type=str,
+    parser.add_argument("-j", "--parallelism", type=str,
                         default="8", help="test parallelism")
+    parser.add_argument("--reruns", type=str,
+                        default="3", help="rerun times")
+    parser.add_argument("--capture", type=str,
+                        default="sys", help="test capture")
     parser.add_argument("-p", "--report-path", type=str,
                         required=True, help="report path")
     parser.add_argument("-f", "--json-report-file", type=str,
                         default="azcli_aks_runner_report.json", help="json report filename")
-    parser.add_argument("-r", "--reruns", type=str,
-                        default="3", help="rerun times")
-    parser.add_argument("-c", "--capture", type=str,
-                        default="sys", help="test capture")
+    parser.add_argument("--xml-file", type=str,
+                        default="azcli_aks_runner.xml", help="junit/xml report filename")
     parser.add_argument("--log-file", type=str,
                         default="az_aks_tool.log", help="log filename")
     args = parser.parse_args(args)
@@ -91,12 +95,12 @@ def main():
     enable_cli = False
     enable_ext = False
     module_data = {}
-    if args.mode == "cli" or args.mode == "all":
+    if args.cli or args.all:
         enable_cli = True
         module_data[const.ACS_MOD_NAME] = cli.get_cli_mod_data()
         cli_test_index = cli.get_cli_test_index(module_data)
 
-    if args.mode == "ext" or args.mode == "all":
+    if args.ext or args.all:
         enable_ext = True
         module_data[const.AKS_PREVIEW_MOD_NAME] = ext.get_ext_mod_data()
         ext_test_index = ext.get_ext_test_index(module_data)
@@ -114,7 +118,7 @@ def main():
         exit_code = run.run_tests(cli_qualified_test_cases, test_index, mode="cli", base_path=args.report_path, xml_file=args.xml_file, json_file=args.json_report_file, in_series=args.series,
                                   run_live=args.live, no_exit_first=args.no_exitfirst, pytest_args=pytest_args)
         if exit_code != 0:
-            sys.exit("CLI test failed!")
+            sys.exit("CLI test failed with exit code: {}".format(exit_code))
 
     # ext matrix test
     if enable_ext:
@@ -125,15 +129,16 @@ def main():
         exit_code = run.run_tests(ext_qualified_test_cases, test_index, mode="ext", base_path=args.report_path, xml_file=args.xml_file, json_file=args.json_report_file, in_series=args.series,
                                   run_live=args.live, no_exit_first=args.no_exitfirst, pytest_args=pytest_args)
         if exit_code != 0:
-            sys.exit("EXT test failed!")
+            sys.exit("EXT test failed with exit code: {}".format(exit_code))
 
     # raw tests
-    if test_cases and len(test_cases) > 0:
+    if test_cases:
+        logger.info("Get {} cases!".format(len(test_cases)))
         logger.info("Perform following raw tets: {}".format(test_cases))
-        exit_code = run_tests(test_cases, test_index, mode="raw", base_path=args.report_path, xml_file=args.xml_file, json_file=args.json_report_file, in_series=args.series,
-                              run_live=args.live, no_exit_first=args.no_exitfirst, pytest_args=pytest_args)
+        exit_code = run.run_tests(test_cases, test_index, mode="raw", base_path=args.report_path, xml_file=args.xml_file, json_file=args.json_report_file, in_series=args.series,
+                                  run_live=args.live, no_exit_first=args.no_exitfirst, pytest_args=pytest_args)
         if exit_code != 0:
-            sys.exit("Raw test failed!")
+            sys.exit("Raw test failed with exit code: {}".format(exit_code))
 
 
 if __name__ == "__main__":

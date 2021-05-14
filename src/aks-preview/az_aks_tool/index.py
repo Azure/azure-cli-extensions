@@ -19,24 +19,32 @@ def get_repo_path(repo_name, root_path=None):
     if os.path.isdir(repo_path):
         logger.info("Find cached '{}' repo path: '{}'".format(repo_name, repo_path))
         return repo_path
+
     # search from root_path
+    candidate_root_paths = [os.getcwd(), os.path.expanduser("~")]
     valid_repo_paths = []
+    repo_path = ""
     if root_path is None or not os.path.isdir(root_path):
-        logger.warning("Invalid root path '{}', setting root path as current work dir '{}'".format(root_path, os.getcwd()))
-        root_path = os.getcwd()
-    for path, _, _ in os.walk(root_path):
-        pattern = os.path.join(path, repo_name)
-        valid_repo_paths.extend(glob.glob(pattern))
-    if len(valid_repo_paths) >= 1:
-        repo_path = valid_repo_paths[0]
-        if len(valid_repo_paths) >= 2:
-            logger.warning("Find {} '{}' repo paths: {}".format(len(valid_repo_paths), repo_name, valid_repo_paths))
-        logger.info("Get '{}' repo path as '{}'".format(repo_name, repo_path))
-        os.environ["{}_PATH".format(repo_name)] = str(repo_path)
-        return repo_path
+        logger.warning("Invalid root path '{}'!".format(root_path))
     else:
-        logger.warning("Could not find valid path to repo '{}' from '{}'".format(repo_name, root_path))
-        return ""
+        candidate_root_paths = [root_path] + candidate_root_paths
+    logger.info("Setting root path from '{}'".format(candidate_root_paths))
+    for candidate_root_path in candidate_root_paths:
+        root_path = candidate_root_path
+        logger.info("Searching from root path: '{}'".format(root_path))
+        for path, _, _ in os.walk(root_path):
+            pattern = os.path.join(path, repo_name)
+            valid_repo_paths.extend(glob.glob(pattern))
+        if len(valid_repo_paths) >= 1:
+            repo_path = valid_repo_paths[0]
+            if len(valid_repo_paths) >= 2:
+                logger.warning("Find {} '{}' repo paths: {}".format(len(valid_repo_paths), repo_name, valid_repo_paths))
+            logger.info("Set '{}' repo path as '{}'".format(repo_name, repo_path))
+            os.environ["{}_PATH".format(repo_name)] = str(repo_path)
+            return repo_path
+        else:
+            logger.warning("Could not find valid path to repo '{}' from '{}'".format(repo_name, root_path))
+    return repo_path
 
 def find_files(root_paths, file_pattern):
     """ Returns the paths to all files that match a given pattern.
