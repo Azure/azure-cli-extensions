@@ -28,8 +28,8 @@ def validate_source_resource(cmd, namespace):
             namespace.source_resource_type = 'sites'
             namespace.source_resource_name = webapp
             del namespace.webapp
-        else:
-            raise Exception('Source resource is required.')
+            return
+    raise Exception('--webapp is required.')
 
 
 def validate_target_resource(cmd, namespace):
@@ -72,5 +72,6 @@ def validate_target_resource(cmd, namespace):
             del namespace.postgres
             del namespace.database
             del namespace.target_resource_group_name
-        else:
-            raise Exception('Target resource is required.')
+            return
+    raise Exception('--postgres is required.')
+
