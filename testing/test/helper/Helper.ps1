@@ -45,3 +45,11 @@ function Get-ExtensionConfigurationSettings {
     }
     return $null
 }
+
+function Check-Error {
+    param(
+        [string]$output
+    )
+    $hasError = $output -CMatch "ERROR"
+    return $hasError
+}

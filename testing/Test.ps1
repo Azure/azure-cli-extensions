@@ -10,13 +10,20 @@ param (
 )
 
 # Disable confirm prompt for script
+# Only show errors, don't show warnings
 az config set core.disable_confirm_prompt=true
+az config set core.only_show_errors=true
 
 $ENVCONFIG = Get-Content -Path $PSScriptRoot/settings.json | ConvertFrom-Json
 
 az account set --subscription $ENVCONFIG.subscriptionId
 
 $Env:KUBECONFIG="$PSScriptRoot/tmp/KUBECONFIG"
+$TestFileDirectory="$PSScriptRoot/results"
+
+if (-not (Test-Path -Path $TestFileDirectory)) {
+    New-Item -ItemType Directory -Path $TestFileDirectory
+}
 
 if ($Type -eq 'k8s-extension') {
     $k8sExtensionVersion = $ENVCONFIG.extensionVersion.'k8s-extension'
@@ -68,15 +75,45 @@ if ($Type -eq 'k8s-extension') {
 }
 
 if ($CI) {
+    # This runs the tests in parallel during the CI pipline to speed up testing
+
     Write-Host "Invoking Pester to run tests from '$testFilePath'..."
-    $testResult = Invoke-Pester $testFilePath -Passthru -Output Detailed
-    $testResult | Export-JUnitReport -Path TestResults.xml
+    $testFiles = Get-ChildItem $testFilePath
+    $resultFileNumber = 0
+    foreach ($testFile in $testFiles)
+    {
+        $resultFileNumber++
+        $testName = Split-Path $testFile –leaf
+        Start-Job -ArgumentList $testName, $testFile, $resultFileNumber, $TestFileDirectory -Name $testName -ScriptBlock {
+            param($name, $testFile, $resultFileNumber, $testFileDirectory)
+
+            Write-Host "$testFile to result file #$resultFileNumber"
+            $testResult = Invoke-Pester $testFile -Passthru -Output Detailed
+            $testResult | Export-JUnitReport -Path "$testFileDirectory/$name.xml"
+        }
+    }
+
+    do {
+        Write-Host ">> Still running tests @ $(Get-Date –Format "HH:mm:ss")" –ForegroundColor Blue
+        Get-Job | Where-Object { $_.State -eq "Running" } | Format-Table –AutoSize 
+        Start-Sleep –Seconds 30
+    } while((Get-Job | Where-Object { $_.State -eq "Running" } | Measure-Object).Count -ge 1)
+
+    Get-Job | Wait-Job
+    $failedJobs = Get-Job | Where-Object { -not ($_.State -eq "Completed")}
+    Get-Job | Receive-Job –AutoRemoveJob –Wait –ErrorAction 'Continue'
+
+    if ($failedJobs.Count -gt 0) {
+        Write-Host "Failed Jobs" –ForegroundColor Red
+        $failedJobs
+        throw "One or more tests failed"
+    }
 } else {
     if ($Path) {
         Write-Host "Invoking Pester to run tests from '$PSScriptRoot/$Path'"
         Invoke-Pester -Output Detailed $PSScriptRoot/$Path
     } else {
         Write-Host "Invoking Pester to run tests from '$testFilePath'..."
-        Invoke-Pester -Output Detailed $testFilePathc
+        Invoke-Pester -Output Detailed $testFilePath
     }
 }
