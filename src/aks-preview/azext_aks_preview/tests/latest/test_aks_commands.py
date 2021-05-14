@@ -753,7 +753,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
                      '--generate-ssh-keys ' \
                      '--vm-set-type VirtualMachineScaleSets -c 1 ' \
-                     '--ossku CBLMariner'
+                     '--os-sku CBLMariner'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('agentPoolProfiles[0].osSku', 'CBLMariner'),
@@ -787,7 +787,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                  '--resource-group={resource_group} '
                  '--cluster-name={name} '
                  '--name={node_pool_name_second} '
-                 '--ossku CBLMariner',
+                 '--os-sku CBLMariner',
                  checks=[
                     self.check('provisioningState', 'Succeeded'),
                     self.check('osSku', 'CBLMariner'),

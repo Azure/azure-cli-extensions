@@ -5,7 +5,7 @@ Release History
 
 0.5.14
 +++++
-* Add ossku argument for cluster and nodepool creation
+* Add os-sku argument for cluster and nodepool creation
 
 0.5.13
 +++++
