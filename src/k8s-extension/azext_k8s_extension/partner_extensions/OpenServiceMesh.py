@@ -81,7 +81,7 @@ class OpenServiceMesh(PartnerExtensionModel):
 
         """
         #  auto-upgrade-minor-version MUST be set to False if release_train is staging or pilot
-        if release_train.lower() in 'staging' 'pilot':
+        if release_train.lower() in ['staging', 'pilot']:
             if auto_upgrade_minor_version or auto_upgrade_minor_version is None:
                 auto_upgrade_minor_version = False
                 # Set version to None to always get the latest version - user cannot override
