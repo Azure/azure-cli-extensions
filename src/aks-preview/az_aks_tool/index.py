@@ -260,8 +260,7 @@ def build_test_index(module_data):
                 test_index['{}.{}'.format(mod1, key)] = path
                 test_index['{}.{}'.format(mod2, key)] = test_index[key]
             else:
-                logger.error("'%s' exists twice in the '%s' module. "
-                             "Please rename one or both and re-run --discover.", key, mod1)
+                logger.error("'%s' exists twice in the '%s' module", key, mod1)
         else:
             test_index[key] = path
 

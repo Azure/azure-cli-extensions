@@ -24,7 +24,7 @@ source azEnv/bin/activate
 # Ensure that the command index is updated by calling a specific command in aks-preview, so that all the commands defined in aks-preview are loaded correctly
 # Otherwise, cold boot execution of azdev test may use the api version adopted by the acs command group in azure-cli (which may diverge from the api version used in current aks-preview)
 retry_count=0
-while ! az aks command invoke --help && [[ $retry_count < 3 ]]
+while ! az aks maintenanceconfiguration show --help && [[ $retry_count < 3 ]]
 do
     retry_count=`expr $retry_count + 1`
     echo $retry_count"th retry to install aks-preview..." 

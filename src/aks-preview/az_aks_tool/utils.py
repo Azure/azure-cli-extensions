@@ -21,9 +21,13 @@ def check_file_existence(file_path):
 
 
 def get_test_matrix(matrix_file_path):
-    json_file = open(matrix_file_path, 'r')
-    test_matrix = json.load(json_file)
-    json_file.close()
+    test_matrix = {}
+    if check_file_existence(matrix_file_path):
+        json_file = open(matrix_file_path, 'r')
+        test_matrix = json.load(json_file)
+        json_file.close()
+    else:
+        logger.warning("Matrix file '{}' not exists!".format(matrix_file_path))
     return test_matrix
 
 
@@ -42,17 +46,16 @@ def add_qualified_prefix(test_cases, prefix):
 
 def get_fully_qualified_test_cases(test_index, matrix_file_path, mod_name, extra_coverage=None, extra_filter=None):
     qualified_test_cases = []
-    if check_file_existence(matrix_file_path):
-        matrix = get_test_matrix(matrix_file_path)
-        test_cases = custom_filter.get_test_cases(
-            test_index, matrix, extra_coverage)
-        exclude_test_cases = custom_filter.get_exclude_test_cases(test_index,
-                                                                  matrix, extra_filter)
-        filtered_test_cases = get_filted_test_cases(
-            test_cases, exclude_test_cases)
-        # add prefix
-        qualified_test_cases = add_qualified_prefix(
-            filtered_test_cases, mod_name)
+    matrix = get_test_matrix(matrix_file_path)
+    test_cases = custom_filter.get_test_cases(
+        test_index, matrix, extra_coverage)
+    exclude_test_cases = custom_filter.get_exclude_test_cases(test_index,
+                                                              matrix, extra_filter)
+    filtered_test_cases = get_filted_test_cases(
+        test_cases, exclude_test_cases)
+    # add prefix
+    qualified_test_cases = add_qualified_prefix(
+        filtered_test_cases, mod_name)
     return qualified_test_cases
 
 

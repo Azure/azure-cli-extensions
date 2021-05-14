@@ -60,7 +60,7 @@ def filter_valid_test_cases(test_cases, test_index):
 
 def get_test_cases(test_index, matrix, extra_coverage=None):
     test_cases = []
-    coverage = matrix["coverage"]
+    coverage = matrix.get("coverage", {})
     # default coverage
     for fileName, className in coverage.items():
         for c in className:
@@ -82,7 +82,7 @@ def get_test_cases(test_index, matrix, extra_coverage=None):
 
 def get_exclude_test_cases(test_index, matrix, extra_filter=None):
     exclude_test_cases = []
-    exclude = matrix["exclude"]
+    exclude = matrix.get("exclude", {})
     # default exclude
     if not extra_filter or "default" in extra_filter:
         matrix_test_cases = []

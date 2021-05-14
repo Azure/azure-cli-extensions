@@ -45,6 +45,17 @@ def current_profile():
     return cmd('az cloud show --query profile -otsv', show_stderr=False).result
 
 
+class CommandError(Exception):
+
+    def __init__(self, output, exit_code, command):
+        message = "Command `{}` failed with exit code {}:\n{}".format(
+            command, exit_code, output)
+        self.exit_code = exit_code
+        self.output = output
+        self.command = command
+        super().__init__(message)
+
+
 def call(command, **kwargs):
     """ Run an arbitrary command but don't buffer the output.
 
@@ -169,7 +180,7 @@ def run_tests(tests, test_index, mode, base_path, xml_file, json_file, in_series
             test_paths.append(test_path)
         except KeyError:
             logger.warning("'%s' not found.", t)
-            continue    
+            continue
 
     # Tests have been collected. Now run them.
     exit_code = 0
