@@ -14,14 +14,12 @@ from knack.help_files import helps
 
 helps['maintenance public-configuration'] = """
     type: group
-    short-summary: Manage public maintenance configuration with maintenance. Command group swagger \
-name=PublicMaintenanceConfigurations
+    short-summary: Manage public maintenance configuration with maintenance
 """
 
 helps['maintenance public-configuration list'] = """
     type: command
-    short-summary: "Get Public Maintenance Configuration records Command group swagger name=PublicMaintenanceConfigurat\
-ions, Command swagger name=List."
+    short-summary: "Get Public Maintenance Configuration records."
     examples:
       - name: PublicMaintenanceConfigurations_List
         text: |-
@@ -30,8 +28,7 @@ ions, Command swagger name=List."
 
 helps['maintenance public-configuration show'] = """
     type: command
-    short-summary: "Get Public Maintenance Configuration record Command group swagger name=PublicMaintenanceConfigurati\
-ons, Command swagger name=Get."
+    short-summary: "Get Public Maintenance Configuration record."
     examples:
       - name: PublicMaintenanceConfigurations_GetForResource
         text: |-
@@ -40,13 +37,12 @@ ons, Command swagger name=Get."
 
 helps['maintenance applyupdate'] = """
     type: group
-    short-summary: Manage apply update with maintenance. Command group swagger name=ApplyUpdates
+    short-summary: Manage apply update with maintenance
 """
 
 helps['maintenance applyupdate list'] = """
     type: command
-    short-summary: "Get Configuration records within a subscription Command group swagger name=ApplyUpdates, Command \
-swagger name=List."
+    short-summary: "Get Configuration records within a subscription."
     examples:
       - name: ApplyUpdates_List
         text: |-
@@ -55,8 +51,7 @@ swagger name=List."
 
 helps['maintenance applyupdate show'] = """
     type: command
-    short-summary: "Track maintenance updates to resource Command group swagger name=ApplyUpdates, Command swagger \
-name=Get."
+    short-summary: "Track maintenance updates to resource."
     examples:
       - name: ApplyUpdates_Get
         text: |-
@@ -66,9 +61,7 @@ name=Get."
 
 helps['maintenance applyupdate create'] = """
     type: command
-    short-summary: "Apply maintenance updates to resource with parent Command group swagger name=ApplyUpdates, Command \
-swagger name=CreateOrUpdateParent And Apply maintenance updates to resource Command group swagger name=ApplyUpdates, \
-Command swagger name=CreateOrUpdate#Create."
+    short-summary: "Apply maintenance updates to resource with parent And Apply maintenance updates to resource."
     examples:
       - name: ApplyUpdates_CreateOrUpdateParent
         text: |-
@@ -83,14 +76,12 @@ Command swagger name=CreateOrUpdate#Create."
 
 helps['maintenance applyupdate update'] = """
     type: command
-    short-summary: "Apply maintenance updates to resource Command group swagger name=ApplyUpdates, Command swagger \
-name=CreateOrUpdate#Update."
+    short-summary: "Apply maintenance updates to resource."
 """
 
 helps['maintenance applyupdate show-parent'] = """
     type: command
-    short-summary: "Track maintenance updates to resource with parent Command group swagger name=ApplyUpdates, Command \
-swagger name=GetParent."
+    short-summary: "Track maintenance updates to resource with parent."
     examples:
       - name: ApplyUpdates_GetParent
         text: |-
@@ -101,8 +92,7 @@ swagger name=GetParent."
 
 helps['maintenance applyupdate get-parent'] = """
     type: command
-    short-summary: "Track maintenance updates to resource with parent Command group swagger name=ApplyUpdates, Command \
-swagger name=GetParent."
+    short-summary: "Track maintenance updates to resource with parent."
     examples:
       - name: ApplyUpdates_GetParent
         text: |-
@@ -113,14 +103,12 @@ swagger name=GetParent."
 
 helps['maintenance assignment'] = """
     type: group
-    short-summary: Manage configuration assignment with maintenance. Command group swagger \
-name=ConfigurationAssignments
+    short-summary: Manage configuration assignment with maintenance
 """
 
 helps['maintenance assignment list'] = """
     type: command
-    short-summary: "List configurationAssignments for resource. Command group swagger name=ConfigurationAssignments, \
-Command swagger name=List."
+    short-summary: "List configurationAssignments for resource."
     examples:
       - name: ConfigurationAssignments_List
         text: |-
@@ -130,9 +118,7 @@ Command swagger name=List."
 
 helps['maintenance assignment create'] = """
     type: command
-    short-summary: "Register configuration for resource. Command group swagger name=ConfigurationAssignments, Command \
-swagger name=CreateOrUpdateParent And Register configuration for resource. Command group swagger \
-name=ConfigurationAssignments, Command swagger name=CreateOrUpdate#Create."
+    short-summary: "Register configuration for resource. And Register configuration for resource."
     examples:
       - name: ConfigurationAssignments_CreateOrUpdateParent
         text: |-
@@ -150,15 +136,12 @@ ddbd88d727c4/resourcegroups/examplerg/providers/Microsoft.Maintenance/maintenanc
 
 helps['maintenance assignment update'] = """
     type: command
-    short-summary: "Register configuration for resource. Command group swagger name=ConfigurationAssignments, Command \
-swagger name=CreateOrUpdate#Update."
+    short-summary: "Register configuration for resource."
 """
 
 helps['maintenance assignment delete'] = """
     type: command
-    short-summary: "Unregister configuration for resource. Command group swagger name=ConfigurationAssignments, \
-Command swagger name=DeleteParent And Unregister configuration for resource. Command group swagger \
-name=ConfigurationAssignments, Command swagger name=Delete."
+    short-summary: "Unregister configuration for resource. And Unregister configuration for resource."
     examples:
       - name: ConfigurationAssignments_DeleteParent
         text: |-
@@ -173,8 +156,7 @@ name=ConfigurationAssignments, Command swagger name=Delete."
 
 helps['maintenance assignment list-parent'] = """
     type: command
-    short-summary: "List configurationAssignments for resource. Command group swagger name=ConfigurationAssignments, \
-Command swagger name=ListParent."
+    short-summary: "List configurationAssignments for resource."
     examples:
       - name: ConfigurationAssignments_ListParent
         text: |-
@@ -185,14 +167,12 @@ Command swagger name=ListParent."
 
 helps['maintenance configuration'] = """
     type: group
-    short-summary: Manage maintenance configuration with maintenance. Command group swagger \
-name=MaintenanceConfigurations
+    short-summary: Manage maintenance configuration with maintenance
 """
 
 helps['maintenance configuration list'] = """
     type: command
-    short-summary: "Get Configuration records within a subscription Command group swagger \
-name=MaintenanceConfigurations, Command swagger name=List."
+    short-summary: "Get Configuration records within a subscription."
     examples:
       - name: MaintenanceConfigurations_List
         text: |-
@@ -201,8 +181,7 @@ name=MaintenanceConfigurations, Command swagger name=List."
 
 helps['maintenance configuration show'] = """
     type: command
-    short-summary: "Get Configuration record Command group swagger name=MaintenanceConfigurations, Command swagger \
-name=Get."
+    short-summary: "Get Configuration record."
     examples:
       - name: MaintenanceConfigurations_GetForResource
         text: |-
@@ -211,8 +190,7 @@ name=Get."
 
 helps['maintenance configuration create'] = """
     type: command
-    short-summary: "Create configuration record Command group swagger name=MaintenanceConfigurations, Command swagger \
-name=CreateOrUpdate#Create."
+    short-summary: "Create configuration record."
     examples:
       - name: MaintenanceConfigurations_CreateOrUpdateForResource
         text: |-
@@ -225,8 +203,7 @@ name=CreateOrUpdate#Create."
 
 helps['maintenance configuration update'] = """
     type: command
-    short-summary: "Patch configuration record Command group swagger name=MaintenanceConfigurations, Command swagger \
-name=Update."
+    short-summary: "Patch configuration record."
     examples:
       - name: MaintenanceConfigurations_UpdateForResource
         text: |-
@@ -239,8 +216,7 @@ name=Update."
 
 helps['maintenance configuration delete'] = """
     type: command
-    short-summary: "Delete Configuration record Command group swagger name=MaintenanceConfigurations, Command swagger \
-name=Delete."
+    short-summary: "Delete Configuration record."
     examples:
       - name: MaintenanceConfigurations_DeleteForResource
         text: |-
@@ -249,14 +225,12 @@ name=Delete."
 
 helps['maintenance configuration-for-resource-group'] = """
     type: group
-    short-summary: Manage maintenance configuration for resource group with maintenance. Command group swagger \
-name=MaintenanceConfigurationsForResourceGroup
+    short-summary: Manage maintenance configuration for resource group with maintenance
 """
 
 helps['maintenance configuration-for-resource-group list'] = """
     type: command
-    short-summary: "Get Configuration records within a subscription and resource group Command group swagger \
-name=MaintenanceConfigurationsForResourceGroup, Command swagger name=List."
+    short-summary: "Get Configuration records within a subscription and resource group."
     examples:
       - name: MaintenanceConfigurationsResourceGroup_List
         text: |-
@@ -265,14 +239,12 @@ name=MaintenanceConfigurationsForResourceGroup, Command swagger name=List."
 
 helps['maintenance applyupdate-for-resource-group'] = """
     type: group
-    short-summary: Manage apply update for resource group with maintenance. Command group swagger \
-name=ApplyUpdateForResourceGroup
+    short-summary: Manage apply update for resource group with maintenance
 """
 
 helps['maintenance applyupdate-for-resource-group list'] = """
     type: command
-    short-summary: "Get Configuration records within a subscription and resource group Command group swagger \
-name=ApplyUpdateForResourceGroup, Command swagger name=List."
+    short-summary: "Get Configuration records within a subscription and resource group."
     examples:
       - name: ApplyUpdatesResourceGroup_List
         text: |-
@@ -281,12 +253,12 @@ name=ApplyUpdateForResourceGroup, Command swagger name=List."
 
 helps['maintenance update'] = """
     type: group
-    short-summary: Manage update with maintenance. Command group swagger name=Updates
+    short-summary: Manage update with maintenance
 """
 
 helps['maintenance update list'] = """
     type: command
-    short-summary: "Get updates to resources. Command group swagger name=Updates, Command swagger name=List."
+    short-summary: "Get updates to resources."
     examples:
       - name: Updates_List
         text: |-
@@ -296,7 +268,7 @@ helps['maintenance update list'] = """
 
 helps['maintenance update list-parent'] = """
     type: command
-    short-summary: "Get updates to resources. Command group swagger name=Updates, Command swagger name=ListParent."
+    short-summary: "Get updates to resources."
     examples:
       - name: Updates_ListParent
         text: |-
