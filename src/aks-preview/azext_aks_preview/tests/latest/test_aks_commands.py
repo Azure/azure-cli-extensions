@@ -766,7 +766,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                  checks=[
                      # if rerun the recording, please update latestNodeImageVersion to the latest value
                      self.check('latestNodeImageVersion',
-                                'AKSUbuntu-1804gen2-2021.03.29'),
+                                'AKSUbuntu-1804gen2containerd-2021.04.27'),
                      self.check(
                          'type', "Microsoft.ContainerService/managedClusters/agentPools/upgradeProfiles")
                  ])
@@ -1582,7 +1582,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.exists('identity'),
             self.exists('identityProfile'),
             self.check('provisioningState', 'Succeeded'),
-            self.check('identityProfile.kubeletidentity.resourceId', kubelet_identity_resource_id),
+            self.check('identityProfile.kubeletidentity.resourceId',
+                       kubelet_identity_resource_id),
         ])
 
         # delete
