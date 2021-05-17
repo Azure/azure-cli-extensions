@@ -53,7 +53,8 @@ from azure.cli.command_modules.appservice.custom import (
     is_plan_consumption,
     _configure_default_logging,
     assign_identity,
-    delete_app_settings)
+    delete_app_settings,
+    update_app_settings)
 
 from azure.cli.command_modules.appservice.utils import retryable_method
 
@@ -892,55 +893,6 @@ def try_create_application_insights(cmd, functionapp):
 
     update_app_settings(cmd, functionapp.resource_group, functionapp.name,
                         ['APPINSIGHTS_INSTRUMENTATIONKEY={}'.format(appinsights.instrumentation_key)])
-
-
-def update_app_settings(cmd, resource_group_name, name, settings=None, slot=None, slot_settings=None):
-    if not settings and not slot_settings:
-        raise CLIError('Usage Error: --settings |--slot-settings')
-
-    settings = settings or []
-    slot_settings = slot_settings or []
-
-    app_settings = _generic_site_operation(cmd.cli_ctx, resource_group_name, name,
-                                           'list_application_settings', slot)
-    result, slot_result = {}, {}
-    # pylint: disable=too-many-nested-blocks
-    for src, dest in [(settings, result), (slot_settings, slot_result)]:
-        for s in src:
-            try:
-                temp = shell_safe_json_parse(s)
-                if isinstance(temp, list):  # a bit messy, but we'd like accept the output of the "list" command
-                    for t in temp:
-                        if t.get('slotSetting', True):
-                            slot_result[t['name']] = t['value']
-                            # Mark each setting as the slot setting
-                        else:
-                            result[t['name']] = t['value']
-                else:
-                    dest.update(temp)
-            except CLIError:
-                setting_name, value = s.split('=', 1)
-                dest[setting_name] = value
-
-    result.update(slot_result)
-    for setting_name, value in result.items():
-        app_settings.properties[setting_name] = value
-    client = web_client_factory(cmd.cli_ctx)
-
-    result = _generic_settings_operation(cmd.cli_ctx, resource_group_name, name,
-                                         'update_application_settings',
-                                         app_settings.properties, slot, client)
-
-    app_settings_slot_cfg_names = []
-    if slot_result:
-        new_slot_setting_names = slot_result.keys()
-        slot_cfg_names = client.web_apps.list_slot_configuration_names(resource_group_name, name)
-        slot_cfg_names.app_setting_names = slot_cfg_names.app_setting_names or []
-        slot_cfg_names.app_setting_names += new_slot_setting_names
-        app_settings_slot_cfg_names = slot_cfg_names.app_setting_names
-        client.web_apps.update_slot_configuration_names(resource_group_name, name, slot_cfg_names)
-
-    return _build_app_settings_output(result.properties, app_settings_slot_cfg_names)
 
 
 # for any modifications to the non-optional parameters, adjust the reflection logic accordingly
