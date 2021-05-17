@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.20
+++++++
+* Fix regression when using main CLI validator
+
 0.1.19
 ++++++
 * Use update and delete appsettings from core CLI
