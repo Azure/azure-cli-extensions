@@ -4,8 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 from abc import ABC, abstractmethod
-from azext_k8s_extension.vendored_sdks.models import ExtensionInstance
-from azext_k8s_extension.vendored_sdks.models import ExtensionInstanceUpdate
+from ..vendored_sdks.models import ExtensionInstance
+from ..vendored_sdks.models import ExtensionInstanceUpdate
 
 
 class PartnerExtensionModel(ABC):

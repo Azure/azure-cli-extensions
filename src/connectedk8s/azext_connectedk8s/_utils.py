@@ -191,6 +191,8 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
         if status_code // 100 == 4:
             telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
+        if status_code // 100 == 5:
+            raise AzureInternalError("Http operation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
         raise AzureResponseError("Http operation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     if isinstance(ex, ValidationError):
@@ -204,7 +206,9 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
         if status_code // 100 == 4:
             telemetry.set_user_fault()
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-        raise ClientRequestError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        if status_code // 100 == 5:
+            raise AzureInternalError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+        raise AzureResponseError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
     telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
     raise ClientRequestError("Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
@@ -224,11 +228,11 @@ def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error o
             logger.debug("Kubernetes Exception: " + str(ex))
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-            raise CLIInternalError(error_message + "\nError Response: " + str(ex.body))
+            raise ValidationError(error_message + "\nError Response: " + str(ex.body))
     else:
         if raise_error:
             telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
-            raise CLIInternalError(error_message + "\nError: " + str(ex))
+            raise ValidationError(error_message + "\nError: " + str(ex))
         else:
             logger.debug("Kubernetes Exception: " + str(ex))
 
@@ -562,16 +566,3 @@ def check_delete_job(configuration, namespace, custom_logger=None):
                 break
     except Exception as e:
         handle_logging_error(custom_logger, "Error occurred while retrieving status of the delete job: {}".format(str(e)))
-
-
-def check_provider_registrations(cli_ctx, custom_logger):
-    try:
-        rp_client = _resource_providers_client(cli_ctx)
-        cc_registration_state = rp_client.get(consts.Connected_Cluster_Provider_Namespace).registration_state
-        if cc_registration_state != "Registered":
-            custom_logger.error("{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace))
-        kc_registration_state = rp_client.get(consts.Kubernetes_Configuration_Provider_Namespace).registration_state
-        if kc_registration_state != "Registered":
-            custom_logger.error("{} provider is not registered".format(consts.Kubernetes_Configuration_Provider_Namespace))
-    except Exception as ex:
-        custom_logger.debug("Couldn't check the required provider's registration status. Error: {}".format(str(ex)), exc_info=True)

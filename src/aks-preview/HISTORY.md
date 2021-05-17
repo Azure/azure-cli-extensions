@@ -2,6 +2,28 @@
 
 Release History
 ===============
+0.5.12
++++++
+* Add --enable-azure-rbac and --disable-azure-rbac in aks update
+* Support disabling local accounts
+* Add addon `azure-defender` to list of available addons under `az aks enable-addons` command
+
+0.5.11
++++++
+* Add get OS options support
+* Fix wrong behavior when enabling pod identity addon for cluster with addon enabled
+
+0.5.10
++++++
+* Add `--binding-selector` to AAD pod identity add sub command
+* Support using custom kubelet identity
+* Support updating Windows password
+* Add FIPS support to CLI extension
+
+0.5.9
++++++
+* Display result better for `az aks command invoke`, while still honor output option
+* Fix the bug that checking the addon profile whether it exists
 
 0.5.8
 +++++
