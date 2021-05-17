@@ -103,8 +103,14 @@ def main():
         ext_test_index = ext.get_ext_test_index(module_data)
 
     # build test index
-    logger.info("Building test index...")
-    test_index = index.build_test_index(module_data)
+    if enable_cli or enable_ext:
+        logger.info("Building test index...")
+        test_index = index.build_test_index(module_data)
+    else:
+        logger.error(
+            "Both modes 'cli' and 'ext' are not enabled! No test will be performed!")
+        logger.error(
+            "Please provide at least one of the following parameters (-a, -c, -e) to enable the test!")
 
     # cli matrix test
     if enable_cli:
