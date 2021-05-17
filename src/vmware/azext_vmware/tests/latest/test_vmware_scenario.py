@@ -19,7 +19,8 @@ class VmwareScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_vmware')
     def test_vmware(self):
         self.kwargs.update({
-            'loc': 'centralus',
+            # 'loc': 'westcentralus',  # jason
+            'loc': 'eastus',  # vamsi
             'privatecloud': 'cloud1',
             'cluster': 'pycluster1'
         })

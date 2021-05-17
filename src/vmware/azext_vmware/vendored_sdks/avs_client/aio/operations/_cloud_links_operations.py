@@ -21,8 +21,8 @@ from ... import models as _models
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class AddonsOperations:
-    """AddonsOperations async operations.
+class CloudLinksOperations:
+    """CloudLinksOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -48,21 +48,21 @@ class AddonsOperations:
         resource_group_name: str,
         private_cloud_name: str,
         **kwargs
-    ) -> AsyncIterable["_models.AddonList"]:
-        """List addons in a private cloud.
+    ) -> AsyncIterable["_models.CloudLinkList"]:
+        """List cloud link in a private cloud.
 
-        List addons in a private cloud.
+        List cloud link in a private cloud.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param private_cloud_name: Name of the private cloud.
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either AddonList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~avs_client.models.AddonList]
+        :return: An iterator like instance of either CloudLinkList or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~avs_client.models.CloudLinkList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.AddonList"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.CloudLinkList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -96,7 +96,7 @@ class AddonsOperations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize('AddonList', pipeline_response)
+            deserialized = self._deserialize('CloudLinkList', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -117,31 +117,31 @@ class AddonsOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/addons'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/cloudLinks'}  # type: ignore
 
     async def get(
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        addon_name: str,
+        cloud_link_name: str,
         **kwargs
-    ) -> "_models.Addon":
-        """Get an addon by name in a private cloud.
+    ) -> "_models.CloudLink":
+        """Get an cloud link by name in a private cloud.
 
-        Get an addon by name in a private cloud.
+        Get an cloud link by name in a private cloud.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param private_cloud_name: Name of the private cloud.
         :type private_cloud_name: str
-        :param addon_name: Name of the addon for the private cloud.
-        :type addon_name: str
+        :param cloud_link_name: Name of the cloud link resource.
+        :type cloud_link_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Addon, or the result of cls(response)
-        :rtype: ~avs_client.models.Addon
+        :return: CloudLink, or the result of cls(response)
+        :rtype: ~avs_client.models.CloudLink
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Addon"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.CloudLink"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -155,7 +155,7 @@ class AddonsOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'addonName': self._serialize.url("addon_name", addon_name, 'str'),
+            'cloudLinkName': self._serialize.url("cloud_link_name", cloud_link_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -175,29 +175,29 @@ class AddonsOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('Addon', pipeline_response)
+        deserialized = self._deserialize('CloudLink', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/addons/{addonName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/cloudLinks/{cloudLinkName}'}  # type: ignore
 
     async def _create_or_update_initial(
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        addon_name: str,
-        properties: Optional["_models.AddonProperties"] = None,
+        cloud_link_name: str,
+        linked_cloud: Optional[str] = None,
         **kwargs
-    ) -> "_models.Addon":
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Addon"]
+    ) -> "_models.CloudLink":
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.CloudLink"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        _addon = _models.Addon(properties=properties)
+        _cloud_link = _models.CloudLink(linked_cloud=linked_cloud)
         api_version = "2021-06-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
@@ -208,7 +208,7 @@ class AddonsOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'addonName': self._serialize.url("addon_name", addon_name, 'str'),
+            'cloudLinkName': self._serialize.url("cloud_link_name", cloud_link_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -222,7 +222,7 @@ class AddonsOperations:
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_addon, 'Addon')
+        body_content = self._serialize.body(_cloud_link, 'CloudLink')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
@@ -233,49 +233,49 @@ class AddonsOperations:
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
-            deserialized = self._deserialize('Addon', pipeline_response)
+            deserialized = self._deserialize('CloudLink', pipeline_response)
 
         if response.status_code == 201:
-            deserialized = self._deserialize('Addon', pipeline_response)
+            deserialized = self._deserialize('CloudLink', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/addons/{addonName}'}  # type: ignore
+    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/cloudLinks/{cloudLinkName}'}  # type: ignore
 
     async def begin_create_or_update(
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        addon_name: str,
-        properties: Optional["_models.AddonProperties"] = None,
+        cloud_link_name: str,
+        linked_cloud: Optional[str] = None,
         **kwargs
-    ) -> AsyncLROPoller["_models.Addon"]:
-        """Create or update a addon in a private cloud.
+    ) -> AsyncLROPoller["_models.CloudLink"]:
+        """Create or update a cloud link in a private cloud.
 
-        Create or update a addon in a private cloud.
+        Create or update a cloud link in a private cloud.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param private_cloud_name: The name of the private cloud.
         :type private_cloud_name: str
-        :param addon_name: Name of the addon for the private cloud.
-        :type addon_name: str
-        :param properties: The properties of an addon resource.
-        :type properties: ~avs_client.models.AddonProperties
+        :param cloud_link_name: Name of the cloud link resource.
+        :type cloud_link_name: str
+        :param linked_cloud: Identifier of the other private cloud participating in the link.
+        :type linked_cloud: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
          False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of AsyncLROPoller that returns either Addon or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~avs_client.models.Addon]
+        :return: An instance of AsyncLROPoller that returns either CloudLink or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~avs_client.models.CloudLink]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Addon"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.CloudLink"]
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
@@ -285,8 +285,8 @@ class AddonsOperations:
             raw_result = await self._create_or_update_initial(
                 resource_group_name=resource_group_name,
                 private_cloud_name=private_cloud_name,
-                addon_name=addon_name,
-                properties=properties,
+                cloud_link_name=cloud_link_name,
+                linked_cloud=linked_cloud,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -295,7 +295,7 @@ class AddonsOperations:
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('Addon', pipeline_response)
+            deserialized = self._deserialize('CloudLink', pipeline_response)
 
             if cls:
                 return cls(pipeline_response, deserialized, {})
@@ -305,7 +305,7 @@ class AddonsOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'addonName': self._serialize.url("addon_name", addon_name, 'str'),
+            'cloudLinkName': self._serialize.url("cloud_link_name", cloud_link_name, 'str'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -320,13 +320,13 @@ class AddonsOperations:
             )
         else:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/addons/{addonName}'}  # type: ignore
+    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/cloudLinks/{cloudLinkName}'}  # type: ignore
 
     async def _delete_initial(
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        addon_name: str,
+        cloud_link_name: str,
         **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
@@ -343,7 +343,7 @@ class AddonsOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'addonName': self._serialize.url("addon_name", addon_name, 'str'),
+            'cloudLinkName': self._serialize.url("cloud_link_name", cloud_link_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -366,25 +366,25 @@ class AddonsOperations:
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/addons/{addonName}'}  # type: ignore
+    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/cloudLinks/{cloudLinkName}'}  # type: ignore
 
     async def begin_delete(
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        addon_name: str,
+        cloud_link_name: str,
         **kwargs
     ) -> AsyncLROPoller[None]:
-        """Delete a addon in a private cloud.
+        """Delete a cloud link in a private cloud.
 
-        Delete a addon in a private cloud.
+        Delete a cloud link in a private cloud.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param private_cloud_name: Name of the private cloud.
         :type private_cloud_name: str
-        :param addon_name: Name of the addon for the private cloud.
-        :type addon_name: str
+        :param cloud_link_name: Name of the cloud link resource.
+        :type cloud_link_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
@@ -406,7 +406,7 @@ class AddonsOperations:
             raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 private_cloud_name=private_cloud_name,
-                addon_name=addon_name,
+                cloud_link_name=cloud_link_name,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -422,7 +422,7 @@ class AddonsOperations:
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'addonName': self._serialize.url("addon_name", addon_name, 'str'),
+            'cloudLinkName': self._serialize.url("cloud_link_name", cloud_link_name, 'str'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -437,4 +437,4 @@ class AddonsOperations:
             )
         else:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/addons/{addonName}'}  # type: ignore
+    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/cloudLinks/{cloudLinkName}'}  # type: ignore
