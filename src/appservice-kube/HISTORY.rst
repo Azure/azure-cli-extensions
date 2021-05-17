@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.1.19
+++++++
+* Use update and delete appsettings from core CLI
+* Remove webapp up code (not in use)
+
 0.1.18
 ++++++
 * Handle 202 response from webapp/functionapp restart (edited SDK manually)
