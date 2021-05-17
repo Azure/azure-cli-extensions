@@ -1422,20 +1422,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         tr_logger.info("Local connectedk8s version: {}".format(local_connectedk8s_version))
         if latest_connectedk8s_version and local_connectedk8s_version != 'Unknown' and local_connectedk8s_version != 'NotFound':
             if version.parse(local_connectedk8s_version) < version.parse(latest_connectedk8s_version):
-                logger.warning("You have an update pending. You can update the connectedk8s extension to latest v{} using 'az extension update -n connectedk8s'".format(latest_connectedk8s_version))
-
-        permitted = utils.check_system_permissions(tr_logger)
-        if not permitted:
-            tr_logger.error("CLI doesn't have the permission/privilege to install azure arc charts at path {}".format(os.path.join(os.path.expanduser('~'), '.azure', 'AzureArcCharts')))
-        required_node_exists = check_linux_amd64_node(configuration, custom_logger=tr_logger)
-        if not required_node_exists:
-            tr_logger.warning("Couldn't find any linux/amd64 node on the Kubernetes cluster")
-        config_dp_endpoint = get_config_dp_endpoint(cmd, location)
-        helm_registry_path = utils.get_helm_registry(cmd, config_dp_endpoint)
-        tr_logger.info("Helm Registry path : {}".format(helm_registry_path))
-        utils.check_provider_registrations(cmd.cli_ctx, tr_logger)
-        os.environ['HELM_EXPERIMENTAL_OCI'] = '1'
-        utils.pull_helm_chart(helm_registry_path, kube_config, kube_context)
+                print("You have an update pending. You can update the connectedk8s extension to latest v{} using 'az extension update -n connectedk8s'".format(latest_connectedk8s_version))
 
         try:
             # Fetch ConnectedCluster
@@ -1463,6 +1450,21 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 
         except Exception as ex:
             tr_logger.error("Error occured while fetching pod's statues : {}".format(str(ex)))
+
+        cert_secret = utils.get_kubernetes_secret(kapi_instance, consts.Arc_Namespace, consts.AZURE_IDENTITY_CERTIFICATE_SECRET, custom_logger=tr_logger)
+        if (not cert_secret) or (not hasattr(cert_secret, 'data')) or (consts.AZURE_IDENTITY_CERTIFICATE_SECRET not in cert_secret.data):
+            tr_logger.error("{} secret is not present on the kubernetes cluster.".format(consts.AZURE_IDENTITY_CERTIFICATE_SECRET))
+            logger.warning("{} secret is not present on the kubernetes cluster.".format(consts.AZURE_IDENTITY_CERTIFICATE_SECRET))
+
+        try:
+            cc_object = json.loads(connected_cluster.response.content)
+            cert_expirn_time = datetime.strptime(cc_object.get("properties").get("managedIdentityCertificateExpirationTime"), consts.ISO_861_Time_format).replace(tzinfo=timezone.utc)
+            current_time = datetime.now(timezone.utc)
+            if cert_expirn_time != datetime.min and cert_expirn_time < current_time:
+                tr_logger.error("MSI certificate on the cluster has expired.")
+                logger.warning("MSI certificate on the cluster has expired.")
+        except Exception as ex:
+            tr_logger.error("Error occured while checking if the MSI certificate has expired: {}".format(str(ex)), exc_info=True)
 
         try:
             # Creating the .tar.gz for logs and deleting the actual log file

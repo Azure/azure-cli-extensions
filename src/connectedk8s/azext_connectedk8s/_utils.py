@@ -516,3 +516,62 @@ def try_list_node_fix():
         V1ContainerImage.names = V1ContainerImage.names.setter(names)
     except Exception as ex:
         logger.debug("Error while trying to monkey patch the fix for list_node(): {}".format(str(ex)))
+
+
+def get_kubernetes_secret(api_instance, namespace, secret_name, custom_logger=None):
+    try:
+        return api_instance.read_namespaced_secret(secret_name, namespace)
+    except Exception as e:
+        handle_logging_error(custom_logger, "Error occurred when retrieving secret '{}': ".format(secret_name) + str(e))
+
+
+def handle_logging_error(custom_logger, error_string):
+    if custom_logger:
+        custom_logger.error(error_string, exc_info=True)
+    else:
+        logger.error(error_string)
+
+
+def can_create_clusterrolebindings(configuration, custom_logger=None):
+    try:
+        api_instance = kube_client.AuthorizationV1Api(kube_client.ApiClient(configuration))
+        access_review = kube_client.V1SelfSubjectAccessReview(spec={
+            "resourceAttributes":{
+                "verb":"create",
+                "resource":"clusterrolebindings",
+                "group": "rbac.authorization.k8s.io"
+            }
+        })
+        response = api_instance.create_self_subject_access_review(access_review)
+        return response.status.allowed
+    except Exception as ex:
+        handle_logging_error(custom_logger, "Couldn't check for the permission to create clusterrolebindings on this k8s cluster. Error: {}".format(str(ex)))
+        return None
+
+
+def check_delete_job(configuration, namespace, custom_logger=None):
+    try:
+        api_instance = kube_client.BatchV1Api(kube_client.ApiClient(configuration))
+        api_response = api_instance.list_namespaced_job(namespace)
+        for item in list(api_response.items):
+            annotations = item.metadata.annotations
+            if annotations.get("helm.sh/hook") == "pre-delete":
+                job_status = item.status
+                if job_status.succeeded == 0 or job_status.active > 0:
+                    custom_logger.info("Delete Job status conditions: {}".format(job_status.conditions))
+                break
+    except Exception as e:
+        handle_logging_error(custom_logger, "Error occurred while retrieving status of the delete job: {}".format(str(e)))
+
+
+def check_provider_registrations(cli_ctx, custom_logger):
+    try:
+        rp_client = _resource_providers_client(cli_ctx)
+        cc_registration_state = rp_client.get(consts.Connected_Cluster_Provider_Namespace).registration_state
+        if cc_registration_state != "Registered":
+            custom_logger.error("{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace))
+        kc_registration_state = rp_client.get(consts.Kubernetes_Configuration_Provider_Namespace).registration_state
+        if kc_registration_state != "Registered":
+            custom_logger.error("{} provider is not registered".format(consts.Kubernetes_Configuration_Provider_Namespace))
+    except Exception as ex:
+        custom_logger.debug("Couldn't check the required provider's registration status. Error: {}".format(str(ex)), exc_info=True)
