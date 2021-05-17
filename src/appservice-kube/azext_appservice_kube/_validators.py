@@ -5,6 +5,10 @@
 
 from knack.util import CLIError
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
+from azure.cli.command_modules.appservice.custom import (
+    validate_site_create,
+    validate_app_or_slot_exists_in_rg
+)
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from ._client_factory import web_client_factory
 from ._utils import _normalize_sku
@@ -63,33 +67,6 @@ def validate_asp_create(cmd, namespace):
             raise CLIError(validation.error.message)
 
 
-def validate_site_create(cmd, namespace):
-    """Validate the SiteName that is being used to create is available
-    This API requires that the RG is already created"""
-    client = web_client_factory(cmd.cli_ctx)
-    if isinstance(namespace.name, str) and isinstance(namespace.resource_group_name, str) \
-            and isinstance(namespace.plan, str):
-        resource_group_name = namespace.resource_group_name
-        plan = namespace.plan
-        if is_valid_resource_id(plan):
-            parsed_result = parse_resource_id(plan)
-            plan_info = client.app_service_plans.get(parsed_result['resource_group'], parsed_result['name'])
-        else:
-            plan_info = client.app_service_plans.get(resource_group_name, plan)
-        # verify that the name is available for create
-        validation_payload = {
-            "name": namespace.name,
-            "type": "Microsoft.Web/sites",
-            "location": plan_info.location,
-            "properties": {
-                "serverfarmId": plan_info.id
-            }
-        }
-        validation = client.validate(resource_group_name, validation_payload)
-        if validation.status.lower() == "failure" and validation.error.code != 'SiteAlreadyExists':
-            raise CLIError(validation.error.message)
-
-
 def validate_nodes_count(namespace):
     """Validates that node_count and max_count is set between 1-100"""
     if namespace.node_count is not None:
@@ -107,16 +84,3 @@ def validate_nodepool_name(namespace):
             raise CLIError('--nodepool-name can contain at most 12 characters')
         if not namespace.nodepool_name.isalnum():
             raise CLIError('--nodepool-name should contain only alphanumeric characters')
-
-
-def validate_app_or_slot_exists_in_rg(cmd, namespace):
-    """Validate that the App/slot exists in the RG provided"""
-    client = web_client_factory(cmd.cli_ctx)
-    webapp = namespace.name
-    resource_group_name = namespace.resource_group_name
-    if isinstance(namespace.slot, str):
-        app = client.web_apps.get_slot(resource_group_name, webapp, namespace.slot, raw=True)
-    else:
-        app = client.web_apps.get(resource_group_name, webapp, None, raw=True)
-    if app.response.status_code != 200:
-        raise CLIError(app.response.text)
