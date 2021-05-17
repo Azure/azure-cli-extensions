@@ -3,6 +3,17 @@
 Release History
 ===============
 
+0.4.0
+++++++++++++++++++
+
+* Release customization for microsoft.openservicemesh
+
+0.3.1
+++++++++++++++++++
+
+* Add provider registration to check to validations
+* Only validate scoring fe settings when inference is enabled in microsoft.azureml.kubernetes
+
 0.3.0
 ++++++++++++++++++
 
