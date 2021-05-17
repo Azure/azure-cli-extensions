@@ -6,6 +6,7 @@
 
 from knack.arguments import CLIArgumentType
 
+from azure.cli.command_modules.appservice._validators import (validate_site_create)
 from azure.cli.core.commands.parameters import (resource_group_name_type, get_location_type,
                                                 get_resource_name_completion_list,
                                                 get_three_state_flag, get_enum_type, tags_type)
@@ -13,7 +14,7 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
 from ._completers import get_kube_sku_completion_list, get_vm_size_completion_list
 from ._constants import (FUNCTIONS_VERSIONS, FUNCTIONS_VERSION_TO_SUPPORTED_RUNTIME_VERSIONS, KUBE_DEFAULT_SKU,
                          LINUX_RUNTIMES, WINDOWS_RUNTIMES, MULTI_CONTAINER_TYPES, OS_TYPES)
-from ._validators import validate_site_create, validate_asp_create, validate_nodes_count, validate_nodepool_name
+from ._validators import validate_asp_create, validate_nodes_count, validate_nodepool_name
 
 
 def load_arguments(self, _):

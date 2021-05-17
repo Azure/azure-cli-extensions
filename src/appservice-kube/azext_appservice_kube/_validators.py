@@ -5,9 +5,8 @@
 
 from knack.util import CLIError
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
-from azure.cli.command_modules.appservice.custom import (
-    validate_site_create,
-    validate_app_or_slot_exists_in_rg
+from azure.cli.command_modules.appservice._validators import (
+    validate_site_create
 )
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from ._client_factory import web_client_factory
@@ -84,3 +83,16 @@ def validate_nodepool_name(namespace):
             raise CLIError('--nodepool-name can contain at most 12 characters')
         if not namespace.nodepool_name.isalnum():
             raise CLIError('--nodepool-name should contain only alphanumeric characters')
+
+
+def validate_app_or_slot_exists_in_rg(cmd, namespace):
+    """Validate that the App/slot exists in the RG provided"""
+    client = web_client_factory(cmd.cli_ctx)
+    webapp = namespace.name
+    resource_group_name = namespace.resource_group_name
+    if isinstance(namespace.slot, str):
+        app = client.web_apps.get_slot(resource_group_name, webapp, namespace.slot, raw=True)
+    else:
+        app = client.web_apps.get(resource_group_name, webapp, None, raw=True)
+    if app.response.status_code != 200:
+        raise CLIError(app.response.text)
