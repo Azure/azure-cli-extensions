@@ -77,9 +77,6 @@ def main():
     test_cases = args.tests
     ext_matrix_file_path = args.ext_matrix
     cli_matrix_file_path = args.cli_matrix
-    # if not test_cases and not utils.check_file_existence(ext_matrix_file_path) and not utils.check_file_existence(cli_matrix_file_path):
-    #     sys.exit(
-    #         "At least one of 'tests', 'cli_matrix' and 'ext_matrix' must be provided!")
 
     # prepare pytest args
     pytest_args = []
