@@ -14,7 +14,7 @@ from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
-from ... import models
+from ... import models as _models
 
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
@@ -33,7 +33,7 @@ class RemoteRenderingAccountsOperations:
     :param deserializer: An object model deserializer.
     """
 
-    models = models
+    models = _models
 
     def __init__(self, client, config, serializer, deserializer) -> None:
         self._client = client
@@ -44,7 +44,7 @@ class RemoteRenderingAccountsOperations:
     def list_by_subscription(
         self,
         **kwargs
-    ) -> AsyncIterable["models.RemoteRenderingAccountPage"]:
+    ) -> AsyncIterable["_models.RemoteRenderingAccountPage"]:
         """List Remote Rendering Accounts by Subscription.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -52,7 +52,7 @@ class RemoteRenderingAccountsOperations:
         :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.mixedreality.models.RemoteRenderingAccountPage]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.RemoteRenderingAccountPage"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.RemoteRenderingAccountPage"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -111,7 +111,7 @@ class RemoteRenderingAccountsOperations:
         self,
         resource_group_name: str,
         **kwargs
-    ) -> AsyncIterable["models.RemoteRenderingAccountPage"]:
+    ) -> AsyncIterable["_models.RemoteRenderingAccountPage"]:
         """List Resources by Resource Group.
 
         :param resource_group_name: Name of an Azure resource group.
@@ -121,7 +121,7 @@ class RemoteRenderingAccountsOperations:
         :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.mixedreality.models.RemoteRenderingAccountPage]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.RemoteRenderingAccountPage"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.RemoteRenderingAccountPage"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -237,7 +237,7 @@ class RemoteRenderingAccountsOperations:
         resource_group_name: str,
         account_name: str,
         **kwargs
-    ) -> "models.RemoteRenderingAccount":
+    ) -> "_models.RemoteRenderingAccount":
         """Retrieve a Remote Rendering Account.
 
         :param resource_group_name: Name of an Azure resource group.
@@ -249,7 +249,7 @@ class RemoteRenderingAccountsOperations:
         :rtype: ~azure.mgmt.mixedreality.models.RemoteRenderingAccount
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.RemoteRenderingAccount"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.RemoteRenderingAccount"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -294,9 +294,9 @@ class RemoteRenderingAccountsOperations:
         self,
         resource_group_name: str,
         account_name: str,
-        remote_rendering_account: "models.RemoteRenderingAccount",
+        remote_rendering_account: "_models.RemoteRenderingAccount",
         **kwargs
-    ) -> "models.RemoteRenderingAccount":
+    ) -> "_models.RemoteRenderingAccount":
         """Updating a Remote Rendering Account.
 
         :param resource_group_name: Name of an Azure resource group.
@@ -310,7 +310,7 @@ class RemoteRenderingAccountsOperations:
         :rtype: ~azure.mgmt.mixedreality.models.RemoteRenderingAccount
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.RemoteRenderingAccount"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.RemoteRenderingAccount"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -360,9 +360,9 @@ class RemoteRenderingAccountsOperations:
         self,
         resource_group_name: str,
         account_name: str,
-        remote_rendering_account: "models.RemoteRenderingAccount",
+        remote_rendering_account: "_models.RemoteRenderingAccount",
         **kwargs
-    ) -> "models.RemoteRenderingAccount":
+    ) -> "_models.RemoteRenderingAccount":
         """Creating or Updating a Remote Rendering Account.
 
         :param resource_group_name: Name of an Azure resource group.
@@ -376,7 +376,7 @@ class RemoteRenderingAccountsOperations:
         :rtype: ~azure.mgmt.mixedreality.models.RemoteRenderingAccount
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.RemoteRenderingAccount"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.RemoteRenderingAccount"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -431,7 +431,7 @@ class RemoteRenderingAccountsOperations:
         resource_group_name: str,
         account_name: str,
         **kwargs
-    ) -> "models.AccountKeys":
+    ) -> "_models.AccountKeys":
         """List Both of the 2 Keys of a Remote Rendering Account.
 
         :param resource_group_name: Name of an Azure resource group.
@@ -443,7 +443,7 @@ class RemoteRenderingAccountsOperations:
         :rtype: ~azure.mgmt.mixedreality.models.AccountKeys
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.AccountKeys"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.AccountKeys"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -488,9 +488,9 @@ class RemoteRenderingAccountsOperations:
         self,
         resource_group_name: str,
         account_name: str,
-        regenerate: "models.AccountKeyRegenerateRequest",
+        regenerate: "_models.AccountKeyRegenerateRequest",
         **kwargs
-    ) -> "models.AccountKeys":
+    ) -> "_models.AccountKeys":
         """Regenerate specified Key of a Remote Rendering Account.
 
         :param resource_group_name: Name of an Azure resource group.
@@ -504,7 +504,7 @@ class RemoteRenderingAccountsOperations:
         :rtype: ~azure.mgmt.mixedreality.models.AccountKeys
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.AccountKeys"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.AccountKeys"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }

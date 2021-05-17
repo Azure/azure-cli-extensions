@@ -98,7 +98,7 @@ helps['aks create'] = """
           short-summary: Enable managed AAD feature for cluster.
         - name: --enable-azure-rbac
           type: bool
-          short-summary: Whether to enable Azure RBAC for Kubernetes authorization.
+          short-summary: Enable Azure RBAC to control authorization checks on cluster.
         - name: --aad-admin-group-object-ids
           type: string
           short-summary: Comma seperated list of aad group object IDs that will be set as cluster admin.
@@ -326,6 +326,9 @@ helps['aks create'] = """
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
+        - name: --disable-local-accounts
+          type: bool
+          short-summary: (Preview) If set to true, getting static credential will be disabled for this cluster.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -367,6 +370,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-encryption-at-host
         - name: Create a kubernetes cluster with custom control plane identity and kubelet identity.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --assign-identity <control-plane-identity-resource-id> --assign-kubelet-identity <kubelet-identity-resource-id>
+        - name: Create a kubernetes cluster with Azure RBAC enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-aad --enable-azure-rbac
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -522,6 +527,18 @@ helps['aks update'] = """
                   * Has a special character (Regex match [\\W_])
                 - Disallowed values:  "abc@123", "P@$$w0rd", "P@ssw0rd", "P@ssword123", "Pa$$word", "pass@word1", "Password!", "Password1", "Password22", "iloveyou!"
             Reference: https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.management.compute.models.virtualmachinescalesetosprofile.adminpassword?view=azure-dotnet
+        - name: --enable-azure-rbac
+          type: bool
+          short-summary: Enable Azure RBAC to control authorization checks on cluster.
+        - name: --disable-azure-rbac
+          type: bool
+          short-summary: Disable Azure RBAC to control authorization checks on cluster.
+        - name: --disable-local-accounts
+          type: bool
+          short-summary: (Preview) If set to true, getting static credential will be disabled for this cluster.
+        - name: --enable-local-accounts
+          type: bool
+          short-summary: (Preview) If set to true, will enable getting static credential for this cluster.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -567,6 +584,10 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCLuster --tags "foo=bar" "baz=qux"
       - name: Update Windows password of a kubernetes cluster
         text: az aks update -g MyResourceGroup -n MyManagedCLuster --windows-admin-password "Repl@cePassw0rd12345678"
+      - name: Update a managed AAD AKS cluster to use Azure RBAC
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-azure-rbac
+      - name: Disable Azure RBAC in a managed AAD AKS cluster
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-azure-rbac
 """
 
 helps['aks kollect'] = """

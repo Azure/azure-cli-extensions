@@ -19,6 +19,16 @@ def _show_info(msg):
     print(f"\033[1m{colorama.Fore.GREEN}{msg}{colorama.Style.RESET_ALL}")
 
 
+def _get_terms_from_marketplace(cmd, publisher_id, offer_id, sku):
+    from azure.mgmt.marketplaceordering.models import OfferType
+    return cf_vm_image_term(cmd.cli_ctx).get(offer_type=OfferType.VIRTUALMACHINE, publisher_id=publisher_id, offer_id=offer_id, plan_id=sku)
+
+
+def _set_terms_from_marketplace(cmd, publisher_id, offer_id, sku, term):
+    from azure.mgmt.marketplaceordering.models import OfferType
+    return cf_vm_image_term(cmd.cli_ctx).create(offer_type=OfferType.VIRTUALMACHINE, publisher_id=publisher_id, offer_id=offer_id, plan_id=sku, parameters=term)
+
+
 def _get_publisher_and_offer_from_provider_id(providers, provider_id):
     publisher_id = None
     offer_id = None
@@ -59,7 +69,7 @@ def show_terms(cmd, provider_id=None, sku=None, location=None):
     (publisher_id, offer_id) = _get_publisher_and_offer_from_provider_id(client.list(location_name=location), provider_id)
     if not _valid_publisher_and_offer(provider_id, publisher_id, offer_id):
         return None
-    return cf_vm_image_term(cmd.cli_ctx).get(publisher_id, offer_id, sku)
+    return _get_terms_from_marketplace(cmd, publisher_id, offer_id, sku)
 
 
 def accept_terms(cmd, provider_id=None, sku=None, location=None):
@@ -71,7 +81,6 @@ def accept_terms(cmd, provider_id=None, sku=None, location=None):
     (publisher_id, offer_id) = _get_publisher_and_offer_from_provider_id(client.list(location_name=location), provider_id)
     if not _valid_publisher_and_offer(provider_id, publisher_id, offer_id):
         return None
-    terms_client = cf_vm_image_term(cmd.cli_ctx)
-    terms = terms_client.get(publisher_id, offer_id, sku)
-    terms.accepted = True
-    return terms_client.create(publisher_id, offer_id, sku, terms)
+    term = _get_terms_from_marketplace(cmd, publisher_id, offer_id, sku)
+    term.accepted = True
+    return _set_terms_from_marketplace(cmd, publisher_id, offer_id, sku, term)
