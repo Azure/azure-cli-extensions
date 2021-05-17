@@ -9,6 +9,7 @@ import re
 import sys
 import uuid
 from msrestazure.azure_exceptions import CloudError
+from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
 from knack.util import CLIError
 import mysql.connector as mysql_connector
@@ -41,7 +42,7 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, location=N
         server_result = _update_server(
             db_context, cmd, client, server_result, resource_group_name, server_name, backup_retention,
             geo_redundant_backup, storage_mb, administrator_login_password, version, ssl_enforcement, tags)
-    except CloudError:
+    except ResourceNotFoundError:
         # Create mysql server
         if administrator_login_password is None:
             administrator_login_password = str(uuid.uuid4())
@@ -54,7 +55,7 @@ def mysql_up(cmd, client, resource_group_name=None, server_name=None, location=N
         logger.warning('Configuring wait timeout to 8 hours...')
         config_client = cf_mysql_config(cmd.cli_ctx, None)
         resolve_poller(
-            config_client.create_or_update(resource_group_name, server_name, 'wait_timeout', '28800'),
+            config_client.begin_create_or_update(resource_group_name, server_name, 'wait_timeout', {'value': '28800'}),
             cmd.cli_ctx, 'MySQL Configuration Update')
 
         # Create firewall rule to allow for Azure IPs
@@ -98,7 +99,7 @@ def postgres_up(cmd, client, resource_group_name=None, server_name=None, locatio
         server_result = _update_server(
             db_context, cmd, client, server_result, resource_group_name, server_name, backup_retention,
             geo_redundant_backup, storage_mb, administrator_login_password, version, ssl_enforcement, tags)
-    except CloudError:
+    except ResourceNotFoundError:
         # Create postgresql server
         if administrator_login_password is None:
             administrator_login_password = str(uuid.uuid4())
@@ -156,7 +157,7 @@ def sql_up(cmd, client, resource_group_name=None, server_name=None, location=Non
         server_result = _update_sql_server(
             db_context, cmd, client, server_result, resource_group_name, server_name, administrator_login_password,
             version, tags)
-    except CloudError:
+    except ResourceNotFoundError:
         # Create sql server
         if administrator_login_password is None:
             administrator_login_password = str(uuid.uuid4())
@@ -224,9 +225,9 @@ def server_down(cmd, client, resource_group_name=None, server_name=None, delete_
 
         # delete resource group
         logger.warning('Deleting Resource Group \'%s\'...', resource_group_name)
-        return resource_client.resource_groups.delete(resource_group_name)
+        return resource_client.resource_groups.begin_delete(resource_group_name)
     logger.warning('Deleting server \'%s\'...', server_name)
-    return client.delete(resource_group_name, server_name)
+    return client.begin_delete(resource_group_name, server_name)
 
 
 def create_mysql_connection_string(cmd, server_name='{server}', database_name='{database}',
@@ -438,20 +439,21 @@ def _configure_firewall_rules(
 
     # Create firewall rules for devbox if needed
     firewall_client = cf_firewall(cmd.cli_ctx, None)
+    create_func = getattr(firewall_client, 'begin_create_or_update', None) or getattr(firewall_client, 'create_or_update')
 
     if addresses and len(addresses) == 1:
         ip_address = addresses.pop()
         logger.warning('Configuring server firewall rule, \'devbox\', to allow for your ip address: %s', ip_address)
         resolve_poller(
-            firewall_client.create_or_update(resource_group_name, server_name, 'devbox', ip_address, ip_address),
+            create_func(resource_group_name, server_name, 'devbox', {'start_ip_address': ip_address, 'end_ip_address': ip_address}),
             cmd.cli_ctx, '{} Firewall Rule Create/Update'.format(logging_name))
     elif addresses:
         logger.warning('Detected dynamic IP address, configuring firewall rules for IP addresses encountered...')
         logger.warning('IP Addresses: %s', ', '.join(list(addresses)))
         firewall_results = []
         for i, ip_address in enumerate(addresses):
-            firewall_results.append(firewall_client.create_or_update(
-                resource_group_name, server_name, 'devbox' + str(i), ip_address, ip_address))
+            firewall_results.append(create_func(
+                resource_group_name, server_name, 'devbox' + str(i), {'start_ip_address': ip_address, 'end_ip_address': ip_address}))
         for result in firewall_results:
             resolve_poller(result, cmd.cli_ctx, '{} Firewall Rule Create/Update'.format(logging_name))
     logger.warning('If %s server declines your IP address, please create a new firewall rule using:', logging_name)
@@ -468,10 +470,10 @@ def _create_database(db_context, cmd, resource_group_name, server_name, database
     database_client = cf_db(cmd.cli_ctx, None)
     try:
         database_client.get(resource_group_name, server_name, database_name)
-    except CloudError:
+    except ResourceNotFoundError:
         logger.warning('Creating %s database \'%s\'...', logging_name, database_name)
         resolve_poller(
-            database_client.create_or_update(resource_group_name, server_name, database_name), cmd.cli_ctx,
+            database_client.begin_create_or_update(resource_group_name, server_name, database_name, {'charset': None, 'collation': None}), cmd.cli_ctx,
             '{} Database Create/Update'.format(logging_name))
 
 
@@ -480,11 +482,11 @@ def _create_sql_database(db_context, cmd, resource_group_name, server_name, data
     database_client = cf_db(cmd.cli_ctx, None)
     try:
         database_client.get(resource_group_name, server_name, database_name)
-    except CloudError:
+    except ResourceNotFoundError:
         logger.warning('Creating %s database \'%s\'...', logging_name, database_name)
         params = azure_sdk.models.Database(location=location)
         resolve_poller(
-            database_client.create_or_update(resource_group_name, server_name, database_name, params), cmd.cli_ctx,
+            database_client.begin_create_or_update(resource_group_name, server_name, database_name, params), cmd.cli_ctx,
             '{} Database Create/Update'.format(logging_name))
 
 
@@ -494,8 +496,9 @@ def _create_azure_firewall_rule(db_context, cmd, resource_group_name, server_nam
     logger.warning('Configuring server firewall rule, \'azure-access\', to accept connections from all '
                    'Azure resources...')
     firewall_client = cf_firewall(cmd.cli_ctx, None)
+    create_func = getattr(firewall_client, 'begin_create_or_update', None) or getattr(firewall_client, 'create_or_update')
     resolve_poller(
-        firewall_client.create_or_update(resource_group_name, server_name, 'azure-access', '0.0.0.0', '0.0.0.0'),
+        create_func(resource_group_name, server_name, 'azure-access', {'start_ip_address': '0.0.0.0', 'end_ip_address': '0.0.0.0'}),
         cmd.cli_ctx, '{} Firewall Rule Create/Update'.format(logging_name))
 
 
@@ -520,7 +523,7 @@ def _create_server(db_context, cmd, resource_group_name, server_name, location, 
         tags=tags)
 
     return resolve_poller(
-        server_client.create(resource_group_name, server_name, parameters), cmd.cli_ctx,
+        server_client.begin_create(resource_group_name, server_name, parameters), cmd.cli_ctx,
         '{} Server Create'.format(logging_name))
 
 
@@ -537,7 +540,7 @@ def _create_sql_server(db_context, cmd, resource_group_name, server_name, locati
         tags=tags)
 
     return resolve_poller(
-        server_client.create_or_update(resource_group_name, server_name, parameters), cmd.cli_ctx,
+        server_client.begin_create_or_update(resource_group_name, server_name, parameters), cmd.cli_ctx,
         '{} Server Create'.format(logging_name))
 
 
@@ -567,7 +570,7 @@ def _update_server(db_context, cmd, client, server_result, resource_group_name, 
     if server_update_kwargs:
         logger.warning('Updating existing %s Server \'%s\' with given arguments', logging_name, server_name)
         params = db_sdk.models.ServerUpdateParameters(**server_update_kwargs)
-        return resolve_poller(client.update(
+        return resolve_poller(client.begin_update(
             resource_group_name, server_name, params), cmd.cli_ctx, '{} Server Update'.format(logging_name))
     return server_result
 
@@ -586,7 +589,7 @@ def _update_sql_server(db_context, cmd, client, server_result, resource_group_na
     if server_update_kwargs:
         logger.warning('Updating existing %s Server \'%s\' with given arguments', logging_name, server_name)
         params = db_sdk.models.ServerUpdate(**server_update_kwargs)
-        return resolve_poller(client.update(
+        return resolve_poller(client.begin_update(
             resource_group_name, server_name, params), cmd.cli_ctx, '{} Server Update'.format(logging_name))
     return server_result
 

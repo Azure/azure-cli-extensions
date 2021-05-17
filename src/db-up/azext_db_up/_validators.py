@@ -11,6 +11,7 @@ from azure.mgmt.resource.resources.models import ResourceGroup
 from knack.log import get_logger
 from knack.util import CLIError
 from msrestazure.azure_exceptions import CloudError
+from azure.core.exceptions import ResourceNotFoundError
 from msrest.exceptions import ValidationError
 from azext_db_up._client_factory import resource_client_factory
 from azext_db_up.random_name.generate import generate_username
@@ -48,7 +49,7 @@ def _process_db_up_namespace(cmd, namespace, db_type=None):
     if _get_value(db_type, namespace, 'location', 'location') is None:
         try:
             get_default_location_from_resource_group(cmd, namespace)
-        except (CLIError, ValidationError):
+        except (CLIError, ValidationError, ResourceNotFoundError):
             namespace.location = 'eastus'
     _set_value(db_type, namespace, 'location', 'location', default=namespace.location)
 
@@ -67,7 +68,7 @@ def _process_db_up_namespace(cmd, namespace, db_type=None):
         try:
             resource_client.resource_groups.get(namespace.resource_group_name)
             create_resource_group = False
-        except CloudError:  # throw exception when resource group name is invalid
+        except ResourceNotFoundError:  # throw exception when resource group name is invalid
             pass
 
     if create_resource_group:

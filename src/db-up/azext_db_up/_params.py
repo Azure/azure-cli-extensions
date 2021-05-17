@@ -5,7 +5,7 @@
 
 from azure.cli.core.commands.parameters import tags_type, get_location_type, get_enum_type
 from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
-from azext_db_up.vendored_sdks.azure_mgmt_rdbms.mysql.models.my_sql_management_client_enums import (
+from azext_db_up.vendored_sdks.azure_mgmt_rdbms.mysql.models._my_sql_management_client_enums import (
     SslEnforcementEnum, GeoRedundantBackup
 )
 

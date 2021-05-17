@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import unittest
 import mock
 import psycopg2
 import mysql.connector
@@ -11,6 +12,7 @@ from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, ResourceGroupPrepare
 
 
 class DbUpTests(ScenarioTest):
+    @unittest.skip('skip')
     @live_only()
     def test_mysql_flow(self):
         group = self.create_random_name(prefix='group', length=24)
@@ -43,6 +45,7 @@ class DbUpTests(ScenarioTest):
             password, user, database, server)).get_output_in_json()
         self.assertEqual(output, output_mirror)
 
+    @unittest.skip('skip')
     @live_only()
     def test_postgres_flow(self):
         group = self.create_random_name(prefix='group', length=24)
@@ -75,6 +78,7 @@ class DbUpTests(ScenarioTest):
             password, user, database, server)).get_output_in_json()
         self.assertEqual(output, output_mirror)
 
+    @unittest.skip('skip')
     @live_only()
     @ResourceGroupPreparer(name_prefix='postgresup')
     def test_postgres_up(self, resource_group):
@@ -93,6 +97,7 @@ class DbUpTests(ScenarioTest):
         assert(rg1 != rg2)
         assert(server1 != server2)
 
+    # @unittest.skip('skip')
     @live_only()  # "sql up" can only run live as updating dependencies is done once during command execution
     def test_sql_flow(self):
         group = self.create_random_name(prefix='group', length=24)
