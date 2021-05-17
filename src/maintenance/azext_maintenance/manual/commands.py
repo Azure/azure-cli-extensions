@@ -34,7 +34,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'maintenance_applyupdate_show')
         g.custom_command('create', 'maintenance_applyupdate_create')
         g.custom_command('update', 'maintenance_applyupdate_update')
-        g.custom_command('get-parent', 'maintenance_applyupdate_get_parent')
+        g.custom_command('get-parent', 'maintenance_applyupdate_show_parent')
 
     from azext_maintenance.generated._client_factory import cf_configuration_assignment
     maintenance_configuration_assignment = CliCommandType(

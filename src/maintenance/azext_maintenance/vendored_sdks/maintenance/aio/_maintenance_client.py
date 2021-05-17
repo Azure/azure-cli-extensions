@@ -6,16 +6,14 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 
-from azure.mgmt.core import ARMPipelineClient
+from azure.mgmt.core import AsyncARMPipelineClient
 from msrest import Deserializer, Serializer
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Optional
-
-    from azure.core.credentials import TokenCredential
+    from azure.core.credentials_async import AsyncTokenCredential
 
 from ._configuration import MaintenanceClientConfiguration
 from .operations import PublicMaintenanceConfigurationsOperations
@@ -26,30 +24,30 @@ from .operations import MaintenanceConfigurationsForResourceGroupOperations
 from .operations import ApplyUpdateForResourceGroupOperations
 from .operations import Operations
 from .operations import UpdatesOperations
-from . import models
+from .. import models
 
 
 class MaintenanceClient(object):
     """Azure Maintenance Management Client.
 
     :ivar public_maintenance_configurations: PublicMaintenanceConfigurationsOperations operations
-    :vartype public_maintenance_configurations: maintenance_client.operations.PublicMaintenanceConfigurationsOperations
+    :vartype public_maintenance_configurations: maintenance_client.aio.operations.PublicMaintenanceConfigurationsOperations
     :ivar apply_updates: ApplyUpdatesOperations operations
-    :vartype apply_updates: maintenance_client.operations.ApplyUpdatesOperations
+    :vartype apply_updates: maintenance_client.aio.operations.ApplyUpdatesOperations
     :ivar configuration_assignments: ConfigurationAssignmentsOperations operations
-    :vartype configuration_assignments: maintenance_client.operations.ConfigurationAssignmentsOperations
+    :vartype configuration_assignments: maintenance_client.aio.operations.ConfigurationAssignmentsOperations
     :ivar maintenance_configurations: MaintenanceConfigurationsOperations operations
-    :vartype maintenance_configurations: maintenance_client.operations.MaintenanceConfigurationsOperations
+    :vartype maintenance_configurations: maintenance_client.aio.operations.MaintenanceConfigurationsOperations
     :ivar maintenance_configurations_for_resource_group: MaintenanceConfigurationsForResourceGroupOperations operations
-    :vartype maintenance_configurations_for_resource_group: maintenance_client.operations.MaintenanceConfigurationsForResourceGroupOperations
+    :vartype maintenance_configurations_for_resource_group: maintenance_client.aio.operations.MaintenanceConfigurationsForResourceGroupOperations
     :ivar apply_update_for_resource_group: ApplyUpdateForResourceGroupOperations operations
-    :vartype apply_update_for_resource_group: maintenance_client.operations.ApplyUpdateForResourceGroupOperations
+    :vartype apply_update_for_resource_group: maintenance_client.aio.operations.ApplyUpdateForResourceGroupOperations
     :ivar operations: Operations operations
-    :vartype operations: maintenance_client.operations.Operations
+    :vartype operations: maintenance_client.aio.operations.Operations
     :ivar updates: UpdatesOperations operations
-    :vartype updates: maintenance_client.operations.UpdatesOperations
+    :vartype updates: maintenance_client.aio.operations.UpdatesOperations
     :param credential: Credential needed for the client to connect to Azure.
-    :type credential: ~azure.core.credentials.TokenCredential
+    :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: Subscription credentials that uniquely identify a Microsoft Azure subscription. The subscription ID forms part of the URI for every service call.
     :type subscription_id: str
     :param str base_url: Service URL
@@ -57,16 +55,15 @@ class MaintenanceClient(object):
 
     def __init__(
         self,
-        credential,  # type: "TokenCredential"
-        subscription_id,  # type: str
-        base_url=None,  # type: Optional[str]
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> None
+        credential: "AsyncTokenCredential",
+        subscription_id: str,
+        base_url: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
         if not base_url:
             base_url = 'https://management.azure.com'
         self._config = MaintenanceClientConfiguration(credential, subscription_id, **kwargs)
-        self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._client = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
@@ -89,15 +86,12 @@ class MaintenanceClient(object):
         self.updates = UpdatesOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
-    def close(self):
-        # type: () -> None
-        self._client.close()
+    async def close(self) -> None:
+        await self._client.close()
 
-    def __enter__(self):
-        # type: () -> MaintenanceClient
-        self._client.__enter__()
+    async def __aenter__(self) -> "MaintenanceClient":
+        await self._client.__aenter__()
         return self
 
-    def __exit__(self, *exc_details):
-        # type: (Any) -> None
-        self._client.__exit__(*exc_details)
+    async def __aexit__(self, *exc_details) -> None:
+        await self._client.__aexit__(*exc_details)
