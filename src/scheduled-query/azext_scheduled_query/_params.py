@@ -24,7 +24,6 @@ def load_arguments(self, _):
         c.argument('severity', type=int, help='Severity of the alert from 0 (critical) to 4 (verbose).')
         c.argument('window_size', type=get_period_type(), help='Time over which to aggregate metrics in "##h##m##s" format.')
         c.argument('evaluation_frequency', type=get_period_type(), help='Frequency with which to evaluate the rule in "##h##m##s" format.')
-        c.argument('kind', arg_type=get_enum_type(Kind, default=Kind.LOG_ALERT), help='Indicates the type of scheduled query rule.')
         c.argument('display_name', help='The display name of the alert rule')
         c.argument('condition', options_list=['--condition'], action=ScheduleQueryConditionAction, nargs='+')
         c.argument('condition_query', options_list=['--condition-query'], nargs='+', action=ScheduleQueryConditionQueryAction, help='Query deteils to replace the placeholders in `--condition` argument.')
@@ -35,11 +34,10 @@ def load_arguments(self, _):
         c.argument('target_resource_type', options_list=['--target-resource-type', '--type'],
                    help='The resource type of the target resource(s) in scopes. '
                         'This must be provided when scopes is resource group or subscription.')
-        c.argument('actions', options_list=['--action', '-a'], action=ScheduleQueryAddAction, nargs='+', validator=get_action_group_validator('actions'))
-
-    with self.argument_context('monitor scheduled-query', arg_group='Log Alert') as c:
         c.argument('mute_actions_duration', type=get_period_type(as_timedelta=True),
                    options_list=['--mute-actions-duration', '--mad'],
                    help='Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired.')
-        c.argument('auto_mitigate', arg_type=get_three_state_flag(), help='The flag that indicates whether the alert should be automatically resolved or not. The default is true.')
-        c.argument('skip_query_validation', arg_type=get_three_state_flag(), help='The flag which indicates whether the provided query should be validated or not. The default is false.')
+        c.argument('actions', options_list=['--action', '-a'], action=ScheduleQueryAddAction, nargs='+', validator=get_action_group_validator('actions'))
+        c.argument('disable_auto_mitigate', arg_type=get_three_state_flag(), help='The flag that indicates whether to disable the alert automatically resolved or not.')
+        c.argument('skip_query_validation', arg_type=get_three_state_flag(), help='The flag which indicates whether the provided query should be validated or not.')
+        c.argument('check_workspace_alerts_storage', arg_type=get_three_state_flag(), help="The flag which indicates whether this scheduled query rule should be stored in the customer's storage.")
