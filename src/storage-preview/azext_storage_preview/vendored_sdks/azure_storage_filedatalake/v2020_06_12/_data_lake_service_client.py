@@ -3,8 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 # --------------------------------------------------------------------------
-from typing import Optional, List, Dict, Any
-
+from typing import Optional, Dict, Any
 
 try:
     from urllib.parse import urlparse
@@ -14,14 +13,13 @@ except ImportError:
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import Pipeline
 
-from ...blob import BlobServiceClient
-from ._deserialize import get_datalake_service_properties
+from azure.storage.blob import BlobServiceClient
 from ._shared.base_client import TransportWrapper, StorageAccountHostsMixin, parse_query, parse_connection_str
+from ._deserialize import get_datalake_service_properties
 from ._file_system_client import FileSystemClient
 from ._data_lake_directory_client import DataLakeDirectoryClient
 from ._data_lake_file_client import DataLakeFileClient
-from ._models import UserDelegationKey, FileSystemPropertiesPaged, LocationMode, AnalyticsLogging, \
-    CorsRule, RetentionPolicy, StaticWebsite, Metrics
+from ._models import UserDelegationKey, FileSystemPropertiesPaged, LocationMode
 from ._serialize import convert_dfs_url_to_blob_url
 
 
@@ -45,9 +43,11 @@ class DataLakeServiceClient(StorageAccountHostsMixin):
         authenticated with a SAS token.
     :param credential:
         The credentials with which to authenticate. This is optional if the
-        account URL already has a SAS token. The value can be a SAS token string, and account
+        account URL already has a SAS token. The value can be a SAS token string,
+        an instance of a AzureSasCredential from azure.core.credentials, an account
         shared access key, or an instance of a TokenCredentials class from azure.identity.
-        If the URL already has a SAS token, specifying an explicit credential will take priority.
+        If the resource URI already contains a SAS token, this will be ignored in favor of an explicit credential
+        - except in the case of AzureSasCredential, where the conflicting SAS tokens will raise a ValueError.
 
     .. admonition:: Example:
 
@@ -94,9 +94,12 @@ class DataLakeServiceClient(StorageAccountHostsMixin):
         # ADLS doesn't support secondary endpoint, make sure it's empty
         self._hosts[LocationMode.SECONDARY] = ""
 
+    def __enter__(self):
+        self._blob_service_client.__enter__()
+        return self
+
     def __exit__(self, *args):
         self._blob_service_client.close()
-        super(DataLakeServiceClient, self).__exit__(*args)
 
     def close(self):
         # type: () -> None
@@ -104,7 +107,6 @@ class DataLakeServiceClient(StorageAccountHostsMixin):
         It need not be used when using with a context manager.
         """
         self._blob_service_client.close()
-        self.__exit__()
 
     def _format_url(self, hostname):
         """Format the endpoint URL according to hostname
@@ -126,7 +128,8 @@ class DataLakeServiceClient(StorageAccountHostsMixin):
         :param credential:
             The credentials with which to authenticate. This is optional if the
             account URL already has a SAS token, or the connection string already has shared
-            access key values. The value can be a SAS token string, and account shared access
+            access key values. The value can be a SAS token string,
+            an instance of a AzureSasCredential from azure.core.credentials, an account shared access
             key, or an instance of a TokenCredentials class from azure.identity.
             Credentials provided here will take precedence over those in the connection string.
         :return a DataLakeServiceClient
@@ -196,6 +199,10 @@ class DataLakeServiceClient(StorageAccountHostsMixin):
             call. If the request does not specify the server will return up to 5,000 items per page.
         :keyword int timeout:
             The timeout parameter is expressed in seconds.
+        :keyword bool include_deleted:
+            Specifies that deleted file systems to be returned in the response. This is for file system restore enabled
+            account. The default value is `False`.
+            .. versionadded:: 12.3.0
         :returns: An iterable (auto-paging) of FileSystemProperties.
         :rtype: ~azure.core.paging.ItemPaged[~azure.storage.filedatalake.FileSystemProperties]
 
@@ -250,6 +257,55 @@ class DataLakeServiceClient(StorageAccountHostsMixin):
         file_system_client = self.get_file_system_client(file_system)
         file_system_client.create_file_system(metadata=metadata, public_access=public_access, **kwargs)
         return file_system_client
+
+    def _rename_file_system(self, name, new_name, **kwargs):
+        # type: (str, str, **Any) -> FileSystemClient
+        """Renames a filesystem.
+
+        Operation is successful only if the source filesystem exists.
+
+        :param str name:
+            The name of the filesystem to rename.
+        :param str new_name:
+            The new filesystem name the user wants to rename to.
+        :keyword lease:
+            Specify this to perform only if the lease ID given
+            matches the active lease ID of the source filesystem.
+        :paramtype lease: ~azure.storage.filedatalake.DataLakeLeaseClient or str
+        :keyword int timeout:
+            The timeout parameter is expressed in seconds.
+        :rtype: ~azure.storage.filedatalake.FileSystemClient
+        """
+        self._blob_service_client._rename_container(name, new_name, **kwargs)   # pylint: disable=protected-access
+        renamed_file_system = self.get_file_system_client(new_name)
+        return renamed_file_system
+
+    def undelete_file_system(self, name, deleted_version, **kwargs):
+        # type: (str, str, **Any) -> FileSystemClient
+        """Restores soft-deleted filesystem.
+
+        Operation will only be successful if used within the specified number of days
+        set in the delete retention policy.
+
+        .. versionadded:: 12.3.0
+            This operation was introduced in API version '2019-12-12'.
+
+        :param str name:
+            Specifies the name of the deleted filesystem to restore.
+        :param str deleted_version:
+            Specifies the version of the deleted filesystem to restore.
+        :keyword str new_name:
+            The new name for the deleted filesystem to be restored to.
+            If not specified "name" will be used as the restored filesystem name.
+        :keyword int timeout:
+            The timeout parameter is expressed in seconds.
+        :rtype: ~azure.storage.filedatalake.FileSystemClient
+        """
+        new_name = kwargs.pop('new_name', None)
+        file_system = self.get_file_system_client(new_name or name)
+        self._blob_service_client.undelete_container(
+            name, deleted_version, new_name=new_name, **kwargs)  # pylint: disable=protected-access
+        return file_system
 
     def delete_file_system(self, file_system,  # type: Union[FileSystemProperties, str]
                            **kwargs):
@@ -438,50 +494,41 @@ class DataLakeServiceClient(StorageAccountHostsMixin):
             key_encryption_key=self.key_encryption_key,
             key_resolver_function=self.key_resolver_function)
 
-    def set_service_properties(
-            self, analytics_logging=None,  # type: Optional[AnalyticsLogging]
-            hour_metrics=None,  # type: Optional[Metrics]
-            minute_metrics=None,  # type: Optional[Metrics]
-            cors=None,  # type: Optional[List[CorsRule]]
-            target_version=None,  # type: Optional[str]
-            delete_retention_policy=None,  # type: Optional[RetentionPolicy]
-            static_website=None,  # type: Optional[StaticWebsite]
-            **kwargs
-    ):
-        # type: (...) -> None
+    def set_service_properties(self, **kwargs):
+        # type: (**Any) -> None
         """Sets the properties of a storage account's Datalake service, including
         Azure Storage Analytics.
+
+        .. versionadded:: 12.4.0
+            This operation was introduced in API version '2020-06-12'.
 
         If an element (e.g. analytics_logging) is left as None, the
         existing settings on the service for that functionality are preserved.
 
-        .. versionadded:: 12.3.0
-            This operation was introduced in API version '2020-06-12'.
-
-        :param analytics_logging:
+        :keyword analytics_logging:
             Groups the Azure Analytics Logging settings.
         :type analytics_logging: ~azure.storage.filedatalake.AnalyticsLogging
-        :param hour_metrics:
+        :keyword hour_metrics:
             The hour metrics settings provide a summary of request
             statistics grouped by API in hourly aggregates.
         :type hour_metrics: ~azure.storage.filedatalake.Metrics
-        :param minute_metrics:
+        :keyword minute_metrics:
             The minute metrics settings provide request statistics
             for each minute.
         :type minute_metrics: ~azure.storage.filedatalake.Metrics
-        :param cors:
+        :keyword cors:
             You can include up to five CorsRule elements in the
             list. If an empty list is specified, all CORS rules will be deleted,
             and CORS will be disabled for the service.
         :type cors: list[~azure.storage.filedatalake.CorsRule]
-        :param str target_version:
+        :keyword str target_version:
             Indicates the default version to use for requests if an incoming
             request's version is not specified.
-        :param delete_retention_policy:
+        :keyword delete_retention_policy:
             The delete retention policy specifies whether to retain deleted files/directories.
             It also specifies the number of days and versions of file/directory to keep.
         :type delete_retention_policy: ~azure.storage.filedatalake.RetentionPolicy
-        :param static_website:
+        :keyword static_website:
             Specifies whether the static website feature is enabled,
             and if yes, indicates the index document and 404 error document to use.
         :type static_website: ~azure.storage.filedatalake.StaticWebsite
@@ -489,21 +536,14 @@ class DataLakeServiceClient(StorageAccountHostsMixin):
             The timeout parameter is expressed in seconds.
         :rtype: None
         """
-        return self._blob_service_client.set_service_properties(analytics_logging=analytics_logging,
-                                                                hour_metrics=hour_metrics,
-                                                                minute_metrics=minute_metrics,
-                                                                cors=cors,
-                                                                target_version=target_version,
-                                                                delete_retention_policy=delete_retention_policy,
-                                                                static_website=static_website,
-                                                                **kwargs)  # pylint: disable=protected-access
+        return self._blob_service_client.set_service_properties(**kwargs)  # pylint: disable=protected-access
 
     def get_service_properties(self, **kwargs):
-        # type: (Any) -> Dict[str, Any]
+        # type: (**Any) -> Dict[str, Any]
         """Gets the properties of a storage account's datalake service, including
         Azure Storage Analytics.
 
-        .. versionadded:: 12.3.0
+        .. versionadded:: 12.4.0
             This operation was introduced in API version '2020-06-12'.
 
         :keyword int timeout:

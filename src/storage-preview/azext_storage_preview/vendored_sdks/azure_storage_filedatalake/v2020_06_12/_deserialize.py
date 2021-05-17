@@ -13,7 +13,7 @@ from azure.core.pipeline.policies import ContentDecodePolicy
 from azure.core.exceptions import HttpResponseError, DecodeError, ResourceModifiedError, ClientAuthenticationError, \
     ResourceNotFoundError, ResourceExistsError
 from ._models import FileProperties, DirectoryProperties, LeaseProperties, DeletedPathProperties, StaticWebsite, \
-    RetentionPolicy, Metrics, AnalyticsLogging  # pylint: disable=protected-access
+    RetentionPolicy, Metrics, AnalyticsLogging, PathProperties  # pylint: disable=protected-access
 from ._shared.models import StorageErrorCode
 
 if TYPE_CHECKING:
@@ -45,6 +45,10 @@ def deserialize_file_properties(response, obj, headers):
     return file_properties
 
 
+def deserialize_path_properties(path_list):
+    return [PathProperties._from_generated(path) for path in path_list] # pylint: disable=protected-access
+
+
 def get_deleted_path_properties_from_generated_code(generated):
     deleted_path = DeletedPathProperties()
     deleted_path.name = generated.name
@@ -52,6 +56,12 @@ def get_deleted_path_properties_from_generated_code(generated):
     deleted_path.remaining_retention_days = generated.properties.remaining_retention_days
     deleted_path.deletion_id = generated.deletion_id
     return deleted_path
+
+
+def is_file_path(_, __, headers):
+    if headers['x-ms-resource-type'] == "file":
+        return True
+    return False
 
 
 def get_datalake_service_properties(datalake_properties):
@@ -83,6 +93,7 @@ def from_blob_properties(blob_properties):
     file_props.content_settings = blob_properties.content_settings
     return file_props
 
+
 def normalize_headers(headers):
     normalized = {}
     for key, value in headers.items():
@@ -93,12 +104,11 @@ def normalize_headers(headers):
 
 
 def deserialize_metadata(response, obj, headers):  # pylint: disable=unused-argument
-    raw_metadata = {k: v for k, v in response.headers.items() if k.startswith("x-ms-meta-")}
+    try:
+        raw_metadata = {k: v for k, v in response.http_response.headers.items() if k.startswith("x-ms-meta-")}
+    except AttributeError:
+        raw_metadata = {k: v for k, v in response.headers.items() if k.startswith("x-ms-meta-")}
     return {k[10:]: v for k, v in raw_metadata.items()}
-
-
-def return_headers_and_deserialized_path_list(response, deserialized, response_headers):  # pylint: disable=unused-argument
-    return deserialized.paths if deserialized.paths else {}, normalize_headers(response_headers)
 
 
 def process_storage_error(storage_error):

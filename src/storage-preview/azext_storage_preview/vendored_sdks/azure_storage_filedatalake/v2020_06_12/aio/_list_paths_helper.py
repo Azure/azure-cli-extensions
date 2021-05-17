@@ -5,10 +5,11 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-few-public-methods, too-many-instance-attributes
 # pylint: disable=super-init-not-called, too-many-lines
-from azure.core.async_paging import AsyncPageIterator, AsyncItemPaged
+from azure.core.exceptions import HttpResponseError
+from azure.core.async_paging import AsyncPageIterator
 
 from .._deserialize import process_storage_error, get_deleted_path_properties_from_generated_code
-from .._generated.models import StorageErrorException, BlobItemInternal, BlobPrefix as GenBlobPrefix
+from .._generated.models import BlobItemInternal, BlobPrefix as GenBlobPrefix
 
 from .._shared.models import DictMixin
 from .._shared.response_handlers import return_context_and_deserialized
@@ -62,7 +63,7 @@ class DeletedPathPropertiesPaged(AsyncPageIterator):
                 max_results=self.results_per_page,
                 cls=return_context_and_deserialized,
                 use_location=self.location_mode)
-        except StorageErrorException as error:
+        except HttpResponseError as error:
             process_storage_error(error)
 
     async def _extract_data_cb(self, get_next_return):

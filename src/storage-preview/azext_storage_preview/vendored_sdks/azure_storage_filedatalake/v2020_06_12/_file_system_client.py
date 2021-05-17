@@ -4,7 +4,7 @@
 # license information.
 # --------------------------------------------------------------------------
 import functools
-from typing import Optional, Union
+from typing import Optional, Any, Union
 
 
 try:
@@ -15,18 +15,20 @@ except ImportError:
 import six
 
 from azure.core.pipeline import Pipeline
+from azure.core.exceptions import HttpResponseError
 from azure.core.paging import ItemPaged
-from ...blob import ContainerClient
+from azure.storage.blob import ContainerClient
 from ._shared.base_client import TransportWrapper, StorageAccountHostsMixin, parse_query, parse_connection_str
 from ._serialize import convert_dfs_url_to_blob_url
-from ._models import LocationMode, FileSystemProperties, PublicAccess, DeletedPathProperties
-from ._list_paths_helper import PathPropertiesPaged, DirectoryPrefix, DeletedPathPropertiesPaged
+from ._list_paths_helper import DeletedPathPropertiesPaged
+from ._models import LocationMode, FileSystemProperties, PublicAccess, DeletedPathProperties, FileProperties, \
+    DirectoryProperties
 from ._data_lake_file_client import DataLakeFileClient
 from ._data_lake_directory_client import DataLakeDirectoryClient
 from ._data_lake_lease import DataLakeLeaseClient
-from ._generated import DataLakeStorageClient
-from ._deserialize import process_storage_error, deserialize_metadata
-from ._generated.models import StorageErrorException, ListBlobsShowOnly
+from ._generated import AzureDataLakeStorageRESTAPI
+from ._generated.models import ListBlobsIncludeItem
+from ._deserialize import deserialize_path_properties, process_storage_error, is_file_path
 
 
 class FileSystemClient(StorageAccountHostsMixin):
@@ -49,9 +51,11 @@ class FileSystemClient(StorageAccountHostsMixin):
     :type file_system_name: str
     :param credential:
         The credentials with which to authenticate. This is optional if the
-        account URL already has a SAS token. The value can be a SAS token string, and account
+        account URL already has a SAS token. The value can be a SAS token string,
+        an instance of a AzureSasCredential from azure.core.credentials, an account
         shared access key, or an instance of a TokenCredentials class from azure.identity.
-        If the URL already has a SAS token, specifying an explicit credential will take priority.
+        If the resource URI already contains a SAS token, this will be ignored in favor of an explicit credential
+        - except in the case of AzureSasCredential, where the conflicting SAS tokens will raise a ValueError.
 
     .. admonition:: Example:
 
@@ -100,11 +104,10 @@ class FileSystemClient(StorageAccountHostsMixin):
                                                _hosts=datalake_hosts, **kwargs)
         # ADLS doesn't support secondary endpoint, make sure it's empty
         self._hosts[LocationMode.SECONDARY] = ""
-        self._client = DataLakeStorageClient(self.url, file_system_name, None, pipeline=self._pipeline)
-        self._datalake_client_for_blob_operation = DataLakeStorageClient(self._container_client.url,
-                                                                         file_system_name,
-                                                                         None,
-                                                                         pipeline=self._pipeline)
+        self._client = AzureDataLakeStorageRESTAPI(self.url, file_system=file_system_name, pipeline=self._pipeline)
+        self._datalake_client_for_blob_operation = AzureDataLakeStorageRESTAPI(self._container_client.url,
+                                                                               file_system=file_system_name,
+                                                                               pipeline=self._pipeline)
 
     def _format_url(self, hostname):
         file_system_name = self.file_system_name
@@ -145,7 +148,8 @@ class FileSystemClient(StorageAccountHostsMixin):
         :param credential:
             The credentials with which to authenticate. This is optional if the
             account URL already has a SAS token, or the connection string already has shared
-            access key values. The value can be a SAS token string, and account shared access
+            access key values. The value can be a SAS token string,
+            an instance of a AzureSasCredential from azure.core.credentials, an account shared access
             key, or an instance of a TokenCredentials class from azure.identity.
             Credentials provided here will take precedence over those in the connection string.
         :return a FileSystemClient
@@ -251,6 +255,43 @@ class FileSystemClient(StorageAccountHostsMixin):
         return self._container_client.create_container(metadata=metadata,
                                                        public_access=public_access,
                                                        **kwargs)
+
+    def exists(self, **kwargs):
+        # type: (**Any) -> bool
+        """
+        Returns True if a file system exists and returns False otherwise.
+
+        :kwarg int timeout:
+            The timeout parameter is expressed in seconds.
+        :returns: boolean
+        """
+        return self._container_client.exists(**kwargs)
+
+    def _rename_file_system(self, new_name, **kwargs):
+        # type: (str, **Any) -> FileSystemClient
+        """Renames a filesystem.
+
+        Operation is successful only if the source filesystem exists.
+
+        :param str new_name:
+            The new filesystem name the user wants to rename to.
+        :keyword lease:
+            Specify this to perform only if the lease ID given
+            matches the active lease ID of the source filesystem.
+        :paramtype lease: ~azure.storage.filedatalake.DataLakeLeaseClient or str
+        :keyword int timeout:
+            The timeout parameter is expressed in seconds.
+        :rtype: ~azure.storage.filedatalake.FileSystemClient
+        """
+        self._container_client._rename_container(new_name, **kwargs)   # pylint: disable=protected-access
+        #TODO: self._raw_credential would not work with SAS tokens
+        renamed_file_system = FileSystemClient(
+                "{}://{}".format(self.scheme, self.primary_hostname), file_system_name=new_name,
+                credential=self._raw_credential, api_version=self.api_version, _configuration=self._config,
+                _pipeline=self._pipeline, _location_mode=self._location_mode, _hosts=self._hosts,
+                require_encryption=self.require_encryption, key_encryption_key=self.key_encryption_key,
+                key_resolver_function=self.key_resolver_function)
+        return renamed_file_system
 
     def delete_file_system(self, **kwargs):
         # type: (Any) -> None
@@ -468,14 +509,13 @@ class FileSystemClient(StorageAccountHostsMixin):
                 :caption: List the paths in the file system.
         """
         timeout = kwargs.pop('timeout', None)
-        command = functools.partial(
-            self._client.file_system.list_paths,
+        return self._client.file_system.list_paths(
+            recursive=recursive,
+            max_results=max_results,
             path=path,
             timeout=timeout,
+            cls=deserialize_path_properties,
             **kwargs)
-        return ItemPaged(
-            command, recursive, path=path, max_results=max_results,
-            page_iterator_class=PathPropertiesPaged, **kwargs)
 
     def create_directory(self, directory,  # type: Union[DirectoryProperties, str]
                          metadata=None,  # type: Optional[Dict[str, str]]
@@ -710,7 +750,7 @@ class FileSystemClient(StorageAccountHostsMixin):
         file_client.delete_file(**kwargs)
         return file_client
 
-    def _undelete_path(self, deleted_path_name, deletion_id):
+    def _undelete_path_options(self, deleted_path_name, deletion_id):
         quoted_path = quote(unquote(deleted_path_name.strip('/')))
 
         url_and_token = self.url.replace('.dfs.', '.blob.').split('?')
@@ -723,14 +763,14 @@ class FileSystemClient(StorageAccountHostsMixin):
 
         return quoted_path, url, undelete_source
 
-    def undelete_path(self, deleted_path_name, deletion_id, **kwargs):
+    def _undelete_path(self, deleted_path_name, deletion_id, **kwargs):
         # type: (str, str, **Any) -> Union[DataLakeDirectoryClient, DataLakeFileClient]
         """Restores soft-deleted path.
 
         Operation will only be successful if used within the specified number of days
         set in the delete retention policy.
 
-        .. versionadded:: 12.3.0
+        .. versionadded:: 12.4.0
             This operation was introduced in API version '2020-06-12'.
 
         :param str deleted_path_name:
@@ -741,21 +781,21 @@ class FileSystemClient(StorageAccountHostsMixin):
             The timeout parameter is expressed in seconds.
         :rtype: ~azure.storage.file.datalake.DataLakeDirectoryClient or azure.storage.file.datalake.DataLakeFileClient
         """
-        _, url, undelete_source = self._undelete_path(deleted_path_name, deletion_id)
+        _, url, undelete_source = self._undelete_path_options(deleted_path_name, deletion_id)
 
         pipeline = Pipeline(
             transport=TransportWrapper(self._pipeline._transport), # pylint: disable = protected-access
             policies=self._pipeline._impl_policies # pylint: disable = protected-access
         )
-        path_client = DataLakeStorageClient(url, self.file_system_name, deleted_path_name, pipeline=pipeline)
+        path_client = AzureDataLakeStorageRESTAPI(
+            url, filesystem=self.file_system_name, path=deleted_path_name, pipeline=pipeline)
         try:
-            path_client.path.undelete(undelete_source=undelete_source, **kwargs)
-        except StorageErrorException as error:
-            process_storage_error(error)
-        resp = path_client.path.get_properties(cls=deserialize_metadata)
-        if resp.get('hdi_isfolder'):
+            is_file = path_client.path.undelete(undelete_source=undelete_source, cls=is_file_path, **kwargs)
+            if is_file:
+                return self.get_file_client(deleted_path_name)
             return self.get_directory_client(deleted_path_name)
-        return self.get_file_client(deleted_path_name)
+        except HttpResponseError as error:
+            process_storage_error(error)
 
     def _get_root_directory_client(self):
         # type: () -> DataLakeDirectoryClient
@@ -790,9 +830,9 @@ class FileSystemClient(StorageAccountHostsMixin):
                 :caption: Getting the directory client to interact with a specific directory.
         """
         try:
-            directory_name = directory.name
+            directory_name = directory.get('name')
         except AttributeError:
-            directory_name = directory
+            directory_name = str(directory)
         _pipeline = Pipeline(
             transport=TransportWrapper(self._pipeline._transport), # pylint: disable = protected-access
             policies=self._pipeline._impl_policies # pylint: disable = protected-access
@@ -830,9 +870,9 @@ class FileSystemClient(StorageAccountHostsMixin):
                 :caption: Getting the file client to interact with a specific file.
         """
         try:
-            file_path = file_path.name
+            file_path = file_path.get('name')
         except AttributeError:
-            pass
+            file_path = str(file_path)
         _pipeline = Pipeline(
             transport=TransportWrapper(self._pipeline._transport), # pylint: disable = protected-access
             policies=self._pipeline._impl_policies # pylint: disable = protected-access
@@ -844,35 +884,34 @@ class FileSystemClient(StorageAccountHostsMixin):
             key_encryption_key=self.key_encryption_key,
             key_resolver_function=self.key_resolver_function)
 
-    def get_deleted_paths(self,
-                          name_starts_with=None,    # type: Optional[str],
-                          **kwargs):
-        # type: (...) -> ItemPaged[DeletedPathProperties]
-        """Returns a generator to list the paths(could be files or directories) under the specified file system.
+    def list_deleted_paths(self, **kwargs):
+        # type: (Any) -> ItemPaged[DeletedPathProperties]
+        """Returns a generator to list the deleted (file or directory) paths under the specified file system.
         The generator will lazily follow the continuation tokens returned by
         the service.
 
-        .. versionadded:: 12.3.0
+        .. versionadded:: 12.4.0
             This operation was introduced in API version '2020-06-12'.
 
-        :param str name_starts_with:
+        :keyword str path_prefix:
             Filters the results to return only paths under the specified path.
         :keyword int max_results:
             An optional value that specifies the maximum number of items to return per page.
             If omitted or greater than 5,000, the response will include up to 5,000 items per page.
         :keyword int timeout:
             The timeout parameter is expressed in seconds.
-        :returns: An iterable (auto-paging) response of PathProperties.
+        :returns: An iterable (auto-paging) response of DeletedPathProperties.
         :rtype:
             ~azure.core.paging.ItemPaged[~azure.storage.filedatalake.DeletedPathProperties]
         """
+        path_prefix = kwargs.pop('path_prefix', None)
         results_per_page = kwargs.pop('max_results', None)
         timeout = kwargs.pop('timeout', None)
         command = functools.partial(
             self._datalake_client_for_blob_operation.file_system.list_blob_hierarchy_segment,
-            showonly=ListBlobsShowOnly.deleted,
+            showonly=ListBlobsIncludeItem.deleted,
             timeout=timeout,
             **kwargs)
         return ItemPaged(
-            command, prefix=name_starts_with, page_iterator_class=DeletedPathPropertiesPaged,
+            command, prefix=path_prefix, page_iterator_class=DeletedPathPropertiesPaged,
             results_per_page=results_per_page, **kwargs)

@@ -80,7 +80,7 @@ def return_headers_and_deserialized(response, deserialized, response_headers):  
 
 
 def return_context_and_deserialized(response, deserialized, response_headers):  # pylint: disable=unused-argument
-    return response.location_mode, deserialized
+    return response.http_response.location_mode, deserialized
 
 
 def process_storage_error(storage_error):
@@ -144,7 +144,7 @@ def process_storage_error(storage_error):
     error = raise_error(message=error_message, response=storage_error.response)
     error.error_code = error_code
     error.additional_info = additional_data
-    raise error
+    error.raise_with_traceback()
 
 
 def parse_to_internal_user_delegation_key(service_user_delegation_key):

@@ -9,7 +9,7 @@ from typing import (  # pylint: disable=unused-import
     Union, Optional, Any,
     TypeVar, TYPE_CHECKING
 )
-from ...blob.aio import BlobLeaseClient
+from azure.storage.blob.aio import BlobLeaseClient
 from .._data_lake_lease import DataLakeLeaseClient as DataLakeLeaseClientBase
 
 

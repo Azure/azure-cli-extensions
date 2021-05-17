@@ -10,7 +10,7 @@ from typing import (  # pylint: disable=unused-import
     Union, Optional, Any,
     TypeVar, TYPE_CHECKING
 )
-from ...blob import BlobLeaseClient
+from azure.storage.blob import BlobLeaseClient
 
 
 if TYPE_CHECKING:
