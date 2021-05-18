@@ -201,9 +201,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Resource group Creation
     if resource_group_exists(cmd.cli_ctx, resource_group_name, subscription_id) is False:
-        resource_group_params = {'location': location}
+        from azure.cli.core.profiles import ResourceType
+        ResourceGroup = cmd.get_models('ResourceGroup', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
+        parameters = ResourceGroup(location=location)
         try:
-            resourceClient.resource_groups.create_or_update(resource_group_name, resource_group_params)
+            resourceClient.resource_groups.create_or_update(resource_group_name, parameters)
         except Exception as e:  # pylint: disable=broad-except
             utils.arm_exception_handler(e, consts.Create_ResourceGroup_Fault_Type, 'Failed to create the resource group')
 
