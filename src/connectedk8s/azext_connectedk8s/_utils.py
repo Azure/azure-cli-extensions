@@ -460,9 +460,9 @@ def check_provider_registrations(cli_ctx):
             logger.error("{} provider is not registered".format(consts.Connected_Cluster_Provider_Namespace))
         kc_registration_state = rp_client.get(consts.Kubernetes_Configuration_Provider_Namespace).registration_state
         if kc_registration_state != "Registered":
-            logger.error("{} provider is not registered".format(consts.Kubernetes_Configuration_Provider_Namespace))
+            logger.warning("{} provider is not registered".format(consts.Kubernetes_Configuration_Provider_Namespace))
     except Exception as ex:
-        logger.warning("Couldn't check the required provider's registration status. Error: {}".format(str(ex)), exc_info=True)
+        logger.warning("Couldn't check the required provider's registration status. Error: {}".format(str(ex)))
 
 
 # Returns a list of kubernetes pod objects in a given namespace. Object description at: https://github.com/kubernetes-client/python/blob/master/kubernetes/docs/V1PodList.md
