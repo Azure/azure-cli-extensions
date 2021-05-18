@@ -9,13 +9,14 @@ ms.topic: article
 ms.prod: azure
 ms.technology: azure-cli
 ms.devlang: azure-cli
+ms.custom: devx-track-azurecli
 ---
 
 # Available extensions for the Azure CLI
 
 This article is a complete list of the available extensions for the Azure CLI which are supported by Microsoft.
 
-The list of extensions is also available  from the CLI. To get it, run [az extension list-available](/cli/azure/extension#az_extension_list_available):
+The list of extensions is also available from the CLI. To get it, run [az extension list-available](/cli/azure/extension#az_extension_list_available):
 
 ```azurecli-interactive
 az extension list-available --output table
