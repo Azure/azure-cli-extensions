@@ -12,6 +12,9 @@ Feature_Values = ["cluster-connect", "azure-rbac", "custom-locations"]
 Custom_Locations_Provider_Namespace = 'Microsoft.ExtendedLocation'
 Connected_Cluster_Provider_Namespace = 'Microsoft.Kubernetes'
 Kubernetes_Configuration_Provider_Namespace = 'Microsoft.KubernetesConfiguration'
+Arc_Namespace = 'azure-arc'
+AZURE_IDENTITY_CERTIFICATE_SECRET = 'azure-identity-certificate'
+ISO_861_Time_format = "%Y-%m-%dT%H:%M:%SZ"
 
 Azure_PublicCloudName = 'AZUREPUBLICCLOUD'
 Azure_USGovCloudName = 'AZUREUSGOVERNMENTCLOUD'

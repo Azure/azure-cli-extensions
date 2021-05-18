@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.1.4
+++++++
+* `az connectedk8s troubleshoot`: Added support for troubleshooting issues with a connected cluster
+
+
 1.1.3
 ++++++
 * Fix for list_node() sdk function for AKS v1.19.x clusters
