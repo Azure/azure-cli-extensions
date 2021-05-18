@@ -26,9 +26,9 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
             'rp_name': 'azcli-test-resource-pool',
             'vnet_morefid': 'network-o761',
             'vnet_name': 'azcli-test-virtual-network',
-            'vmtpl_morefid': 'vm-64',
+            'vmtpl_morefid': 'vm-55',
             'vmtpl_name': 'azcli-test-vm-template',
-            'vm_name': 'azcli-test-vm'
+            'vm_name': 'azcli-test-virtual-machine'
         })
 
         # Validate the show command output with vcenter name.
@@ -84,6 +84,22 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         self.cmd('az connectedvmware inventory-item show_command -g {rg} --vcenter-name {vc_name} --inventory-item {rp_morefid}', checks=[
             self.check('name', '{rp_morefid}'),
         ])
+
+        # Create vm resource.
+        self.cmd('az connectedvmware vm create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} --resource-pool {rp_name} --vm-template {vmtpl_name} --name {vm_name}')
+
+        # Validate the show command output with vm name.
+        self.cmd('az connectedvmware vm show_command -g {rg} --name {vm_name}', checks=[
+            self.check('name', '{vm_name}'),
+        ])
+
+        # List the vm resources in this resource group.
+        resource_list = self.cmd('az connectedvmware vm list -g {rg}').get_output_in_json()
+        # At this point there should be 1 vm resource.
+        assert len(resource_list) >= 1
+
+        # Delete the created vm.
+        self.cmd('az connectedvmware vm delete -g {rg} --name {vm_name}')
 
         # Delete the created resource-pool.
         self.cmd('az connectedvmware resource-pool delete -g {rg} --name {rp_name}')

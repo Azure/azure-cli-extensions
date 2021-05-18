@@ -680,7 +680,7 @@ def stop_vm(
     client: VirtualMachinesOperations,
     resource_group_name,
     resource_name,
-    skip_shutdown=False,
+    skip_shutdown=None,
     no_wait=False,
 ):
 
