@@ -49,7 +49,7 @@ import hashlib
 import re
 import logging
 from setuptools._vendor.packaging import version
-import colorama # pylint: disable=import-error
+import colorama
 from datetime import datetime, timezone
 logger = get_logger(__name__)
 # pylint:disable=unused-argument
@@ -675,7 +675,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
 
     # Deleting the azure-arc agents
     utils.delete_arc_agents(release_namespace, kube_config, kube_context, configuration)
-    utils.check_delete_job(configuration, consts.Arc_Namespace) # Checks for the completion/absence of delete job
+    utils.check_delete_job(configuration, consts.Arc_Namespace)  # Checks for the completion/absence of delete job
 
 
 def get_release_namespace(kube_config, kube_context):
@@ -1423,7 +1423,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
                  sas_token=None, output_file=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz')):
     colorama.init()
     print(f"{colorama.Fore.GREEN}Troubleshooting the ConnectedCluster for possible issues...")
-    utils.check_connectivity() # Checks internet connectivity
+    utils.check_connectivity()  # Checks internet connectivity
     troubleshoot_log_path = os.path.join(os.path.expanduser('~'), '.azure', 'connected8s_troubleshoot.log')
     utils.setup_logger('connectedk8s_troubleshoot', troubleshoot_log_path)
     tr_logger = logging.getLogger('connectedk8s_troubleshoot')

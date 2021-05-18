@@ -476,8 +476,10 @@ def get_pod_list(api_instance, namespace, label_selector="", field_selector=""):
 def try_list_node_fix():
     try:
         from kubernetes.client.models.v1_container_image import V1ContainerImage
+
         def names(self, names):
             self._names = names
+
         V1ContainerImage.names = V1ContainerImage.names.setter(names)
     except Exception as ex:
         logger.debug("Error while trying to monkey patch the fix for list_node(): {}".format(str(ex)))
@@ -501,9 +503,9 @@ def can_create_clusterrolebindings(configuration):
     try:
         api_instance = kube_client.AuthorizationV1Api(kube_client.ApiClient(configuration))
         access_review = kube_client.V1SelfSubjectAccessReview(spec={
-            "resourceAttributes":{
-                "verb":"create",
-                "resource":"clusterrolebindings",
+            "resourceAttributes": {
+                "verb": "create",
+                "resource": "clusterrolebindings",
                 "group": "rbac.authorization.k8s.io"
             }
         })
