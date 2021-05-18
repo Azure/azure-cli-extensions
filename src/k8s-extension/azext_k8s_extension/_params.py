@@ -9,9 +9,9 @@ from azure.cli.core.commands.parameters import (
     tags_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-import azext_k8s_extension._consts as consts
+from . import consts
 
-from azext_k8s_extension.action import (
+from .action import (
     AddConfigurationSettings,
     AddConfigurationProtectedSettings
 )
