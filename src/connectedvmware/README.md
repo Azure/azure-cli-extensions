@@ -1,6 +1,6 @@
 # Microsoft Azure CLI ConnectedVMware Extension #
 
-The Azure CLI extension for [Azure Arc VMware Service](https://azure.microsoft.com/en-us/services/azure-arc) is an extension for Azure CLI 2.0.
+The Azure CLI extension for [Azure Arc VMware Service](https://github.com/Azure/azure-arc-enabled-vmware-vsphere-preview/blob/main/docs/overview.md) is an extension for Azure CLI 2.0.
 
 ## Install
 ``` sh
@@ -8,7 +8,7 @@ az extension add --name connectedvmware
 ```
 
 ## Usage
-See the [extension reference documenation](https://azure.microsoft.com/en-us/services/azure-arc).
+See the [extension reference documenation](https://github.com/Azure/azure-arc-enabled-vmware-vsphere-preview/blob/main/docs/overview.md).
 
 ``` sh
 az connectedvmware --help

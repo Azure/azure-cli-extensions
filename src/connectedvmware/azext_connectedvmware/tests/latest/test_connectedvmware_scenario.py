@@ -16,34 +16,80 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ConnectedvmwareScenarioTest(ScenarioTest):
 
-    def test_connectedvmware_vcenter(self):
-        resource_group = "santosh-rg"
+    def test_connectedvmware(self):
+        self.kwargs.update({
+            'rg': 'azcli-test-rg',
+            'loc': 'eastus2euap',
+            'cus_loc': 'azcli-test-cl-avs',
+            'vc_name': 'azcli-test-vcenter-avs',
+            'rp_morefid': 'resgroup-5034',
+            'rp_name': 'azcli-test-resource-pool',
+            'vnet_morefid': 'network-o761',
+            'vnet_name': 'azcli-test-virtual-network',
+            'vmtpl_morefid': 'vm-64',
+            'vmtpl_name': 'azcli-test-vm-template',
+            'vm_name': 'azcli-test-vm'
+        })
 
-        # count the list of vcenter resources in this resource group
-        count = len(self.cmd('az connectedvmware vcenter list --resource-group ' + resource_group).get_output_in_json())
+        # Validate the show command output with vcenter name.
+        self.cmd('az connectedvmware vcenter show_command -g {rg} --name {vc_name}', checks=[
+            self.check('name', '{vc_name}'),
+        ])
+
+        # Count the vcenter resources in this resource group with list command
+        count = len(self.cmd('az connectedvmware vcenter list -g {rg}').get_output_in_json())
         # vcenter count list should report 1
-        self.assertEqual(count, 1, 'cluster count expected to be 1')
+        self.assertEqual(count, 1, 'vcenter resource count expected to be 1')
 
-    def test_connectedvmware_resourcePool(self):
-        resource_group = "santosh-rg"
+        # Create resource-pool resource.
+        self.cmd('az connectedvmware resource-pool create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} --mo-ref-id {rp_morefid} --name {rp_name}')
 
-        # count the resource-pool resources in this resource group
-        count = len(self.cmd('az connectedvmware resource-pool list --resource-group ' + resource_group).get_output_in_json())
-        # resource-pool count should be greater than 1
-        assert count >= 1
+        # Validate the show command output with resource-pool name.
+        self.cmd('az connectedvmware resource-pool show_command -g {rg} --name {rp_name}', checks=[
+            self.check('name', '{rp_name}'),
+        ])
 
-    def test_connectedvmware_virtualNetwork(self):
-        resource_group = "santosh-rg"
+        # List the resource-pool resources in this resource group.
+        resource_list = self.cmd('az connectedvmware resource-pool list -g {rg}').get_output_in_json()
+        # At this point there should be 1 resource-pool resource.
+        assert len(resource_list) >= 1
 
-        # count the virtual-network resources in this resource group
-        count = len(self.cmd('az connectedvmware virtual-network list --resource-group ' + resource_group).get_output_in_json())
-        # virtual-network count should be greater than or equal to 1
-        assert count >= 1
+        # Create virtual-network resource.
+        self.cmd('az connectedvmware virtual-network create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} --mo-ref-id {vnet_morefid} --name {vnet_name}')
 
-    def test_connectedvmware_vm(self):
-        resource_group = "santosh-rg"
+        # Validate the show command output with virtual-network name.
+        self.cmd('az connectedvmware virtual-network show_command -g {rg} --name {vnet_name}', checks=[
+            self.check('name', '{vnet_name}'),
+        ])
 
-        # count the list of vm resources in this resource group
-        count = len(self.cmd('az connectedvmware vm list --resource-group ' + resource_group).get_output_in_json())
-        # vm count should be greater than or equal 1
-        assert count >= 1
+        # List the virtual-network resources in this resource group.
+        resource_list = self.cmd('az connectedvmware virtual-network list -g {rg}').get_output_in_json()
+        # At this point there should be 1 virtual-network resource.
+        assert len(resource_list) >= 1
+
+        # Create vm-template resource.
+        self.cmd('az connectedvmware vm-template create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} --mo-ref-id {vmtpl_morefid} --name {vmtpl_name}')
+
+        # Validate the show command output with vm-template name.
+        self.cmd('az connectedvmware vm-template show_command -g {rg} --name {vmtpl_name}', checks=[
+            self.check('name', '{vmtpl_name}'),
+        ])
+
+        # List the vm-template resources in this resource group.
+        resource_list = self.cmd('az connectedvmware vm-template list -g {rg}').get_output_in_json()
+        # At this point there should be 1 vm-template resource.
+        assert len(resource_list) >= 1
+
+        # Validate the show command output with inventory-item name.
+        self.cmd('az connectedvmware inventory-item show_command -g {rg} --vcenter-name {vc_name} --inventory-item {rp_morefid}', checks=[
+            self.check('name', '{rp_morefid}'),
+        ])
+
+        # Delete the created resource-pool.
+        self.cmd('az connectedvmware resource-pool delete -g {rg} --name {rp_name}')
+
+        # Delete the created virtual-network.
+        self.cmd('az connectedvmware virtual-network delete -g {rg} --name {vnet_name}')
+
+        # Delete the created vm-template.
+        self.cmd('az connectedvmware vm-template delete -g {rg} --name {vmtpl_name}')

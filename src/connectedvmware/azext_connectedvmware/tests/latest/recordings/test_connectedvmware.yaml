@@ -1,0 +1,1188 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vcenter show_command
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/vcenters/azcli-test-vcenter-avs?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/vcenters/azcli-test-vcenter-avs","name":"azcli-test-vcenter-avs","type":"microsoft.connectedvmwarevsphere/vcenters","kind":"VMware","location":"eastus2euap","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azcli-test-rg/providers/microsoft.extendedlocation/customlocations/azcli-test-cl-avs"},"systemData":{"createdBy":"sanmishra@microsoft.com","createdByType":"User","createdAt":"2021-05-17T11:38:14.9072191Z","lastModifiedBy":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","lastModifiedByType":"Application","lastModifiedAt":"2021-05-17T11:38:32.5791082Z"},"properties":{"credentials":{"username":"cloudadmin@vsphere.local"},"fqdn":"10.160.0.2","port":443,"provisioningState":"Succeeded","customResourceName":"fc8fce52-028e-4b61-b931-9a5902ab5a81","uuid":"fc8fce52-028e-4b61-b931-9a5902ab5a81","version":"6.7.0","instanceUuid":"4ea21e20-2883-44e4-9224-0a48dfff2a81","connectionStatus":"Connected"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1093'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:37:27 GMT
+      etag:
+      - '"03005e99-0000-3400-0000-60a255b90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vcenter list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/vcenters?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/vcenters/azcli-test-vcenter-avs","name":"azcli-test-vcenter-avs","type":"microsoft.connectedvmwarevsphere/vcenters","kind":"VMware","location":"eastus2euap","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/azcli-test-rg/providers/microsoft.extendedlocation/customlocations/azcli-test-cl-avs"},"systemData":{"createdBy":"sanmishra@microsoft.com","createdByType":"User","createdAt":"2021-05-17T11:38:14.9072191Z","lastModifiedBy":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","lastModifiedByType":"Application","lastModifiedAt":"2021-05-17T11:38:32.5791082Z"},"properties":{"credentials":{"username":"cloudadmin@vsphere.local"},"fqdn":"10.160.0.2","port":443,"provisioningState":"Succeeded","customResourceName":"fc8fce52-028e-4b61-b931-9a5902ab5a81","uuid":"fc8fce52-028e-4b61-b931-9a5902ab5a81","version":"6.7.0","instanceUuid":"4ea21e20-2883-44e4-9224-0a48dfff2a81","connectionStatus":"Connected"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1105'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:37:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "extendedLocation": {"type": "CustomLocation",
+      "name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl-avs"},
+      "properties": {"vCenterId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVmwarevSphere/VCenters/azcli-test-vcenter-avs",
+      "moRefId": "resgroup-5034"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware resource-pool create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '454'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -l --custom-location --vcenter --mo-ref-id --name
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/resourcePools/azcli-test-resource-pool?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/resourcePools/azcli-test-resource-pool","name":"azcli-test-resource-pool","type":"microsoft.connectedvmwarevsphere/resourcepools","location":"eastus2euap","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl-avs"},"systemData":{"createdBy":"sanmishra@microsoft.com","createdByType":"User","createdAt":"2021-05-18T13:37:32.110869Z","lastModifiedBy":"sanmishra@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-05-18T13:37:32.110869Z"},"properties":{"vCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVmwarevSphere/VCenters/azcli-test-vcenter-avs","moRefId":"resgroup-5034","provisioningState":"Accepted"}}'
+    headers:
+      api-supported-versions:
+      - 2019-12-20-privatepreview, 2020-10-01-preview
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/b7ed1ebe-676a-4053-bb5a-fb553d53f325?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '970'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:37:40 GMT
+      etag:
+      - '"0000e76c-0000-3400-0000-60a3c3240000"'
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/ResourcePools/azcli-test-resource-pool
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware resource-pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -l --custom-location --vcenter --mo-ref-id --name
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/b7ed1ebe-676a-4053-bb5a-fb553d53f325?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/b7ed1ebe-676a-4053-bb5a-fb553d53f325","name":"b7ed1ebe-676a-4053-bb5a-fb553d53f325","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/resourcePools/azcli-test-resource-pool","status":"Succeeded","startTime":"2021-05-18T13:37:40.130615Z","endTime":"2021-05-18T13:37:50.1361064Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '475'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:38:10 GMT
+      etag:
+      - '"02001e2f-0000-3400-0000-60a3c32e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware resource-pool create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -l --custom-location --vcenter --mo-ref-id --name
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/resourcePools/azcli-test-resource-pool?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/resourcePools/azcli-test-resource-pool","name":"azcli-test-resource-pool","type":"microsoft.connectedvmwarevsphere/resourcepools","location":"eastus2euap","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl-avs"},"systemData":{"createdBy":"sanmishra@microsoft.com","createdByType":"User","createdAt":"2021-05-18T13:37:32.110869Z","lastModifiedBy":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","lastModifiedByType":"Application","lastModifiedAt":"2021-05-18T13:37:49.9305901Z"},"properties":{"vCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVmwarevSphere/VCenters/azcli-test-vcenter-avs","moRefId":"resgroup-5034","provisioningState":"Succeeded","customResourceName":"134d3260-3e5c-498b-9b21-c9a4688bb62a","uuid":"134d3260-3e5c-498b-9b21-c9a4688bb62a","moName":"SanmishraResourcePool","cpuSharesLevel":"normal","cpuLimitMHz":-1,"memSharesLevel":"normal","memLimitMB":-1}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:38:10 GMT
+      etag:
+      - '"0000ed6c-0000-3400-0000-60a3c32e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware resource-pool show_command
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/resourcePools/azcli-test-resource-pool?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/resourcePools/azcli-test-resource-pool","name":"azcli-test-resource-pool","type":"microsoft.connectedvmwarevsphere/resourcepools","location":"eastus2euap","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl-avs"},"systemData":{"createdBy":"sanmishra@microsoft.com","createdByType":"User","createdAt":"2021-05-18T13:37:32.110869Z","lastModifiedBy":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","lastModifiedByType":"Application","lastModifiedAt":"2021-05-18T13:37:49.9305901Z"},"properties":{"vCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVmwarevSphere/VCenters/azcli-test-vcenter-avs","moRefId":"resgroup-5034","provisioningState":"Succeeded","customResourceName":"134d3260-3e5c-498b-9b21-c9a4688bb62a","uuid":"134d3260-3e5c-498b-9b21-c9a4688bb62a","moName":"SanmishraResourcePool","cpuSharesLevel":"normal","cpuLimitMHz":-1,"memSharesLevel":"normal","memLimitMB":-1}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:38:12 GMT
+      etag:
+      - '"0000ed6c-0000-3400-0000-60a3c32e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware resource-pool list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/resourcePools?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/resourcePools/azcli-test-resource-pool","name":"azcli-test-resource-pool","type":"microsoft.connectedvmwarevsphere/resourcepools","location":"eastus2euap","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl-avs"},"systemData":{"createdBy":"sanmishra@microsoft.com","createdByType":"User","createdAt":"2021-05-18T13:37:32.110869Z","lastModifiedBy":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","lastModifiedByType":"Application","lastModifiedAt":"2021-05-18T13:37:49.9305901Z"},"properties":{"vCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVmwarevSphere/VCenters/azcli-test-vcenter-avs","moRefId":"resgroup-5034","provisioningState":"Succeeded","customResourceName":"134d3260-3e5c-498b-9b21-c9a4688bb62a","uuid":"134d3260-3e5c-498b-9b21-c9a4688bb62a","moName":"SanmishraResourcePool","cpuSharesLevel":"normal","cpuLimitMHz":-1,"memSharesLevel":"normal","memLimitMB":-1}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1228'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:38:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "extendedLocation": {"type": "CustomLocation",
+      "name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl-avs"},
+      "properties": {"vCenterId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVmwarevSphere/VCenters/azcli-test-vcenter-avs",
+      "moRefId": "network-o761"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware virtual-network create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '453'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -l --custom-location --vcenter --mo-ref-id --name
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualNetworks/azcli-test-virtual-network?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualNetworks/azcli-test-virtual-network","name":"azcli-test-virtual-network","type":"microsoft.connectedvmwarevsphere/virtualnetworks","location":"eastus2euap","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl-avs"},"systemData":{"createdBy":"sanmishra@microsoft.com","createdByType":"User","createdAt":"2021-05-18T13:38:16.9571675Z","lastModifiedBy":"sanmishra@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-05-18T13:38:16.9571675Z"},"properties":{"vCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVmwarevSphere/VCenters/azcli-test-vcenter-avs","moRefId":"network-o761","provisioningState":"Accepted"}}'
+    headers:
+      api-supported-versions:
+      - 2019-12-20-privatepreview, 2020-10-01-preview
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/21173c74-0fe1-4935-8500-b92a94b84842?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '979'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:38:19 GMT
+      etag:
+      - '"0100a3f8-0000-3400-0000-60a3c34b0000"'
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/VirtualNetworks/azcli-test-virtual-network
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware virtual-network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -l --custom-location --vcenter --mo-ref-id --name
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/21173c74-0fe1-4935-8500-b92a94b84842?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/21173c74-0fe1-4935-8500-b92a94b84842","name":"21173c74-0fe1-4935-8500-b92a94b84842","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualNetworks/azcli-test-virtual-network","status":"Succeeded","startTime":"2021-05-18T13:38:18.8619425Z","endTime":"2021-05-18T13:38:23.3272266Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '480'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:38:49 GMT
+      etag:
+      - '"0200202f-0000-3400-0000-60a3c34f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware virtual-network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -l --custom-location --vcenter --mo-ref-id --name
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualNetworks/azcli-test-virtual-network?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualNetworks/azcli-test-virtual-network","name":"azcli-test-virtual-network","type":"microsoft.connectedvmwarevsphere/virtualnetworks","location":"eastus2euap","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl-avs"},"systemData":{"createdBy":"sanmishra@microsoft.com","createdByType":"User","createdAt":"2021-05-18T13:38:16.9571675Z","lastModifiedBy":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","lastModifiedByType":"Application","lastModifiedAt":"2021-05-18T13:38:23.1435182Z"},"properties":{"vCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVmwarevSphere/VCenters/azcli-test-vcenter-avs","moRefId":"network-o761","provisioningState":"Succeeded","customResourceName":"325f22b1-c59b-4a62-8c7d-11691a5aeb8c","uuid":"325f22b1-c59b-4a62-8c7d-11691a5aeb8c","moName":"segment-2"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1127'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:38:50 GMT
+      etag:
+      - '"0100a9f8-0000-3400-0000-60a3c34f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware virtual-network show_command
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualNetworks/azcli-test-virtual-network?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualNetworks/azcli-test-virtual-network","name":"azcli-test-virtual-network","type":"microsoft.connectedvmwarevsphere/virtualnetworks","location":"eastus2euap","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl-avs"},"systemData":{"createdBy":"sanmishra@microsoft.com","createdByType":"User","createdAt":"2021-05-18T13:38:16.9571675Z","lastModifiedBy":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","lastModifiedByType":"Application","lastModifiedAt":"2021-05-18T13:38:23.1435182Z"},"properties":{"vCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVmwarevSphere/VCenters/azcli-test-vcenter-avs","moRefId":"network-o761","provisioningState":"Succeeded","customResourceName":"325f22b1-c59b-4a62-8c7d-11691a5aeb8c","uuid":"325f22b1-c59b-4a62-8c7d-11691a5aeb8c","moName":"segment-2"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1127'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:38:52 GMT
+      etag:
+      - '"0100a9f8-0000-3400-0000-60a3c34f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware virtual-network list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualNetworks?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualNetworks/azcli-test-virtual-network","name":"azcli-test-virtual-network","type":"microsoft.connectedvmwarevsphere/virtualnetworks","location":"eastus2euap","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl-avs"},"systemData":{"createdBy":"sanmishra@microsoft.com","createdByType":"User","createdAt":"2021-05-18T13:38:16.9571675Z","lastModifiedBy":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","lastModifiedByType":"Application","lastModifiedAt":"2021-05-18T13:38:23.1435182Z"},"properties":{"vCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVmwarevSphere/VCenters/azcli-test-vcenter-avs","moRefId":"network-o761","provisioningState":"Succeeded","customResourceName":"325f22b1-c59b-4a62-8c7d-11691a5aeb8c","uuid":"325f22b1-c59b-4a62-8c7d-11691a5aeb8c","moName":"segment-2"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1139'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:38:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2euap", "extendedLocation": {"type": "CustomLocation",
+      "name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl-avs"},
+      "properties": {"vCenterId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVmwarevSphere/VCenters/azcli-test-vcenter-avs",
+      "moRefId": "vm-64"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm-template create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '446'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -l --custom-location --vcenter --mo-ref-id --name
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineTemplates/azcli-test-vm-template?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineTemplates/azcli-test-vm-template","name":"azcli-test-vm-template","type":"microsoft.connectedvmwarevsphere/virtualmachinetemplates","location":"eastus2euap","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl-avs"},"systemData":{"createdBy":"sanmishra@microsoft.com","createdByType":"User","createdAt":"2021-05-18T13:38:56.839885Z","lastModifiedBy":"sanmishra@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2021-05-18T13:38:56.839885Z"},"properties":{"vCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVmwarevSphere/VCenters/azcli-test-vcenter-avs","moRefId":"vm-64","provisioningState":"Accepted"}}'
+    headers:
+      api-supported-versions:
+      - 2019-12-20-privatepreview, 2020-10-01-preview
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/1daa9e66-87d2-4945-bbc8-2fceae209f31?api-version=2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '978'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:39:04 GMT
+      etag:
+      - '"0000fe5c-0000-3400-0000-60a3c3780000"'
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/VirtualMachineTemplates/azcli-test-vm-template
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm-template create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -l --custom-location --vcenter --mo-ref-id --name
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/1daa9e66-87d2-4945-bbc8-2fceae209f31?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/1daa9e66-87d2-4945-bbc8-2fceae209f31","name":"1daa9e66-87d2-4945-bbc8-2fceae209f31","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineTemplates/azcli-test-vm-template","status":"Succeeded","startTime":"2021-05-18T13:39:04.2733397Z","endTime":"2021-05-18T13:39:13.3852486Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '484'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:39:34 GMT
+      etag:
+      - '"02003d2f-0000-3400-0000-60a3c3810000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm-template create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -l --custom-location --vcenter --mo-ref-id --name
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineTemplates/azcli-test-vm-template?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineTemplates/azcli-test-vm-template","name":"azcli-test-vm-template","type":"microsoft.connectedvmwarevsphere/virtualmachinetemplates","location":"eastus2euap","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl-avs"},"systemData":{"createdBy":"sanmishra@microsoft.com","createdByType":"User","createdAt":"2021-05-18T13:38:56.839885Z","lastModifiedBy":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","lastModifiedByType":"Application","lastModifiedAt":"2021-05-18T13:39:13.1256964Z"},"properties":{"vCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVmwarevSphere/VCenters/azcli-test-vcenter-avs","moRefId":"vm-64","provisioningState":"Succeeded","customResourceName":"57b746b6-ef4b-45e3-be72-e380c2037b27","uuid":"57b746b6-ef4b-45e3-be72-e380c2037b27","networkInterfaces":[{"name":"nic_1","label":"Network
+        adapter 1","macAddress":"00:50:56:93:fb:46","networkMoRefId":"network-o50","networkMoName":"segment-1","nicType":"vmxnet3","deviceKey":4000,"powerOnBoot":"enabled","ipSettings":{"allocationMethod":"unset"}}],"disks":[{"diskObjectId":"403-2000","name":"disk_1","label":"Hard
+        disk 1","diskSizeGB":10,"deviceKey":2000,"diskMode":"persistent","controllerKey":1000,"unitNumber":0}],"moName":"azurevmwarecloudtestubuntu20.04","memorySizeMB":2048,"numCPUs":1,"numCoresPerSocket":1,"osType":"Linux","osName":"Ubuntu
+        Linux (64-bit)","folderPath":"SDDC-Datacenter/Templates"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1725'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:39:35 GMT
+      etag:
+      - '"0000045d-0000-3400-0000-60a3c3810000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm-template show_command
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineTemplates/azcli-test-vm-template?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineTemplates/azcli-test-vm-template","name":"azcli-test-vm-template","type":"microsoft.connectedvmwarevsphere/virtualmachinetemplates","location":"eastus2euap","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl-avs"},"systemData":{"createdBy":"sanmishra@microsoft.com","createdByType":"User","createdAt":"2021-05-18T13:38:56.839885Z","lastModifiedBy":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","lastModifiedByType":"Application","lastModifiedAt":"2021-05-18T13:39:13.1256964Z"},"properties":{"vCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVmwarevSphere/VCenters/azcli-test-vcenter-avs","moRefId":"vm-64","provisioningState":"Succeeded","customResourceName":"57b746b6-ef4b-45e3-be72-e380c2037b27","uuid":"57b746b6-ef4b-45e3-be72-e380c2037b27","networkInterfaces":[{"name":"nic_1","label":"Network
+        adapter 1","macAddress":"00:50:56:93:fb:46","networkMoRefId":"network-o50","networkMoName":"segment-1","nicType":"vmxnet3","deviceKey":4000,"powerOnBoot":"enabled","ipSettings":{"allocationMethod":"unset"}}],"disks":[{"diskObjectId":"403-2000","name":"disk_1","label":"Hard
+        disk 1","diskSizeGB":10,"deviceKey":2000,"diskMode":"persistent","controllerKey":1000,"unitNumber":0}],"moName":"azurevmwarecloudtestubuntu20.04","memorySizeMB":2048,"numCPUs":1,"numCoresPerSocket":1,"osType":"Linux","osName":"Ubuntu
+        Linux (64-bit)","folderPath":"SDDC-Datacenter/Templates"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1725'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:39:38 GMT
+      etag:
+      - '"0000045d-0000-3400-0000-60a3c3810000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm-template list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineTemplates?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineTemplates/azcli-test-vm-template","name":"azcli-test-vm-template","type":"microsoft.connectedvmwarevsphere/virtualmachinetemplates","location":"eastus2euap","extendedLocation":{"type":"CustomLocation","name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ExtendedLocation/CustomLocations/azcli-test-cl-avs"},"systemData":{"createdBy":"sanmishra@microsoft.com","createdByType":"User","createdAt":"2021-05-18T13:38:56.839885Z","lastModifiedBy":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","lastModifiedByType":"Application","lastModifiedAt":"2021-05-18T13:39:13.1256964Z"},"properties":{"vCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVmwarevSphere/VCenters/azcli-test-vcenter-avs","moRefId":"vm-64","provisioningState":"Succeeded","customResourceName":"57b746b6-ef4b-45e3-be72-e380c2037b27","uuid":"57b746b6-ef4b-45e3-be72-e380c2037b27","networkInterfaces":[{"name":"nic_1","label":"Network
+        adapter 1","macAddress":"00:50:56:93:fb:46","networkMoRefId":"network-o50","networkMoName":"segment-1","nicType":"vmxnet3","deviceKey":4000,"powerOnBoot":"enabled","ipSettings":{"allocationMethod":"unset"}}],"disks":[{"diskObjectId":"403-2000","name":"disk_1","label":"Hard
+        disk 1","diskSizeGB":10,"deviceKey":2000,"diskMode":"persistent","controllerKey":1000,"unitNumber":0}],"moName":"azurevmwarecloudtestubuntu20.04","memorySizeMB":2048,"numCPUs":1,"numCoresPerSocket":1,"osType":"Linux","osName":"Ubuntu
+        Linux (64-bit)","folderPath":"SDDC-Datacenter/Templates"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1737'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:39:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware inventory-item show_command
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vcenter-name --inventory-item
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/vcenters/azcli-test-vcenter-avs/inventoryItems/resgroup-5034?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/VCenters/azcli-test-vcenter-avs/InventoryItems/resgroup-5034","name":"resgroup-5034","type":"microsoft.connectedvmwarevsphere/vcenters/inventoryitems","systemData":{"createdBy":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","createdByType":"Application","createdAt":"2021-05-17T11:38:31.7591468Z","lastModifiedBy":"ac9dc5fe-b644-4832-9d03-d9f1ab70c5f7","lastModifiedByType":"Application","lastModifiedAt":"2021-05-18T12:54:33.3252357Z"},"properties":{"inventoryType":"ResourcePool","managedResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/ResourcePools/azcli-test-resource-pool","moRefId":"resgroup-5034","provisioningState":"Succeeded","parent":{"moName":"Resources","inventoryItemId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/VCenters/azcli-test-vcenter-avs/InventoryItems/resgroup-8"},"moName":"SanmishraResourcePool"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1116'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:39:41 GMT
+      etag:
+      - '"410034c2-0000-3400-0000-60a3b9090000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware resource-pool delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --name
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/resourcePools/azcli-test-resource-pool?api-version=2020-10-01-preview&force=false
+  response:
+    body:
+      string: 'null'
+    headers:
+      api-supported-versions:
+      - 2019-12-20-privatepreview, 2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:39:43 GMT
+      etag:
+      - '"0000ef6c-0000-3400-0000-60a3c3a00000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/03b92c8b-4364-40a7-9b9f-bef0ea1faf29?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware resource-pool delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/03b92c8b-4364-40a7-9b9f-bef0ea1faf29?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/03b92c8b-4364-40a7-9b9f-bef0ea1faf29","name":"03b92c8b-4364-40a7-9b9f-bef0ea1faf29","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/resourcePools/azcli-test-resource-pool","status":"Succeeded","startTime":"2021-05-18T13:39:44.3151142Z","endTime":"2021-05-18T13:39:45.7503125Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '476'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:40:14 GMT
+      etag:
+      - '"0200412f-0000-3400-0000-60a3c3a10000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware virtual-network delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --name
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualNetworks/azcli-test-virtual-network?api-version=2020-10-01-preview&force=false
+  response:
+    body:
+      string: 'null'
+    headers:
+      api-supported-versions:
+      - 2019-12-20-privatepreview, 2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:40:16 GMT
+      etag:
+      - '"0100dff8-0000-3400-0000-60a3c3c00000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/efb64f1a-8071-4d35-bb13-fd54e3f9c908?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware virtual-network delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/efb64f1a-8071-4d35-bb13-fd54e3f9c908?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/efb64f1a-8071-4d35-bb13-fd54e3f9c908","name":"efb64f1a-8071-4d35-bb13-fd54e3f9c908","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualNetworks/azcli-test-virtual-network","status":"Succeeded","startTime":"2021-05-18T13:40:16.3743534Z","endTime":"2021-05-18T13:40:18.2215669Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '480'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:40:46 GMT
+      etag:
+      - '"0200442f-0000-3400-0000-60a3c3c20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm-template delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --name
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineTemplates/azcli-test-vm-template?api-version=2020-10-01-preview&force=false
+  response:
+    body:
+      string: 'null'
+    headers:
+      api-supported-versions:
+      - 2019-12-20-privatepreview, 2020-10-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:40:49 GMT
+      etag:
+      - '"0000065d-0000-3400-0000-60a3c3e10000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/caf49c04-38c2-4fb7-83b4-c033df21048d?api-version=2020-10-01-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedvmware vm-template delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --name
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-mgmt-connectedvmware/1.0.0b1 Python/3.8.5 (Linux-5.10.16.3-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/caf49c04-38c2-4fb7-83b4-c033df21048d?api-version=2020-10-01-preview
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.ConnectedVMwarevSphere/locations/EASTUS2EUAP/operationStatuses/caf49c04-38c2-4fb7-83b4-c033df21048d","name":"caf49c04-38c2-4fb7-83b4-c033df21048d","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/azcli-test-rg/providers/Microsoft.ConnectedVMwarevSphere/virtualMachineTemplates/azcli-test-vm-template","status":"Succeeded","startTime":"2021-05-18T13:40:49.5253554Z","endTime":"2021-05-18T13:40:50.3334457Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '484'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 18 May 2021 13:41:19 GMT
+      etag:
+      - '"0200462f-0000-3400-0000-60a3c3e20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

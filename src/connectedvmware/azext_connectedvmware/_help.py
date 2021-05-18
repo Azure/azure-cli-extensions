@@ -426,8 +426,8 @@ helps[
         text: |-
                az connectedvmware vm-template create --custom-location "custom location name" \
                --location "region name" --mo-ref-id "mo-ref id of the resource in vc" --name \
-               "vm template name" --resource-group "resource group name" --vcenter \
-               "name or id of the vcenter" --inventory-item "inventory item name or id"
+               "vm template name" --resource-group "resource group name" --vcenter "name or id of \
+               the vcenter" --inventory-item "inventory item name or id"
 """
 
 helps[
