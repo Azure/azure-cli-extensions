@@ -505,7 +505,7 @@ def get_kubernetes_infra(configuration):  # Heuristic
         return "generic"
 
 
-def check_linux_amd64_node(configuration, custom_logger=None):
+def check_linux_amd64_node(configuration):
     api_instance = kube_client.CoreV1Api(kube_client.ApiClient(configuration))
     try:
         api_response = api_instance.list_node()
@@ -515,10 +515,7 @@ def check_linux_amd64_node(configuration, custom_logger=None):
             if node_arch == "amd64" and node_os == "linux":
                 return True
     except Exception as e:  # pylint: disable=broad-except
-        if custom_logger:
-            custom_logger.error("Error occured while trying to find a linux/amd64 node: " + str(e))
-        else:
-            logger.debug("Error occured while trying to find a linux/amd64 node: " + str(e))
+        logger.debug("Error occured while trying to find a linux/amd64 node: " + str(e))
         utils.kubernetes_exception_handler(e, consts.Kubernetes_Node_Type_Fetch_Fault, 'Unable to find a linux/amd64 node',
                                            raise_error=False)
     return False
