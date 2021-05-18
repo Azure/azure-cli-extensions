@@ -127,7 +127,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     crb_permission = utils.can_create_clusterrolebindings(configuration)
     if not crb_permission:
-        logger.error("CLI logged-in credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.")
+        logger.error("Kubectl credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster.")
 
     # Get kubernetes cluster info
     kubernetes_version = get_server_version(configuration)
