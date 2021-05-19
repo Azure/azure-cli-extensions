@@ -9,7 +9,7 @@ from typing import Optional, Any, Dict
 from azure.core.paging import ItemPaged
 from azure.core.pipeline import AsyncPipeline
 
-from azure.storage.blob.aio import BlobServiceClient
+from ...blob.aio import BlobServiceClient
 from .._generated.aio import AzureDataLakeStorageRESTAPI
 from .._deserialize import get_datalake_service_properties
 from .._shared.base_client_async import AsyncTransportWrapper, AsyncStorageAccountHostsMixin

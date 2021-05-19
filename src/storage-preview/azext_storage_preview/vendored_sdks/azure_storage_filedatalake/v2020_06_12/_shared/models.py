@@ -283,7 +283,7 @@ class ResourceTypes(object):
         :param str string: Specify service, container, or object in
             in the string with the first letter of the word.
         :return: A ResourceTypes object
-        :rtype: ~azure.storage.blob.ResourceTypes
+        :rtype: ~...blob.ResourceTypes
         """
         res_service = 's' in string
         res_container = 'c' in string
@@ -395,7 +395,7 @@ class Services(object):
     """Specifies the services accessible with the account SAS.
 
     :param bool blob:
-        Access for the `~azure.storage.blob.BlobServiceClient`
+        Access for the `~...blob.BlobServiceClient`
     :param bool queue:
         Access for the `~azure.storage.queue.QueueServiceClient`
     :param bool fileshare:
@@ -424,7 +424,7 @@ class Services(object):
         :param str string: Specify blob, queue, or file in
             in the string with the first letter of the word.
         :return: A Services object
-        :rtype: ~azure.storage.blob.Services
+        :rtype: ~...blob.Services
         """
         res_blob = 'b' in string
         res_queue = 'q' in string

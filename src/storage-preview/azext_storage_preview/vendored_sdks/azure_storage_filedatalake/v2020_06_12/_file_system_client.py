@@ -17,7 +17,7 @@ import six
 from azure.core.pipeline import Pipeline
 from azure.core.exceptions import HttpResponseError
 from azure.core.paging import ItemPaged
-from azure.storage.blob import ContainerClient
+from ...blob import ContainerClient
 from ._shared.base_client import TransportWrapper, StorageAccountHostsMixin, parse_query, parse_connection_str
 from ._serialize import convert_dfs_url_to_blob_url
 from ._list_paths_helper import DeletedPathPropertiesPaged

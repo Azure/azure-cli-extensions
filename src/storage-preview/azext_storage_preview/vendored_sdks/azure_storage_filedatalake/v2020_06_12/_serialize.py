@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 # --------------------------------------------------------------------------
-from azure.storage.blob._serialize import _get_match_headers  # pylint: disable=protected-access
+from ...blob._serialize import _get_match_headers  # pylint: disable=protected-access
 from ._shared import encode_base64
 from ._generated.models import ModifiedAccessConditions, PathHTTPHeaders, \
     SourceModifiedAccessConditions, LeaseAccessConditions

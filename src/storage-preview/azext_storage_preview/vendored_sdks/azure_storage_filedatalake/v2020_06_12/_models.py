@@ -8,17 +8,17 @@
 from datetime import datetime
 from enum import Enum
 
-from azure.storage.blob import LeaseProperties as BlobLeaseProperties
-from azure.storage.blob import AccountSasPermissions as BlobAccountSasPermissions
-from azure.storage.blob import ResourceTypes as BlobResourceTypes
-from azure.storage.blob import UserDelegationKey as BlobUserDelegationKey
-from azure.storage.blob import ContentSettings as BlobContentSettings
-from azure.storage.blob import AccessPolicy as BlobAccessPolicy
-from azure.storage.blob import DelimitedTextDialect as BlobDelimitedTextDialect
-from azure.storage.blob import DelimitedJsonDialect as BlobDelimitedJSON
-from azure.storage.blob import ArrowDialect as BlobArrowDialect
-from azure.storage.blob._models import ContainerPropertiesPaged
-from azure.storage.blob._generated.models import Logging as GenLogging, Metrics as GenMetrics, \
+from ...blob import LeaseProperties as BlobLeaseProperties
+from ...blob import AccountSasPermissions as BlobAccountSasPermissions
+from ...blob import ResourceTypes as BlobResourceTypes
+from ...blob import UserDelegationKey as BlobUserDelegationKey
+from ...blob import ContentSettings as BlobContentSettings
+from ...blob import AccessPolicy as BlobAccessPolicy
+from ...blob import DelimitedTextDialect as BlobDelimitedTextDialect
+from ...blob import DelimitedJsonDialect as BlobDelimitedJSON
+from ...blob import ArrowDialect as BlobArrowDialect
+from ...blob._models import ContainerPropertiesPaged
+from ...blob._generated.models import Logging as GenLogging, Metrics as GenMetrics, \
     RetentionPolicy as GenRetentionPolicy, StaticWebsite as GenStaticWebsite, CorsRule as GenCorsRule
 from ._shared.models import DictMixin
 
@@ -31,7 +31,7 @@ class FileSystemProperties(object):
     :ivar str etag:
         The ETag contains a value that you can use to perform operations
         conditionally.
-    :ivar ~azure.storage.filedatalake.LeaseProperties lease:
+    :ivar ~...filedatalake.LeaseProperties lease:
         Stores all the lease information for the file system.
     :ivar str public_access: Specifies whether data in the file system may be accessed
         publicly and the level of access.
@@ -99,7 +99,7 @@ class FileSystemPropertiesPaged(ContainerPropertiesPaged):
     :ivar str location_mode: The location mode being used to list results. The available
         options include "primary" and "secondary".
     :ivar current_page: The current page of listed results.
-    :vartype current_page: list(~azure.storage.filedatalake.FileSystemProperties)
+    :vartype current_page: list(~...filedatalake.FileSystemProperties)
 
     :param callable command: Function to retrieve the next page of items.
     :param str prefix: Filters the results to return only file systems whose names
@@ -127,7 +127,7 @@ class DirectoryProperties(DictMixin):
         conditionally.
     :ivar bool deleted: if the current directory marked as deleted
     :ivar dict metadata: Name-value pairs associated with the directory as metadata.
-    :ivar ~azure.storage.filedatalake.LeaseProperties lease:
+    :ivar ~...filedatalake.LeaseProperties lease:
         Stores all the lease information for the directory.
     :ivar ~datetime.datetime last_modified:
         A datetime object representing the last time the directory was modified.
@@ -135,7 +135,7 @@ class DirectoryProperties(DictMixin):
         Indicates when the directory was created, in UTC.
     :ivar int remaining_retention_days: The number of days that the directory will be retained
         before being permanently deleted by the service.
-    :var ~azure.storage.filedatalake.ContentSettings content_settings:
+    :var ~...filedatalake.ContentSettings content_settings:
     """
 
     def __init__(self, **kwargs):
@@ -157,7 +157,7 @@ class FileProperties(DictMixin):
         conditionally.
     :ivar bool deleted: if the current file marked as deleted
     :ivar dict metadata: Name-value pairs associated with the file as metadata.
-    :ivar ~azure.storage.filedatalake.LeaseProperties lease:
+    :ivar ~...filedatalake.LeaseProperties lease:
         Stores all the lease information for the file.
     :ivar ~datetime.datetime last_modified:
         A datetime object representing the last time the file was modified.
@@ -166,7 +166,7 @@ class FileProperties(DictMixin):
     :ivar int size: size of the file
     :ivar int remaining_retention_days: The number of days that the file will be retained
         before being permanently deleted by the service.
-    :var ~azure.storage.filedatalake.ContentSettings content_settings:
+    :var ~...filedatalake.ContentSettings content_settings:
     """
 
     def __init__(self, **kwargs):
@@ -303,7 +303,7 @@ class AccountSasPermissions(BlobAccountSasPermissions):
 
 class FileSystemSasPermissions(object):
     """FileSystemSasPermissions class to be used with the
-    :func:`~azure.storage.filedatalake.generate_file_system_sas` function.
+    :func:`~...filedatalake.generate_file_system_sas` function.
 
     :param bool read:
         Read the content, properties, metadata etc.
@@ -361,7 +361,7 @@ class FileSystemSasPermissions(object):
         :param str permission: The string which dictates the read, add, create,
             write, or delete permissions.
         :return: A FileSystemSasPermissions object
-        :rtype: ~azure.storage.fildatalake.FileSystemSasPermissions
+        :rtype: ~...fildatalake.FileSystemSasPermissions
         """
         p_read = 'r' in permission
         p_write = 'w' in permission
@@ -380,7 +380,7 @@ class FileSystemSasPermissions(object):
 
 class DirectorySasPermissions(object):
     """DirectorySasPermissions class to be used with the
-    :func:`~azure.storage.filedatalake.generate_directory_sas` function.
+    :func:`~...filedatalake.generate_directory_sas` function.
 
     :param bool read:
         Read the content, properties, metadata etc.
@@ -442,7 +442,7 @@ class DirectorySasPermissions(object):
         :param str permission: The string which dictates the read, add, create,
             write, or delete permissions.
         :return: A DirectorySasPermissions object
-        :rtype: ~azure.storage.filedatalake.DirectorySasPermissions
+        :rtype: ~...filedatalake.DirectorySasPermissions
         """
         p_read = 'r' in permission
         p_create = 'c' in permission
@@ -462,7 +462,7 @@ class DirectorySasPermissions(object):
 
 class FileSasPermissions(object):
     """FileSasPermissions class to be used with the
-    :func:`~azure.storage.filedatalake.generate_file_sas` function.
+    :func:`~...filedatalake.generate_file_sas` function.
 
     :param bool read:
         Read the content, properties, metadata etc. Use the file as
@@ -521,7 +521,7 @@ class FileSasPermissions(object):
         :param str permission: The string which dictates the read, add, create,
             write, or delete permissions.
         :return: A FileSasPermissions object
-        :rtype: ~azure.storage.fildatalake.FileSasPermissions
+        :rtype: ~...fildatalake.FileSasPermissions
         """
         p_read = 'r' in permission
         p_create = 'c' in permission
@@ -564,7 +564,7 @@ class AccessPolicy(BlobAccessPolicy):
         Required unless an id is given referencing a stored access policy
         which contains this field. This field must be omitted if it has been
         specified in an associated stored access policy.
-    :type permission: str or ~azure.storage.datalake.FileSystemSasPermissions
+    :type permission: str or ~...datalake.FileSystemSasPermissions
     :param expiry:
         The time at which the shared access signature becomes invalid.
         Required unless an id is given referencing a stored access policy
@@ -775,7 +775,7 @@ class AccessControlChangeResult(DictMixin):
     """
     AccessControlChangeResult contains result of operations that change Access Control Lists recursively.
 
-    :ivar ~azure.storage.filedatalake.AccessControlChangeCounters counters:
+    :ivar ~...filedatalake.AccessControlChangeCounters counters:
         Contains counts of paths changed from start of the operation.
     :ivar str continuation:
         Optional continuation token.
@@ -811,11 +811,11 @@ class AccessControlChanges(DictMixin):
     that change Access Control Lists recursively.
     Additionally it exposes path entries that failed to update while these operations progress.
 
-    :ivar ~azure.storage.filedatalake.AccessControlChangeCounters batch_counters:
+    :ivar ~...filedatalake.AccessControlChangeCounters batch_counters:
         Contains counts of paths changed within single batch.
-    :ivar ~azure.storage.filedatalake.AccessControlChangeCounters aggregate_counters:
+    :ivar ~...filedatalake.AccessControlChangeCounters aggregate_counters:
         Contains counts of paths changed from start of the operation.
-    :ivar list(~azure.storage.filedatalake.AccessControlChangeFailure) batch_failures:
+    :ivar list(~...filedatalake.AccessControlChangeFailure) batch_failures:
         List of path entries that failed to update Access Control List within single batch.
     :ivar str continuation:
         An opaque continuation token that may be used to resume the operations in case of failures.
@@ -859,7 +859,7 @@ class AnalyticsLogging(GenLogging):
         Indicates whether all read requests should be logged. The default value is `False`.
     :keyword bool write:
         Indicates whether all write requests should be logged. The default value is `False`.
-    :keyword ~azure.storage.filedatalake.RetentionPolicy retention_policy:
+    :keyword ~...filedatalake.RetentionPolicy retention_policy:
         Determines how long the associated data should persist. If not specified the retention
         policy will be disabled by default.
     """
@@ -894,7 +894,7 @@ class Metrics(GenMetrics):
         The default value is `False`.
     :keyword bool include_apis:
         Indicates whether metrics should generate summary statistics for called API operations.
-    :keyword ~azure.storage.filedatalake.RetentionPolicy retention_policy:
+    :keyword ~...filedatalake.RetentionPolicy retention_policy:
         Determines how long the associated data should persist. If not specified the retention
         policy will be disabled by default.
     """

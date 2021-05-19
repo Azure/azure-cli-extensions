@@ -8,7 +8,7 @@ from datetime import datetime
 from typing import Any, Dict, Union
 
 from azure.core.exceptions import AzureError, HttpResponseError
-from azure.storage.blob.aio import BlobClient
+from ...blob.aio import BlobClient
 from .._shared.base_client_async import AsyncStorageAccountHostsMixin
 from .._path_client import PathClient as PathClientBase
 from .._models import DirectoryProperties, AccessControlChangeResult, AccessControlChangeFailure, \

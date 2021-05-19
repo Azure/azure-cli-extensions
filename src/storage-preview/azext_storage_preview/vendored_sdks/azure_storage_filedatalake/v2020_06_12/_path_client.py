@@ -15,7 +15,7 @@ except ImportError:
 import six
 
 from azure.core.exceptions import AzureError, HttpResponseError
-from azure.storage.blob import BlobClient
+from ...blob import BlobClient
 from ._data_lake_lease import DataLakeLeaseClient
 from ._deserialize import process_storage_error
 from ._generated import AzureDataLakeStorageRESTAPI
@@ -147,7 +147,7 @@ class PathClient(StorageAccountHostsMixin):
             The value must be "file" or "directory". Possible values include:
             'directory', 'file'
         :type resource_type: str
-        :param ~azure.storage.filedatalake.ContentSettings content_settings:
+        :param ~...filedatalake.ContentSettings content_settings:
             ContentSettings object used to set path properties.
         :param metadata:
             Name-value pairs associated with the file/directory as metadata.
@@ -155,7 +155,7 @@ class PathClient(StorageAccountHostsMixin):
         :keyword lease:
             Required if the file/directory has an active lease. Value can be a LeaseClient object
             or the lease ID as a string.
-        :paramtype lease: ~azure.storage.filedatalake.DataLakeLeaseClient or str
+        :paramtype lease: ~...filedatalake.DataLakeLeaseClient or str
         :keyword str umask:
             Optional and only valid if Hierarchical Namespace is enabled for the account.
             When creating a file or directory and the parent folder does not have a default ACL,
@@ -226,7 +226,7 @@ class PathClient(StorageAccountHostsMixin):
         :keyword lease:
             Required if the file/directory has an active lease. Value can be a LeaseClient object
             or the lease ID as a string.
-        :type lease: ~azure.storage.filedatalake.DataLakeLeaseClient or str
+        :type lease: ~...filedatalake.DataLakeLeaseClient or str
         :param ~datetime.datetime if_modified_since:
             A DateTime value. Azure expects the date value passed in to be UTC.
             If timezone is included, any non-UTC datetimes will be converted to UTC.
@@ -308,7 +308,7 @@ class PathClient(StorageAccountHostsMixin):
         :keyword lease:
             Required if the file/directory has an active lease. Value can be a LeaseClient object
             or the lease ID as a string.
-        :paramtype lease: ~azure.storage.filedatalake.DataLakeLeaseClient or str
+        :paramtype lease: ~...filedatalake.DataLakeLeaseClient or str
         :keyword ~datetime.datetime if_modified_since:
             A DateTime value. Azure expects the date value passed in to be UTC.
             If timezone is included, any non-UTC datetimes will be converted to UTC.
@@ -373,7 +373,7 @@ class PathClient(StorageAccountHostsMixin):
         :keyword lease:
             Required if the file/directory has an active lease. Value can be a LeaseClient object
             or the lease ID as a string.
-        :paramtype lease: ~azure.storage.filedatalake.DataLakeLeaseClient or str
+        :paramtype lease: ~...filedatalake.DataLakeLeaseClient or str
         :keyword ~datetime.datetime if_modified_since:
             A DateTime value. Azure expects the date value passed in to be UTC.
             If timezone is included, any non-UTC datetimes will be converted to UTC.
@@ -430,7 +430,7 @@ class PathClient(StorageAccountHostsMixin):
             group identifier, and permissions in the format
             "[scope:][type]:[id]:[permissions]".
         :type acl: str
-        :keyword func(~azure.storage.filedatalake.AccessControlChanges) progress_hook:
+        :keyword func(~...filedatalake.AccessControlChanges) progress_hook:
             Callback where the caller can track progress of the operation
             as well as collect paths that failed to change Access Control.
         :keyword str continuation_token:
@@ -454,7 +454,7 @@ class PathClient(StorageAccountHostsMixin):
             The timeout parameter is expressed in seconds.
         :return: A summary of the recursive operations, including the count of successes and failures,
             as well as a continuation token in case the operation was terminated prematurely.
-        :rtype: :class:`~azure.storage.filedatalake.AccessControlChangeResult`
+        :rtype: :class:`~...filedatalake.AccessControlChangeResult`
         :raises ~azure.core.exceptions.AzureError:
             User can restart the operation using continuation_token field of AzureError if the token is available.
         """
@@ -481,7 +481,7 @@ class PathClient(StorageAccountHostsMixin):
             group identifier, and permissions in the format
             "[scope:][type]:[id]:[permissions]".
         :type acl: str
-        :keyword func(~azure.storage.filedatalake.AccessControlChanges) progress_hook:
+        :keyword func(~...filedatalake.AccessControlChanges) progress_hook:
             Callback where the caller can track progress of the operation
             as well as collect paths that failed to change Access Control.
         :keyword str continuation_token:
@@ -505,7 +505,7 @@ class PathClient(StorageAccountHostsMixin):
             The timeout parameter is expressed in seconds.
         :return: A summary of the recursive operations, including the count of successes and failures,
             as well as a continuation token in case the operation was terminated prematurely.
-        :rtype: :class:`~azure.storage.filedatalake.AccessControlChangeResult`
+        :rtype: :class:`~...filedatalake.AccessControlChangeResult`
         :raises ~azure.core.exceptions.AzureError:
             User can restart the operation using continuation_token field of AzureError if the token is available.
         """
@@ -531,7 +531,7 @@ class PathClient(StorageAccountHostsMixin):
             access control entry (ACE) consists of a scope, a type, and a user or
             group identifier in the format "[scope:][type]:[id]".
         :type acl: str
-        :keyword func(~azure.storage.filedatalake.AccessControlChanges) progress_hook:
+        :keyword func(~...filedatalake.AccessControlChanges) progress_hook:
             Callback where the caller can track progress of the operation
             as well as collect paths that failed to change Access Control.
         :keyword str continuation_token:
@@ -555,7 +555,7 @@ class PathClient(StorageAccountHostsMixin):
             The timeout parameter is expressed in seconds.
         :return: A summary of the recursive operations, including the count of successes and failures,
             as well as a continuation token in case the operation was terminated prematurely.
-        :rtype: :class:`~azure.storage.filedatalake.AccessControlChangeResult`
+        :rtype: :class:`~...filedatalake.AccessControlChangeResult`
         :raises ~azure.core.exceptions.AzureError:
             User can restart the operation using continuation_token field of AzureError if the token is available.
         """
@@ -667,17 +667,17 @@ class PathClient(StorageAccountHostsMixin):
         :param rename_source:
             The value must have the following format: "/{filesystem}/{path}".
         :type rename_source: str
-        :keyword ~azure.storage.filedatalake.ContentSettings content_settings:
+        :keyword ~...filedatalake.ContentSettings content_settings:
             ContentSettings object used to set path properties.
         :keyword source_lease:
             A lease ID for the source path. If specified,
             the source path must have an active lease and the leaase ID must
             match.
-        :paramtype source_lease: ~azure.storage.filedatalake.DataLakeLeaseClient or str
+        :paramtype source_lease: ~...filedatalake.DataLakeLeaseClient or str
         :keyword lease:
             Required if the file/directory has an active lease. Value can be a LeaseClient object
             or the lease ID as a string.
-        :paramtype lease: ~azure.storage.filedatalake.DataLakeLeaseClient or str
+        :paramtype lease: ~...filedatalake.DataLakeLeaseClient or str
         :keyword ~datetime.datetime if_modified_since:
             A DateTime value. Azure expects the date value passed in to be UTC.
             If timezone is included, any non-UTC datetimes will be converted to UTC.
@@ -731,7 +731,7 @@ class PathClient(StorageAccountHostsMixin):
         :keyword lease:
             Required if the directory or file has an active lease. Value can be a DataLakeLeaseClient object
             or the lease ID as a string.
-        :paramtype lease: ~azure.storage.filedatalake.DataLakeLeaseClient or str
+        :paramtype lease: ~...filedatalake.DataLakeLeaseClient or str
         :keyword ~datetime.datetime if_modified_since:
             A DateTime value. Azure expects the date value passed in to be UTC.
             If timezone is included, any non-UTC datetimes will be converted to UTC.
@@ -791,7 +791,7 @@ class PathClient(StorageAccountHostsMixin):
         :keyword lease:
             If specified, set_file_system_metadata only succeeds if the
             file system's lease is active and matches this ID.
-        :paramtype lease: ~azure.storage.filedatalake.DataLakeLeaseClient or str
+        :paramtype lease: ~...filedatalake.DataLakeLeaseClient or str
         :keyword ~datetime.datetime if_modified_since:
             A DateTime value. Azure expects the date value passed in to be UTC.
             If timezone is included, any non-UTC datetimes will be converted to UTC.
@@ -822,12 +822,12 @@ class PathClient(StorageAccountHostsMixin):
 
         If one property is set for the content_settings, all properties will be overriden.
 
-        :param ~azure.storage.filedatalake.ContentSettings content_settings:
+        :param ~...filedatalake.ContentSettings content_settings:
             ContentSettings object used to set file/directory properties.
         :keyword lease:
             If specified, set_file_system_metadata only succeeds if the
             file system's lease is active and matches this ID.
-        :paramtype lease: ~azure.storage.filedatalake.DataLakeLeaseClient or str
+        :paramtype lease: ~...filedatalake.DataLakeLeaseClient or str
         :keyword ~datetime.datetime if_modified_since:
             A DateTime value. Azure expects the date value passed in to be UTC.
             If timezone is included, any non-UTC datetimes will be converted to UTC.
@@ -889,7 +889,7 @@ class PathClient(StorageAccountHostsMixin):
         :keyword int timeout:
             The timeout parameter is expressed in seconds.
         :returns: A DataLakeLeaseClient object, that can be run in a context manager.
-        :rtype: ~azure.storage.filedatalake.DataLakeLeaseClient
+        :rtype: ~...filedatalake.DataLakeLeaseClient
         """
         lease = DataLakeLeaseClient(self, lease_id=lease_id)  # type: ignore
         lease.acquire(lease_duration=lease_duration, **kwargs)

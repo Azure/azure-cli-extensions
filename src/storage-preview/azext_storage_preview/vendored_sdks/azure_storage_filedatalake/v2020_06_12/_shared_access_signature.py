@@ -5,8 +5,8 @@
 # --------------------------------------------------------------------------
 from typing import TYPE_CHECKING
 
-from azure.storage.blob import generate_account_sas as generate_blob_account_sas
-from azure.storage.blob import generate_container_sas, generate_blob_sas
+from ...blob import generate_account_sas as generate_blob_account_sas
+from ...blob import generate_container_sas, generate_blob_sas
 if TYPE_CHECKING:
     import datetime
     from ._models import AccountSasPermissions, FileSystemSasPermissions, FileSasPermissions, ResourceTypes, \
