@@ -321,7 +321,7 @@ def load_arguments(self, _):
             'vm_name', options_list=['--vm-name'], help="Name of the virtual machine."
         )
 
-    with self.argument_context('connectedvmware vm disk show_command') as c:
+    with self.argument_context('connectedvmware vm disk show') as c:
         c.argument('disk_name', options_list=['--name', '-n'], help="Name of the Disk.")
         c.argument(
             'vm_name', options_list=['--vm-name'], help="Name of the virtual machine."
@@ -365,7 +365,7 @@ def load_arguments(self, _):
             'vcenter_name', options_list=['--vcenter-name'], help="Name of the vCenter."
         )
 
-    with self.argument_context('connectedvmware inventory-item show_command') as c:
+    with self.argument_context('connectedvmware inventory-item show') as c:
         c.argument(
             'inventory_item_name',
             options_list=['--inventory-item-name'], help="Name of the inventory item.",

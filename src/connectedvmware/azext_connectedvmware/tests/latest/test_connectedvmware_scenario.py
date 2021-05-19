@@ -32,7 +32,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         })
 
         # Validate the show command output with vcenter name.
-        self.cmd('az connectedvmware vcenter show_command -g {rg} --name {vc_name}', checks=[
+        self.cmd('az connectedvmware vcenter show -g {rg} --name {vc_name}', checks=[
             self.check('name', '{vc_name}'),
         ])
 
@@ -45,7 +45,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         self.cmd('az connectedvmware resource-pool create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} --mo-ref-id {rp_morefid} --name {rp_name}')
 
         # Validate the show command output with resource-pool name.
-        self.cmd('az connectedvmware resource-pool show_command -g {rg} --name {rp_name}', checks=[
+        self.cmd('az connectedvmware resource-pool show -g {rg} --name {rp_name}', checks=[
             self.check('name', '{rp_name}'),
         ])
 
@@ -58,7 +58,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         self.cmd('az connectedvmware virtual-network create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} --mo-ref-id {vnet_morefid} --name {vnet_name}')
 
         # Validate the show command output with virtual-network name.
-        self.cmd('az connectedvmware virtual-network show_command -g {rg} --name {vnet_name}', checks=[
+        self.cmd('az connectedvmware virtual-network show -g {rg} --name {vnet_name}', checks=[
             self.check('name', '{vnet_name}'),
         ])
 
@@ -71,7 +71,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         self.cmd('az connectedvmware vm-template create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} --mo-ref-id {vmtpl_morefid} --name {vmtpl_name}')
 
         # Validate the show command output with vm-template name.
-        self.cmd('az connectedvmware vm-template show_command -g {rg} --name {vmtpl_name}', checks=[
+        self.cmd('az connectedvmware vm-template show -g {rg} --name {vmtpl_name}', checks=[
             self.check('name', '{vmtpl_name}'),
         ])
 
@@ -81,7 +81,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         assert len(resource_list) >= 1
 
         # Validate the show command output with inventory-item name.
-        self.cmd('az connectedvmware inventory-item show_command -g {rg} --vcenter-name {vc_name} --inventory-item {rp_morefid}', checks=[
+        self.cmd('az connectedvmware inventory-item show -g {rg} --vcenter-name {vc_name} --inventory-item {rp_morefid}', checks=[
             self.check('name', '{rp_morefid}'),
         ])
 
@@ -89,7 +89,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         self.cmd('az connectedvmware vm create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} --resource-pool {rp_name} --vm-template {vmtpl_name} --name {vm_name}')
 
         # Validate the show command output with vm name.
-        self.cmd('az connectedvmware vm show_command -g {rg} --name {vm_name}', checks=[
+        self.cmd('az connectedvmware vm show -g {rg} --name {vm_name}', checks=[
             self.check('name', '{vm_name}'),
         ])
 

@@ -1,23 +1,87 @@
 # Microsoft Azure CLI ConnectedVMware Extension #
 
-The Azure CLI extension for [Azure Arc VMware Service](https://github.com/Azure/azure-arc-enabled-vmware-vsphere-preview/blob/main/docs/overview.md) is an extension for Azure CLI 2.0.
+The Azure CLI extension for [Azure Arc for VMware PrivateCloud](https://github.com/Azure/azure-arc-enabled-vmware-vsphere-preview/blob/main/docs/overview.md) is an extension for Azure CLI 2.0.
 
 ## Install
-``` sh
+```
 az extension add --name connectedvmware
 ```
 
 ## Usage
 See the [extension reference documenation](https://github.com/Azure/azure-arc-enabled-vmware-vsphere-preview/blob/main/docs/overview.md).
+*Examples:*
 
-``` sh
-az connectedvmware --help
-az connectedvmware vcenter list -g $resourcegroup
-az connectedvmware vcenter connect -g $rg --location $location  --custom-location $customLocation --fqdn $fqdn --username $username --password $pwd
+##### Create Vcenter Resource
+
+```
+az connectedvmware vcenter connect \
+    --subscription subscriptionId \
+    --resource-group resourceGroupName \
+    --location locationName \
+    --custom-location customLocationName \
+    --fqdn vcenterFqdn \
+    --username userName \
+    --password password \
+    --name resourceName
+```
+
+##### Create Resource Pool Resource
+
+```
+az connectedvmware resource-pool create \
+    --subscription subscriptionId \
+    --resource-group resourceGroupName \
+    --location locationName \
+    --custom-location customLocationName \
+    --vcenter vcenterResourceName \
+    --mo-ref-id morefId \
+    --name resourceName
+```
+
+##### Create VM Template Resource
+
+```
+az connectedvmware vm-template create \
+    --subscription subscriptionId \
+    --resource-group resourceGroupName \
+    --location locationName \
+    --custom-location customLocationName \
+    --vcenter vcenterResourceName \
+    --mo-ref-id morefId \
+    --name resourceName
+```
+
+##### Create Virtual Network Resource
+
+```
+az connectedvmware virtual-network create \
+    --subscription subscriptionId \
+    --resource-group resourceGroupName \
+    --location locationName \
+    --custom-location customLocationName \
+    --vcenter vcenterResourceName \
+    --mo-ref-id morefId \
+    --name resourceName
+```
+
+##### Create Virtual Machine Resource
+
+```
+az connectedvmware vm create \
+    --subscription subscriptionId \
+    --resource-group resourceGroupName \
+    --location locationName \
+    --custom-location customLocationName \
+    --vcenter vcenterResourceName \
+    --resource-pool resourcePoolResourceName \
+    --vm-template vmTemplateResourceName \
+    --name resourceName
 ```
 
 ## Uninstall
 You can see if the extension is installed by running `az --version` or `az extension list`. You can remove the extension by running:
-``` sh
+```
 az extension remove --name connectedvmware
 ```
+
+If you have issues, please give feedback by opening an issue at https://github.com/Azure/azure-cli-extensions/issues.

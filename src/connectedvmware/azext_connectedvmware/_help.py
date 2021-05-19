@@ -59,14 +59,14 @@ helps[
 """
 
 helps[
-    'connectedvmware resource-pool show_command'
+    'connectedvmware resource-pool show'
 ] = """
     type: command
     short-summary: "Get details of a resource pool by id, resource-group, resource pool name, or subscription"
     examples:
       - name: Get details of a resource pool
         text: |-
-               az connectedvmware resource-pool show_command --ids "resource id" --name "resource pool name" \
+               az connectedvmware resource-pool show --ids "resource id" --name "resource pool name" \
                --resource-group "resource group name" --subscription "Name or ID of subscription"
 """
 
@@ -115,14 +115,14 @@ helps[
 """
 
 helps[
-    'connectedvmware vcenter show_command'
+    'connectedvmware vcenter show'
 ] = """
     type: command
     short-summary: "Get details of a vcenter resource by id, resource-group, vcenter name or subscription"
     examples:
       - name: Get details of a vcenter resource
         text: |-
-               az connectedvmware vcenter show_command --ids "resource id" --name "vcenter name" \
+               az connectedvmware vcenter show --ids "resource id" --name "vcenter name" \
                    --resource-group "resource group name" --subscription "Name or ID of subscription"
 """
 
@@ -171,14 +171,14 @@ helps[
 """
 
 helps[
-    'connectedvmware virtual-network show_command'
+    'connectedvmware virtual-network show'
 ] = """
     type: command
     short-summary: "Get details of a virtual network by id, resource-group, reource pool name or subscription"
     examples:
       - name: Get details of a virtual-network
         text: |-
-               az connectedvmware virtual-network show_command --ids "resource id" --name "virtual network name" \
+               az connectedvmware virtual-network show --ids "resource id" --name "virtual network name" \
                --resource-group "resource group name" --subscription "Name or ID of subscription"
 """
 
@@ -238,14 +238,14 @@ helps[
 """
 
 helps[
-    'connectedvmware vm show_command'
+    'connectedvmware vm show'
 ] = """
     type: command
     short-summary: "Get details of a vm by id, resource-group, reource pool name or subscription"
     examples:
       - name: Get details of a vm resource
         text: |-
-               az connectedvmware vm show_command --ids "resource id" --name "vm template name" \
+               az connectedvmware vm show --ids "resource id" --name "vm template name" \
                --resource-group "resource group name" --subscription "Name or ID of subscription"
 """
 
@@ -331,14 +331,14 @@ helps[
 """
 
 helps[
-    'connectedvmware vm disk show_command'
+    'connectedvmware vm disk show'
 ] = """
     type: command
     short-summary: "Get details of a vm disk by it's name, resource-group and vm name"
     examples:
       - name: Get details of vm disk
         text: |-
-               az connectedvmware vm disk show_command --name "Name of the Disk" --resource-group \
+               az connectedvmware vm disk show --name "Name of the Disk" --resource-group \
                "resource group name" --vm-name "Name of the virtual machine"
 """
 helps[
@@ -398,14 +398,14 @@ helps[
 """
 
 helps[
-    'connectedvmware vm nic show_command'
+    'connectedvmware vm nic show'
 ] = """
     type: command
     short-summary: "Get details of a vm nic by it's name, resource-group and vm name"
     examples:
       - name: Get details of vm nic
         text: |-
-               az connectedvmware vm nic show_command --name "Name of the NIC" --resource-group \
+               az connectedvmware vm nic show --name "Name of the NIC" --resource-group \
                "resource group name" --vm-name "Name of the virtual machine"
 """
 
@@ -454,14 +454,14 @@ helps[
 """
 
 helps[
-    'connectedvmware vm-template show_command'
+    'connectedvmware vm-template show'
 ] = """
     type: command
     short-summary: "Get details of a vm template by id, resource-group, reource pool name or subscription"
     examples:
       - name: Get details of a vm template
         text: |-
-               az connectedvmware vm-template show_command --ids "resource id" --name "vm template name" \
+               az connectedvmware vm-template show --ids "resource id" --name "vm template name" \
                --resource-group "resource group name" --subscription "Name or ID of subscription"
 """
 
@@ -485,13 +485,13 @@ helps[
 """
 
 helps[
-    'connectedvmware inventory-item show_command'
+    'connectedvmware inventory-item show'
 ] = """
     type: command
     short-summary: "Get details of a inventory item by inventory item name or id, resource-group and vcenter name."
     examples:
       - name: Get details of a vm template
         text: |-
-               az connectedvmware inventory-item show_command --inventory-item-name "inventory item name" \
+               az connectedvmware inventory-item show --inventory-item-name "inventory item name" \
                --resource-group "resource group name" --vcenter-name "name of the vcenter"
 """
