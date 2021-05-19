@@ -88,8 +88,8 @@ def get_whl_from_url(url, filename, tmp_dir, whl_cache=None):
             import time
             time.sleep(0.5)
             continue
-    if not r:
-        print('get url={} fail'.format(url))
+    
+    print('get url={} resp={}'.format(url, r))
 
     ext_file = os.path.join(tmp_dir, filename)
     with open(ext_file, 'wb') as f:
