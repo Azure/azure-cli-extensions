@@ -14,17 +14,21 @@ from .vendored_sdks.azure_messaging_webpubsubservice import (
 )
 
 
-async def connect(url):
-    async with websockets.connect(url, subprotocols=['json.webpubsub.azure.v1']) as ws:
-        comment = """
+HELP_MESSAGE = """
 ----------Usage-----------
+help                                : Print help messages
 joingroup <group-name>              : Join the connection to group
 leavegroup <group-name>             : Leave the connection from group
 sendtogroup <group-name> <message>  : Send message to group
 event <event-name> <message>        : Send event to event handler
 --------------------------
         """
-        print(comment)
+
+
+async def connect(url):
+    async with websockets.connect(url, subprotocols=['json.webpubsub.azure.v1']) as ws:
+
+        eprint(HELP_MESSAGE)
         publisher = Publisher(ws)
         publisher.daemon = True
         publisher.start()
@@ -37,6 +41,10 @@ def start_client(client, resource_group_name, webpubsub_name, hub_name):
     connection_string = keys.primary_connection_string
     token = build_authentication_token(connection_string, hub_name, roles=['webpubsub.sendToGroup', 'webpubsub.joinLeaveGroup'])
     asyncio.get_event_loop().run_until_complete(connect(token['url']))
+
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
 
 class Publisher(threading.Thread):
@@ -57,9 +65,13 @@ class Publisher(threading.Thread):
 
     async def _parse(self, input_line):
         if input_line:
+            if input_line.strip() == 'help':
+                eprint(HELP_MESSAGE)
+                return
+
             arr = input_line.split(maxsplit=1)
             if len(arr) != 2:
-                print('Invalid input {}'.format(input_line))
+                eprint('Invalid input "{}", use help to show usage'.format(input_line))
                 return
 
             command = arr[0]
@@ -105,7 +117,7 @@ class Publisher(threading.Thread):
                 await self.ws.send(payload)
 
             else:
-                print('Invalid input {}'.format(input))
+                eprint('Invalid input "{}", use help to show usage'.format(input_line))
 
     def _get_ack_id(self):
         self.id = self.id + 1
