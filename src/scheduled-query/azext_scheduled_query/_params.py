@@ -40,4 +40,4 @@ def load_arguments(self, _):
         c.argument('actions', options_list=['--action', '-a'], action=ScheduleQueryAddAction, nargs='+', validator=get_action_group_validator('actions'))
         c.argument('disable_auto_mitigate', arg_type=get_three_state_flag(), help='The flag that indicates whether to disable the alert automatically resolved or not.')
         c.argument('skip_query_validation', arg_type=get_three_state_flag(), help='The flag which indicates whether the provided query should be validated or not.')
-        c.argument('check_workspace_alerts_storage', options_list=['--check-ws-alerts-storage'], arg_type=get_three_state_flag(), help="The flag which indicates whether this scheduled query rule should be stored in the customer's storage.")
+        c.argument('check_workspace_alerts_storage', options_list=['--check-ws-alerts-storage', '--cwas'], arg_type=get_three_state_flag(), help="The flag which indicates whether this scheduled query rule should be stored in the customer's storage.")
