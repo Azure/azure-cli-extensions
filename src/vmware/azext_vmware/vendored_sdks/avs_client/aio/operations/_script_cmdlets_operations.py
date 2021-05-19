@@ -46,7 +46,7 @@ class ScriptCmdletsOperations:
         resource_group_name: str,
         private_cloud_name: str,
         script_package_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.ScriptCmdletsList"]:
         """Return script cmdlet resources available for a private cloud to create a script execution
         resource on their Private Cloud.
@@ -126,7 +126,7 @@ class ScriptCmdletsOperations:
         private_cloud_name: str,
         script_package_name: str,
         script_cmdlet_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.ScriptCmdlet":
         """Return information about a script cmdlet resource in a specific package on a private cloud.
 

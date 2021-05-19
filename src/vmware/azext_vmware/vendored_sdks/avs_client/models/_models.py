@@ -762,7 +762,7 @@ class ErrorAdditionalInfo(msrest.serialization.Model):
     :ivar type: The additional info type.
     :vartype type: str
     :ivar info: The additional info.
-    :vartype info: object
+    :vartype info: any
     """
 
     _validation = {
@@ -2051,7 +2051,7 @@ class ScriptExecution(ProxyResource):
     :param output: Standard output stream from the powershell execution.
     :type output: list[str]
     :param named_outputs: User-defined dictionary.
-    :type named_outputs: dict[str, object]
+    :type named_outputs: dict[str, any]
     :ivar information: Standard information out stream from the powershell execution.
     :vartype information: list[str]
     :ivar warnings: Standard warning out stream from the powershell execution.
@@ -2234,12 +2234,16 @@ class ScriptParameter(msrest.serialization.Model):
     :ivar visibility: Should this parameter be visible to arm and passed in the parameters argument
      when executing. Possible values include: "Visible", "Hidden".
     :vartype visibility: str or ~avs_client.models.VisibilityParameterEnum
+    :ivar optional: Is this parameter required or optional. Possible values include: "Optional",
+     "Required".
+    :vartype optional: str or ~avs_client.models.OptionalParamEnum
     """
 
     _validation = {
         'type': {'readonly': True},
         'description': {'readonly': True},
         'visibility': {'readonly': True},
+        'optional': {'readonly': True},
     }
 
     _attribute_map = {
@@ -2247,6 +2251,7 @@ class ScriptParameter(msrest.serialization.Model):
         'name': {'key': 'name', 'type': 'str'},
         'description': {'key': 'description', 'type': 'str'},
         'visibility': {'key': 'visibility', 'type': 'str'},
+        'optional': {'key': 'optional', 'type': 'str'},
     }
 
     def __init__(
@@ -2258,6 +2263,7 @@ class ScriptParameter(msrest.serialization.Model):
         self.name = kwargs.get('name', None)
         self.description = None
         self.visibility = None
+        self.optional = None
 
 
 class ScriptSecureStringExecutionParameter(ScriptExecutionParameter):

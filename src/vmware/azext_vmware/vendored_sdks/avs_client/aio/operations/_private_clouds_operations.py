@@ -46,7 +46,7 @@ class PrivateCloudsOperations:
     def list(
         self,
         resource_group_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.PrivateCloudList"]:
         """List private clouds in a resource group.
 
@@ -117,7 +117,7 @@ class PrivateCloudsOperations:
 
     def list_in_subscription(
         self,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.PrivateCloudList"]:
         """List private clouds in a subscription.
 
@@ -187,7 +187,7 @@ class PrivateCloudsOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.PrivateCloud":
         """Get a private cloud.
 
@@ -248,7 +248,7 @@ class PrivateCloudsOperations:
         resource_group_name: str,
         private_cloud_name: str,
         private_cloud: "_models.PrivateCloud",
-        **kwargs
+        **kwargs: Any
     ) -> "_models.PrivateCloud":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.PrivateCloud"]
         error_map = {
@@ -305,7 +305,7 @@ class PrivateCloudsOperations:
         resource_group_name: str,
         private_cloud_name: str,
         private_cloud: "_models.PrivateCloud",
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.PrivateCloud"]:
         """Create or update a private cloud.
 
@@ -319,8 +319,8 @@ class PrivateCloudsOperations:
         :type private_cloud: ~avs_client.models.PrivateCloud
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either PrivateCloud or the result of cls(response)
@@ -378,7 +378,7 @@ class PrivateCloudsOperations:
         resource_group_name: str,
         private_cloud_name: str,
         private_cloud_update: "_models.PrivateCloudUpdate",
-        **kwargs
+        **kwargs: Any
     ) -> "_models.PrivateCloud":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.PrivateCloud"]
         error_map = {
@@ -435,7 +435,7 @@ class PrivateCloudsOperations:
         resource_group_name: str,
         private_cloud_name: str,
         private_cloud_update: "_models.PrivateCloudUpdate",
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.PrivateCloud"]:
         """Update a private cloud.
 
@@ -449,8 +449,8 @@ class PrivateCloudsOperations:
         :type private_cloud_update: ~avs_client.models.PrivateCloudUpdate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either PrivateCloud or the result of cls(response)
@@ -507,7 +507,7 @@ class PrivateCloudsOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -551,7 +551,7 @@ class PrivateCloudsOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Delete a private cloud.
 
@@ -563,8 +563,8 @@ class PrivateCloudsOperations:
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -617,7 +617,7 @@ class PrivateCloudsOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -661,7 +661,7 @@ class PrivateCloudsOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Rotate the vCenter password.
 
@@ -673,8 +673,8 @@ class PrivateCloudsOperations:
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -727,7 +727,7 @@ class PrivateCloudsOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -771,7 +771,7 @@ class PrivateCloudsOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Rotate the NSX-T Manager password.
 
@@ -783,8 +783,8 @@ class PrivateCloudsOperations:
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -837,7 +837,7 @@ class PrivateCloudsOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.AdminCredentials":
         """List the admin credentials for the private cloud.
 

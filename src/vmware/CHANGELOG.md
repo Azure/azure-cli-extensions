@@ -1,6 +1,7 @@
 # Release History
 
 ## 2.1.0 (TBD)
+- update to AVS 2021-06-01 API
 - add az vmware private-cloud rotate-vcenter-password
 - add az vmware private-cloud rotate-nsxt-password
 

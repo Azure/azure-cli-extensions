@@ -19,8 +19,7 @@ class VmwareScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_vmware')
     def test_vmware(self):
         self.kwargs.update({
-            # 'loc': 'westcentralus',  # jason
-            'loc': 'eastus',  # vamsi
+            'loc': 'westcentralus',
             'privatecloud': 'cloud1',
             'cluster': 'pycluster1'
         })
@@ -57,28 +56,8 @@ class VmwareScenarioTest(ScenarioTest):
         self.cmd('vmware private-cloud rotate-vcenter-password -g {rg} -c {privatecloud}')
         self.cmd('vmware private-cloud rotate-nsxt-password -g {rg} -c {privatecloud}')
 
-        # hcx-enterprise-site list should report 0
-        count = len(self.cmd('vmware hcx-enterprise-site list -g {rg} -c {privatecloud}').get_output_in_json())
-        self.assertEqual(count, 0, 'hcx-enterprise-site count expected to be 0')
-
-        # create authorization
-        self.cmd('vmware hcx-enterprise-site create -g {rg} -c {privatecloud} -n myhcx')
-
-        # hcx-enterprise-site list should report 1
-        count = len(self.cmd('vmware hcx-enterprise-site list -g {rg} -c {privatecloud}').get_output_in_json())
-        self.assertEqual(count, 1, 'hcx-enterprise-site count expected to be 0')
-
-        self.cmd('vmware hcx-enterprise-site show -g {rg} -c {privatecloud} -n myhcx')
-
-        self.cmd('vmware hcx-enterprise-site delete -g {rg} -c {privatecloud} -n myhcx')
-
-        # bug 7470537
-        # hcx-enterprise-site list should report 0
-        # count = len(self.cmd('vmware hcx-enterprise-site list -g {rg} -c {privatecloud}').get_output_in_json())
-        # self.assertEqual(count, 0, 'hcx-enterprise-site count expected to be 0')
-
         # update private cloud to changed default cluster size
-        self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --cluster-size 3')
+        # self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --cluster-size 3')
 
         # update private cloud to enable internet
         self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --internet enabled')

@@ -6,7 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import msrest.serialization
 
@@ -792,7 +792,7 @@ class ErrorAdditionalInfo(msrest.serialization.Model):
     :ivar type: The additional info type.
     :vartype type: str
     :ivar info: The additional info.
-    :vartype info: object
+    :vartype info: any
     """
 
     _validation = {
@@ -2165,7 +2165,7 @@ class ScriptExecution(ProxyResource):
     :param output: Standard output stream from the powershell execution.
     :type output: list[str]
     :param named_outputs: User-defined dictionary.
-    :type named_outputs: dict[str, object]
+    :type named_outputs: dict[str, any]
     :ivar information: Standard information out stream from the powershell execution.
     :vartype information: list[str]
     :ivar warnings: Standard warning out stream from the powershell execution.
@@ -2218,7 +2218,7 @@ class ScriptExecution(ProxyResource):
         timeout: Optional[str] = None,
         retention: Optional[str] = None,
         output: Optional[List[str]] = None,
-        named_outputs: Optional[Dict[str, object]] = None,
+        named_outputs: Optional[Dict[str, Any]] = None,
         **kwargs
     ):
         super(ScriptExecution, self).__init__(**kwargs)
@@ -2357,12 +2357,16 @@ class ScriptParameter(msrest.serialization.Model):
     :ivar visibility: Should this parameter be visible to arm and passed in the parameters argument
      when executing. Possible values include: "Visible", "Hidden".
     :vartype visibility: str or ~avs_client.models.VisibilityParameterEnum
+    :ivar optional: Is this parameter required or optional. Possible values include: "Optional",
+     "Required".
+    :vartype optional: str or ~avs_client.models.OptionalParamEnum
     """
 
     _validation = {
         'type': {'readonly': True},
         'description': {'readonly': True},
         'visibility': {'readonly': True},
+        'optional': {'readonly': True},
     }
 
     _attribute_map = {
@@ -2370,6 +2374,7 @@ class ScriptParameter(msrest.serialization.Model):
         'name': {'key': 'name', 'type': 'str'},
         'description': {'key': 'description', 'type': 'str'},
         'visibility': {'key': 'visibility', 'type': 'str'},
+        'optional': {'key': 'optional', 'type': 'str'},
     }
 
     def __init__(
@@ -2383,6 +2388,7 @@ class ScriptParameter(msrest.serialization.Model):
         self.name = name
         self.description = None
         self.visibility = None
+        self.optional = None
 
 
 class ScriptSecureStringExecutionParameter(ScriptExecutionParameter):

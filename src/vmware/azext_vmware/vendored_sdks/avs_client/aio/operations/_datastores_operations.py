@@ -48,7 +48,7 @@ class DatastoresOperations:
         resource_group_name: str,
         private_cloud_name: str,
         cluster_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.DatastoreList"]:
         """List datastores in a private cloud cluster.
 
@@ -129,7 +129,7 @@ class DatastoresOperations:
         private_cloud_name: str,
         cluster_name: str,
         datastore_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.Datastore":
         """Get a datastore in a private cloud cluster.
 
@@ -199,7 +199,7 @@ class DatastoresOperations:
         datastore_name: str,
         net_app_volume: Optional["_models.NetAppVolume"] = None,
         disk_pool_volume: Optional["_models.DiskPoolVolume"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.Datastore":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.Datastore"]
         error_map = {
@@ -263,7 +263,7 @@ class DatastoresOperations:
         datastore_name: str,
         net_app_volume: Optional["_models.NetAppVolume"] = None,
         disk_pool_volume: Optional["_models.DiskPoolVolume"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.Datastore"]:
         """Create or update a datastore in a private cloud cluster.
 
@@ -283,8 +283,8 @@ class DatastoresOperations:
         :type disk_pool_volume: ~avs_client.models.DiskPoolVolume
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either Datastore or the result of cls(response)
@@ -348,7 +348,7 @@ class DatastoresOperations:
         private_cloud_name: str,
         cluster_name: str,
         datastore_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -396,7 +396,7 @@ class DatastoresOperations:
         private_cloud_name: str,
         cluster_name: str,
         datastore_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Delete a datastore in a private cloud cluster.
 
@@ -412,8 +412,8 @@ class DatastoresOperations:
         :type datastore_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)

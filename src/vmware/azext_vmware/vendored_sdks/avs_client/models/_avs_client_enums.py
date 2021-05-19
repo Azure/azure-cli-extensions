@@ -148,6 +148,13 @@ class MountOptionEnum(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     MOUNT = "MOUNT"
     ATTACH = "ATTACH"
 
+class OptionalParamEnum(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Is this parameter required or optional
+    """
+
+    OPTIONAL = "Optional"
+    REQUIRED = "Required"
+
 class PortMirroringDirectionEnum(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Direction of port mirroring profile.
     """

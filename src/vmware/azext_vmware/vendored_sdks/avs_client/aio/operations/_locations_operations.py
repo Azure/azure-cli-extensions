@@ -43,7 +43,7 @@ class LocationsOperations:
     async def check_trial_availability(
         self,
         location: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.Trial":
         """Return trial status for subscription by region.
 
@@ -97,7 +97,7 @@ class LocationsOperations:
     async def check_quota_availability(
         self,
         location: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.Quota":
         """Return quota for subscription by region.
 

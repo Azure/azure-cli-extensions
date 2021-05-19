@@ -45,7 +45,7 @@ class HcxEnterpriseSitesOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.HcxEnterpriseSiteList"]:
         """List HCX Enterprise Sites in a private cloud.
 
@@ -122,7 +122,7 @@ class HcxEnterpriseSitesOperations:
         resource_group_name: str,
         private_cloud_name: str,
         hcx_enterprise_site_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.HcxEnterpriseSite":
         """Get an HCX Enterprise Site by name in a private cloud.
 
@@ -186,7 +186,7 @@ class HcxEnterpriseSitesOperations:
         resource_group_name: str,
         private_cloud_name: str,
         hcx_enterprise_site_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.HcxEnterpriseSite":
         """Create or update an HCX Enterprise Site in a private cloud.
 
@@ -261,7 +261,7 @@ class HcxEnterpriseSitesOperations:
         resource_group_name: str,
         private_cloud_name: str,
         hcx_enterprise_site_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         """Delete an HCX Enterprise Site in a private cloud.
 

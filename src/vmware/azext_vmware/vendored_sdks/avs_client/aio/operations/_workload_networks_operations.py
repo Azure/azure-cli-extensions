@@ -47,7 +47,7 @@ class WorkloadNetworksOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.WorkloadNetworkSegmentsList"]:
         """List of segments in a private cloud workload network.
 
@@ -124,7 +124,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         private_cloud_name: str,
         segment_id: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.WorkloadNetworkSegment":
         """Get a segment by id in a private cloud workload network.
 
@@ -189,7 +189,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         segment_id: str,
         workload_network_segment: "_models.WorkloadNetworkSegment",
-        **kwargs
+        **kwargs: Any
     ) -> "_models.WorkloadNetworkSegment":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkSegment"]
         error_map = {
@@ -248,7 +248,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         segment_id: str,
         workload_network_segment: "_models.WorkloadNetworkSegment",
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.WorkloadNetworkSegment"]:
         """Create a segment by id in a private cloud workload network.
 
@@ -264,8 +264,8 @@ class WorkloadNetworksOperations:
         :type workload_network_segment: ~avs_client.models.WorkloadNetworkSegment
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either WorkloadNetworkSegment or the result of cls(response)
@@ -326,7 +326,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         segment_id: str,
         workload_network_segment: "_models.WorkloadNetworkSegment",
-        **kwargs
+        **kwargs: Any
     ) -> Optional["_models.WorkloadNetworkSegment"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.WorkloadNetworkSegment"]]
         error_map = {
@@ -383,7 +383,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         segment_id: str,
         workload_network_segment: "_models.WorkloadNetworkSegment",
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.WorkloadNetworkSegment"]:
         """Create or update a segment by id in a private cloud workload network.
 
@@ -399,8 +399,8 @@ class WorkloadNetworksOperations:
         :type workload_network_segment: ~avs_client.models.WorkloadNetworkSegment
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either WorkloadNetworkSegment or the result of cls(response)
@@ -460,7 +460,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         private_cloud_name: str,
         segment_id: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -506,7 +506,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         private_cloud_name: str,
         segment_id: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Delete a segment by id in a private cloud workload network.
 
@@ -520,8 +520,8 @@ class WorkloadNetworksOperations:
         :type segment_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -576,7 +576,7 @@ class WorkloadNetworksOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.WorkloadNetworkDhcpList"]:
         """List dhcp in a private cloud workload network.
 
@@ -653,7 +653,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         dhcp_id: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.WorkloadNetworkDhcp":
         """Get dhcp by id in a private cloud workload network.
 
@@ -718,7 +718,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         dhcp_id: str,
         properties: Optional["_models.WorkloadNetworkDhcpEntity"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.WorkloadNetworkDhcp":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkDhcp"]
         error_map = {
@@ -779,7 +779,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         dhcp_id: str,
         properties: Optional["_models.WorkloadNetworkDhcpEntity"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.WorkloadNetworkDhcp"]:
         """Create dhcp by id in a private cloud workload network.
 
@@ -795,8 +795,8 @@ class WorkloadNetworksOperations:
         :type properties: ~avs_client.models.WorkloadNetworkDhcpEntity
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either WorkloadNetworkDhcp or the result of cls(response)
@@ -857,7 +857,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         dhcp_id: str,
         properties: Optional["_models.WorkloadNetworkDhcpEntity"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> Optional["_models.WorkloadNetworkDhcp"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.WorkloadNetworkDhcp"]]
         error_map = {
@@ -916,7 +916,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         dhcp_id: str,
         properties: Optional["_models.WorkloadNetworkDhcpEntity"] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.WorkloadNetworkDhcp"]:
         """Create or update dhcp by id in a private cloud workload network.
 
@@ -932,8 +932,8 @@ class WorkloadNetworksOperations:
         :type properties: ~avs_client.models.WorkloadNetworkDhcpEntity
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either WorkloadNetworkDhcp or the result of cls(response)
@@ -993,7 +993,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         private_cloud_name: str,
         dhcp_id: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -1039,7 +1039,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         private_cloud_name: str,
         dhcp_id: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Delete dhcp by id in a private cloud workload network.
 
@@ -1053,8 +1053,8 @@ class WorkloadNetworksOperations:
         :type dhcp_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -1109,7 +1109,7 @@ class WorkloadNetworksOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.WorkloadNetworkGatewayList"]:
         """List of gateways in a private cloud workload network.
 
@@ -1186,7 +1186,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         private_cloud_name: str,
         gateway_id: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.WorkloadNetworkGateway":
         """Get a gateway by id in a private cloud workload network.
 
@@ -1249,7 +1249,7 @@ class WorkloadNetworksOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.WorkloadNetworkPortMirroringList"]:
         """List of port mirroring profiles in a private cloud workload network.
 
@@ -1326,7 +1326,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         private_cloud_name: str,
         port_mirroring_id: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.WorkloadNetworkPortMirroring":
         """Get a port mirroring profile by id in a private cloud workload network.
 
@@ -1392,7 +1392,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         port_mirroring_id: str,
         workload_network_port_mirroring: "_models.WorkloadNetworkPortMirroring",
-        **kwargs
+        **kwargs: Any
     ) -> "_models.WorkloadNetworkPortMirroring":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkPortMirroring"]
         error_map = {
@@ -1451,7 +1451,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         port_mirroring_id: str,
         workload_network_port_mirroring: "_models.WorkloadNetworkPortMirroring",
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.WorkloadNetworkPortMirroring"]:
         """Create a port mirroring profile by id in a private cloud workload network.
 
@@ -1468,8 +1468,8 @@ class WorkloadNetworksOperations:
         :type workload_network_port_mirroring: ~avs_client.models.WorkloadNetworkPortMirroring
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either WorkloadNetworkPortMirroring or the result of cls(response)
@@ -1530,7 +1530,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         port_mirroring_id: str,
         workload_network_port_mirroring: "_models.WorkloadNetworkPortMirroring",
-        **kwargs
+        **kwargs: Any
     ) -> Optional["_models.WorkloadNetworkPortMirroring"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.WorkloadNetworkPortMirroring"]]
         error_map = {
@@ -1587,7 +1587,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         port_mirroring_id: str,
         workload_network_port_mirroring: "_models.WorkloadNetworkPortMirroring",
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.WorkloadNetworkPortMirroring"]:
         """Create or update a port mirroring profile by id in a private cloud workload network.
 
@@ -1604,8 +1604,8 @@ class WorkloadNetworksOperations:
         :type workload_network_port_mirroring: ~avs_client.models.WorkloadNetworkPortMirroring
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either WorkloadNetworkPortMirroring or the result of cls(response)
@@ -1665,7 +1665,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         port_mirroring_id: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -1711,7 +1711,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         port_mirroring_id: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Delete a port mirroring profile by id in a private cloud workload network.
 
@@ -1726,8 +1726,8 @@ class WorkloadNetworksOperations:
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -1782,7 +1782,7 @@ class WorkloadNetworksOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.WorkloadNetworkVMGroupsList"]:
         """List of vm groups in a private cloud workload network.
 
@@ -1859,7 +1859,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         private_cloud_name: str,
         vm_group_id: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.WorkloadNetworkVMGroup":
         """Get a vm group by id in a private cloud workload network.
 
@@ -1924,7 +1924,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         vm_group_id: str,
         workload_network_vm_group: "_models.WorkloadNetworkVMGroup",
-        **kwargs
+        **kwargs: Any
     ) -> "_models.WorkloadNetworkVMGroup":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkVMGroup"]
         error_map = {
@@ -1983,7 +1983,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         vm_group_id: str,
         workload_network_vm_group: "_models.WorkloadNetworkVMGroup",
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.WorkloadNetworkVMGroup"]:
         """Create a vm group by id in a private cloud workload network.
 
@@ -1999,8 +1999,8 @@ class WorkloadNetworksOperations:
         :type workload_network_vm_group: ~avs_client.models.WorkloadNetworkVMGroup
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either WorkloadNetworkVMGroup or the result of cls(response)
@@ -2061,7 +2061,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         vm_group_id: str,
         workload_network_vm_group: "_models.WorkloadNetworkVMGroup",
-        **kwargs
+        **kwargs: Any
     ) -> Optional["_models.WorkloadNetworkVMGroup"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.WorkloadNetworkVMGroup"]]
         error_map = {
@@ -2118,7 +2118,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         vm_group_id: str,
         workload_network_vm_group: "_models.WorkloadNetworkVMGroup",
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.WorkloadNetworkVMGroup"]:
         """Create or update a vm group by id in a private cloud workload network.
 
@@ -2134,8 +2134,8 @@ class WorkloadNetworksOperations:
         :type workload_network_vm_group: ~avs_client.models.WorkloadNetworkVMGroup
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either WorkloadNetworkVMGroup or the result of cls(response)
@@ -2195,7 +2195,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         vm_group_id: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -2241,7 +2241,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         vm_group_id: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Delete a vm group by id in a private cloud workload network.
 
@@ -2255,8 +2255,8 @@ class WorkloadNetworksOperations:
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -2311,7 +2311,7 @@ class WorkloadNetworksOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.WorkloadNetworkVirtualMachinesList"]:
         """List of virtual machines in a private cloud workload network.
 
@@ -2388,7 +2388,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         private_cloud_name: str,
         virtual_machine_id: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.WorkloadNetworkVirtualMachine":
         """Get a virtual machine by id in a private cloud workload network.
 
@@ -2451,7 +2451,7 @@ class WorkloadNetworksOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.WorkloadNetworkDnsServicesList"]:
         """List of DNS services in a private cloud workload network.
 
@@ -2528,7 +2528,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         private_cloud_name: str,
         dns_service_id: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.WorkloadNetworkDnsService":
         """Get a DNS service by id in a private cloud workload network.
 
@@ -2594,7 +2594,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         dns_service_id: str,
         workload_network_dns_service: "_models.WorkloadNetworkDnsService",
-        **kwargs
+        **kwargs: Any
     ) -> "_models.WorkloadNetworkDnsService":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkDnsService"]
         error_map = {
@@ -2653,7 +2653,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         dns_service_id: str,
         workload_network_dns_service: "_models.WorkloadNetworkDnsService",
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.WorkloadNetworkDnsService"]:
         """Create a DNS service by id in a private cloud workload network.
 
@@ -2670,8 +2670,8 @@ class WorkloadNetworksOperations:
         :type workload_network_dns_service: ~avs_client.models.WorkloadNetworkDnsService
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either WorkloadNetworkDnsService or the result of cls(response)
@@ -2732,7 +2732,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         dns_service_id: str,
         workload_network_dns_service: "_models.WorkloadNetworkDnsService",
-        **kwargs
+        **kwargs: Any
     ) -> Optional["_models.WorkloadNetworkDnsService"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.WorkloadNetworkDnsService"]]
         error_map = {
@@ -2789,7 +2789,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         dns_service_id: str,
         workload_network_dns_service: "_models.WorkloadNetworkDnsService",
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.WorkloadNetworkDnsService"]:
         """Create or update a DNS service by id in a private cloud workload network.
 
@@ -2806,8 +2806,8 @@ class WorkloadNetworksOperations:
         :type workload_network_dns_service: ~avs_client.models.WorkloadNetworkDnsService
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either WorkloadNetworkDnsService or the result of cls(response)
@@ -2867,7 +2867,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         dns_service_id: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -2913,7 +2913,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         dns_service_id: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Delete a DNS service by id in a private cloud workload network.
 
@@ -2928,8 +2928,8 @@ class WorkloadNetworksOperations:
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -2984,7 +2984,7 @@ class WorkloadNetworksOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.WorkloadNetworkDnsZonesList"]:
         """List of DNS zones in a private cloud workload network.
 
@@ -3061,7 +3061,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         private_cloud_name: str,
         dns_zone_id: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.WorkloadNetworkDnsZone":
         """Get a DNS zone by id in a private cloud workload network.
 
@@ -3126,7 +3126,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         dns_zone_id: str,
         workload_network_dns_zone: "_models.WorkloadNetworkDnsZone",
-        **kwargs
+        **kwargs: Any
     ) -> "_models.WorkloadNetworkDnsZone":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkDnsZone"]
         error_map = {
@@ -3185,7 +3185,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         dns_zone_id: str,
         workload_network_dns_zone: "_models.WorkloadNetworkDnsZone",
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.WorkloadNetworkDnsZone"]:
         """Create a DNS zone by id in a private cloud workload network.
 
@@ -3201,8 +3201,8 @@ class WorkloadNetworksOperations:
         :type workload_network_dns_zone: ~avs_client.models.WorkloadNetworkDnsZone
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either WorkloadNetworkDnsZone or the result of cls(response)
@@ -3263,7 +3263,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         dns_zone_id: str,
         workload_network_dns_zone: "_models.WorkloadNetworkDnsZone",
-        **kwargs
+        **kwargs: Any
     ) -> Optional["_models.WorkloadNetworkDnsZone"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.WorkloadNetworkDnsZone"]]
         error_map = {
@@ -3320,7 +3320,7 @@ class WorkloadNetworksOperations:
         private_cloud_name: str,
         dns_zone_id: str,
         workload_network_dns_zone: "_models.WorkloadNetworkDnsZone",
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.WorkloadNetworkDnsZone"]:
         """Create or update a DNS zone by id in a private cloud workload network.
 
@@ -3336,8 +3336,8 @@ class WorkloadNetworksOperations:
         :type workload_network_dns_zone: ~avs_client.models.WorkloadNetworkDnsZone
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either WorkloadNetworkDnsZone or the result of cls(response)
@@ -3397,7 +3397,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         dns_zone_id: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -3443,7 +3443,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         dns_zone_id: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Delete a DNS zone by id in a private cloud workload network.
 
@@ -3457,8 +3457,8 @@ class WorkloadNetworksOperations:
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -3513,7 +3513,7 @@ class WorkloadNetworksOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.WorkloadNetworkPublicIPsList"]:
         """List of Public IP Blocks in a private cloud workload network.
 
@@ -3590,7 +3590,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         private_cloud_name: str,
         public_ip_id: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.WorkloadNetworkPublicIP":
         """Get a Public IP Block by id in a private cloud workload network.
 
@@ -3657,7 +3657,7 @@ class WorkloadNetworksOperations:
         public_ip_id: str,
         display_name: Optional[str] = None,
         number_of_public_i_ps: Optional[int] = None,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.WorkloadNetworkPublicIP":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkloadNetworkPublicIP"]
         error_map = {
@@ -3719,7 +3719,7 @@ class WorkloadNetworksOperations:
         public_ip_id: str,
         display_name: Optional[str] = None,
         number_of_public_i_ps: Optional[int] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.WorkloadNetworkPublicIP"]:
         """Create a Public IP Block by id in a private cloud workload network.
 
@@ -3738,8 +3738,8 @@ class WorkloadNetworksOperations:
         :type number_of_public_i_ps: long
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either WorkloadNetworkPublicIP or the result of cls(response)
@@ -3800,7 +3800,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         public_ip_id: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -3846,7 +3846,7 @@ class WorkloadNetworksOperations:
         resource_group_name: str,
         public_ip_id: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Delete a Public IP Block by id in a private cloud workload network.
 
@@ -3861,8 +3861,8 @@ class WorkloadNetworksOperations:
         :type private_cloud_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)

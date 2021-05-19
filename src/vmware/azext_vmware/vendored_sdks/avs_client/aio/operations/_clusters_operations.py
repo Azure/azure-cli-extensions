@@ -47,7 +47,7 @@ class ClustersOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.ClusterList"]:
         """List clusters in a private cloud.
 
@@ -124,7 +124,7 @@ class ClustersOperations:
         resource_group_name: str,
         private_cloud_name: str,
         cluster_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.Cluster":
         """Get a cluster by name in a private cloud.
 
@@ -190,7 +190,7 @@ class ClustersOperations:
         cluster_name: str,
         sku: "_models.Sku",
         cluster_size: Optional[int] = None,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.Cluster":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.Cluster"]
         error_map = {
@@ -252,7 +252,7 @@ class ClustersOperations:
         cluster_name: str,
         sku: "_models.Sku",
         cluster_size: Optional[int] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.Cluster"]:
         """Create or update a cluster in a private cloud.
 
@@ -270,8 +270,8 @@ class ClustersOperations:
         :type cluster_size: int
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either Cluster or the result of cls(response)
@@ -333,7 +333,7 @@ class ClustersOperations:
         private_cloud_name: str,
         cluster_name: str,
         cluster_size: Optional[int] = None,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.Cluster":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.Cluster"]
         error_map = {
@@ -394,7 +394,7 @@ class ClustersOperations:
         private_cloud_name: str,
         cluster_name: str,
         cluster_size: Optional[int] = None,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller["_models.Cluster"]:
         """Update a cluster in a private cloud.
 
@@ -410,8 +410,8 @@ class ClustersOperations:
         :type cluster_size: int
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either Cluster or the result of cls(response)
@@ -471,7 +471,7 @@ class ClustersOperations:
         resource_group_name: str,
         private_cloud_name: str,
         cluster_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -517,7 +517,7 @@ class ClustersOperations:
         resource_group_name: str,
         private_cloud_name: str,
         cluster_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncLROPoller[None]:
         """Delete a cluster in a private cloud.
 
@@ -531,8 +531,8 @@ class ClustersOperations:
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
-         False for no polling, or your own initialized polling object for a personal polling strategy.
+        :keyword polling: By default, your polling method will be AsyncARMPolling.
+         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)

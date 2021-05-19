@@ -45,7 +45,7 @@ class ScriptPackagesOperations:
         self,
         resource_group_name: str,
         private_cloud_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> AsyncIterable["_models.ScriptPackagesList"]:
         """Return script packages available for a private cloud to run on their Private Cloud.
 
@@ -120,7 +120,7 @@ class ScriptPackagesOperations:
         resource_group_name: str,
         private_cloud_name: str,
         script_package_name: str,
-        **kwargs
+        **kwargs: Any
     ) -> "_models.ScriptPackage":
         """Return script package available to run on an Private Cloud.
 
