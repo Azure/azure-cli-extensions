@@ -6,16 +6,14 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from typing import TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 
-from azure.mgmt.core import ARMPipelineClient
+from azure.mgmt.core import AsyncARMPipelineClient
 from msrest import Deserializer, Serializer
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Optional
-
-    from azure.core.credentials import TokenCredential
+    from azure.core.credentials_async import AsyncTokenCredential
 
 from ._configuration import StorageCacheManagementClientConfiguration
 from .operations import Operations
@@ -23,24 +21,24 @@ from .operations import SkusOperations
 from .operations import UsageModelsOperations
 from .operations import CachesOperations
 from .operations import StorageTargetsOperations
-from . import models
+from .. import models
 
 
 class StorageCacheManagementClient(object):
     """A Storage Cache provides scalable caching service for NAS clients, serving data from either NFSv3 or Blob at-rest storage (referred to as "Storage Targets"). These operations allow you to manage Caches.
 
     :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.storagecache.operations.Operations
+    :vartype operations: azure.mgmt.storagecache.aio.operations.Operations
     :ivar skus: SkusOperations operations
-    :vartype skus: azure.mgmt.storagecache.operations.SkusOperations
+    :vartype skus: azure.mgmt.storagecache.aio.operations.SkusOperations
     :ivar usage_models: UsageModelsOperations operations
-    :vartype usage_models: azure.mgmt.storagecache.operations.UsageModelsOperations
+    :vartype usage_models: azure.mgmt.storagecache.aio.operations.UsageModelsOperations
     :ivar caches: CachesOperations operations
-    :vartype caches: azure.mgmt.storagecache.operations.CachesOperations
+    :vartype caches: azure.mgmt.storagecache.aio.operations.CachesOperations
     :ivar storage_targets: StorageTargetsOperations operations
-    :vartype storage_targets: azure.mgmt.storagecache.operations.StorageTargetsOperations
+    :vartype storage_targets: azure.mgmt.storagecache.aio.operations.StorageTargetsOperations
     :param credential: Credential needed for the client to connect to Azure.
-    :type credential: ~azure.core.credentials.TokenCredential
+    :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: Subscription credentials which uniquely identify Microsoft Azure subscription. The subscription ID forms part of the URI for every service call.
     :type subscription_id: str
     :param str base_url: Service URL
@@ -49,16 +47,15 @@ class StorageCacheManagementClient(object):
 
     def __init__(
         self,
-        credential,  # type: "TokenCredential"
-        subscription_id,  # type: str
-        base_url=None,  # type: Optional[str]
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> None
+        credential: "AsyncTokenCredential",
+        subscription_id: str,
+        base_url: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
         if not base_url:
             base_url = 'https://management.azure.com'
         self._config = StorageCacheManagementClientConfiguration(credential, subscription_id, **kwargs)
-        self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._client = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
@@ -76,15 +73,12 @@ class StorageCacheManagementClient(object):
         self.storage_targets = StorageTargetsOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
-    def close(self):
-        # type: () -> None
-        self._client.close()
+    async def close(self) -> None:
+        await self._client.close()
 
-    def __enter__(self):
-        # type: () -> StorageCacheManagementClient
-        self._client.__enter__()
+    async def __aenter__(self) -> "StorageCacheManagementClient":
+        await self._client.__aenter__()
         return self
 
-    def __exit__(self, *exc_details):
-        # type: (Any) -> None
-        self._client.__exit__(*exc_details)
+    async def __aexit__(self, *exc_details) -> None:
+        await self._client.__aexit__(*exc_details)
