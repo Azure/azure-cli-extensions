@@ -27,9 +27,9 @@ def _build_criteria(condition, condition_query):
 
 def create_scheduled_query(client, resource_group_name, rule_name, scopes, condition, condition_query=None,
                            disabled=False, description=None, tags=None, location=None, display_name=None,
-                           disable_auto_mitigate=False, skip_query_validation=False, check_workspace_alerts_storage=None,
+                           disable_auto_mitigate=False, skip_query_validation=False, check_workspace_alerts_storage=False,
                            actions=None, severity=2, window_size='5m', evaluation_frequency='5m',
-                           target_resource_type=None, mute_actions_duration='PT30M'):
+                           target_resource_type=None, mute_actions_duration=None):
     from .vendored_sdks.azure_mgmt_scheduled_query.models import ScheduledQueryRuleResource
     criteria = _build_criteria(condition, condition_query)
     kwargs = {
@@ -70,10 +70,8 @@ def update_scheduled_query(cmd, instance, tags=None, disabled=None, condition=No
             c.set_param('enabled', not disabled)
         if disable_auto_mitigate is not None:
             c.set_param('auto_mitigate', not disable_auto_mitigate)
-        if skip_query_validation is not None:
-            c.set_param('skip_query_validation', skip_query_validation)
-        if check_workspace_alerts_storage is not None:
-            c.set_param('check_workspace_alerts_storage_configured', check_workspace_alerts_storage)
+        c.set_param('skip_query_validation', skip_query_validation)
+        c.set_param('check_workspace_alerts_storage_configured', check_workspace_alerts_storage)
         c.set_param('description', description)
         c.set_param('actions', actions)
         c.set_param('severity', severity)
