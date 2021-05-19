@@ -455,9 +455,9 @@ def add_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name,
 
 
 def update_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name, index, address=None,
-                   http_port=None, https_port=None, disabled=None, priority=None, weight=None,
-                   backend_host_header=None, private_link_alias=None, private_link_resource_id=None,
-                   private_link_location=None, private_link_approval_message=None):
+                      http_port=None, https_port=None, disabled=None, priority=None, weight=None,
+                      backend_host_header=None, private_link_alias=None, private_link_resource_id=None,
+                      private_link_location=None, private_link_approval_message=None):
 
     client = cf_frontdoor(cmd.cli_ctx, None)
     frontdoor = client.get(resource_group_name, front_door_name)
@@ -469,7 +469,7 @@ def update_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_na
     if index >= len(backend_pool.backends):
         from knack.util import CLIError
         raise CLIError("Backend range is from 0 to {}, index '{}' could not be found on frontdoor '{}'".format(
-            len(backend_pool.backends)-1, index, front_door_name))
+            len(backend_pool.backends) - 1, index, front_door_name))
     backend = backend_pool.backends[index] if index > 0 else backend_pool.backends[0]
     with UpdateContext(backend) as c:
         c.update_param('address', address, None)
