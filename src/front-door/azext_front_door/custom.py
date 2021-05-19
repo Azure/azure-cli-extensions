@@ -436,7 +436,7 @@ def add_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name,
         enabled_state='Disabled' if disabled else 'Enabled',
         priority=priority,
         weight=weight,
-        backend_host_header=backend_host_header or address,
+        backend_host_header=address if backend_host_header==None else backend_host_header,
         private_link_alias=private_link_alias,
         private_link_resource_id=private_link_resource_id,
         private_link_location=private_link_location,
@@ -450,6 +450,39 @@ def add_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name,
         raise CLIError("Backend pool '{}' could not be found on frontdoor '{}'".format(
             backend_pool_name, front_door_name))
     backend_pool.backends.append(backend)
+    client.begin_create_or_update(resource_group_name, front_door_name, frontdoor).result()
+    return backend
+
+
+def update_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_name, index, address=None,
+                   http_port=None, https_port=None, disabled=None, priority=None, weight=None,
+                   backend_host_header=None, private_link_alias=None, private_link_resource_id=None,
+                   private_link_location=None, private_link_approval_message=None):
+
+    client = cf_frontdoor(cmd.cli_ctx, None)
+    frontdoor = client.get(resource_group_name, front_door_name)
+    backend_pool = next((x for x in frontdoor.backend_pools if x.name == backend_pool_name), None)
+    if not backend_pool:
+        from knack.util import CLIError
+        raise CLIError("Backend pool '{}' could not be found on frontdoor '{}'".format(
+            backend_pool_name, front_door_name))
+    if index >= len(backend_pool.backends):
+        from knack.util import CLIError
+        raise CLIError("Backend range is from 0 to {}, index '{}' could not be found on frontdoor '{}'".format(
+            len(backend_pool.backends)-1, index, front_door_name))
+    backend = backend_pool.backends[index] if index > 0 else backend_pool.backends[0]
+    with UpdateContext(backend) as c:
+        c.update_param('address', address, None)
+        c.update_param('http_port', http_port, None)
+        c.update_param('https_port', https_port, None)
+        c.update_param('enabled_state', 'Disabled' if disabled else 'Enabled', None)
+        c.update_param('priority', priority, None)
+        c.update_param('weight', weight, None)
+        c.update_param('backend_host_header', backend_host_header, None)
+        c.update_param('private_link_alias', private_link_alias, None)
+        c.update_param('private_link_resource_id', private_link_resource_id, None)
+        c.update_param('private_link_location', private_link_location, None)
+        c.update_param('private_link_approval_message', private_link_approval_message, None)
     client.begin_create_or_update(resource_group_name, front_door_name, frontdoor).result()
     return backend
 
