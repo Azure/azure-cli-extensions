@@ -1438,6 +1438,8 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         local_connectedk8s_version = utils.get_existing_extension_version()
         tr_logger.info("Latest available connectedk8s version: {}".format(latest_connectedk8s_version))
         tr_logger.info("Local connectedk8s version: {}".format(local_connectedk8s_version))
+        from azure.cli.core import __version__ as azure_cli_core_version
+        tr_logger.info("azure-cli-core version installed locally: {}".format(azure_cli_core_version))
         if latest_connectedk8s_version and local_connectedk8s_version != 'Unknown' and local_connectedk8s_version != 'NotFound':
             if version.parse(local_connectedk8s_version) < version.parse(latest_connectedk8s_version):
                 print("You have an update pending. You can update the connectedk8s extension to latest v{} using 'az extension update -n connectedk8s'".format(latest_connectedk8s_version))
