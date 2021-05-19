@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.4.0
+++++++++++++++++++
+
+* Release customization for microsoft.openservicemesh
+
 0.3.1
 ++++++++++++++++++
 
