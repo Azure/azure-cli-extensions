@@ -58,6 +58,7 @@ from .vendored_sdks.models import (
     VirtualMachineUpdate,
     VirtualNetwork,
     ExtendedLocation,
+    StopVirtualMachineOptions,
 )
 
 from .vendored_sdks.operations import (
@@ -680,16 +681,17 @@ def stop_vm(
     client: VirtualMachinesOperations,
     resource_group_name,
     resource_name,
-    skip_shutdown=None,
+    skip_shutdown=False,
     no_wait=False,
 ):
+    body = StopVirtualMachineOptions(skip_shutdown=skip_shutdown)
 
     return sdk_no_wait(
         no_wait,
         client.begin_stop,
         resource_group_name,
         resource_name,
-        str(skip_shutdown).lower(),
+        body
     )
 
 

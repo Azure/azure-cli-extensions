@@ -93,12 +93,18 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
             self.check('name', '{vm_name}'),
         ])
 
-        # List the vm resources in this resource group.
+        # List the VM resources in this resource group.
         resource_list = self.cmd('az connectedvmware vm list -g {rg}').get_output_in_json()
         # At this point there should be 1 vm resource.
         assert len(resource_list) >= 1
 
-        # Delete the created vm.
+        # Stop VM.
+        self.cmd('az connectedvmware vm stop -g {rg} --name {vm_name}')
+
+        # Start VM.
+        self.cmd('az connectedvmware vm start -g {rg} --name {vm_name}')
+
+        # Delete the created VM.
         self.cmd('az connectedvmware vm delete -g {rg} --name {vm_name}')
 
         # Delete the created resource-pool.
