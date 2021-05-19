@@ -227,5 +227,5 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
     with self.command_group('storage fs', command_type=adls_fs_sdk,
                             custom_command_type=get_custom_sdk('filesystem', cf_adls_file_system),
                             resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE, min_api='2020-06-12', is_preview=True) as g:
-        g.storage_command_oauth('list-deleted-path', 'list_deleted_paths')
-        g.storage_command_oauth('undelete-path', 'undelete_path')
+        g.storage_custom_command_oauth('list-deleted-path', 'list_deleted_path')
+        g.storage_command_oauth('undelete-path', '_undelete_path')

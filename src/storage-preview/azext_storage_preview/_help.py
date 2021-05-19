@@ -405,6 +405,15 @@ type: group
 short-summary: Manage storage datalake service properties.
 """
 
+helps['storage fs list-deleted-path'] = """
+type: command
+short-summary: List the deleted (file or directory) paths under the specified file system.
+examples:
+  - name: List the deleted (file or directory) paths under the specified file system..
+    text: |
+        az storage fs list-deleted-path -f myfilesystem --account-name mystorageccount --account-key 00000000
+"""
+
 helps['storage fs service-properties show'] = """
 type: command
 short-summary: Show the properties of a storage account's datalake service, including Azure Storage Analytics.
@@ -421,4 +430,14 @@ examples:
   - name: Update the properties of a storage account's datalake service
     text: |
         az storage fs service-properties update --delete-retention --delete-retention-period 7 --account-name mystorageccount --account-key 00000000
+"""
+
+helps['storage fs undelete-path'] = """
+type: command
+short-summary: Restore soft-deleted path.
+long-summary: Operation will only be successful if used within the specified number of days set in the delete retention policy.
+examples:
+  - name: Restore soft-deleted path.
+    text: |
+        az storage fs undelete-path -f myfilesystem --deleted-path-name dir --deletion-id 0000 --account-name mystorageccount --account-key 00000000
 """

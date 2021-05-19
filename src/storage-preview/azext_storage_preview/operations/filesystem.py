@@ -6,6 +6,17 @@
 from knack.util import CLIError
 
 
+def list_deleted_path(client, marker=None, num_results=None, path_prefix=None, timeout=None, **kwargs):
+    from ..track2_util import list_generator
+
+    generator = client.list_deleted_path(path_prefix=path_prefix, timeout=timeout, **kwargs)
+
+    pages = generator.by_page(continuation_token=marker)  # BlobPropertiesPaged
+    result = list_generator(pages=pages, num_results=num_results)
+
+    return result
+
+
 def set_service_properties(client, delete_retention=None, delete_retention_period=None,
                            static_website=None, index_document=None, error_document_404_path=None):
     parameters = client.get_service_properties()
