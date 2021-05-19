@@ -92,7 +92,7 @@ def get_whl_from_url(url, filename, tmp_dir, whl_cache=None):
     try:
         r = r
     except NameError:
-        print('get download-url fail: {}'.format(url))
+        raise ValueError('download-url can not access: {}'.format(url))
 
     ext_file = os.path.join(tmp_dir, filename)
     with open(ext_file, 'wb') as f:
