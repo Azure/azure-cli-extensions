@@ -1422,11 +1422,11 @@ def disable_features(cmd, client, resource_group_name, cluster_name, features, k
 def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, location=None, storage_account=None,
                  sas_token=None, output_file=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz')):
     colorama.init()
-    print(f"{colorama.Fore.GREEN}Troubleshooting the ConnectedCluster for possible issues...")
+    print(f"{colorama.Fore.YELLOW}Troubleshooting the ConnectedCluster for possible issues...")
     utils.check_connectivity()  # Checks internet connectivity
     troubleshoot_log_path = os.path.join(os.path.expanduser('~'), '.azure', 'connected8s_troubleshoot.log')
     utils.setup_logger('connectedk8s_troubleshoot', troubleshoot_log_path)
-    tr_logger = logging.getLogger('connectedk8s_troubleshoot')
+    tr_logger = logging.getLogger('connectedk8s_troubleshoot')  # logger for troubleshooting, onto a log file
 
     kube_config = set_kube_config(kube_config)
 
@@ -1499,7 +1499,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             print(f"{colorama.Style.BRIGHT}{colorama.Fore.GREEN}The diagnostic logs have been collected and archived at '{output_file}'.")
         except Exception as ex:
             tr_logger.error("Error occured while archiving the log file: {}".format(str(ex)), exc_info=True)
-            raise Exception("Error occured while archiving the log file: {}".format(str(ex)))
+            raise Exception("Error occured while archiving the diagnostic log file: {}".format(str(ex)))
 
     except Exception as ex:
         tr_logger.error("Exception caught while running troubleshoot: {}".format(str(ex)), exc_info=True)
