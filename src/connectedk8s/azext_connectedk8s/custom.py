@@ -1947,18 +1947,18 @@ def get_custom_locations_oid(cmd, cl_oid):
             return result[0].object_id  # Using the fetched OID
 
         if cl_oid is None:
-            logger.warning("Unable to fetch oid of 'custom-locations' app. Proceeding without enabling the feature.")
+            logger.warning("Failed to enable Custom Locations feature on the cluster. Unable to fetch Object ID of Azure AD application used by Azure Arc service. Try enabling the feature by passing the --custom-locations-object-id parameter directly. Learn more at https://aka.ms/CustomLocationsObjectID")
             telemetry.set_exception(exception='Unable to fetch oid of custom locations app.', fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type,
                                     summary='Unable to fetch oid for custom locations app.')
             return ""
         else:
             return cl_oid
     except Exception as e:
-        log_string = "Unable to fetch oid of 'custom-locations' app. "
+        log_string = "Unable to fetch the Object ID of the Azure AD application used by Azure Arc service. "
         telemetry.set_exception(exception=e, fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type,
                                 summary='Unable to fetch oid for custom locations app.')
         if cl_oid:
-            log_string += "Proceeding with the OID passed to enable the 'custom-locations' feature."
+            log_string += "Proceeding with the Object ID provided to enable the 'custom-locations' feature."
             logger.warning(log_string)
             return cl_oid
         log_string += "Unable to enable the 'custom-locations' feature. " + str(e)
