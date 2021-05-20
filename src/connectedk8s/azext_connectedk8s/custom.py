@@ -1954,7 +1954,7 @@ def get_custom_locations_oid(cmd, cl_oid):
         else:
             return cl_oid
     except Exception as e:
-        log_string = "Unable to fetch oid of 'custom-locations' app. "
+        log_string = "Unable to fetch the Object ID of the Azure AD application used by Azure Arc service. "
         telemetry.set_exception(exception=e, fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type,
                                 summary='Unable to fetch oid for custom locations app.')
         if cl_oid:
