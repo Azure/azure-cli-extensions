@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.14
++++++
+* Add os-sku argument for cluster and nodepool creation
+
 0.5.13
 +++++
 * Add compatible logic for the track 2 migration of resource dependence
