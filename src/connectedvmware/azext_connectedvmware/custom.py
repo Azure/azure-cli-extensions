@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable= too-many-lines
+# pylint: disable= too-many-lines, too-many-locals, unused-argument
 
 from knack.util import CLIError
 from azext_connectedvmware.vmware_utils import get_resource_id
@@ -86,6 +86,7 @@ def connect_vcenter(
     username=None,
     password=None,
     port=DEFAULT_VCENTER_PORT,
+    tags=None,
     no_wait=False,
 ):
 
@@ -159,6 +160,7 @@ def create_resource_pool(
     vcenter=None,
     mo_ref_id=None,
     inventory_item=None,
+    tags=None,
     no_wait=False,
 ):
 
@@ -261,6 +263,7 @@ def create_virtual_network(
     vcenter=None,
     mo_ref_id=None,
     inventory_item=None,
+    tags=None,
     no_wait=False,
 ):
 
@@ -369,6 +372,7 @@ def create_vm_template(
     vcenter=None,
     mo_ref_id=None,
     inventory_item=None,
+    tags=None,
     no_wait=True,
 ):
 
@@ -462,7 +466,6 @@ def list_vm_template(
 
 # region VirtualMachines
 
-# pylint: disable=R0914
 def create_vm(
     cmd,
     client: VirtualMachinesOperations,
@@ -481,6 +484,7 @@ def create_vm(
     memory_size=None,
     nics=None,
     disks=None,
+    tags=None,
     no_wait=False,
 ):
 
@@ -1244,3 +1248,6 @@ def list_inventory_item(
 ):
 
     return client.list_by_v_center(resource_group_name, vcenter_name)
+
+
+# endregion
