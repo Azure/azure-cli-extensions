@@ -55,6 +55,10 @@ fi
 if [[ -n ${TEST_CASES} ]]; then
     run_flags+=" -t ${TEST_CASES}"
 fi
+# ext matrix
+if [[ -n ${EXT_TEST_MATRIX} ]]; then
+    run_flags+=" -em ${EXT_TEST_MATRIX}"
+fi
 # ext extra filter
 if [[ -n ${EXT_TEST_FILTER} ]]; then
     run_flags+=" -ef ${EXT_TEST_FILTER}"
