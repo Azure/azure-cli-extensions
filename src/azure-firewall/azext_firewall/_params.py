@@ -20,6 +20,7 @@ from ._validators import (
     process_threat_intel_allowlist_ip_addresses, process_threat_intel_allowlist_fqdns,
     validate_virtual_hub, get_management_subnet_validator, get_management_public_ip_validator,
     validate_ip_groups)
+from ._actions import PublicIpConfig
 
 
 # pylint: disable=too-many-locals, too-many-branches, too-many-statements
@@ -247,4 +248,21 @@ def load_arguments(self, _):
     with self.argument_context('network firewall policy rule-collection-group collection rule') as c:
         c.argument('rule_collection_name', options_list=['--collection-name'], help='The name of the rule collection in Firewall Policy Rule Collection Group.')
         c.argument('rule_name', options_list=['--name', '-n'], arg_group='Common Rule', help='The name of rule')
+
+    with self.argument_context('network firewall start') as c:
+        c.argument('azure_firewall_name', firewall_name_type, id_part=None)
+
+    with self.argument_context('network firewall start', arg_group="Ip Config") as c:
+        c.argument('virtual_network_name', options_list='--vnet-name', help='Name of virtual network(vnet). It should contain one subnet called "AzureFirewallSubnet".')
+        c.argument('public_ip_config', nargs='+', action=PublicIpConfig)
+
+    with self.argument_context('network firewall start', arg_group="Management Ip Config") as c:
+        c.argument('management_item_name', options_list=['--m-name'], help='Name of the management IP configuration.')
+        c.argument('management_virtual_network_name', options_list=['--m-vnet-name'],
+                   help='The virtual network (VNet) name for management ip configuation. '
+                        'It should contain one subnet called "AzureFirewallManagementSubnet".')
+        c.argument('management_public_ip_address', help='Name or ID of the public IP to use for management ip configuation.',
+                   options_list=['--m-public-ip-address'], validator=get_management_public_ip_validator())
+
+
     # endregion

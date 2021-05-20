@@ -10,10 +10,17 @@ def network_client_factory(cli_ctx, aux_subscriptions=None, **_):
     return get_mgmt_service_client(cli_ctx, CUSTOM_FIREWALL, aux_subscriptions=aux_subscriptions,
                                    api_version='2020-07-01')
 
+def network_client_factory_2020_11_01(cli_ctx, aux_subscriptions=None, **_):
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    from .profiles import CUSTOM_FIREWALL_2020_11_01
+    return get_mgmt_service_client(cli_ctx, CUSTOM_FIREWALL_2020_11_01, aux_subscriptions=aux_subscriptions,
+                                   api_version='2020-11-01')
 
 def cf_firewalls(cli_ctx, _):
     return network_client_factory(cli_ctx).azure_firewalls
 
+def cf_firewalls_2020_11_01(cli_ctx, _):
+    return network_client_factory_2020_11_01(cli_ctx).azure_firewalls
 
 def cf_firewall_fqdn_tags(cli_ctx, _):
     return network_client_factory(cli_ctx).azure_firewall_fqdn_tags

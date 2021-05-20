@@ -38,6 +38,21 @@ helps['network firewall show'] = """
 helps['network firewall update'] = """
     type: command
     short-summary: Update an Azure Firewall.
+    
+"""
+helps['network firewall start'] = """
+    type: command
+    short-summary: Start an Azure Firewall.
+    parameters:
+      - name: --public-ip-config
+        short-summary: Public Ip config for firewall. If it's used, --vnet-name is required
+        long-summary: |
+          Usage: --public-ip-config name=MyConfig public-ip=MyPublicIp
+        
+          name: Required. Name of IP configuration.
+          public-ip: Required. Name or Id of existing public-ip
+        
+          Multiple config can be specified by using more than one `--public-ip-config` argument.    
 """
 # endregion
 

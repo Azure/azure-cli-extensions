@@ -4,6 +4,24 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.azclierror import ArgumentUsageError
+
+
+def validate_af_start(namespace):
+    if 'public_ip_config' in namespace:
+        for config in namespace.public_ip_config:
+            tmp_set = {getattr(namespace, 'virtual_network_name') is not None}
+            tmp_set.add('name' in config)
+            tmp_set.add('public_ip' in config)
+            if len(tmp_set) != 1:
+                raise ArgumentUsageError('name, public-ip and vnet-name must be provided for Ip Configuration')
+
+    tmp_set = {getattr(namespace, 'management_item_name') is None}
+    tmp_set.add(getattr(namespace, 'management_public_ip_address') is None)
+    tmp_set.add(getattr(namespace, 'management_virtual_network_name') is None)
+    if len(tmp_set) != 1:
+        raise ArgumentUsageError('--m-vnet-name, --m-public-ip-address and --m-name must be provided '
+                                 'for Management Ip Configuration')
 
 
 def validate_application_rule_protocols(namespace):

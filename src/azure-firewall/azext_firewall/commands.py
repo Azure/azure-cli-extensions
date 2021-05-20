@@ -7,13 +7,13 @@
 from azure.cli.core.commands import CliCommandType
 
 from .custom import build_af_rule_list, build_af_rule_show, build_af_rule_delete
-from .profiles import CUSTOM_FIREWALL
+from .profiles import CUSTOM_FIREWALL, CUSTOM_FIREWALL_2020_11_01
 
-from ._client_factory import cf_firewalls, cf_firewall_fqdn_tags, cf_firewall_policies, cf_firewall_policy_rule_collection_groups
+from ._client_factory import cf_firewalls, cf_firewall_fqdn_tags, cf_firewall_policies, cf_firewall_policy_rule_collection_groups, cf_firewalls_2020_11_01
 from ._util import (
     list_network_resource_property, get_network_resource_property_entry, delete_network_resource_property_entry)
 
-from ._validators import validate_af_network_rule, validate_af_nat_rule, validate_af_application_rule
+from ._validators import validate_af_network_rule, validate_af_nat_rule, validate_af_application_rule, validate_af_start
 from ._exception_handler import exception_handler
 
 
@@ -30,6 +30,13 @@ def load_command_table(self, _):
         client_factory=cf_firewalls,
         resource_type=CUSTOM_FIREWALL,
         min_api='2018-08-01'
+    )
+
+    network_firewall_sdk_start = CliCommandType(
+        operations_tmpl='azext_firewall.vendored_sdks.v2020_11_01.operations#AzureFirewallsOperations.{}',
+        client_factory=cf_firewalls_2020_11_01,
+        resource_type=CUSTOM_FIREWALL_2020_11_01,
+        min_api='2020-11-01'
     )
 
     network_firewall_fqdn_tags_sdk = CliCommandType(
@@ -67,6 +74,10 @@ def load_command_table(self, _):
         g.custom_command('list', 'list_azure_firewalls')
         g.show_command('show')
         g.generic_update_command('update', custom_func_name='update_azure_firewall')
+
+    with self.command_group('network firewall', network_firewall_sdk_start, client_factory=cf_firewalls_2020_11_01) as g:
+        g.custom_command('start', 'start_azure_firewall', is_preview=True, validator=validate_af_start)
+        g.custom_command('stop', 'stop_azure_firewall', is_preview=True)
 
     with self.command_group('network firewall threat-intel-allowlist', network_firewall_sdk, is_preview=True, min_api='2019-09-01') as g:
         g.custom_command('create', 'create_azure_firewall_threat_intel_allowlist')

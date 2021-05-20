@@ -9,6 +9,9 @@ from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import UserFault, ServiceError
 from ._client_factory import network_client_factory
+from msrestazure.tools import resource_id, is_valid_resource_id
+from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.azclierror import ArgumentUsageError
 
 logger = get_logger(__name__)
 
@@ -485,6 +488,65 @@ def delete_azure_firewall_threat_intel_allowlist(cmd, resource_group_name, azure
         firewall.additional_properties.pop('ThreatIntel.Whitelist.IpAddresses', None)
         firewall.additional_properties.pop('ThreatIntel.Whitelist.FQDNs', None)
     return client.create_or_update(resource_group_name, azure_firewall_name, firewall)
+
+
+def _subnet_id(cmd, resource_group_name, virtual_network_name, subnet_name):
+    subnet_id = resource_id(subscription=get_subscription_id(cmd.cli_ctx),
+                            resource_group=resource_group_name,
+                            namespace='Microsoft.Network',
+                            type='virtualNetworks',
+                            name=virtual_network_name,
+                            child_type_1='subnets',
+                            child_name_1=subnet_name)
+    if not is_valid_resource_id(subnet_id):
+        raise ArgumentUsageError(f'{virtual_network_name} should contain a subnet named {subnet_name}')
+    return subnet_id
+
+
+def _public_ip_id(cmd, resource_group_name, public_ip):
+    if not is_valid_resource_id(public_ip):
+        return resource_id(
+            subscription=get_subscription_id(cmd.cli_ctx),
+            resource_group=resource_group_name,
+            namespace='Microsoft.Network',
+            type='publicIPAddresses',
+            name=public_ip)
+    return public_ip
+
+
+def start_azure_firewall(cmd, client, resource_group_name, azure_firewall_name, public_ip_config=None, virtual_network_name=None,
+                         management_item_name=None, management_virtual_network_name=None,
+                         management_public_ip_address=None):
+    AzureFirewallIPConfiguration, SubResource = cmd.get_models('AzureFirewallIPConfiguration', 'SubResource')
+    af = client.get(resource_group_name, azure_firewall_name)
+
+    if public_ip_config:
+        ip_configurations = [AzureFirewallIPConfiguration(
+                name=config['name'],
+                public_ip_address=SubResource(id=_public_ip_id(cmd, resource_group_name, config['public_ip'])))
+                for config in public_ip_config]
+
+        # only one IpConfiguration contains a subnet reference
+        if not {str(config.subnet) for config in af.ip_configurations}.difference({'None'}):
+            ip_configurations[0].subnet = SubResource(id=_subnet_id(cmd, resource_group_name, virtual_network_name, 'AzureFirewallSubnet'))
+        af.ip_configurations.extend(ip_configurations)
+
+    if management_virtual_network_name and management_public_ip_address:
+        af.management_ip_configuration = AzureFirewallIPConfiguration(
+            name=management_item_name,
+            public_ip_address=SubResource( id=_public_ip_id(cmd, resource_group_name, management_public_ip_address)),
+            subnet=SubResource(id=_subnet_id(cmd, resource_group_name, management_virtual_network_name, 'AzureFirewallManagementSubnet')))
+
+    return client.begin_create_or_update(resource_group_name, azure_firewall_name, af)
+    # return client.create_or_update(resource_group_name, azure_firewall_name, af)
+
+
+def stop_azure_firewall(cmd, resource_group_name, azure_firewall_name):
+    client = network_client_factory(cmd.cli_ctx).azure_firewalls
+    firewall = client.get(resource_group_name, azure_firewall_name)
+    firewall.ip_configurations = None
+    firewall.management_ip_configuration = None
+    return client.begin_create_or_update(resource_group_name, azure_firewall_name, firewall)
 # endregion
 
 
