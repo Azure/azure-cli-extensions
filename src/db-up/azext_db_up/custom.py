@@ -224,7 +224,7 @@ def server_down(cmd, client, resource_group_name=None, server_name=None, delete_
 
         # delete resource group
         logger.warning('Deleting Resource Group \'%s\'...', resource_group_name)
-        return resource_client.resource_groups.delete(resource_group_name)
+        return resource_client.resource_groups.begin_delete(resource_group_name)
     logger.warning('Deleting server \'%s\'...', server_name)
     return client.delete(resource_group_name, server_name)
 
