@@ -1943,7 +1943,7 @@ def get_custom_locations_oid(cmd, cl_oid):
         result = list(sp_graph_client.list(filter=(' and '.join(sub_filters))))
         if len(result) != 0:
             if cl_oid is not None and cl_oid != result[0].object_id:
-                logger.warning("The 'Custom-locations' OID passed is different from the actual OID ({}) of the Custom Locations RP app.".format(result[0].object_id))
+                logger.warning("The 'Custom-locations' OID passed is different from the actual OID({}) of the Custom Locations RP app. Proceeding with the correct one...".format(result[0].object_id))
             return result[0].object_id  # Using the fetched OID
 
         if cl_oid is None:
