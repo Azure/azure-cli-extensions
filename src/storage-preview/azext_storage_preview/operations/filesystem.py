@@ -9,7 +9,7 @@ from knack.util import CLIError
 def list_deleted_path(client, marker=None, num_results=None, path_prefix=None, timeout=None, **kwargs):
     from ..track2_util import list_generator
 
-    generator = client.list_deleted_path(path_prefix=path_prefix, timeout=timeout, **kwargs)
+    generator = client.list_deleted_paths(path_prefix=path_prefix, timeout=timeout, max_results=num_results, **kwargs)
 
     pages = generator.by_page(continuation_token=marker)  # BlobPropertiesPaged
     result = list_generator(pages=pages, num_results=num_results)

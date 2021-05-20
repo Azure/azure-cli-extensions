@@ -400,7 +400,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage fs list-deleted-path') as c:
         c.argument('path_prefix', help='Filter the results to return only paths under the specified path.')
-        c.argument('num_results', help='Specify the maximum number to return.')
+        c.argument('num_results', type=int, help='Specify the maximum number to return.')
         c.argument('marker', help='A string value that identifies the portion of the list of containers to be '
                    'returned with the next listing operation. The operation returns the NextMarker value within '
                    'the response body if the listing operation did not return all containers remaining to be listed '

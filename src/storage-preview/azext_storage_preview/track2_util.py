@@ -37,6 +37,9 @@ def list_generator(pages, num_results):
         # handle num results
         if num_results is not None:
             if num_results == len(result):
+                if pages.continuation_token:
+                    next_marker = {"nextMarker": pages.continuation_token}
+                    result.append(next_marker)
                 break
 
         page = list(next(pages))
