@@ -18,63 +18,72 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
 
 from ._configuration import DataFactoryManagementClientConfiguration
-from .operations import OperationOperations
-from .operations import FactoryOperations
+from .operations import Operations
+from .operations import FactoriesOperations
 from .operations import ExposureControlOperations
-from .operations import IntegrationRuntimeOperations
+from .operations import IntegrationRuntimesOperations
 from .operations import IntegrationRuntimeObjectMetadataOperations
-from .operations import IntegrationRuntimeNodeOperations
-from .operations import LinkedServiceOperations
-from .operations import DatasetOperations
-from .operations import PipelineOperations
-from .operations import PipelineRunOperations
-from .operations import ActivityRunOperations
-from .operations import TriggerOperations
-from .operations import TriggerRunOperations
-from .operations import DataFlowOperations
+from .operations import IntegrationRuntimeNodesOperations
+from .operations import LinkedServicesOperations
+from .operations import DatasetsOperations
+from .operations import PipelinesOperations
+from .operations import PipelineRunsOperations
+from .operations import ActivityRunsOperations
+from .operations import TriggersOperations
+from .operations import TriggerRunsOperations
+from .operations import DataFlowsOperations
 from .operations import DataFlowDebugSessionOperations
-from .operations import ManagedVirtualNetworkOperations
-from .operations import ManagedPrivateEndpointOperations
+from .operations import ManagedVirtualNetworksOperations
+from .operations import ManagedPrivateEndpointsOperations
+from .operations import PrivateEndPointConnectionsOperations
+from .operations import PrivateEndpointConnectionOperations
+from .operations import PrivateLinkResourcesOperations
 from . import models
 
 
 class DataFactoryManagementClient(object):
     """The Azure Data Factory V2 management API provides a RESTful set of web services that interact with Azure Data Factory V2 services.
 
-    :ivar operation: OperationOperations operations
-    :vartype operation: data_factory_management_client.operations.OperationOperations
-    :ivar factory: FactoryOperations operations
-    :vartype factory: data_factory_management_client.operations.FactoryOperations
+    :ivar operations: Operations operations
+    :vartype operations: data_factory_management_client.operations.Operations
+    :ivar factories: FactoriesOperations operations
+    :vartype factories: data_factory_management_client.operations.FactoriesOperations
     :ivar exposure_control: ExposureControlOperations operations
     :vartype exposure_control: data_factory_management_client.operations.ExposureControlOperations
-    :ivar integration_runtime: IntegrationRuntimeOperations operations
-    :vartype integration_runtime: data_factory_management_client.operations.IntegrationRuntimeOperations
+    :ivar integration_runtimes: IntegrationRuntimesOperations operations
+    :vartype integration_runtimes: data_factory_management_client.operations.IntegrationRuntimesOperations
     :ivar integration_runtime_object_metadata: IntegrationRuntimeObjectMetadataOperations operations
     :vartype integration_runtime_object_metadata: data_factory_management_client.operations.IntegrationRuntimeObjectMetadataOperations
-    :ivar integration_runtime_node: IntegrationRuntimeNodeOperations operations
-    :vartype integration_runtime_node: data_factory_management_client.operations.IntegrationRuntimeNodeOperations
-    :ivar linked_service: LinkedServiceOperations operations
-    :vartype linked_service: data_factory_management_client.operations.LinkedServiceOperations
-    :ivar dataset: DatasetOperations operations
-    :vartype dataset: data_factory_management_client.operations.DatasetOperations
-    :ivar pipeline: PipelineOperations operations
-    :vartype pipeline: data_factory_management_client.operations.PipelineOperations
-    :ivar pipeline_run: PipelineRunOperations operations
-    :vartype pipeline_run: data_factory_management_client.operations.PipelineRunOperations
-    :ivar activity_run: ActivityRunOperations operations
-    :vartype activity_run: data_factory_management_client.operations.ActivityRunOperations
-    :ivar trigger: TriggerOperations operations
-    :vartype trigger: data_factory_management_client.operations.TriggerOperations
-    :ivar trigger_run: TriggerRunOperations operations
-    :vartype trigger_run: data_factory_management_client.operations.TriggerRunOperations
-    :ivar data_flow: DataFlowOperations operations
-    :vartype data_flow: data_factory_management_client.operations.DataFlowOperations
+    :ivar integration_runtime_nodes: IntegrationRuntimeNodesOperations operations
+    :vartype integration_runtime_nodes: data_factory_management_client.operations.IntegrationRuntimeNodesOperations
+    :ivar linked_services: LinkedServicesOperations operations
+    :vartype linked_services: data_factory_management_client.operations.LinkedServicesOperations
+    :ivar datasets: DatasetsOperations operations
+    :vartype datasets: data_factory_management_client.operations.DatasetsOperations
+    :ivar pipelines: PipelinesOperations operations
+    :vartype pipelines: data_factory_management_client.operations.PipelinesOperations
+    :ivar pipeline_runs: PipelineRunsOperations operations
+    :vartype pipeline_runs: data_factory_management_client.operations.PipelineRunsOperations
+    :ivar activity_runs: ActivityRunsOperations operations
+    :vartype activity_runs: data_factory_management_client.operations.ActivityRunsOperations
+    :ivar triggers: TriggersOperations operations
+    :vartype triggers: data_factory_management_client.operations.TriggersOperations
+    :ivar trigger_runs: TriggerRunsOperations operations
+    :vartype trigger_runs: data_factory_management_client.operations.TriggerRunsOperations
+    :ivar data_flows: DataFlowsOperations operations
+    :vartype data_flows: data_factory_management_client.operations.DataFlowsOperations
     :ivar data_flow_debug_session: DataFlowDebugSessionOperations operations
     :vartype data_flow_debug_session: data_factory_management_client.operations.DataFlowDebugSessionOperations
-    :ivar managed_virtual_network: ManagedVirtualNetworkOperations operations
-    :vartype managed_virtual_network: data_factory_management_client.operations.ManagedVirtualNetworkOperations
-    :ivar managed_private_endpoint: ManagedPrivateEndpointOperations operations
-    :vartype managed_private_endpoint: data_factory_management_client.operations.ManagedPrivateEndpointOperations
+    :ivar managed_virtual_networks: ManagedVirtualNetworksOperations operations
+    :vartype managed_virtual_networks: data_factory_management_client.operations.ManagedVirtualNetworksOperations
+    :ivar managed_private_endpoints: ManagedPrivateEndpointsOperations operations
+    :vartype managed_private_endpoints: data_factory_management_client.operations.ManagedPrivateEndpointsOperations
+    :ivar private_end_point_connections: PrivateEndPointConnectionsOperations operations
+    :vartype private_end_point_connections: data_factory_management_client.operations.PrivateEndPointConnectionsOperations
+    :ivar private_endpoint_connection: PrivateEndpointConnectionOperations operations
+    :vartype private_endpoint_connection: data_factory_management_client.operations.PrivateEndpointConnectionOperations
+    :ivar private_link_resources: PrivateLinkResourcesOperations operations
+    :vartype private_link_resources: data_factory_management_client.operations.PrivateLinkResourcesOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The subscription identifier.
@@ -98,41 +107,48 @@ class DataFactoryManagementClient(object):
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
+        self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
-        self.operation = OperationOperations(
+        self.operations = Operations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.factory = FactoryOperations(
+        self.factories = FactoriesOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.exposure_control = ExposureControlOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.integration_runtime = IntegrationRuntimeOperations(
+        self.integration_runtimes = IntegrationRuntimesOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.integration_runtime_object_metadata = IntegrationRuntimeObjectMetadataOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.integration_runtime_node = IntegrationRuntimeNodeOperations(
+        self.integration_runtime_nodes = IntegrationRuntimeNodesOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.linked_service = LinkedServiceOperations(
+        self.linked_services = LinkedServicesOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.dataset = DatasetOperations(
+        self.datasets = DatasetsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.pipeline = PipelineOperations(
+        self.pipelines = PipelinesOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.pipeline_run = PipelineRunOperations(
+        self.pipeline_runs = PipelineRunsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.activity_run = ActivityRunOperations(
+        self.activity_runs = ActivityRunsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.trigger = TriggerOperations(
+        self.triggers = TriggersOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.trigger_run = TriggerRunOperations(
+        self.trigger_runs = TriggerRunsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.data_flow = DataFlowOperations(
+        self.data_flows = DataFlowsOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.data_flow_debug_session = DataFlowDebugSessionOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.managed_virtual_network = ManagedVirtualNetworkOperations(
+        self.managed_virtual_networks = ManagedVirtualNetworksOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.managed_private_endpoint = ManagedPrivateEndpointOperations(
+        self.managed_private_endpoints = ManagedPrivateEndpointsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.private_end_point_connections = PrivateEndPointConnectionsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.private_endpoint_connection = PrivateEndpointConnectionOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.private_link_resources = PrivateLinkResourcesOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     def close(self):

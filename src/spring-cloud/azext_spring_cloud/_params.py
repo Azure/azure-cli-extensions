@@ -201,8 +201,7 @@ def load_arguments(self, _):
     for scope in ['spring-cloud app binding redis add', 'spring-cloud app binding redis update']:
         with self.argument_context(scope) as c:
             c.argument('key', help='Api key of the service.')
-            c.argument('disable_ssl', action='store_true',
-                       help='Disable SSL.')
+            c.argument('disable_ssl', arg_type=get_three_state_flag(), help='If true, disable SSL. If false, enable SSL.', default=False)
 
     with self.argument_context('spring-cloud config-server set') as c:
         c.argument('config_file',

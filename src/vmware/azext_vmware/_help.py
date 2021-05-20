@@ -107,6 +107,22 @@ helps['vmware private-cloud update'] = """
     short-summary: Update a private cloud.
 """
 
+helps['vmware private-cloud rotate-vcenter-password'] = """
+    type: command
+    short-summary: Rotate the vCenter password.
+    examples:
+    - name: Rotate the vCenter password.
+      text: az vmware private-cloud rotate-vcenter-password --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+"""
+
+helps['vmware private-cloud rotate-nsxt-password'] = """
+    type: command
+    short-summary: Rotate the NSX-T Manager password.
+    examples:
+    - name: Rotate the NSX-T Manager password.
+      text: az vmware private-cloud rotate-nsxt-password --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+"""
+
 helps['vmware authorization create'] = """
     type: command
     short-summary: Create an authorization for an ExpressRoute Circuit in a private cloud.

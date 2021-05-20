@@ -1,8 +1,8 @@
 interactions:
 - request:
-    body: '{"location": "global", "properties": {"policySettings": {"enabledState":
-      "Enabled", "mode": "Prevention"}, "customRules": {"rules": []}, "managedRules":
-      {}}, "sku": {"name": "Classic_AzureFrontDoor"}}'
+    body: '{"location": "global", "sku": {"name": "Classic_AzureFrontDoor"}, "properties":
+      {"policySettings": {"enabledState": "Enabled", "mode": "Prevention"}, "customRules":
+      {"rules": []}, "managedRules": {}}}'
     headers:
       Accept:
       - application/json
@@ -15,83 +15,25 @@ interactions:
       Content-Length:
       - '200'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - -g -n --mode
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
   response:
     body:
-      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
+      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '783'
+      - '807'
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 23:27:00 GMT
-      expires:
-      - '-1'
-      odata-version:
-      - '4.0'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-    status:
-      code: 201
-      message: Created
-- request:
-    body: '{"location": "global", "properties": {"policySettings": {"enabledState":
-      "Enabled", "mode": "Prevention"}, "customRules": {"rules": []}, "managedRules":
-      {}}, "sku": {"name": "Standard_AzureFrontDoor"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network front-door waf-policy create
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '201'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - -g -n --mode --sku
-      User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000004?api-version=2020-11-01
-  response:
-    body:
-      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000004","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Standard_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '784'
-      content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
-      date:
-      - Wed, 27 Jan 2021 23:27:03 GMT
+      - Wed, 14 Apr 2021 05:39:04 GMT
       expires:
       - '-1'
       odata-version:
@@ -110,9 +52,9 @@ interactions:
       code: 201
       message: Created
 - request:
-    body: '{"location": "global", "properties": {"policySettings": {"enabledState":
-      "Enabled", "mode": "Detection", "redirectUrl": "http://www.microsoft.com"},
-      "customRules": {"rules": []}, "managedRules": {}}, "sku": {"name": "Premium_AzureFrontDoor"}}'
+    body: '{"location": "global", "sku": {"name": "Standard_AzureFrontDoor"}, "properties":
+      {"policySettings": {"enabledState": "Enabled", "mode": "Prevention"}, "customRules":
+      {"rules": []}, "managedRules": {}}}'
     headers:
       Accept:
       - application/json
@@ -123,30 +65,27 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '242'
+      - '201'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
-      - -g -n --mode --redirect-url --sku
+      - -g -n --mode --sku
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000005?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000004?api-version=2020-11-01
   response:
     body:
-      string: '{"name":"cli000005","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000005","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
+      string: '{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000004","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Standard_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '804'
+      - '808'
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 23:27:06 GMT
+      - Wed, 14 Apr 2021 05:39:11 GMT
       expires:
       - '-1'
       odata-version:
@@ -160,14 +99,14 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 201
       message: Created
 - request:
-    body: '{"location": "global", "properties": {"policySettings": {"enabledState":
-      "Enabled", "mode": "Detection", "redirectUrl": "http://www.microsoft.com", "customBlockResponseStatusCode":
-      406}, "customRules": {"rules": []}, "managedRules": {}}, "sku": {"name": "Classic_AzureFrontDoor"}}'
+    body: '{"location": "global", "sku": {"name": "Premium_AzureFrontDoor"}, "properties":
+      {"policySettings": {"enabledState": "Enabled", "mode": "Detection", "redirectUrl":
+      "http://www.microsoft.com"}, "customRules": {"rules": []}, "managedRules": {}}}'
     headers:
       Accept:
       - application/json
@@ -178,30 +117,27 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '280'
+      - '242'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
-      - -g -n --mode --redirect-url --custom-block-response-status-code --sku
+      - -g -n --mode --redirect-url --sku
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000006?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000005?api-version=2020-11-01
   response:
     body:
-      string: '{"name":"cli000006","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000006","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":406,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
+      string: '{"name":"cli000005","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000005","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '803'
+      - '828'
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 23:27:09 GMT
+      - Wed, 14 Apr 2021 05:39:18 GMT
       expires:
       - '-1'
       odata-version:
@@ -220,10 +156,63 @@ interactions:
       code: 201
       message: Created
 - request:
-    body: '{"location": "global", "properties": {"policySettings": {"enabledState":
-      "Enabled", "mode": "Detection", "redirectUrl": "http://www.microsoft.com", "customBlockResponseStatusCode":
-      406, "customBlockResponseBody": "YiBvZHk="}, "customRules": {"rules": []}, "managedRules":
-      {}}, "sku": {"name": "Classic_AzureFrontDoor"}}'
+    body: '{"location": "global", "sku": {"name": "Classic_AzureFrontDoor"}, "properties":
+      {"policySettings": {"enabledState": "Enabled", "mode": "Detection", "redirectUrl":
+      "http://www.microsoft.com", "customBlockResponseStatusCode": 406}, "customRules":
+      {"rules": []}, "managedRules": {}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '280'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --mode --redirect-url --custom-block-response-status-code --sku
+      User-Agent:
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000006?api-version=2020-11-01
+  response:
+    body:
+      string: '{"name":"cli000006","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000006","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":406,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '827'
+      content-type:
+      - application/json; odata.metadata=minimal; odata.streaming=true
+      date:
+      - Wed, 14 Apr 2021 05:39:25 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"location": "global", "sku": {"name": "Classic_AzureFrontDoor"}, "properties":
+      {"policySettings": {"enabledState": "Enabled", "mode": "Detection", "redirectUrl":
+      "http://www.microsoft.com", "customBlockResponseStatusCode": 406, "customBlockResponseBody":
+      "YiBvZHk="}, "customRules": {"rules": []}, "managedRules": {}}}'
     headers:
       Accept:
       - application/json
@@ -236,28 +225,25 @@ interactions:
       Content-Length:
       - '319'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - -g -n --mode --redirect-url --custom-block-response-status-code --custom-block-response-body
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000007?api-version=2020-11-01
   response:
     body:
-      string: '{"name":"cli000007","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000007","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":406,"customBlockResponseBody":"YiBvZHk=","requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
+      string: '{"name":"cli000007","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000007","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":406,"customBlockResponseBody":"YiBvZHk=","requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '809'
+      - '833'
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 23:27:11 GMT
+      - Wed, 14 Apr 2021 05:39:32 GMT
       expires:
       - '-1'
       odata-version:
@@ -271,14 +257,14 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 201
       message: Created
 - request:
-    body: '{"location": "global", "properties": {"policySettings": {"enabledState":
-      "Disabled", "mode": "Detection"}, "customRules": {"rules": []}, "managedRules":
-      {}}, "sku": {"name": "Classic_AzureFrontDoor"}}'
+    body: '{"location": "global", "sku": {"name": "Classic_AzureFrontDoor"}, "properties":
+      {"policySettings": {"enabledState": "Disabled", "mode": "Detection"}, "customRules":
+      {"rules": []}, "managedRules": {}}}'
     headers:
       Accept:
       - application/json
@@ -291,28 +277,25 @@ interactions:
       Content-Length:
       - '200'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - -g -n --mode --disabled
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000008?api-version=2020-11-01
   response:
     body:
-      string: '{"name":"cli000008","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000008","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Disabled","mode":"Detection","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
+      string: '{"name":"cli000008","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000008","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Disabled","mode":"Detection","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '783'
+      - '807'
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 23:27:14 GMT
+      - Wed, 14 Apr 2021 05:39:39 GMT
       expires:
       - '-1'
       odata-version:
@@ -326,7 +309,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1196'
     status:
       code: 201
       message: Created
@@ -344,24 +327,21 @@ interactions:
       ParameterSetName:
       - -g -n --mode
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000008?api-version=2020-11-01
   response:
     body:
-      string: '{"name":"cli000008","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000008","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Disabled","mode":"Detection","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
+      string: '{"name":"cli000008","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000008","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Disabled","mode":"Detection","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '783'
+      - '807'
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 23:27:15 GMT
+      - Wed, 14 Apr 2021 05:39:39 GMT
       expires:
       - '-1'
       odata-version:
@@ -382,9 +362,10 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"location": "Global", "tags": {}, "properties": {"policySettings": {"enabledState":
-      "Enabled", "mode": "Detection", "requestBodyCheck": "Disabled"}, "customRules":
-      {"rules": []}, "managedRules": {"managedRuleSets": []}}, "sku": {"name": "Classic_AzureFrontDoor"}}'
+    body: '{"location": "Global", "tags": {}, "sku": {"name": "Classic_AzureFrontDoor"},
+      "properties": {"policySettings": {"enabledState": "Enabled", "mode": "Detection",
+      "requestBodyCheck": "Enabled"}, "customRules": {"rules": []}, "managedRules":
+      {"managedRuleSets": []}}}'
     headers:
       Accept:
       - application/json
@@ -395,141 +376,27 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '264'
+      - '263'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - -g -n --mode
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000008?api-version=2020-11-01
   response:
     body:
-      string: '{"name":"cli000008","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000008","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
+      string: '{"name":"cli000008","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000008","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '782'
+      - '806'
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 23:27:17 GMT
-      expires:
-      - '-1'
-      odata-version:
-      - '4.0'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network front-door waf-policy update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --tags
-      User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
-  response:
-    body:
-      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '783'
-      content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
-      date:
-      - Wed, 27 Jan 2021 23:27:17 GMT
-      expires:
-      - '-1'
-      odata-version:
-      - '4.0'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "Global", "tags": {"test": "best"}, "properties": {"policySettings":
-      {"enabledState": "Enabled", "mode": "Prevention", "requestBodyCheck": "Disabled"},
-      "customRules": {"rules": []}, "managedRules": {"managedRuleSets": []}}, "sku":
-      {"name": "Classic_AzureFrontDoor"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network front-door waf-policy update
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '279'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - -g -n --tags
-      User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
-  response:
-    body:
-      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '796'
-      content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
-      date:
-      - Wed, 27 Jan 2021 23:28:01 GMT
+      - Wed, 14 Apr 2021 05:39:42 GMT
       expires:
       - '-1'
       odata-version:
@@ -563,26 +430,23 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --mode --sku
+      - -g -n --tags
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
   response:
     body:
-      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
+      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '796'
+      - '807'
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 23:28:02 GMT
+      - Wed, 14 Apr 2021 05:39:42 GMT
       expires:
       - '-1'
       odata-version:
@@ -603,10 +467,10 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"location": "Global", "tags": {"test": "best"}, "properties": {"policySettings":
-      {"enabledState": "Enabled", "mode": "Detection", "requestBodyCheck": "Disabled"},
-      "customRules": {"rules": []}, "managedRules": {"managedRuleSets": []}}, "sku":
-      {"name": "Classic_AzureFrontDoor"}}'
+    body: '{"location": "Global", "tags": {"test": "best"}, "sku": {"name": "Classic_AzureFrontDoor"},
+      "properties": {"policySettings": {"enabledState": "Enabled", "mode": "Prevention",
+      "requestBodyCheck": "Enabled"}, "customRules": {"rules": []}, "managedRules":
+      {"managedRuleSets": []}}}'
     headers:
       Accept:
       - application/json
@@ -619,362 +483,25 @@ interactions:
       Content-Length:
       - '278'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
-      - -g -n --mode --sku
+      - -g -n --tags
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
   response:
     body:
-      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
+      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '795'
+      - '820'
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 23:28:03 GMT
-      expires:
-      - '-1'
-      odata-version:
-      - '4.0'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network front-door waf-policy update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --mode --redirect-url
-      User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
-  response:
-    body:
-      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '795'
-      content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
-      date:
-      - Wed, 27 Jan 2021 23:28:04 GMT
-      expires:
-      - '-1'
-      odata-version:
-      - '4.0'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "Global", "tags": {"test": "best"}, "properties": {"policySettings":
-      {"enabledState": "Enabled", "mode": "Prevention", "redirectUrl": "http://www.microsoft.com",
-      "requestBodyCheck": "Disabled"}, "customRules": {"rules": []}, "managedRules":
-      {"managedRuleSets": []}}, "sku": {"name": "Classic_AzureFrontDoor"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network front-door waf-policy update
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '322'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - -g -n --mode --redirect-url
-      User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
-  response:
-    body:
-      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '818'
-      content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
-      date:
-      - Wed, 27 Jan 2021 23:28:06 GMT
-      expires:
-      - '-1'
-      odata-version:
-      - '4.0'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network front-door waf-policy update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --custom-block-response-status-code
-      User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
-  response:
-    body:
-      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '818'
-      content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
-      date:
-      - Wed, 27 Jan 2021 23:28:06 GMT
-      expires:
-      - '-1'
-      odata-version:
-      - '4.0'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "Global", "tags": {"test": "best"}, "properties": {"policySettings":
-      {"enabledState": "Enabled", "mode": "Prevention", "redirectUrl": "http://www.microsoft.com",
-      "customBlockResponseStatusCode": 406, "requestBodyCheck": "Disabled"}, "customRules":
-      {"rules": []}, "managedRules": {"managedRuleSets": []}}, "sku": {"name": "Classic_AzureFrontDoor"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network front-door waf-policy update
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '360'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - -g -n --custom-block-response-status-code
-      User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
-  response:
-    body:
-      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":406,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '817'
-      content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
-      date:
-      - Wed, 27 Jan 2021 23:28:07 GMT
-      expires:
-      - '-1'
-      odata-version:
-      - '4.0'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network front-door waf-policy update
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n --custom-block-response-status-code --custom-block-response-body
-      User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
-  response:
-    body:
-      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":406,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '817'
-      content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
-      date:
-      - Wed, 27 Jan 2021 23:28:08 GMT
-      expires:
-      - '-1'
-      odata-version:
-      - '4.0'
-      pragma:
-      - no-cache
-      server:
-      - Kestrel
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"location": "Global", "tags": {"test": "best"}, "properties": {"policySettings":
-      {"enabledState": "Enabled", "mode": "Prevention", "redirectUrl": "http://www.microsoft.com",
-      "customBlockResponseStatusCode": 405, "customBlockResponseBody": "YiBvZHk=",
-      "requestBodyCheck": "Disabled"}, "customRules": {"rules": []}, "managedRules":
-      {"managedRuleSets": []}}, "sku": {"name": "Classic_AzureFrontDoor"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network front-door waf-policy update
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '399'
-      Content-Type:
-      - application/json; charset=utf-8
-      ParameterSetName:
-      - -g -n --custom-block-response-status-code --custom-block-response-body
-      User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
-  response:
-    body:
-      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":405,"customBlockResponseBody":"YiBvZHk=","requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '823'
-      content-type:
-      - application/json; odata.metadata=minimal; odata.streaming=true
-      date:
-      - Wed, 27 Jan 2021 23:28:10 GMT
+      - Wed, 14 Apr 2021 05:39:48 GMT
       expires:
       - '-1'
       odata-version:
@@ -1008,26 +535,23 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --disabled
+      - -g -n --mode --sku
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
   response:
     body:
-      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":405,"customBlockResponseBody":"YiBvZHk=","requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
+      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '823'
+      - '820'
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 23:28:10 GMT
+      - Wed, 14 Apr 2021 05:39:49 GMT
       expires:
       - '-1'
       odata-version:
@@ -1048,11 +572,10 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"location": "Global", "tags": {"test": "best"}, "properties": {"policySettings":
-      {"enabledState": "Disabled", "mode": "Prevention", "redirectUrl": "http://www.microsoft.com",
-      "customBlockResponseStatusCode": 405, "customBlockResponseBody": "YiBvZHk=",
-      "requestBodyCheck": "Disabled"}, "customRules": {"rules": []}, "managedRules":
-      {"managedRuleSets": []}}, "sku": {"name": "Classic_AzureFrontDoor"}}'
+    body: '{"location": "Global", "tags": {"test": "best"}, "sku": {"name": "Classic_AzureFrontDoor"},
+      "properties": {"policySettings": {"enabledState": "Enabled", "mode": "Detection",
+      "requestBodyCheck": "Enabled"}, "customRules": {"rules": []}, "managedRules":
+      {"managedRuleSets": []}}}'
     headers:
       Accept:
       - application/json
@@ -1063,30 +586,132 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '400'
+      - '277'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
-      - -g -n --disabled
+      - -g -n --mode --sku
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
   response:
     body:
-      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Disabled","mode":"Prevention","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":405,"customBlockResponseBody":"YiBvZHk=","requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
+      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '824'
+      - '819'
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 23:28:12 GMT
+      - Wed, 14 Apr 2021 05:39:51 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --mode --redirect-url
+      User-Agent:
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
+  response:
+    body:
+      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '819'
+      content-type:
+      - application/json; odata.metadata=minimal; odata.streaming=true
+      date:
+      - Wed, 14 Apr 2021 05:39:52 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "Global", "tags": {"test": "best"}, "sku": {"name": "Classic_AzureFrontDoor"},
+      "properties": {"policySettings": {"enabledState": "Enabled", "mode": "Prevention",
+      "redirectUrl": "http://www.microsoft.com", "requestBodyCheck": "Enabled"}, "customRules":
+      {"rules": []}, "managedRules": {"managedRuleSets": []}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '321'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --mode --redirect-url
+      User-Agent:
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
+  response:
+    body:
+      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '842'
+      content-type:
+      - application/json; odata.metadata=minimal; odata.streaming=true
+      date:
+      - Wed, 14 Apr 2021 05:39:54 GMT
       expires:
       - '-1'
       odata-version:
@@ -1116,30 +741,345 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
+      - network front-door waf-policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --custom-block-response-status-code
+      User-Agent:
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
+  response:
+    body:
+      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '842'
+      content-type:
+      - application/json; odata.metadata=minimal; odata.streaming=true
+      date:
+      - Wed, 14 Apr 2021 05:39:54 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "Global", "tags": {"test": "best"}, "sku": {"name": "Classic_AzureFrontDoor"},
+      "properties": {"policySettings": {"enabledState": "Enabled", "mode": "Prevention",
+      "redirectUrl": "http://www.microsoft.com", "customBlockResponseStatusCode":
+      406, "requestBodyCheck": "Enabled"}, "customRules": {"rules": []}, "managedRules":
+      {"managedRuleSets": []}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '359'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --custom-block-response-status-code
+      User-Agent:
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
+  response:
+    body:
+      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":406,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '841'
+      content-type:
+      - application/json; odata.metadata=minimal; odata.streaming=true
+      date:
+      - Wed, 14 Apr 2021 05:39:56 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --custom-block-response-status-code --custom-block-response-body
+      User-Agent:
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
+  response:
+    body:
+      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":406,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '841'
+      content-type:
+      - application/json; odata.metadata=minimal; odata.streaming=true
+      date:
+      - Wed, 14 Apr 2021 05:39:57 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "Global", "tags": {"test": "best"}, "sku": {"name": "Classic_AzureFrontDoor"},
+      "properties": {"policySettings": {"enabledState": "Enabled", "mode": "Prevention",
+      "redirectUrl": "http://www.microsoft.com", "customBlockResponseStatusCode":
+      405, "customBlockResponseBody": "YiBvZHk=", "requestBodyCheck": "Enabled"},
+      "customRules": {"rules": []}, "managedRules": {"managedRuleSets": []}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '398'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --custom-block-response-status-code --custom-block-response-body
+      User-Agent:
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
+  response:
+    body:
+      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":405,"customBlockResponseBody":"YiBvZHk=","requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '847'
+      content-type:
+      - application/json; odata.metadata=minimal; odata.streaming=true
+      date:
+      - Wed, 14 Apr 2021 05:39:59 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1196'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --disabled
+      User-Agent:
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
+  response:
+    body:
+      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":405,"customBlockResponseBody":"YiBvZHk=","requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '847'
+      content-type:
+      - application/json; odata.metadata=minimal; odata.streaming=true
+      date:
+      - Wed, 14 Apr 2021 05:40:00 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "Global", "tags": {"test": "best"}, "sku": {"name": "Classic_AzureFrontDoor"},
+      "properties": {"policySettings": {"enabledState": "Disabled", "mode": "Prevention",
+      "redirectUrl": "http://www.microsoft.com", "customBlockResponseStatusCode":
+      405, "customBlockResponseBody": "YiBvZHk=", "requestBodyCheck": "Enabled"},
+      "customRules": {"rules": []}, "managedRules": {"managedRuleSets": []}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network front-door waf-policy update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '399'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --disabled
+      User-Agent:
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
+  response:
+    body:
+      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Disabled","mode":"Prevention","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":405,"customBlockResponseBody":"YiBvZHk=","requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '848'
+      content-type:
+      - application/json; odata.metadata=minimal; odata.streaming=true
+      date:
+      - Wed, 14 Apr 2021 05:40:02 GMT
+      expires:
+      - '-1'
+      odata-version:
+      - '4.0'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
       - network front-door waf-policy show
       Connection:
       - keep-alive
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
   response:
     body:
-      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Disabled","mode":"Prevention","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":405,"customBlockResponseBody":"YiBvZHk=","requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}'
+      string: '{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Disabled","mode":"Prevention","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":405,"customBlockResponseBody":"YiBvZHk=","requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '824'
+      - '848'
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 23:28:13 GMT
+      - Wed, 14 Apr 2021 05:40:02 GMT
       expires:
       - '-1'
       odata-version:
@@ -1173,24 +1113,21 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoorWebApplicationFirewallPolicies?api-version=2020-11-01
   response:
     body:
-      string: '{"value":[{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Disabled","mode":"Prevention","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":405,"customBlockResponseBody":"YiBvZHk=","requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}},{"name":"cli000006","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000006","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":406,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}},{"name":"cli000005","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000005","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}},{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000004","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Standard_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}},{"name":"cli000008","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000008","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}},{"name":"cli000007","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000007","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":406,"customBlockResponseBody":"YiBvZHk=","requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}]}'
+      string: '{"value":[{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000004","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Standard_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}},{"name":"cli000006","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000006","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":406,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}},{"name":"cli000008","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000008","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}},{"name":"cli000007","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000007","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":406,"customBlockResponseBody":"YiBvZHk=","requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}},{"name":"cli000005","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000005","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}},{"name":"cli000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000002","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{"test":"best"},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Disabled","mode":"Prevention","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":405,"customBlockResponseBody":"YiBvZHk=","requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4823'
+      - '4967'
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 23:28:14 GMT
+      - Wed, 14 Apr 2021 05:40:04 GMT
       expires:
       - '-1'
       odata-version:
@@ -1214,7 +1151,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -1226,10 +1163,7 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/FrontDoorWebApplicationFirewallPolicies/cli000002?api-version=2020-11-01
   response:
@@ -1239,7 +1173,7 @@ interactions:
       cache-control:
       - no-cache
       date:
-      - Wed, 27 Jan 2021 23:28:15 GMT
+      - Wed, 14 Apr 2021 05:40:09 GMT
       expires:
       - '-1'
       pragma:
@@ -1251,7 +1185,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14998'
+      - '14999'
     status:
       code: 204
       message: No Content
@@ -1269,24 +1203,21 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - python/3.8.6 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-frontdoor/0.3.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.21.0 azsdk-python-mgmt-frontdoor/1.0.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/frontDoorWebApplicationFirewallPolicies?api-version=2020-11-01
   response:
     body:
-      string: '{"value":[{"name":"cli000007","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000007","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":406,"customBlockResponseBody":"YiBvZHk=","requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}},{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000004","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Standard_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}},{"name":"cli000005","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000005","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}},{"name":"cli000008","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000008","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}},{"name":"cli000006","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000006","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":406,"customBlockResponseBody":null,"requestBodyCheck":"Disabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[]}}]}'
+      string: '{"value":[{"name":"cli000008","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000008","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}},{"name":"cli000007","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000007","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":406,"customBlockResponseBody":"YiBvZHk=","requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}},{"name":"cli000006","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000006","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Classic_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":406,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}},{"name":"cli000004","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000004","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Standard_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Prevention","redirectUrl":null,"customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}},{"name":"cli000005","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.Network/frontdoorwebapplicationfirewallpolicies/cli000005","type":"Microsoft.Network/frontdoorwebapplicationfirewallpolicies","location":"Global","tags":{},"sku":{"name":"Premium_AzureFrontDoor"},"properties":{"resourceState":"Enabled","provisioningState":"Succeeded","policySettings":{"enabledState":"Enabled","mode":"Detection","redirectUrl":"http://www.microsoft.com","customBlockResponseStatusCode":null,"customBlockResponseBody":null,"requestBodyCheck":"Enabled"},"customRules":{"rules":[]},"managedRules":{"managedRuleSets":[]},"frontendEndpointLinks":[],"routingRuleLinks":[],"securityPolicyLinks":[]}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '3998'
+      - '4118'
       content-type:
       - application/json; odata.metadata=minimal; odata.streaming=true
       date:
-      - Wed, 27 Jan 2021 23:28:16 GMT
+      - Wed, 14 Apr 2021 05:40:10 GMT
       expires:
       - '-1'
       odata-version:

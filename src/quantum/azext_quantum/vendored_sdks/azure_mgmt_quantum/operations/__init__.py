@@ -12,9 +12,11 @@
 from .workspaces_operations import WorkspacesOperations
 from .offerings_operations import OfferingsOperations
 from .operations import Operations
+from .workspace_operations import WorkspaceOperations
 
 __all__ = [
     'WorkspacesOperations',
     'OfferingsOperations',
     'Operations',
+    'WorkspaceOperations',
 ]

@@ -19,15 +19,14 @@ def load_command_table(self, _):
         operations_tmpl='azext_peering.vendored_sdks.peering.operations._legacy_peering_operations#LegacyPeeringOperati'
         'ons.{}',
         client_factory=cf_legacy_peering)
-    with self.command_group('peering legacy', peering_legacy_peering, client_factory=cf_legacy_peering,
-                            is_experimental=True) as g:
+    with self.command_group('peering legacy', peering_legacy_peering, client_factory=cf_legacy_peering) as g:
         g.custom_command('list', 'peering_legacy_list')
 
     from azext_peering.generated._client_factory import cf_peer_asn
     peering_peer_asn = CliCommandType(
         operations_tmpl='azext_peering.vendored_sdks.peering.operations._peer_asn_operations#PeerAsnOperations.{}',
         client_factory=cf_peer_asn)
-    with self.command_group('peering asn', peering_peer_asn, client_factory=cf_peer_asn, is_experimental=True) as g:
+    with self.command_group('peering asn', peering_peer_asn, client_factory=cf_peer_asn) as g:
         g.custom_command('list', 'peering_asn_list')
         g.custom_show_command('show', 'peering_asn_show')
         g.custom_command('create', 'peering_asn_create')
@@ -38,8 +37,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_peering.vendored_sdks.peering.operations._peering_location_operations#PeeringLocationOpe'
         'rations.{}',
         client_factory=cf_peering_location)
-    with self.command_group('peering location', peering_peering_location, client_factory=cf_peering_location,
-                            is_experimental=True) as g:
+    with self.command_group('peering location', peering_peering_location, client_factory=cf_peering_location) as g:
         g.custom_command('list', 'peering_location_list')
 
     from azext_peering.generated._client_factory import cf_registered_asn
@@ -47,8 +45,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_peering.vendored_sdks.peering.operations._registered_asn_operations#RegisteredAsnOperati'
         'ons.{}',
         client_factory=cf_registered_asn)
-    with self.command_group('peering registered-asn', peering_registered_asn, client_factory=cf_registered_asn,
-                            is_experimental=True) as g:
+    with self.command_group('peering registered-asn', peering_registered_asn, client_factory=cf_registered_asn) as g:
         g.custom_command('list', 'peering_registered_asn_list')
         g.custom_show_command('show', 'peering_registered_asn_show')
         g.custom_command('create', 'peering_registered_asn_create')
@@ -61,7 +58,7 @@ def load_command_table(self, _):
         'perations.{}',
         client_factory=cf_registered_prefix)
     with self.command_group('peering registered-prefix', peering_registered_prefix,
-                            client_factory=cf_registered_prefix, is_experimental=True) as g:
+                            client_factory=cf_registered_prefix) as g:
         g.custom_command('list', 'peering_registered_prefix_list')
         g.custom_show_command('show', 'peering_registered_prefix_show')
         g.custom_command('create', 'peering_registered_prefix_create')
@@ -72,7 +69,7 @@ def load_command_table(self, _):
     peering_peering = CliCommandType(
         operations_tmpl='azext_peering.vendored_sdks.peering.operations._peering_operations#PeeringOperations.{}',
         client_factory=cf_peering)
-    with self.command_group('peering peering', peering_peering, client_factory=cf_peering, is_experimental=True) as g:
+    with self.command_group('peering peering', peering_peering, client_factory=cf_peering) as g:
         g.custom_command('list', 'peering_peering_list')
         g.custom_show_command('show', 'peering_peering_show')
         g.custom_command('create', 'peering_peering_create')
@@ -84,8 +81,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_peering.vendored_sdks.peering.operations._received_route_operations#ReceivedRouteOperati'
         'ons.{}',
         client_factory=cf_received_route)
-    with self.command_group('peering received-route', peering_received_route, client_factory=cf_received_route,
-                            is_experimental=True) as g:
+    with self.command_group('peering received-route', peering_received_route, client_factory=cf_received_route) as g:
         g.custom_command('list', 'peering_received_route_list')
 
     from azext_peering.generated._client_factory import cf_peering_service_country
@@ -131,8 +127,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_peering.vendored_sdks.peering.operations._peering_service_operations#PeeringServiceOpera'
         'tions.{}',
         client_factory=cf_peering_service)
-    with self.command_group('peering service', peering_peering_service, client_factory=cf_peering_service,
-                            is_experimental=True) as g:
+    with self.command_group('peering service', peering_peering_service, client_factory=cf_peering_service) as g:
         g.custom_command('list', 'peering_service_list')
         g.custom_show_command('show', 'peering_service_show')
         g.custom_command('create', 'peering_service_create')

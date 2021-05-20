@@ -8,6 +8,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
+# pylint: disable=line-too-long
 
 import uuid
 from msrest.pipeline import ClientRawResponse
