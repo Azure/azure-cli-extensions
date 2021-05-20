@@ -1348,6 +1348,7 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
     return sdk_no_wait(no_wait, client.deployments.create_or_update,
                        resource_group, service, app, name, properties=properties, sku=sku)
 
+
 # pylint: disable=bare-except, too-many-statements
 def _get_app_log(url, user_name, password, format_json, exceptions):
     logger_seg_regex = re.compile(r'([^\.])[^\.]+\.')
@@ -1355,6 +1356,7 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
     def build_log_shortener(length):
         if length <= 0:
             raise CLIError('Logger length in `logger{length}` should be positive')
+
         def shortener(record):
             '''
             Try shorten the logger property to the specified length before feeding it to the formatter.
@@ -1410,7 +1412,8 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
                 return format_json.format_map(pre_processor(defaultdict(str, n="\n", **log_record)))
             except:
                 if first_exception:
-                    logger.exception("Failed to format log line '{}'".format(line))
+                    # enable this format error logging only with --verbose
+                    logger.info("Failed to format log line '{}'".format(line), exc_info=sys.exc_info())
                     first_exception = False
                 return line
 
@@ -1418,8 +1421,8 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
 
     def iter_lines(response, limit=2**20):
         '''
-        Return a line iterator from the response content. If no line ending was found and the buffered content size is
-        large than the limit, the buffer will be yielded directly.
+        Returns a line iterator from the response content. If no line ending was found and the buffered content size is
+        larger than the limit, the buffer will be yielded directly.
         '''
         buffer = []
         total = 0
