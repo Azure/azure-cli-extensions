@@ -395,16 +395,6 @@ helps['storage blob directory upload'] = """
           text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/file*" -d directory --recursive
 """
 
-helps['storage blob service-properties'] = """
-type: group
-short-summary: Manage storage blob service properties.
-"""
-
-helps['storage blob service-properties'] = """
-type: group
-short-summary: Manage storage datalake service properties.
-"""
-
 helps['storage fs list-deleted-path'] = """
 type: command
 short-summary: List the deleted (file or directory) paths under the specified file system.
@@ -412,6 +402,11 @@ examples:
   - name: List the deleted (file or directory) paths under the specified file system..
     text: |
         az storage fs list-deleted-path -f myfilesystem --account-name mystorageccount --account-key 00000000
+"""
+
+helps['storage fs service-properties'] = """
+type: group
+short-summary: Manage storage datalake service properties.
 """
 
 helps['storage fs service-properties show'] = """
