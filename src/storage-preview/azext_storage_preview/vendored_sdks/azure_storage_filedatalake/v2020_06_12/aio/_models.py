@@ -5,7 +5,7 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-few-public-methods, too-many-instance-attributes
 # pylint: disable=super-init-not-called, too-many-lines
-from ...blob.aio._models import ContainerPropertiesPaged
+from ....blob.aio._models import ContainerPropertiesPaged
 from .._models import FileSystemProperties
 
 
