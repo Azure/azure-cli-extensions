@@ -43,3 +43,11 @@ class ResourceIdentityType(str, Enum):
 
     system_assigned = "SystemAssigned"
     none = "None"
+
+
+class CreatedByType(str, Enum):
+
+    user = "User"
+    application = "Application"
+    managed_identity = "ManagedIdentity"
+    key = "Key"

@@ -1,5 +1,9 @@
 Release History
 ===============
+2.3.1
+-----
+* Fix disable-ssl in redis binding.
+
 2.3.0
 -----
 * Support End-to-end TLS.
