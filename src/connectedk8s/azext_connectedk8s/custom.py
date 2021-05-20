@@ -1958,7 +1958,7 @@ def get_custom_locations_oid(cmd, cl_oid):
         telemetry.set_exception(exception=e, fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type,
                                 summary='Unable to fetch oid for custom locations app.')
         if cl_oid:
-            log_string += "Proceeding with the OID passed to enable the 'custom-locations' feature."
+            log_string += "Proceeding with the Object ID provided to enable the 'custom-locations' feature."
             logger.warning(log_string)
             return cl_oid
         log_string += "Proceeding without enabling the feature. " + str(e)
