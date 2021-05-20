@@ -6,10 +6,11 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core._profile import Profile
 from azure.cli.core.commands.client_factory import configure_common_settings
-from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.graphrbac import GraphRbacManagementClient
 from azure.common.client_factory import get_client_from_cli_profile
 
+def cf_storage(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_STORAGE, subscription_id=subscription_id)
 
 def cf_connectedk8s(cli_ctx, *_):
     from azext_connectedk8s.vendored_sdks import ConnectedKubernetesClient
