@@ -529,3 +529,11 @@ def check_delete_job(configuration, namespace):
                 break
     except Exception as e:
         logger.debug("Error occurred while retrieving status of the delete job: {}".format(str(e)))
+
+
+def try_upload_log_file(storage_account, sas_token, custom_logger):
+    try:  # Strorage Upload
+        from azure.storage.blob import BlobServiceClient
+    except Exception as e:
+        custom_logger.error("Error while uploading the log file to storage account: {}".format(str(e)), exc_info=True)
+        raise Exception("Error while uploading the log file to storage account: {}".format(str(e)))

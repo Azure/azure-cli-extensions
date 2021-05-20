@@ -1491,17 +1491,19 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         except Exception as ex:
             tr_logger.error("Error occured while checking if the MSI certificate has expired: {}".format(str(ex)), exc_info=True)
 
-        try:
-            # Creating the .tar.gz for logs and deleting the actual log file
-            import tarfile
-            with tarfile.open(output_file, "w:gz") as tar:
-                tar.add(troubleshoot_log_path, 'connected8s_troubleshoot.log')
-            logging.shutdown()  # To release log file handler, so that the actual log file can be removed after archiving
-            os.remove(troubleshoot_log_path)
-            print(f"{colorama.Style.BRIGHT}{colorama.Fore.GREEN}The diagnostic logs have been collected and archived at '{output_file}'.")
-        except Exception as ex:
-            tr_logger.error("Error occured while archiving the log file: {}".format(str(ex)), exc_info=True)
-            raise Exception("Error occured while archiving the diagnostic log file: {}".format(str(ex)))
+        utils.try_upload_log_file(storage_account, sas_token, tr_logger)
+
+        # try:
+        #     # Creating the .tar.gz for logs and deleting the actual log file
+        #     import tarfile
+        #     with tarfile.open(output_file, "w:gz") as tar:
+        #         tar.add(troubleshoot_log_path, 'connected8s_troubleshoot.log')
+        #     logging.shutdown()  # To release log file handler, so that the actual log file can be removed after archiving
+        #     os.remove(troubleshoot_log_path)
+        #     print(f"{colorama.Style.BRIGHT}{colorama.Fore.GREEN}The diagnostic logs have been collected and archived at '{output_file}'.")
+        # except Exception as ex:
+        #     tr_logger.error("Error occured while archiving the log file: {}".format(str(ex)), exc_info=True)
+        #     raise Exception("Error occured while archiving the diagnostic log file: {}".format(str(ex)))
 
     except Exception as ex:
         tr_logger.error("Exception caught while running troubleshoot: {}".format(str(ex)), exc_info=True)
