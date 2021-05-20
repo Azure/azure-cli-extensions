@@ -2,6 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable= protected-access, too-few-public-methods
+
 """
 This file contains actions for parsing complex arguments.
 """
@@ -10,7 +12,7 @@ import argparse
 from azext_connectedvmware.vmware_utils import create_dictionary_from_arg_string
 
 
-class VmNicAddAction(argparse._AppendAction):  # pylint: disable=W0212, R0903
+class VmNicAddAction(argparse._AppendAction):
     """
     Action for parsing the nic arguments.
     """
@@ -23,7 +25,7 @@ class VmNicAddAction(argparse._AppendAction):  # pylint: disable=W0212, R0903
             namespace.nics = [nic_params_dict]
 
 
-class VmDiskAddAction(argparse._AppendAction):  # pylint: disable=W0212, R0903
+class VmDiskAddAction(argparse._AppendAction):
     """
     Action for parsing the disk arguments.
     """

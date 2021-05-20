@@ -28,7 +28,9 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
             'vnet_name': 'azcli-test-virtual-network',
             'vmtpl_morefid': 'vm-55',
             'vmtpl_name': 'azcli-test-vm-template',
-            'vm_name': 'azcli-test-virtual-machine'
+            'vm_name': 'azcli-test-virtual-machine',
+            'nic_name': 'nic_1',
+            'disk_name': 'disk_1'
         })
 
         # Validate the show command output with vcenter name.
@@ -96,6 +98,26 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         # List the VM resources in this resource group.
         resource_list = self.cmd('az connectedvmware vm list -g {rg}').get_output_in_json()
         # At this point there should be 1 vm resource.
+        assert len(resource_list) >= 1
+
+        # Validate vm nic name.
+        self.cmd('az connectedvmware vm nic show -g {rg} --vm-name {vm_name} --name {nic_name}', checks=[
+            self.check('name', '{nic_name}'),
+        ])
+
+        # List the nic for the vm.
+        resource_list = self.cmd('az connectedvmware vm nic list -g {rg} --vm-name {vm_name}').get_output_in_json()
+        # At least 1 nic should be there for the vm resource.
+        assert len(resource_list) >= 1
+
+        # Validate vm disk name.
+        self.cmd('az connectedvmware vm disk show -g {rg} --vm-name {vm_name} --name {disk_name}', checks=[
+            self.check('name', '{disk_name}'),
+        ])
+
+        # List the disk for the vm.
+        resource_list = self.cmd('az connectedvmware vm disk list -g {rg} --vm-name {vm_name}').get_output_in_json()
+        # At least 1 disk should be there for the vm resource.
         assert len(resource_list) >= 1
 
         # Stop VM.

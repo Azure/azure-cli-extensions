@@ -2,12 +2,12 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable= unused-import, import-outside-toplevel, super-with-arguments
 
 from azure.cli.core import AzCommandsLoader
-from azext_connectedvmware._help import helps  # pylint: disable=unused-import
+from azext_connectedvmware._help import helps
 
 
-# pylint: disable=C0415
 class ConnectedvmwareCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
@@ -16,7 +16,6 @@ class ConnectedvmwareCommandsLoader(AzCommandsLoader):
             operations_tmpl='azext_connectedvmware.custom#{}',
             client_factory=cf_connectedvmware,
         )
-        # pylint: disable=R1725
         super(ConnectedvmwareCommandsLoader, self).__init__(
             cli_ctx=cli_ctx, custom_command_type=connectedvmware_custom
         )
