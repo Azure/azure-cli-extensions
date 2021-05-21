@@ -223,10 +223,11 @@ def __create_identity(cmd, resource_group_name, cluster_name, cluster_type, clus
             "Error! Cluster type '{}' is not supported for extension identity".format(cluster_type)
         )
 
+    from azure.core.exceptions import HttpResponseError
     try:
         resource = resources.get_by_id(cluster_resource_id, parent_api_version)
         location = str(resource.location.lower())
-    except CloudError as ex:
+    except HttpResponseError as ex:
         raise ex
     identity_type = "SystemAssigned"
 
