@@ -132,17 +132,15 @@ def step_list2(test, rg, rg_2, checks=None):
 
 # EXAMPLE: /IscsiTargets/put/Create or Update iSCSI Target
 @try_manual
-def step_iscsi_target_create(test, rg, checks=None):
+def step_iscsi_target_create(test, rg, rg_2, checks=None):
     if checks is None:
         checks = []
     test.cmd('az disk-pool iscsi-target create '
              '--disk-pool-name "{myDiskPool}" '
+             '--acl-mode "Dynamic" '
+             '--luns name="lun0" managed-disk-azure-resource-id="/subscriptions/{subscription_id}/resourceGroups/{rg}/p'
+             'roviders/Microsoft.Compute/disks/vm-name_DataDisk_1" '
              '--target-iqn "iqn.2005-03.org.iscsi:server1" '
-             '--tpgs "[{{\\"acls\\":[{{\\"credentials\\":{{\\"password\\":\\"some_password\\",\\"username\\":\\"some_us'
-             'ername\\"}},\\"initiatorIqn\\":\\"iqn.2005-03.org.iscsi:client\\",\\"mappedLuns\\":[\\"lun0\\"]}}],\\"att'
-             'ributes\\":{{\\"authentication\\":true,\\"prodModeWriteProtect\\":false}},\\"luns\\":[{{\\"name\\":\\"lun'
-             '0\\",\\"managedDiskAzureResourceId\\":\\"/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/M'
-             'icrosoft.Compute/disks/vm-name_DataDisk_1\\"}}]}}]" '
              '--name "{myIscsiTarget}" '
              '--resource-group "{rg}"',
              checks=[])
@@ -154,7 +152,7 @@ def step_iscsi_target_create(test, rg, checks=None):
 
 # EXAMPLE: /IscsiTargets/get/Get iSCSI Target
 @try_manual
-def step_iscsi_target_show(test, rg, checks=None):
+def step_iscsi_target_show(test, rg, rg_2, checks=None):
     if checks is None:
         checks = []
     test.cmd('az disk-pool iscsi-target show '
@@ -202,10 +200,10 @@ def step_update(test, rg, rg_2, checks=None):
 
 # EXAMPLE: /DiskPools/post/Deallocate Disk Pool
 @try_manual
-def step_deallocate(test, rg, rg_2, checks=None):
+def step_stop(test, rg, rg_2, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az disk-pool deallocate '
+    test.cmd('az disk-pool stop '
              '--name "{myDiskPool}" '
              '--resource-group "{rg}"',
              checks=checks)
@@ -286,34 +284,6 @@ def step_iscsi_target_list(test, rg, rg_2, checks=None):
              checks=checks)
 
 
-# EXAMPLE: /IscsiTargets/patch/Update iSCSI Target
-@try_manual
-def step_iscsi_target_update(test, rg, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az disk-pool iscsi-target update '
-             '--disk-pool-name "{myDiskPool}" '
-             '--name "{myIscsiTarget}" '
-             '--tpgs "[{{\\"acls\\":[{{\\"credentials\\":{{\\"password\\":\\"some_password\\",\\"username\\":\\"some_us'
-             'ername\\"}},\\"initiatorIqn\\":\\"iqn.2005-03.org.iscsi:client\\",\\"mappedLuns\\":[\\"lun0\\"]}}],\\"lun'
-             's\\":[{{\\"name\\":\\"lun0\\",\\"managedDiskAzureResourceId\\":\\"/subscriptions/{subscription_id}/resour'
-             'ceGroups/{rg}/providers/Microsoft.Compute/disks/vm-name_DataDisk_1\\"}}]}}]" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
-# EXAMPLE: /IscsiTargets/delete/Delete iSCSI Target
-@try_manual
-def step_iscsi_target_delete(test, rg, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az disk-pool iscsi-target delete -y '
-             '--disk-pool-name "{myDiskPool}" '
-             '--name "{myIscsiTarget}" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
 # EXAMPLE: /DiskPools/delete/Delete Disk Pool
 @try_manual
 def step_delete(test, rg, checks=None):
@@ -321,6 +291,32 @@ def step_delete(test, rg, checks=None):
         checks = []
     test.cmd('az disk-pool delete -y '
              '--name "{myDiskPool}" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+# EXAMPLE: /IscsiTargets/patch/Update iSCSI Target
+@try_manual
+def step_iscsi_target_update(test, rg, rg_2, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az disk-pool iscsi-target update '
+             '--disk-pool-name "{myDiskPool}" '
+             '--name "{myIscsiTarget}" '
+             '--luns name="lun0" managed-disk-azure-resource-id="/subscriptions/{subscription_id}/resourceGroups/{rg}/p'
+             'roviders/Microsoft.Compute/disks/vm-name_DataDisk_1" '
+             '--static-acls initiator-iqn="iqn.2005-03.org.iscsi:client" mapped-luns="lun0" '
+             '--resource-group "{rg}"',
+             checks=checks)
+
+
+# EXAMPLE: /IscsiTargets/delete/Delete iSCSI Target
+@try_manual
+def step_iscsi_target_delete(test, rg, rg_2, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az disk-pool iscsi-target delete -y '
+             '--disk-pool-name "{myDiskPool}" '
+             '--name "{myIscsiTarget}" '
              '--resource-group "{rg}"',
              checks=checks)
 

@@ -23,9 +23,9 @@
 |[az disk-pool create](#DiskPoolsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersDiskPoolsCreateOrUpdate#Create)|[Example](#ExamplesDiskPoolsCreateOrUpdate#Create)|
 |[az disk-pool update](#DiskPoolsUpdate)|Update|[Parameters](#ParametersDiskPoolsUpdate)|[Example](#ExamplesDiskPoolsUpdate)|
 |[az disk-pool delete](#DiskPoolsDelete)|Delete|[Parameters](#ParametersDiskPoolsDelete)|[Example](#ExamplesDiskPoolsDelete)|
-|[az disk-pool deallocate](#DiskPoolsDeallocate)|Deallocate|[Parameters](#ParametersDiskPoolsDeallocate)|[Example](#ExamplesDiskPoolsDeallocate)|
 |[az disk-pool list-outbound-network-dependency-endpoint](#DiskPoolsListOutboundNetworkDependenciesEndpoints)|ListOutboundNetworkDependenciesEndpoints|[Parameters](#ParametersDiskPoolsListOutboundNetworkDependenciesEndpoints)|[Example](#ExamplesDiskPoolsListOutboundNetworkDependenciesEndpoints)|
 |[az disk-pool start](#DiskPoolsStart)|Start|[Parameters](#ParametersDiskPoolsStart)|[Example](#ExamplesDiskPoolsStart)|
+|[az disk-pool stop](#DiskPoolsDeallocate)|Deallocate|[Parameters](#ParametersDiskPoolsDeallocate)|[Example](#ExamplesDiskPoolsDeallocate)|
 
 ### <a name="CommandsInIscsiTargets">Commands in `az disk-pool iscsi-target` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
@@ -130,18 +130,6 @@ az disk-pool delete --name "myDiskPool" --resource-group "myResourceGroup"
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--disk-pool-name**|string|The name of the Disk Pool.|disk_pool_name|diskPoolName|
 
-#### <a name="DiskPoolsDeallocate">Command `az disk-pool deallocate`</a>
-
-##### <a name="ExamplesDiskPoolsDeallocate">Example</a>
-```
-az disk-pool deallocate --name "myDiskPool" --resource-group "myResourceGroup"
-```
-##### <a name="ParametersDiskPoolsDeallocate">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--disk-pool-name**|string|The name of the Disk Pool.|disk_pool_name|diskPoolName|
-
 #### <a name="DiskPoolsListOutboundNetworkDependenciesEndpoints">Command `az disk-pool list-outbound-network-dependency-endpoint`</a>
 
 ##### <a name="ExamplesDiskPoolsListOutboundNetworkDependenciesEndpoints">Example</a>
@@ -162,6 +150,18 @@ az disk-pool list-outbound-network-dependency-endpoint --name "SampleAse" --reso
 az disk-pool start --name "myDiskPool" --resource-group "myResourceGroup"
 ```
 ##### <a name="ParametersDiskPoolsStart">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
+|**--disk-pool-name**|string|The name of the Disk Pool.|disk_pool_name|diskPoolName|
+
+#### <a name="DiskPoolsDeallocate">Command `az disk-pool stop`</a>
+
+##### <a name="ExamplesDiskPoolsDeallocate">Example</a>
+```
+az disk-pool stop --name "myDiskPool" --resource-group "myResourceGroup"
+```
+##### <a name="ParametersDiskPoolsDeallocate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|

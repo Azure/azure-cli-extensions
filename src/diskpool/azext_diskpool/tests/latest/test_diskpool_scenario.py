@@ -18,7 +18,7 @@ from .example_steps import step_list_outbound_network_dependency_endpoint
 from .example_steps import step_list
 from .example_steps import step_list2
 from .example_steps import step_update
-from .example_steps import step_deallocate
+from .example_steps import step_stop
 from .example_steps import step_start
 from .example_steps import step_delete
 from .example_steps import step_list3
@@ -78,7 +78,7 @@ def call_scenario(test, rg, rg_2):
                    "lNetworks/{vn}/subnets/default", case_sensitive=False),
         test.check("name", "{myDiskPool}", case_sensitive=False),
     ])
-    step_deallocate(test, rg, rg_2, checks=[])
+    step_stop(test, rg, rg_2, checks=[])
     step_start(test, rg, rg_2, checks=[])
     step_delete(test, rg, rg_2, checks=[])
     step_list3(test, rg, rg_2, checks=[])

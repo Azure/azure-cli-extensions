@@ -98,16 +98,6 @@ helps['disk-pool delete'] = """
                az disk-pool delete --name "myDiskPool" --resource-group "myResourceGroup"
 """
 
-helps['disk-pool deallocate'] = """
-    type: command
-    short-summary: "Shuts down the Disk Pool and releases the compute resources. You are not billed for the compute \
-resources that this Disk Pool uses."
-    examples:
-      - name: Deallocate Disk Pool
-        text: |-
-               az disk-pool deallocate --name "myDiskPool" --resource-group "myResourceGroup"
-"""
-
 helps['disk-pool list-outbound-network-dependency-endpoint'] = """
     type: command
     short-summary: "Gets the network endpoints of all outbound dependencies of a Disk Pool."
@@ -125,6 +115,16 @@ helps['disk-pool start'] = """
       - name: Start Disk Pool
         text: |-
                az disk-pool start --name "myDiskPool" --resource-group "myResourceGroup"
+"""
+
+helps['disk-pool stop'] = """
+    type: command
+    short-summary: "Shuts down the Disk Pool and releases the compute resources. You are not billed for the compute \
+resources that this Disk Pool uses."
+    examples:
+      - name: Deallocate Disk Pool
+        text: |-
+               az disk-pool stop --name "myDiskPool" --resource-group "myResourceGroup"
 """
 
 helps['disk-pool wait'] = """

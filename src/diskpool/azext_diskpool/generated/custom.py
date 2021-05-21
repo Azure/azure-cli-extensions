@@ -78,16 +78,6 @@ def disk_pool_delete(client,
                        disk_pool_name=disk_pool_name)
 
 
-def disk_pool_deallocate(client,
-                         resource_group_name,
-                         disk_pool_name,
-                         no_wait=False):
-    return sdk_no_wait(no_wait,
-                       client.begin_deallocate,
-                       resource_group_name=resource_group_name,
-                       disk_pool_name=disk_pool_name)
-
-
 def disk_pool_list_outbound_network_dependency_endpoint(client,
                                                         resource_group_name,
                                                         disk_pool_name):
@@ -101,6 +91,16 @@ def disk_pool_start(client,
                     no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_start,
+                       resource_group_name=resource_group_name,
+                       disk_pool_name=disk_pool_name)
+
+
+def disk_pool_stop(client,
+                   resource_group_name,
+                   disk_pool_name,
+                   no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_deallocate,
                        resource_group_name=resource_group_name,
                        disk_pool_name=disk_pool_name)
 
