@@ -573,9 +573,11 @@ def setup_validate_strorage_account(cli_ctx, storage_account, sas_token, rg_name
             try:
                 parsed_storage_account = parse_resource_id(storage_account_id)
             except CloudError as ex:
-                raise ValidationError(ex.message)
+                logger.warning("Couldn't validate the storage account details. Error: {}".format(ex.message))
+                return None, None, None
         else:
-            raise ValidationError("Invalid storage account id %s" % storage_account_id)
+            logger.warning("Invalid storage account id - {}".format(storage_account_id))
+            return None, None, None
 
         storage_account_name = parsed_storage_account['name']
 
