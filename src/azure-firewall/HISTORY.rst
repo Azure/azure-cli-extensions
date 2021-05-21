@@ -6,6 +6,7 @@ Release History
 0.10.0
 ++++++
 * `az network firewall create`: Add new parameter `--tier`
+* Migrate to Track2 SDK.
 
 0.9.0
 ++++++

@@ -37,7 +37,7 @@ def load_command_table(self, _):
     )
 
     network_vhub_route_table_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2020_05_01.operations#VirtualHubRouteTableV2sOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2020_05_01.operations#VirtualHubRouteTableV2SOperations.{}',
         client_factory=cf_virtual_hub_route_table_v2s,
         resource_type=CUSTOM_VWAN,
         min_api='2019-09-01'
@@ -82,7 +82,7 @@ def load_command_table(self, _):
     )
 
     network_p2s_vpn_gateway_sdk = CliCommandType(
-        operations_tmpl='azext_vwan.vendored_sdks.v2020_05_01.operations#P2sVpnGatewaysOperations.{}',
+        operations_tmpl='azext_vwan.vendored_sdks.v2020_05_01.operations#P2SVpnGatewaysOperations.{}',
         client_factory=cf_p2s_vpn_gateways,
         resource_type=CUSTOM_VWAN,
         min_api='2020-03-01'
@@ -96,27 +96,27 @@ def load_command_table(self, _):
     # region VirtualWANs
     with self.command_group('network vwan', network_vwan_sdk) as g:
         g.custom_command('create', 'create_virtual_wan')
-        g.command('delete', 'delete')
+        g.command('delete', 'begin_delete')
         g.show_command('show')
         g.custom_command('list', 'list_virtual_wans')
-        g.generic_update_command('update', custom_func_name='update_virtual_wan', setter_arg_name='wan_parameters')
+        g.generic_update_command('update', custom_func_name='update_virtual_wan', setter_name="begin_create_or_update", setter_arg_name='wan_parameters')
     # endregion
 
     # region VirtualHubs
     with self.command_group('network vhub', network_vhub_sdk) as g:
         g.custom_command('create', 'create_virtual_hub', supports_no_wait=True)
-        g.command('delete', 'delete')
+        g.command('delete', 'begin_delete')
         g.show_command('show')
         g.custom_command('list', 'list_virtual_hubs')
-        g.generic_update_command('update', custom_func_name='update_virtual_hub', setter_arg_name='virtual_hub_parameters', supports_no_wait=True)
-        g.command('get-effective-routes', 'get_effective_virtual_hub_routes', supports_no_wait=True)
+        g.generic_update_command('update', custom_func_name='update_virtual_hub', setter_name="begin_create_or_update", setter_arg_name='virtual_hub_parameters', supports_no_wait=True)
+        g.custom_command('get-effective-routes', 'get_effective_virtual_hub_routes', supports_no_wait=True)
 
     with self.command_group('network vhub connection', network_vhub_connection_sdk) as g:
         g.custom_command('create', 'create_hub_vnet_connection', supports_no_wait=True)
-        g.command('delete', 'delete', supports_no_wait=True, confirmation=True)
+        g.command('delete', 'begin_delete', supports_no_wait=True, confirmation=True)
         g.show_command('show')
         g.command('list', 'list')
-        g.generic_update_command('update', custom_func_name='update_hub_vnet_connection', setter_arg_name='hub_virtual_network_connection_parameters', supports_no_wait=True)
+        g.generic_update_command('update', custom_func_name='update_hub_vnet_connection', setter_name="begin_create_or_update", setter_arg_name='hub_virtual_network_connection_parameters', supports_no_wait=True)
         g.wait_command('wait')
 
     with self.command_group('network vhub route', network_vhub_sdk, deprecate_info=self.deprecate(redirect=ROUTE_TABLE_DEPRECATION_INFO, hide=False)) as g:
@@ -143,17 +143,17 @@ def load_command_table(self, _):
     # region VpnGateways
     with self.command_group('network vpn-gateway', network_vpn_gateway_sdk) as g:
         g.custom_command('create', 'create_vpn_gateway', supports_no_wait=True)
-        g.command('delete', 'delete')
+        g.command('delete', 'begin_delete')
         g.custom_command('list', 'list_vpn_gateways')
         g.show_command('show')
-        g.generic_update_command('update', custom_func_name='update_vpn_gateway', supports_no_wait=True, setter_arg_name='vpn_gateway_parameters')
+        g.generic_update_command('update', custom_func_name='update_vpn_gateway', supports_no_wait=True, setter_name="begin_create_or_update", setter_arg_name='vpn_gateway_parameters')
 
     with self.command_group('network vpn-gateway connection', network_vpn_gateway_connection_sdk) as g:
         g.custom_command('create', 'create_vpn_gateway_connection', supports_no_wait=True)
         g.command('list', 'list_by_vpn_gateway')
         g.show_command('show', 'get')
-        g.command('delete', 'delete')
-        g.generic_update_command('update', custom_func_name='update_vpn_gateway_connection',
+        g.command('delete', 'begin_delete')
+        g.generic_update_command('update', custom_func_name='update_vpn_gateway_connection', setter_name="begin_create_or_update",
                                  setter_arg_name='vpn_connection_parameters', supports_no_wait=True)
         g.wait_command('wait')
 
@@ -166,13 +166,13 @@ def load_command_table(self, _):
     # region VpnSites
     with self.command_group('network vpn-site', network_vpn_site_sdk) as g:
         g.custom_command('create', 'create_vpn_site', supports_no_wait=True)
-        g.command('delete', 'delete')
+        g.command('delete', 'begin_delete')
         g.custom_command('list', 'list_vpn_sites')
         g.show_command('show')
-        g.generic_update_command('update', custom_func_name='update_vpn_site', setter_arg_name='vpn_site_parameters', supports_no_wait=True)
+        g.generic_update_command('update', custom_func_name='update_vpn_site', setter_name='begin_create_or_update', setter_arg_name='vpn_site_parameters', supports_no_wait=True)
 
     with self.command_group('network vpn-site', network_vpn_site_config_sdk) as g:
-        g.command('download', 'download')
+        g.command('download', 'begin_download')
     # endregion
 
     # region VpnServer
@@ -182,7 +182,7 @@ def load_command_table(self, _):
         # due to service limitation, we cannot support update command right now.
         # g.generic_update_command('update', custom_func_name='update_vpn_server_config', supports_no_wait=True, setter_arg_name='vpn_server_configuration_parameters')
         g.show_command('show')
-        g.command('delete', 'delete', confirmation=True)
+        g.command('delete', 'begin_delete', confirmation=True)
         g.custom_command('list', 'list_vpn_server_config')
         g.wait_command('wait')
 
@@ -194,18 +194,18 @@ def load_command_table(self, _):
 
     with self.command_group('network p2s-vpn-gateway', network_p2s_vpn_gateway_sdk) as g:
         g.custom_command('create', 'create_p2s_vpn_gateway', supports_no_wait=True)
-        g.command('delete', 'delete', confirmation=True)
+        g.command('delete', 'begin_delete', confirmation=True)
         g.custom_command('list', 'list_p2s_vpn_gateways')
         g.show_command('show')
-        g.generic_update_command('update', custom_func_name='update_p2s_vpn_gateway', supports_no_wait=True, setter_arg_name='p2_svpn_gateway_parameters')
+        g.generic_update_command('update', custom_func_name='update_p2s_vpn_gateway', supports_no_wait=True, setter_name="begin_create_or_update", setter_arg_name='p2_s_vpn_gateway_parameters')
         g.wait_command('wait')
 
-    resource = 'p2s_vpn_gateways'
-    prop = 'p2_sconnection_configurations'
+    resource = 'p2_svpn_gateways'
+    prop = 'p2_s_connection_configurations'
     with self.command_group('network p2s-vpn-gateway connection', network_util, min_api='2020-04-01', is_preview=True) as g:
         g.command('list', list_network_resource_property(resource, prop))
         g.show_command('show', get_network_resource_property_entry(resource, prop))
 
     with self.command_group('network p2s-vpn-gateway vpn-client', network_p2s_vpn_gateway_sdk, min_api='2020-05-01') as g:
-        g.command('generate', 'generate_vpn_profile')
+        g.custom_command('generate', 'generate_vpn_profile')
     # endregion

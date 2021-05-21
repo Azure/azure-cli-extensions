@@ -3,6 +3,12 @@
 Release History
 ===============
 
+0.4.0
+++++++
+* [2021-05-03] Version intended to work with QDK version v0.16.2104.138035
+* Updated generated clients for Azure Quantum control plane to include support for restricted plans.
+* Fixed regression on offerings commands dependent on Azure Markeplace APIs.
+
 0.3.0
 ++++++
 * [2021-03-31] Version intended to work with QDK version v0.15.2103.133969

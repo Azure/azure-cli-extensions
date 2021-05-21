@@ -7,18 +7,18 @@
 
 from knack.util import CLIError
 
-from .._client_factory import cf_workspaces, cf_quotas, cf_offerings, cf_vm_image_term
+from .._client_factory import cf_workspaces, cf_quotas, cf_offerings
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspace
 from ..vendored_sdks.azure_mgmt_quantum.models import QuantumWorkspaceIdentity
 from ..vendored_sdks.azure_mgmt_quantum.models import Provider
-from .offerings import _get_publisher_and_offer_from_provider_id, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
+from .offerings import _get_publisher_and_offer_from_provider_id, _get_terms_from_marketplace, OFFER_NOT_AVAILABLE, PUBLISHER_NOT_AVAILABLE
 from msrestazure.azure_exceptions import CloudError
 
 import time
 
 DEFAULT_WORKSPACE_LOCATION = 'westus'
-POLLING_TIME_DURATION = 3
-MAX_RETRIES_ROLE_ASSIGNMENT = 10
+POLLING_TIME_DURATION = 3  # Seconds
+MAX_RETRIES_ROLE_ASSIGNMENT = 20
 
 
 class WorkspaceInfo(object):
@@ -87,7 +87,7 @@ def _provider_terms_need_acceptance(cmd, provider):
         # No need to accept terms
         return False
     else:
-        return not cf_vm_image_term(cmd.cli_ctx).get(provider['publisher_id'], provider['offer_id'], provider['sku']).accepted
+        return not _get_terms_from_marketplace(cmd, provider['publisher_id'], provider['offer_id'], provider['sku']).accepted
 
 
 def _add_quantum_providers(cmd, workspace, providers):
@@ -136,7 +136,8 @@ def _create_role_assignment(cmd, quantum_workspace):
     if (retry_attempts > 0):
         print()  # To end the line of the waiting indicators.
     if (retry_attempts == MAX_RETRIES_ROLE_ASSIGNMENT):
-        raise CLIError(f"Role assignment could not be added to storage account {quantum_workspace.storage_account}.")
+        max_time_in_seconds = MAX_RETRIES_ROLE_ASSIGNMENT * POLLING_TIME_DURATION
+        raise CLIError(f"Role assignment could not be added to storage account {quantum_workspace.storage_account} within {max_time_in_seconds} seconds.")
     return quantum_workspace
 
 
