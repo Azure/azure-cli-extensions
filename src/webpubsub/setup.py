@@ -33,7 +33,9 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = []
+DEPENDENCIES = [
+    'websockets~=8.1'
+]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
     README = f.read()
