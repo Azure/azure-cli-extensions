@@ -34,6 +34,10 @@ def cf_resource_groups(cli_ctx, subscription_id=None):
                                    subscription_id=subscription_id).resource_groups
 
 
+def cf_storage(cli_ctx, subscription_id=None):
+    return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_STORAGE, subscription_id=subscription_id)
+
+
 def _resource_client_factory(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id)
 

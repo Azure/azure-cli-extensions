@@ -37,6 +37,7 @@ CLASSIFIERS = [
 DEPENDENCIES = [
     'kubernetes==11.0.0',
     'pycryptodome==3.9.8',
+    'azure-storage-blob'
 ]
 
 with open('README.md', 'r', encoding='utf-8') as f:

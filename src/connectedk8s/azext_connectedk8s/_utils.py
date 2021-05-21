@@ -14,6 +14,8 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import json
+from datetime import datetime, timedelta
+import colorama
 
 from knack.util import CLIError
 from knack.log import get_logger
@@ -28,7 +30,7 @@ from azext_connectedk8s._client_factory import _resource_client_factory
 import azext_connectedk8s._constants as consts
 from kubernetes import client as kube_client
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError, ValidationError
-from azext_connectedk8s._client_factory import get_subscription_client, _resource_providers_client
+from azext_connectedk8s._client_factory import get_subscription_client, _resource_providers_client, cf_storage
 
 logger = get_logger(__name__)
 
@@ -494,7 +496,7 @@ def get_kubernetes_secret(api_instance, namespace, secret_name, custom_logger=No
 
 def handle_logging_error(custom_logger, error_string):
     if custom_logger:
-        custom_logger.error(error_string, exc_info=True)
+        custom_logger.error(error_string)
     else:
         logger.debug(error_string)
 
@@ -531,9 +533,67 @@ def check_delete_job(configuration, namespace):
         logger.debug("Error occurred while retrieving status of the delete job: {}".format(str(e)))
 
 
-def try_upload_log_file(storage_account, sas_token, custom_logger):
+def try_upload_log_file(storage_account_name, storage_token, log_file_path):
     try:  # Strorage Upload
+        import uuid
         from azure.storage.blob import BlobServiceClient
+        storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/"
+        blob_service_client = BlobServiceClient(account_url=storage_account_url, credential=storage_token)
+        container_name = str(uuid.uuid4())  # Create a unique name for the container
+
+        try:
+            blob_service_client.create_container(container_name)
+        except Exception as ex:
+            raise Exception("Storage account container creation error: {}".format(str(ex)))
+
+        blob_client = blob_service_client.get_blob_client(container=container_name, blob="connectedk8s_troubleshoot.log")
+        with open(log_file_path, "rb") as data:  # Upload log file as blob
+            blob_client.upload_blob(data)
     except Exception as e:
-        custom_logger.error("Error while uploading the log file to storage account: {}".format(str(e)), exc_info=True)
-        raise Exception("Error while uploading the log file to storage account: {}".format(str(e)))
+        logger.warning("Error while uploading the log file to storage account: {}".format(str(e)))
+
+
+def setup_validate_strorage_account(cli_ctx, storage_account, sas_token, rg_name):
+    if storage_account is None:
+        return None, None, None
+    try:
+        from msrestazure.tools import is_valid_resource_id, parse_resource_id, resource_id
+        from azure.storage.blob import generate_account_sas
+        if not is_valid_resource_id(storage_account):
+            storage_account_id = resource_id(
+                subscription=get_subscription_id(cli_ctx),
+                resource_group=rg_name,
+                namespace='Microsoft.Storage', type='storageAccounts',
+                name=storage_account
+            )
+        else:
+            storage_account_id = storage_account
+
+        if is_valid_resource_id(storage_account_id):
+            try:
+                parsed_storage_account = parse_resource_id(storage_account_id)
+            except CloudError as ex:
+                raise ValidationError(ex.message)
+        else:
+            raise ValidationError("Invalid storage account id %s" % storage_account_id)
+
+        storage_account_name = parsed_storage_account['name']
+
+        readonly_sas_token = None
+        if sas_token is None:
+            storage_client = cf_storage(
+                cli_ctx, parsed_storage_account['subscription'])
+            storage_account_keys = storage_client.storage_accounts.list_keys(parsed_storage_account['resource_group'], storage_account_name)
+            sas_token = generate_account_sas(account_name=storage_account_name, account_key=storage_account_keys.keys[0].value, resource_types='sco', permission='rwdlacup', expiry=datetime.utcnow() + timedelta(days=1))
+            readonly_sas_token = generate_account_sas(account_name=storage_account_name, account_key=storage_account_keys.keys[0].value, resource_types='sco', permission='rl', expiry=datetime.utcnow() + timedelta(days=1))
+        return storage_account_name, sas_token, readonly_sas_token
+    except Exception as ex:
+        logger.warning("Error while validating the credentials for the storage account: {}".format(str(ex)))
+
+
+def format_hyperlink(the_link):
+    return f'\033[1m{colorama.Style.BRIGHT}{colorama.Fore.BLUE}{the_link}{colorama.Style.RESET_ALL}'
+
+
+def format_bright(msg):
+    return f'\033[1m{colorama.Style.BRIGHT}{msg}{colorama.Style.RESET_ALL}'
