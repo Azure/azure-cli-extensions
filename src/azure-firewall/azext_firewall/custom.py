@@ -681,7 +681,7 @@ def update_azure_firewall_policies(cmd,
         user_assigned_identities_instance[user_assigned_identity] = user_assigned_indentity_instance
         identity_instance = ManagedServiceIdentity(
             type="UserAssigned",
-            Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties=user_assigned_identities_instance
+            user_assigned_identities=user_assigned_identities_instance
         )
         instance.identity = identity_instance
 
@@ -689,12 +689,11 @@ def update_azure_firewall_policies(cmd,
 
 
 def set_azure_firewall_policies(cmd, resource_group_name, firewall_policy_name, parameters):
-    # Firewall Policy can't contain premium only properties - Identity
-    # if parameters.identity is None:
-    #     ManagedServiceIdentity = cmd.get_models('ManagedServiceIdentity')
+    if parameters.identity is None:
+        ManagedServiceIdentity = cmd.get_models('ManagedServiceIdentity')
 
-    #     identity = ManagedServiceIdentity(type="None", Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties=None)
-    #     parameters.identity = identity
+        identity = ManagedServiceIdentity(type="None", user_assigned_identities=None)
+        parameters.identity = identity
 
     client = network_client_factory(cmd.cli_ctx).firewall_policies
     return client.begin_create_or_update(resource_group_name, firewall_policy_name, parameters)

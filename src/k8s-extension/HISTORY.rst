@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.4.1
+++++++++++++++++++
+
+* Add compatible logic for the track 2 migration of resource dependence
+
 0.4.0
 ++++++++++++++++++
 

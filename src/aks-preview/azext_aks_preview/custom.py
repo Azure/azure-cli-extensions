@@ -317,20 +317,16 @@ def _invoke_deployment(cmd, resource_group_name, deployment_name, template, para
         logger.info(json.dumps(template, indent=2))
         logger.info('==== END TEMPLATE ====')
 
-    if cmd.supported_api_version(min_api='2019-10-01', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES):
-        Deployment = cmd.get_models(
-            'Deployment', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
-        deployment = Deployment(properties=properties)
-
-        if validate:
-            validation_poller = smc.validate(
-                resource_group_name, deployment_name, deployment)
-            return LongRunningOperation(cmd.cli_ctx)(validation_poller)
-        return sdk_no_wait(no_wait, smc.create_or_update, resource_group_name, deployment_name, deployment)
-
+    Deployment = cmd.get_models('Deployment', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
+    deployment = Deployment(properties=properties)
     if validate:
-        return smc.validate(resource_group_name, deployment_name, properties)
-    return sdk_no_wait(no_wait, smc.create_or_update, resource_group_name, deployment_name, properties)
+        if cmd.supported_api_version(min_api='2019-10-01', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES):
+            validation_poller = smc.begin_validate(resource_group_name, deployment_name, deployment)
+            return LongRunningOperation(cmd.cli_ctx)(validation_poller)
+        else:
+            return smc.validate(resource_group_name, deployment_name, deployment)
+
+    return sdk_no_wait(no_wait, smc.begin_create_or_update, resource_group_name, deployment_name, deployment)
 
 
 def create_application(client, display_name, homepage, identifier_uris,
@@ -972,6 +968,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_vmss=None,
                vm_set_type=None,
                skip_subnet_role_assignment=False,
+               os_sku=None,
                enable_fips_image=False,
                enable_cluster_autoscaler=False,
                cluster_autoscaler_profile=None,
@@ -1084,6 +1081,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         count=int(node_count),
         vm_size=node_vm_size,
         os_type="Linux",
+        os_sku=os_sku,
         mode="System",
         vnet_subnet_id=vnet_subnet_id,
         pod_subnet_id=pod_subnet_id,
@@ -2598,29 +2596,27 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
     resource_groups = cf_resource_groups(cmd.cli_ctx, subscription_id)
     resources = cf_resources(cmd.cli_ctx, subscription_id)
 
+    from azure.cli.core.profiles import ResourceType
     # check if default RG exists
     if resource_groups.check_existence(default_workspace_resource_group):
+        from azure.core.exceptions import HttpResponseError
         try:
             resource = resources.get_by_id(
                 default_workspace_resource_id, '2015-11-01-preview')
             return resource.id
-        except CloudError as ex:
+        except HttpResponseError as ex:
             if ex.status_code != 404:
                 raise ex
     else:
-        resource_groups.create_or_update(default_workspace_resource_group, {
-                                         'location': workspace_region})
+        ResourceGroup = cmd.get_models('ResourceGroup', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
+        resource_group = ResourceGroup(location=workspace_region)
+        resource_groups.create_or_update(default_workspace_resource_group, resource_group)
 
-    default_workspace_params = {
-        'location': workspace_region,
-        'properties': {
-            'sku': {
-                'name': 'standalone'
-            }
-        }
-    }
-    async_poller = resources.create_or_update_by_id(default_workspace_resource_id, '2015-11-01-preview',
-                                                    default_workspace_params)
+    GenericResource = cmd.get_models('GenericResource', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
+    generic_resource = GenericResource(location=workspace_region, properties={'sku': {'name': 'standalone'}})
+
+    async_poller = resources.begin_create_or_update_by_id(default_workspace_resource_id, '2015-11-01-preview',
+                                                          generic_resource)
 
     ws_resource_id = ''
     while True:
@@ -2669,11 +2665,12 @@ def _ensure_container_insights_for_monitoring(cmd, addon):
 
     # region of workspace can be different from region of RG so find the location of the workspace_resource_id
     resources = cf_resources(cmd.cli_ctx, subscription_id)
+    from azure.core.exceptions import HttpResponseError
     try:
         resource = resources.get_by_id(
             workspace_resource_id, '2015-11-01-preview')
         location = resource.location
-    except CloudError as ex:
+    except HttpResponseError as ex:
         raise ex
 
     unix_time_in_millis = int(
@@ -2979,6 +2976,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       ppg=None,
                       max_pods=0,
                       os_type="Linux",
+                      os_sku=None,
                       enable_fips_image=False,
                       min_count=None,
                       max_count=None,
@@ -3029,6 +3027,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         count=int(node_count),
         vm_size=node_vm_size,
         os_type=os_type,
+        os_sku=os_sku,
         enable_fips=enable_fips_image,
         storage_profile=ContainerServiceStorageProfileTypes.managed_disks,
         vnet_subnet_id=vnet_subnet_id,

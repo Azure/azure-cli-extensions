@@ -333,8 +333,21 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('name', '{policy2}')
         ])
 
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_with_firewall_policy_premium', location='westus2')
+    def test_azure_firewall_with_firewall_policy_premium(self, resource_group, resource_group_location):
+        self.kwargs.update({
+            'policy2': 'myclipolicy2',
+            'rg': resource_group,
+            'location': resource_group_location,
+        })
+
+        self.cmd('network firewall policy create -g {rg} -n {policy2} -l {location} --sku Premium', checks=[
+            self.check('type', 'Microsoft.Network/FirewallPolicies'),
+            self.check('name', '{policy2}')
+        ])
+
         # test firewall policy identity
-        identity = self.cmd('identity create -g {rg} -n identitytest').get_output_in_json()
+        identity = self.cmd('identity create -g {rg} -n identitytest',).get_output_in_json()
         self.kwargs.update({'id': identity['id']})
         self.cmd('network firewall policy update -g {rg} -n {policy2} --identity {id}',
                  checks=[self.exists('identity')])
