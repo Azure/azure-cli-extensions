@@ -21,7 +21,7 @@ python${PYTHON_VERSION} -m venv azEnv
 source azEnv/bin/activate
 python -m pip install -U pip
 # install azdev, used later to install azcli and extension
-pip install azdev
+pip install azdev==0.1.32
 # install pytest plugins
 pip install pytest-json-report pytest-rerunfailures --upgrade
 # pip install pytest-html --upgrade
