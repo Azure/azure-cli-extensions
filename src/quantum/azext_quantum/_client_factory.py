@@ -38,9 +38,6 @@ def get_appid():
 
 # Control Plane clients
 
-from pprint import pprint
-from inspect import getmembers
-from types import FunctionType
 
 def cf_quantum_mgmt(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
