@@ -15,8 +15,8 @@ except ImportError:
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
 # This version should match the latest entry in HISTORY.rst
-# Also, when updating this review the version used by the extension to submit
-# requests, which can be found at './azext_quantum/__init__.py'
+# Also, when updating this, please review the version used by the extension to
+# submit requests, which can be found at './azext_quantum/__init__.py'
 VERSION = '0.4.0'
 
 # The full list of classifiers is available at
