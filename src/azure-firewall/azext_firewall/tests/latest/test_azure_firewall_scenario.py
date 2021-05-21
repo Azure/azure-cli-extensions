@@ -69,7 +69,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall ip-config delete -g {rg} -n {ipconfig2} -f {af}')
         self.cmd('network firewall ip-config delete -g {rg} -n {ipconfig} -f {af}')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_management_ip_config')
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_management_ip_config')
     def test_azure_firewall_management_ip_config(self, resource_group):
         self.kwargs.update({
             'af': 'af1',
@@ -110,6 +110,7 @@ class AzureFirewallScenario(ScenarioTest):
         #              self.check('subnet.id', subnet_id_ip_config)
         #          ])
 
+        self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name "AzureFirewallSubnet" --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24')
         self.cmd('network firewall ip-config create -g {rg} -n {ipconfig3} -f {af} --public-ip-address {pubip3} --vnet-name {vnet}', checks=[
             self.check('name', '{ipconfig3}'),
             # self.check('subnet', None)
@@ -332,8 +333,21 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('name', '{policy2}')
         ])
 
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_with_firewall_policy_premium', location='westus2')
+    def test_azure_firewall_with_firewall_policy_premium(self, resource_group, resource_group_location):
+        self.kwargs.update({
+            'policy2': 'myclipolicy2',
+            'rg': resource_group,
+            'location': resource_group_location,
+        })
+
+        self.cmd('network firewall policy create -g {rg} -n {policy2} -l {location} --sku Premium', checks=[
+            self.check('type', 'Microsoft.Network/FirewallPolicies'),
+            self.check('name', '{policy2}')
+        ])
+
         # test firewall policy identity
-        identity = self.cmd('identity create -g {rg} -n identitytest').get_output_in_json()
+        identity = self.cmd('identity create -g {rg} -n identitytest',).get_output_in_json()
         self.kwargs.update({'id': identity['id']})
         self.cmd('network firewall policy update -g {rg} -n {policy2} --identity {id}',
                  checks=[self.exists('identity')])
@@ -812,3 +826,11 @@ class AzureFirewallScenario(ScenarioTest):
         self.assertEqual(show_data['Network.DNS.EnableProxy'], 'true')
 
         self.cmd('network firewall delete -g {rg} --name {fw}')
+
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_tier', location='eastus2euap')
+    def test_azure_firewall_tier(self, resource_group):
+        self.kwargs.update({
+            'rg': resource_group
+        })
+        self.cmd('network firewall create -g {rg} -n af --sku AZFW_VNet --tier Premium',
+                 checks=self.check('sku.tier', 'Premium'))
