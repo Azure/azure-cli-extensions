@@ -7,7 +7,7 @@
 
 import os
 from ._location_helper import normalize_location
-from ..setup import VERSION
+from .__init__ import CLI_REPORTED_VERSION
 
 
 def is_env(name):
@@ -33,10 +33,14 @@ def _get_data_credentials(cli_ctx, subscription_id=None):
 
 
 def get_appid():
-    return f"azure-cli-extension/{VERSION}"
+    return f"azure-cli-extension/{CLI_REPORTED_VERSION}"
 
 
 # Control Plane clients
+
+from pprint import pprint
+from inspect import getmembers
+from types import FunctionType
 
 def cf_quantum_mgmt(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client

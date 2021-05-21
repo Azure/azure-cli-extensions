@@ -14,8 +14,9 @@ except ImportError:
     from distutils import log as logger
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-# TODO: Confirm this is the right version number you want and it matches your
-# HISTORY.rst entry.
+# This version should match the latest entry in HISTORY.rst
+# Also, when updating this review the version used by the extension to submit
+# requests, which can be found at './azext_quantum/__init__.py'
 VERSION = '0.4.0'
 
 # The full list of classifiers is available at
