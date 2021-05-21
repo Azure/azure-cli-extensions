@@ -589,6 +589,7 @@ def setup_validate_strorage_account(cli_ctx, storage_account, sas_token, rg_name
         return storage_account_name, sas_token, readonly_sas_token
     except Exception as ex:
         logger.warning("Error while validating the credentials for the storage account: {}".format(str(ex)))
+        return None, None, None
 
 
 def format_hyperlink(the_link):

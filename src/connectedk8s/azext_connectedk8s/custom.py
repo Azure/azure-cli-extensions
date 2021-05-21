@@ -1494,9 +1494,10 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             tr_logger.error("Error occured while checking if the MSI certificate has expired: {}".format(str(ex)))
 
         storage_account_name, sas_token, readonly_sas_token = utils.setup_validate_strorage_account(cmd.cli_ctx, storage_account, sas_token, resource_group_name)
-        token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token
-        if storage_account_name:
+        if storage_account_name:  # When validated the storage account
             utils.try_upload_log_file(storage_account_name, sas_token, troubleshoot_log_path)
+            # token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token
+            # ADD the periscope part here.
 
         try:
             # Creating the .tar.gz for logs and deleting the actual log file
