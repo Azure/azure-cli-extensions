@@ -5,7 +5,7 @@ Release History
 
 1.1.5
 ++++++
-* Adding custom-locations oid param for spn scenario
+* Add custom-locations oid parameter for spn scenario
 
 
 1.1.4
