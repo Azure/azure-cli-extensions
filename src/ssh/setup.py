@@ -7,7 +7,7 @@
 
 from setuptools import setup, find_packages
 
-VERSION = "0.1.4"
+VERSION = "0.1.5"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -31,8 +31,8 @@ setup(
     description='SSH into VMs',
     long_description='SSH into VMs using RBAC',
     license='MIT',
-    author='Ryan Rossiter',
-    author_email='ryrossit@microsoft.com',
+    author='Microsoft Corporation',
+    author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/ssh',
     classifiers=CLASSIFIERS,
     packages=find_packages(),

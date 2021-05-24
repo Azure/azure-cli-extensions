@@ -22,21 +22,22 @@ def create_custom_providers_custom_resource_provider(client,
     body = {'location': location, 'tags': tags,
             'actions': actions, 'resource_types': resource_types,
             'validations': validations}
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name=resource_group_name, resource_provider_name=resource_provider_name, resource_provider=body)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name=resource_group_name, resource_provider_name=resource_provider_name, resource_provider=body)
 
 
 def update_custom_providers_custom_resource_provider(client,
                                                      resource_group_name,
                                                      resource_provider_name,
                                                      tags=None):
-    return client.update(resource_group_name=resource_group_name, resource_provider_name=resource_provider_name, tags=tags)
+    tags = {'tags': tags}
+    return client.update(resource_group_name=resource_group_name, resource_provider_name=resource_provider_name, patchable_resource=tags)
 
 
 def delete_custom_providers_custom_resource_provider(client,
                                                      resource_group_name,
                                                      resource_provider_name,
                                                      no_wait=False):
-    return sdk_no_wait(no_wait, client.delete, resource_group_name=resource_group_name, resource_provider_name=resource_provider_name)
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name=resource_group_name, resource_provider_name=resource_provider_name)
 
 
 def get_custom_providers_custom_resource_provider(client,

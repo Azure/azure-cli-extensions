@@ -63,16 +63,16 @@ def load_command_table(self, _):
     # region AzureFirewalls
     with self.command_group('network firewall', network_firewall_sdk) as g:
         g.custom_command('create', 'create_azure_firewall')
-        g.command('delete', 'delete')
+        g.command('delete', 'begin_delete')
         g.custom_command('list', 'list_azure_firewalls')
         g.show_command('show')
-        g.generic_update_command('update', custom_func_name='update_azure_firewall')
+        g.generic_update_command('update', setter_name="begin_create_or_update", custom_func_name='update_azure_firewall')
 
     with self.command_group('network firewall threat-intel-allowlist', network_firewall_sdk, is_preview=True, min_api='2019-09-01') as g:
         g.custom_command('create', 'create_azure_firewall_threat_intel_allowlist')
         g.custom_command('delete', 'delete_azure_firewall_threat_intel_allowlist')
         g.custom_show_command('show', 'show_azure_firewall_threat_intel_allowlist')
-        g.generic_update_command('update', custom_func_name='update_azure_firewall_threat_intel_allowlist')
+        g.generic_update_command('update', setter_name='begin_create_or_update', custom_func_name='update_azure_firewall_threat_intel_allowlist')
 
     with self.command_group('network firewall ip-config', network_util) as g:
         g.custom_command('create', 'create_af_ip_configuration')
@@ -123,7 +123,7 @@ def load_command_table(self, _):
     # region AzureFirewallPolicies
     with self.command_group('network firewall policy', network_firewall_policies_sdk, resource_type=CUSTOM_FIREWALL, min_api='2019-07-01') as g:
         g.custom_command('create', 'create_azure_firewall_policies', exception_handler=exception_handler)
-        g.command('delete', 'delete')
+        g.command('delete', 'begin_delete')
         g.custom_command('list', 'list_azure_firewall_policies')
         g.show_command('show')
         g.generic_update_command('update', custom_func_name='update_azure_firewall_policies',
@@ -138,8 +138,8 @@ def load_command_table(self, _):
 
     with self.command_group('network firewall policy rule-collection-group', network_firewall_policy_rule_groups, resource_type=CUSTOM_FIREWALL, is_preview=True) as g:
         g.custom_command('create', 'create_azure_firewall_policy_rule_collection_group', exception_handler=exception_handler)
-        g.generic_update_command('update', custom_func_name='update_azure_firewall_policy_rule_collection_group', exception_handler=exception_handler)
-        g.command('delete', 'delete')
+        g.generic_update_command('update', custom_func_name='update_azure_firewall_policy_rule_collection_group', setter_name='begin_create_or_update', exception_handler=exception_handler)
+        g.command('delete', 'begin_delete')
         g.show_command('show')
         g.command('list', 'list')
 
@@ -151,6 +151,6 @@ def load_command_table(self, _):
 
     with self.command_group('network firewall policy rule-collection-group collection rule', network_firewall_policy_rule_groups, resource_type=CUSTOM_FIREWALL, is_preview=True) as g:
         g.custom_command('add', 'add_azure_firewall_policy_filter_rule', exception_handler=exception_handler)
-        g.generic_update_command('update', custom_func_name='update_azure_firewall_policy_filter_rule', exception_handler=exception_handler)
+        g.generic_update_command('update', setter_name='begin_create_or_update', custom_func_name='update_azure_firewall_policy_filter_rule', exception_handler=exception_handler)
         g.custom_command('remove', 'remove_azure_firewall_policy_filter_rule')
     # endregion

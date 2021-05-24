@@ -61,12 +61,6 @@ helps['cloud-service role-instance show-remote-desktop-file'] = """
     short-summary: "Get a remote desktop file for a role instance in a cloud service."
 """
 
-helps['cloud-service role-instance wait'] = """
-    type: command
-    short-summary: Place the CLI in a waiting state until a condition of the cloud-service role-instance \
-is met.
-"""
-
 helps['cloud-service role'] = """
     type: group
     short-summary: Manage cloud service role with cloud service
@@ -84,7 +78,7 @@ helps['cloud-service role show'] = """
 
 helps['cloud-service'] = """
     type: group
-    short-summary: Manage cloud service
+    short-summary: Manage cloud service (extended support).
 """
 
 helps['cloud-service list'] = """
