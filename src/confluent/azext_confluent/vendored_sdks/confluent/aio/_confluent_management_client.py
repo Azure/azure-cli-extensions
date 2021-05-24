@@ -19,6 +19,7 @@ from ._configuration import ConfluentManagementClientConfiguration
 from .operations import MarketplaceAgreementsOperations
 from .operations import OrganizationOperationsOperations
 from .operations import OrganizationOperations
+from .operations import ValidationsOperations
 from .. import models
 
 
@@ -31,6 +32,8 @@ class ConfluentManagementClient(object):
     :vartype organization_operations: azure.mgmt.confluent.aio.operations.OrganizationOperationsOperations
     :ivar organization: OrganizationOperations operations
     :vartype organization: azure.mgmt.confluent.aio.operations.OrganizationOperations
+    :ivar validations: ValidationsOperations operations
+    :vartype validations: azure.mgmt.confluent.aio.operations.ValidationsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: Microsoft Azure subscription id.
@@ -61,6 +64,8 @@ class ConfluentManagementClient(object):
         self.organization_operations = OrganizationOperationsOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.organization = OrganizationOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.validations = ValidationsOperations(
             self._client, self._config, self._serialize, self._deserialize)
 
     async def close(self) -> None:

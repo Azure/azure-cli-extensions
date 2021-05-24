@@ -37,7 +37,7 @@ def confluent_organization_create(cmd,
         body['user_detail']['email_address'] = decode['email'] if 'email' in decode else decode['unique_name']
     except KeyError as ex:
         raise Exception(f'Cannot create the organization as CLI cannot get the right value for {str(ex)} from access '
-                        'token.')
+                        'token.') from ex
 
     # Check owner or contributor role of subscription
     user_object_id = decode['oid']
@@ -111,7 +111,7 @@ def confluent_offer_detail_show(cmd, publisher_id=None, offer_id=None):
                   'planName': plan['displayName'],
                   'termUnits':[item for a in plan['availabilities'] for item in a['terms']]
                   } for plan in plans]
-    except KeyError:
-        raise ArgumentUsageError('Not able to get offer details for the provided publisher id and offer id.')
+    except KeyError as ex:
+        raise ArgumentUsageError('Not able to get offer details for the provided publisher id and offer id.') from ex
 
     return plans
