@@ -98,7 +98,7 @@ helps['aks create'] = """
           short-summary: Enable managed AAD feature for cluster.
         - name: --enable-azure-rbac
           type: bool
-          short-summary: Whether to enable Azure RBAC for Kubernetes authorization.
+          short-summary: Enable Azure RBAC to control authorization checks on cluster.
         - name: --aad-admin-group-object-ids
           type: string
           short-summary: Comma seperated list of aad group object IDs that will be set as cluster admin.
@@ -171,6 +171,7 @@ helps['aks create'] = """
                 open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
                 gitops                          - enable GitOps (PREVIEW).
                 azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon (PREVIEW).
+                azure-defender                  - enable Azure Defender addon (PREVIEW).
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -213,6 +214,9 @@ helps['aks create'] = """
         - name: --ppg
           type: string
           short-summary: The ID of a PPG.
+        - name: --os-sku
+          type: string
+          short-summary: The os-sku of the agent node pool. Ubuntu or CBLMariner.
         - name: --enable-fips-image
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
@@ -326,6 +330,9 @@ helps['aks create'] = """
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
+        - name: --disable-local-accounts
+          type: bool
+          short-summary: (Preview) If set to true, getting static credential will be disabled for this cluster.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -367,6 +374,10 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-encryption-at-host
         - name: Create a kubernetes cluster with custom control plane identity and kubelet identity.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --assign-identity <control-plane-identity-resource-id> --assign-kubelet-identity <kubelet-identity-resource-id>
+        - name: Create a kubernetes cluster with Azure RBAC enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-aad --enable-azure-rbac
+        - name: Create a kubernetes cluster with a specific os-sku
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --os-sku Ubuntu
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -522,6 +533,18 @@ helps['aks update'] = """
                   * Has a special character (Regex match [\\W_])
                 - Disallowed values:  "abc@123", "P@$$w0rd", "P@ssw0rd", "P@ssword123", "Pa$$word", "pass@word1", "Password!", "Password1", "Password22", "iloveyou!"
             Reference: https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.management.compute.models.virtualmachinescalesetosprofile.adminpassword?view=azure-dotnet
+        - name: --enable-azure-rbac
+          type: bool
+          short-summary: Enable Azure RBAC to control authorization checks on cluster.
+        - name: --disable-azure-rbac
+          type: bool
+          short-summary: Disable Azure RBAC to control authorization checks on cluster.
+        - name: --disable-local-accounts
+          type: bool
+          short-summary: (Preview) If set to true, getting static credential will be disabled for this cluster.
+        - name: --enable-local-accounts
+          type: bool
+          short-summary: (Preview) If set to true, will enable getting static credential for this cluster.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -567,6 +590,10 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCLuster --tags "foo=bar" "baz=qux"
       - name: Update Windows password of a kubernetes cluster
         text: az aks update -g MyResourceGroup -n MyManagedCLuster --windows-admin-password "Repl@cePassw0rd12345678"
+      - name: Update a managed AAD AKS cluster to use Azure RBAC
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-azure-rbac
+      - name: Disable Azure RBAC in a managed AAD AKS cluster
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-azure-rbac
 """
 
 helps['aks kollect'] = """
@@ -837,6 +864,9 @@ helps['aks nodepool add'] = """
         - name: --os-type
           type: string
           short-summary: The OS Type. Linux or Windows.
+        - name: --os-sku
+          type: string
+          short-summary: The os-sku of the agent node pool. Ubuntu or CBLMariner.
         - name: --enable-fips-image
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
@@ -893,6 +923,8 @@ helps['aks nodepool add'] = """
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
         - name: Create a nodepool with EncryptionAtHost enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --enable-encryption-at-host
+        - name: Create a nodepool cluster with a specific os-sku
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --os-sku Ubuntu
 """
 
 helps['aks nodepool scale'] = """
@@ -988,6 +1020,8 @@ long-summary: |-
         open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
         gitops                          - enable GitOps (PREVIEW).
         azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon (PREVIEW).
+        azure-defender                  - enable Azure Defender addon (PREVIEW).
+
 parameters:
   - name: --addons -a
     type: string
@@ -1032,6 +1066,9 @@ examples:
   - name: Enable open-service-mesh addon.
     text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons open-service-mesh
     crafted: true
+  - name: Enable azure-defender addon with workspace resourceId.
+    text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons azure-defender --workspace-resource-id WorkspaceResourceId
+    crafted: true
 """
 
 helps['aks get-versions'] = """
@@ -1040,6 +1077,15 @@ short-summary: Get the versions available for creating a managed Kubernetes clus
 examples:
   - name: Get the versions available for creating a managed Kubernetes cluster
     text: az aks get-versions --location westus2
+    crafted: true
+"""
+
+helps['aks get-os-options'] = """
+type: command
+short-summary: Get the OS options available for creating a managed Kubernetes cluster.
+examples:
+  - name: Get the OS options available for creating a managed Kubernetes cluster
+    text: az aks get-os-options --location westus2
     crafted: true
 """
 

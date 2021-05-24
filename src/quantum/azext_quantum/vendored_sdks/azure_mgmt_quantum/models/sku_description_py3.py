@@ -19,8 +19,13 @@ class SkuDescription(Model):
     :type id: str
     :param name: Display name of this sku.
     :type name: str
+    :param version: Display name of this sku.
+    :type version: str
     :param description: Description about this sku.
     :type description: str
+    :param restricted_access_uri: Uri to subscribe to the restricted access
+     sku.
+    :type restricted_access_uri: str
     :param targets: The list of targets available for this sku.
     :type targets: list[str]
     :param quota_dimensions: The list of quota dimensions for this sku.
@@ -32,17 +37,21 @@ class SkuDescription(Model):
     _attribute_map = {
         'id': {'key': 'id', 'type': 'str'},
         'name': {'key': 'name', 'type': 'str'},
+        'version': {'key': 'version', 'type': 'str'},
         'description': {'key': 'description', 'type': 'str'},
+        'restricted_access_uri': {'key': 'restrictedAccessUri', 'type': 'str'},
         'targets': {'key': 'targets', 'type': '[str]'},
         'quota_dimensions': {'key': 'quotaDimensions', 'type': '[QuotaDimension]'},
         'pricing_details': {'key': 'pricingDetails', 'type': '[PricingDetail]'},
     }
 
-    def __init__(self, *, id: str=None, name: str=None, description: str=None, targets=None, quota_dimensions=None, pricing_details=None, **kwargs) -> None:
+    def __init__(self, *, id: str=None, name: str=None, version: str=None, description: str=None, restricted_access_uri: str=None, targets=None, quota_dimensions=None, pricing_details=None, **kwargs) -> None:
         super(SkuDescription, self).__init__(**kwargs)
         self.id = id
         self.name = name
+        self.version = version
         self.description = description
+        self.restricted_access_uri = restricted_access_uri
         self.targets = targets
         self.quota_dimensions = quota_dimensions
         self.pricing_details = pricing_details

@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.1.2'
+VERSION = '0.1.3'
 try:
     from .manual.version import VERSION
 except ImportError:
