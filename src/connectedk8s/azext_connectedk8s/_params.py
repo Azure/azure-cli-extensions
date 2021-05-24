@@ -33,6 +33,7 @@ def load_arguments(self, _):
         c.argument('distribution', options_list=['--distribution'], help='The Kubernetes distribution which will be running on this connected cluster.', arg_type=get_enum_type(Distribution_Enum_Values))
         c.argument('infrastructure', options_list=['--infrastructure'], help='The infrastructure on which the Kubernetes cluster represented by this connected cluster will be running on.', arg_type=get_enum_type(Infrastructure_Enum_Values))
         c.argument('disable_auto_upgrade', options_list=['--disable-auto-upgrade'], action='store_true', help='Flag to disable auto upgrade of arc agents.')
+        c.argument('cl_oid', options_list=['--custom-locations-oid'], help="OID of 'custom-locations' app")
 
     with self.argument_context('connectedk8s update') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
@@ -59,6 +60,7 @@ def load_arguments(self, _):
         c.argument('azrbac_client_id', options_list=['--app-id'], arg_group='Azure RBAC', help='Application ID for enabling Azure RBAC. Specify when enabling azure-rbac.')
         c.argument('azrbac_client_secret', options_list=['--app-secret'], arg_group='Azure RBAC', help='Application secret for enabling Azure RBAC. Specify when enabling azure-rbac.')
         c.argument('azrbac_skip_authz_check', options_list=['--skip-azure-rbac-list'], arg_group='Azure RBAC', help='Comma separated list of names of usernames/email/oid. Azure RBAC will be skipped for these users. Specify when enabling azure-rbac.')
+        c.argument('cl_oid', options_list=['--custom-locations-oid'], help="OID of 'custom-locations' app")
 
     with self.argument_context('connectedk8s disable-features') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')

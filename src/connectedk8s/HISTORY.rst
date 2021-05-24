@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.1.5
+++++++
+* Add custom-locations oid parameter for spn scenario
+
+
 1.1.4
 ++++++
 * Add compatible logic for the track 2 migration of resource dependence
