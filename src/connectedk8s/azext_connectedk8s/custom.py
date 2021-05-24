@@ -1506,8 +1506,8 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
             # token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token
             # ADD the periscope part here.
 
-        collect_logs(cmd, client, resource_group_name, cluster_name, storage_account, sas_token, 
-        kube_context, kube_config)
+            collect_logs(cmd, resource_group_name, cluster_name, storage_account_name, sas_token, 
+        readonly_sas_token, kube_context, kube_config)
         try:
             # Creating the .tar.gz for logs and deleting the actual log file
             import tarfile
@@ -1643,84 +1643,17 @@ def format_diag_status(diag_status):
     return diag_status
 
 
-def get_storage_account_from_diag_settings(cli_ctx, resource_group_name, name):
-    from azure.mgmt.monitor import MonitorManagementClient
-    diag_settings_client = get_mgmt_service_client(cli_ctx, MonitorManagementClient).diagnostic_settings
-    subscription_id = get_subscription_id(cli_ctx)
-    aks_resource_id = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ContainerService' \
-        '/managedClusters/{2}'.format(subscription_id, resource_group_name, name)
-    diag_settings = diag_settings_client.list(aks_resource_id)
-    if diag_settings.value:
-        return diag_settings.value[0].storage_account_id
-
-    print("No diag settings specified")
-    return None
-
-
-def collect_logs(cmd, client, resource_group_name, name, storage_account=None,
+def collect_logs(cmd, resource_group_name, name, storage_account_name=None,
                 sas_token=None,
+                readonly_sas_token=None,
                 kube_context=None,
                 kube_config=None,
                 ):
     colorama.init()
 
-    cc = client.get(resource_group_name, name)
-
     if not which('kubectl'):
         raise CLIError('Can not find kubectl executable in PATH')
-    storage_account_id = None
-    if storage_account is None:
-        print("No storage account specified. Try getting storage account from diagnostic settings")
-        storage_account_id = get_storage_account_from_diag_settings(cmd.cli_ctx, resource_group_name, name)
-        if storage_account_id is None:
-            raise CLIError("A storage account must be specified, since there isn't one in the diagnostic settings.")
 
-    from msrestazure.tools import is_valid_resource_id, parse_resource_id, resource_id
-    if storage_account_id is None:
-        if not is_valid_resource_id(storage_account):
-            storage_account_id = resource_id(
-                subscription=get_subscription_id(cmd.cli_ctx),
-                resource_group=resource_group_name,
-                namespace='Microsoft.Storage', type='storageAccounts',
-                name=storage_account
-            )
-        else:
-            storage_account_id = storage_account
-
-    if is_valid_resource_id(storage_account_id):
-        try:
-            parsed_storage_account = parse_resource_id(storage_account_id)
-        except CloudError as ex:
-            raise CLIError(ex.message)
-    else:
-        raise CLIError("Invalid storage account id %s" % storage_account_id)
-
-    storage_account_name = parsed_storage_account['name']
-
-    readonly_sas_token = None
-    if sas_token is None:
-        storage_client = cf_storage(cmd.cli_ctx, parsed_storage_account['subscription'])
-        storage_account_keys = storage_client.storage_accounts.list_keys(parsed_storage_account['resource_group'],
-                                                                         storage_account_name)
-        kwargs = {
-            'account_name': storage_account_name,
-            'account_key': storage_account_keys.keys[0].value
-        }
-        cloud_storage_client = cloud_storage_account_service_factory(cmd.cli_ctx, kwargs)
-
-        sas_token = cloud_storage_client.generate_shared_access_signature(
-            'b',
-            'sco',
-            'rwdlacup',
-            datetime.datetime.utcnow() + datetime.timedelta(days=1))
-
-        readonly_sas_token = cloud_storage_client.generate_shared_access_signature(
-            'b',
-            'sco',
-            'rl',
-            datetime.datetime.utcnow() + datetime.timedelta(days=1))
-
-        readonly_sas_token = readonly_sas_token.strip('?')
     readonly_sas_token = readonly_sas_token.strip('?')
 
     from knack.prompting import prompt_y_n
