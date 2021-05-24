@@ -15,7 +15,6 @@ from azext_cosmosdb_preview._client_factory import (
     cf_restorable_mongodb_databases,
     cf_restorable_mongodb_collections,
     cf_restorable_mongodb_resources,
-    cf_sql_resources,
     cf_cassandra_cluster,
     cf_cassandra_data_center
 )
@@ -56,10 +55,6 @@ def load_command_table(self, _):
     cosmosdb_restorable_mongodb_resources_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#RestorableMongodbResourcesOperations.{}',
         client_factory=cf_restorable_mongodb_resources)
-
-    cosmosdb_rbac_sql_sdk = CliCommandType(
-        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#SqlResourcesOperations.{}',
-        client_factory=cf_sql_resources)
 
     cosmosdb_managed_cassandra_cluster_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations#CassandraClustersOperations.{}',

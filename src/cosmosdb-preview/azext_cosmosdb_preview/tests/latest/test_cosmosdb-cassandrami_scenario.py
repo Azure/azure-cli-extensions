@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import unittest
+import mock
 
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
@@ -94,7 +94,8 @@ class ManagedCassandraScenarioTest(ScenarioTest):
         })
 
         # Role Assignment.
-        vnet_resource = self.cmd('az role assignment create --assignee e5007d2c-4b13-4a74-9b6a-605d99f03501 --role 4d97b98b-1d4f-4787-a291-c67834d212e7 --scope {vnet_id}')
+        with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
+            vnet_resource = self.cmd('az role assignment create --assignee e5007d2c-4b13-4a74-9b6a-605d99f03501 --role 4d97b98b-1d4f-4787-a291-c67834d212e7 --scope {vnet_id}')
 
         # Get Delegated subnet id.
         subnet_resource = self.cmd('az network vnet subnet show -g {rg} --vnet-name {vnet} --name {subnet}').get_output_in_json()

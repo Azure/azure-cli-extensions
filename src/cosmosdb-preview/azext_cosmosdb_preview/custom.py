@@ -5,7 +5,6 @@
 
 from knack.util import CLIError
 from knack.log import get_logger
-from msrestazure.azure_exceptions import CloudError
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ConsistencyPolicy,

@@ -5,7 +5,6 @@
 
 import ipaddress
 from knack.util import CLIError
-from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
 
@@ -109,9 +108,9 @@ def validate_seednodes(ns):
         for item in ns.external_seed_nodes:
             try:
                 ipaddress.ip_address(item)
-            except ValueError:
+            except ValueError as e:
                 raise InvalidArgumentValueError("""IP address provided is invalid.
-            Please verify if there are any spaces or other invalid characters.""")
+            Please verify if there are any spaces or other invalid characters.""") from e
             seed_nodes.append(SeedNode(ip_address=item))
         ns.external_seed_nodes = seed_nodes
 
