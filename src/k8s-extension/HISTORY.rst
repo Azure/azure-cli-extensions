@@ -3,6 +3,16 @@
 Release History
 ===============
 
+0.4.1
+++++++++++++++++++
+
+* Add compatible logic for the track 2 migration of resource dependence
+
+0.4.0
+++++++++++++++++++
+
+* Release customization for microsoft.openservicemesh
+
 0.3.1
 ++++++++++++++++++
 

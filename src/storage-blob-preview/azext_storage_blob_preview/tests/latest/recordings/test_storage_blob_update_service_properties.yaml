@@ -15,21 +15,21 @@ interactions:
       ParameterSetName:
       - -n -g --query -o
       User-Agent:
-      - AZURECLI/2.20.0 azsdk-python-azure-mgmt-storage/17.0.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-storage/18.0.0 Python/3.8.3 (Windows-10-10.0.19041-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2021-01-01&$expand=kerb
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Storage/storageAccounts/clitest000002/listKeys?api-version=2021-04-01&$expand=kerb
   response:
     body:
-      string: '{"keys":[{"keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
+      string: '{"keys":[{"creationTime":"2021-05-20T08:36:19.9455140Z","keyName":"key1","value":"veryFakedStorageAccountKey==","permissions":"FULL"},{"creationTime":"2021-05-20T08:36:19.9455140Z","keyName":"key2","value":"veryFakedStorageAccountKey==","permissions":"FULL"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '288'
+      - '380'
       content-type:
       - application/json
       date:
-      - Mon, 01 Mar 2021 03:41:24 GMT
+      - Thu, 20 May 2021 08:36:41 GMT
       expires:
       - '-1'
       pragma:
@@ -45,114 +45,88 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '11998'
+      - '11997'
     status:
       code: 200
       message: OK
 - request:
     body: null
     headers:
-      Accept:
-      - application/xml
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - storage blob service-properties show
       Connection:
       - keep-alive
-      ParameterSetName:
-      - --account-name --account-key
       User-Agent:
-      - AZURECLI/2.20.0 azsdk-python-storage-blob/12.6.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.8.3; Windows 10) AZURECLI/2.23.0
       x-ms-date:
-      - Mon, 01 Mar 2021 03:41:25 GMT
+      - Thu, 20 May 2021 08:36:42 GMT
       x-ms-version:
-      - '2020-02-10'
+      - '2018-11-09'
     method: GET
     uri: https://clitest000002.blob.core.windows.net/?restype=service&comp=properties
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><StorageServiceProperties><Logging><Version>1.0</Version><Read>false</Read><Write>false</Write><Delete>false</Delete><RetentionPolicy><Enabled>false</Enabled></RetentionPolicy></Logging><HourMetrics><Version>1.0</Version><Enabled>true</Enabled><IncludeAPIs>true</IncludeAPIs><RetentionPolicy><Enabled>true</Enabled><Days>7</Days></RetentionPolicy></HourMetrics><MinuteMetrics><Version>1.0</Version><Enabled>false</Enabled><RetentionPolicy><Enabled>false</Enabled></RetentionPolicy></MinuteMetrics><Cors
-        /><DeleteRetentionPolicy><Enabled>false</Enabled><AllowPermanentDelete>false</AllowPermanentDelete></DeleteRetentionPolicy><StaticWebsite><Enabled>false</Enabled></StaticWebsite></StorageServiceProperties>"
+        /><DeleteRetentionPolicy><Enabled>false</Enabled></DeleteRetentionPolicy><StaticWebsite><Enabled>false</Enabled></StaticWebsite></StorageServiceProperties>"
     headers:
       content-type:
       - application/xml
       date:
-      - Mon, 01 Mar 2021 03:41:27 GMT
+      - Thu, 20 May 2021 08:36:44 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
       - chunked
       x-ms-version:
-      - '2020-02-10'
+      - '2018-11-09'
     status:
       code: 200
       message: OK
 - request:
     body: null
     headers:
-      Accept:
-      - application/xml
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - storage blob service-properties update
       Connection:
       - keep-alive
-      ParameterSetName:
-      - --static-website --index-document --404-document --account-name --account-key
       User-Agent:
-      - AZURECLI/2.20.0 azsdk-python-storage-blob/12.6.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.8.3; Windows 10) AZURECLI/2.23.0
       x-ms-date:
-      - Mon, 01 Mar 2021 03:41:28 GMT
+      - Thu, 20 May 2021 08:36:45 GMT
       x-ms-version:
-      - '2020-02-10'
+      - '2018-11-09'
     method: GET
     uri: https://clitest000002.blob.core.windows.net/?restype=service&comp=properties
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><StorageServiceProperties><Logging><Version>1.0</Version><Read>false</Read><Write>false</Write><Delete>false</Delete><RetentionPolicy><Enabled>false</Enabled></RetentionPolicy></Logging><HourMetrics><Version>1.0</Version><Enabled>true</Enabled><IncludeAPIs>true</IncludeAPIs><RetentionPolicy><Enabled>true</Enabled><Days>7</Days></RetentionPolicy></HourMetrics><MinuteMetrics><Version>1.0</Version><Enabled>false</Enabled><RetentionPolicy><Enabled>false</Enabled></RetentionPolicy></MinuteMetrics><Cors
-        /><DeleteRetentionPolicy><Enabled>false</Enabled><AllowPermanentDelete>false</AllowPermanentDelete></DeleteRetentionPolicy><StaticWebsite><Enabled>false</Enabled></StaticWebsite></StorageServiceProperties>"
+        /><DeleteRetentionPolicy><Enabled>false</Enabled></DeleteRetentionPolicy><StaticWebsite><Enabled>false</Enabled></StaticWebsite></StorageServiceProperties>"
     headers:
       content-type:
       - application/xml
       date:
-      - Mon, 01 Mar 2021 03:41:29 GMT
+      - Thu, 20 May 2021 08:36:46 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
       - chunked
       x-ms-version:
-      - '2020-02-10'
+      - '2018-11-09'
     status:
       code: 200
       message: OK
 - request:
     body: '<?xml version=''1.0'' encoding=''utf-8''?>
 
-      <StorageServiceProperties><Logging><Version>1.0</Version><Delete>false</Delete><Read>false</Read><Write>false</Write><RetentionPolicy><Enabled>false</Enabled></RetentionPolicy></Logging><HourMetrics><Version>1.0</Version><Enabled>true</Enabled><IncludeAPIs>true</IncludeAPIs><RetentionPolicy><Enabled>true</Enabled><Days>7</Days></RetentionPolicy></HourMetrics><MinuteMetrics><Version>1.0</Version><Enabled>false</Enabled><RetentionPolicy><Enabled>false</Enabled></RetentionPolicy></MinuteMetrics><Cors
-      /><DeleteRetentionPolicy><Enabled>false</Enabled></DeleteRetentionPolicy><StaticWebsite><Enabled>true</Enabled><IndexDocument>index.html</IndexDocument><ErrorDocument404Path>error.html</ErrorDocument404Path></StaticWebsite></StorageServiceProperties>'
+      <StorageServiceProperties><Logging><Version>1.0</Version><Delete>False</Delete><Read>False</Read><Write>False</Write><RetentionPolicy><Enabled>False</Enabled></RetentionPolicy></Logging><HourMetrics><Version>1.0</Version><Enabled>True</Enabled><IncludeAPIs>True</IncludeAPIs><RetentionPolicy><Enabled>True</Enabled><Days>7</Days></RetentionPolicy></HourMetrics><MinuteMetrics><Version>1.0</Version><Enabled>False</Enabled><RetentionPolicy><Enabled>False</Enabled></RetentionPolicy></MinuteMetrics><Cors
+      /><DeleteRetentionPolicy><Enabled>False</Enabled></DeleteRetentionPolicy><StaticWebsite><Enabled>True</Enabled><IndexDocument>index.html</IndexDocument><ErrorDocument404Path>error.html</ErrorDocument404Path></StaticWebsite></StorageServiceProperties>'
     headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - storage blob service-properties update
       Connection:
       - keep-alive
       Content-Length:
       - '792'
-      Content-Type:
-      - application/xml; charset=utf-8
-      ParameterSetName:
-      - --static-website --index-document --404-document --account-name --account-key
       User-Agent:
-      - AZURECLI/2.20.0 azsdk-python-storage-blob/12.6.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.8.3; Windows 10) AZURECLI/2.23.0
       x-ms-date:
-      - Mon, 01 Mar 2021 03:41:29 GMT
+      - Thu, 20 May 2021 08:36:46 GMT
       x-ms-version:
-      - '2020-02-10'
+      - '2018-11-09'
     method: PUT
     uri: https://clitest000002.blob.core.windows.net/?restype=service&comp=properties
   response:
@@ -162,118 +136,92 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 01 Mar 2021 03:41:30 GMT
+      - Thu, 20 May 2021 08:36:47 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
-      - '2020-02-10'
+      - '2018-11-09'
     status:
       code: 202
       message: Accepted
 - request:
     body: null
     headers:
-      Accept:
-      - application/xml
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - storage blob service-properties update
       Connection:
       - keep-alive
-      ParameterSetName:
-      - --static-website --index-document --404-document --account-name --account-key
       User-Agent:
-      - AZURECLI/2.20.0 azsdk-python-storage-blob/12.6.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.8.3; Windows 10) AZURECLI/2.23.0
       x-ms-date:
-      - Mon, 01 Mar 2021 03:41:30 GMT
+      - Thu, 20 May 2021 08:36:47 GMT
       x-ms-version:
-      - '2020-02-10'
+      - '2018-11-09'
     method: GET
     uri: https://clitest000002.blob.core.windows.net/?restype=service&comp=properties
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><StorageServiceProperties><Logging><Version>1.0</Version><Read>false</Read><Write>false</Write><Delete>false</Delete><RetentionPolicy><Enabled>false</Enabled></RetentionPolicy></Logging><HourMetrics><Version>1.0</Version><Enabled>true</Enabled><IncludeAPIs>true</IncludeAPIs><RetentionPolicy><Enabled>true</Enabled><Days>7</Days></RetentionPolicy></HourMetrics><MinuteMetrics><Version>1.0</Version><Enabled>false</Enabled><RetentionPolicy><Enabled>false</Enabled></RetentionPolicy></MinuteMetrics><Cors
-        /><DeleteRetentionPolicy><Enabled>false</Enabled><AllowPermanentDelete>false</AllowPermanentDelete></DeleteRetentionPolicy><StaticWebsite><Enabled>true</Enabled><IndexDocument>index.html</IndexDocument><ErrorDocument404Path>error.html</ErrorDocument404Path></StaticWebsite></StorageServiceProperties>"
+        /><DeleteRetentionPolicy><Enabled>false</Enabled></DeleteRetentionPolicy><StaticWebsite><Enabled>true</Enabled><IndexDocument>index.html</IndexDocument><ErrorDocument404Path>error.html</ErrorDocument404Path></StaticWebsite></StorageServiceProperties>"
     headers:
       content-type:
       - application/xml
       date:
-      - Mon, 01 Mar 2021 03:41:30 GMT
+      - Thu, 20 May 2021 08:36:47 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
       - chunked
       x-ms-version:
-      - '2020-02-10'
+      - '2018-11-09'
     status:
       code: 200
       message: OK
 - request:
     body: null
     headers:
-      Accept:
-      - application/xml
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - storage blob service-properties update
       Connection:
       - keep-alive
-      ParameterSetName:
-      - --delete-retention --delete-retention-period --account-name --account-key
       User-Agent:
-      - AZURECLI/2.20.0 azsdk-python-storage-blob/12.6.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.8.3; Windows 10) AZURECLI/2.23.0
       x-ms-date:
-      - Mon, 01 Mar 2021 03:41:30 GMT
+      - Thu, 20 May 2021 08:36:47 GMT
       x-ms-version:
-      - '2020-02-10'
+      - '2018-11-09'
     method: GET
     uri: https://clitest000002.blob.core.windows.net/?restype=service&comp=properties
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><StorageServiceProperties><Logging><Version>1.0</Version><Read>false</Read><Write>false</Write><Delete>false</Delete><RetentionPolicy><Enabled>false</Enabled></RetentionPolicy></Logging><HourMetrics><Version>1.0</Version><Enabled>true</Enabled><IncludeAPIs>true</IncludeAPIs><RetentionPolicy><Enabled>true</Enabled><Days>7</Days></RetentionPolicy></HourMetrics><MinuteMetrics><Version>1.0</Version><Enabled>false</Enabled><RetentionPolicy><Enabled>false</Enabled></RetentionPolicy></MinuteMetrics><Cors
-        /><DeleteRetentionPolicy><Enabled>false</Enabled><AllowPermanentDelete>false</AllowPermanentDelete></DeleteRetentionPolicy><StaticWebsite><Enabled>true</Enabled><IndexDocument>index.html</IndexDocument><ErrorDocument404Path>error.html</ErrorDocument404Path></StaticWebsite></StorageServiceProperties>"
+        /><DeleteRetentionPolicy><Enabled>false</Enabled></DeleteRetentionPolicy><StaticWebsite><Enabled>true</Enabled><IndexDocument>index.html</IndexDocument><ErrorDocument404Path>error.html</ErrorDocument404Path></StaticWebsite></StorageServiceProperties>"
     headers:
       content-type:
       - application/xml
       date:
-      - Mon, 01 Mar 2021 03:41:31 GMT
+      - Thu, 20 May 2021 08:36:48 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
       - chunked
       x-ms-version:
-      - '2020-02-10'
+      - '2018-11-09'
     status:
       code: 200
       message: OK
 - request:
     body: '<?xml version=''1.0'' encoding=''utf-8''?>
 
-      <StorageServiceProperties><Logging><Version>1.0</Version><Delete>false</Delete><Read>false</Read><Write>false</Write><RetentionPolicy><Enabled>false</Enabled></RetentionPolicy></Logging><HourMetrics><Version>1.0</Version><Enabled>true</Enabled><IncludeAPIs>true</IncludeAPIs><RetentionPolicy><Enabled>true</Enabled><Days>7</Days></RetentionPolicy></HourMetrics><MinuteMetrics><Version>1.0</Version><Enabled>false</Enabled><RetentionPolicy><Enabled>false</Enabled></RetentionPolicy></MinuteMetrics><Cors
-      /><DeleteRetentionPolicy><Enabled>true</Enabled><Days>1</Days></DeleteRetentionPolicy><StaticWebsite><Enabled>true</Enabled><IndexDocument>index.html</IndexDocument><ErrorDocument404Path>error.html</ErrorDocument404Path></StaticWebsite></StorageServiceProperties>'
+      <StorageServiceProperties><Logging><Version>1.0</Version><Delete>False</Delete><Read>False</Read><Write>False</Write><RetentionPolicy><Enabled>False</Enabled></RetentionPolicy></Logging><HourMetrics><Version>1.0</Version><Enabled>True</Enabled><IncludeAPIs>True</IncludeAPIs><RetentionPolicy><Enabled>True</Enabled><Days>7</Days></RetentionPolicy></HourMetrics><MinuteMetrics><Version>1.0</Version><Enabled>False</Enabled><RetentionPolicy><Enabled>False</Enabled></RetentionPolicy></MinuteMetrics><Cors
+      /><DeleteRetentionPolicy><Enabled>True</Enabled><Days>1</Days></DeleteRetentionPolicy><StaticWebsite><Enabled>True</Enabled><IndexDocument>index.html</IndexDocument><ErrorDocument404Path>error.html</ErrorDocument404Path></StaticWebsite></StorageServiceProperties>'
     headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - storage blob service-properties update
       Connection:
       - keep-alive
       Content-Length:
       - '805'
-      Content-Type:
-      - application/xml; charset=utf-8
-      ParameterSetName:
-      - --delete-retention --delete-retention-period --account-name --account-key
       User-Agent:
-      - AZURECLI/2.20.0 azsdk-python-storage-blob/12.6.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.8.3; Windows 10) AZURECLI/2.23.0
       x-ms-date:
-      - Mon, 01 Mar 2021 03:41:31 GMT
+      - Thu, 20 May 2021 08:36:48 GMT
       x-ms-version:
-      - '2020-02-10'
+      - '2018-11-09'
     method: PUT
     uri: https://clitest000002.blob.core.windows.net/?restype=service&comp=properties
   response:
@@ -283,89 +231,73 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 01 Mar 2021 03:41:31 GMT
+      - Thu, 20 May 2021 08:36:49 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-version:
-      - '2020-02-10'
+      - '2018-11-09'
     status:
       code: 202
       message: Accepted
 - request:
     body: null
     headers:
-      Accept:
-      - application/xml
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - storage blob service-properties update
       Connection:
       - keep-alive
-      ParameterSetName:
-      - --delete-retention --delete-retention-period --account-name --account-key
       User-Agent:
-      - AZURECLI/2.20.0 azsdk-python-storage-blob/12.6.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.8.3; Windows 10) AZURECLI/2.23.0
       x-ms-date:
-      - Mon, 01 Mar 2021 03:41:32 GMT
+      - Thu, 20 May 2021 08:36:49 GMT
       x-ms-version:
-      - '2020-02-10'
+      - '2018-11-09'
     method: GET
     uri: https://clitest000002.blob.core.windows.net/?restype=service&comp=properties
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><StorageServiceProperties><Logging><Version>1.0</Version><Read>false</Read><Write>false</Write><Delete>false</Delete><RetentionPolicy><Enabled>false</Enabled></RetentionPolicy></Logging><HourMetrics><Version>1.0</Version><Enabled>true</Enabled><IncludeAPIs>true</IncludeAPIs><RetentionPolicy><Enabled>true</Enabled><Days>7</Days></RetentionPolicy></HourMetrics><MinuteMetrics><Version>1.0</Version><Enabled>false</Enabled><RetentionPolicy><Enabled>false</Enabled></RetentionPolicy></MinuteMetrics><Cors
-        /><DeleteRetentionPolicy><Enabled>true</Enabled><Days>1</Days><AllowPermanentDelete>false</AllowPermanentDelete></DeleteRetentionPolicy><StaticWebsite><Enabled>true</Enabled><IndexDocument>index.html</IndexDocument><ErrorDocument404Path>error.html</ErrorDocument404Path></StaticWebsite></StorageServiceProperties>"
+        /><DeleteRetentionPolicy><Enabled>true</Enabled><Days>1</Days></DeleteRetentionPolicy><StaticWebsite><Enabled>true</Enabled><IndexDocument>index.html</IndexDocument><ErrorDocument404Path>error.html</ErrorDocument404Path></StaticWebsite></StorageServiceProperties>"
     headers:
       content-type:
       - application/xml
       date:
-      - Mon, 01 Mar 2021 03:41:31 GMT
+      - Thu, 20 May 2021 08:36:49 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
       - chunked
       x-ms-version:
-      - '2020-02-10'
+      - '2018-11-09'
     status:
       code: 200
       message: OK
 - request:
     body: null
     headers:
-      Accept:
-      - application/xml
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - storage blob service-properties show
       Connection:
       - keep-alive
-      ParameterSetName:
-      - --account-name --account-key
       User-Agent:
-      - AZURECLI/2.20.0 azsdk-python-storage-blob/12.6.0 Python/3.7.7 (Windows-10-10.0.19041-SP0)
+      - Azure-Storage/2.0.0-2.0.1 (Python CPython 3.8.3; Windows 10) AZURECLI/2.23.0
       x-ms-date:
-      - Mon, 01 Mar 2021 03:41:32 GMT
+      - Thu, 20 May 2021 08:36:50 GMT
       x-ms-version:
-      - '2020-02-10'
+      - '2018-11-09'
     method: GET
     uri: https://clitest000002.blob.core.windows.net/?restype=service&comp=properties
   response:
     body:
       string: "\uFEFF<?xml version=\"1.0\" encoding=\"utf-8\"?><StorageServiceProperties><Logging><Version>1.0</Version><Read>false</Read><Write>false</Write><Delete>false</Delete><RetentionPolicy><Enabled>false</Enabled></RetentionPolicy></Logging><HourMetrics><Version>1.0</Version><Enabled>true</Enabled><IncludeAPIs>true</IncludeAPIs><RetentionPolicy><Enabled>true</Enabled><Days>7</Days></RetentionPolicy></HourMetrics><MinuteMetrics><Version>1.0</Version><Enabled>false</Enabled><RetentionPolicy><Enabled>false</Enabled></RetentionPolicy></MinuteMetrics><Cors
-        /><DeleteRetentionPolicy><Enabled>true</Enabled><Days>1</Days><AllowPermanentDelete>false</AllowPermanentDelete></DeleteRetentionPolicy><StaticWebsite><Enabled>true</Enabled><IndexDocument>index.html</IndexDocument><ErrorDocument404Path>error.html</ErrorDocument404Path></StaticWebsite></StorageServiceProperties>"
+        /><DeleteRetentionPolicy><Enabled>true</Enabled><Days>1</Days></DeleteRetentionPolicy><StaticWebsite><Enabled>true</Enabled><IndexDocument>index.html</IndexDocument><ErrorDocument404Path>error.html</ErrorDocument404Path></StaticWebsite></StorageServiceProperties>"
     headers:
       content-type:
       - application/xml
       date:
-      - Mon, 01 Mar 2021 03:41:33 GMT
+      - Thu, 20 May 2021 08:36:50 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       transfer-encoding:
       - chunked
       x-ms-version:
-      - '2020-02-10'
+      - '2018-11-09'
     status:
       code: 200
       message: OK

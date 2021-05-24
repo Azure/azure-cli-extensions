@@ -14,7 +14,7 @@ from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
-from ... import models
+from ... import models as _models
 
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
@@ -33,7 +33,7 @@ class SpatialAnchorsAccountsOperations:
     :param deserializer: An object model deserializer.
     """
 
-    models = models
+    models = _models
 
     def __init__(self, client, config, serializer, deserializer) -> None:
         self._client = client
@@ -44,7 +44,7 @@ class SpatialAnchorsAccountsOperations:
     def list_by_subscription(
         self,
         **kwargs
-    ) -> AsyncIterable["models.SpatialAnchorsAccountPage"]:
+    ) -> AsyncIterable["_models.SpatialAnchorsAccountPage"]:
         """List Spatial Anchors Accounts by Subscription.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -52,7 +52,7 @@ class SpatialAnchorsAccountsOperations:
         :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.mixedreality.models.SpatialAnchorsAccountPage]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.SpatialAnchorsAccountPage"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.SpatialAnchorsAccountPage"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -111,7 +111,7 @@ class SpatialAnchorsAccountsOperations:
         self,
         resource_group_name: str,
         **kwargs
-    ) -> AsyncIterable["models.SpatialAnchorsAccountPage"]:
+    ) -> AsyncIterable["_models.SpatialAnchorsAccountPage"]:
         """List Resources by Resource Group.
 
         :param resource_group_name: Name of an Azure resource group.
@@ -121,7 +121,7 @@ class SpatialAnchorsAccountsOperations:
         :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.mixedreality.models.SpatialAnchorsAccountPage]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.SpatialAnchorsAccountPage"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.SpatialAnchorsAccountPage"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -237,7 +237,7 @@ class SpatialAnchorsAccountsOperations:
         resource_group_name: str,
         account_name: str,
         **kwargs
-    ) -> "models.SpatialAnchorsAccount":
+    ) -> "_models.SpatialAnchorsAccount":
         """Retrieve a Spatial Anchors Account.
 
         :param resource_group_name: Name of an Azure resource group.
@@ -249,7 +249,7 @@ class SpatialAnchorsAccountsOperations:
         :rtype: ~azure.mgmt.mixedreality.models.SpatialAnchorsAccount
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.SpatialAnchorsAccount"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.SpatialAnchorsAccount"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -294,9 +294,9 @@ class SpatialAnchorsAccountsOperations:
         self,
         resource_group_name: str,
         account_name: str,
-        spatial_anchors_account: "models.SpatialAnchorsAccount",
+        spatial_anchors_account: "_models.SpatialAnchorsAccount",
         **kwargs
-    ) -> "models.SpatialAnchorsAccount":
+    ) -> "_models.SpatialAnchorsAccount":
         """Updating a Spatial Anchors Account.
 
         :param resource_group_name: Name of an Azure resource group.
@@ -310,7 +310,7 @@ class SpatialAnchorsAccountsOperations:
         :rtype: ~azure.mgmt.mixedreality.models.SpatialAnchorsAccount
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.SpatialAnchorsAccount"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.SpatialAnchorsAccount"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -360,9 +360,9 @@ class SpatialAnchorsAccountsOperations:
         self,
         resource_group_name: str,
         account_name: str,
-        spatial_anchors_account: "models.SpatialAnchorsAccount",
+        spatial_anchors_account: "_models.SpatialAnchorsAccount",
         **kwargs
-    ) -> "models.SpatialAnchorsAccount":
+    ) -> "_models.SpatialAnchorsAccount":
         """Creating or Updating a Spatial Anchors Account.
 
         :param resource_group_name: Name of an Azure resource group.
@@ -376,7 +376,7 @@ class SpatialAnchorsAccountsOperations:
         :rtype: ~azure.mgmt.mixedreality.models.SpatialAnchorsAccount
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.SpatialAnchorsAccount"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.SpatialAnchorsAccount"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -431,7 +431,7 @@ class SpatialAnchorsAccountsOperations:
         resource_group_name: str,
         account_name: str,
         **kwargs
-    ) -> "models.AccountKeys":
+    ) -> "_models.AccountKeys":
         """List Both of the 2 Keys of a Spatial Anchors Account.
 
         :param resource_group_name: Name of an Azure resource group.
@@ -443,7 +443,7 @@ class SpatialAnchorsAccountsOperations:
         :rtype: ~azure.mgmt.mixedreality.models.AccountKeys
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.AccountKeys"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.AccountKeys"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -488,9 +488,9 @@ class SpatialAnchorsAccountsOperations:
         self,
         resource_group_name: str,
         account_name: str,
-        regenerate: "models.AccountKeyRegenerateRequest",
+        regenerate: "_models.AccountKeyRegenerateRequest",
         **kwargs
-    ) -> "models.AccountKeys":
+    ) -> "_models.AccountKeys":
         """Regenerate specified Key of a Spatial Anchors Account.
 
         :param resource_group_name: Name of an Azure resource group.
@@ -504,7 +504,7 @@ class SpatialAnchorsAccountsOperations:
         :rtype: ~azure.mgmt.mixedreality.models.AccountKeys
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.AccountKeys"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.AccountKeys"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
