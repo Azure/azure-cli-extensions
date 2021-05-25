@@ -170,13 +170,19 @@ def hcxenterprisesite_delete(cmd, client: AVSClient, resource_group_name, privat
 
 
 def datastore_create(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name, nfs_provider_ip=None, nfs_file_path=None, endpoints=[], lun_name=None):
-    from azext_vmware.vendored_sdks.avs_client.models import Datastore, NetAppVolume, DiskPoolVolume
-    datastore = Datastore()
-    if nfs_provider_ip is not None or nfs_file_path is not None:
-        datastore.net_app_volume = NetAppVolume(nfs_provider_ip=nfs_provider_ip, nfs_file_path=nfs_file_path)
-    if len(endpoints) > 0 or lun_name is not None:
-        datastore.disk_pool_volume = DiskPoolVolume(endpoints=endpoints, lun_name=lun_name)
-    return client.datastores.begin_create(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name, datastore=datastore)
+    print('Please use "az vmware datastore net-app-volume create" or "az vmware datastore disk-pool-volume create" instead.')
+
+
+def datastore_netappvolume_create(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name, volume_id):
+    from azext_vmware.vendored_sdks.avs_client.models import NetAppVolume
+    net_app_volume = NetAppVolume(id=volume_id)
+    return client.datastores.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name, net_app_volume=net_app_volume, disk_pool_volume=None)
+
+
+def datastore_diskpoolvolume_create(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name, target_id, lun_name):
+    from azext_vmware.vendored_sdks.avs_client.models import DiskPoolVolume
+    disk_pool_volume = DiskPoolVolume(target_id=target_id, lun_name=lun_name)
+    return client.datastores.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name, net_app_volume=None, disk_pool_volume=disk_pool_volume)
 
 
 def datastore_list(cmd, client: AVSClient, resource_group_name, private_cloud, cluster):

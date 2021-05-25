@@ -53,3 +53,9 @@ def load_command_table(self, _):
         g.custom_command('list', 'datastore_list')
         g.custom_show_command('show', 'datastore_show')
         g.custom_command('delete', 'datastore_delete')
+
+    with self.command_group('vmware datastore net-app-volume', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'datastore_netappvolume_create')
+
+    with self.command_group('vmware datastore disk-pool-volume', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'datastore_diskpoolvolume_create')
