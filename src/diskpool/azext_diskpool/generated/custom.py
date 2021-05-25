@@ -78,6 +78,11 @@ def disk_pool_delete(client,
                        disk_pool_name=disk_pool_name)
 
 
+def disk_pool_list_skus(client,
+                        location):
+    return client.list(location=location)
+
+
 def disk_pool_start(client,
                     resource_group_name,
                     disk_pool_name,
@@ -96,11 +101,6 @@ def disk_pool_stop(client,
                        client.begin_deallocate,
                        resource_group_name=resource_group_name,
                        disk_pool_name=disk_pool_name)
-
-
-def diskpool_disk_pool_zone_list(client,
-                                 location):
-    return client.list(location=location)
 
 
 def disk_pool_iscsi_target_list(client,

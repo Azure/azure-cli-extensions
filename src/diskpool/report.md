@@ -11,7 +11,6 @@
 |---------|------------|--------|
 |az disk-pool|DiskPools|[commands](#CommandsInDiskPools)|
 |az disk-pool iscsi-target|IscsiTargets|[commands](#CommandsInIscsiTargets)|
-|az diskpool disk-pool-zone|DiskPoolZones|[commands](#CommandsInDiskPoolZones)|
 
 ## COMMANDS
 ### <a name="CommandsInDiskPools">Commands in `az disk-pool` group</a>
@@ -23,6 +22,7 @@
 |[az disk-pool create](#DiskPoolsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersDiskPoolsCreateOrUpdate#Create)|[Example](#ExamplesDiskPoolsCreateOrUpdate#Create)|
 |[az disk-pool update](#DiskPoolsUpdate)|Update|[Parameters](#ParametersDiskPoolsUpdate)|[Example](#ExamplesDiskPoolsUpdate)|
 |[az disk-pool delete](#DiskPoolsDelete)|Delete|[Parameters](#ParametersDiskPoolsDelete)|[Example](#ExamplesDiskPoolsDelete)|
+|[az disk-pool list-skus](#DiskPoolsList)|List|[Parameters](#ParametersDiskPoolsList)|[Example](#ExamplesDiskPoolsList)|
 |[az disk-pool start](#DiskPoolsStart)|Start|[Parameters](#ParametersDiskPoolsStart)|[Example](#ExamplesDiskPoolsStart)|
 |[az disk-pool stop](#DiskPoolsDeallocate)|Deallocate|[Parameters](#ParametersDiskPoolsDeallocate)|[Example](#ExamplesDiskPoolsDeallocate)|
 
@@ -34,11 +34,6 @@
 |[az disk-pool iscsi-target create](#IscsiTargetsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersIscsiTargetsCreateOrUpdate#Create)|[Example](#ExamplesIscsiTargetsCreateOrUpdate#Create)|
 |[az disk-pool iscsi-target update](#IscsiTargetsUpdate)|Update|[Parameters](#ParametersIscsiTargetsUpdate)|[Example](#ExamplesIscsiTargetsUpdate)|
 |[az disk-pool iscsi-target delete](#IscsiTargetsDelete)|Delete|[Parameters](#ParametersIscsiTargetsDelete)|[Example](#ExamplesIscsiTargetsDelete)|
-
-### <a name="CommandsInDiskPoolZones">Commands in `az diskpool disk-pool-zone` group</a>
-|CLI Command|Operation Swagger name|Parameters|Examples|
-|---------|------------|--------|-----------|
-|[az diskpool disk-pool-zone list](#DiskPoolZonesList)|List|[Parameters](#ParametersDiskPoolZonesList)|[Example](#ExamplesDiskPoolZonesList)|
 
 
 ## COMMAND DETAILS
@@ -128,6 +123,17 @@ az disk-pool delete --name "myDiskPool" --resource-group "myResourceGroup"
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--disk-pool-name**|string|The name of the Disk Pool.|disk_pool_name|diskPoolName|
+
+#### <a name="DiskPoolsList">Command `az disk-pool list-skus`</a>
+
+##### <a name="ExamplesDiskPoolsList">Example</a>
+```
+az disk-pool list-skus --location "eastus"
+```
+##### <a name="ParametersDiskPoolsList">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--location**|string|The location of the resource.|location|location|
 
 #### <a name="DiskPoolsStart">Command `az disk-pool start`</a>
 
@@ -230,15 +236,3 @@ az disk-pool iscsi-target delete --disk-pool-name "myDiskPool" --name "myIscsiTa
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--disk-pool-name**|string|The name of the Disk Pool.|disk_pool_name|diskPoolName|
 |**--iscsi-target-name**|string|The name of the iSCSI Target.|iscsi_target_name|iscsiTargetName|
-
-### group `az diskpool disk-pool-zone`
-#### <a name="DiskPoolZonesList">Command `az diskpool disk-pool-zone list`</a>
-
-##### <a name="ExamplesDiskPoolZonesList">Example</a>
-```
-az diskpool disk-pool-zone list --location "eastus"
-```
-##### <a name="ParametersDiskPoolZonesList">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--location**|string|The location of the resource.|location|location|

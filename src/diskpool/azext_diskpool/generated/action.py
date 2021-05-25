@@ -57,16 +57,24 @@ class AddSku(argparse.Action):
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
+
             kl = k.lower()
+
             v = properties[k]
+
             if kl == 'name':
+
                 d['name'] = v[0]
+
             elif kl == 'tier':
+
                 d['tier'] = v[0]
+
             else:
                 raise CLIError(
                     'Unsupported Key {} is provided for parameter sku. All possible keys are: name, tier'.format(k)
                 )
+
         return d
 
 
@@ -108,17 +116,25 @@ class AddDiskPoolIscsiTargetUpdateStaticAcls(argparse._AppendAction):
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
+
             kl = k.lower()
+
             v = properties[k]
+
             if kl == 'initiator-iqn':
+
                 d['initiator_iqn'] = v[0]
+
             elif kl == 'mapped-luns':
+
                 d['mapped_luns'] = v
+
             else:
                 raise CLIError(
                     'Unsupported Key {} is provided for parameter static-acls. All possible keys are: initiator-iqn,'
                     ' mapped-luns'.format(k)
                 )
+
         return d
 
 
@@ -137,12 +153,19 @@ class AddDiskPoolIscsiTargetUpdateLuns(argparse._AppendAction):
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
+
             kl = k.lower()
+
             v = properties[k]
+
             if kl == 'name':
+
                 d['name'] = v[0]
+
             elif kl == 'managed-disk-azure-resource-id':
+
                 d['managed_disk_azure_resource_id'] = v[0]
+
             else:
                 raise CLIError(
                     'Unsupported Key {} is provided for parameter luns. All possible keys are: name,'
@@ -167,12 +190,19 @@ class AddDiskPoolIscsiTargetCreateStaticAcls(argparse._AppendAction):
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
+
             kl = k.lower()
+
             v = properties[k]
+
             if kl == 'initiator-iqn':
+
                 d['initiator_iqn'] = v[0]
+
             elif kl == 'mapped-luns':
+
                 d['mapped_luns'] = v
+
             else:
                 raise CLIError(
                     'Unsupported Key {} is provided for parameter static-acls. All possible keys are: initiator-iqn,'
@@ -197,12 +227,19 @@ class AddDiskPoolIscsiTargetCreateLuns(argparse._AppendAction):
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
+
             kl = k.lower()
+
             v = properties[k]
+
             if kl == 'name':
+
                 d['name'] = v[0]
+
             elif kl == 'managed-disk-azure-resource-id':
+
                 d['managed_disk_azure_resource_id'] = v[0]
+
             else:
                 raise CLIError(
                     'Unsupported Key {} is provided for parameter luns. All possible keys are: name,'
