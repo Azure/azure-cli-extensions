@@ -505,7 +505,7 @@ class AzureVWanVHubScenario(ScenarioTest):
                      '-n {connection} '
                      '--vhub-name {vhub}')
 
-    # @record_only()
+    @record_only()
     @ResourceGroupPreparer(name_prefix='cli_test_azure_vwan_vhub_get_effective_routes')
     def test_azure_vwan_vhub_get_effective_routes(self):
         self.kwargs.update({
