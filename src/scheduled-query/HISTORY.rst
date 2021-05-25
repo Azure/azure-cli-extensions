@@ -8,7 +8,7 @@ Release History
 * Add `--condition-query` parameter to support query placeholder.
 * Add `--skip-query-validation` parameter
 * Add `--check-ws-alerts-storage` parameter
-* [Breaking Change] the default value of `--mute-actions-duration` is changed to None, as alert auto mitigate is supported
+* [Breaking Change] the default value of `--mute-actions-duration` is changed to None, as alert `--auto-mitigate` is supported
 
 0.2.2
 ++++++

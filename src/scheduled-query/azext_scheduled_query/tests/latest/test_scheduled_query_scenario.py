@@ -61,7 +61,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
                      self.check('criteria.allOf[0].failingPeriods.minFailingPeriodsToAlert', 2),
                      self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 3)
                  ])
-        self.cmd('monitor scheduled-query update -g {rg} -n {name1} --mad PT30M --disable-auto-mitigate', checks=[
+        self.cmd('monitor scheduled-query update -g {rg} -n {name1} --mad PT30M --auto-mitigate false', checks=[
             self.check('muteActionsDuration', '0:30:00'),
             self.check('autoMitigate', False)
         ])

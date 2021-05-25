@@ -9,7 +9,6 @@ from azure.cli.command_modules.monitor.actions import get_period_type
 from azure.cli.command_modules.monitor.validators import get_action_group_validator
 from knack.arguments import CLIArgumentType
 from ._actions import ScheduleQueryConditionAction, ScheduleQueryAddAction, ScheduleQueryConditionQueryAction
-from .vendored_sdks.azure_mgmt_scheduled_query.models import Kind
 
 
 def load_arguments(self, _):
@@ -38,6 +37,6 @@ def load_arguments(self, _):
                    options_list=['--mute-actions-duration', '--mad'],
                    help='Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired.')
         c.argument('actions', options_list=['--action', '-a'], action=ScheduleQueryAddAction, nargs='+', validator=get_action_group_validator('actions'))
-        c.argument('disable_auto_mitigate', arg_type=get_three_state_flag(), help='The flag that indicates whether to disable the alert automatically resolved or not.')
+        c.argument('auto_mitigate', arg_type=get_three_state_flag(), help='The flag that indicates whether the alert should be automatically resolved or not. The default is true.')
         c.argument('skip_query_validation', arg_type=get_three_state_flag(), help='The flag which indicates whether the provided query should be validated or not.')
         c.argument('check_workspace_alerts_storage', options_list=['--check-ws-alerts-storage', '--cwas'], arg_type=get_three_state_flag(), help="The flag which indicates whether this scheduled query rule should be stored in the customer's storage.")
