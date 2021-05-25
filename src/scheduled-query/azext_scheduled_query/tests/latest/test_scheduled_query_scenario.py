@@ -17,7 +17,6 @@ class Scheduled_queryScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_scheduled_query', location='eastus')
     def test_scheduled_query(self, resource_group):
         from azure.mgmt.core.tools import resource_id
-        import time
         self.kwargs.update({
             'name1': 'sq01',
             'rg': resource_group,
