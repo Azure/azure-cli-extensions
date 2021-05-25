@@ -19,7 +19,7 @@ class VmwareScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_vmware')
     def test_vmware(self):
         self.kwargs.update({
-            'loc': 'westcentralus',
+            'loc': 'centralus',
             'privatecloud': 'cloud1',
             'cluster': 'pycluster1'
         })
@@ -38,7 +38,7 @@ class VmwareScenarioTest(ScenarioTest):
         self.assertEqual(count, 0, 'private cloud count expected to be 0')
 
         # create a private cloud
-        self.cmd('vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 4 --network-block 192.168.48.0/22 --nsxt-password 5rqdLj4GF3cePUe6( --vcenter-password UpfBXae9ZquZSDXk( --accept-eula')
+        self.cmd('vmware private-cloud create -g {rg} -n {privatecloud} --location {loc} --sku av20 --cluster-size 3 --network-block 192.168.48.0/22 --nsxt-password 5rqdLj4GF3cePUe6( --vcenter-password UpfBXae9ZquZSDXk( --accept-eula')
 
         count = len(self.cmd('vmware private-cloud list -g {rg}').get_output_in_json())
         self.assertEqual(count, 1, 'private cloud count expected to be 1')
@@ -57,7 +57,7 @@ class VmwareScenarioTest(ScenarioTest):
         self.cmd('vmware private-cloud rotate-nsxt-password -g {rg} -c {privatecloud}')
 
         # update private cloud to changed default cluster size
-        # self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --cluster-size 3')
+        self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --cluster-size 4')
 
         # update private cloud to enable internet
         self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --internet enabled')
