@@ -57,24 +57,16 @@ class AddSku(argparse.Action):
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
-
             kl = k.lower()
-
             v = properties[k]
-
             if kl == 'name':
-
                 d['name'] = v[0]
-
             elif kl == 'tier':
-
                 d['tier'] = v[0]
-
             else:
                 raise CLIError(
                     'Unsupported Key {} is provided for parameter sku. All possible keys are: name, tier'.format(k)
                 )
-
         return d
 
 
