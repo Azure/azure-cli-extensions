@@ -3,17 +3,17 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
-def create_scheduled_query(client, resource_group_name, rule_name, scopes, condition,
-                           disabled=False, description=None, tags=None, location=None,
-                           actions=None, severity=2, window_size='5m', evaluation_frequency='5m',
-                           target_resource_type=None, mute_actions_duration='PT30M'):
-    from .vendored_sdks.azure_mgmt_scheduled_query.models import (ScheduledQueryRuleResource,
-                                                                  ScheduledQueryRuleCriteria,
+
+def _build_criteria(condition, condition_query):
+    from .vendored_sdks.azure_mgmt_scheduled_query.models import (ScheduledQueryRuleCriteria,
                                                                   ConditionFailingPeriods)
-    from knack.util import CLIError
-
     for cond in condition:
+        if condition_query and cond.query in condition_query:
+            # replace query placeholder
+            placeholder = cond.query
+            cond.query = condition_query[placeholder]
         if cond.failing_periods is None:
             cond.failing_periods = ConditionFailingPeriods(
                 min_failing_periods_to_alert=1,
@@ -21,9 +21,16 @@ def create_scheduled_query(client, resource_group_name, rule_name, scopes, condi
             )
         else:
             if cond.failing_periods.min_failing_periods_to_alert > cond.failing_periods.number_of_evaluation_periods:
-                raise CLIError('EvaluationPeriod must be greater than or equals to MinTimeToFail.')
-    criteria = ScheduledQueryRuleCriteria(all_of=condition)
+                raise InvalidArgumentValueError('EvaluationPeriod must be greater than or equals to MinTimeToFail.')
+    return ScheduledQueryRuleCriteria(all_of=condition)
 
+
+def create_scheduled_query(client, resource_group_name, rule_name, scopes, condition, condition_query=None,
+                           disabled=False, description=None, tags=None, location=None,
+                           actions=None, severity=2, window_size='5m', evaluation_frequency='5m',
+                           target_resource_type=None, mute_actions_duration='PT30M'):
+    from .vendored_sdks.azure_mgmt_scheduled_query.models import ScheduledQueryRuleResource
+    criteria = _build_criteria(condition, condition_query)
     kwargs = {
         'description': description,
         'severity': severity,
@@ -47,10 +54,9 @@ def list_scheduled_query(client, resource_group_name=None):
     return client.list_by_subscription()
 
 
-def update_scheduled_query(cmd, instance, tags=None, disabled=False, condition=None,
+def update_scheduled_query(cmd, instance, tags=None, disabled=False, condition=None, condition_query=None,
                            description=None, actions=None, severity=None, window_size=None,
                            evaluation_frequency=None, mute_actions_duration=None):
-    from .vendored_sdks.azure_mgmt_scheduled_query.models import ScheduledQueryRuleCriteria
     with cmd.update_context(instance) as c:
         c.set_param('tags', tags)
         c.set_param('enabled', not disabled)
@@ -61,5 +67,6 @@ def update_scheduled_query(cmd, instance, tags=None, disabled=False, condition=N
         c.set_param('evaluation_frequency', evaluation_frequency)
         c.set_param('mute_actions_duration', mute_actions_duration)
         if condition is not None:
-            c.set_param('criteria', ScheduledQueryRuleCriteria(all_of=condition))
+            criteria = _build_criteria(condition, condition_query)
+            c.set_param('criteria', criteria)
     return instance

@@ -26,18 +26,18 @@ parameters:
     short-summary: The condition which triggers the rule.
     long-summary: |
         Usage:  --condition {avg,min,max,total,count} ["METRIC COLUMN" from]
-                            "QUERY" {=,!=,>,>=,<,<=} THRESHOLD
+                            "QUERY_PLACEHOLDER" {=,!=,>,>=,<,<=} THRESHOLD
                             [resource id RESOURCEID]
                             [where DIMENSION {includes,excludes} VALUE [or VALUE ...]
                             [and   DIMENSION {includes,excludes} VALUE [or VALUE ...] ...]]
                             [at least MinTimeToFail violations out of EvaluationPeriod aggregated points]'
-
+        Query placeholders can be defined in --condition-query argument
         Dimensions can be queried by adding the 'where' keyword and multiple dimensions can be queried by combining them with the 'and' keyword.
 examples:
   - name: Create a scheduled query for a VM.
-    text: az monitor scheduled-query create -g {rg} -n {name1} --scopes {vm_id} --condition "count 'union Event, Syslog | where TimeGenerated > ago(1h) | where EventLevelName==\\'Error\\' or SeverityLevel==\\'err\\'' > 360 resource id _ResourceID at least 1 violations out of 5 aggregated points" --description "Test rule"
+    text: az monitor scheduled-query create -g {rg} -n {name1} --scopes {vm_id} --condition "count 'Placeholder_1' > 360 resource id _ResourceID at least 1 violations out of 5 aggregated points" --condition-query Placeholder_1="union Event, Syslog | where TimeGenerated > ago(1h) | where EventLevelName=='Error' or SeverityLevel=='err'" --description "Test rule"
   - name: Create a scheduled query for VMs in a resource group.
-    text: az monitor scheduled-query create -g {rg} -n {name1} --scopes {rg_id} --condition "count 'union Event, Syslog | where TimeGenerated > ago(1h) | where EventLevelName==\\'Error\\' or SeverityLevel==\\'err\\'' > 360 resource id _ResourceID at least 1 violations out of 5 aggregated points" --description "Test rule"
+    text: az monitor scheduled-query create -g {rg} -n {name1} --scopes {rg_id} --condition "count 'Placeholder_1' > 360 resource id _ResourceID at least 1 violations out of 5 aggregated points" --condition-query Placeholder_1="union Event, Syslog | where TimeGenerated > ago(1h) | where EventLevelName=='Error' or SeverityLevel=='err'" --description "Test rule"
 """
 
 helps['monitor scheduled-query update'] = """
@@ -54,12 +54,13 @@ parameters:
     short-summary: The condition which triggers the rule.
     long-summary: |
         Usage:  --condition {avg,min,max,total,count} ["METRIC COLUMN" from]
-                            "QUERY" {=,!=,>,>=,<,<=} THRESHOLD
+                            "QUERY_PLACEHOLDER" {=,!=,>,>=,<,<=} THRESHOLD
                             [resource id RESOURCEID]
                             [where DIMENSION {includes,excludes} VALUE [or VALUE ...]
                             [and   DIMENSION {includes,excludes} VALUE [or VALUE ...] ...]]
                             [at least MinTimeToFail violations out of EvaluationPeriod aggregated points]'
 
+        Query placeholders can be defined in --condition-query argument
         Dimensions can be queried by adding the 'where' keyword and multiple dimensions can be queried by combining them with the 'and' keyword.
 """
 
