@@ -50,7 +50,8 @@ def load_arguments(self, _):
         c.argument('disks', action=AddDiskPoolCreateDisks, nargs='+', help='List of Azure Managed Disks to attach to a '
                    'Disk Pool.')
         c.argument('subnet_id', type=str, help='Azure Resource ID of a Subnet for the Disk Pool.')
-        c.argument('additional_capabilities', nargs='+', help='List of additional capabilities for a Disk Pool.')
+        c.argument('additional_capabilities', options_list=['--additional-capabilities', '-a'], nargs='+', help='List '
+                   'of additional capabilities for a Disk Pool.')
 
     with self.argument_context('disk-pool update') as c:
         c.argument('resource_group_name', resource_group_name_type)
