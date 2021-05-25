@@ -1,0 +1,1580 @@
+operationGroups:
+  all:
+    - operationGroupName: operations
+      cli:
+        cliKey: Operations
+        cliM4Path: operationGroups['Operations']
+      operations:
+        - operationName: list
+          cli:
+            cliKey: List
+            cliM4Path: operationGroups['Operations']$$operations['List']
+            hidden: true
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: api_version(api_version2021_04_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['Operations']$$operations['List']$$requests[0]$$parameters['accept']
+    - operationGroupName: disk_pools
+      cli:
+        cliKey: DiskPools
+        cliM4Path: operationGroups['DiskPools']
+      operations:
+        - operationName: list_by_subscription
+          cli:
+            cliKey: ListBySubscription
+            cliM4Path: operationGroups['DiskPools']$$operations['ListBySubscription']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: api_version(api_version2021_04_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DiskPools']$$operations['ListBySubscription']$$requests[0]$$parameters['accept']
+        - operationName: list_by_resource_group
+          cli:
+            cliKey: ListByResourceGroup
+            cliM4Path: operationGroups['DiskPools']$$operations['ListByResourceGroup']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+                cliM4Path: operationGroups['DiskPools']$$operations['ListByResourceGroup']$$parameters['resourceGroupName']
+            - parameterName: api_version(api_version2021_04_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DiskPools']$$operations['ListByResourceGroup']$$requests[0]$$parameters['accept']
+        - operationName: create_or_update
+          cli:
+            cli-operation-splitted: true
+            cliKey: CreateOrUpdate
+            cliM4Path: operationGroups['DiskPools']$$operations['CreateOrUpdate']
+            split-operation-names: 
+              - Create
+              - Update
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+                cliM4Path: operationGroups['DiskPools']$$operations['CreateOrUpdate']$$parameters['resourceGroupName']
+            - parameterName: disk_pool_name(string^string)
+              cli:
+                cliKey: diskPoolName
+                cliM4Path: operationGroups['DiskPools']$$operations['CreateOrUpdate']$$parameters['diskPoolName']
+            - parameterName: api_version(api_version2021_04_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: content_type(application_json^constant)
+              cli:
+                cliKey: content-type
+                cliM4Path: operationGroups['DiskPools']$$operations['CreateOrUpdate']$$requests[0]$$parameters['content-type']
+            - parameterName[0]: disk_pool_create_payload(disk_pool_create^object)
+              cli:
+                cli-flatten: true
+                cli-flattened: true
+                cliKey: diskPoolCreatePayload
+                cliM4Path: operationGroups['DiskPools']$$operations['CreateOrUpdate']$$requests[0]$$parameters['diskPoolCreatePayload']
+              bodySchema: disk_pool_create
+            - parameterName[0]: sku(sku^object)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DiskPools']$$operations['CreateOrUpdate']$$requests[0]$$parameters['diskPoolCreatePayload']
+                  - schemas$$objects['DiskPoolCreate']$$properties['sku']
+                cliKey: sku
+            - parameterName[0]: tags(disk_pool_create_tags^dictionary)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DiskPools']$$operations['CreateOrUpdate']$$requests[0]$$parameters['diskPoolCreatePayload']
+                  - schemas$$objects['DiskPoolCreate']$$properties['tags']
+                cliKey: tags
+            - parameterName[0]: location(disk_pool_create_location^string)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DiskPools']$$operations['CreateOrUpdate']$$requests[0]$$parameters['diskPoolCreatePayload']
+                  - schemas$$objects['DiskPoolCreate']$$properties['location']
+                cliKey: location
+            - parameterName[0]: availability_zones(disk_pool_create_properties_availability_zones^array)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DiskPools']$$operations['CreateOrUpdate']$$requests[0]$$parameters['diskPoolCreatePayload']
+                  - schemas$$objects['DiskPoolCreate']$$properties['availabilityZones']
+                cliKey: availabilityZones
+            - parameterName[0]: disks(disk_pool_create_properties_disks^array)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DiskPools']$$operations['CreateOrUpdate']$$requests[0]$$parameters['diskPoolCreatePayload']
+                  - schemas$$objects['DiskPoolCreate']$$properties['disks']
+                cliKey: disks
+                positional: true
+                positionalKeys: 
+                  - id
+            - parameterName[0]: subnet_id(disk_pool_create_properties_subnet_id^string)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DiskPools']$$operations['CreateOrUpdate']$$requests[0]$$parameters['diskPoolCreatePayload']
+                  - schemas$$objects['DiskPoolCreate']$$properties['subnetId']
+                cliKey: subnetId
+            - parameterName[0]: additional_capabilities(disk_pool_create_properties_additional_capabilities^array)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DiskPools']$$operations['CreateOrUpdate']$$requests[0]$$parameters['diskPoolCreatePayload']
+                  - schemas$$objects['DiskPoolCreate']$$properties['additionalCapabilities']
+                cliKey: additionalCapabilities
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DiskPools']$$operations['CreateOrUpdate']$$requests[0]$$parameters['accept']
+        - operationName: update
+          cli:
+            cliKey: Update
+            cliM4Path: operationGroups['DiskPools']$$operations['Update']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+                cliM4Path: operationGroups['DiskPools']$$operations['Update']$$parameters['resourceGroupName']
+            - parameterName: disk_pool_name(string^string)
+              cli:
+                cliKey: diskPoolName
+                cliM4Path: operationGroups['DiskPools']$$operations['Update']$$parameters['diskPoolName']
+            - parameterName: api_version(api_version2021_04_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: content_type(application_json^constant)
+              cli:
+                cliKey: content-type
+                cliM4Path: operationGroups['DiskPools']$$operations['Update']$$requests[0]$$parameters['content-type']
+            - parameterName[0]: disk_pool_update_payload(disk_pool_update^object)
+              cli:
+                cli-flatten: true
+                cli-flattened: true
+                cliKey: diskPoolUpdatePayload
+                cliM4Path: operationGroups['DiskPools']$$operations['Update']$$requests[0]$$parameters['diskPoolUpdatePayload']
+              bodySchema: disk_pool_update
+            - parameterName[0]: tags(disk_pool_update_tags^dictionary)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DiskPools']$$operations['Update']$$requests[0]$$parameters['diskPoolUpdatePayload']
+                  - schemas$$objects['DiskPoolUpdate']$$properties['tags']
+                cliKey: tags
+            - parameterName[0]: disks(disk_pool_update_properties_disks^array)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['DiskPools']$$operations['Update']$$requests[0]$$parameters['diskPoolUpdatePayload']
+                  - schemas$$objects['DiskPoolUpdate']$$properties['disks']
+                cliKey: disks
+                positional: true
+                positionalKeys: 
+                  - id
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DiskPools']$$operations['Update']$$requests[0]$$parameters['accept']
+        - operationName: delete
+          cli:
+            cliKey: Delete
+            cliM4Path: operationGroups['DiskPools']$$operations['Delete']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+                cliM4Path: operationGroups['DiskPools']$$operations['Delete']$$parameters['resourceGroupName']
+            - parameterName: disk_pool_name(string^string)
+              cli:
+                cliKey: diskPoolName
+                cliM4Path: operationGroups['DiskPools']$$operations['Delete']$$parameters['diskPoolName']
+            - parameterName: api_version(api_version2021_04_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DiskPools']$$operations['Delete']$$requests[0]$$parameters['accept']
+        - operationName: get
+          cli:
+            cliKey: Get
+            cliM4Path: operationGroups['DiskPools']$$operations['Get']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+                cliM4Path: operationGroups['DiskPools']$$operations['Get']$$parameters['resourceGroupName']
+            - parameterName: disk_pool_name(string^string)
+              cli:
+                cliKey: diskPoolName
+                cliM4Path: operationGroups['DiskPools']$$operations['Get']$$parameters['diskPoolName']
+            - parameterName: api_version(api_version2021_04_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DiskPools']$$operations['Get']$$requests[0]$$parameters['accept']
+        - operationName: list_outbound_network_dependencies_endpoints
+          cli:
+            cliKey: ListOutboundNetworkDependenciesEndpoints
+            cliM4Path: operationGroups['DiskPools']$$operations['ListOutboundNetworkDependenciesEndpoints']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+                cliM4Path: operationGroups['DiskPools']$$operations['ListOutboundNetworkDependenciesEndpoints']$$parameters['resourceGroupName']
+            - parameterName: disk_pool_name(string^string)
+              cli:
+                cliKey: diskPoolName
+                cliM4Path: operationGroups['DiskPools']$$operations['ListOutboundNetworkDependenciesEndpoints']$$parameters['diskPoolName']
+            - parameterName: api_version(api_version2021_04_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DiskPools']$$operations['ListOutboundNetworkDependenciesEndpoints']$$requests[0]$$parameters['accept']
+        - operationName: start
+          cli:
+            cliKey: Start
+            cliM4Path: operationGroups['DiskPools']$$operations['Start']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+                cliM4Path: operationGroups['DiskPools']$$operations['Start']$$parameters['resourceGroupName']
+            - parameterName: disk_pool_name(string^string)
+              cli:
+                cliKey: diskPoolName
+                cliM4Path: operationGroups['DiskPools']$$operations['Start']$$parameters['diskPoolName']
+            - parameterName: api_version(api_version2021_04_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DiskPools']$$operations['Start']$$requests[0]$$parameters['accept']
+        - operationName: deallocate
+          cli:
+            cliKey: Deallocate
+            cliM4Path: operationGroups['DiskPools']$$operations['Deallocate']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+                cliM4Path: operationGroups['DiskPools']$$operations['Deallocate']$$parameters['resourceGroupName']
+            - parameterName: disk_pool_name(string^string)
+              cli:
+                cliKey: diskPoolName
+                cliM4Path: operationGroups['DiskPools']$$operations['Deallocate']$$parameters['diskPoolName']
+            - parameterName: api_version(api_version2021_04_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DiskPools']$$operations['Deallocate']$$requests[0]$$parameters['accept']
+        - operationName: Create
+          cli:
+            cliKey: CreateOrUpdate#Create
+          cli-split-operation-original-operation: CreateOrUpdate
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+            - parameterName: disk_pool_name(string^string)
+              cli:
+                cliKey: diskPoolName
+            - parameterName: api_version(api_version2021_04_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: content_type(application_json^constant)
+              cli:
+                cliKey: content-type
+            - parameterName[0]: disk_pool_create_payload(disk_pool_create^object)
+              cli:
+                cli-flatten: true
+                cli-flattened: true
+                cliKey: diskPoolCreatePayload
+              bodySchema: disk_pool_create
+            - parameterName[0]: sku(sku^object)
+              cli:
+                cliFlattenTrace: 
+                  - schemas$$objects['DiskPoolCreate']$$properties['sku']
+                cliKey: sku
+            - parameterName[0]: tags(disk_pool_create_tags^dictionary)
+              cli:
+                cliFlattenTrace: 
+                  - schemas$$objects['DiskPoolCreate']$$properties['tags']
+                cliKey: tags
+            - parameterName[0]: location(disk_pool_create_location^string)
+              cli:
+                cliFlattenTrace: 
+                  - schemas$$objects['DiskPoolCreate']$$properties['location']
+                cliKey: location
+            - parameterName[0]: availability_zones(disk_pool_create_properties_availability_zones^array)
+              cli:
+                cliFlattenTrace: 
+                  - schemas$$objects['DiskPoolCreate']$$properties['availabilityZones']
+                cliKey: availabilityZones
+            - parameterName[0]: disks(disk_pool_create_properties_disks^array)
+              cli:
+                cliFlattenTrace: 
+                  - schemas$$objects['DiskPoolCreate']$$properties['disks']
+                cliKey: disks
+                positional: true
+                positionalKeys: 
+                  - id
+            - parameterName[0]: subnet_id(disk_pool_create_properties_subnet_id^string)
+              cli:
+                cliFlattenTrace: 
+                  - schemas$$objects['DiskPoolCreate']$$properties['subnetId']
+                cliKey: subnetId
+            - parameterName[0]: additional_capabilities(disk_pool_create_properties_additional_capabilities^array)
+              cli:
+                cliFlattenTrace: 
+                  - schemas$$objects['DiskPoolCreate']$$properties['additionalCapabilities']
+                cliKey: additionalCapabilities
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+    - operationGroupName: disk_pool_zones
+      cli:
+        cliKey: DiskPoolZones
+        cliM4Path: operationGroups['DiskPoolZones']
+      operations:
+        - operationName: list
+          cli:
+            cliKey: List
+            cliM4Path: operationGroups['DiskPoolZones']$$operations['List']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: api_version(api_version2021_04_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: location(string^string)
+              cli:
+                cliKey: location
+                cliM4Path: operationGroups['DiskPoolZones']$$operations['List']$$parameters['location']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['DiskPoolZones']$$operations['List']$$requests[0]$$parameters['accept']
+    - operationGroupName: iscsi_targets
+      cli:
+        cliKey: IscsiTargets
+        cliM4Path: operationGroups['IscsiTargets']
+      operations:
+        - operationName: list_by_disk_pool
+          cli:
+            cliKey: ListByDiskPool
+            cliM4Path: operationGroups['IscsiTargets']$$operations['ListByDiskPool']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+                cliM4Path: operationGroups['IscsiTargets']$$operations['ListByDiskPool']$$parameters['resourceGroupName']
+            - parameterName: disk_pool_name(string^string)
+              cli:
+                cliKey: diskPoolName
+                cliM4Path: operationGroups['IscsiTargets']$$operations['ListByDiskPool']$$parameters['diskPoolName']
+            - parameterName: api_version(api_version2021_04_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['IscsiTargets']$$operations['ListByDiskPool']$$requests[0]$$parameters['accept']
+        - operationName: create_or_update
+          cli:
+            cli-operation-splitted: true
+            cliKey: CreateOrUpdate
+            cliM4Path: operationGroups['IscsiTargets']$$operations['CreateOrUpdate']
+            split-operation-names: 
+              - Create
+              - Update
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+                cliM4Path: operationGroups['IscsiTargets']$$operations['CreateOrUpdate']$$parameters['resourceGroupName']
+            - parameterName: disk_pool_name(string^string)
+              cli:
+                cliKey: diskPoolName
+                cliM4Path: operationGroups['IscsiTargets']$$operations['CreateOrUpdate']$$parameters['diskPoolName']
+            - parameterName: iscsi_target_name(string^string)
+              cli:
+                cliKey: iscsiTargetName
+                cliM4Path: operationGroups['IscsiTargets']$$operations['CreateOrUpdate']$$parameters['iscsiTargetName']
+            - parameterName: api_version(api_version2021_04_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: content_type(application_json^constant)
+              cli:
+                cliKey: content-type
+                cliM4Path: operationGroups['IscsiTargets']$$operations['CreateOrUpdate']$$requests[0]$$parameters['content-type']
+            - parameterName[0]: iscsi_target_create_payload(iscsi_target_create^object)
+              cli:
+                cli-flatten: true
+                cli-flattened: true
+                cliKey: iscsiTargetCreatePayload
+                cliM4Path: operationGroups['IscsiTargets']$$operations['CreateOrUpdate']$$requests[0]$$parameters['iscsiTargetCreatePayload']
+              bodySchema: iscsi_target_create
+            - parameterName[0]: acl_mode(iscsi_target_acl_mode^choice)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['IscsiTargets']$$operations['CreateOrUpdate']$$requests[0]$$parameters['iscsiTargetCreatePayload']
+                  - schemas$$objects['IscsiTargetCreate']$$properties['aclMode']
+                cliKey: aclMode
+            - parameterName[0]: target_iqn(iscsi_target_create_properties_target_iqn^string)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['IscsiTargets']$$operations['CreateOrUpdate']$$requests[0]$$parameters['iscsiTargetCreatePayload']
+                  - schemas$$objects['IscsiTargetCreate']$$properties['targetIqn']
+                cliKey: targetIqn
+            - parameterName[0]: static_acls(iscsi_target_create_properties_static_acls^array)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['IscsiTargets']$$operations['CreateOrUpdate']$$requests[0]$$parameters['iscsiTargetCreatePayload']
+                  - schemas$$objects['IscsiTargetCreate']$$properties['staticAcls']
+                cliKey: staticAcls
+            - parameterName[0]: luns(iscsi_target_create_properties_luns^array)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['IscsiTargets']$$operations['CreateOrUpdate']$$requests[0]$$parameters['iscsiTargetCreatePayload']
+                  - schemas$$objects['IscsiTargetCreate']$$properties['luns']
+                cliKey: luns
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['IscsiTargets']$$operations['CreateOrUpdate']$$requests[0]$$parameters['accept']
+        - operationName: update
+          cli:
+            cliKey: Update
+            cliM4Path: operationGroups['IscsiTargets']$$operations['Update']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+                cliM4Path: operationGroups['IscsiTargets']$$operations['Update']$$parameters['resourceGroupName']
+            - parameterName: disk_pool_name(string^string)
+              cli:
+                cliKey: diskPoolName
+                cliM4Path: operationGroups['IscsiTargets']$$operations['Update']$$parameters['diskPoolName']
+            - parameterName: iscsi_target_name(string^string)
+              cli:
+                cliKey: iscsiTargetName
+                cliM4Path: operationGroups['IscsiTargets']$$operations['Update']$$parameters['iscsiTargetName']
+            - parameterName: api_version(api_version2021_04_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: content_type(application_json^constant)
+              cli:
+                cliKey: content-type
+                cliM4Path: operationGroups['IscsiTargets']$$operations['Update']$$requests[0]$$parameters['content-type']
+            - parameterName[0]: iscsi_target_update_payload(iscsi_target_update^object)
+              cli:
+                cli-flatten: true
+                cli-flattened: true
+                cliKey: iscsiTargetUpdatePayload
+                cliM4Path: operationGroups['IscsiTargets']$$operations['Update']$$requests[0]$$parameters['iscsiTargetUpdatePayload']
+              bodySchema: iscsi_target_update
+            - parameterName[0]: static_acls(iscsi_target_update_properties_static_acls^array)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['IscsiTargets']$$operations['Update']$$requests[0]$$parameters['iscsiTargetUpdatePayload']
+                  - schemas$$objects['IscsiTargetUpdate']$$properties['staticAcls']
+                cliKey: staticAcls
+            - parameterName[0]: luns(iscsi_target_update_properties_luns^array)
+              cli:
+                cliFlattenTrace: 
+                  - operationGroups['IscsiTargets']$$operations['Update']$$requests[0]$$parameters['iscsiTargetUpdatePayload']
+                  - schemas$$objects['IscsiTargetUpdate']$$properties['luns']
+                cliKey: luns
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['IscsiTargets']$$operations['Update']$$requests[0]$$parameters['accept']
+        - operationName: delete
+          cli:
+            cliKey: Delete
+            cliM4Path: operationGroups['IscsiTargets']$$operations['Delete']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+                cliM4Path: operationGroups['IscsiTargets']$$operations['Delete']$$parameters['resourceGroupName']
+            - parameterName: disk_pool_name(string^string)
+              cli:
+                cliKey: diskPoolName
+                cliM4Path: operationGroups['IscsiTargets']$$operations['Delete']$$parameters['diskPoolName']
+            - parameterName: iscsi_target_name(string^string)
+              cli:
+                cliKey: iscsiTargetName
+                cliM4Path: operationGroups['IscsiTargets']$$operations['Delete']$$parameters['iscsiTargetName']
+            - parameterName: api_version(api_version2021_04_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['IscsiTargets']$$operations['Delete']$$requests[0]$$parameters['accept']
+        - operationName: get
+          cli:
+            cliKey: Get
+            cliM4Path: operationGroups['IscsiTargets']$$operations['Get']
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+                cliM4Path: operationGroups['IscsiTargets']$$operations['Get']$$parameters['resourceGroupName']
+            - parameterName: disk_pool_name(string^string)
+              cli:
+                cliKey: diskPoolName
+                cliM4Path: operationGroups['IscsiTargets']$$operations['Get']$$parameters['diskPoolName']
+            - parameterName: iscsi_target_name(string^string)
+              cli:
+                cliKey: iscsiTargetName
+                cliM4Path: operationGroups['IscsiTargets']$$operations['Get']$$parameters['iscsiTargetName']
+            - parameterName: api_version(api_version2021_04_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+                cliM4Path: operationGroups['IscsiTargets']$$operations['Get']$$requests[0]$$parameters['accept']
+        - operationName: Create
+          cli:
+            cliKey: CreateOrUpdate#Create
+          cli-split-operation-original-operation: CreateOrUpdate
+          parameters:
+            - parameterName: $host(string^string)
+              cli:
+                cliKey: $host
+                cliM4Path: globalParameters['$host']
+            - parameterName: subscription_id(string^string)
+              cli:
+                cliKey: subscriptionId
+                cliM4Path: globalParameters['subscriptionId']
+            - parameterName: resource_group_name(string^string)
+              cli:
+                cliKey: resourceGroupName
+            - parameterName: disk_pool_name(string^string)
+              cli:
+                cliKey: diskPoolName
+            - parameterName: iscsi_target_name(string^string)
+              cli:
+                cliKey: iscsiTargetName
+            - parameterName: api_version(api_version2021_04_01_preview^constant)
+              cli:
+                cliKey: ApiVersion
+                cliM4Path: globalParameters['ApiVersion']
+            - parameterName[0]: content_type(application_json^constant)
+              cli:
+                cliKey: content-type
+            - parameterName[0]: iscsi_target_create_payload(iscsi_target_create^object)
+              cli:
+                cli-flatten: true
+                cli-flattened: true
+                cliKey: iscsiTargetCreatePayload
+              bodySchema: iscsi_target_create
+            - parameterName[0]: acl_mode(iscsi_target_acl_mode^choice)
+              cli:
+                cliFlattenTrace: 
+                  - schemas$$objects['IscsiTargetCreate']$$properties['aclMode']
+                cliKey: aclMode
+            - parameterName[0]: target_iqn(iscsi_target_create_properties_target_iqn^string)
+              cli:
+                cliFlattenTrace: 
+                  - schemas$$objects['IscsiTargetCreate']$$properties['targetIqn']
+                cliKey: targetIqn
+            - parameterName[0]: static_acls(iscsi_target_create_properties_static_acls^array)
+              cli:
+                cliFlattenTrace: 
+                  - schemas$$objects['IscsiTargetCreate']$$properties['staticAcls']
+                cliKey: staticAcls
+            - parameterName[0]: luns(iscsi_target_create_properties_luns^array)
+              cli:
+                cliFlattenTrace: 
+                  - schemas$$objects['IscsiTargetCreate']$$properties['luns']
+                cliKey: luns
+            - parameterName[0]: accept(accept^constant)
+              cli:
+                cliKey: accept
+schemas:
+  objects:
+    all:
+      - schemaName: storage_pool_operation_list_result
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: StoragePoolOperationListResult
+          cliM4Path: schemas$$objects['StoragePoolOperationListResult']
+        properties:
+          - propertyName: value(storage_pool_operation_list_result_value^array)
+            cli:
+              cliKey: value
+              cliM4Path: schemas$$objects['StoragePoolOperationListResult']$$properties['value']
+          - propertyName: next_link(storage_pool_operation_list_result_next_link^string)
+            cli:
+              cliKey: nextLink
+              cliM4Path: schemas$$objects['StoragePoolOperationListResult']$$properties['nextLink']
+      - schemaName: storage_pool_RP_operation
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 8
+            propertyCountIfSimplifyWithoutSimpleObject: 5
+            simplifiable: true
+          cliKey: StoragePoolRPOperation
+          cliM4Path: schemas$$objects['StoragePoolRPOperation']
+        properties:
+          - propertyName: name(storage_pool_RP_operation_name^string)
+            cli:
+              cliKey: name
+              cliM4Path: schemas$$objects['StoragePoolRPOperation']$$properties['name']
+          - propertyName: is_data_action(boolean^boolean)
+            cli:
+              cliKey: isDataAction
+              cliM4Path: schemas$$objects['StoragePoolRPOperation']$$properties['isDataAction']
+          - propertyName: action_type(storage_pool_RP_operation_action_type^string)
+            cli:
+              cliKey: actionType
+              cliM4Path: schemas$$objects['StoragePoolRPOperation']$$properties['actionType']
+          - propertyName: display(storage_pool_operation_display^object)
+            cli:
+              cliKey: display
+              cliM4Path: schemas$$objects['StoragePoolRPOperation']$$properties['display']
+          - propertyName: origin(storage_pool_RP_operation_origin^string)
+            cli:
+              cliKey: origin
+              cliM4Path: schemas$$objects['StoragePoolRPOperation']$$properties['origin']
+      - schemaName: storage_pool_operation_display
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 4
+            propertyCountIfSimplifyWithoutSimpleObject: 4
+            simplifiable: true
+          cliKey: StoragePoolOperationDisplay
+          cliM4Path: schemas$$objects['StoragePoolOperationDisplay']
+        properties:
+          - propertyName: provider(storage_pool_operation_display_provider^string)
+            cli:
+              cliKey: provider
+              cliM4Path: schemas$$objects['StoragePoolOperationDisplay']$$properties['provider']
+          - propertyName: resource(storage_pool_operation_display_resource^string)
+            cli:
+              cliKey: resource
+              cliM4Path: schemas$$objects['StoragePoolOperationDisplay']$$properties['resource']
+          - propertyName: operation(storage_pool_operation_display_operation^string)
+            cli:
+              cliKey: operation
+              cliM4Path: schemas$$objects['StoragePoolOperationDisplay']$$properties['operation']
+          - propertyName: description(storage_pool_operation_display_description^string)
+            cli:
+              cliKey: description
+              cliM4Path: schemas$$objects['StoragePoolOperationDisplay']$$properties['description']
+      - schemaName: error
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 0
+            propertyCountIfSimplifyWithoutSimpleObject: 0
+            simplifiable: true
+          cliKey: Error
+          cliM4Path: schemas$$objects['Error']
+        properties:
+          - propertyName: error(error_response^object)
+            cli:
+              cliKey: error
+              cliM4Path: schemas$$objects['Error']$$properties['error']
+      - schemaName: error_response
+        cli:
+          cli-complexity: object_complex
+          cli-in-circle: true
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 0
+            propertyCountIfSimplifyWithoutSimpleObject: 0
+            simplifiable: true
+          cliKey: ErrorResponse
+          cliM4Path: schemas$$objects['ErrorResponse']
+        properties:
+          - propertyName: code(error_response_code^string)
+            cli:
+              cliKey: code
+              cliM4Path: schemas$$objects['ErrorResponse']$$properties['code']
+            readOnly: true
+          - propertyName: message(error_response_message^string)
+            cli:
+              cliKey: message
+              cliM4Path: schemas$$objects['ErrorResponse']$$properties['message']
+            readOnly: true
+          - propertyName: target(error_response_target^string)
+            cli:
+              cliKey: target
+              cliM4Path: schemas$$objects['ErrorResponse']$$properties['target']
+            readOnly: true
+          - propertyName: details(error_response_details^array)
+            cli:
+              cliKey: details
+              cliM4Path: schemas$$objects['ErrorResponse']$$properties['details']
+            readOnly: true
+          - propertyName: additional_info(error_response_additional_info^array)
+            cli:
+              cliKey: additionalInfo
+              cliM4Path: schemas$$objects['ErrorResponse']$$properties['additionalInfo']
+            readOnly: true
+      - schemaName: error_additional_info
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 0
+            propertyCountIfSimplifyWithoutSimpleObject: 0
+            simplifiable: true
+          cliKey: ErrorAdditionalInfo
+          cliM4Path: schemas$$objects['ErrorAdditionalInfo']
+        properties:
+          - propertyName: type(error_additional_info_type^string)
+            cli:
+              cliKey: type
+              cliM4Path: schemas$$objects['ErrorAdditionalInfo']$$properties['type']
+            readOnly: true
+          - propertyName: info(any^any)
+            cli:
+              cliKey: info
+              cliM4Path: schemas$$objects['ErrorAdditionalInfo']$$properties['info']
+            readOnly: true
+      - schemaName: disk_pool_list_result
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: DiskPoolListResult
+          cliM4Path: schemas$$objects['DiskPoolListResult']
+        properties:
+          - propertyName: value(disk_pool_list_result_value^array)
+            cli:
+              cliKey: value
+              cliM4Path: schemas$$objects['DiskPoolListResult']$$properties['value']
+          - propertyName: next_link(disk_pool_list_result_next_link^string)
+            cli:
+              cliKey: nextLink
+              cliM4Path: schemas$$objects['DiskPoolListResult']$$properties['nextLink']
+            readOnly: true
+      - schemaName: disk_pool
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: DiskPool
+          cliM4Path: schemas$$objects['DiskPool']
+        properties:
+          - propertyName: system_data(system_metadata^object)
+            cli:
+              cliKey: systemData
+              cliM4Path: schemas$$objects['DiskPool']$$properties['systemData']
+            readOnly: true
+          - propertyName: provisioning_state(provisioning_states^choice)
+            cli:
+              cliKey: provisioningState
+              cliM4Path: schemas$$objects['DiskPool']$$properties['provisioningState']
+            readOnly: true
+          - propertyName: availability_zones(disk_pool_properties_availability_zones^array)
+            cli:
+              cliKey: availabilityZones
+              cliM4Path: schemas$$objects['DiskPool']$$properties['availabilityZones']
+          - propertyName: status(operational_status^choice)
+            cli:
+              cliKey: status
+              cliM4Path: schemas$$objects['DiskPool']$$properties['status']
+          - propertyName: disks(disk_pool_properties_disks^array)
+            cli:
+              cliKey: disks
+              cliM4Path: schemas$$objects['DiskPool']$$properties['disks']
+          - propertyName: subnet_id(disk_pool_properties_subnet_id^string)
+            cli:
+              cliKey: subnetId
+              cliM4Path: schemas$$objects['DiskPool']$$properties['subnetId']
+          - propertyName: additional_capabilities(disk_pool_properties_additional_capabilities^array)
+            cli:
+              cliKey: additionalCapabilities
+              cliM4Path: schemas$$objects['DiskPool']$$properties['additionalCapabilities']
+          - propertyName: name_sku_name(sku_name^string)
+            cli:
+              cliKey: name
+              cliM4Path: schemas$$objects['DiskPool']$$properties['name']
+          - propertyName: tier(sku_tier^string)
+            cli:
+              cliKey: tier
+              cliM4Path: schemas$$objects['DiskPool']$$properties['tier']
+      - schemaName: sku
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 2
+            propertyCountIfSimplifyWithoutSimpleObject: 2
+            simplifiable: true
+          cliKey: Sku
+          cliM4Path: schemas$$objects['Sku']
+        properties:
+          - propertyName: name(sku_name^string)
+            cli:
+              cliKey: name
+              cliM4Path: schemas$$objects['Sku']$$properties['name']
+          - propertyName: tier(sku_tier^string)
+            cli:
+              cliKey: tier
+              cliM4Path: schemas$$objects['Sku']$$properties['tier']
+      - schemaName: disk
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 1
+            propertyCountIfSimplifyWithoutSimpleObject: 1
+            simplifiable: true
+          cliKey: Disk
+          cliM4Path: schemas$$objects['Disk']
+        properties:
+          - propertyName: id(disk_id^string)
+            cli:
+              cliKey: id
+              cliM4Path: schemas$$objects['Disk']$$properties['id']
+      - schemaName: system_metadata
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 6
+            propertyCountIfSimplifyWithoutSimpleObject: 6
+            simplifiable: true
+          cliKey: SystemMetadata
+          cliM4Path: schemas$$objects['SystemMetadata']
+        properties:
+          - propertyName: created_by(system_metadata_created_by^string)
+            cli:
+              cliKey: createdBy
+              cliM4Path: schemas$$objects['SystemMetadata']$$properties['createdBy']
+          - propertyName: created_by_type(created_by_type^choice)
+            cli:
+              cliKey: createdByType
+              cliM4Path: schemas$$objects['SystemMetadata']$$properties['createdByType']
+          - propertyName: created_at(system_metadata_created_at^date-time)
+            cli:
+              cliKey: createdAt
+              cliM4Path: schemas$$objects['SystemMetadata']$$properties['createdAt']
+          - propertyName: last_modified_by(system_metadata_last_modified_by^string)
+            cli:
+              cliKey: lastModifiedBy
+              cliM4Path: schemas$$objects['SystemMetadata']$$properties['lastModifiedBy']
+          - propertyName: last_modified_by_type(created_by_type^choice)
+            cli:
+              cliKey: lastModifiedByType
+              cliM4Path: schemas$$objects['SystemMetadata']$$properties['lastModifiedByType']
+          - propertyName: last_modified_at(system_metadata_last_modified_at^date-time)
+            cli:
+              cliKey: lastModifiedAt
+              cliM4Path: schemas$$objects['SystemMetadata']$$properties['lastModifiedAt']
+      - schemaName: tracked_resource
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: TrackedResource
+          cliM4Path: schemas$$objects['TrackedResource']
+        properties:
+          - propertyName: tags(tracked_resource_tags^dictionary)
+            cli:
+              cliKey: tags
+              cliM4Path: schemas$$objects['TrackedResource']$$properties['tags']
+          - propertyName: location(tracked_resource_location^string)
+            cli:
+              cliKey: location
+              cliM4Path: schemas$$objects['TrackedResource']$$properties['location']
+      - schemaName: resource
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 0
+            propertyCountIfSimplifyWithoutSimpleObject: 0
+            simplifiable: true
+          cliKey: Resource
+          cliM4Path: schemas$$objects['Resource']
+        properties:
+          - propertyName: id(resource_id^string)
+            cli:
+              cliKey: id
+              cliM4Path: schemas$$objects['Resource']$$properties['id']
+            readOnly: true
+          - propertyName: name(resource_name^string)
+            cli:
+              cliKey: name
+              cliM4Path: schemas$$objects['Resource']$$properties['name']
+            readOnly: true
+          - propertyName: type(resource_type^string)
+            cli:
+              cliKey: type
+              cliM4Path: schemas$$objects['Resource']$$properties['type']
+            readOnly: true
+      - schemaName: disk_pool_create
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: DiskPoolCreate
+          cliM4Path: schemas$$objects['DiskPoolCreate']
+        properties:
+          - propertyName: sku(sku^object)
+            cli:
+              cliKey: sku
+              cliM4Path: schemas$$objects['DiskPoolCreate']$$properties['sku']
+          - propertyName: tags(disk_pool_create_tags^dictionary)
+            cli:
+              cliKey: tags
+              cliM4Path: schemas$$objects['DiskPoolCreate']$$properties['tags']
+          - propertyName: location(disk_pool_create_location^string)
+            cli:
+              cliKey: location
+              cliM4Path: schemas$$objects['DiskPoolCreate']$$properties['location']
+          - propertyName: id(disk_pool_create_id^string)
+            cli:
+              cliKey: id
+              cliM4Path: schemas$$objects['DiskPoolCreate']$$properties['id']
+            readOnly: true
+          - propertyName: name(disk_pool_create_name^string)
+            cli:
+              cliKey: name
+              cliM4Path: schemas$$objects['DiskPoolCreate']$$properties['name']
+            readOnly: true
+          - propertyName: type(disk_pool_create_type^string)
+            cli:
+              cliKey: type
+              cliM4Path: schemas$$objects['DiskPoolCreate']$$properties['type']
+            readOnly: true
+          - propertyName: availability_zones(disk_pool_create_properties_availability_zones^array)
+            cli:
+              cliKey: availabilityZones
+              cliM4Path: schemas$$objects['DiskPoolCreate']$$properties['availabilityZones']
+          - propertyName: disks(disk_pool_create_properties_disks^array)
+            cli:
+              cliKey: disks
+              cliM4Path: schemas$$objects['DiskPoolCreate']$$properties['disks']
+          - propertyName: subnet_id(disk_pool_create_properties_subnet_id^string)
+            cli:
+              cliKey: subnetId
+              cliM4Path: schemas$$objects['DiskPoolCreate']$$properties['subnetId']
+          - propertyName: additional_capabilities(disk_pool_create_properties_additional_capabilities^array)
+            cli:
+              cliKey: additionalCapabilities
+              cliM4Path: schemas$$objects['DiskPoolCreate']$$properties['additionalCapabilities']
+      - schemaName: disk_pool_update
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: DiskPoolUpdate
+          cliM4Path: schemas$$objects['DiskPoolUpdate']
+        properties:
+          - propertyName: tags(disk_pool_update_tags^dictionary)
+            cli:
+              cliKey: tags
+              cliM4Path: schemas$$objects['DiskPoolUpdate']$$properties['tags']
+          - propertyName: disks(disk_pool_update_properties_disks^array)
+            cli:
+              cliKey: disks
+              cliM4Path: schemas$$objects['DiskPoolUpdate']$$properties['disks']
+      - schemaName: disk_pool_zone_list_result
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: DiskPoolZoneListResult
+          cliM4Path: schemas$$objects['DiskPoolZoneListResult']
+        properties:
+          - propertyName: value(disk_pool_zone_list_result_value^array)
+            cli:
+              cliKey: value
+              cliM4Path: schemas$$objects['DiskPoolZoneListResult']$$properties['value']
+          - propertyName: next_link(disk_pool_zone_list_result_next_link^string)
+            cli:
+              cliKey: nextLink
+              cliM4Path: schemas$$objects['DiskPoolZoneListResult']$$properties['nextLink']
+      - schemaName: disk_pool_zone_info
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: DiskPoolZoneInfo
+          cliM4Path: schemas$$objects['DiskPoolZoneInfo']
+        properties:
+          - propertyName: availability_zones(disk_pool_zone_info_availability_zones^array)
+            cli:
+              cliKey: availabilityZones
+              cliM4Path: schemas$$objects['DiskPoolZoneInfo']$$properties['availabilityZones']
+          - propertyName: additional_capabilities(disk_pool_zone_info_additional_capabilities^array)
+            cli:
+              cliKey: additionalCapabilities
+              cliM4Path: schemas$$objects['DiskPoolZoneInfo']$$properties['additionalCapabilities']
+          - propertyName: sku(sku^object)
+            cli:
+              cliKey: sku
+              cliM4Path: schemas$$objects['DiskPoolZoneInfo']$$properties['sku']
+      - schemaName: outbound_environment_endpoint_list
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: OutboundEnvironmentEndpointList
+          cliM4Path: schemas$$objects['OutboundEnvironmentEndpointList']
+        properties:
+          - propertyName: value(outbound_environment_endpoint_list_value^array)
+            cli:
+              cliKey: value
+              cliM4Path: schemas$$objects['OutboundEnvironmentEndpointList']$$properties['value']
+          - propertyName: next_link(outbound_environment_endpoint_list_next_link^string)
+            cli:
+              cliKey: nextLink
+              cliM4Path: schemas$$objects['OutboundEnvironmentEndpointList']$$properties['nextLink']
+            readOnly: true
+      - schemaName: outbound_environment_endpoint
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: OutboundEnvironmentEndpoint
+          cliM4Path: schemas$$objects['OutboundEnvironmentEndpoint']
+        properties:
+          - propertyName: category(outbound_environment_endpoint_category^string)
+            cli:
+              cliKey: category
+              cliM4Path: schemas$$objects['OutboundEnvironmentEndpoint']$$properties['category']
+          - propertyName: endpoints(outbound_environment_endpoint_endpoints^array)
+            cli:
+              cliKey: endpoints
+              cliM4Path: schemas$$objects['OutboundEnvironmentEndpoint']$$properties['endpoints']
+      - schemaName: endpoint_dependency
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: EndpointDependency
+          cliM4Path: schemas$$objects['EndpointDependency']
+        properties:
+          - propertyName: domain_name(endpoint_dependency_domain_name^string)
+            cli:
+              cliKey: domainName
+              cliM4Path: schemas$$objects['EndpointDependency']$$properties['domainName']
+          - propertyName: endpoint_details(endpoint_dependency_endpoint_details^array)
+            cli:
+              cliKey: endpointDetails
+              cliM4Path: schemas$$objects['EndpointDependency']$$properties['endpointDetails']
+      - schemaName: endpoint_detail
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 4
+            propertyCountIfSimplifyWithoutSimpleObject: 4
+            simplifiable: true
+          cliKey: EndpointDetail
+          cliM4Path: schemas$$objects['EndpointDetail']
+        properties:
+          - propertyName: ip_address(endpoint_detail_ip_address^string)
+            cli:
+              cliKey: ipAddress
+              cliM4Path: schemas$$objects['EndpointDetail']$$properties['ipAddress']
+          - propertyName: port(integer^integer)
+            cli:
+              cliKey: port
+              cliM4Path: schemas$$objects['EndpointDetail']$$properties['port']
+          - propertyName: latency(number^number)
+            cli:
+              cliKey: latency
+              cliM4Path: schemas$$objects['EndpointDetail']$$properties['latency']
+          - propertyName: is_accessible(boolean^boolean)
+            cli:
+              cliKey: isAccessible
+              cliM4Path: schemas$$objects['EndpointDetail']$$properties['isAccessible']
+      - schemaName: iscsi_target_list
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: IscsiTargetList
+          cliM4Path: schemas$$objects['IscsiTargetList']
+        properties:
+          - propertyName: value(iscsi_target_list_value^array)
+            cli:
+              cliKey: value
+              cliM4Path: schemas$$objects['IscsiTargetList']$$properties['value']
+          - propertyName: next_link(iscsi_target_list_next_link^string)
+            cli:
+              cliKey: nextLink
+              cliM4Path: schemas$$objects['IscsiTargetList']$$properties['nextLink']
+            readOnly: true
+      - schemaName: iscsi_target
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: IscsiTarget
+          cliM4Path: schemas$$objects['IscsiTarget']
+        properties:
+          - propertyName: system_data(system_metadata^object)
+            cli:
+              cliKey: systemData
+              cliM4Path: schemas$$objects['IscsiTarget']$$properties['systemData']
+            readOnly: true
+          - propertyName: acl_mode(iscsi_target_acl_mode^choice)
+            cli:
+              cliKey: aclMode
+              cliM4Path: schemas$$objects['IscsiTarget']$$properties['aclMode']
+          - propertyName: static_acls(iscsi_target_properties_static_acls^array)
+            cli:
+              cliKey: staticAcls
+              cliM4Path: schemas$$objects['IscsiTarget']$$properties['staticAcls']
+          - propertyName: luns(iscsi_target_properties_luns^array)
+            cli:
+              cliKey: luns
+              cliM4Path: schemas$$objects['IscsiTarget']$$properties['luns']
+          - propertyName: target_iqn(iscsi_target_properties_target_iqn^string)
+            cli:
+              cliKey: targetIqn
+              cliM4Path: schemas$$objects['IscsiTarget']$$properties['targetIqn']
+          - propertyName: provisioning_state(provisioning_states^choice)
+            cli:
+              cliKey: provisioningState
+              cliM4Path: schemas$$objects['IscsiTarget']$$properties['provisioningState']
+            readOnly: true
+          - propertyName: status(operational_status^choice)
+            cli:
+              cliKey: status
+              cliM4Path: schemas$$objects['IscsiTarget']$$properties['status']
+          - propertyName: endpoints(iscsi_target_properties_endpoints^array)
+            cli:
+              cliKey: endpoints
+              cliM4Path: schemas$$objects['IscsiTarget']$$properties['endpoints']
+          - propertyName: port(integer^integer)
+            cli:
+              cliKey: port
+              cliM4Path: schemas$$objects['IscsiTarget']$$properties['port']
+      - schemaName: acl
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: Acl
+          cliM4Path: schemas$$objects['Acl']
+        properties:
+          - propertyName: initiator_iqn(acl_initiator_iqn^string)
+            cli:
+              cliKey: initiatorIqn
+              cliM4Path: schemas$$objects['Acl']$$properties['initiatorIqn']
+          - propertyName: mapped_luns(acl_mapped_luns^array)
+            cli:
+              cliKey: mappedLuns
+              cliM4Path: schemas$$objects['Acl']$$properties['mappedLuns']
+      - schemaName: iscsi_lun
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 2
+            propertyCountIfSimplifyWithoutSimpleObject: 2
+            simplifiable: true
+          cliKey: IscsiLun
+          cliM4Path: schemas$$objects['IscsiLun']
+        properties:
+          - propertyName: name(iscsi_lun_name^string)
+            cli:
+              cliKey: name
+              cliM4Path: schemas$$objects['IscsiLun']$$properties['name']
+          - propertyName: managed_disk_azure_resource_id(iscsi_lun_managed_disk_azure_resource_id^string)
+            cli:
+              cliKey: managedDiskAzureResourceId
+              cliM4Path: schemas$$objects['IscsiLun']$$properties['managedDiskAzureResourceId']
+      - schemaName: iscsi_target_create
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: IscsiTargetCreate
+          cliM4Path: schemas$$objects['IscsiTargetCreate']
+        properties:
+          - propertyName: acl_mode(iscsi_target_acl_mode^choice)
+            cli:
+              cliKey: aclMode
+              cliM4Path: schemas$$objects['IscsiTargetCreate']$$properties['aclMode']
+          - propertyName: target_iqn(iscsi_target_create_properties_target_iqn^string)
+            cli:
+              cliKey: targetIqn
+              cliM4Path: schemas$$objects['IscsiTargetCreate']$$properties['targetIqn']
+          - propertyName: static_acls(iscsi_target_create_properties_static_acls^array)
+            cli:
+              cliKey: staticAcls
+              cliM4Path: schemas$$objects['IscsiTargetCreate']$$properties['staticAcls']
+          - propertyName: luns(iscsi_target_create_properties_luns^array)
+            cli:
+              cliKey: luns
+              cliM4Path: schemas$$objects['IscsiTargetCreate']$$properties['luns']
+      - schemaName: iscsi_target_update
+        cli:
+          cli-complexity: object_complex
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 10000
+            propertyCountIfSimplifyWithoutSimpleObject: 10000
+            simplifiable: false
+          cliKey: IscsiTargetUpdate
+          cliM4Path: schemas$$objects['IscsiTargetUpdate']
+        properties:
+          - propertyName: static_acls(iscsi_target_update_properties_static_acls^array)
+            cli:
+              cliKey: staticAcls
+              cliM4Path: schemas$$objects['IscsiTargetUpdate']$$properties['staticAcls']
+          - propertyName: luns(iscsi_target_update_properties_luns^array)
+            cli:
+              cliKey: luns
+              cliM4Path: schemas$$objects['IscsiTargetUpdate']$$properties['luns']
+      - schemaName: proxy_resource
+        cli:
+          cli-complexity: object_simple
+          cli-mark: checked
+          cli-simplify-indicator: 
+            propertyCountIfSimplify: 0
+            propertyCountIfSimplifyWithoutSimpleObject: 0
+            simplifiable: true
+          cliKey: ProxyResource
+          cliM4Path: schemas$$objects['ProxyResource']
+  choices:
+    all:
+      - choiceName: provisioning_states
+        cli:
+          cliKey: ProvisioningStates
+          cliM4Path: schemas$$choices['ProvisioningStates']
+        choiceValues:
+          - choiceValue: invalid
+            cli:
+              cliKey: Invalid
+              cliM4Path: schemas$$choices['ProvisioningStates']$$choices['Invalid]'
+          - choiceValue: succeeded
+            cli:
+              cliKey: Succeeded
+              cliM4Path: schemas$$choices['ProvisioningStates']$$choices['Succeeded]'
+          - choiceValue: failed
+            cli:
+              cliKey: Failed
+              cliM4Path: schemas$$choices['ProvisioningStates']$$choices['Failed]'
+          - choiceValue: canceled
+            cli:
+              cliKey: Canceled
+              cliM4Path: schemas$$choices['ProvisioningStates']$$choices['Canceled]'
+          - choiceValue: pending
+            cli:
+              cliKey: Pending
+              cliM4Path: schemas$$choices['ProvisioningStates']$$choices['Pending]'
+          - choiceValue: creating
+            cli:
+              cliKey: Creating
+              cliM4Path: schemas$$choices['ProvisioningStates']$$choices['Creating]'
+          - choiceValue: updating
+            cli:
+              cliKey: Updating
+              cliM4Path: schemas$$choices['ProvisioningStates']$$choices['Updating]'
+          - choiceValue: deleting
+            cli:
+              cliKey: Deleting
+              cliM4Path: schemas$$choices['ProvisioningStates']$$choices['Deleting]'
+      - choiceName: operational_status
+        cli:
+          cliKey: OperationalStatus
+          cliM4Path: schemas$$choices['OperationalStatus']
+        choiceValues:
+          - choiceValue: invalid
+            cli:
+              cliKey: Invalid
+              cliM4Path: schemas$$choices['OperationalStatus']$$choices['Invalid]'
+          - choiceValue: unknown
+            cli:
+              cliKey: Unknown
+              cliM4Path: schemas$$choices['OperationalStatus']$$choices['Unknown]'
+          - choiceValue: healthy
+            cli:
+              cliKey: Healthy
+              cliM4Path: schemas$$choices['OperationalStatus']$$choices['Healthy]'
+          - choiceValue: unhealthy
+            cli:
+              cliKey: Unhealthy
+              cliM4Path: schemas$$choices['OperationalStatus']$$choices['Unhealthy]'
+          - choiceValue: updating
+            cli:
+              cliKey: Updating
+              cliM4Path: schemas$$choices['OperationalStatus']$$choices['Updating]'
+          - choiceValue: running
+            cli:
+              cliKey: Running
+              cliM4Path: schemas$$choices['OperationalStatus']$$choices['Running]'
+          - choiceValue: stopped
+            cli:
+              cliKey: Stopped
+              cliM4Path: schemas$$choices['OperationalStatus']$$choices['Stopped]'
+          - choiceValue: stopped_deallocated_
+            cli:
+              cliKey: Stopped (deallocated)
+              cliM4Path: schemas$$choices['OperationalStatus']$$choices['Stopped (deallocated)]'
+      - choiceName: created_by_type
+        cli:
+          cliKey: createdByType
+          cliM4Path: schemas$$choices['createdByType']
+        choiceValues:
+          - choiceValue: user
+            cli:
+              cliKey: User
+              cliM4Path: schemas$$choices['createdByType']$$choices['User]'
+          - choiceValue: application
+            cli:
+              cliKey: Application
+              cliM4Path: schemas$$choices['createdByType']$$choices['Application]'
+          - choiceValue: managed_identity
+            cli:
+              cliKey: ManagedIdentity
+              cliM4Path: schemas$$choices['createdByType']$$choices['ManagedIdentity]'
+          - choiceValue: key
+            cli:
+              cliKey: Key
+              cliM4Path: schemas$$choices['createdByType']$$choices['Key]'
+      - choiceName: iscsi_target_acl_mode
+        cli:
+          cliKey: IscsiTargetAclMode
+          cliM4Path: schemas$$choices['IscsiTargetAclMode']
+        choiceValues:
+          - choiceValue: dynamic
+            cli:
+              cliKey: Dynamic
+              cliM4Path: schemas$$choices['IscsiTargetAclMode']$$choices['Dynamic]'
+          - choiceValue: static
+            cli:
+              cliKey: Static
+              cliM4Path: schemas$$choices['IscsiTargetAclMode']$$choices['Static]'
+      - choiceName: disk_pool_tier
+        cli:
+          cliKey: DiskPoolTier
+          cliM4Path: schemas$$choices['DiskPoolTier']
+        choiceValues:
+          - choiceValue: basic
+            cli:
+              cliKey: Basic
+              cliM4Path: schemas$$choices['DiskPoolTier']$$choices['Basic]'
+          - choiceValue: standard
+            cli:
+              cliKey: Standard
+              cliM4Path: schemas$$choices['DiskPoolTier']$$choices['Standard]'
+          - choiceValue: premium
+            cli:
+              cliKey: Premium
+              cliM4Path: schemas$$choices['DiskPoolTier']$$choices['Premium]'
