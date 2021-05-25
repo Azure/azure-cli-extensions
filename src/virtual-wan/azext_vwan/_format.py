@@ -8,7 +8,7 @@ from collections import OrderedDict
 
 def transform_effective_route_table(result):
     transformed = []
-    for item in result['value']:
+    for item in result.get('value', []):
         transformed.append(OrderedDict([
             ('Address Prefix', ' '.join(item['addressPrefixes'] or [])),
             ('Next Hop Type', item['nextHopType']),
