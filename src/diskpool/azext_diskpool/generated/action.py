@@ -116,25 +116,17 @@ class AddDiskPoolIscsiTargetUpdateStaticAcls(argparse._AppendAction):
             raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
         d = {}
         for k in properties:
-
             kl = k.lower()
-
             v = properties[k]
-
             if kl == 'initiator-iqn':
-
                 d['initiator_iqn'] = v[0]
-
             elif kl == 'mapped-luns':
-
                 d['mapped_luns'] = v
-
             else:
                 raise CLIError(
                     'Unsupported Key {} is provided for parameter static-acls. All possible keys are: initiator-iqn,'
                     ' mapped-luns'.format(k)
                 )
-
         return d
 
 
