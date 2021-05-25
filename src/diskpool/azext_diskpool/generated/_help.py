@@ -14,12 +14,14 @@ from knack.help_files import helps
 
 helps['disk-pool'] = """
     type: group
-    short-summary: Manage disk pool with diskpool
+    short-summary: Manage disk pool with diskpool. Command group swagger name=DiskPools
 """
 
 helps['disk-pool list'] = """
     type: command
-    short-summary: "Gets a list of DiskPools in a resource group. And Gets a list of Disk Pools in a subscription."
+    short-summary: "Gets a list of DiskPools in a resource group. Command group swagger name=DiskPools, Command \
+swagger name=ListByResourceGroup And Gets a list of Disk Pools in a subscription Command group swagger name=DiskPools, \
+Command swagger name=ListBySubscription."
     examples:
       - name: List Disk Pools
         text: |-
@@ -31,7 +33,7 @@ helps['disk-pool list'] = """
 
 helps['disk-pool show'] = """
     type: command
-    short-summary: "Get a Disk pool."
+    short-summary: "Get a Disk pool. Command group swagger name=DiskPools, Command swagger name=Get."
     examples:
       - name: Get Disk pool
         text: |-
@@ -40,17 +42,18 @@ helps['disk-pool show'] = """
 
 helps['disk-pool create'] = """
     type: command
-    short-summary: "Create Disk pool."
+    short-summary: "Create Disk pool. Command group swagger name=DiskPools, Command swagger \
+name=CreateOrUpdate#Create."
     parameters:
       - name: --sku
-        short-summary: "Determines the SKU of the Disk Pool"
+        short-summary: "Determines the SKU of the Disk Pool. Swagger name=sku"
         long-summary: |
             Usage: --sku name=XX tier=XX
 
             name: Required. Sku name
             tier: Sku tier
       - name: --disks
-        short-summary: "List of Azure Managed Disks to attach to a Disk Pool."
+        short-summary: "List of Azure Managed Disks to attach to a Disk Pool. Swagger name=disks"
         long-summary: |
             The order of this parameter is specific customized. Usage:  --disks id-value
 
@@ -70,10 +73,10 @@ iders/Microsoft.Network/virtualNetworks/myvnet/subnets/mysubnet" --sku name="Bas
 
 helps['disk-pool update'] = """
     type: command
-    short-summary: "Update a Disk pool."
+    short-summary: "Update a Disk pool. Command group swagger name=DiskPools, Command swagger name=Update."
     parameters:
       - name: --disks
-        short-summary: "List of Azure Managed Disks to attach to a Disk Pool."
+        short-summary: "List of Azure Managed Disks to attach to a Disk Pool. Swagger name=disks"
         long-summary: |
             The order of this parameter is specific customized. Usage:  --disks id-value
 
@@ -91,7 +94,7 @@ m-name_DataDisk_1" --tags key="value" --resource-group "myResourceGroup"
 
 helps['disk-pool delete'] = """
     type: command
-    short-summary: "Delete a Disk pool."
+    short-summary: "Delete a Disk pool. Command group swagger name=DiskPools, Command swagger name=Delete."
     examples:
       - name: Delete Disk pool
         text: |-
@@ -100,7 +103,8 @@ helps['disk-pool delete'] = """
 
 helps['disk-pool list-outbound-network-dependency-endpoint'] = """
     type: command
-    short-summary: "Gets the network endpoints of all outbound dependencies of a Disk Pool."
+    short-summary: "Gets the network endpoints of all outbound dependencies of a Disk Pool Command group swagger \
+name=DiskPools, Command swagger name=ListOutboundNetworkDependenciesEndpoints."
     examples:
       - name: Get Disk Pool outbound network dependencies
         text: |-
@@ -110,7 +114,8 @@ helps['disk-pool list-outbound-network-dependency-endpoint'] = """
 
 helps['disk-pool start'] = """
     type: command
-    short-summary: "The operation to start a Disk Pool."
+    short-summary: "The operation to start a Disk Pool. Command group swagger name=DiskPools, Command swagger \
+name=Start."
     examples:
       - name: Start Disk Pool
         text: |-
@@ -120,7 +125,7 @@ helps['disk-pool start'] = """
 helps['disk-pool stop'] = """
     type: command
     short-summary: "Shuts down the Disk Pool and releases the compute resources. You are not billed for the compute \
-resources that this Disk Pool uses."
+resources that this Disk Pool uses. Command group swagger name=DiskPools, Command swagger name=Deallocate."
     examples:
       - name: Deallocate Disk Pool
         text: |-
@@ -144,12 +149,13 @@ helps['disk-pool wait'] = """
 
 helps['disk-pool-zone'] = """
     type: group
-    short-summary: Manage disk pool zone with diskpool
+    short-summary: Manage disk pool zone with diskpool. Command group swagger name=DiskPoolZones
 """
 
 helps['disk-pool-zone list'] = """
     type: command
-    short-summary: "Lists available Disk Pool Skus in an Azure location."
+    short-summary: "Lists available Disk Pool Skus in an Azure location. Command group swagger name=DiskPoolZones, \
+Command swagger name=List."
     examples:
       - name: List Disk Pool Skus
         text: |-
@@ -158,12 +164,13 @@ helps['disk-pool-zone list'] = """
 
 helps['disk-pool iscsi-target'] = """
     type: group
-    short-summary: Manage iscsi target with diskpool
+    short-summary: Manage iscsi target with diskpool. Command group swagger name=IscsiTargets
 """
 
 helps['disk-pool iscsi-target list'] = """
     type: command
-    short-summary: "Get iSCSI Targets in a Disk pool."
+    short-summary: "Get iSCSI Targets in a Disk pool. Command group swagger name=IscsiTargets, Command swagger \
+name=ListByDiskPool."
     examples:
       - name: List Disk Pools by Resource Group
         text: |-
@@ -172,7 +179,7 @@ helps['disk-pool iscsi-target list'] = """
 
 helps['disk-pool iscsi-target show'] = """
     type: command
-    short-summary: "Get an iSCSI Target."
+    short-summary: "Get an iSCSI Target. Command group swagger name=IscsiTargets, Command swagger name=Get."
     examples:
       - name: Get iSCSI Target
         text: |-
@@ -182,10 +189,12 @@ helps['disk-pool iscsi-target show'] = """
 
 helps['disk-pool iscsi-target create'] = """
     type: command
-    short-summary: "Create an iSCSI Target."
+    short-summary: "Create an iSCSI Target. Command group swagger name=IscsiTargets, Command swagger \
+name=CreateOrUpdate#Create."
     parameters:
       - name: --static-acls
-        short-summary: "Access Control List (ACL) for an iSCSI Target; defines LUN masking policy"
+        short-summary: "Access Control List (ACL) for an iSCSI Target; defines LUN masking policy. Swagger \
+name=staticAcls"
         long-summary: |
             Usage: --static-acls initiator-iqn=XX mapped-luns=XX
 
@@ -195,7 +204,7 @@ helps['disk-pool iscsi-target create'] = """
 
             Multiple actions can be specified by using more than one --static-acls argument.
       - name: --luns
-        short-summary: "List of LUNs to be exposed through iSCSI Target."
+        short-summary: "List of LUNs to be exposed through iSCSI Target. Swagger name=luns"
         long-summary: |
             Usage: --luns name=XX managed-disk-azure-resource-id=XX
 
@@ -214,10 +223,11 @@ iders/Microsoft.Compute/disks/vm-name_DataDisk_1" --target-iqn "iqn.2005-03.org.
 
 helps['disk-pool iscsi-target update'] = """
     type: command
-    short-summary: "Update an iSCSI Target."
+    short-summary: "Update an iSCSI Target. Command group swagger name=IscsiTargets, Command swagger name=Update."
     parameters:
       - name: --static-acls
-        short-summary: "Access Control List (ACL) for an iSCSI Target; defines LUN masking policy"
+        short-summary: "Access Control List (ACL) for an iSCSI Target; defines LUN masking policy. Swagger \
+name=staticAcls"
         long-summary: |
             Usage: --static-acls initiator-iqn=XX mapped-luns=XX
 
@@ -227,7 +237,7 @@ helps['disk-pool iscsi-target update'] = """
 
             Multiple actions can be specified by using more than one --static-acls argument.
       - name: --luns
-        short-summary: "List of LUNs to be exposed through iSCSI Target."
+        short-summary: "List of LUNs to be exposed through iSCSI Target. Swagger name=luns"
         long-summary: |
             Usage: --luns name=XX managed-disk-azure-resource-id=XX
 
@@ -246,7 +256,7 @@ ceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_1" --static-acls init
 
 helps['disk-pool iscsi-target delete'] = """
     type: command
-    short-summary: "Delete an iSCSI Target."
+    short-summary: "Delete an iSCSI Target. Command group swagger name=IscsiTargets, Command swagger name=Delete."
     examples:
       - name: Delete iSCSI Target
         text: |-

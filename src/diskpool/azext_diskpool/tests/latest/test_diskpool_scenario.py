@@ -13,20 +13,6 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 from .preparers import VirtualNetworkPreparer
 from .example_steps import step_create, step_create_required
-from .example_steps import step_show
-from .example_steps import step_list_outbound_network_dependency_endpoint
-from .example_steps import step_list
-from .example_steps import step_list2
-from .example_steps import step_update
-from .example_steps import step_stop
-from .example_steps import step_start
-from .example_steps import step_delete
-from .example_steps import step_list3
-from .example_steps import step_iscsi_target_create
-from .example_steps import step_iscsi_target_show
-from .example_steps import step_iscsi_target_list
-from .example_steps import step_iscsi_target_update
-from .example_steps import step_iscsi_target_delete
 from .. import (
     try_manual,
     raise_if,
@@ -53,52 +39,7 @@ def cleanup_scenario(test, rg, rg_2):
 @try_manual
 def call_scenario(test, rg, rg_2):
     setup_scenario(test, rg, rg_2)
-    step_create(test, rg, rg_2, checks=[
-        test.check("availabilityZones[0]", "1", case_sensitive=False),
-        test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtua"
-                   "lNetworks/{vn}/subnets/default", case_sensitive=False),
-        test.check("name", "{myDiskPool}", case_sensitive=False),
-    ])
-    step_show(test, rg, rg_2, checks=[
-        test.check("availabilityZones[0]", "1", case_sensitive=False),
-        test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtua"
-                   "lNetworks/{vn}/subnets/default", case_sensitive=False),
-        test.check("name", "{myDiskPool}", case_sensitive=False),
-    ])
-    step_list_outbound_network_dependency_endpoint(test, rg, rg_2, checks=[])
-    step_list(test, rg, rg_2, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_list2(test, rg, rg_2, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_update(test, rg, rg_2, checks=[
-        test.check("availabilityZones[0]", "1", case_sensitive=False),
-        test.check("subnetId", "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/virtua"
-                   "lNetworks/{vn}/subnets/default", case_sensitive=False),
-        test.check("name", "{myDiskPool}", case_sensitive=False),
-    ])
-    step_stop(test, rg, rg_2, checks=[])
-    step_start(test, rg, rg_2, checks=[])
-    step_delete(test, rg, rg_2, checks=[])
-    step_list3(test, rg, rg_2, checks=[])
-    step_iscsi_target_create(test, rg, rg_2, checks=[
-        test.check("aclMode", "Dynamic", case_sensitive=False),
-        test.check("targetIqn", "iqn.2005-03.org.iscsi:server1", case_sensitive=False),
-        test.check("name", "{myIscsiTarget}", case_sensitive=False),
-    ])
-    step_iscsi_target_show(test, rg, rg_2, checks=[
-        test.check("targetIqn", "iqn.2005-03.org.iscsi:server1", case_sensitive=False),
-        test.check("name", "{myIscsiTarget}", case_sensitive=False),
-    ])
-    step_iscsi_target_list(test, rg, rg_2, checks=[
-        test.check('length(@)', 1),
-    ])
-    step_iscsi_target_update(test, rg, rg_2, checks=[
-        test.check("targetIqn", "iqn.2005-03.org.iscsi:server1", case_sensitive=False),
-        test.check("name", "{myIscsiTarget}", case_sensitive=False),
-    ])
-    step_iscsi_target_delete(test, rg, rg_2, checks=[])
+    # STEP NOT FOUND: /DiskPools/put/Createxxx
     cleanup_scenario(test, rg, rg_2)
 
 
@@ -115,7 +56,7 @@ class DiskpoolScenarioTest(ScenarioTest):
         self.kwargs.update({
             'myDisk': self.create_random_name(prefix='disk', length=10),
             'zone': "3",
-            'myDiskPool': self.create_random_name(prefix='diskpool', length=10),
+            'myDiskPool': self.create_random_name(prefix='diskpool', length=16),
             'myIscsiTarget': self.create_random_name(prefix='iscsi', length=10),
             'myDiskPool2': 'SampleAse',
         })
