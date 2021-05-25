@@ -17,14 +17,13 @@ from azure.core.exceptions import ClientAuthenticationError
 import yaml
 import requests
 import urllib.request
-import signal
 from _thread import interrupt_main
 from psutil import process_iter, NoSuchProcess, AccessDenied, ZombieProcess, net_connections
 from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.prompting import NoTTYException
-from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
+from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core._profile import Profile
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core import telemetry
@@ -51,12 +50,6 @@ import logging
 from setuptools._vendor.packaging import version
 import colorama
 from datetime import datetime, timezone
-import subprocess
-import base64
-from ._client_factory import cf_storage
-from six.moves.urllib.request import urlopen  # pylint: disable=import-error
-from tabulate import tabulate  # pylint: disable=import-error
-import datetime 
 
 logger = get_logger(__name__)
 # pylint:disable=unused-argument
@@ -1437,6 +1430,9 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     utils.setup_logger('connectedk8s_troubleshoot', troubleshoot_log_path)
     tr_logger = logging.getLogger('connectedk8s_troubleshoot')  # logger for troubleshooting, onto a log file
 
+    # Send cloud information to telemetry
+    send_cloud_telemetry(cmd)
+    # setting kubeconfig
     kube_config = set_kube_config(kube_config)
 
     # Loading the kubeconfig file in kubernetes client configuration
@@ -1500,14 +1496,13 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         except Exception as ex:
             tr_logger.error("Error occured while checking if the MSI certificate has expired: {}".format(str(ex)))
 
-        storage_account_name, sas_token, readonly_sas_token = utils.setup_validate_strorage_account(cmd.cli_ctx, storage_account, sas_token, resource_group_name)
+        storage_account_name, sas_token, readonly_sas_token = utils.setup_validate_storage_account(cmd.cli_ctx, storage_account, sas_token, resource_group_name)
         if storage_account_name:  # When validated the storage account
             utils.try_upload_log_file(storage_account_name, sas_token, troubleshoot_log_path)
             # token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token
             # ADD the periscope part here.
 
-            collect_logs(cmd, resource_group_name, cluster_name, storage_account_name, sas_token, 
-        readonly_sas_token, kube_context, kube_config)
+            utils.collect_logs(resource_group_name, cluster_name, storage_account_name, sas_token, readonly_sas_token, kube_context, kube_config)
         try:
             # Creating the .tar.gz for logs and deleting the actual log file
             import tarfile
@@ -1523,291 +1518,6 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     except Exception as ex:
         tr_logger.error("Exception caught while running troubleshoot: {}".format(str(ex)), exc_info=True)
         raise CLIInternalError("Exception caught while running troubleshoot: {}".format(str(ex)))
-
-
-def display_diagnostics_report(temp_kubeconfig_path, kube_config):   # pylint: disable=too-many-statements
-    if not which('kubectl'):
-        raise CLIError('Can not find kubectl executable in PATH')
-    subprocess_cmd = ["kubectl", "get", "node", "--no-headers"]
-    if kube_config:
-        subprocess_cmd.extend(["--kubeconfig", kube_config])
-    nodes = subprocess.check_output(
-        subprocess_cmd,
-        universal_newlines=True)
-    logger.debug(nodes)
-    node_lines = nodes.splitlines()
-    ready_nodes = {}
-    for node_line in node_lines:
-        columns = node_line.split()
-        logger.debug(node_line)
-        if columns[1] != "Ready":
-            logger.warning("Node %s is not Ready. Current state is: %s.", columns[0], columns[1])
-        else:
-            ready_nodes[columns[0]] = False
-
-    logger.debug('There are %s ready nodes in the cluster', str(len(ready_nodes)))
-
-    if not ready_nodes:
-        logger.warning('No nodes are ready in the current cluster. Diagnostics info might not be available.')
-
-    network_config_array = []
-    network_status_array = []
-    apds_created = False
-
-    max_retry = 10
-    for retry in range(0, max_retry):
-        if not apds_created:
-            subprocess_cmd = ["kubectl", "get", "apd", "-n", "aks-periscope", "--no-headers"]
-            if kube_config:
-                subprocess_cmd.extend(["--kubeconfig", kube_config])
-            apd = subprocess.check_output(
-                subprocess_cmd,
-                universal_newlines=True
-            )
-            apd_lines = apd.splitlines()
-            if apd_lines and 'No resources found' in apd_lines[0]:
-                apd_lines.pop(0)
-
-            print("Got {} diagnostic results for {} ready nodes{}\r".format(len(apd_lines),
-                                                                            len(ready_nodes),
-                                                                            '.' * retry), end='')
-            if len(apd_lines) < len(ready_nodes):
-                time.sleep(3)
-            else:
-                apds_created = True
-                print()
-        else:
-            for node_name in ready_nodes:
-                if ready_nodes[node_name]:
-                    continue
-                apdName = "aks-periscope-diagnostic-" + node_name
-                try:
-                    subprocess_cmd = ["kubectl", 
-                         "get", "apd", apdName, "-n",
-                         "aks-periscope", "-o=jsonpath={.spec.networkconfig}"]
-                    if kube_config:
-                        subprocess_cmd.extend(["--kubeconfig", kube_config])
-                    network_config = subprocess.check_output(
-                        subprocess_cmd,
-                        universal_newlines=True)
-                    logger.debug('Dns status for node %s is %s', node_name, network_config)
-                    subprocess_cmd = ["kubectl", 
-                         "get", "apd", apdName, "-n",
-                         "aks-periscope", "-o=jsonpath={.spec.networkoutbound}"]
-                    if kube_config:
-                        subprocess_cmd.extend(["--kubeconfig", kube_config])
-                    network_status = subprocess.check_output(
-                        subprocess_cmd,
-                        universal_newlines=True)
-                    logger.debug('Network status for node %s is %s', node_name, network_status)
-
-                    if not network_config or not network_status:
-                        print("The diagnostics information for node {} is not ready yet. "
-                              "Will try again in 10 seconds.".format(node_name))
-                        time.sleep(10)
-                        break
-
-                    network_config_array += json.loads('[' + network_config + ']')
-                    network_status_object = json.loads(network_status)
-                    network_status_array += format_diag_status(network_status_object)
-                    ready_nodes[node_name] = True
-                except subprocess.CalledProcessError as err:
-                    raise CLIError(err.output)
-
-    print()
-    if network_config_array:
-        print("Below are the network configuration for each node: ")
-        print()
-        print(tabulate(network_config_array, headers="keys", tablefmt='simple'))
-        print()
-    else:
-        logger.warning("Could not get network config. "
-                       "Please run 'az aks kanalyze' command later to get the analysis results.")
-
-    if network_status_array:
-        print("Below are the network connectivity results for each node:")
-        print()
-        print(tabulate(network_status_array, headers="keys", tablefmt='simple'))
-    else:
-        logger.warning("Could not get networking status. "
-                       "Please run 'az aks kanalyze' command later to get the analysis results.")
-
-def format_diag_status(diag_status):
-    for diag in diag_status:
-        if diag["Status"]:
-            if "Error:" in diag["Status"]:
-                diag["Status"] = f'{colorama.Fore.RED}{diag["Status"]}{colorama.Style.RESET_ALL}'
-            else:
-                diag["Status"] = f'{colorama.Fore.GREEN}{diag["Status"]}{colorama.Style.RESET_ALL}'
-
-    return diag_status
-
-
-def collect_logs(cmd, resource_group_name, name, storage_account_name=None,
-                sas_token=None,
-                readonly_sas_token=None,
-                kube_context=None,
-                kube_config=None,
-                ):
-    colorama.init()
-
-    if not which('kubectl'):
-        raise CLIError('Can not find kubectl executable in PATH')
-
-    readonly_sas_token = readonly_sas_token.strip('?')
-
-    from knack.prompting import prompt_y_n
-
-    print()
-    print('This will deploy a daemon set to your cluster to collect logs and diagnostic information and '
-          f'save them to the storage account '
-          f'{colorama.Style.BRIGHT}{colorama.Fore.GREEN}{storage_account_name}{colorama.Style.RESET_ALL} as '
-          f'outlined in {format_hyperlink("http://aka.ms/AKSPeriscope")}.')
-    print()
-    print('If you share access to that storage account to Azure support, you consent to the terms outlined'
-          f' in {format_hyperlink("http://aka.ms/DiagConsent")}.')
-    print()
-    if not prompt_y_n('Do you confirm?', default="n"):
-        return
-    print()
-    print("Getting credentials for cluster %s " % name)
-    path=os.path.join(os.path.expanduser('~'), '.kube', 'config')
-    # Setting kubeconfig
-    # Send cloud information to telemetry
-    send_cloud_telemetry(cmd)
-    kube_config = set_kube_config(kube_config)
-    print()
-    print("Starts collecting diag info for cluster %s " % name)
-
-    sas_token = sas_token.strip('?')
-
-    deployment_yaml = urlopen(
-        "https://raw.githubusercontent.com/Azure/aks-periscope/latest/deployment/aks-periscope.yaml").read().decode()
-    deployment_yaml = deployment_yaml.replace("# <accountName, base64 encoded>",
-                                              (base64.b64encode(bytes(storage_account_name, 'ascii'))).decode('ascii'))
-    deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>",
-                                              (base64.b64encode(bytes("?" + sas_token, 'ascii'))).decode('ascii'))
-    container_logs = "azure-arc"
-    kube_objects = "azure-arc/pod azure-arc/service azure-arc/deployment"
-    yaml_lines = deployment_yaml.splitlines()
-    for index, line in enumerate(yaml_lines):
-        if "DIAGNOSTIC_CONTAINERLOGS_LIST" in line and container_logs is not None:
-            yaml_lines[index] = line + ' ' + container_logs
-        if "DIAGNOSTIC_KUBEOBJECTS_LIST" in line and kube_objects is not None:
-            yaml_lines[index] = line + ' ' + kube_objects
-        if "CLUSTER_TYPE" in line:
-            yaml_lines[index] = '  CLUSTER_TYPE: connectedCluster'
-
-    deployment_yaml = '\n'.join(yaml_lines)
-
-    fd, temp_yaml_path = tempfile.mkstemp()
-    temp_yaml_file = os.fdopen(fd, 'w+t')
-    try:
-        temp_yaml_file.write(deployment_yaml)
-        temp_yaml_file.flush()
-        temp_yaml_file.close()
-        print(temp_yaml_file)
-        try:
-            kube_config = None
-            print("Cleaning up diagnostic container resources from the k8s cluster if existing")
-
-            subprocess_cmd = ["kubectl", "delete",
-                             "serviceaccount,configmap,daemonset,secret",
-                             "--all", "-n", "aks-periscope", "--ignore-not-found"]
-            if kube_config:
-                subprocess_cmd.extend(["--kubeconfig", kube_config])
-            subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
-            
-            subprocess_cmd = ["kubectl", "delete",
-            "ClusterRoleBinding",
-            "aks-periscope-role-binding", "--ignore-not-found"]
-            if kube_config:
-                subprocess_cmd.extend(["--kubeconfig", kube_config])
-            subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
-
-            subprocess_cmd = ["kubectl", "delete",
-                             "ClusterRole",
-                             "aks-periscope-role", "--ignore-not-found"]
-            if kube_config:
-                subprocess_cmd.extend(["--kubeconfig", kube_config])
-            subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
-        
-            subprocess_cmd = ["kubectl", "delete",
-                             "--all",
-                             "apd", "-n", "aks-periscope", "--ignore-not-found"]
-            if kube_config:
-                subprocess_cmd.extend(["--kubeconfig", kube_config])
-            subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
-
-            subprocess_cmd = ["kubectl", "delete",
-                             "CustomResourceDefinition",
-                             "diagnostics.aks-periscope.azure.github.com", "--ignore-not-found"]
-            if kube_config:
-                subprocess_cmd.extend(["--kubeconfig", kube_config])
-            subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
-
-            print()
-            print("Deploying diagnostic container on the K8s cluster")
-            subprocess_cmd = ["kubectl", "apply", "-f", temp_yaml_path, "-n", "aks-periscope"]
-            if kube_config:
-                subprocess_cmd.extend(["--kubeconfig", kube_config])
-            subprocess.check_output(subprocess_cmd, stderr=subprocess.STDOUT)
-        except subprocess.CalledProcessError as err:
-            raise CLIError(err.output)
-    finally:
-        os.remove(temp_yaml_path)
-
-    print()
-    log_storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/"
-
-    print(f'{colorama.Fore.GREEN}Your logs are being uploaded to storage account {format_bright(storage_account_name)}')
-
-    print()
-    print(f'You can download Azure Storage Explorer here '
-          f'{format_hyperlink("https://azure.microsoft.com/en-us/features/storage-explorer/")}'
-          f' to check the logs by adding the storage account using the following URL:')
-    print(f'{format_hyperlink(log_storage_account_url)}')
-
-    print()
-    if not prompt_y_n('Do you want to see analysis results now?', default="n"):
-        print(f"You can run 'az aks kanalyze -g {resource_group_name} -n {name}' "
-              f"anytime to check the analysis results.")
-    else:
-        display_diagnostics_report(path, kube_config)
-
-
-def which(binary):
-    path_var = os.getenv('PATH')
-    if platform.system() == 'Windows':
-        binary = binary + '.exe'
-        parts = path_var.split(';')
-    else:
-        parts = path_var.split(':')
-
-    for part in parts:
-        bin_path = os.path.join(part, binary)
-        if os.path.exists(bin_path) and os.path.isfile(bin_path) and os.access(bin_path, os.X_OK):
-            return bin_path
-
-    return None
-
-
-def cloud_storage_account_service_factory(cli_ctx, kwargs):
-    from azure.cli.core.profiles import ResourceType, get_sdk
-    t_cloud_storage_account = get_sdk(cli_ctx, ResourceType.DATA_STORAGE, 'common#CloudStorageAccount')
-    account_name = kwargs.pop('account_name', None)
-    account_key = kwargs.pop('account_key', None)
-    sas_token = kwargs.pop('sas_token', None)
-    kwargs.pop('connection_string', None)
-    return t_cloud_storage_account(account_name, account_key, sas_token)
-
-
-def format_hyperlink(the_link):
-    return f'\033[1m{colorama.Style.BRIGHT}{colorama.Fore.BLUE}{the_link}{colorama.Style.RESET_ALL}'
-
-
-def format_bright(msg):
-    return f'\033[1m{colorama.Style.BRIGHT}{msg}{colorama.Style.RESET_ALL}'
 
 
 def load_kubernetes_configuration(filename):
