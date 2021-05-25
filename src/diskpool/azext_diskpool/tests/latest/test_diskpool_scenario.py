@@ -12,7 +12,6 @@ import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 from .preparers import VirtualNetworkPreparer
-from .example_steps import step_create, step_create_required
 from .. import (
     try_manual,
     raise_if,

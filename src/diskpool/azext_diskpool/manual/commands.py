@@ -25,8 +25,8 @@ def load_command_table(self, _):
         g.custom_command('list', 'disk_pool_list', table_transformer=transform_disk_pool_list_output)
 
     diskpool_disk_pool_zones = CliCommandType(
-        operations_tmpl='azext_diskpool.vendored_sdks.storagepool.operations._disk_pool_zones_operations#DiskPoolZonesOperations'
-                        '.{}',
+        operations_tmpl=
+        'azext_diskpool.vendored_sdks.storagepool.operations._disk_pool_zones_operations#DiskPoolZonesOperations.{}',
         client_factory=cf_disk_pool_zones)
-    with self.command_group('disk-pool', diskpool_disk_pool_zones, client_factory=cf_disk_pool_zones, is_preview=True) as g:
+    with self.command_group('disk-pool', diskpool_disk_pool_zones, is_preview=True) as g:
         g.custom_command('list-skus', 'disk_pool_list_skus')

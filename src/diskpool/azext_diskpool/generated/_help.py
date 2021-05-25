@@ -12,6 +12,11 @@
 from knack.help_files import helps
 
 
+helps['diskpool'] = '''
+    type: group
+    short-summary: Manage Storage Pool Management
+'''
+
 helps['disk-pool'] = """
     type: group
     short-summary: Manage disk pool with diskpool
@@ -98,15 +103,6 @@ helps['disk-pool delete'] = """
                az disk-pool delete --name "myDiskPool" --resource-group "myResourceGroup"
 """
 
-helps['disk-pool list-skus'] = """
-    type: command
-    short-summary: "Lists available Disk Pool Skus in an Azure location."
-    examples:
-      - name: List Disk Pool Skus
-        text: |-
-               az disk-pool list-skus --location "eastus"
-"""
-
 helps['disk-pool start'] = """
     type: command
     short-summary: "The operation to start a Disk Pool."
@@ -139,6 +135,20 @@ helps['disk-pool wait'] = """
       - name: Pause executing next line of CLI script until the disk-pool is successfully deleted.
         text: |-
                az disk-pool wait --name "myDiskPool" --resource-group "myResourceGroup" --deleted
+"""
+
+helps['diskpool disk-pool-zone'] = """
+    type: group
+    short-summary: Manage disk pool zone with diskpool
+"""
+
+helps['diskpool disk-pool-zone list'] = """
+    type: command
+    short-summary: "Lists available Disk Pool Skus in an Azure location."
+    examples:
+      - name: List Disk Pool Skus
+        text: |-
+               az diskpool disk-pool-zone list --location "eastus"
 """
 
 helps['disk-pool iscsi-target'] = """

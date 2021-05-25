@@ -23,17 +23,19 @@ KEY_VNET_NIC = 'nic'
 
 
 class VirtualNetworkPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
-    def __init__(self, name_prefix='clitest.vn',
-                 parameter_name='virtual_network',
-                 resource_group_name=None,
-                 resource_group_key=KEY_RESOURCE_GROUP,
-                 dev_setting_name='AZURE_CLI_TEST_DEV_VIRTUAL_NETWORK_NAME',
-                 random_name_length=24, key=KEY_VIRTUAL_NETWORK):
+    def __init__(
+        self,
+        name_prefix='clitest.vn',
+        parameter_name='virtual_network',
+        resource_group_name=None,
+        resource_group_key=KEY_RESOURCE_GROUP,
+        dev_setting_name='AZURE_CLI_TEST_DEV_VIRTUAL_NETWORK_NAME',
+        random_name_length=24,
+        key=KEY_VIRTUAL_NETWORK,
+    ):
         if ' ' in name_prefix:
-            raise CliTestError(
-                'Error: Space character in name prefix \'%s\'' % name_prefix)
-        super(VirtualNetworkPreparer, self).__init__(
-            name_prefix, random_name_length)
+            raise CliTestError('Error: Space character in name prefix \'%s\'' % name_prefix)
+        super(VirtualNetworkPreparer, self).__init__(name_prefix, random_name_length)
         self.cli_ctx = get_dummy_cli()
         self.parameter_name = parameter_name
         self.key = key
@@ -43,23 +45,21 @@ class VirtualNetworkPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
 
     def create_resource(self, name, **_):
         if self.dev_setting_name:
-            return {self.parameter_name: self.dev_setting_name, }
+            return {
+                self.parameter_name: self.dev_setting_name,
+            }
 
         if not self.resource_group_name:
-            self.resource_group_name = self.test_class_instance.kwargs.get(
-                self.resource_group_key)
+            self.resource_group_name = self.test_class_instance.kwargs.get(self.resource_group_key)
             if not self.resource_group_name:
                 raise CliTestError("Error: No resource group configured!")
 
-        tags = {'product': 'azurecli', 'cause': 'automation',
-                'date': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')}
+        tags = {'product': 'azurecli', 'cause': 'automation', 'date': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')}
         if 'ENV_JOB_NAME' in os.environ:
             tags['job'] = os.environ['ENV_JOB_NAME']
-        tags = ' '.join(['{}={}'.format(key, value)
-                         for key, value in tags.items()])
+        tags = ' '.join(['{}={}'.format(key, value) for key, value in tags.items()])
         template = 'az network vnet create --resource-group {} --name {} --subnet-name default --tag ' + tags
-        self.live_only_execute(self.cli_ctx, template.format(
-            self.resource_group_name, name))
+        self.live_only_execute(self.cli_ctx, template.format(self.resource_group_name, name))
 
         self.test_class_instance.kwargs[self.key] = name
         return {self.parameter_name: name}
@@ -69,20 +69,23 @@ class VirtualNetworkPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         if not self.dev_setting_name:
             self.live_only_execute(
                 self.cli_ctx,
-                'az network vnet delete --name {} --resource-group {}'.format(name, self.resource_group_name))
+                'az network vnet delete --name {} --resource-group {}'.format(name, self.resource_group_name),
+            )
 
 
 class VnetSubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
-    def __init__(self, name_prefix='clitest.vn',
-                 parameter_name='subnet',
-                 resource_group_key=KEY_RESOURCE_GROUP,
-                 vnet_key=KEY_VIRTUAL_NETWORK,
-                 address_prefixes="11.0.0.0/24",
-                 dev_setting_name='AZURE_CLI_TEST_DEV_VNET_SUBNET_NAME',
-                 key=KEY_VNET_SUBNET):
+    def __init__(
+        self,
+        name_prefix='clitest.vn',
+        parameter_name='subnet',
+        resource_group_key=KEY_RESOURCE_GROUP,
+        vnet_key=KEY_VIRTUAL_NETWORK,
+        address_prefixes="11.0.0.0/24",
+        dev_setting_name='AZURE_CLI_TEST_DEV_VNET_SUBNET_NAME',
+        key=KEY_VNET_SUBNET,
+    ):
         if ' ' in name_prefix:
-            raise CliTestError(
-                'Error: Space character in name prefix \'%s\'' % name_prefix)
+            raise CliTestError('Error: Space character in name prefix \'%s\'' % name_prefix)
         super(VnetSubnetPreparer, self).__init__(name_prefix, 15)
         self.cli_ctx = get_dummy_cli()
         self.parameter_name = parameter_name
@@ -94,11 +97,12 @@ class VnetSubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
 
     def create_resource(self, name, **_):
         if self.dev_setting_name:
-            return {self.parameter_name: self.dev_setting_name, }
+            return {
+                self.parameter_name: self.dev_setting_name,
+            }
 
         if not self.resource_group[1]:
-            self.resource_group[1] = self.test_class_instance.kwargs.get(
-                self.resource_group[0])
+            self.resource_group[1] = self.test_class_instance.kwargs.get(self.resource_group[0])
             if not self.resource_group[1]:
                 raise CliTestError("Error: No resource group configured!")
         if not self.vnet[1]:
@@ -114,15 +118,17 @@ class VnetSubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
 
 
 class VnetNicPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
-    def __init__(self, name_prefix='clitest.nic',
-                 parameter_name='subnet',
-                 resource_group_key=KEY_RESOURCE_GROUP,
-                 vnet_key=KEY_VIRTUAL_NETWORK,
-                 dev_setting_name='AZURE_CLI_TEST_DEV_VNET_NIC_NAME',
-                 key=KEY_VNET_NIC):
+    def __init__(
+        self,
+        name_prefix='clitest.nic',
+        parameter_name='subnet',
+        resource_group_key=KEY_RESOURCE_GROUP,
+        vnet_key=KEY_VIRTUAL_NETWORK,
+        dev_setting_name='AZURE_CLI_TEST_DEV_VNET_NIC_NAME',
+        key=KEY_VNET_NIC,
+    ):
         if ' ' in name_prefix:
-            raise CliTestError(
-                'Error: Space character in name prefix \'%s\'' % name_prefix)
+            raise CliTestError('Error: Space character in name prefix \'%s\'' % name_prefix)
         super(VnetNicPreparer, self).__init__(name_prefix, 15)
         self.cli_ctx = get_dummy_cli()
         self.parameter_name = parameter_name
@@ -133,11 +139,12 @@ class VnetNicPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
 
     def create_resource(self, name, **_):
         if self.dev_setting_name:
-            return {self.parameter_name: self.dev_setting_name, }
+            return {
+                self.parameter_name: self.dev_setting_name,
+            }
 
         if not self.resource_group[1]:
-            self.resource_group[1] = self.test_class_instance.kwargs.get(
-                self.resource_group[0])
+            self.resource_group[1] = self.test_class_instance.kwargs.get(self.resource_group[0])
             if not self.resource_group[1]:
                 raise CliTestError("Error: No resource group configured!")
         if not self.vnet[1]:
@@ -146,8 +153,7 @@ class VnetNicPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
                 raise CliTestError("Error: No vnet configured!")
 
         template = 'az network nic create --resource-group {} --name {} --vnet-name {} --subnet default '
-        self.live_only_execute(self.cli_ctx, template.format(
-            self.resource_group[1], name, self.vnet[1]))
+        self.live_only_execute(self.cli_ctx, template.format(self.resource_group[1], name, self.vnet[1]))
 
         self.test_class_instance.kwargs[self.key] = name
         return {self.parameter_name: name}
@@ -155,5 +161,5 @@ class VnetNicPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
     def remove_resource(self, name, **_):
         if not self.dev_setting_name:
             self.live_only_execute(
-                self.cli_ctx,
-                'az network nic delete --name {} --resource-group {}'.format(name, self.resource_group[1]))
+                self.cli_ctx, 'az network nic delete --name {} --resource-group {}'.format(name, self.resource_group[1])
+            )
