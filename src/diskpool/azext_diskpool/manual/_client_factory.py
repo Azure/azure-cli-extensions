@@ -8,17 +8,8 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-
-def cf_diskpool_cl(cli_ctx, *_):
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azext_diskpool.vendored_sdks.storagepool import StoragePoolManagement
-    return get_mgmt_service_client(cli_ctx,
-                                   StoragePoolManagement)
+from ..generated._client_factory import cf_diskpool_cl
 
 
-def cf_disk_pool(cli_ctx, *_):
-    return cf_diskpool_cl(cli_ctx).disk_pools
-
-
-def cf_iscsi_target(cli_ctx, *_):
-    return cf_diskpool_cl(cli_ctx).iscsi_targets
+def cf_disk_pool_zones(cli_ctx, *_):
+    return cf_diskpool_cl(cli_ctx).disk_pool_zones

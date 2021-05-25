@@ -25,22 +25,22 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 # Env setup_scenario
 @try_manual
-def setup_scenario(test, rg, rg_2):
+def setup_scenario(test, rg):
     pass
 
 
 # Env cleanup_scenario
 @try_manual
-def cleanup_scenario(test, rg, rg_2):
+def cleanup_scenario(test, rg):
     pass
 
 
 # Testcase: Scenario
 @try_manual
-def call_scenario(test, rg, rg_2):
-    setup_scenario(test, rg, rg_2)
+def call_scenario(test, rg):
+    setup_scenario(test, rg)
     # STEP NOT FOUND: /DiskPools/put/Createxxx
-    cleanup_scenario(test, rg, rg_2)
+    cleanup_scenario(test, rg)
 
 
 # Test class for Scenario
@@ -58,15 +58,12 @@ class DiskpoolScenarioTest(ScenarioTest):
             'zone': "3",
             'myDiskPool': self.create_random_name(prefix='diskpool', length=16),
             'myIscsiTarget': self.create_random_name(prefix='iscsi', length=10),
-            'myDiskPool2': 'SampleAse',
         })
 
     @ResourceGroupPreparer(name_prefix='clitestdiskpool_myResourceGroup'[:7], key='rg', parameter_name='rg')
-    @ResourceGroupPreparer(name_prefix='clitestdiskpool_Sample-WestUSResourceGroup'[:7], key='rg_2',
-                           parameter_name='rg_2')
     @VirtualNetworkPreparer(name_prefix='clitestdiskpool_myvnet'[:7], key='vn', resource_group_key='rg')
-    def test_diskpool_Scenario(self, rg, rg_2):
-        call_scenario(self, rg, rg_2)
+    def test_diskpool_Scenario(self, rg):
+        call_scenario(self, rg)
         calc_coverage(__file__)
         raise_if()
 

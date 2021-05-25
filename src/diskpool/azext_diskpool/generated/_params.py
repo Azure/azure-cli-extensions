@@ -36,107 +36,94 @@ def load_arguments(self, _):
     with self.argument_context('disk-pool show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
-                   'the Disk Pool. Swagger name=diskPoolName', id_part='name')
+                   'the Disk Pool.', id_part='name')
 
     with self.argument_context('disk-pool create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
-                   'the Disk Pool. Swagger name=diskPoolName')
-        c.argument('sku', action=AddSku, nargs='+', help='Determines the SKU of the Disk Pool. Swagger name=sku')
+                   'the Disk Pool.')
+        c.argument('sku', action=AddSku, nargs='+', help='Determines the SKU of the Disk Pool')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('availability_zones', nargs='+', help='Logical zone for Disk Pool resource; example: ["1"]. Swagger '
-                   'name=availabilityZones')
+        c.argument('availability_zones', nargs='+', help='Logical zone for Disk Pool resource; example: ["1"].')
         c.argument('disks', action=AddDiskPoolCreateDisks, nargs='+', help='List of Azure Managed Disks to attach to a '
-                   'Disk Pool. Swagger name=disks')
-        c.argument('subnet_id', type=str,
-                   help='Azure Resource ID of a Subnet for the Disk Pool. Swagger name=subnetId')
-        c.argument('additional_capabilities', nargs='+', help='List of additional capabilities for a Disk Pool. '
-                   'Swagger name=additionalCapabilities')
+                   'Disk Pool.')
+        c.argument('subnet_id', type=str, help='Azure Resource ID of a Subnet for the Disk Pool.')
+        c.argument('additional_capabilities', nargs='+', help='List of additional capabilities for a Disk Pool.')
 
     with self.argument_context('disk-pool update') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
-                   'the Disk Pool. Swagger name=diskPoolName', id_part='name')
+                   'the Disk Pool.', id_part='name')
         c.argument('tags', tags_type)
         c.argument('disks', action=AddDiskPoolUpdateDisks, nargs='+', help='List of Azure Managed Disks to attach to a '
-                   'Disk Pool. Swagger name=disks')
+                   'Disk Pool.')
 
     with self.argument_context('disk-pool delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
-                   'the Disk Pool. Swagger name=diskPoolName', id_part='name')
+                   'the Disk Pool.', id_part='name')
 
-    with self.argument_context('disk-pool list-outbound-network-dependency-endpoint') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
-                   'the Disk Pool. Swagger name=diskPoolName')
+    with self.argument_context('disk-pool list-skus') as c:
+        c.argument('location', arg_type=get_location_type(self.cli_ctx))
 
     with self.argument_context('disk-pool start') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
-                   'the Disk Pool. Swagger name=diskPoolName', id_part='name')
+                   'the Disk Pool.', id_part='name')
 
     with self.argument_context('disk-pool stop') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
-                   'the Disk Pool. Swagger name=diskPoolName', id_part='name')
+                   'the Disk Pool.', id_part='name')
 
     with self.argument_context('disk-pool wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('disk_pool_name', options_list=['--name', '-n', '--disk-pool-name'], type=str, help='The name of '
-                   'the Disk Pool. Swagger name=diskPoolName', id_part='name')
-
-    with self.argument_context('disk-pool-zone list') as c:
-        c.argument('location', arg_type=get_location_type(self.cli_ctx))
+                   'the Disk Pool.', id_part='name')
 
     with self.argument_context('disk-pool iscsi-target list') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('disk_pool_name', type=str, help='The name of the Disk Pool. Swagger name=diskPoolName')
+        c.argument('disk_pool_name', type=str, help='The name of the Disk Pool.')
 
     with self.argument_context('disk-pool iscsi-target show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('disk_pool_name', type=str, help='The name of the Disk Pool. Swagger name=diskPoolName',
-                   id_part='name')
+        c.argument('disk_pool_name', type=str, help='The name of the Disk Pool.', id_part='name')
         c.argument('iscsi_target_name', options_list=['--name', '-n', '--iscsi-target-name'], type=str, help='The name '
-                   'of the iSCSI Target. Swagger name=iscsiTargetName', id_part='child_name_1')
+                   'of the iSCSI Target.', id_part='child_name_1')
 
     with self.argument_context('disk-pool iscsi-target create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('disk_pool_name', type=str, help='The name of the Disk Pool. Swagger name=diskPoolName')
+        c.argument('disk_pool_name', type=str, help='The name of the Disk Pool.')
         c.argument('iscsi_target_name', options_list=['--name', '-n', '--iscsi-target-name'], type=str, help='The name '
-                   'of the iSCSI Target. Swagger name=iscsiTargetName')
-        c.argument('acl_mode', arg_type=get_enum_type(['Dynamic', 'Static']), help='Mode for Target connectivity. '
-                   'Swagger name=aclMode')
+                   'of the iSCSI Target.')
+        c.argument('acl_mode', arg_type=get_enum_type(['Dynamic', 'Static']), help='Mode for Target connectivity.')
         c.argument('target_iqn', type=str, help='iSCSI Target IQN (iSCSI Qualified Name); example: '
-                   '"iqn.2005-03.org.iscsi:server". Swagger name=targetIqn')
+                   '"iqn.2005-03.org.iscsi:server".')
         c.argument('static_acls', action=AddDiskPoolIscsiTargetCreateStaticAcls, nargs='+', help='Access Control List '
-                   '(ACL) for an iSCSI Target; defines LUN masking policy. Swagger name=staticAcls')
+                   '(ACL) for an iSCSI Target; defines LUN masking policy')
         c.argument('luns', action=AddDiskPoolIscsiTargetCreateLuns, nargs='+', help='List of LUNs to be exposed '
-                   'through iSCSI Target. Swagger name=luns')
+                   'through iSCSI Target.')
 
     with self.argument_context('disk-pool iscsi-target update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('disk_pool_name', type=str, help='The name of the Disk Pool. Swagger name=diskPoolName',
-                   id_part='name')
+        c.argument('disk_pool_name', type=str, help='The name of the Disk Pool.', id_part='name')
         c.argument('iscsi_target_name', options_list=['--name', '-n', '--iscsi-target-name'], type=str, help='The name '
-                   'of the iSCSI Target. Swagger name=iscsiTargetName', id_part='child_name_1')
+                   'of the iSCSI Target.', id_part='child_name_1')
         c.argument('static_acls', action=AddDiskPoolIscsiTargetUpdateStaticAcls, nargs='+', help='Access Control List '
-                   '(ACL) for an iSCSI Target; defines LUN masking policy. Swagger name=staticAcls')
+                   '(ACL) for an iSCSI Target; defines LUN masking policy')
         c.argument('luns', action=AddDiskPoolIscsiTargetUpdateLuns, nargs='+', help='List of LUNs to be exposed '
-                   'through iSCSI Target. Swagger name=luns')
+                   'through iSCSI Target.')
 
     with self.argument_context('disk-pool iscsi-target delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('disk_pool_name', type=str, help='The name of the Disk Pool. Swagger name=diskPoolName',
-                   id_part='name')
+        c.argument('disk_pool_name', type=str, help='The name of the Disk Pool.', id_part='name')
         c.argument('iscsi_target_name', options_list=['--name', '-n', '--iscsi-target-name'], type=str, help='The name '
-                   'of the iSCSI Target. Swagger name=iscsiTargetName', id_part='child_name_1')
+                   'of the iSCSI Target.', id_part='child_name_1')
 
     with self.argument_context('disk-pool iscsi-target wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('disk_pool_name', type=str, help='The name of the Disk Pool. Swagger name=diskPoolName',
-                   id_part='name')
+        c.argument('disk_pool_name', type=str, help='The name of the Disk Pool.', id_part='name')
         c.argument('iscsi_target_name', options_list=['--name', '-n', '--iscsi-target-name'], type=str, help='The name '
-                   'of the iSCSI Target. Swagger name=iscsiTargetName', id_part='child_name_1')
+                   'of the iSCSI Target.', id_part='child_name_1')

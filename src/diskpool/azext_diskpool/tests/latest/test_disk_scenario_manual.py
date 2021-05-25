@@ -7,7 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-
+import mock
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 
@@ -34,9 +34,10 @@ class DiskpoolScenarioTest(ScenarioTest):
         result = self.cmd('disk create --name {diskName2} --resource-group {rg} --zone {zone} --location {location} '
                           '--sku Premium_LRS --max-shares 2 --size-gb 256').get_output_in_json()
         self.kwargs['diskId2'] = result['id']
-
-        self.cmd('role assignment create --assignee-object-id {storagePoolObjectId} --role "Virtual Machine Contributor" --scope {diskId}')
-        self.cmd('role assignment create --assignee-object-id {storagePoolObjectId} --role "Virtual Machine Contributor" --scope {diskId2}')
+        with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
+            self.cmd('role assignment create --assignee-object-id {storagePoolObjectId} --role "Virtual Machine Contributor" --scope {diskId}')
+        with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
+            self.cmd('role assignment create --assignee-object-id {storagePoolObjectId} --role "Virtual Machine Contributor" --scope {diskId2}')
 
         self.cmd('network vnet create --name {vnet} --resource-group {rg} --location {location}')
         result = self.cmd('network vnet subnet create --name {subnet} --vnet-name {vnet} --resource-group {rg} '
@@ -59,7 +60,8 @@ class DiskpoolScenarioTest(ScenarioTest):
                          self.check('tier', 'Standard')])
         self.cmd('disk-pool list --resource-group {rg}',
                  checks=[self.check('length(@)', 1)])
-        #
+
+        # TODO: Add back when fixed in server
         # self.cmd('disk-pool list-outbound-network-dependency-endpoint --name {diskPoolName} --resource-group {rg}',
         #          checks=[self.check('length(@)', 1)])
 
@@ -92,11 +94,13 @@ class DiskpoolScenarioTest(ScenarioTest):
                          self.check('luns[1].managedDiskAzureResourceId', '{diskId2}'),
                          self.check('luns[1].name', 'lun1')])
 
-        self.cmd('disk-pool stop --name {diskPoolName} --resource-group {rg}',
-                 checks=[self.check('status', 'Stopped')])
-        self.cmd('disk-pool start --name {diskPoolName} --resource-group {rg}',
-                 checks=[self.check('name', '{diskPoolName}'),
-                         self.check('status', 'Running')])
+        self.cmd('disk-pool stop --name {diskPoolName} --resource-group {rg}')
+        self.cmd('disk-pool show --name {diskPoolName} --resource-group {rg}',
+                 checks=[self.check('status', 'Stopped (deallocated)')])
+
+        self.cmd('disk-pool start --name {diskPoolName} --resource-group {rg}')
+        self.cmd('disk-pool show --name {diskPoolName} --resource-group {rg}',
+                 checks=[self.check('status', 'Running')])
 
         self.cmd('disk-pool iscsi-target delete --name {targetName} --disk-pool-name {diskPoolName} '
                  '--resource-group {rg} -y')
@@ -106,3 +110,7 @@ class DiskpoolScenarioTest(ScenarioTest):
         self.cmd('disk-pool delete --name {diskPoolName} --resource-group {rg} -y')
         self.cmd('disk-pool list --resource-group {rg}',
                  checks=[self.check('length(@)', 0)])
+
+    def test_diskpool_list_sku_scenario_manual(self):
+        result = self.cmd('disk-pool list-skus -l eastus ').get_output_in_json()
+        self.assertIsNotNone(result)
