@@ -256,7 +256,6 @@ def step__tagrules_get_tagrules_list(test):
              ])
 
 
-# TODO: Add test back
 # EXAMPLE: /Monitors/delete/Monitors_Delete
 @try_manual
 def step__monitors_delete_monitors_delete(test):
@@ -290,7 +289,7 @@ def step__monitors_put_monitors_create_link(test):
                  '--resource-group "{rg}"',
                  checks=[
                      test.check("name", "{myMonitor}", case_sensitive=False),
-                     test.check("sku.name", "drawdown_testing_20200904_Monthly", case_sensitive=False),
+                     test.check("sku.name", "Linked", case_sensitive=False),
                      test.check("location", "eastus2euap", case_sensitive=False),
                      test.check("properties.marketplaceSubscriptionStatus", "Active", case_sensitive=False),
                      test.check("properties.monitoringStatus", "Enabled", case_sensitive=False),
@@ -329,6 +328,7 @@ def call_scenario(test):
     step__apikeys_post_apikeys_list(test)
     step__apikeys_post_apikeys_setdefaultkey(test)
     step__apikeys_post_apikeys_getdefaultkey(test)
+    step__monitors_delete_monitors_delete(test)
     step__terms_list(test)
     step__monitors_put_monitors_create_link(test)
     cleanup()
