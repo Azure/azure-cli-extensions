@@ -69,5 +69,5 @@ def load_command_table(self, _):
                                  custom_func_name='datadog_sso_config_update', supports_no_wait=True)
         g.custom_wait_command('wait', 'datadog_sso_config_show')
 
-    with self.command_group('datadog', is_experimental=True):
+    with self.command_group('datadog'):
         pass

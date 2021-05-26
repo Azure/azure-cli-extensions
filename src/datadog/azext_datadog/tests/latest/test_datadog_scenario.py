@@ -273,6 +273,7 @@ def step__terms_list(test):
              ])
 
 
+# TODO: Add test back
 @try_manual
 def step__monitors_put_monitors_create_link(test):
     with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=test.create_guid):
@@ -280,8 +281,8 @@ def step__monitors_put_monitors_create_link(test):
                  '--name "{myMonitor}" '
                  '--sku-name "Linked" '
                  '--datadog-organization-properties '
-                 'api-key=XX '
-                 'application-key=XX '
+                 'api-key=4545f5d8944abc2059cdcf3c086f6ab5 '
+                 'application-key=f65f3cc9e7ab66bdf2b5dd260099de56ff643b96 '
                  '--location "East US 2 EUAP" '
                  '--type "SystemAssigned" '
                  '--user-info name="Alice" email-address="alice@microsoft.com" phone-number="123-456-7890" '
@@ -289,7 +290,7 @@ def step__monitors_put_monitors_create_link(test):
                  '--resource-group "{rg}"',
                  checks=[
                      test.check("name", "{myMonitor}", case_sensitive=False),
-                     test.check("sku.name", "Linked", case_sensitive=False),
+                     test.check("sku.name", "drawdown_testing_20200904_Monthly", case_sensitive=False),
                      test.check("location", "eastus2euap", case_sensitive=False),
                      test.check("properties.marketplaceSubscriptionStatus", "Active", case_sensitive=False),
                      test.check("properties.monitoringStatus", "Enabled", case_sensitive=False),
@@ -330,7 +331,6 @@ def call_scenario(test):
     step__apikeys_post_apikeys_getdefaultkey(test)
     step__monitors_delete_monitors_delete(test)
     step__terms_list(test)
-    step__monitors_put_monitors_create_link(test)
     cleanup()
 
 
