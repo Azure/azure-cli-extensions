@@ -115,5 +115,8 @@ DEFAULT_REQUEST_TIMEOUT = 10  # seconds
 RELEASE_DATE_WINDOWS = 'release12-03-21'
 RELEASE_DATE_LINUX = 'release12-03-21'
 CSP_REFRESH_TIME = 300
+# refer https://docs.microsoft.com/en-us/rest/api/storageservices/
+# naming-and-referencing-containers--blobs--and-metadata#container-names
+STORAGE_CONTAINER_NAME_MAX_LENGTH = 63
 # URL constants
 CSP_Storage_Url = "https://k8sconnectcsp.blob.core.windows.net"

@@ -538,13 +538,16 @@ def check_delete_job(configuration, namespace):
         logger.debug("Error occurred while retrieving status of the delete job: {}".format(str(e)))
 
 
-def try_upload_log_file(storage_account_name, storage_token, log_file_path):
+def try_upload_log_file(cluster_name, storage_account_name, storage_token, log_file_path):
     try:  # Storage Upload
         import uuid
         from azure.storage.blob import BlobServiceClient
         storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/"
         blob_service_client = BlobServiceClient(account_url=storage_account_url, credential=storage_token)
-        container_name = str(uuid.uuid4())  # Create a unique name for the container
+        container_name = cluster_name + "-" + str(uuid.uuid4().hex)  # Create a unique name for the container
+        if len(container_name) > consts.STORAGE_CONTAINER_NAME_MAX_LENGTH:
+            container_name = container_name[:consts.STORAGE_CONTAINER_NAME_MAX_LENGTH]
+        container_name.rstrip('-')
 
         try:
             blob_service_client.create_container(container_name)
@@ -770,7 +773,6 @@ def collect_logs(resource_group_name, name, storage_account_name=None, sas_token
         temp_yaml_file.write(deployment_yaml)
         temp_yaml_file.flush()
         temp_yaml_file.close()
-        print(temp_yaml_file)
         try:
             print("Cleaning up diagnostic container resources from the k8s cluster if existing")
 
@@ -806,7 +808,7 @@ def collect_logs(resource_group_name, name, storage_account_name=None, sas_token
     print()
     print(f'You can download Azure Storage Explorer here '
           f'{format_hyperlink("https://azure.microsoft.com/en-us/features/storage-explorer/")}'
-          f'to check the logs by accessing the storage account {storage_account_name}.')
+          f' to check the logs by accessing the storage account {storage_account_name}.')
     # f' to check the logs by adding the storage account using the following URL:')
     # print(f'{format_hyperlink(log_storage_account_url)}')
 
