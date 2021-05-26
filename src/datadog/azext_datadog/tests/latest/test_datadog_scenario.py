@@ -256,6 +256,7 @@ def step__tagrules_get_tagrules_list(test):
              ])
 
 
+# TODO: Add test back
 # EXAMPLE: /Monitors/delete/Monitors_Delete
 @try_manual
 def step__monitors_delete_monitors_delete(test):
@@ -273,7 +274,6 @@ def step__terms_list(test):
              ])
 
 
-# TODO: Add test back
 @try_manual
 def step__monitors_put_monitors_create_link(test):
     with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=test.create_guid):
@@ -329,8 +329,8 @@ def call_scenario(test):
     step__apikeys_post_apikeys_list(test)
     step__apikeys_post_apikeys_setdefaultkey(test)
     step__apikeys_post_apikeys_getdefaultkey(test)
-    step__monitors_delete_monitors_delete(test)
     step__terms_list(test)
+    step__monitors_put_monitors_create_link(test)
     cleanup()
 
 
