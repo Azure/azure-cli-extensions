@@ -16,8 +16,7 @@ class Cosmosdb_previewCommandsLoader(AzCommandsLoader):
         cosmosdb_preview_custom = CliCommandType(
             operations_tmpl='azext_cosmosdb_preview.custom#{}',
             client_factory=cf_cosmosdb_preview)
-        super(Cosmosdb_previewCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                             custom_command_type=cosmosdb_preview_custom)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=cosmosdb_preview_custom)
 
     def load_command_table(self, args):
         from azext_cosmosdb_preview.commands import load_command_table
