@@ -22,6 +22,7 @@ from .vendored_sdks.appplatform.v2020_11_01_preview import (
 )
 from knack.log import get_logger
 from .azure_storage_file import FileService
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.profiles import ResourceType, get_sdk
@@ -1355,7 +1356,7 @@ def _get_app_log(url, user_name, password, format_json, exceptions):
 
     def build_log_shortener(length):
         if length <= 0:
-            raise CLIError('Logger length in `logger{length}` should be positive')
+            raise InvalidArgumentValueError('Logger length in `logger{length}` should be positive')
 
         def shortener(record):
             '''
