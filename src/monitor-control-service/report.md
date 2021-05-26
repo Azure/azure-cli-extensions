@@ -9,8 +9,8 @@
 ### <a name="CommandGroups">Command groups in `az monitor-control-service` extension </a>
 |CLI Command Group|Group Swagger name|Commands|
 |---------|------------|--------|
-|az monitor data-collection rule association|DataCollectionRuleAssociations|[commands](#CommandsInDataCollectionRuleAssociations)|
 |az monitor data-collection rule|DataCollectionRules|[commands](#CommandsInDataCollectionRules)|
+|az monitor data-collection rule association|DataCollectionRuleAssociations|[commands](#CommandsInDataCollectionRuleAssociations)|
 
 ## COMMANDS
 ### <a name="CommandsInDataCollectionRules">Commands in `az monitor data-collection rule` group</a>
@@ -31,7 +31,6 @@
 
 
 ## COMMAND DETAILS
-
 ### group `az monitor data-collection rule`
 #### <a name="DataCollectionRulesListByResourceGroup">Command `az monitor data-collection rule list`</a>
 
@@ -53,6 +52,7 @@ az monitor data-collection rule list
 ##### <a name="ParametersDataCollectionRulesListBySubscription">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
+
 #### <a name="DataCollectionRulesGet">Command `az monitor data-collection rule show`</a>
 
 ##### <a name="ExamplesDataCollectionRulesGet">Example</a>

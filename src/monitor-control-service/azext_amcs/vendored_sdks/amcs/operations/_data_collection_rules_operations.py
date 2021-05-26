@@ -30,7 +30,7 @@ class DataCollectionRulesOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~$(python-base-namespace).v2019_11_01_preview.models
+    :type models: ~azure.mgmt.amcs.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -59,7 +59,7 @@ class DataCollectionRulesOperations(object):
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DataCollectionRuleResourceListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~$(python-base-namespace).v2019_11_01_preview.models.DataCollectionRuleResourceListResult]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.amcs.models.DataCollectionRuleResourceListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionRuleResourceListResult"]
@@ -130,7 +130,7 @@ class DataCollectionRulesOperations(object):
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DataCollectionRuleResourceListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~$(python-base-namespace).v2019_11_01_preview.models.DataCollectionRuleResourceListResult]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.amcs.models.DataCollectionRuleResourceListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionRuleResourceListResult"]
@@ -207,7 +207,7 @@ class DataCollectionRulesOperations(object):
         :type data_collection_rule_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataCollectionRuleResource, or the result of cls(response)
-        :rtype: ~$(python-base-namespace).v2019_11_01_preview.models.DataCollectionRuleResource
+        :rtype: ~azure.mgmt.amcs.models.DataCollectionRuleResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionRuleResource"]
@@ -270,10 +270,10 @@ class DataCollectionRulesOperations(object):
          insensitive.
         :type data_collection_rule_name: str
         :param body: The payload.
-        :type body: ~$(python-base-namespace).v2019_11_01_preview.models.DataCollectionRuleResource
+        :type body: ~azure.mgmt.amcs.models.DataCollectionRuleResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataCollectionRuleResource, or the result of cls(response)
-        :rtype: ~$(python-base-namespace).v2019_11_01_preview.models.DataCollectionRuleResource
+        :rtype: ~azure.mgmt.amcs.models.DataCollectionRuleResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionRuleResource"]
@@ -348,10 +348,10 @@ class DataCollectionRulesOperations(object):
          insensitive.
         :type data_collection_rule_name: str
         :param body: The payload.
-        :type body: ~$(python-base-namespace).v2019_11_01_preview.models.ResourceForUpdate
+        :type body: ~azure.mgmt.amcs.models.ResourceForUpdate
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataCollectionRuleResource, or the result of cls(response)
-        :rtype: ~$(python-base-namespace).v2019_11_01_preview.models.DataCollectionRuleResource
+        :rtype: ~azure.mgmt.amcs.models.DataCollectionRuleResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionRuleResource"]

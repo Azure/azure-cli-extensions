@@ -34,10 +34,10 @@ def load_arguments(self, _):
 
     with self.argument_context('monitor data-collection rule show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('data_collection_rule_name', options_list=['--name', '-n'], type=str,
-                   help='The name of the data collection rule. The name is case insensitive.', id_part='name')
+        c.argument('data_collection_rule_name', options_list=['--name', '-n'], type=str, help='The name of the data '
+                   'collection rule. The name is case insensitive.', id_part='name')
 
     with self.argument_context('monitor data-collection rule delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('data_collection_rule_name', options_list=['--name', '-n'], type=str,
-                   help='The name of the data collection rule. The name is case insensitive.', id_part='name')
+        c.argument('data_collection_rule_name', options_list=['--name', '-n'], type=str, help='The name of the data '
+                   'collection rule. The name is case insensitive.', id_part='name')

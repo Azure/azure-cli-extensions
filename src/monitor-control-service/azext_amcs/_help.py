@@ -1,4 +1,3 @@
-# coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for
@@ -8,5 +7,14 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-
-__path__ = __import__('pkgutil').extend_path(__path__, __name__)
+# pylint: disable=wildcard-import
+# pylint: disable=unused-wildcard-import
+# pylint: disable=unused-import
+from .generated._help import helps  # pylint: disable=reimported
+try:
+    from .manual._help import helps  # pylint: disable=reimported
+except ImportError as e:
+    if e.name.endswith('manual._help'):
+        pass
+    else:
+        raise e

@@ -30,7 +30,7 @@ class DataCollectionRuleAssociationsOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~$(python-base-namespace).v2019_11_01_preview.models
+    :type models: ~azure.mgmt.amcs.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -59,7 +59,7 @@ class DataCollectionRuleAssociationsOperations(object):
         :type resource_uri: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DataCollectionRuleAssociationProxyOnlyResourceListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~$(python-base-namespace).v2019_11_01_preview.models.DataCollectionRuleAssociationProxyOnlyResourceListResult]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.amcs.models.DataCollectionRuleAssociationProxyOnlyResourceListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionRuleAssociationProxyOnlyResourceListResult"]
@@ -136,7 +136,7 @@ class DataCollectionRuleAssociationsOperations(object):
         :type data_collection_rule_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either DataCollectionRuleAssociationProxyOnlyResourceListResult or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~$(python-base-namespace).v2019_11_01_preview.models.DataCollectionRuleAssociationProxyOnlyResourceListResult]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.amcs.models.DataCollectionRuleAssociationProxyOnlyResourceListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionRuleAssociationProxyOnlyResourceListResult"]
@@ -214,7 +214,7 @@ class DataCollectionRuleAssociationsOperations(object):
         :type association_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataCollectionRuleAssociationProxyOnlyResource, or the result of cls(response)
-        :rtype: ~$(python-base-namespace).v2019_11_01_preview.models.DataCollectionRuleAssociationProxyOnlyResource
+        :rtype: ~azure.mgmt.amcs.models.DataCollectionRuleAssociationProxyOnlyResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionRuleAssociationProxyOnlyResource"]
@@ -275,10 +275,10 @@ class DataCollectionRuleAssociationsOperations(object):
         :param association_name: The name of the association.
         :type association_name: str
         :param body: The payload.
-        :type body: ~$(python-base-namespace).v2019_11_01_preview.models.DataCollectionRuleAssociationProxyOnlyResource
+        :type body: ~azure.mgmt.amcs.models.DataCollectionRuleAssociationProxyOnlyResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: DataCollectionRuleAssociationProxyOnlyResource, or the result of cls(response)
-        :rtype: ~$(python-base-namespace).v2019_11_01_preview.models.DataCollectionRuleAssociationProxyOnlyResource
+        :rtype: ~azure.mgmt.amcs.models.DataCollectionRuleAssociationProxyOnlyResource
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.DataCollectionRuleAssociationProxyOnlyResource"]

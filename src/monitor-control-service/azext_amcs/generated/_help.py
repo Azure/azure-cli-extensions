@@ -12,6 +12,11 @@
 from knack.help_files import helps
 
 
+helps['monitor data-collection'] = '''
+    type: group
+    short-summary: Manage Monitor
+'''
+
 helps['monitor data-collection rule association'] = """
     type: group
     short-summary: Manage data collection rule association with monitor control service

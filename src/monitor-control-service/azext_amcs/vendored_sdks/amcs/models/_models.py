@@ -49,15 +49,15 @@ class DataCollectionRule(msrest.serialization.Model):
     :param data_sources: The specification of data sources.
      This property is optional and can be omitted if the rule is meant to be used via direct calls
      to the provisioned endpoint.
-    :type data_sources: ~$(python-base-namespace).v2019_11_01_preview.models.DataSourcesSpec
+    :type data_sources: ~azure.mgmt.amcs.models.DataSourcesSpec
     :param destinations: Required. The specification of destinations.
-    :type destinations: ~$(python-base-namespace).v2019_11_01_preview.models.DestinationsSpec
+    :type destinations: ~azure.mgmt.amcs.models.DestinationsSpec
     :param data_flows: Required. The specification of data flows.
-    :type data_flows: list[~$(python-base-namespace).v2019_11_01_preview.models.DataFlow]
+    :type data_flows: list[~azure.mgmt.amcs.models.DataFlow]
     :ivar provisioning_state: The resource provisioning state. Possible values include: "Creating",
      "Updating", "Deleting", "Succeeded", "Failed".
-    :vartype provisioning_state: str or ~$(python-base-
-     namespace).v2019_11_01_preview.models.KnownDataCollectionRuleProvisioningState
+    :vartype provisioning_state: str or
+     ~azure.mgmt.amcs.models.KnownDataCollectionRuleProvisioningState
     """
 
     _validation = {
@@ -101,8 +101,8 @@ class DataCollectionRuleAssociation(msrest.serialization.Model):
     :type data_collection_rule_id: str
     :ivar provisioning_state: The resource provisioning state. Possible values include: "Creating",
      "Updating", "Deleting", "Succeeded", "Failed".
-    :vartype provisioning_state: str or ~$(python-base-
-     namespace).v2019_11_01_preview.models.KnownDataCollectionRuleAssociationProvisioningState
+    :vartype provisioning_state: str or
+     ~azure.mgmt.amcs.models.KnownDataCollectionRuleAssociationProvisioningState
     """
 
     _validation = {
@@ -149,8 +149,8 @@ class DataCollectionRuleAssociationProxyOnlyResource(msrest.serialization.Model)
     :type data_collection_rule_id: str
     :ivar provisioning_state: The resource provisioning state. Possible values include: "Creating",
      "Updating", "Deleting", "Succeeded", "Failed".
-    :vartype provisioning_state: str or ~$(python-base-
-     namespace).v2019_11_01_preview.models.KnownDataCollectionRuleAssociationProvisioningState
+    :vartype provisioning_state: str or
+     ~azure.mgmt.amcs.models.KnownDataCollectionRuleAssociationProvisioningState
     """
 
     _validation = {
@@ -193,8 +193,7 @@ class DataCollectionRuleAssociationProxyOnlyResourceListResult(msrest.serializat
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. A list of resources.
-    :type value: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.DataCollectionRuleAssociationProxyOnlyResource]
+    :type value: list[~azure.mgmt.amcs.models.DataCollectionRuleAssociationProxyOnlyResource]
     :param next_link: The URL to use for getting the next set of results.
     :type next_link: str
     """
@@ -231,8 +230,8 @@ class DataCollectionRuleAssociationProxyOnlyResourceProperties(DataCollectionRul
     :type data_collection_rule_id: str
     :ivar provisioning_state: The resource provisioning state. Possible values include: "Creating",
      "Updating", "Deleting", "Succeeded", "Failed".
-    :vartype provisioning_state: str or ~$(python-base-
-     namespace).v2019_11_01_preview.models.KnownDataCollectionRuleAssociationProvisioningState
+    :vartype provisioning_state: str or
+     ~azure.mgmt.amcs.models.KnownDataCollectionRuleAssociationProvisioningState
     """
 
     _validation = {
@@ -258,16 +257,13 @@ class DataSourcesSpec(msrest.serialization.Model):
     """Specification of data sources that will be collected.
 
     :param performance_counters: The list of performance counter data source configurations.
-    :type performance_counters: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.PerfCounterDataSource]
+    :type performance_counters: list[~azure.mgmt.amcs.models.PerfCounterDataSource]
     :param windows_event_logs: The list of Windows Event Log data source configurations.
-    :type windows_event_logs: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.WindowsEventLogDataSource]
+    :type windows_event_logs: list[~azure.mgmt.amcs.models.WindowsEventLogDataSource]
     :param syslog: The list of Syslog data source configurations.
-    :type syslog: list[~$(python-base-namespace).v2019_11_01_preview.models.SyslogDataSource]
+    :type syslog: list[~azure.mgmt.amcs.models.SyslogDataSource]
     :param extensions: The list of Azure VM extension data source configurations.
-    :type extensions: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.ExtensionDataSource]
+    :type extensions: list[~azure.mgmt.amcs.models.ExtensionDataSource]
     """
 
     _attribute_map = {
@@ -293,16 +289,13 @@ class DataCollectionRuleDataSources(DataSourcesSpec):
 This property is optional and can be omitted if the rule is meant to be used via direct calls to the provisioned endpoint.
 
     :param performance_counters: The list of performance counter data source configurations.
-    :type performance_counters: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.PerfCounterDataSource]
+    :type performance_counters: list[~azure.mgmt.amcs.models.PerfCounterDataSource]
     :param windows_event_logs: The list of Windows Event Log data source configurations.
-    :type windows_event_logs: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.WindowsEventLogDataSource]
+    :type windows_event_logs: list[~azure.mgmt.amcs.models.WindowsEventLogDataSource]
     :param syslog: The list of Syslog data source configurations.
-    :type syslog: list[~$(python-base-namespace).v2019_11_01_preview.models.SyslogDataSource]
+    :type syslog: list[~azure.mgmt.amcs.models.SyslogDataSource]
     :param extensions: The list of Azure VM extension data source configurations.
-    :type extensions: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.ExtensionDataSource]
+    :type extensions: list[~azure.mgmt.amcs.models.ExtensionDataSource]
     """
 
     _attribute_map = {
@@ -323,11 +316,9 @@ class DestinationsSpec(msrest.serialization.Model):
     """Specification of destinations that can be used in data flows.
 
     :param log_analytics: List of Log Analytics destinations.
-    :type log_analytics: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.LogAnalyticsDestination]
+    :type log_analytics: list[~azure.mgmt.amcs.models.LogAnalyticsDestination]
     :param azure_monitor_metrics: Azure Monitor Metrics destination.
-    :type azure_monitor_metrics: ~$(python-base-
-     namespace).v2019_11_01_preview.models.AzureMonitorMetricsDestination
+    :type azure_monitor_metrics: ~azure.mgmt.amcs.models.AzureMonitorMetricsDestination
     """
 
     _attribute_map = {
@@ -348,11 +339,9 @@ class DataCollectionRuleDestinations(DestinationsSpec):
     """The specification of destinations.
 
     :param log_analytics: List of Log Analytics destinations.
-    :type log_analytics: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.LogAnalyticsDestination]
+    :type log_analytics: list[~azure.mgmt.amcs.models.LogAnalyticsDestination]
     :param azure_monitor_metrics: Azure Monitor Metrics destination.
-    :type azure_monitor_metrics: ~$(python-base-
-     namespace).v2019_11_01_preview.models.AzureMonitorMetricsDestination
+    :type azure_monitor_metrics: ~azure.mgmt.amcs.models.AzureMonitorMetricsDestination
     """
 
     _attribute_map = {
@@ -391,15 +380,15 @@ class DataCollectionRuleResource(msrest.serialization.Model):
     :param data_sources: The specification of data sources.
      This property is optional and can be omitted if the rule is meant to be used via direct calls
      to the provisioned endpoint.
-    :type data_sources: ~$(python-base-namespace).v2019_11_01_preview.models.DataSourcesSpec
+    :type data_sources: ~azure.mgmt.amcs.models.DataSourcesSpec
     :param destinations: Required. The specification of destinations.
-    :type destinations: ~$(python-base-namespace).v2019_11_01_preview.models.DestinationsSpec
+    :type destinations: ~azure.mgmt.amcs.models.DestinationsSpec
     :param data_flows: Required. The specification of data flows.
-    :type data_flows: list[~$(python-base-namespace).v2019_11_01_preview.models.DataFlow]
+    :type data_flows: list[~azure.mgmt.amcs.models.DataFlow]
     :ivar provisioning_state: The resource provisioning state. Possible values include: "Creating",
      "Updating", "Deleting", "Succeeded", "Failed".
-    :vartype provisioning_state: str or ~$(python-base-
-     namespace).v2019_11_01_preview.models.KnownDataCollectionRuleProvisioningState
+    :vartype provisioning_state: str or
+     ~azure.mgmt.amcs.models.KnownDataCollectionRuleProvisioningState
     """
 
     _validation = {
@@ -452,8 +441,7 @@ class DataCollectionRuleResourceListResult(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param value: Required. A list of resources.
-    :type value: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.DataCollectionRuleResource]
+    :type value: list[~azure.mgmt.amcs.models.DataCollectionRuleResource]
     :param next_link: The URL to use for getting the next set of results.
     :type next_link: str
     """
@@ -488,15 +476,15 @@ class DataCollectionRuleResourceProperties(DataCollectionRule):
     :param data_sources: The specification of data sources.
      This property is optional and can be omitted if the rule is meant to be used via direct calls
      to the provisioned endpoint.
-    :type data_sources: ~$(python-base-namespace).v2019_11_01_preview.models.DataSourcesSpec
+    :type data_sources: ~azure.mgmt.amcs.models.DataSourcesSpec
     :param destinations: Required. The specification of destinations.
-    :type destinations: ~$(python-base-namespace).v2019_11_01_preview.models.DestinationsSpec
+    :type destinations: ~azure.mgmt.amcs.models.DestinationsSpec
     :param data_flows: Required. The specification of data flows.
-    :type data_flows: list[~$(python-base-namespace).v2019_11_01_preview.models.DataFlow]
+    :type data_flows: list[~azure.mgmt.amcs.models.DataFlow]
     :ivar provisioning_state: The resource provisioning state. Possible values include: "Creating",
      "Updating", "Deleting", "Succeeded", "Failed".
-    :vartype provisioning_state: str or ~$(python-base-
-     namespace).v2019_11_01_preview.models.KnownDataCollectionRuleProvisioningState
+    :vartype provisioning_state: str or
+     ~azure.mgmt.amcs.models.KnownDataCollectionRuleProvisioningState
     """
 
     _validation = {
@@ -527,8 +515,7 @@ class DataFlow(msrest.serialization.Model):
     All required parameters must be populated in order to send to Azure.
 
     :param streams: Required. List of streams for this data flow.
-    :type streams: list[str or ~$(python-base-
-     namespace).v2019_11_01_preview.models.KnownDataFlowStreams]
+    :type streams: list[str or ~azure.mgmt.amcs.models.KnownDataFlowStreams]
     :param destinations: Required. List of destinations for this data flow.
     :type destinations: list[str]
     """
@@ -621,10 +608,9 @@ class ErrorDetails(msrest.serialization.Model):
      error).
     :vartype target: str
     :ivar details: Additional nested error detail objects.
-    :vartype details: list[~$(python-base-namespace).v2019_11_01_preview.models.ErrorDetails]
+    :vartype details: list[~azure.mgmt.amcs.models.ErrorDetails]
     :ivar additional_info: Additional error information.
-    :vartype additional_info: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.ErrorAdditionalInfo]
+    :vartype additional_info: list[~azure.mgmt.amcs.models.ErrorAdditionalInfo]
     """
 
     _validation = {
@@ -668,11 +654,9 @@ class ErrorDetailsautogenerated(msrest.serialization.Model):
      error).
     :vartype target: str
     :ivar details: Additional nested error detail objects.
-    :vartype details: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.ErrorDetailsautogenerated]
+    :vartype details: list[~azure.mgmt.amcs.models.ErrorDetailsautogenerated]
     :ivar additional_info: Additional error information.
-    :vartype additional_info: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.ErrorAdditionalInfo]
+    :vartype additional_info: list[~azure.mgmt.amcs.models.ErrorAdditionalInfo]
     """
 
     _validation = {
@@ -709,7 +693,7 @@ class ErrorResponse(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar error: Error details.
-    :vartype error: ~$(python-base-namespace).v2019_11_01_preview.models.ErrorDetails
+    :vartype error: ~azure.mgmt.amcs.models.ErrorDetails
     """
 
     _validation = {
@@ -734,7 +718,7 @@ class ErrorResponseautogenerated(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar error: Error details.
-    :vartype error: ~$(python-base-namespace).v2019_11_01_preview.models.ErrorDetailsautogenerated
+    :vartype error: ~azure.mgmt.amcs.models.ErrorDetailsautogenerated
     """
 
     _validation = {
@@ -766,10 +750,9 @@ class ErrorResponseError(ErrorDetails):
      error).
     :vartype target: str
     :ivar details: Additional nested error detail objects.
-    :vartype details: list[~$(python-base-namespace).v2019_11_01_preview.models.ErrorDetails]
+    :vartype details: list[~azure.mgmt.amcs.models.ErrorDetails]
     :ivar additional_info: Additional error information.
-    :vartype additional_info: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.ErrorAdditionalInfo]
+    :vartype additional_info: list[~azure.mgmt.amcs.models.ErrorAdditionalInfo]
     """
 
     _validation = {
@@ -808,11 +791,9 @@ class ErrorResponseErrorautogenerated(ErrorDetailsautogenerated):
      error).
     :vartype target: str
     :ivar details: Additional nested error detail objects.
-    :vartype details: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.ErrorDetailsautogenerated]
+    :vartype details: list[~azure.mgmt.amcs.models.ErrorDetailsautogenerated]
     :ivar additional_info: Additional error information.
-    :vartype additional_info: list[~$(python-base-
-     namespace).v2019_11_01_preview.models.ErrorAdditionalInfo]
+    :vartype additional_info: list[~azure.mgmt.amcs.models.ErrorAdditionalInfo]
     """
 
     _validation = {
@@ -847,8 +828,7 @@ Collected from either Windows and Linux machines, depending on which extension i
     :param streams: Required. List of streams that this data source will be sent to.
      A stream indicates what schema will be used for this data and usually what table in Log
      Analytics the data will be sent to.
-    :type streams: list[str or ~$(python-base-
-     namespace).v2019_11_01_preview.models.KnownExtensionDataSourceStreams]
+    :type streams: list[str or ~azure.mgmt.amcs.models.KnownExtensionDataSourceStreams]
     :param extension_name: Required. The name of the VM extension.
     :type extension_name: str
     :param extension_settings: The extension settings. The format is specific for particular
@@ -925,13 +905,12 @@ Collected from both Windows and Linux machines where the counter is present.
     :param streams: Required. List of streams that this data source will be sent to.
      A stream indicates what schema will be used for this data and usually what table in Log
      Analytics the data will be sent to.
-    :type streams: list[str or ~$(python-base-
-     namespace).v2019_11_01_preview.models.KnownPerfCounterDataSourceStreams]
+    :type streams: list[str or ~azure.mgmt.amcs.models.KnownPerfCounterDataSourceStreams]
     :param scheduled_transfer_period: Required. The interval between data uploads (scheduled
      transfers), rounded up to the nearest minute. Possible values include: "PT1M", "PT5M", "PT15M",
      "PT30M", "PT60M".
-    :type scheduled_transfer_period: str or ~$(python-base-
-     namespace).v2019_11_01_preview.models.KnownPerfCounterDataSourceScheduledTransferPeriod
+    :type scheduled_transfer_period: str or
+     ~azure.mgmt.amcs.models.KnownPerfCounterDataSourceScheduledTransferPeriod
     :param sampling_frequency_in_seconds: Required. The number of seconds between consecutive
      counter measurements (samples).
     :type sampling_frequency_in_seconds: int
@@ -1002,14 +981,11 @@ Only collected from Linux machines.
     :param streams: Required. List of streams that this data source will be sent to.
      A stream indicates what schema will be used for this data and usually what table in Log
      Analytics the data will be sent to.
-    :type streams: list[str or ~$(python-base-
-     namespace).v2019_11_01_preview.models.KnownSyslogDataSourceStreams]
+    :type streams: list[str or ~azure.mgmt.amcs.models.KnownSyslogDataSourceStreams]
     :param facility_names: Required. The list of facility names.
-    :type facility_names: list[str or ~$(python-base-
-     namespace).v2019_11_01_preview.models.KnownSyslogDataSourceFacilityNames]
+    :type facility_names: list[str or ~azure.mgmt.amcs.models.KnownSyslogDataSourceFacilityNames]
     :param log_levels: The log levels to collect.
-    :type log_levels: list[str or ~$(python-base-
-     namespace).v2019_11_01_preview.models.KnownSyslogDataSourceLogLevels]
+    :type log_levels: list[str or ~azure.mgmt.amcs.models.KnownSyslogDataSourceLogLevels]
     :param name: Required. A friendly name for the data source.
      This name should be unique across all data sources (regardless of type) within the data
      collection rule.
@@ -1049,13 +1025,12 @@ Only collected from Windows machines.
     :param streams: Required. List of streams that this data source will be sent to.
      A stream indicates what schema will be used for this data and usually what table in Log
      Analytics the data will be sent to.
-    :type streams: list[str or ~$(python-base-
-     namespace).v2019_11_01_preview.models.KnownWindowsEventLogDataSourceStreams]
+    :type streams: list[str or ~azure.mgmt.amcs.models.KnownWindowsEventLogDataSourceStreams]
     :param scheduled_transfer_period: Required. The interval between data uploads (scheduled
      transfers), rounded up to the nearest minute. Possible values include: "PT1M", "PT5M", "PT15M",
      "PT30M", "PT60M".
-    :type scheduled_transfer_period: str or ~$(python-base-
-     namespace).v2019_11_01_preview.models.KnownWindowsEventLogDataSourceScheduledTransferPeriod
+    :type scheduled_transfer_period: str or
+     ~azure.mgmt.amcs.models.KnownWindowsEventLogDataSourceScheduledTransferPeriod
     :param x_path_queries: Required. A list of Windows Event Log queries in XPATH format.
     :type x_path_queries: list[str]
     :param name: Required. A friendly name for the data source.

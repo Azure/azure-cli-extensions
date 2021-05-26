@@ -6,14 +6,4 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._monitor_client import MonitorClient
-from ._version import VERSION
-
-__version__ = VERSION
-__all__ = ['MonitorClient']
-
-try:
-    from ._patch import patch_sdk  # type: ignore
-    patch_sdk()
-except ImportError:
-    pass
+VERSION = "0.1.0"
