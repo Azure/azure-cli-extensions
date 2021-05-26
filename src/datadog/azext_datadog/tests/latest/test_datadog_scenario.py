@@ -88,6 +88,7 @@ def step__monitors_get_monitors_listbyresourcegroup(test):
              ])
 
 
+# TODO: Add tests for --monitoring-status and --sku-name arguments
 # EXAMPLE: /Monitors/patch/Monitors_Update
 @try_manual
 def step__monitors_patch_monitors_update(test):
