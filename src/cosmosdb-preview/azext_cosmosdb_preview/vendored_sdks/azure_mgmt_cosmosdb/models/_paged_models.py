@@ -389,6 +389,45 @@ class RestorableMongodbCollectionGetResultPaged(Paged):
     def __init__(self, *args, **kwargs):
 
         super(RestorableMongodbCollectionGetResultPaged, self).__init__(*args, **kwargs)
+class ClusterResourcePaged(Paged):
+    """
+    A paging container for iterating over a list of :class:`ClusterResource <azure.mgmt.cosmosdb.models.ClusterResource>` object
+    """
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'current_page': {'key': 'value', 'type': '[ClusterResource]'}
+    }
+
+    def __init__(self, *args, **kwargs):
+
+        super(ClusterResourcePaged, self).__init__(*args, **kwargs)
+class BackupResourcePaged(Paged):
+    """
+    A paging container for iterating over a list of :class:`BackupResource <azure.mgmt.cosmosdb.models.BackupResource>` object
+    """
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'current_page': {'key': 'value', 'type': '[BackupResource]'}
+    }
+
+    def __init__(self, *args, **kwargs):
+
+        super(BackupResourcePaged, self).__init__(*args, **kwargs)
+class DataCenterResourcePaged(Paged):
+    """
+    A paging container for iterating over a list of :class:`DataCenterResource <azure.mgmt.cosmosdb.models.DataCenterResource>` object
+    """
+
+    _attribute_map = {
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+        'current_page': {'key': 'value', 'type': '[DataCenterResource]'}
+    }
+
+    def __init__(self, *args, **kwargs):
+
+        super(DataCenterResourcePaged, self).__init__(*args, **kwargs)
 class PrivateLinkResourcePaged(Paged):
     """
     A paging container for iterating over a list of :class:`PrivateLinkResource <azure.mgmt.cosmosdb.models.PrivateLinkResource>` object

@@ -39,6 +39,8 @@ from .operations import RestorableSqlResourcesOperations
 from .operations import RestorableMongodbDatabasesOperations
 from .operations import RestorableMongodbCollectionsOperations
 from .operations import RestorableMongodbResourcesOperations
+from .operations import CassandraClustersOperations
+from .operations import CassandraDataCentersOperations
 from .operations import PrivateLinkResourcesOperations
 from .operations import PrivateEndpointConnectionsOperations
 from . import models
@@ -102,6 +104,10 @@ class CosmosDBManagementClient(SDKClient):
     :vartype restorable_mongodb_collections: azure.mgmt.cosmosdb.operations.RestorableMongodbCollectionsOperations
     :ivar restorable_mongodb_resources: RestorableMongodbResources operations
     :vartype restorable_mongodb_resources: azure.mgmt.cosmosdb.operations.RestorableMongodbResourcesOperations
+    :ivar cassandra_clusters: CassandraClusters operations
+    :vartype cassandra_clusters: azure.mgmt.cosmosdb.operations.CassandraClustersOperations
+    :ivar cassandra_data_centers: CassandraDataCenters operations
+    :vartype cassandra_data_centers: azure.mgmt.cosmosdb.operations.CassandraDataCentersOperations
     :ivar private_link_resources: PrivateLinkResources operations
     :vartype private_link_resources: azure.mgmt.cosmosdb.operations.PrivateLinkResourcesOperations
     :ivar private_endpoint_connections: PrivateEndpointConnections operations
@@ -122,6 +128,7 @@ class CosmosDBManagementClient(SDKClient):
         super(CosmosDBManagementClient, self).__init__(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
+        self.api_version = '2021-03-01-preview'
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
@@ -176,6 +183,10 @@ class CosmosDBManagementClient(SDKClient):
         self.restorable_mongodb_collections = RestorableMongodbCollectionsOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.restorable_mongodb_resources = RestorableMongodbResourcesOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.cassandra_clusters = CassandraClustersOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.cassandra_data_centers = CassandraDataCentersOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.private_link_resources = PrivateLinkResourcesOperations(
             self._client, self.config, self._serialize, self._deserialize)

@@ -17,9 +17,12 @@ from knack.util import CLIError
 from .vendored_sdks.appplatform.v2020_07_01 import models
 from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
 from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
-from .vendored_sdks.appplatform.v2020_11_01_preview import AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
+from .vendored_sdks.appplatform.v2020_11_01_preview import (
+    AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
+)
 from knack.log import get_logger
 from .azure_storage_file import FileService
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.profiles import ResourceType, get_sdk
@@ -32,6 +35,8 @@ from six.moves.urllib import parse
 from threading import Thread
 from threading import Timer
 import sys
+import json
+from collections import defaultdict
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
@@ -210,7 +215,7 @@ def regenerate_keys(cmd, client, resource_group, name, type):
 
 
 def app_create(cmd, client, resource_group, service, name,
-               is_public=None,
+               assign_endpoint=None,
                cpu=None,
                memory=None,
                instance_count=None,
@@ -226,7 +231,6 @@ def app_create(cmd, client, resource_group, service, name,
     properties = models.AppResourceProperties()
     properties.temporary_disk = models.TemporaryDisk(
         size_in_gb=5, mount_path="/tmp")
-
     resource = client.services.get(resource_group, service)
 
     _validate_instance_count(resource.sku.tier, instance_count)
@@ -267,7 +271,7 @@ def app_create(cmd, client, resource_group, service, name,
 
     logger.warning("[3/4] Setting default deployment to production")
     properties = models.AppResourceProperties(
-        active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=is_public)
+        active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=assign_endpoint)
 
     if enable_persistent_storage:
         properties.persistent_disk = models.PersistentDisk(
@@ -300,26 +304,28 @@ def _check_active_deployment_exist(client, resource_group, service, app):
 
 
 def app_update(cmd, client, resource_group, service, name,
-               is_public=None,
+               assign_endpoint=None,
                deployment=None,
                runtime_version=None,
                jvm_options=None,
                main_entry=None,
                env=None,
                enable_persistent_storage=None,
-               https_only=None):
+               https_only=None,
+               enable_end_to_end_tls=None):
     _check_active_deployment_exist(client, resource_group, service, name)
     resource = client.services.get(resource_group, service)
     location = resource.location
 
-    properties = models.AppResourceProperties(public=is_public, https_only=https_only)
+    properties = models_20201101preview.AppResourceProperties(public=assign_endpoint, https_only=https_only,
+                                                              enable_end_to_end_tls=enable_end_to_end_tls)
     if enable_persistent_storage is True:
         properties.persistent_disk = models.PersistentDisk(
             size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
     if enable_persistent_storage is False:
         properties.persistent_disk = models.PersistentDisk(size_in_gb=0)
 
-    app_resource = models.AppResource()
+    app_resource = models_20201101preview.AppResource()
     app_resource.properties = properties
     app_resource.location = location
 
@@ -529,7 +535,8 @@ def app_get_build_log(cmd, client, resource_group, service, name, deployment=Non
     return stream_logs(client.deployments, resource_group, service, name, deployment)
 
 
-def app_tail_log(cmd, client, resource_group, service, name, deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048):
+def app_tail_log(cmd, client, resource_group, service, name,
+                 deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048, format_json=None):
     if not instance:
         if deployment is None:
             deployment = client.apps.get(
@@ -573,7 +580,7 @@ def app_tail_log(cmd, client, resource_group, service, name, deployment=None, in
     exceptions = []
     streaming_url += "?{}".format(parse.urlencode(params)) if params else ""
     t = Thread(target=_get_app_log, args=(
-        streaming_url, "primary", primary_key, exceptions))
+        streaming_url, "primary", primary_key, format_json, exceptions))
     t.daemon = True
     t.start()
 
@@ -1032,16 +1039,16 @@ def config_repo_list(cmd, client, resource_group, name):
 
 def binding_list(cmd, client, resource_group, service, app):
     _check_active_deployment_exist(client, resource_group, service, app)
-    return client.list(resource_group, service, app)
+    return client.bindings.list(resource_group, service, app)
 
 
 def binding_get(cmd, client, resource_group, service, app, name):
     _check_active_deployment_exist(client, resource_group, service, app)
-    return client.get(resource_group, service, app, name)
+    return client.bindings.get(resource_group, service, app, name)
 
 
 def binding_remove(cmd, client, resource_group, service, app, name):
-    return client.delete(resource_group, service, app, name)
+    return client.bindings.delete(resource_group, service, app, name)
 
 
 def binding_cosmos_add(cmd, client, resource_group, service, app, name,
@@ -1064,7 +1071,7 @@ def binding_cosmos_add(cmd, client, resource_group, service, app, name,
         binding_parameters['collectionName'] = collection_name
 
     try:
-        primary_key = _get_cosmosdb_primary_key(client, resource_id)
+        primary_key = _get_cosmosdb_primary_key(client.bindings, resource_id)
     except:
         raise CLIError(
             "Couldn't get cosmosdb {}'s primary key".format(resource_name))
@@ -1076,7 +1083,7 @@ def binding_cosmos_add(cmd, client, resource_group, service, app, name,
         key=primary_key,
         binding_parameters=binding_parameters
     )
-    return client.create_or_update(resource_group, service, app, name, properties)
+    return client.bindings.create_or_update(resource_group, service, app, name, properties)
 
 
 def binding_cosmos_update(cmd, client, resource_group, service, app, name,
@@ -1084,7 +1091,7 @@ def binding_cosmos_update(cmd, client, resource_group, service, app, name,
                           key_space=None,
                           collection_name=None):
     _check_active_deployment_exist(client, resource_group, service, app)
-    binding = client.get(resource_group, service, app, name).properties
+    binding = client.bindings.get(resource_group, service, app, name).properties
     resource_id = binding.resource_id
     resource_name = binding.resource_name
     binding_parameters = {}
@@ -1093,7 +1100,7 @@ def binding_cosmos_update(cmd, client, resource_group, service, app, name,
     binding_parameters['collectionName'] = collection_name
 
     try:
-        primary_key = _get_cosmosdb_primary_key(client, resource_id)
+        primary_key = _get_cosmosdb_primary_key(client.bindings, resource_id)
     except:
         raise CLIError(
             "Couldn't get cosmosdb {}'s primary key".format(resource_name))
@@ -1102,7 +1109,7 @@ def binding_cosmos_update(cmd, client, resource_group, service, app, name,
         key=primary_key,
         binding_parameters=binding_parameters
     )
-    return client.update(resource_group, service, app, name, properties)
+    return client.bindings.update(resource_group, service, app, name, properties)
 
 
 def binding_mysql_add(cmd, client, resource_group, service, app, name,
@@ -1125,7 +1132,7 @@ def binding_mysql_add(cmd, client, resource_group, service, app, name,
         key=key,
         binding_parameters=binding_parameters
     )
-    return client.create_or_update(resource_group, service, app, name, properties)
+    return client.bindings.create_or_update(resource_group, service, app, name, properties)
 
 
 def binding_mysql_update(cmd, client, resource_group, service, app, name,
@@ -1141,7 +1148,7 @@ def binding_mysql_update(cmd, client, resource_group, service, app, name,
         key=key,
         binding_parameters=binding_parameters
     )
-    return client.update(resource_group, service, app, name, properties)
+    return client.bindings.update(resource_group, service, app, name, properties)
 
 
 def binding_redis_add(cmd, client, resource_group, service, app, name,
@@ -1156,7 +1163,7 @@ def binding_redis_add(cmd, client, resource_group, service, app, name,
     binding_parameters['useSsl'] = use_ssl
     primary_key = None
     try:
-        primary_key = _get_redis_primary_key(client, resource_id)
+        primary_key = _get_redis_primary_key(client.bindings, resource_id)
     except:
         raise CLIError(
             "Couldn't get redis {}'s primary key".format(resource_name))
@@ -1169,22 +1176,21 @@ def binding_redis_add(cmd, client, resource_group, service, app, name,
         binding_parameters=binding_parameters
     )
 
-    return client.create_or_update(resource_group, service, app, name, properties)
+    return client.bindings.create_or_update(resource_group, service, app, name, properties)
 
 
 def binding_redis_update(cmd, client, resource_group, service, app, name,
                          disable_ssl=None):
     _check_active_deployment_exist(client, resource_group, service, app)
-    binding = client.get(resource_group, service, app, name).properties
+    binding = client.bindings.get(resource_group, service, app, name).properties
     resource_id = binding.resource_id
     resource_name = binding.resource_name
     binding_parameters = {}
-    if disable_ssl:
-        binding_parameters['useSsl'] = not disable_ssl
+    binding_parameters['useSsl'] = not disable_ssl
 
     primary_key = None
     try:
-        primary_key = _get_redis_primary_key(client, resource_id)
+        primary_key = _get_redis_primary_key(client.bindings, resource_id)
     except:
         raise CLIError(
             "Couldn't get redis {}'s primary key".format(resource_name))
@@ -1193,7 +1199,7 @@ def binding_redis_update(cmd, client, resource_group, service, app, name,
         key=primary_key,
         binding_parameters=binding_parameters
     )
-    return client.update(resource_group, service, app, name, properties)
+    return client.bindings.update(resource_group, service, app, name, properties)
 
 
 def _get_cosmosdb_primary_key(client, resource_id):
@@ -1344,18 +1350,124 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
                        resource_group, service, app, name, properties=properties, sku=sku)
 
 
-def _get_app_log(url, user_name, password, exceptions):
+# pylint: disable=bare-except, too-many-statements
+def _get_app_log(url, user_name, password, format_json, exceptions):
+    logger_seg_regex = re.compile(r'([^\.])[^\.]+\.')
+
+    def build_log_shortener(length):
+        if length <= 0:
+            raise InvalidArgumentValueError('Logger length in `logger{length}` should be positive')
+
+        def shortener(record):
+            '''
+            Try shorten the logger property to the specified length before feeding it to the formatter.
+            '''
+            logger_name = record.get('logger', None)
+            if logger_name is None:
+                return record
+
+            # first, try to shorten the package name to one letter, e.g.,
+            #     org.springframework.cloud.netflix.eureka.config.DiscoveryClientOptionalArgsConfiguration
+            # to: o.s.c.n.e.c.DiscoveryClientOptionalArgsConfiguration
+            while len(logger_name) > length:
+                logger_name, count = logger_seg_regex.subn(r'\1.', logger_name, 1)
+                if count < 1:
+                    break
+
+            # then, cut off the leading packages if necessary
+            logger_name = logger_name[-length:]
+            record['logger'] = logger_name
+            return record
+
+        return shortener
+
+    def build_formatter():
+        '''
+        Build the log line formatter based on the format_json argument.
+        '''
+        nonlocal format_json
+
+        def identity(o):
+            return o
+
+        if format_json is None or len(format_json) == 0:
+            return identity
+
+        logger_regex = re.compile(r'\blogger\{(\d+)\}')
+        match = logger_regex.search(format_json)
+        pre_processor = identity
+        if match:
+            length = int(match[1])
+            pre_processor = build_log_shortener(length)
+            format_json = logger_regex.sub('logger', format_json, 1)
+
+        first_exception = True
+
+        def format_line(line):
+            nonlocal first_exception
+            try:
+                log_record = json.loads(line)
+                # Add n=\n so that in Windows CMD it's easy to specify customized format with line ending
+                # e.g., "{timestamp} {message}{n}"
+                # (Windows CMD does not escape \n in string literal.)
+                return format_json.format_map(pre_processor(defaultdict(str, n="\n", **log_record)))
+            except:
+                if first_exception:
+                    # enable this format error logging only with --verbose
+                    logger.info("Failed to format log line '{}'".format(line), exc_info=sys.exc_info())
+                    first_exception = False
+                return line
+
+        return format_line
+
+    def iter_lines(response, limit=2**20):
+        '''
+        Returns a line iterator from the response content. If no line ending was found and the buffered content size is
+        larger than the limit, the buffer will be yielded directly.
+        '''
+        buffer = []
+        total = 0
+        for content in response.iter_content(chunk_size=None):
+            if not content:
+                if len(buffer) > 0:
+                    yield b''.join(buffer)
+                break
+
+            start = 0
+            while start < len(content):
+                line_end = content.find(b'\n', start)
+                should_print = False
+                if line_end < 0:
+                    next = (content if start == 0 else content[start:])
+                    buffer.append(next)
+                    total += len(next)
+                    start = len(content)
+                    should_print = total >= limit
+                else:
+                    buffer.append(content[start:line_end + 1])
+                    start = line_end + 1
+                    should_print = True
+
+                if should_print:
+                    yield b''.join(buffer)
+                    buffer.clear()
+                    total = 0
+
     with requests.get(url, stream=True, auth=HTTPBasicAuth(user_name, password)) as response:
         try:
             if response.status_code != 200:
                 raise CLIError("Failed to connect to the server with status code '{}' and reason '{}'".format(
                     response.status_code, response.reason))
             std_encoding = sys.stdout.encoding
-            for content in response.iter_content():
-                if content:
-                    sys.stdout.write(content.decode(encoding='utf-8', errors='replace')
-                                     .encode(std_encoding, errors='replace')
-                                     .decode(std_encoding, errors='replace'))
+
+            formatter = build_formatter()
+
+            for line in iter_lines(response):
+                decoded = (line.decode(encoding='utf-8', errors='replace')
+                           .encode(std_encoding, errors='replace')
+                           .decode(std_encoding, errors='replace'))
+                print(formatter(decoded), end='')
+
         except CLIError as e:
             exceptions.append(e)
 
@@ -1383,7 +1495,8 @@ def certificate_remove(cmd, client, resource_group, service, name):
 
 def domain_bind(cmd, client, resource_group, service, app,
                 domain_name,
-                certificate=None):
+                certificate=None,
+                enable_end_to_end_tls=None):
     _check_active_deployment_exist(client, resource_group, service, app)
     properties = models.CustomDomainProperties()
     if certificate is not None:
@@ -1392,7 +1505,26 @@ def domain_bind(cmd, client, resource_group, service, app,
             thumbprint=certificate_response.properties.thumbprint,
             cert_name=certificate
         )
+    if enable_end_to_end_tls is not None:
+        _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls)
+
     return client.custom_domains.create_or_update(resource_group, service, app, domain_name, properties)
+
+
+def _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls):
+    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20201101preview)
+    resource = client.services.get(resource_group, service)
+    location = resource.location
+
+    properties = models_20201101preview.AppResourceProperties(enable_end_to_end_tls=enable_end_to_end_tls)
+    app_resource = models_20201101preview.AppResource()
+    app_resource.properties = properties
+    app_resource.location = location
+
+    logger.warning("Set end to end tls for app '{}'".format(app))
+    poller = client.apps.update(
+        resource_group, service, app, app_resource)
+    return poller.result()
 
 
 def domain_show(cmd, client, resource_group, service, app, domain_name):
@@ -1407,7 +1539,8 @@ def domain_list(cmd, client, resource_group, service, app):
 
 def domain_update(cmd, client, resource_group, service, app,
                   domain_name,
-                  certificate=None):
+                  certificate=None,
+                  enable_end_to_end_tls=None):
     _check_active_deployment_exist(client, resource_group, service, app)
     properties = models.CustomDomainProperties()
     if certificate is not None:
@@ -1416,6 +1549,9 @@ def domain_update(cmd, client, resource_group, service, app,
             thumbprint=certificate_response.properties.thumbprint,
             cert_name=certificate
         )
+    if enable_end_to_end_tls is not None:
+        _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls)
+
     return client.custom_domains.create_or_update(resource_group, service, app, domain_name, properties)
 
 

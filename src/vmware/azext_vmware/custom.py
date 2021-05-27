@@ -100,6 +100,14 @@ def privatecloud_deleteidentitysource(cmd, client: AVSClient, resource_group_nam
         return pc
 
 
+def privatecloud_rotate_vcenter_password(cmd, client: AVSClient, resource_group_name, private_cloud):
+    return client.private_clouds.begin_rotate_vcenter_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def privatecloud_rotate_nsxt_password(cmd, client: AVSClient, resource_group_name, private_cloud):
+    return client.private_clouds.begin_rotate_nsxt_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
 def cluster_create(cmd, client: AVSClient, resource_group_name, name, sku, private_cloud, size, tags=[]):
     from azext_vmware.vendored_sdks.avs_client.models import Cluster, Sku
     cluster = Cluster(sku=Sku(name=sku), cluster_size=size)
@@ -166,3 +174,25 @@ def hcxenterprisesite_show(cmd, client: AVSClient, resource_group_name, private_
 
 def hcxenterprisesite_delete(cmd, client: AVSClient, resource_group_name, private_cloud, name):
     return client.hcx_enterprise_sites.delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, hcx_enterprise_site_name=name)
+
+
+def datastore_create(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name, nfs_provider_ip=None, nfs_file_path=None, endpoints=[], lun_name=None):
+    from azext_vmware.vendored_sdks.avs_client.models import Datastore, NetAppVolume, DiskPoolVolume
+    datastore = Datastore()
+    if nfs_provider_ip is not None or nfs_file_path is not None:
+        datastore.net_app_volume = NetAppVolume(nfs_provider_ip=nfs_provider_ip, nfs_file_path=nfs_file_path)
+    if len(endpoints) > 0 or lun_name is not None:
+        datastore.disk_pool_volume = DiskPoolVolume(endpoints=endpoints, lun_name=lun_name)
+    return client.datastores.begin_create(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name, datastore=datastore)
+
+
+def datastore_list(cmd, client: AVSClient, resource_group_name, private_cloud, cluster):
+    return client.datastores.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster)
+
+
+def datastore_show(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name):
+    return client.datastores.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name)
+
+
+def datastore_delete(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name):
+    return client.datastores.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name)

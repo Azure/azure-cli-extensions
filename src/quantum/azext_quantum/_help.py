@@ -83,6 +83,37 @@ helps['quantum job wait'] = """
                 -j yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy --max-poll-wait-secs 60 -o table
 """
 
+helps['quantum offerings'] = """
+    type: group
+    short-summary: Manage provider offerings for Azure Quantum.
+"""
+
+helps['quantum offerings list'] = """
+    type: command
+    short-summary: Get the list of all provider offerings available on the given location.
+    examples:
+      - name: List offerings available in an Azure location.
+        text: |-
+            az quantum offerings list -l MyLocation
+"""
+
+helps['quantum offerings show-terms'] = """
+    type: command
+    short-summary: Show the terms of a provider and SKU combination including license URL and acceptance status.
+    examples:
+      - name: Use a Provider Id and SKU from `az quantum offerings list` to review the terms.
+        text: |-
+            az quantum offerings show-terms -p MyProviderId -k MySKU -l MyLocation
+"""
+
+helps['quantum offerings accept-terms'] = """
+    type: command
+    short-summary: Accept the terms of a provider and SKU combination to enable it for workspace creation.
+    examples:
+      - name: Once terms have been reviewed, accept the invoking this command.
+        text: |-
+            az quantum offerings accept-terms -p MyProviderId -k MySKU -l MyLocation
+"""
 
 helps['quantum target'] = """
     type: group
@@ -143,10 +174,10 @@ helps['quantum workspace create'] = """
     type: command
     short-summary: Create a new Azure Quantum workspace.
     examples:
-      - name: Create a new Azure Quantum workspace.
+      - name: Create a new Azure Quantum workspace with a specific list of providers.
         text: |-
             az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-                -a MyStorageAccountName
+                -r "MyProvider1 / MySKU1, MyProvider2 / MySKU2" -a MyStorageAccountName
 """
 
 helps['quantum workspace delete'] = """

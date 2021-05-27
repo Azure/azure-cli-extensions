@@ -17,7 +17,7 @@ except ImportError:
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
 
-VERSION = '1.0.0'
+VERSION = '1.1.5'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -36,7 +36,7 @@ CLASSIFIERS = [
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
     'kubernetes==11.0.0',
-    'pycryptodome==3.9.8'
+    'pycryptodome==3.9.8',
 ]
 
 with open('README.md', 'r', encoding='utf-8') as f:
@@ -53,6 +53,7 @@ setup(
     author_email='k8connect@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/connectedk8s',
     long_description=README + '\n\n' + HISTORY,
+    long_description_content_type="text/markdown",
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(),

@@ -15,8 +15,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_timeseriesinsights.vendored_sdks.timeseriesinsights.operations._environments_operations#'
         'EnvironmentsOperations.{}',
         client_factory=cf_environment)
-    with self.command_group('tsi environment', timeseriesinsights_environment,
-                            client_factory=cf_environment, is_experimental=True) as g:
+    with self.command_group('tsi environment', timeseriesinsights_environment, client_factory=cf_environment) as g:
         g.custom_command('list', 'timeseriesinsights_environment_list')
         g.custom_show_command('show', 'timeseriesinsights_environment_show')
         g.custom_command('delete', 'timeseriesinsights_environment_delete', confirmation=True)
@@ -37,8 +36,7 @@ def load_command_table(self, _):
         operations_tmpl='azext_timeseriesinsights.vendored_sdks.timeseriesinsights.operations._event_sources_operations'
         '#EventSourcesOperations.{}',
         client_factory=cf_event_source)
-    with self.command_group('tsi event-source', timeseriesinsights_event_source,
-                            client_factory=cf_event_source, is_experimental=True) as g:
+    with self.command_group('tsi event-source', timeseriesinsights_event_source, client_factory=cf_event_source) as g:
         g.custom_command('list', 'timeseriesinsights_event_source_list')
         g.custom_show_command('show', 'timeseriesinsights_event_source_show')
         g.custom_command('delete', 'timeseriesinsights_event_source_delete', confirmation=True)
@@ -59,7 +57,7 @@ def load_command_table(self, _):
         'ations#ReferenceDataSetsOperations.{}',
         client_factory=cf_reference_data_set)
     with self.command_group('tsi reference-data-set', timeseriesinsights_reference_data_set,
-                            client_factory=cf_reference_data_set, is_experimental=True) as g:
+                            client_factory=cf_reference_data_set) as g:
         g.custom_command('list', 'timeseriesinsights_reference_data_set_list')
         g.custom_show_command('show', 'timeseriesinsights_reference_data_set_show')
         g.custom_command('create', 'timeseriesinsights_reference_data_set_create')
@@ -72,7 +70,7 @@ def load_command_table(self, _):
         'ns#AccessPoliciesOperations.{}',
         client_factory=cf_access_policy)
     with self.command_group('tsi access-policy', timeseriesinsights_access_policy,
-                            client_factory=cf_access_policy, is_experimental=True) as g:
+                            client_factory=cf_access_policy) as g:
         g.custom_command('list', 'timeseriesinsights_access_policy_list')
         g.custom_show_command('show', 'timeseriesinsights_access_policy_show')
         g.custom_command('create', 'timeseriesinsights_access_policy_create')

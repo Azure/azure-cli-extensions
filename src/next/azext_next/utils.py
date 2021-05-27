@@ -32,7 +32,7 @@ def get_int_option(option_description, min_option, max_option, default_option):
     print(Fore.LIGHTBLUE_EX + ' ? ' + Fore.RESET + option_description, end='')
     option = read_int(default_option)
     while option < min_option or option > max_option:
-        print("The range of options is {}-{}, please input again: ".format(min_option, max_option), end='')
+        print("Please enter a valid option ({}-{}): ".format(min_option, max_option), end='')
         option = read_int(default_option)
     return option
 
@@ -104,15 +104,76 @@ def _parse_command_file(command_file_path):
         return json.dumps(command_info)
 
 
-def get_last_exception(cmd):
-    '''Get last executed command from local log files'''
-    import os
-    history_file_name = os.path.join(cmd.cli_ctx.config.config_dir, 'recommendation', 'exception_history.log')
-    if not os.path.exists(history_file_name):
+def get_latest_command(command_history):
+    if not command_history:
         return ''
-    with open(history_file_name, "r") as f:
+
+    command_list_data = reversed(command_history)
+    for command_item in command_list_data:
+        cmd = json.loads(command_item)
+        if cmd['command'] == 'next':
+            continue
+        return cmd['command']
+
+
+def get_last_exception(cmd, latest_command):
+    '''Get last exception from T cache'''
+    # Because Telemetry cache is the place where all exceptions are recorded uniformly
+    # And it needs to decouple from azure-cli-core, so it's designed to get exceptions from Telemetry cache.
+
+    # If Telemetry is turned off, the errors recorded in the Telemetry cache will stagnate,
+    # resulting in a mismatch with the last executed command
+    if not cmd.cli_ctx.config.getboolean('core', 'collect_telemetry', fallback=True):
+        return ''
+
+    import os
+    telemetry_cache_file = os.path.join(cmd.cli_ctx.config.config_dir, 'telemetry', 'cache')
+    if not os.path.exists(telemetry_cache_file):
+        return ''
+
+    with open(telemetry_cache_file, "r") as f:
         lines = f.read().splitlines()
-        return lines[-1]
+        history_data_list = reversed(lines)
+        for history_data_item in history_data_list:
+            if not history_data_item:
+                return ''
+
+            record_data = history_data_item.split(',', 1)
+            if not record_data or len(record_data) < 2:
+                return ''
+
+            import ast
+            data_dict = ast.literal_eval(record_data[1])
+            if not data_dict or len(data_dict) != 1:
+                return
+
+            data_item = [item for item in data_dict.values()][0][0]
+            if not data_item or 'properties' not in data_item:
+                return
+            properties = data_item['properties']
+
+            command_key = 'Context.Default.AzureCLI.RawCommand'
+            if command_key not in properties:
+                continue
+            command = properties[command_key]
+            if command == 'next':
+                continue
+
+            # When executing "az next" after telemetry is turned off and than turned on,
+            # make sure that the command in Telemetry cache can match the latest command
+            if latest_command != command:
+                return ''
+
+            latest_exception = ''
+            summary_key = 'Reserved.DataModel.Action.ResultSummary'
+            exception_key = 'Reserved.DataModel.Fault.Exception.Message'
+            if summary_key in properties and properties[summary_key]:
+                latest_exception = properties[summary_key]
+            elif exception_key in properties and properties[exception_key]:
+                latest_exception = properties[exception_key]
+
+            return latest_exception
+
     return ''
 
 
@@ -123,33 +184,49 @@ def get_title_case(str):
     return str[0].upper() + str[1:]
 
 
-def _is_modern_terminal():
-    # Windows Terminal: https://github.com/microsoft/terminal/issues/1040
-    if 'WT_SESSION' in os.environ:
-        return True
-    # VS Code: https://github.com/microsoft/vscode/pull/30346
-    if os.environ.get('TERM_PROGRAM', '').lower() == 'vscode':
-        return True
-    return False
-
-
-def is_modern_terminal():
-    """Detect whether the current terminal is a modern terminal that supports Unicode and
-    Console Virtual Terminal Sequences.
-    Currently, these terminals can be detected:
-      - Windows Terminal
-      - VS Code terminal
-    """
-    # This function wraps _is_modern_terminal and use a function-level cache to save the result.
-    if not hasattr(is_modern_terminal, "return_value"):
-        setattr(is_modern_terminal, "return_value", _is_modern_terminal())
-    return getattr(is_modern_terminal, "return_value")
-
-
 def print_successful_styled_text(message):
+    from azure.cli.core.style import print_styled_text, Style, is_modern_terminal
 
-    from azure.cli.core.style import print_styled_text, Style
     prefix_text = '\nDone: '
     if is_modern_terminal():
         prefix_text = '\n(✓ )Done: '
     print_styled_text([(Style.SUCCESS, prefix_text), (Style.PRIMARY, message)])
+
+
+def log_command_history(command, args):
+    import os
+    from knack.util import ensure_dir
+    from azure.cli.core._environment import get_config_dir
+
+    if not args or '--no-log' in args:
+        return
+
+    if not command or command == 'next':
+        return
+
+    base_dir = os.path.join(get_config_dir(), 'recommendation')
+    ensure_dir(base_dir)
+
+    file_path = os.path.join(base_dir, 'cmd_history.log')
+    if not os.path.exists(file_path):
+        with open(file_path, 'w') as fd:
+            fd.write('')
+
+    lines = []
+    with open(file_path, 'r') as fd:
+        lines = fd.readlines()
+        lines = [x.strip('\n') for x in lines if x]
+
+    with open(file_path, 'w') as fd:
+        command_info = {'command': command}
+        params = []
+        for arg in args:
+            if arg.startswith('-'):
+                params.append(arg)
+        if params:
+            command_info['arguments'] = params
+
+        lines.append(json.dumps(command_info))
+        if len(lines) > 30:
+            lines = lines[-30:]
+        fd.write('\n'.join(lines))

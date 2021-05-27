@@ -37,6 +37,9 @@ aks create:
     enable_node_public_ip:
       rule_exclusions:
       - option_length_too_long
+    node_public_ip_prefix_id:
+      rule_exclusions:
+        - option_length_too_long
     enable_pod_security_policy:
       rule_exclusions:
       - option_length_too_long
@@ -76,6 +79,12 @@ aks create:
     enable_encryption_at_host:
       rule_exclusions:
       - option_length_too_long
+    enable_pod_identity_with_kubenet:
+      rule_exclusions:
+      - option_length_too_long
+    assign_kubelet_identity:
+      rule_exclusions:
+      - option_length_too_long
 aks enable-addons:
   parameters:
     appgw_watch_namespace:
@@ -89,6 +98,9 @@ aks nodepool add:
     enable_node_public_ip:
       rule_exclusions:
       - option_length_too_long
+    node_public_ip_prefix_id:
+      rule_exclusions:
+        - option_length_too_long
     enable_encryption_at_host:
       rule_exclusions:
       - option_length_too_long
@@ -125,6 +137,9 @@ aks update:
       rule_exclusions:
       - option_length_too_long
     enable_managed_identity:
+      rule_exclusions:
+      - option_length_too_long
+    enable_pod_identity_with_kubenet:
       rule_exclusions:
       - option_length_too_long
 attestation policy set:
@@ -278,24 +293,12 @@ datadog monitor create:
     datadog_organization_properties:
       rule_exclusions:
       - option_length_too_long
-    marketplace_subscription_status:
-      rule_exclusions:
-      - option_length_too_long
 datadog tag-rule create:
   parameters:
     log_rules_filtering_tags:
       rule_exclusions:
       - option_length_too_long
-    log_rules_send_aad_logs:
-      rule_exclusions:
-      - option_length_too_long
-    log_rules_send_resource_logs:
-      rule_exclusions:
-      - option_length_too_long
-    log_rules_send_subscription_logs:
-      rule_exclusions:
-      - option_length_too_long
-    metric_rules_filtering_tags:
+    send_subscription_logs:
       rule_exclusions:
       - option_length_too_long
 datadog tag-rule update:
@@ -303,16 +306,7 @@ datadog tag-rule update:
     log_rules_filtering_tags:
       rule_exclusions:
       - option_length_too_long
-    log_rules_send_aad_logs:
-      rule_exclusions:
-      - option_length_too_long
-    log_rules_send_resource_logs:
-      rule_exclusions:
-      - option_length_too_long
-    log_rules_send_subscription_logs:
-      rule_exclusions:
-      - option_length_too_long
-    metric_rules_filtering_tags:
+    send_subscription_logs:
       rule_exclusions:
       - option_length_too_long
 datafactory factory configure-factory-repo:
@@ -926,14 +920,39 @@ import-export update:
     backup_drive_manifest:
       rule_exclusions:
       - option_length_too_long
-iot pnp capability-model update:
+iot hub configuration update:
   parameters:
-    repo_endpoint:
+    auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
-iot pnp interface update:
+iot hub device-identity update:
   parameters:
-    repo_endpoint:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot hub device-twin update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot hub distributed-tracing update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot hub module-identity update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot hub module-twin update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot edge deployment update:
+  parameters:
+    auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
 k8sconfiguration create:

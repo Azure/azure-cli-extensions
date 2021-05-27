@@ -2,6 +2,71 @@
 
 Release History
 ===============
+
+0.5.14
++++++
+* Add os-sku argument for cluster and nodepool creation
+
+0.5.13
++++++
+* Add compatible logic for the track 2 migration of resource dependence
+
+0.5.12
++++++
+* Add --enable-azure-rbac and --disable-azure-rbac in aks update
+* Support disabling local accounts
+* Add addon `azure-defender` to list of available addons under `az aks enable-addons` command
+
+0.5.11
++++++
+* Add get OS options support
+* Fix wrong behavior when enabling pod identity addon for cluster with addon enabled
+
+0.5.10
++++++
+* Add `--binding-selector` to AAD pod identity add sub command
+* Support using custom kubelet identity
+* Support updating Windows password
+* Add FIPS support to CLI extension
+
+0.5.9
++++++
+* Display result better for `az aks command invoke`, while still honor output option
+* Fix the bug that checking the addon profile whether it exists
+
+0.5.8
++++++
+* Update to use 2021-03-01 api-version
+
+0.5.7
++++++
+* Add command invoke for run-command feature
+
+0.5.6
++++++
+* Fix issue that assigning identity in another subscription will fail
+
+0.5.5
++++++
+* Add support for Azure KeyVault Secrets Provider as an AKS addon
+
+0.5.4
++++++
+* Add operations of maintenance configuration
+
+0.5.3
++++++
+* Add `--enable-pod-identity-with-kubenet` for enabling AAD Pod Identity in Kubenet cluster
+* Add `--fqdn-subdomain parameter` to create private cluster with custom private dns zone scenario
+
+0.5.2
++++++
+* Add support for node public IP prefix ID '--node-public-ip-prefix-id'
+
+0.5.1
++++++
+* Update to use 2021-02-01 api-version
+
 0.5.0
 +++++
 * Modify addon confcom behavior to only enable SGX device plugin by default.

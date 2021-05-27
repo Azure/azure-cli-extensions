@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.0
++++++
+* Allow user to export blueprint and artifacts to local directory
+
 0.2.1
 +++++
 * Support removing depends_on relationships for artifacts in update command

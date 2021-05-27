@@ -8,7 +8,7 @@
 from typing import TYPE_CHECKING
 import warnings
 
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.core.polling import LROPoller, NoPolling, PollingMethod
@@ -55,9 +55,12 @@ class IntegrationRuntimeObjectMetadataOperations(object):
     ):
         # type: (...) -> Optional["models.SsisObjectMetadataStatusResponse"]
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.SsisObjectMetadataStatusResponse"]]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2018-06-01"
+        accept = "application/json"
 
         # Construct URL
         url = self._refresh_initial.metadata['url']  # type: ignore
@@ -75,7 +78,7 @@ class IntegrationRuntimeObjectMetadataOperations(object):
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.post(url, query_parameters, header_parameters)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -147,7 +150,14 @@ class IntegrationRuntimeObjectMetadataOperations(object):
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        if polling is True: polling_method = ARMPolling(lro_delay,  **kwargs)
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
+            'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+            'factoryName': self._serialize.url("factory_name", factory_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+            'integrationRuntimeName': self._serialize.url("integration_runtime_name", integration_runtime_name, 'str', max_length=63, min_length=3, pattern=r'^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
+        }
+
+        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         if cont_token:
@@ -166,7 +176,7 @@ class IntegrationRuntimeObjectMetadataOperations(object):
         resource_group_name,  # type: str
         factory_name,  # type: str
         integration_runtime_name,  # type: str
-        metadata_path=None,  # type: Optional[str]
+        get_metadata_request=None,  # type: Optional["models.GetSsisObjectMetadataRequest"]
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.SsisObjectMetadataListResponse"
@@ -179,20 +189,21 @@ class IntegrationRuntimeObjectMetadataOperations(object):
         :type factory_name: str
         :param integration_runtime_name: The integration runtime name.
         :type integration_runtime_name: str
-        :param metadata_path: Metadata path.
-        :type metadata_path: str
+        :param get_metadata_request: The parameters for getting a SSIS object metadata.
+        :type get_metadata_request: ~data_factory_management_client.models.GetSsisObjectMetadataRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: SsisObjectMetadataListResponse, or the result of cls(response)
         :rtype: ~data_factory_management_client.models.SsisObjectMetadataListResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.SsisObjectMetadataListResponse"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
-
-        get_metadata_request = models.GetSsisObjectMetadataRequest(metadata_path=metadata_path)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -211,7 +222,7 @@ class IntegrationRuntimeObjectMetadataOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
         if get_metadata_request is not None:
@@ -220,7 +231,6 @@ class IntegrationRuntimeObjectMetadataOperations(object):
             body_content = None
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
