@@ -178,6 +178,7 @@ class StorageBlobUploadTests(StorageScenarioMixin, ScenarioTest):
                                               account_info, container).get_output_in_json()), 0)
 
         # undelete and check
+        time.sleep(60)
         self.storage_cmd('storage blob undelete -c {} -n {}', account_info, container, blob_name)
         self.assertEqual(len(self.storage_cmd('storage blob list -c {}',
                                               account_info, container).get_output_in_json()), 1)
