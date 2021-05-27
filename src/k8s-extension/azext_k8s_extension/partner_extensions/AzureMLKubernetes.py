@@ -337,7 +337,7 @@ def _get_service_bus_connection_string(cmd, subscription_id, resource_group_name
         location=cluster_location,
         sku=service_bus_sku,
         tags=resource_tag)
-    async_poller = service_bus_client.namespaces.create_or_update(
+    async_poller = service_bus_client.namespaces.begin_create_or_update(
         resource_group_name, service_bus_namespace_name, service_bus_namespace)
     while True:
         async_poller.result(15)
