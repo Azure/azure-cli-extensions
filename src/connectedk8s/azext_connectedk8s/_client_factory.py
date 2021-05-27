@@ -46,6 +46,7 @@ def _resource_providers_client(cli_ctx):
     return get_mgmt_service_client(cli_ctx, ResourceManagementClient).providers
 
     # Alternate: This should also work
+    # from azure.cli.core.commands.client_factory import get_subscription_id
     # subscription_id = get_subscription_id(cli_ctx)
     # return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id).providers
 
