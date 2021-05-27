@@ -6,12 +6,5 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._data_collection_endpoints_operations import DataCollectionEndpointsOperations
-from ._data_collection_rule_associations_operations import DataCollectionRuleAssociationsOperations
-from ._data_collection_rules_operations import DataCollectionRulesOperations
-
-__all__ = [
-    'DataCollectionEndpointsOperations',
-    'DataCollectionRuleAssociationsOperations',
-    'DataCollectionRulesOperations',
-]
+from ._monitor_client import MonitorClient
+__all__ = ['MonitorClient']

@@ -5,6 +5,52 @@
 # --------------------------------------------------------------------------------------------
 
 
+def data_collection_endpoint_create(client,
+                                    resource_group_name,
+                                    data_collection_endpoint_name,
+                                    location,
+                                    public_network_access,
+                                    tags=None,
+                                    kind=None,
+                                    description=None):
+    body = {}
+    body['location'] = location
+    body['tags'] = tags
+    body['kind'] = kind
+    body['description'] = description
+    body['network_acls'] = {}
+    body['network_acls']['public_network_access'] = public_network_access
+    return client.create(resource_group_name=resource_group_name,
+                         data_collection_endpoint_name=data_collection_endpoint_name,
+                         body=body)
+
+
+def data_collection_endpoint_update(client,
+                                    resource_group_name,
+                                    data_collection_endpoint_name,
+                                    tags=None,
+                                    kind=None,
+                                    description=None,
+                                    public_network_access=None):
+    from ..custom import monitor_data_collection_endpoint_show
+    instance = monitor_data_collection_endpoint_show(client, resource_group_name=resource_group_name,
+                                                     data_collection_endpoint_name=data_collection_endpoint_name)
+    body = instance.as_dict(keep_readonly=False)
+
+    if description is not None:
+        body['description'] = description
+    if tags is not None:
+        body['tags'] = tags
+    if kind is not None:
+        body['kind'] = kind
+    if public_network_access is not None:
+        body['network_acls'] = {}
+        body['network_acls']['public_network_access'] = public_network_access
+    return client.create(resource_group_name=resource_group_name,
+                         data_collection_endpoint_name=data_collection_endpoint_name,
+                         body=body)
+
+
 def data_collection_rule_associations_create(client,
                                              resource_uri,
                                              association_name,

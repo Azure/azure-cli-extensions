@@ -13,7 +13,17 @@
 # pylint: disable=line-too-long
 
 from azure.cli.core.commands import CliCommandType
-from azext_amcs.generated._client_factory import cf_data_collection_rule_association, cf_data_collection_rule
+from azext_amcs.generated._client_factory import (
+    cf_data_collection_endpoint,
+    cf_data_collection_rule_association,
+    cf_data_collection_rule,
+)
+
+
+monitor_control_service_data_collection_endpoint = CliCommandType(
+    operations_tmpl='azext_amcs.vendored_sdks.amcs.operations._data_collection_endpoints_operations#DataCollectionEndpointsOperations.{}',
+    client_factory=cf_data_collection_endpoint,
+)
 
 
 monitor_control_service_data_collection_rule = CliCommandType(
@@ -33,6 +43,15 @@ monitor_control_service_data_collection_rule_association = CliCommandType(
 def load_command_table(self, _):
 
     with self.command_group(
+        'monitor data-collection endpoint',
+        monitor_control_service_data_collection_endpoint,
+        client_factory=cf_data_collection_endpoint,
+    ) as g:
+        g.custom_command('list', 'monitor_data_collection_endpoint_list')
+        g.custom_show_command('show', 'monitor_data_collection_endpoint_show')
+        g.custom_command('delete', 'monitor_data_collection_endpoint_delete', confirmation=True)
+
+    with self.command_group(
         'monitor data-collection rule',
         monitor_control_service_data_collection_rule,
         client_factory=cf_data_collection_rule,
@@ -49,6 +68,3 @@ def load_command_table(self, _):
         g.custom_command('list', 'monitor_data_collection_rule_association_list')
         g.custom_show_command('show', 'monitor_data_collection_rule_association_show')
         g.custom_command('delete', 'monitor_data_collection_rule_association_delete', confirmation=True)
-
-    with self.command_group('monitor monitor-control-service', is_preview=True):
-        pass

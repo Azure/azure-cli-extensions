@@ -31,6 +31,426 @@ class AzureMonitorMetricsDestination(msrest.serialization.Model):
         self.name = kwargs.get('name', None)
 
 
+class ConfigurationAccessEndpointSpec(msrest.serialization.Model):
+    """Definition of the endpoint used for accessing configuration.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar endpoint: The endpoint. This property is READ-ONLY.
+    :vartype endpoint: str
+    """
+
+    _validation = {
+        'endpoint': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'endpoint': {'key': 'endpoint', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ConfigurationAccessEndpointSpec, self).__init__(**kwargs)
+        self.endpoint = None
+
+
+class DataCollectionEndpoint(msrest.serialization.Model):
+    """Definition of data collection endpoint.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :param description: Description of the data collection endpoint.
+    :type description: str
+    :param immutable_id: The immutable ID of this data collection endpoint resource. This property
+     is READ-ONLY.
+    :type immutable_id: str
+    :param configuration_access: The endpoint used by agents to access their configuration.
+    :type configuration_access: ~azure.mgmt.amcs.models.ConfigurationAccessEndpointSpec
+    :param logs_ingestion: The endpoint used by clients to ingest logs.
+    :type logs_ingestion: ~azure.mgmt.amcs.models.LogsIngestionEndpointSpec
+    :param network_acls: Network access control rules for the endpoints.
+    :type network_acls: ~azure.mgmt.amcs.models.NetworkRuleSet
+    :ivar provisioning_state: The resource provisioning state. This property is READ-ONLY. Possible
+     values include: "Creating", "Updating", "Deleting", "Succeeded", "Failed".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.amcs.models.KnownDataCollectionEndpointProvisioningState
+    """
+
+    _validation = {
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'description': {'key': 'description', 'type': 'str'},
+        'immutable_id': {'key': 'immutableId', 'type': 'str'},
+        'configuration_access': {'key': 'configurationAccess', 'type': 'ConfigurationAccessEndpointSpec'},
+        'logs_ingestion': {'key': 'logsIngestion', 'type': 'LogsIngestionEndpointSpec'},
+        'network_acls': {'key': 'networkAcls', 'type': 'NetworkRuleSet'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DataCollectionEndpoint, self).__init__(**kwargs)
+        self.description = kwargs.get('description', None)
+        self.immutable_id = kwargs.get('immutable_id', None)
+        self.configuration_access = kwargs.get('configuration_access', None)
+        self.logs_ingestion = kwargs.get('logs_ingestion', None)
+        self.network_acls = kwargs.get('network_acls', None)
+        self.provisioning_state = None
+
+
+class DataCollectionEndpointConfigurationAccess(ConfigurationAccessEndpointSpec):
+    """The endpoint used by agents to access their configuration.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar endpoint: The endpoint. This property is READ-ONLY.
+    :vartype endpoint: str
+    """
+
+    _validation = {
+        'endpoint': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'endpoint': {'key': 'endpoint', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DataCollectionEndpointConfigurationAccess, self).__init__(**kwargs)
+
+
+class LogsIngestionEndpointSpec(msrest.serialization.Model):
+    """Definition of the endpoint used for ingesting logs.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar endpoint: The endpoint. This property is READ-ONLY.
+    :vartype endpoint: str
+    """
+
+    _validation = {
+        'endpoint': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'endpoint': {'key': 'endpoint', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(LogsIngestionEndpointSpec, self).__init__(**kwargs)
+        self.endpoint = None
+
+
+class DataCollectionEndpointLogsIngestion(LogsIngestionEndpointSpec):
+    """The endpoint used by clients to ingest logs.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar endpoint: The endpoint. This property is READ-ONLY.
+    :vartype endpoint: str
+    """
+
+    _validation = {
+        'endpoint': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'endpoint': {'key': 'endpoint', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DataCollectionEndpointLogsIngestion, self).__init__(**kwargs)
+
+
+class NetworkRuleSet(msrest.serialization.Model):
+    """Definition of the network rules.
+
+    :param public_network_access: The configuration to set whether network access from public
+     internet to the endpoints are allowed. Possible values include: "Enabled", "Disabled".
+    :type public_network_access: str or ~azure.mgmt.amcs.models.KnownPublicNetworkAccessOptions
+    """
+
+    _attribute_map = {
+        'public_network_access': {'key': 'publicNetworkAccess', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(NetworkRuleSet, self).__init__(**kwargs)
+        self.public_network_access = kwargs.get('public_network_access', None)
+
+
+class DataCollectionEndpointNetworkAcls(NetworkRuleSet):
+    """Network access control rules for the endpoints.
+
+    :param public_network_access: The configuration to set whether network access from public
+     internet to the endpoints are allowed. Possible values include: "Enabled", "Disabled".
+    :type public_network_access: str or ~azure.mgmt.amcs.models.KnownPublicNetworkAccessOptions
+    """
+
+    _attribute_map = {
+        'public_network_access': {'key': 'publicNetworkAccess', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DataCollectionEndpointNetworkAcls, self).__init__(**kwargs)
+
+
+class DataCollectionEndpointResource(msrest.serialization.Model):
+    """Definition of ARM tracked top level resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param location: Required. The geo-location where the resource lives.
+    :type location: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
+    :param kind: The kind of the resource. Possible values include: "Linux", "Windows".
+    :type kind: str or ~azure.mgmt.amcs.models.KnownDataCollectionEndpointResourceKind
+    :ivar id: Fully qualified ID of the resource.
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource.
+    :vartype type: str
+    :ivar etag: Resource entity tag (ETag).
+    :vartype etag: str
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~azure.mgmt.amcs.models.SystemData
+    :param description: Description of the data collection endpoint.
+    :type description: str
+    :param immutable_id: The immutable ID of this data collection endpoint resource. This property
+     is READ-ONLY.
+    :type immutable_id: str
+    :param configuration_access: The endpoint used by agents to access their configuration.
+    :type configuration_access: ~azure.mgmt.amcs.models.ConfigurationAccessEndpointSpec
+    :param logs_ingestion: The endpoint used by clients to ingest logs.
+    :type logs_ingestion: ~azure.mgmt.amcs.models.LogsIngestionEndpointSpec
+    :param network_acls: Network access control rules for the endpoints.
+    :type network_acls: ~azure.mgmt.amcs.models.NetworkRuleSet
+    :ivar provisioning_state: The resource provisioning state. This property is READ-ONLY. Possible
+     values include: "Creating", "Updating", "Deleting", "Succeeded", "Failed".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.amcs.models.KnownDataCollectionEndpointProvisioningState
+    """
+
+    _validation = {
+        'location': {'required': True},
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'etag': {'readonly': True},
+        'system_data': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'location': {'key': 'location', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'kind': {'key': 'kind', 'type': 'str'},
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'etag': {'key': 'etag', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
+        'description': {'key': 'properties.description', 'type': 'str'},
+        'immutable_id': {'key': 'properties.immutableId', 'type': 'str'},
+        'configuration_access': {'key': 'properties.configurationAccess', 'type': 'ConfigurationAccessEndpointSpec'},
+        'logs_ingestion': {'key': 'properties.logsIngestion', 'type': 'LogsIngestionEndpointSpec'},
+        'network_acls': {'key': 'properties.networkAcls', 'type': 'NetworkRuleSet'},
+        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DataCollectionEndpointResource, self).__init__(**kwargs)
+        self.location = kwargs['location']
+        self.tags = kwargs.get('tags', None)
+        self.kind = kwargs.get('kind', None)
+        self.id = None
+        self.name = None
+        self.type = None
+        self.etag = None
+        self.system_data = None
+        self.description = kwargs.get('description', None)
+        self.immutable_id = kwargs.get('immutable_id', None)
+        self.configuration_access = kwargs.get('configuration_access', None)
+        self.logs_ingestion = kwargs.get('logs_ingestion', None)
+        self.network_acls = kwargs.get('network_acls', None)
+        self.provisioning_state = None
+
+
+class DataCollectionEndpointResourceListResult(msrest.serialization.Model):
+    """A pageable list of resources.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param value: Required. A list of resources.
+    :type value: list[~azure.mgmt.amcs.models.DataCollectionEndpointResource]
+    :param next_link: The URL to use for getting the next set of results.
+    :type next_link: str
+    """
+
+    _validation = {
+        'value': {'required': True},
+    }
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[DataCollectionEndpointResource]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DataCollectionEndpointResourceListResult, self).__init__(**kwargs)
+        self.value = kwargs['value']
+        self.next_link = kwargs.get('next_link', None)
+
+
+class DataCollectionEndpointResourceProperties(DataCollectionEndpoint):
+    """Resource properties.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :param description: Description of the data collection endpoint.
+    :type description: str
+    :param immutable_id: The immutable ID of this data collection endpoint resource. This property
+     is READ-ONLY.
+    :type immutable_id: str
+    :param configuration_access: The endpoint used by agents to access their configuration.
+    :type configuration_access: ~azure.mgmt.amcs.models.ConfigurationAccessEndpointSpec
+    :param logs_ingestion: The endpoint used by clients to ingest logs.
+    :type logs_ingestion: ~azure.mgmt.amcs.models.LogsIngestionEndpointSpec
+    :param network_acls: Network access control rules for the endpoints.
+    :type network_acls: ~azure.mgmt.amcs.models.NetworkRuleSet
+    :ivar provisioning_state: The resource provisioning state. This property is READ-ONLY. Possible
+     values include: "Creating", "Updating", "Deleting", "Succeeded", "Failed".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.amcs.models.KnownDataCollectionEndpointProvisioningState
+    """
+
+    _validation = {
+        'provisioning_state': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'description': {'key': 'description', 'type': 'str'},
+        'immutable_id': {'key': 'immutableId', 'type': 'str'},
+        'configuration_access': {'key': 'configurationAccess', 'type': 'ConfigurationAccessEndpointSpec'},
+        'logs_ingestion': {'key': 'logsIngestion', 'type': 'LogsIngestionEndpointSpec'},
+        'network_acls': {'key': 'networkAcls', 'type': 'NetworkRuleSet'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DataCollectionEndpointResourceProperties, self).__init__(**kwargs)
+
+
+class SystemData(msrest.serialization.Model):
+    """Metadata pertaining to creation and last modification of the resource.
+
+    :param created_by: The identity that created the resource.
+    :type created_by: str
+    :param created_by_type: The type of identity that created the resource. Possible values
+     include: "User", "Application", "ManagedIdentity", "Key".
+    :type created_by_type: str or ~azure.mgmt.amcs.models.CreatedByType
+    :param created_at: The timestamp of resource creation (UTC).
+    :type created_at: ~datetime.datetime
+    :param last_modified_by: The identity that last modified the resource.
+    :type last_modified_by: str
+    :param last_modified_by_type: The type of identity that last modified the resource. Possible
+     values include: "User", "Application", "ManagedIdentity", "Key".
+    :type last_modified_by_type: str or ~azure.mgmt.amcs.models.CreatedByType
+    :param last_modified_at: The timestamp of resource last modification (UTC).
+    :type last_modified_at: ~datetime.datetime
+    """
+
+    _attribute_map = {
+        'created_by': {'key': 'createdBy', 'type': 'str'},
+        'created_by_type': {'key': 'createdByType', 'type': 'str'},
+        'created_at': {'key': 'createdAt', 'type': 'iso-8601'},
+        'last_modified_by': {'key': 'lastModifiedBy', 'type': 'str'},
+        'last_modified_by_type': {'key': 'lastModifiedByType', 'type': 'str'},
+        'last_modified_at': {'key': 'lastModifiedAt', 'type': 'iso-8601'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(SystemData, self).__init__(**kwargs)
+        self.created_by = kwargs.get('created_by', None)
+        self.created_by_type = kwargs.get('created_by_type', None)
+        self.created_at = kwargs.get('created_at', None)
+        self.last_modified_by = kwargs.get('last_modified_by', None)
+        self.last_modified_by_type = kwargs.get('last_modified_by_type', None)
+        self.last_modified_at = kwargs.get('last_modified_at', None)
+
+
+class DataCollectionEndpointResourceSystemData(SystemData):
+    """Metadata pertaining to creation and last modification of the resource.
+
+    :param created_by: The identity that created the resource.
+    :type created_by: str
+    :param created_by_type: The type of identity that created the resource. Possible values
+     include: "User", "Application", "ManagedIdentity", "Key".
+    :type created_by_type: str or ~azure.mgmt.amcs.models.CreatedByType
+    :param created_at: The timestamp of resource creation (UTC).
+    :type created_at: ~datetime.datetime
+    :param last_modified_by: The identity that last modified the resource.
+    :type last_modified_by: str
+    :param last_modified_by_type: The type of identity that last modified the resource. Possible
+     values include: "User", "Application", "ManagedIdentity", "Key".
+    :type last_modified_by_type: str or ~azure.mgmt.amcs.models.CreatedByType
+    :param last_modified_at: The timestamp of resource last modification (UTC).
+    :type last_modified_at: ~datetime.datetime
+    """
+
+    _attribute_map = {
+        'created_by': {'key': 'createdBy', 'type': 'str'},
+        'created_by_type': {'key': 'createdByType', 'type': 'str'},
+        'created_at': {'key': 'createdAt', 'type': 'iso-8601'},
+        'last_modified_by': {'key': 'lastModifiedBy', 'type': 'str'},
+        'last_modified_by_type': {'key': 'lastModifiedByType', 'type': 'str'},
+        'last_modified_at': {'key': 'lastModifiedAt', 'type': 'iso-8601'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DataCollectionEndpointResourceSystemData, self).__init__(**kwargs)
+
+
 class DataCollectionRule(msrest.serialization.Model):
     """Definition of what monitoring data to collect and where that data should be sent.
 
@@ -91,6 +511,9 @@ class DataCollectionRuleAssociation(msrest.serialization.Model):
     :param data_collection_rule_id: The resource ID of the data collection rule that is to be
      associated.
     :type data_collection_rule_id: str
+    :param data_collection_endpoint_id: The resource ID of the data collection endpoint that is to
+     be associated.
+    :type data_collection_endpoint_id: str
     :ivar provisioning_state: The resource provisioning state. Possible values include: "Creating",
      "Updating", "Deleting", "Succeeded", "Failed".
     :vartype provisioning_state: str or
@@ -104,6 +527,7 @@ class DataCollectionRuleAssociation(msrest.serialization.Model):
     _attribute_map = {
         'description': {'key': 'description', 'type': 'str'},
         'data_collection_rule_id': {'key': 'dataCollectionRuleId', 'type': 'str'},
+        'data_collection_endpoint_id': {'key': 'dataCollectionEndpointId', 'type': 'str'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
     }
 
@@ -114,6 +538,7 @@ class DataCollectionRuleAssociation(msrest.serialization.Model):
         super(DataCollectionRuleAssociation, self).__init__(**kwargs)
         self.description = kwargs.get('description', None)
         self.data_collection_rule_id = kwargs.get('data_collection_rule_id', None)
+        self.data_collection_endpoint_id = kwargs.get('data_collection_endpoint_id', None)
         self.provisioning_state = None
 
 
@@ -130,11 +555,16 @@ class DataCollectionRuleAssociationProxyOnlyResource(msrest.serialization.Model)
     :vartype type: str
     :ivar etag: Resource entity tag (ETag).
     :vartype etag: str
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~azure.mgmt.amcs.models.SystemData
     :param description: Description of the association.
     :type description: str
     :param data_collection_rule_id: The resource ID of the data collection rule that is to be
      associated.
     :type data_collection_rule_id: str
+    :param data_collection_endpoint_id: The resource ID of the data collection endpoint that is to
+     be associated.
+    :type data_collection_endpoint_id: str
     :ivar provisioning_state: The resource provisioning state. Possible values include: "Creating",
      "Updating", "Deleting", "Succeeded", "Failed".
     :vartype provisioning_state: str or
@@ -146,6 +576,7 @@ class DataCollectionRuleAssociationProxyOnlyResource(msrest.serialization.Model)
         'name': {'readonly': True},
         'type': {'readonly': True},
         'etag': {'readonly': True},
+        'system_data': {'readonly': True},
         'provisioning_state': {'readonly': True},
     }
 
@@ -154,8 +585,10 @@ class DataCollectionRuleAssociationProxyOnlyResource(msrest.serialization.Model)
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'etag': {'key': 'etag', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'data_collection_rule_id': {'key': 'properties.dataCollectionRuleId', 'type': 'str'},
+        'data_collection_endpoint_id': {'key': 'properties.dataCollectionEndpointId', 'type': 'str'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
     }
 
@@ -168,8 +601,10 @@ class DataCollectionRuleAssociationProxyOnlyResource(msrest.serialization.Model)
         self.name = None
         self.type = None
         self.etag = None
+        self.system_data = None
         self.description = kwargs.get('description', None)
         self.data_collection_rule_id = kwargs.get('data_collection_rule_id', None)
+        self.data_collection_endpoint_id = kwargs.get('data_collection_endpoint_id', None)
         self.provisioning_state = None
 
 
@@ -212,6 +647,9 @@ class DataCollectionRuleAssociationProxyOnlyResourceProperties(DataCollectionRul
     :param data_collection_rule_id: The resource ID of the data collection rule that is to be
      associated.
     :type data_collection_rule_id: str
+    :param data_collection_endpoint_id: The resource ID of the data collection endpoint that is to
+     be associated.
+    :type data_collection_endpoint_id: str
     :ivar provisioning_state: The resource provisioning state. Possible values include: "Creating",
      "Updating", "Deleting", "Succeeded", "Failed".
     :vartype provisioning_state: str or
@@ -225,6 +663,7 @@ class DataCollectionRuleAssociationProxyOnlyResourceProperties(DataCollectionRul
     _attribute_map = {
         'description': {'key': 'description', 'type': 'str'},
         'data_collection_rule_id': {'key': 'dataCollectionRuleId', 'type': 'str'},
+        'data_collection_endpoint_id': {'key': 'dataCollectionEndpointId', 'type': 'str'},
         'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
     }
 
@@ -233,6 +672,41 @@ class DataCollectionRuleAssociationProxyOnlyResourceProperties(DataCollectionRul
         **kwargs
     ):
         super(DataCollectionRuleAssociationProxyOnlyResourceProperties, self).__init__(**kwargs)
+
+
+class DataCollectionRuleAssociationProxyOnlyResourceSystemData(SystemData):
+    """Metadata pertaining to creation and last modification of the resource.
+
+    :param created_by: The identity that created the resource.
+    :type created_by: str
+    :param created_by_type: The type of identity that created the resource. Possible values
+     include: "User", "Application", "ManagedIdentity", "Key".
+    :type created_by_type: str or ~azure.mgmt.amcs.models.CreatedByType
+    :param created_at: The timestamp of resource creation (UTC).
+    :type created_at: ~datetime.datetime
+    :param last_modified_by: The identity that last modified the resource.
+    :type last_modified_by: str
+    :param last_modified_by_type: The type of identity that last modified the resource. Possible
+     values include: "User", "Application", "ManagedIdentity", "Key".
+    :type last_modified_by_type: str or ~azure.mgmt.amcs.models.CreatedByType
+    :param last_modified_at: The timestamp of resource last modification (UTC).
+    :type last_modified_at: ~datetime.datetime
+    """
+
+    _attribute_map = {
+        'created_by': {'key': 'createdBy', 'type': 'str'},
+        'created_by_type': {'key': 'createdByType', 'type': 'str'},
+        'created_at': {'key': 'createdAt', 'type': 'iso-8601'},
+        'last_modified_by': {'key': 'lastModifiedBy', 'type': 'str'},
+        'last_modified_by_type': {'key': 'lastModifiedByType', 'type': 'str'},
+        'last_modified_at': {'key': 'lastModifiedAt', 'type': 'iso-8601'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DataCollectionRuleAssociationProxyOnlyResourceSystemData, self).__init__(**kwargs)
 
 
 class DataSourcesSpec(msrest.serialization.Model):
@@ -359,6 +833,8 @@ class DataCollectionRuleResource(msrest.serialization.Model):
     :vartype type: str
     :ivar etag: Resource entity tag (ETag).
     :vartype etag: str
+    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
+    :vartype system_data: ~azure.mgmt.amcs.models.SystemData
     :param description: Description of the data collection rule.
     :type description: str
     :ivar immutable_id: The immutable ID of this data collection rule. This property is READ-ONLY.
@@ -383,6 +859,7 @@ class DataCollectionRuleResource(msrest.serialization.Model):
         'name': {'readonly': True},
         'type': {'readonly': True},
         'etag': {'readonly': True},
+        'system_data': {'readonly': True},
         'immutable_id': {'readonly': True},
         'provisioning_state': {'readonly': True},
     }
@@ -395,6 +872,7 @@ class DataCollectionRuleResource(msrest.serialization.Model):
         'name': {'key': 'name', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
         'etag': {'key': 'etag', 'type': 'str'},
+        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'immutable_id': {'key': 'properties.immutableId', 'type': 'str'},
         'data_sources': {'key': 'properties.dataSources', 'type': 'DataSourcesSpec'},
@@ -415,6 +893,7 @@ class DataCollectionRuleResource(msrest.serialization.Model):
         self.name = None
         self.type = None
         self.etag = None
+        self.system_data = None
         self.description = kwargs.get('description', None)
         self.immutable_id = None
         self.data_sources = kwargs.get('data_sources', None)
@@ -494,6 +973,41 @@ class DataCollectionRuleResourceProperties(DataCollectionRule):
         **kwargs
     ):
         super(DataCollectionRuleResourceProperties, self).__init__(**kwargs)
+
+
+class DataCollectionRuleResourceSystemData(SystemData):
+    """Metadata pertaining to creation and last modification of the resource.
+
+    :param created_by: The identity that created the resource.
+    :type created_by: str
+    :param created_by_type: The type of identity that created the resource. Possible values
+     include: "User", "Application", "ManagedIdentity", "Key".
+    :type created_by_type: str or ~azure.mgmt.amcs.models.CreatedByType
+    :param created_at: The timestamp of resource creation (UTC).
+    :type created_at: ~datetime.datetime
+    :param last_modified_by: The identity that last modified the resource.
+    :type last_modified_by: str
+    :param last_modified_by_type: The type of identity that last modified the resource. Possible
+     values include: "User", "Application", "ManagedIdentity", "Key".
+    :type last_modified_by_type: str or ~azure.mgmt.amcs.models.CreatedByType
+    :param last_modified_at: The timestamp of resource last modification (UTC).
+    :type last_modified_at: ~datetime.datetime
+    """
+
+    _attribute_map = {
+        'created_by': {'key': 'createdBy', 'type': 'str'},
+        'created_by_type': {'key': 'createdByType', 'type': 'str'},
+        'created_at': {'key': 'createdAt', 'type': 'iso-8601'},
+        'last_modified_by': {'key': 'lastModifiedBy', 'type': 'str'},
+        'last_modified_by_type': {'key': 'lastModifiedByType', 'type': 'str'},
+        'last_modified_at': {'key': 'lastModifiedAt', 'type': 'iso-8601'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(DataCollectionRuleResourceSystemData, self).__init__(**kwargs)
 
 
 class DataFlow(msrest.serialization.Model):

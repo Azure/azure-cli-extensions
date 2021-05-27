@@ -15,6 +15,19 @@ from azure.cli.core.commands.parameters import resource_group_name_type
 
 def load_arguments(self, _):
 
+    with self.argument_context('monitor data-collection endpoint list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+
+    with self.argument_context('monitor data-collection endpoint show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('data_collection_endpoint_name', options_list=['--name', '-n'], type=str, help='The name of the '
+                   'data collection endpoint. The name is case insensitive.', id_part='name')
+
+    with self.argument_context('monitor data-collection endpoint delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('data_collection_endpoint_name', options_list=['--name', '-n'], type=str, help='The name of the '
+                   'data collection endpoint. The name is case insensitive.', id_part='name')
+
     with self.argument_context('monitor data-collection rule association list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('data_collection_rule_name', options_list=['--rule-name'], type=str, help='The name of the data '

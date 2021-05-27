@@ -26,6 +26,32 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
+class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of identity that created the resource.
+    """
+
+    USER = "User"
+    APPLICATION = "Application"
+    MANAGED_IDENTITY = "ManagedIdentity"
+    KEY = "Key"
+
+class KnownDataCollectionEndpointProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The resource provisioning state. This property is READ-ONLY.
+    """
+
+    CREATING = "Creating"
+    UPDATING = "Updating"
+    DELETING = "Deleting"
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+
+class KnownDataCollectionEndpointResourceKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The kind of the resource.
+    """
+
+    LINUX = "Linux"
+    WINDOWS = "Windows"
+
 class KnownDataCollectionRuleAssociationProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The resource provisioning state.
     """
@@ -73,6 +99,14 @@ class KnownPerfCounterDataSourceStreams(with_metaclass(_CaseInsensitiveEnumMeta,
 
     MICROSOFT_PERF = "Microsoft-Perf"
     MICROSOFT_INSIGHTS_METRICS = "Microsoft-InsightsMetrics"
+
+class KnownPublicNetworkAccessOptions(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The configuration to set whether network access from public internet to the endpoints are
+    allowed.
+    """
+
+    ENABLED = "Enabled"
+    DISABLED = "Disabled"
 
 class KnownSyslogDataSourceFacilityNames(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 

@@ -11,6 +11,63 @@ helps['monitor data-collection'] = """
     short-summary: Manage data collection for monitor control service
 """
 
+helps['monitor data-collection endpoint'] = """
+    type: group
+    short-summary: Manage data collection endpoint for monitor control service
+"""
+
+helps['monitor data-collection endpoint list'] = """
+    type: command
+    short-summary: "List all data collection endpoints."
+    examples:
+      - name: List data collection endpoints by resource group
+        text: |-
+               az monitor data-collection endpoint list --resource-group "myResourceGroup"
+      - name: List data collection endpoints by subscription
+        text: |-
+               az monitor data-collection endpoint list
+"""
+
+helps['monitor data-collection endpoint show'] = """
+    type: command
+    short-summary: "Show the specified data collection endpoint."
+    examples:
+      - name: Get data collection endpoint
+        text: |-
+               az monitor data-collection endpoint show --name "myCollectionEndpoint" --resource-group \
+"myResourceGroup"
+"""
+
+helps['monitor data-collection endpoint create'] = """
+    type: command
+    short-summary: "Create a data collection endpoint."
+    examples:
+      - name: Create data collection endpoint
+        text: |-
+               az monitor data-collection endpoint create -g "myResourceGroup" -l "eastus2euap" \
+               --name "myCollectionEndpoint" --public-network-access "Enabled"
+"""
+
+helps['monitor data-collection endpoint update'] = """
+    type: command
+    short-summary: "Update a data collection endpoint."
+    examples:
+      - name: Update data collection endpoint
+        text: |-
+               az monitor data-collection endpoint update --tags tag1="A" tag2="B" tag3="C" --name \
+"myCollectionEndpoint" --resource-group "myResourceGroup"
+"""
+
+helps['monitor data-collection endpoint delete'] = """
+    type: command
+    short-summary: "Delete a data collection endpoint."
+    examples:
+      - name: Delete data collection endpoint
+        text: |-
+               az monitor data-collection endpoint delete --name "myCollectionEndpoint" --resource-group \
+"myResourceGroup"
+"""
+
 helps['monitor data-collection rule association'] = """
     type: group
     short-summary: Manage data collection rule association for monitor control service

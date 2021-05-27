@@ -33,6 +33,23 @@ from azext_amcs.vendored_sdks.amcs.models import KnownDataFlowStreams, KnownPerf
 
 def load_arguments(self, _):
 
+    with self.argument_context('monitor data-collection endpoint') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('data_collection_endpoint_name', options_list=['--name', '-n'], type=str,
+                   help='The name of the data collection endpoint. The name is case insensitive.', id_part='name')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+                   validator=get_default_location_from_resource_group)
+        c.argument('tags', tags_type)
+        c.argument('kind', arg_type=get_enum_type(['Linux', 'Windows']), help='The kind of the resource.')
+        c.argument('description', type=str, help='Description of the data collection endpoint.')
+        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']),
+                   help='The configuration to set whether network access from public internet to the endpoints '
+                        'are allowed.',
+                   arg_group='Network Acls')
+
+    with self.argument_context('monitor data-collection endpoint create') as c:
+        c.argument('data_collection_endpoint_name', id_part=None)
+
     with self.argument_context('monitor data-collection rule association') as c:
         c.argument('resource_uri', options_list=['--resource'], help='The identifier of the resource.')
         c.argument('association_name', options_list=['--name', '-n'], help='The name of the association.')
@@ -66,7 +83,6 @@ def load_arguments(self, _):
                    'configurations.')
         c.argument('data_sources__syslog', options_list=['--syslog'], arg_group="Data Sources",
                    action=AddDataSourcesSyslog, nargs='+', help='The list of Syslog data source configurations.')
-        # TODO: define extensions
         c.argument('data_sources__extensions', options_list=['--extensions'], arg_group="Data Sources",
                    type=validate_file_or_dict, help='The list of Azure VM extension data source configurations. '
                    'Expected value: json-string/@json-file.')

@@ -524,3 +524,37 @@ class Monitor_control_serviceScenarioTest(ScenarioTest):
         })
 
         call_scenario(self, rg)
+
+    @ResourceGroupPreparer(name_prefix='clitest_amcs_endpoints', location='eastus2euap')
+    def test_amcs_data_collection_endpoint(self, resource_group):
+        self.kwargs.update({
+            'rg': resource_group,
+            'name1': 'endpoint1',
+            'name2': 'endpoint2',
+        })
+
+        self.cmd('monitor data-collection endpoint create -g {rg} -n {name1} --public-network-access disabled', checks=[
+            self.check('networkAcls.publicNetworkAccess', 'Disabled'),
+        ])
+
+        self.cmd('monitor data-collection endpoint update -g {rg} -n {name1} --public-network-access enabled '
+                 '--kind windows', checks=[
+            self.check('networkAcls.publicNetworkAccess', 'Enabled'),
+            self.check('kind', 'Windows')
+        ])
+
+        self.cmd('monitor data-collection endpoint create -g {rg} -n {name2} '
+                 '--public-network-access enabled --kind linux')
+        self.cmd('monitor data-collection endpoint show -g {rg} -n {name2}', checks=[
+            self.check('networkAcls.publicNetworkAccess', 'Enabled'),
+            self.check('kind', 'Linux')
+        ])
+
+        self.cmd('monitor data-collection endpoint list -g {rg}', checks=[
+            self.check('length(@)', 2)
+        ])
+
+        self.cmd('monitor data-collection endpoint delete -g {rg} -n {name2} -y')
+        self.cmd('monitor data-collection endpoint list -g {rg}', checks=[
+            self.check('length(@)', 1)
+        ])
