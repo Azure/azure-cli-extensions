@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
 
-set -eux
+# bash options
+set -o errexit
+set -o nounset
+set -o pipefail
+set -o xtrace
+
+# dir
 pwd
+ls -alh
 
 # activate virtualenv
 source azEnv/bin/activate
@@ -21,19 +28,9 @@ azdev extension list | grep "aks-preview" -C 5
 deactivate
 source azEnv/bin/activate
 
-# Ensure that the command index is updated by calling a specific command in aks-preview, so that all the commands defined in aks-preview are loaded correctly
-# Otherwise, cold boot execution of azdev test may use the api version adopted by the acs command group in azure-cli (which may diverge from the api version used in current aks-preview)
-retry_count=0
-while ! az aks command invoke --help && [[ $retry_count < 3 ]]
-do
-    retry_count=`expr $retry_count + 1`
-    echo $retry_count"th retry to install aks-preview..." 
-    azdev extension add aks-preview --debug
-    az extension list --debug
-    azdev extension list --debug | grep "aks-preview" -C 5
-    deactivate
-    source azEnv/bin/activate
-done
+# use a fake command to force trigger the command index update of azure-cli, in order to load aks-preview commands
+# otherwise, cold boot execution of azdev test / pytest would only use commands in the acs module
+az aks fake-command --debug || true
 
 # unit test & coverage report
 # az_aks_tool
@@ -65,7 +62,7 @@ coverage report -m
 popd
 cp azure-cli-extensions/src/aks-preview/azext_aks_preview/coverage_azext_aks_preview.json reports/
 
-if [[ $az_aks_tool_unit_test_result == "error" || $azext_aks_preview_unit_test_result == "error" ]]; then
+if [[ ${az_aks_tool_unit_test_result} == "error" || ${azext_aks_preview_unit_test_result} == "error" ]]; then
     echo "Unit test failed!"
     exit 1
 fi

@@ -104,7 +104,8 @@ def load_arguments(self, _):
         c.argument('scope', help="The scope the managed identity has access to")
         c.argument('role', help="Role name or id the managed identity will be assigned")
 
-    with self.argument_context('spring-cloud app logs') as c:
+    def prepare_logs_argument(c):
+        '''`app log tail` is deprecated. `app logs` is the new choice. They share the same command processor.'''
         c.argument('instance', options_list=['--instance', '-i'], help='Name of an existing instance of the deployment.')
         c.argument('lines', type=int, help='Number of lines to show. Maximum is 10000', validator=validate_log_lines)
         c.argument('follow', options_list=['--follow ', '-f'], help='Specify if the logs should be streamed.', action='store_true')
@@ -112,15 +113,14 @@ def load_arguments(self, _):
         c.argument('limit', type=int, help='Maximum kilobytes of logs to return. Ceiling number is 2048.', validator=validate_log_limit)
         c.argument('deployment', options_list=[
             '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)
+        c.argument('format_json', nargs='?', const='{timestamp} {level:>5} [{thread:>15.15}] {logger{39}:<40.40}: {message}\n{stackTrace}',
+                   help='Format JSON logs if structured log is enabled')
+
+    with self.argument_context('spring-cloud app logs') as c:
+        prepare_logs_argument(c)
 
     with self.argument_context('spring-cloud app log tail') as c:
-        c.argument('instance', options_list=['--instance', '-i'], help='Name of an existing instance of the deployment.')
-        c.argument('lines', type=int, help='Number of lines to show. Maximum is 10000', validator=validate_log_lines)
-        c.argument('follow', options_list=['--follow ', '-f'], help='Specify if the logs should be streamed.', action='store_true')
-        c.argument('since', help='Only return logs newer than a relative duration like 5s, 2m, or 1h. Maximum is 1h', validator=validate_log_since)
-        c.argument('limit', type=int, help='Maximum kilobytes of logs to return. Ceiling number is 2048.', validator=validate_log_limit)
-        c.argument('deployment', options_list=[
-            '--deployment', '-d'], help='Name of an existing deployment of the app. Default to the production deployment if not specified.', validator=validate_deployment_name)
+        prepare_logs_argument(c)
 
     with self.argument_context('spring-cloud app set-deployment') as c:
         c.argument('deployment', options_list=[

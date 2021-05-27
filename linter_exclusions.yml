@@ -920,14 +920,39 @@ import-export update:
     backup_drive_manifest:
       rule_exclusions:
       - option_length_too_long
-iot pnp capability-model update:
+iot hub configuration update:
   parameters:
-    repo_endpoint:
+    auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
-iot pnp interface update:
+iot hub device-identity update:
   parameters:
-    repo_endpoint:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot hub device-twin update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot hub distributed-tracing update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot hub module-identity update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot hub module-twin update:
+  parameters:
+    auth_type_dataplane:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+iot edge deployment update:
+  parameters:
+    auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
 k8sconfiguration create:

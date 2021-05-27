@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.7.0
+++++++
+* Removing APIs to create and manage Role Definitions and Role Assignments since they are now GA.
+
 0.6.0
 ++++++
 * Addressing CLI bugs for Managed Cassandra Service and updating to python sdk 4.0.

@@ -1,5 +1,10 @@
 Release History
 ===============
+
+2.4.0
+-----
+* Add support to format log streaming of structured JSON output
+
 2.3.1
 -----
 * Fix disable-ssl in redis binding.

@@ -1,0 +1,48 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - disk-pool list-skus
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l
+      User-Agent:
+      - AZURECLI/2.24.0 azsdk-python-storagepoolmanagement/unknown Python/3.8.3 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.StoragePool/locations/eastus/diskPoolZones?api-version=2021-04-01-preview
+  response:
+    body:
+      string: '{"value":[{"availabilityZones":["3","1","2"],"sku":{"name":"Basic","tier":"Basic"}},{"availabilityZones":["3","1","2"],"sku":{"name":"Standard","tier":"Standard"}},{"availabilityZones":["3","1","2"],"sku":{"name":"Premium","tier":"Premium"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '243'
+      content-type:
+      - application/json
+      date:
+      - Tue, 25 May 2021 06:06:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-return-client-request-id:
+      - 'true'
+    status:
+      code: 200
+      message: OK
+version: 1
