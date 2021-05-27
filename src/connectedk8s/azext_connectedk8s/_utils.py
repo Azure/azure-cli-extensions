@@ -22,13 +22,13 @@ from tabulate import tabulate  # pylint: disable=import-error
 import tempfile
 
 
-from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import send_raw_request
 from azure.cli.core import telemetry
-from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpiredError, ValidationError
+from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpiredError
+from msrest.exceptions import ValidationError as MSRestValidationError
 from msrestazure.azure_exceptions import CloudError
 from kubernetes.client.rest import ApiException
 from azext_connectedk8s._client_factory import _resource_client_factory
@@ -202,7 +202,7 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
             raise AzureInternalError("Http operation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
         raise AzureResponseError("Http operation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
-    if isinstance(ex, ValidationError):
+    if isinstance(ex, MSRestValidationError):
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
         raise AzureResponseError("Validation error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
 
@@ -544,10 +544,7 @@ def try_upload_log_file(cluster_name, storage_account_name, storage_token, log_f
         from azure.storage.blob import BlobServiceClient
         storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/"
         blob_service_client = BlobServiceClient(account_url=storage_account_url, credential=storage_token)
-        container_name = cluster_name + "-" + str(uuid.uuid4().hex)  # Create a unique name for the container
-        if len(container_name) > consts.STORAGE_CONTAINER_NAME_MAX_LENGTH:
-            container_name = container_name[:consts.STORAGE_CONTAINER_NAME_MAX_LENGTH]
-        container_name.rstrip('-')
+        container_name = cluster_name + "-troubleshoot-" + time.strftime("%Y%m%d-%H%M%S")
 
         try:
             blob_service_client.create_container(container_name)
@@ -612,7 +609,7 @@ def format_bright(msg):
 
 def display_diagnostics_report(kubectl_prior):   # pylint: disable=too-many-statements
     if not which('kubectl'):
-        raise CLIError('Can not find kubectl executable in PATH')
+        raise ValidationError('Can not find kubectl executable in PATH')
     subprocess_cmd = kubectl_prior + ["get", "node", "--no-headers"]
     nodes = subprocess.check_output(
         subprocess_cmd,
@@ -686,7 +683,7 @@ def display_diagnostics_report(kubectl_prior):   # pylint: disable=too-many-stat
                     network_status_array += format_diag_status(network_status_object)
                     ready_nodes[node_name] = True
                 except subprocess.CalledProcessError as err:
-                    raise CLIError(err.output)
+                    raise CLIInternalError(err.output)
 
     print()
     if network_config_array:
@@ -718,11 +715,11 @@ def format_diag_status(diag_status):
     return diag_status
 
 
-def collect_logs(resource_group_name, name, storage_account_name=None, sas_token=None, readonly_sas_token=None, kube_context=None, kube_config=None):
+def collect_periscope_logs(resource_group_name, name, storage_account_name=None, sas_token=None, readonly_sas_token=None, kube_context=None, kube_config=None):
     colorama.init()
 
     if not which('kubectl'):
-        raise CLIError('Can not find kubectl executable in PATH')
+        raise ValidationError('Can not find kubectl executable in PATH')
 
     kubectl_prior = ["kubectl"]
     if kube_config:
@@ -758,9 +755,9 @@ def collect_logs(resource_group_name, name, storage_account_name=None, sas_token
     kube_objects = "azure-arc/pod azure-arc/service azure-arc/deployment"
     yaml_lines = deployment_yaml.splitlines()
     for index, line in enumerate(yaml_lines):
-        if "DIAGNOSTIC_CONTAINERLOGS_LIST" in line and container_logs is not None:
+        if "DIAGNOSTIC_CONTAINERLOGS_LIST" in line:
             yaml_lines[index] = line + ' ' + container_logs
-        if "DIAGNOSTIC_KUBEOBJECTS_LIST" in line and kube_objects is not None:
+        if "DIAGNOSTIC_KUBEOBJECTS_LIST" in line:
             yaml_lines[index] = line + ' ' + kube_objects
         if "CLUSTER_TYPE" in line:
             yaml_lines[index] = '  CLUSTER_TYPE: connectedCluster'
@@ -774,7 +771,7 @@ def collect_logs(resource_group_name, name, storage_account_name=None, sas_token
         temp_yaml_file.flush()
         temp_yaml_file.close()
         try:
-            print("Cleaning up diagnostic container resources from the k8s cluster if existing")
+            print("Cleaning up diagnostic container resources from the k8s cluster if existing...")
 
             subprocess_cmd = kubectl_prior + ["delete", "serviceaccount,configmap,daemonset,secret", "--all", "-n", "aks-periscope", "--ignore-not-found"]
             subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
@@ -792,18 +789,18 @@ def collect_logs(resource_group_name, name, storage_account_name=None, sas_token
             subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
 
             print()
-            print("Deploying diagnostic container on the K8s cluster")
+            print(f"{colorama.Fore.GREEN}Deploying diagnostic container on the K8s cluster...")
             subprocess_cmd = kubectl_prior + ["apply", "-f", temp_yaml_path, "-n", "aks-periscope"]
             subprocess.check_output(subprocess_cmd, stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as err:
-            raise CLIError(err.output)
+            raise CLIInternalError(err.output)
     finally:
         os.remove(temp_yaml_path)
 
     print()
     # log_storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/"
 
-    print(f'{colorama.Fore.GREEN}Your logs are being uploaded to storage account {format_bright(storage_account_name)}')
+    print(f'{colorama.Fore.GREEN}Your logs are being uploaded to storage account {format_bright(storage_account_name)}...')
 
     print()
     print(f'You can download Azure Storage Explorer here '
@@ -834,3 +831,17 @@ def which(binary):
             return bin_path
 
     return None
+
+
+def try_archive_log_file(troubleshoot_log_path, output_file):
+    try:
+        # Creating the .tar.gz for logs and deleting the actual log file
+        import tarfile
+        with tarfile.open(output_file, "w:gz") as tar:
+            tar.add(troubleshoot_log_path, 'connected8s_troubleshoot.log')
+        logging.shutdown()  # To release log file handler, so that the actual log file can be removed after archiving
+        os.remove(troubleshoot_log_path)
+        print(f"{colorama.Style.BRIGHT}{colorama.Fore.GREEN}Some diagnostic logs have been collected and archived at '{output_file}'.")
+    except Exception as ex:
+        logger.error("Error occured while archiving the log file: {}".format(str(ex)))
+        print(f"{colorama.Style.BRIGHT}{colorama.Fore.GREEN}You can find the unarchived log file at '{troubleshoot_log_path}'.")

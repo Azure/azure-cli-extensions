@@ -19,7 +19,6 @@ import requests
 import urllib.request
 from _thread import interrupt_main
 from psutil import process_iter, NoSuchProcess, AccessDenied, ZombieProcess, net_connections
-from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.prompting import NoTTYException
@@ -1500,19 +1499,11 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         storage_account_name, sas_token, readonly_sas_token = utils.setup_validate_storage_account(cmd.cli_ctx, storage_account, sas_token, resource_group_name)
         if storage_account_name:  # When validated the storage account
             utils.try_upload_log_file(cluster_name, storage_account_name, sas_token, troubleshoot_log_path)
+            utils.try_archive_log_file(troubleshoot_log_path, output_file)
             # token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token.
-            utils.collect_logs(resource_group_name, cluster_name, storage_account_name, sas_token, readonly_sas_token, kube_context, kube_config)
-        try:
-            # Creating the .tar.gz for logs and deleting the actual log file
-            import tarfile
-            with tarfile.open(output_file, "w:gz") as tar:
-                tar.add(troubleshoot_log_path, 'connected8s_troubleshoot.log')
-            logging.shutdown()  # To release log file handler, so that the actual log file can be removed after archiving
-            os.remove(troubleshoot_log_path)
-            print(f"{colorama.Style.BRIGHT}{colorama.Fore.GREEN}The diagnostic logs have been collected and archived at '{output_file}'.")
-        except Exception as ex:
-            tr_logger.error("Error occured while archiving the log file: {}".format(str(ex)))
-            raise Exception("Error occured while archiving the diagnostic log file: {}".format(str(ex)))
+            utils.collect_periscope_logs(resource_group_name, cluster_name, storage_account_name, sas_token, readonly_sas_token, kube_context, kube_config)
+        else:
+            utils.try_archive_log_file(troubleshoot_log_path, output_file)
 
     except Exception as ex:
         tr_logger.error("Exception caught while running troubleshoot: {}".format(str(ex)), exc_info=True)
