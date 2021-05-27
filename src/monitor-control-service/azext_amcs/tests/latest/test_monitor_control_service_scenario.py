@@ -102,15 +102,15 @@ def step_data_collection_rule_create(test, rg, checks=None):
                          ')\\\\% Processor Time" counter-specifiers="\\\\Memory\\\\Committed Bytes" '
                          'counter-specifiers="\\\\LogicalDisk(_Total)\\\\Free Megabytes" '
                          'counter-specifiers="\\\\PhysicalDisk(_Total)\\\\Avg. Disk Queue Length" '
-                         'sampling-frequency=15 transfer-period="PT1M" streams="Microsoft-Perf" '
+                         'sampling-frequency=15 streams="Microsoft-Perf" '
                          '--performance-counters name="appTeamExtraCounters" '
                          'counter-specifiers="\\\\Process(_Total)\\\\Thread Count" sampling-frequency=30 '
-                         'transfer-period="PT5M" streams="Microsoft-Perf" '
+                         'streams="Microsoft-Perf" '
                          '--syslog name="syslogBase" facility-names="syslog" log-levels="Alert" log-levels="Critical" '
                          'log-levels="Emergency" streams="Microsoft-Syslog" '
-                         '--windows-event-logs name="cloudSecurityTeamEvents" transfer-period="PT1M" '
+                         '--windows-event-logs name="cloudSecurityTeamEvents" '
                          'streams="Microsoft-WindowsEvent" x-path-queries="Security!" '
-                         '--windows-event-logs name="appTeam1AppEvents" transfer-period="PT5M" '
+                         '--windows-event-logs name="appTeam1AppEvents" '
                          'streams="Microsoft-WindowsEvent" '
                          'x-path-queries="System![System[(Level = 1 or Level = 2 or Level = 3)]]" '
                          'x-path-queries="Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]" ',
@@ -219,7 +219,6 @@ def step_data_collection_rule_performance_counter_add(test, rg, checks=None):
              '--name extraCounters '
              '--counter-specifiers "\\\\Memory\\\\Committed Bytes" "\\\\Processor(_Total)\\\\% Processor Time" '
              '--sampling-frequency 15 '
-             '--transfer-period "PT1M" '
              '--streams "Microsoft-Perf"',
              checks=checks)
 
@@ -276,7 +275,6 @@ def step_data_collection_rule_windows_event_log_add(test, rg, checks=None):
              '--rule-name "{myDataCollectionRule}" '
              '--resource-group "{rg}" '
              '--name extraEvents '
-             '--transfer-period "PT1M" '
              '--streams "Microsoft-WindowsEvent" '
              '--x-path-queries "System![System[(Level = 1 or Level = 2 or Level = 3)]]" '
              '"Application!*[System[(Level = 1 or Level = 2 or Level = 3)]]"',

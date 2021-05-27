@@ -113,7 +113,7 @@ az monitor data-collection rule association show --name "myAssociation" --resour
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-uri**|string|The identifier of the resource.|resource_uri|resourceUri|
-|**--association-name**|string|The name of the association.|association_name|associationName|
+|**--association-name**|string|The name of the association. The name is case insensitive.|association_name|associationName|
 
 #### <a name="DataCollectionRuleAssociationsDelete">Command `az monitor data-collection rule association delete`</a>
 
@@ -126,4 +126,4 @@ az monitor data-collection rule association delete --name "myAssociation" --reso
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-uri**|string|The identifier of the resource.|resource_uri|resourceUri|
-|**--association-name**|string|The name of the association.|association_name|associationName|
+|**--association-name**|string|The name of the association. The name is case insensitive.|association_name|associationName|

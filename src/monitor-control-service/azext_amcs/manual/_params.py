@@ -27,8 +27,7 @@ from azext_amcs.action import (
 
 
 from azext_amcs.vendored_sdks.amcs.models import KnownDataFlowStreams, KnownPerfCounterDataSourceStreams, \
-    KnownPerfCounterDataSourceScheduledTransferPeriod, KnownWindowsEventLogDataSourceStreams, \
-    KnownWindowsEventLogDataSourceScheduledTransferPeriod, KnownSyslogDataSourceStreams, \
+    KnownWindowsEventLogDataSourceStreams, KnownSyslogDataSourceStreams, \
     KnownSyslogDataSourceFacilityNames, KnownSyslogDataSourceLogLevels
 
 
@@ -67,6 +66,7 @@ def load_arguments(self, _):
                    'configurations.')
         c.argument('data_sources__syslog', options_list=['--syslog'], arg_group="Data Sources",
                    action=AddDataSourcesSyslog, nargs='+', help='The list of Syslog data source configurations.')
+        # TODO: define extensions
         c.argument('data_sources__extensions', options_list=['--extensions'], arg_group="Data Sources",
                    type=validate_file_or_dict, help='The list of Azure VM extension data source configurations. '
                    'Expected value: json-string/@json-file.')
@@ -109,9 +109,6 @@ def load_arguments(self, _):
                    nargs='+', help='List of streams that this data source will be sent to. A stream '
                    'indicates what schema will be used for this data and usually what table in Log Analytics the data '
                    'will be sent to.')
-        c.argument('scheduled_transfer_period', options_list=['--transfer-period'],
-                   arg_type=get_enum_type(KnownPerfCounterDataSourceScheduledTransferPeriod),
-                   help='The interval between data uploads (scheduled transfers), rounded up to the nearest minute.')
         c.argument('sampling_frequency_in_seconds', options_list=['--sampling-frequency'], type=int,
                    help='The number of seconds between consecutive counter measurements (samples).')
         c.argument('counter_specifiers', options_list=['--counter-specifiers'], nargs='+',
@@ -131,9 +128,6 @@ def load_arguments(self, _):
                    nargs='+', help='List of streams that this data source will be sent to. A stream '
                    'indicates what schema will be used for this data and usually what table in Log Analytics the data '
                    'will be sent to.')
-        c.argument('scheduled_transfer_period', options_list=['--transfer-period'],
-                   arg_type=get_enum_type(KnownWindowsEventLogDataSourceScheduledTransferPeriod),
-                   help='The interval between data uploads (scheduled transfers), rounded up to the nearest minute.')
         c.argument('x_path_queries', options_list=['--x-path-queries'], nargs='+',
                    help='A list of Windows Event Log queries in XPATH format.')
 

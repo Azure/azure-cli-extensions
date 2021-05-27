@@ -296,7 +296,6 @@ def data_collection_rules_performance_counters_add(client,
                                                    data_collection_rule_name,
                                                    name,
                                                    streams,
-                                                   scheduled_transfer_period,
                                                    sampling_frequency_in_seconds,
                                                    counter_specifiers):
     from ..custom import monitor_data_collection_rule_show
@@ -316,7 +315,6 @@ def data_collection_rules_performance_counters_add(client,
     item = {
         'name': name,
         'streams': streams,
-        'scheduled_transfer_period': scheduled_transfer_period,
         'sampling_frequency_in_seconds': sampling_frequency_in_seconds,
         'counter_specifiers': counter_specifiers
     }
@@ -356,7 +354,6 @@ def data_collection_rules_performance_counters_update(client,
                                                       data_collection_rule_name,
                                                       name,
                                                       streams=None,
-                                                      scheduled_transfer_period=None,
                                                       sampling_frequency_in_seconds=None,
                                                       counter_specifiers=None):
     from ..custom import monitor_data_collection_rule_show
@@ -372,8 +369,6 @@ def data_collection_rules_performance_counters_update(client,
         if item['name'] == name:
             if streams is not None:
                 item['streams'] = streams
-            if scheduled_transfer_period is not None:
-                item['scheduled_transfer_period'] = scheduled_transfer_period
             if sampling_frequency_in_seconds is not None:
                 item['sampling_frequency_in_seconds'] = sampling_frequency_in_seconds
             if counter_specifiers is not None:
@@ -412,7 +407,6 @@ def data_collection_rules_windows_event_logs_add(client,
                                                  data_collection_rule_name,
                                                  name,
                                                  streams,
-                                                 scheduled_transfer_period,
                                                  x_path_queries):
     from ..custom import monitor_data_collection_rule_show
     instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
@@ -431,7 +425,6 @@ def data_collection_rules_windows_event_logs_add(client,
     item = {
         'name': name,
         'streams': streams,
-        'scheduled_transfer_period': scheduled_transfer_period,
         'x_path_queries': x_path_queries
     }
 
@@ -470,7 +463,6 @@ def data_collection_rules_windows_event_logs_update(client,
                                                     data_collection_rule_name,
                                                     name,
                                                     streams=None,
-                                                    scheduled_transfer_period=None,
                                                     x_path_queries=None):
     from ..custom import monitor_data_collection_rule_show
     instance = monitor_data_collection_rule_show(client, resource_group_name, data_collection_rule_name)
@@ -485,8 +477,6 @@ def data_collection_rules_windows_event_logs_update(client,
         if item['name'] == name:
             if streams is not None:
                 item['streams'] = streams
-            if scheduled_transfer_period is not None:
-                item['scheduled_transfer_period'] = scheduled_transfer_period
             if x_path_queries is not None:
                 item['x_path_queries'] = x_path_queries
             break
