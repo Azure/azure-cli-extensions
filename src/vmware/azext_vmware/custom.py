@@ -179,9 +179,9 @@ def datastore_netappvolume_create(cmd, client: AVSClient, resource_group_name, p
     return client.datastores.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name, net_app_volume=net_app_volume, disk_pool_volume=None)
 
 
-def datastore_diskpoolvolume_create(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name, target_id, lun_name):
+def datastore_diskpoolvolume_create(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name, target_id, lun_name, mount_option="MOUNT", path=None):
     from azext_vmware.vendored_sdks.avs_client.models import DiskPoolVolume
-    disk_pool_volume = DiskPoolVolume(target_id=target_id, lun_name=lun_name)
+    disk_pool_volume = DiskPoolVolume(target_id=target_id, lun_name=lun_name, mount_option=mount_option, path=path)
     return client.datastores.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name, net_app_volume=None, disk_pool_volume=disk_pool_volume)
 
 
