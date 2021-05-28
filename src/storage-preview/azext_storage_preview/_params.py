@@ -385,7 +385,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('delete_retention_period', type=int, arg_group='Soft Delete',
                    options_list=['--delete-retention-period', '--period'],
                    help='Number of days that soft-deleted blob will be retained. Must be in range [1,365].')
-        c.argument('static_website', arg_group='Static Website', arg_type=get_three_state_flag(),
+        c.argument('enable_static_website', options_list=['--static-website'], arg_group='Static Website',
+                   arg_type=get_three_state_flag(),
                    help='Enable static-website.')
         c.argument('index_document', help='Represent the name of the index document. This is commonly "index.html".',
                    arg_group='Static Website')

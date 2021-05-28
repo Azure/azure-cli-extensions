@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.util import CLIError
+from ..profiles import CUSTOM_DATA_STORAGE_FILEDATALAKE
 
 
 def list_deleted_path(client, marker=None, num_results=None, path_prefix=None, timeout=None, **kwargs):
@@ -17,27 +18,31 @@ def list_deleted_path(client, marker=None, num_results=None, path_prefix=None, t
     return result
 
 
-def set_service_properties(client, delete_retention=None, delete_retention_period=None,
-                           static_website=None, index_document=None, error_document_404_path=None):
+def set_service_properties(cmd, client, delete_retention=None, delete_retention_period=None,
+                           enable_static_website=False, index_document=None, error_document_404_path=None):
     parameters = client.get_service_properties()
     # update
     kwargs = {}
+    delete_retention_policy = cmd.get_models('_models#RetentionPolicy', resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE)()
     if parameters.get('delete_retention_policy', None):
-        kwargs['delete_retention_policy'] = parameters['delete_retention_policy']
+        delete_retention_policy = parameters['delete_retention_policy']
     if delete_retention is not None:
-        kwargs['delete_retention_policy'].enabled = delete_retention
+        delete_retention_policy.enabled = delete_retention
     if delete_retention_period is not None:
-        kwargs['delete_retention_policy'].days = delete_retention_period
-    kwargs['delete_retention_policy'].allow_permanent_delete = False
+        delete_retention_policy.days = delete_retention_period
+    delete_retention_policy.allow_permanent_delete = False
+
+    static_website = cmd.get_models('_models#StaticWebsite', resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE)()
     if parameters.get('static_website', None):
-        kwargs['static_website'] = parameters['static_website']
+        static_website = parameters['static_website']
 
     if static_website is not None:
-        kwargs['static_website'].enabled = static_website
+        static_website.enabled = enable_static_website
     if index_document is not None:
-        kwargs['static_website'].index_document = index_document
+        static_website.index_document = index_document
     if error_document_404_path is not None:
-        kwargs['static_website'].error_document_404_path = error_document_404_path
+        static_website.error_document_404_path = error_document_404_path
+
     if parameters.get('hour_metrics', None):
         kwargs['hour_metrics'] = parameters['hour_metrics']
     if parameters.get('logging', None):
@@ -48,9 +53,9 @@ def set_service_properties(client, delete_retention=None, delete_retention_perio
         kwargs['cors'] = parameters['cors']
 
     # checks
-    policy = kwargs.get('delete_retention_policy', None)
-    if policy and policy.enabled and not policy.days:
+    if delete_retention_policy and delete_retention_policy.enabled and not delete_retention_policy.days:
         raise CLIError("must specify days-retained")
 
-    client.set_service_properties(**kwargs)
+    client.set_service_properties(delete_retention_policy=delete_retention_policy, static_website=static_website,
+                                  **kwargs)
     return client.get_service_properties()
