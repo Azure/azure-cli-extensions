@@ -46,7 +46,7 @@ setup(
     name='internet_analyzer',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools Internet Analyzer Extension',
-   # TODO: Update author and email, if applicable
+    # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/internet-analyzer',

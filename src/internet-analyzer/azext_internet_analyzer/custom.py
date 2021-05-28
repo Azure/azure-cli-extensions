@@ -10,11 +10,11 @@
 
 
 def begin_create_internet_analyzer_profile(cmd, client,
-                                     resource_group,
-                                     name,
-                                     location=None,
-                                     tags=None,
-                                     enabled_state=None):
+                                           resource_group,
+                                           name,
+                                           location=None,
+                                           tags=None,
+                                           enabled_state=None):
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
@@ -23,11 +23,11 @@ def begin_create_internet_analyzer_profile(cmd, client,
 
 
 def begin_update_internet_analyzer_profile(cmd, client,
-                                     resource_group,
-                                     name,
-                                     location=None,
-                                     tags=None,
-                                     enabled_state=None):
+                                           resource_group,
+                                           name,
+                                           location=None,
+                                           tags=None,
+                                           enabled_state=None):
     body = client.get(resource_group_name=resource_group, profile_name=name).as_dict()
     if location is not None:
         body['location'] = location  # str
@@ -39,8 +39,8 @@ def begin_update_internet_analyzer_profile(cmd, client,
 
 
 def begin_delete_internet_analyzer_profile(cmd, client,
-                                     resource_group,
-                                     name):
+                                           resource_group,
+                                           name):
     return client.begin_delete(resource_group_name=resource_group, profile_name=name)
 
 
@@ -64,17 +64,17 @@ def list_internet_analyzer_preconfigured_endpoint(cmd, client,
 
 
 def begin_create_internet_analyzer_test(cmd, client,
-                                  resource_group,
-                                  profile_name,
-                                  name,
-                                  location=None,
-                                  tags=None,
-                                  description=None,
-                                  endpoint_a_name=None,
-                                  endpoint_a_endpoint=None,
-                                  endpoint_b_name=None,
-                                  endpoint_b_endpoint=None,
-                                  enabled_state=None):
+                                        resource_group,
+                                        profile_name,
+                                        name,
+                                        location=None,
+                                        tags=None,
+                                        description=None,
+                                        endpoint_a_name=None,
+                                        endpoint_a_endpoint=None,
+                                        endpoint_b_name=None,
+                                        endpoint_b_endpoint=None,
+                                        enabled_state=None):
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
@@ -88,17 +88,17 @@ def begin_create_internet_analyzer_test(cmd, client,
 
 
 def begin_update_internet_analyzer_test(cmd, client,
-                                  resource_group,
-                                  profile_name,
-                                  name,
-                                  location=None,
-                                  tags=None,
-                                  description=None,
-                                  endpoint_a_name=None,
-                                  endpoint_a_endpoint=None,
-                                  endpoint_b_name=None,
-                                  endpoint_b_endpoint=None,
-                                  enabled_state=None):
+                                        resource_group,
+                                        profile_name,
+                                        name,
+                                        location=None,
+                                        tags=None,
+                                        description=None,
+                                        endpoint_a_name=None,
+                                        endpoint_a_endpoint=None,
+                                        endpoint_b_name=None,
+                                        endpoint_b_endpoint=None,
+                                        enabled_state=None):
     body = client.get(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name).as_dict()
     if location is not None:
         body['location'] = location  # str
@@ -120,9 +120,9 @@ def begin_update_internet_analyzer_test(cmd, client,
 
 
 def begin_delete_internet_analyzer_test(cmd, client,
-                                  resource_group,
-                                  profile_name,
-                                  name):
+                                        resource_group,
+                                        profile_name,
+                                        name):
     return client.begin_delete(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name)
 
 
