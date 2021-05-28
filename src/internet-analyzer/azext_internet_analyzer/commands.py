@@ -17,9 +17,9 @@ def load_command_table(self, _):
         operations_tmpl='azext_internet_analyzer.vendored_sdks.frontdoor.operations._network_experiment_profiles_operations#NetworkExperimentProfilesOperations.{}',
         client_factory=cf_network_experiment_profiles)
     with self.command_group('internet-analyzer profile', internet_analyzer_network_experiment_profiles, client_factory=cf_network_experiment_profiles) as g:
-        g.custom_command('create', 'create_internet_analyzer_profile')
-        g.custom_command('update', 'update_internet_analyzer_profile')
-        g.custom_command('delete', 'delete_internet_analyzer_profile')
+        g.custom_command('create', 'begin_create_internet_analyzer_profile')
+        g.custom_command('update', 'begin_update_internet_analyzer_profile')
+        g.custom_command('delete', 'begin_delete_internet_analyzer_profile')
         g.custom_command('list', 'list_internet_analyzer_profile')
         g.custom_show_command('show', 'get_internet_analyzer_profile')
 
@@ -35,9 +35,9 @@ def load_command_table(self, _):
         operations_tmpl='azext_internet_analyzer.vendored_sdks.frontdoor.operations._experiments_operations#ExperimentsOperations.{}',
         client_factory=cf_experiments)
     with self.command_group('internet-analyzer test', internet_analyzer_experiments, client_factory=cf_experiments) as g:
-        g.custom_command('create', 'create_internet_analyzer_test')
-        g.custom_command('update', 'update_internet_analyzer_test')
-        g.custom_command('delete', 'delete_internet_analyzer_test')
+        g.custom_command('create', 'begin_create_internet_analyzer_test')
+        g.custom_command('update', 'begin_update_internet_analyzer_test')
+        g.custom_command('delete', 'begin_delete_internet_analyzer_test')
         g.custom_command('list', 'list_internet_analyzer_test')
         g.custom_show_command('show', 'get_internet_analyzer_test')
 

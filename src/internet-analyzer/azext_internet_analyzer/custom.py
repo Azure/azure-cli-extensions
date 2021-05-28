@@ -9,7 +9,7 @@
 # pylint: disable=unused-argument
 
 
-def create_internet_analyzer_profile(cmd, client,
+def begin_create_internet_analyzer_profile(cmd, client,
                                      resource_group,
                                      name,
                                      location=None,
@@ -19,10 +19,10 @@ def create_internet_analyzer_profile(cmd, client,
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
     body['enabled_state'] = enabled_state  # str
-    return client.create_or_update(resource_group_name=resource_group, profile_name=name, parameters=body)
+    return client.begin_create_or_update(resource_group_name=resource_group, profile_name=name, parameters=body)
 
 
-def update_internet_analyzer_profile(cmd, client,
+def begin_update_internet_analyzer_profile(cmd, client,
                                      resource_group,
                                      name,
                                      location=None,
@@ -35,13 +35,13 @@ def update_internet_analyzer_profile(cmd, client,
         body['tags'] = tags  # dictionary
     if enabled_state is not None:
         body['enabled_state'] = enabled_state  # str
-    return client.create_or_update(resource_group_name=resource_group, profile_name=name, parameters=body)
+    return client.begin_create_or_update(resource_group_name=resource_group, profile_name=name, parameters=body)
 
 
-def delete_internet_analyzer_profile(cmd, client,
+def begin_delete_internet_analyzer_profile(cmd, client,
                                      resource_group,
                                      name):
-    return client.delete(resource_group_name=resource_group, profile_name=name)
+    return client.begin_delete(resource_group_name=resource_group, profile_name=name)
 
 
 def list_internet_analyzer_profile(cmd, client,
@@ -63,7 +63,7 @@ def list_internet_analyzer_preconfigured_endpoint(cmd, client,
     return client.list(resource_group_name=resource_group, profile_name=profile_name)
 
 
-def create_internet_analyzer_test(cmd, client,
+def begin_create_internet_analyzer_test(cmd, client,
                                   resource_group,
                                   profile_name,
                                   name,
@@ -84,10 +84,10 @@ def create_internet_analyzer_test(cmd, client,
     body.setdefault('endpoint_b', {})['name'] = endpoint_b_name  # str
     body.setdefault('endpoint_b', {})['endpoint'] = endpoint_b_endpoint  # str
     body['enabled_state'] = enabled_state  # str
-    return client.create_or_update(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name, parameters=body)
+    return client.begin_create_or_update(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name, parameters=body)
 
 
-def update_internet_analyzer_test(cmd, client,
+def begin_update_internet_analyzer_test(cmd, client,
                                   resource_group,
                                   profile_name,
                                   name,
@@ -116,14 +116,14 @@ def update_internet_analyzer_test(cmd, client,
         body.setdefault('endpoint_b', {})['endpoint'] = endpoint_b_endpoint  # str
     if enabled_state is not None:
         body['enabled_state'] = enabled_state  # str
-    return client.create_or_update(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name, parameters=body)
+    return client.begin_create_or_update(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name, parameters=body)
 
 
-def delete_internet_analyzer_test(cmd, client,
+def begin_delete_internet_analyzer_test(cmd, client,
                                   resource_group,
                                   profile_name,
                                   name):
-    return client.delete(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name)
+    return client.begin_delete(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name)
 
 
 def list_internet_analyzer_test(cmd, client,
