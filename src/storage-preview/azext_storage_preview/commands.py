@@ -215,7 +215,7 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
 
     with self.command_group('storage fs service-properties', command_type=adls_fs_service_sdk,
                             custom_command_type=get_custom_sdk('filesystem', cf_adls_service),
-                            resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE, min_api='2020-06-12') as g:
+                            resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE, min_api='2020-06-12', is_preview=True) as g:
         g.storage_command_oauth('show', 'get_service_properties', exception_handler=show_exception_handler)
         g.storage_custom_command_oauth('update', 'set_service_properties')
 
