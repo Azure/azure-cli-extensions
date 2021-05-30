@@ -12,32 +12,35 @@
 from knack.help_files import helps
 
 
-helps['datafactory factory'] = """
+helps['datafactory'] = """
     type: group
-    short-summary: datafactory factory
+    short-summary: Manage factory with datafactory
 """
 
-helps['datafactory factory list'] = """
+helps['datafactory list'] = """
     type: command
-    short-summary: "Lists factories under the specified subscription."
+    short-summary: "Lists factories. And Lists factories under the specified subscription."
     examples:
       - name: Factories_ListByResourceGroup
         text: |-
-               az datafactory factory list --resource-group "exampleResourceGroup"
+               az datafactory list --resource-group "exampleResourceGroup"
+      - name: Factories_List
+        text: |-
+               az datafactory list
 """
 
-helps['datafactory factory show'] = """
+helps['datafactory show'] = """
     type: command
     short-summary: "Gets a factory."
     examples:
       - name: Factories_Get
         text: |-
-               az datafactory factory show --name "exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory show --name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory factory create'] = """
+helps['datafactory create'] = """
     type: command
-    short-summary: "Creates or updates a factory."
+    short-summary: "Create a factory."
     parameters:
       - name: --factory-vsts-configuration
         short-summary: "Factory's VSTS repo information."
@@ -69,30 +72,30 @@ collaboration-branch=XX root-folder=XX last-commit-id=XX
     examples:
       - name: Factories_CreateOrUpdate
         text: |-
-               az datafactory factory create --location "East US" --name "exampleFactoryName" --resource-group \
+               az datafactory create --location "East US" --name "exampleFactoryName" --resource-group \
 "exampleResourceGroup"
 """
 
-helps['datafactory factory update'] = """
+helps['datafactory update'] = """
     type: command
     short-summary: "Updates a factory."
     examples:
       - name: Factories_Update
         text: |-
-               az datafactory factory update --name "exampleFactoryName" --tags exampleTag="exampleValue" \
---resource-group "exampleResourceGroup"
+               az datafactory update --name "exampleFactoryName" --tags exampleTag="exampleValue" --resource-group \
+"exampleResourceGroup"
 """
 
-helps['datafactory factory delete'] = """
+helps['datafactory delete'] = """
     type: command
     short-summary: "Deletes a factory."
     examples:
       - name: Factories_Delete
         text: |-
-               az datafactory factory delete --name "exampleFactoryName" --resource-group "exampleResourceGroup"
+               az datafactory delete --name "exampleFactoryName" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory factory configure-factory-repo'] = """
+helps['datafactory configure-factory-repo'] = """
     type: command
     short-summary: "Updates a factory's repo information."
     parameters:
@@ -126,36 +129,36 @@ collaboration-branch=XX root-folder=XX last-commit-id=XX
     examples:
       - name: Factories_ConfigureFactoryRepo
         text: |-
-               az datafactory factory configure-factory-repo --factory-resource-id "/subscriptions/12345678-1234-1234-1\
-234-12345678abc/resourceGroups/exampleResourceGroup/providers/Microsoft.DataFactory/factories/exampleFactoryName" \
+               az datafactory configure-factory-repo --factory-resource-id "/subscriptions/12345678-1234-1234-1234-1234\
+5678abc/resourceGroups/exampleResourceGroup/providers/Microsoft.DataFactory/factories/exampleFactoryName" \
 --factory-vsts-configuration account-name="ADF" collaboration-branch="master" last-commit-id="" project-name="project" \
 repository-name="repo" root-folder="/" tenant-id="" --location "East US"
 """
 
-helps['datafactory factory get-data-plane-access'] = """
+helps['datafactory get-data-plane-access'] = """
     type: command
     short-summary: "Get Data Plane access."
     examples:
       - name: Factories_GetDataPlaneAccess
         text: |-
-               az datafactory factory get-data-plane-access --name "exampleFactoryName" --access-resource-path "" \
+               az datafactory get-data-plane-access --name "exampleFactoryName" --access-resource-path "" \
 --expire-time "2018-11-10T09:46:20.2659347Z" --permissions "r" --profile-name "DefaultProfile" --start-time \
 "2018-11-10T02:46:20.2659347Z" --resource-group "exampleResourceGroup"
 """
 
-helps['datafactory factory get-git-hub-access-token'] = """
+helps['datafactory get-git-hub-access-token'] = """
     type: command
     short-summary: "Get GitHub Access Token."
     examples:
       - name: Factories_GetGitHubAccessToken
         text: |-
-               az datafactory factory get-git-hub-access-token --name "exampleFactoryName" --git-hub-access-code \
-"some" --git-hub-access-token-base-url "some" --git-hub-client-id "some" --resource-group "exampleResourceGroup"
+               az datafactory get-git-hub-access-token --name "exampleFactoryName" --git-hub-access-code "some" \
+--git-hub-access-token-base-url "some" --git-hub-client-id "some" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime'] = """
     type: group
-    short-summary: datafactory integration-runtime
+    short-summary: Manage integration runtime with datafactory
 """
 
 helps['datafactory integration-runtime list'] = """
@@ -180,7 +183,7 @@ helps['datafactory integration-runtime show'] = """
 
 helps['datafactory integration-runtime linked-integration-runtime'] = """
     type: group
-    short-summary: datafactory integration-runtime sub group linked-integration-runtime
+    short-summary: Manage integration runtime with datafactory sub group linked-integration-runtime
 """
 
 helps['datafactory integration-runtime linked-integration-runtime create'] = """
@@ -192,28 +195,27 @@ helps['datafactory integration-runtime linked-integration-runtime create'] = """
                az datafactory integration-runtime linked-integration-runtime create --name \
 "bfa92911-9fb6-4fbe-8f23-beae87bc1c83" --location "West US" --data-factory-name "e9955d6d-56ea-4be3-841c-52a12c1a9981" \
 --subscription-id "061774c7-4b5a-4159-a55b-365581830283" --factory-name "exampleFactoryName" \
---integration-runtime-name "exampleIntegrationRuntime" --resource-group "exampleResourceGroup" --subscription-id \
-"12345678-1234-1234-1234-12345678abc"
+--integration-runtime-name "exampleIntegrationRuntime" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory integration-runtime managed'] = """
     type: group
-    short-summary: datafactory integration-runtime sub group managed
+    short-summary: Manage integration runtime with datafactory sub group managed
 """
 
 helps['datafactory integration-runtime managed create'] = """
     type: command
-    short-summary: "Creates or updates an integration runtime."
+    short-summary: "Create an integration runtime."
 """
 
 helps['datafactory integration-runtime self-hosted'] = """
     type: group
-    short-summary: datafactory integration-runtime sub group self-hosted
+    short-summary: Manage integration runtime with datafactory sub group self-hosted
 """
 
 helps['datafactory integration-runtime self-hosted create'] = """
     type: command
-    short-summary: "Creates or updates an integration runtime."
+    short-summary: "Create an integration runtime."
     examples:
       - name: IntegrationRuntimes_Create
         text: |-
@@ -361,7 +363,7 @@ created.
 
 helps['datafactory integration-runtime-node'] = """
     type: group
-    short-summary: datafactory integration-runtime-node
+    short-summary: Manage integration runtime node with datafactory
 """
 
 helps['datafactory integration-runtime-node show'] = """
@@ -407,7 +409,7 @@ helps['datafactory integration-runtime-node get-ip-address'] = """
 
 helps['datafactory linked-service'] = """
     type: group
-    short-summary: datafactory linked-service
+    short-summary: Manage linked service with datafactory
 """
 
 helps['datafactory linked-service list'] = """
@@ -432,7 +434,7 @@ helps['datafactory linked-service show'] = """
 
 helps['datafactory linked-service create'] = """
     type: command
-    short-summary: "Creates or updates a linked service."
+    short-summary: "Create a linked service."
     examples:
       - name: LinkedServices_Create
         text: |-
@@ -444,7 +446,7 @@ helps['datafactory linked-service create'] = """
 
 helps['datafactory linked-service update'] = """
     type: command
-    short-summary: "Creates or updates a linked service."
+    short-summary: "Update a linked service."
     examples:
       - name: LinkedServices_Update
         text: |-
@@ -464,7 +466,7 @@ helps['datafactory linked-service delete'] = """
 
 helps['datafactory dataset'] = """
     type: group
-    short-summary: datafactory dataset
+    short-summary: Manage dataset with datafactory
 """
 
 helps['datafactory dataset list'] = """
@@ -488,7 +490,7 @@ helps['datafactory dataset show'] = """
 
 helps['datafactory dataset create'] = """
     type: command
-    short-summary: "Creates or updates a dataset."
+    short-summary: "Create a dataset."
     examples:
       - name: Datasets_Create
         text: |-
@@ -502,7 +504,7 @@ TextFormat\\"},\\"fileName\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@datas
 
 helps['datafactory dataset update'] = """
     type: command
-    short-summary: "Creates or updates a dataset."
+    short-summary: "Update a dataset."
     parameters:
       - name: --folder
         short-summary: "The folder that this Dataset is in. If not specified, Dataset will appear at the root level."
@@ -531,7 +533,7 @@ helps['datafactory dataset delete'] = """
 
 helps['datafactory pipeline'] = """
     type: group
-    short-summary: datafactory pipeline
+    short-summary: Manage pipeline with datafactory
 """
 
 helps['datafactory pipeline list'] = """
@@ -556,7 +558,7 @@ helps['datafactory pipeline show'] = """
 
 helps['datafactory pipeline create'] = """
     type: command
-    short-summary: "Creates or updates a pipeline."
+    short-summary: "Create a pipeline."
     examples:
       - name: Pipelines_Create
         text: |-
@@ -570,13 +572,13 @@ pleDataset\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{
 :{\\"type\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipe\
 line().parameters.OutputBlobNameList\\"}}}],\\"parameters\\":{\\"JobId\\":{\\"type\\":\\"String\\"},\\"OutputBlobNameLi\
 st\\":{\\"type\\":\\"Array\\"}},\\"variables\\":{\\"TestVariableArray\\":{\\"type\\":\\"Array\\"}},\\"runDimensions\\":\
-{\\"JobId\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.JobId\\"}}}" --name "examplePipeline" \
---resource-group "exampleResourceGroup"
+{\\"JobId\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline().parameters.JobId\\"}},\\"duration\\":\\"0.00:10:00\
+\\"}" --name "examplePipeline" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory pipeline update'] = """
     type: command
-    short-summary: "Creates or updates a pipeline."
+    short-summary: "Update a pipeline."
     examples:
       - name: Pipelines_Update
         text: |-
@@ -588,8 +590,8 @@ eters\\":{\\"MyFileName\\":\\"examplecontainer.csv\\",\\"MyFolderPath\\":\\"exam
 \\"Expression\\",\\"value\\":\\"@item()\\"},\\"MyFolderPath\\":\\"examplecontainer\\"},\\"referenceName\\":\\"exampleDa\
 taset\\"}],\\"typeProperties\\":{\\"dataIntegrationUnits\\":32,\\"sink\\":{\\"type\\":\\"BlobSink\\"},\\"source\\":{\\"\
 type\\":\\"BlobSource\\"}}}],\\"isSequential\\":true,\\"items\\":{\\"type\\":\\"Expression\\",\\"value\\":\\"@pipeline(\
-).parameters.OutputBlobNameList\\"}}}]" --parameters "{\\"OutputBlobNameList\\":{\\"type\\":\\"Array\\"}}" --name \
-"examplePipeline" --resource-group "exampleResourceGroup"
+).parameters.OutputBlobNameList\\"}}}]" --parameters "{\\"OutputBlobNameList\\":{\\"type\\":\\"Array\\"}}" --duration \
+"0.00:10:00" --name "examplePipeline" --resource-group "exampleResourceGroup"
 """
 
 helps['datafactory pipeline delete'] = """
@@ -615,7 +617,7 @@ helps['datafactory pipeline create-run'] = """
 
 helps['datafactory pipeline-run'] = """
     type: group
-    short-summary: datafactory pipeline-run
+    short-summary: Manage pipeline run with datafactory
 """
 
 helps['datafactory pipeline-run show'] = """
@@ -675,7 +677,7 @@ operand="PipelineName" operator="Equals" values="examplePipeline" --last-updated
 
 helps['datafactory activity-run'] = """
     type: group
-    short-summary: datafactory activity-run
+    short-summary: Manage activity run with datafactory
 """
 
 helps['datafactory activity-run query-by-pipeline-run'] = """
@@ -715,7 +717,7 @@ ActivityRunEnd and Status; for trigger runs are TriggerName, TriggerRunTimestamp
 
 helps['datafactory trigger'] = """
     type: group
-    short-summary: datafactory trigger
+    short-summary: Manage trigger with datafactory
 """
 
 helps['datafactory trigger list'] = """
@@ -739,7 +741,7 @@ helps['datafactory trigger show'] = """
 
 helps['datafactory trigger create'] = """
     type: command
-    short-summary: "Creates or updates a trigger."
+    short-summary: "Create a trigger."
     examples:
       - name: Triggers_Create
         text: |-
@@ -753,7 +755,7 @@ requency\\":\\"Minute\\",\\"interval\\":4,\\"startTime\\":\\"2018-06-16T00:39:13
 
 helps['datafactory trigger update'] = """
     type: command
-    short-summary: "Creates or updates a trigger."
+    short-summary: "Update a trigger."
     examples:
       - name: Triggers_Update
         text: |-
@@ -843,7 +845,7 @@ helps['datafactory trigger wait'] = """
 
 helps['datafactory trigger-run'] = """
     type: group
-    short-summary: datafactory trigger-run
+    short-summary: Manage trigger run with datafactory
 """
 
 helps['datafactory trigger-run cancel'] = """

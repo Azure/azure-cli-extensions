@@ -17,33 +17,33 @@ def load_command_table(self, _):
 
     from azext_maintenance.generated._client_factory import cf_public_maintenance_configuration
     maintenance_public_maintenance_configuration = CliCommandType(
-        operations_tmpl='azext_maintenance.vendored_sdks.maintenance.operations._public_maintenance_configuration_opera'
-        'tions#PublicMaintenanceConfigurationOperations.{}',
+        operations_tmpl='azext_maintenance.vendored_sdks.maintenance.operations._public_maintenance_configurations_oper'
+        'ations#PublicMaintenanceConfigurationsOperations.{}',
         client_factory=cf_public_maintenance_configuration)
     with self.command_group('maintenance public-configuration', maintenance_public_maintenance_configuration,
-                            client_factory=cf_public_maintenance_configuration, is_experimental=True) as g:
+                            client_factory=cf_public_maintenance_configuration) as g:
         g.custom_command('list', 'maintenance_public_configuration_list')
         g.custom_show_command('show', 'maintenance_public_configuration_show')
 
     from azext_maintenance.generated._client_factory import cf_apply_update
     maintenance_apply_update = CliCommandType(
-        operations_tmpl='azext_maintenance.vendored_sdks.maintenance.operations._apply_update_operations#ApplyUpdateOpe'
-        'rations.{}',
+        operations_tmpl='azext_maintenance.vendored_sdks.maintenance.operations._apply_updates_operations#ApplyUpdatesO'
+        'perations.{}',
         client_factory=cf_apply_update)
-    with self.command_group('maintenance applyupdate', maintenance_apply_update, client_factory=cf_apply_update,
-                            is_experimental=True) as g:
+    with self.command_group('maintenance applyupdate', maintenance_apply_update, client_factory=cf_apply_update) as g:
+        g.custom_command('list', 'maintenance_applyupdate_list')
         g.custom_show_command('show', 'maintenance_applyupdate_show')
         g.custom_command('create', 'maintenance_applyupdate_create')
         g.custom_command('update', 'maintenance_applyupdate_update')
-        g.custom_command('get-parent', 'maintenance_applyupdate_get_parent')
+        g.custom_command('show-parent', 'maintenance_applyupdate_show_parent')
 
     from azext_maintenance.generated._client_factory import cf_configuration_assignment
     maintenance_configuration_assignment = CliCommandType(
-        operations_tmpl='azext_maintenance.vendored_sdks.maintenance.operations._configuration_assignment_operations#Co'
-        'nfigurationAssignmentOperations.{}',
+        operations_tmpl='azext_maintenance.vendored_sdks.maintenance.operations._configuration_assignments_operations#C'
+        'onfigurationAssignmentsOperations.{}',
         client_factory=cf_configuration_assignment)
     with self.command_group('maintenance assignment', maintenance_configuration_assignment,
-                            client_factory=cf_configuration_assignment, is_experimental=True) as g:
+                            client_factory=cf_configuration_assignment) as g:
         g.custom_command('list', 'maintenance_assignment_list')
         g.custom_command('create', 'maintenance_assignment_create')
         g.custom_command('update', 'maintenance_assignment_update')
@@ -52,22 +52,41 @@ def load_command_table(self, _):
 
     from azext_maintenance.generated._client_factory import cf_maintenance_configuration
     maintenance_maintenance_configuration = CliCommandType(
-        operations_tmpl='azext_maintenance.vendored_sdks.maintenance.operations._maintenance_configuration_operations#M'
-        'aintenanceConfigurationOperations.{}',
+        operations_tmpl='azext_maintenance.vendored_sdks.maintenance.operations._maintenance_configurations_operations#'
+        'MaintenanceConfigurationsOperations.{}',
         client_factory=cf_maintenance_configuration)
     with self.command_group('maintenance configuration', maintenance_maintenance_configuration,
-                            client_factory=cf_maintenance_configuration, is_experimental=True) as g:
+                            client_factory=cf_maintenance_configuration) as g:
         g.custom_command('list', 'maintenance_configuration_list')
         g.custom_show_command('show', 'maintenance_configuration_show')
         g.custom_command('create', 'maintenance_configuration_create')
         g.custom_command('update', 'maintenance_configuration_update')
         g.custom_command('delete', 'maintenance_configuration_delete', confirmation=True)
 
+    from azext_maintenance.generated._client_factory import cf_maintenance_configuration_for_resource_group
+    maintenance_maintenance_configuration_for_resource_group = CliCommandType(
+        operations_tmpl='azext_maintenance.vendored_sdks.maintenance.operations._maintenance_configurations_for_resourc'
+        'e_group_operations#MaintenanceConfigurationsForResourceGroupOperations.{}',
+        client_factory=cf_maintenance_configuration_for_resource_group)
+    with self.command_group('maintenance configuration-for-resource-group',
+                            maintenance_maintenance_configuration_for_resource_group,
+                            client_factory=cf_maintenance_configuration_for_resource_group) as g:
+        g.custom_command('list', 'maintenance_configuration_for_resource_group_list')
+
+    from azext_maintenance.generated._client_factory import cf_apply_update_for_resource_group
+    maintenance_apply_update_for_resource_group = CliCommandType(
+        operations_tmpl='azext_maintenance.vendored_sdks.maintenance.operations._apply_update_for_resource_group_operat'
+        'ions#ApplyUpdateForResourceGroupOperations.{}',
+        client_factory=cf_apply_update_for_resource_group)
+    with self.command_group('maintenance applyupdate-for-resource-group', maintenance_apply_update_for_resource_group,
+                            client_factory=cf_apply_update_for_resource_group) as g:
+        g.custom_command('list', 'maintenance_applyupdate_for_resource_group_list')
+
     from azext_maintenance.generated._client_factory import cf_update
     maintenance_update = CliCommandType(
-        operations_tmpl='azext_maintenance.vendored_sdks.maintenance.operations._update_operations#UpdateOperations.{}',
+        operations_tmpl='azext_maintenance.vendored_sdks.maintenance.operations._updates_operations#UpdatesOperations.{'
+        '}',
         client_factory=cf_update)
-    with self.command_group('maintenance update', maintenance_update, client_factory=cf_update,
-                            is_experimental=True) as g:
+    with self.command_group('maintenance update', maintenance_update, client_factory=cf_update) as g:
         g.custom_command('list', 'maintenance_update_list')
         g.custom_command('list-parent', 'maintenance_update_list_parent')

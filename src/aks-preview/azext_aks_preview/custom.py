@@ -113,6 +113,7 @@ from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
 from ._consts import CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED
+from ._consts import CONST_AZURE_DEFENDER_ADDON_NAME, CONST_AZURE_DEFENDER_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
 from ._consts import CONST_MANAGED_IDENTITY_OPERATOR_ROLE, CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID
 from ._consts import ADDONS
 from .maintenanceconfiguration import aks_maintenanceconfiguration_update_internal
@@ -316,20 +317,16 @@ def _invoke_deployment(cmd, resource_group_name, deployment_name, template, para
         logger.info(json.dumps(template, indent=2))
         logger.info('==== END TEMPLATE ====')
 
-    if cmd.supported_api_version(min_api='2019-10-01', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES):
-        Deployment = cmd.get_models(
-            'Deployment', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
-        deployment = Deployment(properties=properties)
-
-        if validate:
-            validation_poller = smc.validate(
-                resource_group_name, deployment_name, deployment)
-            return LongRunningOperation(cmd.cli_ctx)(validation_poller)
-        return sdk_no_wait(no_wait, smc.create_or_update, resource_group_name, deployment_name, deployment)
-
+    Deployment = cmd.get_models('Deployment', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
+    deployment = Deployment(properties=properties)
     if validate:
-        return smc.validate(resource_group_name, deployment_name, properties)
-    return sdk_no_wait(no_wait, smc.create_or_update, resource_group_name, deployment_name, properties)
+        if cmd.supported_api_version(min_api='2019-10-01', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES):
+            validation_poller = smc.begin_validate(resource_group_name, deployment_name, deployment)
+            return LongRunningOperation(cmd.cli_ctx)(validation_poller)
+        else:
+            return smc.validate(resource_group_name, deployment_name, deployment)
+
+    return sdk_no_wait(no_wait, smc.begin_create_or_update, resource_group_name, deployment_name, deployment)
 
 
 def create_application(client, display_name, homepage, identifier_uris,
@@ -971,6 +968,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_vmss=None,
                vm_set_type=None,
                skip_subnet_role_assignment=False,
+               os_sku=None,
                enable_fips_image=False,
                enable_cluster_autoscaler=False,
                cluster_autoscaler_profile=None,
@@ -1033,6 +1031,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_pod_identity_with_kubenet=False,
                enable_encryption_at_host=False,
                enable_secret_rotation=False,
+               disable_local_accounts=False,
                no_wait=False,
                assign_kubelet_identity=None,
                yes=False):
@@ -1082,6 +1081,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         count=int(node_count),
         vm_size=node_vm_size,
         os_type="Linux",
+        os_sku=os_sku,
         mode="System",
         vnet_subnet_id=vnet_subnet_id,
         pod_subnet_id=pod_subnet_id,
@@ -1284,7 +1284,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         if any([aad_client_app_id, aad_server_app_id, aad_server_app_secret]):
             raise CLIError('"--enable-aad" cannot be used together with '
                            '"--aad-client-app-id/--aad-server-app-id/--aad-server-app-secret"')
-
+        if disable_rbac and enable_azure_rbac:
+            raise CLIError(
+                '"--enable-azure-rbac" can not be used together with "--disable-rbac"')
         aad_profile = ManagedClusterAADProfile(
             managed=True,
             enable_azure_rbac=enable_azure_rbac,
@@ -1389,7 +1391,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         api_server_access_profile=api_server_access_profile,
         auto_upgrade_profile=auto_upgrade_profile,
         pod_identity_profile=pod_identity_profile,
-        identity_profile=identity_profile)
+        identity_profile=identity_profile,
+        disable_local_accounts=bool(disable_local_accounts))
 
     if node_resource_group:
         mc.node_resource_group = node_resource_group
@@ -1496,9 +1499,13 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                disable_pod_identity=False,
                enable_secret_rotation=False,
                disable_secret_rotation=False,
+               disable_local_accounts=False,
+               enable_local_accounts=False,
                yes=False,
                tags=None,
-               windows_admin_password=None):
+               windows_admin_password=None,
+               enable_azure_rbac=False,
+               disable_azure_rbac=False):
     update_autoscaler = enable_cluster_autoscaler or disable_cluster_autoscaler or update_cluster_autoscaler
     update_acr = attach_acr is not None or detach_acr is not None
     update_pod_security = enable_pod_security_policy or disable_pod_security_policy
@@ -1508,7 +1515,7 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                                                           load_balancer_outbound_ports,
                                                           load_balancer_idle_timeout)
     update_aad_profile = not (
-        aad_tenant_id is None and aad_admin_group_object_ids is None)
+        aad_tenant_id is None and aad_admin_group_object_ids is None and not enable_azure_rbac and not disable_azure_rbac)
     # pylint: disable=too-many-boolean-expressions
     if not update_autoscaler and \
        cluster_autoscaler_profile is None and \
@@ -1531,7 +1538,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not enable_secret_rotation and \
        not disable_secret_rotation and \
        not tags and \
-       not windows_admin_password:
+       not windows_admin_password and \
+       not enable_local_accounts and \
+       not disable_local_accounts:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1558,8 +1567,11 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--enable-secret-rotation" or '
                        '"--disable-secret-rotation" or '
                        '"--tags" or '
-                       '"--windows-admin-password"')
-
+                       '"--windows-admin-password" or '
+                       '"--enable-azure-rbac" or '
+                       '"--disable-azure-rbac" or '
+                       '"--enable-local-accounts" or '
+                       '"--disable-local-accounts"')
     instance = client.get(resource_group_name, name)
 
     if update_autoscaler and len(instance.agent_pool_profiles) > 1:
@@ -1622,6 +1634,16 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
 
     if disable_pod_security_policy:
         instance.enable_pod_security_policy = False
+
+    if disable_local_accounts and enable_local_accounts:
+        raise CLIError('Cannot specify --disable-local-accounts and --enable-local-accounts '
+                       'at the same time.')
+
+    if disable_local_accounts:
+        instance.disable_local_accounts = True
+
+    if enable_local_accounts:
+        instance.disable_local_accounts = False
 
     if update_lb_profile:
         instance.network_profile.load_balancer_profile = update_load_balancer_profile(
@@ -1694,13 +1716,20 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         )
     if update_aad_profile:
         if instance.aad_profile is None or not instance.aad_profile.managed:
-            raise CLIError('Cannot specify "--aad-tenant-id/--aad-admin-group-object-ids"'
+            raise CLIError('Cannot specify "--aad-tenant-id/--aad-admin-group-object-ids/--enable-azure-rbac/--disable-azure-rbac"'
                            ' if managed AAD is not enabled')
         if aad_tenant_id is not None:
             instance.aad_profile.tenant_id = aad_tenant_id
         if aad_admin_group_object_ids is not None:
             instance.aad_profile.admin_group_object_ids = _parse_comma_separated_list(
                 aad_admin_group_object_ids)
+        if enable_azure_rbac and disable_azure_rbac:
+            raise CLIError(
+                'Cannot specify "--enable-azure-rbac" and "--disable-azure-rbac" at the same time')
+        if enable_azure_rbac:
+            instance.aad_profile.enable_azure_rbac = True
+        if disable_azure_rbac:
+            instance.aad_profile.enable_azure_rbac = False
 
     if enable_ahub and disable_ahub:
         raise CLIError(
@@ -1759,8 +1788,12 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
             )
 
     if enable_pod_identity:
-        _update_addon_pod_identity(
-            instance, enable=True, allow_kubenet_consent=enable_pod_identity_with_kubenet)
+        if not _is_pod_identity_addon_enabled(instance):
+            # we only rebuild the pod identity profile if it's disabled before
+            _update_addon_pod_identity(
+                instance, enable=True,
+                allow_kubenet_consent=enable_pod_identity_with_kubenet,
+            )
 
     if disable_pod_identity:
         _update_addon_pod_identity(instance, enable=False)
@@ -2343,24 +2376,24 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
             enabled=True)
         addons.remove('kube-dashboard')
     # TODO: can we help the user find a workspace resource ID?
-    if 'monitoring' in addons:
+    if 'monitoring' in addons or 'azure-defender' in addons:
         if not workspace_resource_id:
             # use default workspace if exists else create default workspace
             workspace_resource_id = _ensure_default_log_analytics_workspace_for_monitoring(
                 cmd, subscription_id, resource_group_name)
 
-        workspace_resource_id = workspace_resource_id.strip()
-        if not workspace_resource_id.startswith('/'):
-            workspace_resource_id = '/' + workspace_resource_id
-        if workspace_resource_id.endswith('/'):
-            workspace_resource_id = workspace_resource_id.rstrip('/')
-        addon_profiles[CONST_MONITORING_ADDON_NAME] = ManagedClusterAddonProfile(
-            enabled=True, config={CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id})
-        addons.remove('monitoring')
-    # error out if '--enable-addons=monitoring' isn't set but workspace_resource_id is
+        workspace_resource_id = _sanitize_loganalytics_ws_resource_id(workspace_resource_id)
+
+        if 'monitoring' in addons:
+            addon_profiles[CONST_MONITORING_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True, config={CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id})
+            addons.remove('monitoring')
+        if 'azure-defender' in addons:
+            addon_profiles[CONST_AZURE_DEFENDER_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True, config={CONST_AZURE_DEFENDER_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id})
+            addons.remove('azure-defender')
+    # error out if '--enable-addons=monitoring/azure-defender' isn't set but workspace_resource_id is
     elif workspace_resource_id:
         raise CLIError(
-            '"--workspace-resource-id" requires "--enable-addons monitoring".')
+            '"--workspace-resource-id" requires "--enable-addons [monitoring/azure-defender]".')
     if 'azure-policy' in addons:
         addon_profiles[CONST_AZURE_POLICY_ADDON_NAME] = ManagedClusterAddonProfile(
             enabled=True)
@@ -2563,29 +2596,27 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
     resource_groups = cf_resource_groups(cmd.cli_ctx, subscription_id)
     resources = cf_resources(cmd.cli_ctx, subscription_id)
 
+    from azure.cli.core.profiles import ResourceType
     # check if default RG exists
     if resource_groups.check_existence(default_workspace_resource_group):
+        from azure.core.exceptions import HttpResponseError
         try:
             resource = resources.get_by_id(
                 default_workspace_resource_id, '2015-11-01-preview')
             return resource.id
-        except CloudError as ex:
+        except HttpResponseError as ex:
             if ex.status_code != 404:
                 raise ex
     else:
-        resource_groups.create_or_update(default_workspace_resource_group, {
-                                         'location': workspace_region})
+        ResourceGroup = cmd.get_models('ResourceGroup', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
+        resource_group = ResourceGroup(location=workspace_region)
+        resource_groups.create_or_update(default_workspace_resource_group, resource_group)
 
-    default_workspace_params = {
-        'location': workspace_region,
-        'properties': {
-            'sku': {
-                'name': 'standalone'
-            }
-        }
-    }
-    async_poller = resources.create_or_update_by_id(default_workspace_resource_id, '2015-11-01-preview',
-                                                    default_workspace_params)
+    GenericResource = cmd.get_models('GenericResource', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
+    generic_resource = GenericResource(location=workspace_region, properties={'sku': {'name': 'standalone'}})
+
+    async_poller = resources.begin_create_or_update_by_id(default_workspace_resource_id, '2015-11-01-preview',
+                                                          generic_resource)
 
     ws_resource_id = ''
     while True:
@@ -2595,6 +2626,15 @@ def _ensure_default_log_analytics_workspace_for_monitoring(cmd, subscription_id,
             break
 
     return ws_resource_id
+
+
+def _sanitize_loganalytics_ws_resource_id(workspace_resource_id):
+    workspace_resource_id = workspace_resource_id.strip()
+    if not workspace_resource_id.startswith('/'):
+        workspace_resource_id = '/' + workspace_resource_id
+    if workspace_resource_id.endswith('/'):
+        workspace_resource_id = workspace_resource_id.rstrip('/')
+    return workspace_resource_id
 
 
 def _ensure_container_insights_for_monitoring(cmd, addon):
@@ -2625,11 +2665,12 @@ def _ensure_container_insights_for_monitoring(cmd, addon):
 
     # region of workspace can be different from region of RG so find the location of the workspace_resource_id
     resources = cf_resources(cmd.cli_ctx, subscription_id)
+    from azure.core.exceptions import HttpResponseError
     try:
         resource = resources.get_by_id(
             workspace_resource_id, '2015-11-01-preview')
         location = resource.location
-    except CloudError as ex:
+    except HttpResponseError as ex:
         raise ex
 
     unix_time_in_millis = int(
@@ -2935,6 +2976,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       ppg=None,
                       max_pods=0,
                       os_type="Linux",
+                      os_sku=None,
                       enable_fips_image=False,
                       min_count=None,
                       max_count=None,
@@ -2985,6 +3027,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         count=int(node_count),
         vm_size=node_vm_size,
         os_type=os_type,
+        os_sku=os_sku,
         enable_fips=enable_fips_image,
         storage_profile=ContainerServiceStorageProfileTypes.managed_disks,
         vnet_subnet_id=vnet_subnet_id,
@@ -3306,23 +3349,21 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
             addon_profile = addon_profiles.get(
                 addon, ManagedClusterAddonProfile(enabled=False))
             # special config handling for certain addons
-            if addon == CONST_MONITORING_ADDON_NAME:
+            if addon in [CONST_MONITORING_ADDON_NAME, CONST_AZURE_DEFENDER_ADDON_NAME]:
+                logAnalyticsConstName = CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID if addon == CONST_MONITORING_ADDON_NAME else CONST_AZURE_DEFENDER_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
                 if addon_profile.enabled:
-                    raise CLIError('The monitoring addon is already enabled for this managed cluster.\n'
-                                   'To change monitoring configuration, run "az aks disable-addons -a monitoring"'
+                    raise CLIError(f'The {addon} addon is already enabled for this managed cluster.\n'
+                                   f'To change {addon} configuration, run "az aks disable-addons -a {addon}"'
                                    'before enabling it again.')
                 if not workspace_resource_id:
                     workspace_resource_id = _ensure_default_log_analytics_workspace_for_monitoring(
                         cmd,
                         subscription_id,
                         resource_group_name)
-                workspace_resource_id = workspace_resource_id.strip()
-                if not workspace_resource_id.startswith('/'):
-                    workspace_resource_id = '/' + workspace_resource_id
-                if workspace_resource_id.endswith('/'):
-                    workspace_resource_id = workspace_resource_id.rstrip('/')
+                workspace_resource_id = _sanitize_loganalytics_ws_resource_id(workspace_resource_id)
+
                 addon_profile.config = {
-                    CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id}
+                    logAnalyticsConstName: workspace_resource_id}
             elif addon == (CONST_VIRTUAL_NODE_ADDON_NAME + os_type):
                 if addon_profile.enabled:
                     raise CLIError('The virtual-node addon is already enabled for this managed cluster.\n'
@@ -3879,11 +3920,16 @@ def _get_linux_os_config(file_path):
     return config_object
 
 
+def _is_pod_identity_addon_enabled(instance):
+    if not instance:
+        return False
+    if not instance.pod_identity_profile:
+        return False
+    return bool(instance.pod_identity_profile.enabled)
+
+
 def _ensure_pod_identity_addon_is_enabled(instance):
-    addon_enabled = False
-    if instance and instance.pod_identity_profile:
-        addon_enabled = instance.pod_identity_profile.enabled
-    if not addon_enabled:
+    if not _is_pod_identity_addon_enabled(instance):
         raise CLIError('The pod identity addon is not enabled for this managed cluster yet.\n'
                        'To enable, run "az aks update --enable-pod-identity')
 

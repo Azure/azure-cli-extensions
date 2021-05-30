@@ -5,7 +5,6 @@
 
 from knack.util import CLIError
 from knack.log import get_logger
-from msrestazure.azure_exceptions import CloudError
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ConsistencyPolicy,
@@ -19,8 +18,6 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     PeriodicModeBackupPolicy,
     PeriodicModeProperties,
     ContinuousModeBackupPolicy,
-    SqlRoleAssignmentCreateUpdateParameters,
-    SqlRoleDefinitionCreateUpdateParameters,
     ClusterResource,
     ClusterResourceProperties,
     DataCenterResourceProperties
@@ -405,131 +402,6 @@ def cli_cosmosdb_restorable_database_account_list(client,
         if account.account_name == account_name:
             matching_restorable_accounts.append(account)
     return matching_restorable_accounts
-
-
-def cli_cosmosdb_sql_role_definition_create(client,
-                                            resource_group_name,
-                                            account_name,
-                                            role_definition_body):
-    '''Creates an Azure Cosmos DB SQL Role Definition '''
-    role_definition_create_resource = SqlRoleDefinitionCreateUpdateParameters(
-        role_name=role_definition_body['RoleName'],
-        type=role_definition_body['Type'],
-        assignable_scopes=role_definition_body['AssignableScopes'],
-        permissions=role_definition_body['Permissions'])
-
-    return client.create_update_sql_role_definition(role_definition_body['Id'], resource_group_name, account_name, role_definition_create_resource)
-
-
-def cli_cosmosdb_sql_role_definition_update(client,
-                                            resource_group_name,
-                                            account_name,
-                                            role_definition_body):
-    '''Update an existing Azure Cosmos DB Sql Role Definition'''
-    logger.debug('reading SQL role definition')
-    role_definition = client.get_sql_role_definition(role_definition_body['Id'], resource_group_name, account_name)
-
-    if role_definition_body['RoleName'] is not None:
-        role_definition.role_name = role_definition_body['RoleName']
-
-    if role_definition_body['AssignableScopes'] is not None:
-        role_definition.assignable_scopes = role_definition_body['AssignableScopes']
-
-    if role_definition_body['Permissions'] is not None:
-        role_definition.permissions = role_definition_body['Permissions']
-
-    role_definition_update_resource = SqlRoleDefinitionCreateUpdateParameters(
-        role_name=role_definition.role_name,
-        type=role_definition_body['Type'],
-        assignable_scopes=role_definition.assignable_scopes,
-        permissions=role_definition.permissions)
-
-    return client.create_update_sql_role_definition(role_definition_body['Id'], resource_group_name, account_name, role_definition_update_resource)
-
-
-def cli_cosmosdb_sql_role_definition_exists(client,
-                                            resource_group_name,
-                                            account_name,
-                                            role_definition_id):
-    """Checks if an Azure Cosmos DB Sql Role Definition exists"""
-    try:
-        client.get_sql_role_definition(role_definition_id, resource_group_name, account_name)
-    except CloudError as ex:
-        return _handle_exists_exception(ex.response)
-
-    return True
-
-
-def cli_cosmosdb_sql_role_assignment_create(client,
-                                            resource_group_name,
-                                            account_name,
-                                            scope,
-                                            principal_id,
-                                            role_assignment_id=None,
-                                            role_definition_name=None,
-                                            role_definition_id=None):
-    """Creates an Azure Cosmos DB Sql Role Assignment"""
-    if role_definition_id is None:
-        role_definition_id = get_associated_role_definition_id(client, resource_group_name, account_name, role_definition_name)
-
-    sql_role_assignment_create_update_parameters = SqlRoleAssignmentCreateUpdateParameters(
-        role_definition_id=role_definition_id,
-        scope=scope,
-        principal_id=principal_id)
-
-    return client.create_update_sql_role_assignment(role_assignment_id, resource_group_name, account_name, sql_role_assignment_create_update_parameters)
-
-
-def cli_cosmosdb_sql_role_assignment_update(client,
-                                            resource_group_name,
-                                            account_name,
-                                            role_assignment_id,
-                                            role_definition_name=None,
-                                            role_definition_id=None):
-    """Updates an Azure Cosmos DB Sql Role Assignment"""
-    logger.debug('reading Sql Role Assignment')
-    role_assignment = client.get_sql_role_assignment(role_assignment_id, resource_group_name, account_name)
-
-    logger.debug('replacing Sql Role Assignment')
-
-    if role_definition_id is None:
-        role_definition_id = get_associated_role_definition_id(client, resource_group_name, account_name, role_definition_name)
-
-    sql_role_assignment_create_update_parameters = SqlRoleAssignmentCreateUpdateParameters(
-        role_definition_id=role_definition_id,
-        scope=role_assignment.scope,
-        principal_id=role_assignment.principal_id)
-
-    return client.create_update_sql_role_assignment(role_assignment_id, resource_group_name, account_name, sql_role_assignment_create_update_parameters)
-
-
-def cli_cosmosdb_sql_role_assignment_exists(client,
-                                            resource_group_name,
-                                            account_name,
-                                            role_assignment_id):
-    """Checks if an Azure Cosmos DB Sql Role Assignment exists"""
-    try:
-        client.get_sql_role_assignment(role_assignment_id, resource_group_name, account_name)
-    except CloudError as ex:
-        return _handle_exists_exception(ex.response)
-
-    return True
-
-
-def get_associated_role_definition_id(client,
-                                      resource_group_name,
-                                      account_name,
-                                      role_definition_name=None):
-    if role_definition_name is None:
-        raise CLIError('Atleast one out of the Role Definition ID or Name is required.')
-
-    logger.debug('reading Sql Role Definition')
-    role_definitions = client.list_sql_role_definitions(resource_group_name, account_name)
-    matching_role_definition = next((role_definition for role_definition in role_definitions if role_definition.role_name.lower() == role_definition_name.lower()), None)
-    if matching_role_definition is None:
-        raise CLIError('No Role Definition found with name [{}].'.format(role_definition_name))
-
-    return matching_role_definition.id
 
 
 def cli_cosmosdb_managed_cassandra_cluster_create(client,

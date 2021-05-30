@@ -14,13 +14,12 @@ az extension list-available -otable
 # turn off telemetry as it crowds output
 export AZURE_CORE_COLLECT_TELEMETRY=False
 
-# wait for the index.json to be synced in storage account
-# Remove this when we can support using customized index.json
-sleep 360
+# use index.json in master branch
+export AZURE_EXTENSION_INDEX_URL=https://raw.githubusercontent.com/Azure/azure-cli-extensions/master/src/index.json
 
 output=$(az extension list-available --query [].name -otsv)
-# azure-cli-iot-ext is the deprecated old versions of the renamed azure-iot extension
-blocklist=("azure-cli-iot-ext")
+# azure-cli-ml is replaced by ml
+blocklist=("azure-cli-ml")
 
 rm -f ~/.azure/extCmdTreeToUpload.json
 
@@ -32,7 +31,7 @@ for ext in $output; do
     fi
     filter_exts="${filter_exts} ${ext}"
     echo "Adding extension:" $ext
-    az extension add -n $ext
+    az extension add --upgrade -n $ext
     if [ $? != 0 ]
     then
         echo "Failed to load:" $ext

@@ -47,9 +47,8 @@ class MaintenanceClientConfiguration(Configuration):
 
         self.credential = credential
         self.subscription_id = subscription_id
-        self.api_version = "2020-07-01-preview"
-        self.credential_scopes = ['https://management.azure.com/.default']
-        self.credential_scopes.extend(kwargs.pop('credential_scopes', []))
+        self.api_version = "2021-05-01"
+        self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
         kwargs.setdefault('sdk_moniker', 'maintenanceclient/{}'.format(VERSION))
         self._configure(**kwargs)
 

@@ -30,7 +30,7 @@ from .PartnerExtensionModel import PartnerExtensionModel
 
 logger = get_logger(__name__)
 
-resource_tag = {'created_by': 'amlk8s-extension'}
+resource_tag = {'created_by': 'Azure Arc-enabled ML'}
 
 
 class AzureMLKubernetes(PartnerExtensionModel):
@@ -167,13 +167,12 @@ class AzureMLKubernetes(PartnerExtensionModel):
 
         if enable_inference:
             logger.warning("The installed AzureML extension for AML inference is experimental and not covered by customer support. Please use with discretion.")
+            self.__validate_scoring_fe_settings(configuration_settings, configuration_protected_settings)
         elif not (enable_training or enable_inference):
             raise InvalidArgumentValueError(
                 "Please create Microsoft.AzureML.Kubernetes extension instance either "
                 "for Machine Learning training or inference by specifying "
                 f"'--configuration-settings {self.ENABLE_TRAINING}=true' or '--configuration-settings {self.ENABLE_INFERENCE}=true'")
-
-        self.__validate_scoring_fe_settings(configuration_settings, configuration_protected_settings)
 
         configuration_settings[self.ENABLE_TRAINING] = configuration_settings.get(self.ENABLE_TRAINING, enable_training)
         configuration_settings[self.ENABLE_INFERENCE] = configuration_settings.get(
@@ -272,10 +271,10 @@ def _lock_resource(cmd, lock_scope, lock_level='CanNotDelete'):
     lock_client: azure.mgmt.resource.locks.ManagementLockClient = get_mgmt_service_client(
         cmd.cli_ctx, azure.mgmt.resource.locks.ManagementLockClient)
     # put lock on relay resource
-    lock_object = ManagementLockObject(level=lock_level, notes='locked by amlk8s.')
+    lock_object = ManagementLockObject(level=lock_level, notes='locked by amlarc.')
     try:
         lock_client.management_locks.create_or_update_by_scope(
-            scope=lock_scope, lock_name='amlk8s-resource-lock', parameters=lock_object)
+            scope=lock_scope, lock_name='amlarc-resource-lock', parameters=lock_object)
     except:
         # try to lock the resource if user has the owner privilege
         pass
@@ -338,7 +337,7 @@ def _get_service_bus_connection_string(cmd, subscription_id, resource_group_name
         location=cluster_location,
         sku=service_bus_sku,
         tags=resource_tag)
-    async_poller = service_bus_client.namespaces.create_or_update(
+    async_poller = service_bus_client.namespaces.begin_create_or_update(
         resource_group_name, service_bus_namespace_name, service_bus_namespace)
     while True:
         async_poller.result(15)
