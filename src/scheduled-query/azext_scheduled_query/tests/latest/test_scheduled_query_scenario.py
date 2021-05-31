@@ -23,7 +23,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
             'vm': 'myvm1',
             'ws': self.create_random_name('clitest', 20)
         })
-        vm = self.cmd('vm create -n {vm} -g {rg} --image UbuntuLTS --admin-username {ws} --workspace {ws} --generate-ssh-keys').get_output_in_json()
+        vm = self.cmd('vm create -n {vm} -g {rg} --image UbuntuLTS --admin-username {ws} --generate-ssh-keys').get_output_in_json()
         self.kwargs.update({
             'vm_id': vm['id'],
             'rg_id': resource_id(subscription=self.get_subscription_id(),
