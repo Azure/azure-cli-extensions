@@ -13,10 +13,8 @@ from msrestazure.azure_exceptions import CloudError
 from azure.cli.core.azclierror import ResourceNotFoundError, MutuallyExclusiveArgumentError, \
     InvalidArgumentValueError, CommandNotFoundError, RequiredArgumentMissingError
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azext_k8s_extension.vendored_sdks.models import ConfigurationIdentity
-from azext_k8s_extension.vendored_sdks.models import ErrorResponseException
-from azext_k8s_extension.vendored_sdks.models import Scope
-from azext_k8s_extension._validators import validate_cc_registration
+from .vendored_sdks.models import ConfigurationIdentity, ErrorResponseException, Scope
+from ._validators import validate_cc_registration
 
 from .partner_extensions.ContainerInsights import ContainerInsights
 from .partner_extensions.AzureDefender import AzureDefender

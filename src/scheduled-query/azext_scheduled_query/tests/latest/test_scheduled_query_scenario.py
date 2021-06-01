@@ -17,17 +17,13 @@ class Scheduled_queryScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_scheduled_query', location='eastus')
     def test_scheduled_query(self, resource_group):
         from azure.mgmt.core.tools import resource_id
-        import time
-        import mock
         self.kwargs.update({
             'name1': 'sq01',
-            'name2': 'sq02',
             'rg': resource_group,
             'vm': 'myvm1',
             'ws': self.create_random_name('clitest', 20)
         })
-        with mock.patch('azure.cli.command_modules.vm.custom._gen_guid', side_effect=self.create_guid):
-            vm = self.cmd('vm create -n {vm} -g {rg} --image UbuntuLTS --nsg-rule None --workspace {ws} --generate-ssh-keys').get_output_in_json()
+        vm = self.cmd('vm create -n {vm} -g {rg} --image UbuntuLTS --admin-username {ws} --generate-ssh-keys').get_output_in_json()
         self.kwargs.update({
             'vm_id': vm['id'],
             'rg_id': resource_id(subscription=self.get_subscription_id(),
@@ -35,7 +31,6 @@ class Scheduled_queryScenarioTest(ScenarioTest):
             'sub_id': resource_id(subscription=self.get_subscription_id(),
                                   resource_group=resource_group),
         })
-        time.sleep(180)
         self.cmd('monitor scheduled-query create -g {rg} -n {name1} --scopes {vm_id} --condition "count \'placeholder_1\' > 360" --condition-query placeholder_1="union Event, Syslog | where TimeGenerated > ago(1h)" --description "Test rule"',
                  checks=[
                      self.check('name', '{name1}'),
@@ -46,13 +41,10 @@ class Scheduled_queryScenarioTest(ScenarioTest):
                      self.check('criteria.allOf[0].timeAggregation', 'Count'),
                      self.check('criteria.allOf[0].operator', 'GreaterThan'),
                      self.check('criteria.allOf[0].failingPeriods.minFailingPeriodsToAlert', 1),
-                     self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 1)
-                 ])
-        self.cmd('monitor scheduled-query create -g {rg} -n {name2} --scopes {rg_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360 resource id _ResourceId" --description "Test rule"',
-                 checks=[
-                     self.check('name', '{name2}'),
-                     self.check('scopes[0]', '{rg_id}'),
-                     self.check('severity', 2)
+                     self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 1),
+                     self.check('autoMitigate', True),
+                     self.check('skipQueryValidation', False),
+                     self.check('checkWorkspaceAlertsStorageConfigured', False)
                  ])
         self.cmd('monitor scheduled-query update -g {rg} -n {name1} --condition "count \'placeholder_1\' < 260 resource id _ResourceId at least 2 violations out of 3 aggregated points" --condition-query placeholder_1="union Event | where TimeGenerated > ago(2h)" --description "Test rule 2" --severity 4 --disabled --evaluation-frequency 10m --window-size 10m',
                  checks=[
@@ -68,13 +60,17 @@ class Scheduled_queryScenarioTest(ScenarioTest):
                      self.check('criteria.allOf[0].failingPeriods.minFailingPeriodsToAlert', 2),
                      self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 3)
                  ])
+        self.cmd('monitor scheduled-query update -g {rg} -n {name1} --mad PT30M --auto-mitigate false', checks=[
+            self.check('muteActionsDuration', '0:30:00'),
+            self.check('autoMitigate', False)
+        ])
         self.cmd('monitor scheduled-query show -g {rg} -n {name1}',
                  checks=[
                      self.check('name', '{name1}')
                  ])
         self.cmd('monitor scheduled-query list -g {rg}',
                  checks=[
-                     self.check('length(@)', 2)
+                     self.check('length(@)', 1)
                  ])
         self.cmd('monitor scheduled-query list',
                  checks=[
@@ -84,7 +80,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
             self.cmd('monitor scheduled-query show -g {rg} -n {name1}')
 
 
-class ScheduledQueryCondtionTest(unittest.TestCase):
+class ScheduledQueryConditionTest(unittest.TestCase):
 
     def _build_namespace(self, name_or_id=None, resource_group=None, provider_namespace=None, parent=None,
                          resource_type=None):

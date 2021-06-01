@@ -9,5 +9,12 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-VERSION = "2020-05-01-preview"
+from ._service_operations_async import ServiceOperations
+from ._file_system_operations_async import FileSystemOperations
+from ._path_operations_async import PathOperations
 
+__all__ = [
+    'ServiceOperations',
+    'FileSystemOperations',
+    'PathOperations',
+]

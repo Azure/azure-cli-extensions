@@ -26,12 +26,14 @@ def _build_criteria(condition, condition_query):
 
 
 def create_scheduled_query(client, resource_group_name, rule_name, scopes, condition, condition_query=None,
-                           disabled=False, description=None, tags=None, location=None,
+                           disabled=False, description=None, tags=None, location=None, display_name=None,
+                           auto_mitigate=True, skip_query_validation=False, check_workspace_alerts_storage=False,
                            actions=None, severity=2, window_size='5m', evaluation_frequency='5m',
-                           target_resource_type=None, mute_actions_duration='PT30M'):
+                           target_resource_type=None, mute_actions_duration=None):
     from .vendored_sdks.azure_mgmt_scheduled_query.models import ScheduledQueryRuleResource
     criteria = _build_criteria(condition, condition_query)
     kwargs = {
+        'display_name': display_name,
         'description': description,
         'severity': severity,
         'enabled': not disabled,
@@ -43,7 +45,10 @@ def create_scheduled_query(client, resource_group_name, rule_name, scopes, condi
         'actions': actions,
         'tags': tags,
         'location': location,
-        'mute_actions_duration': mute_actions_duration
+        'mute_actions_duration': mute_actions_duration,
+        'check_workspace_alerts_storage_configured': check_workspace_alerts_storage,
+        'skip_query_validation': skip_query_validation,
+        'auto_mitigate': auto_mitigate,
     }
     return client.create_or_update(resource_group_name, rule_name, ScheduledQueryRuleResource(**kwargs))
 
@@ -54,12 +59,19 @@ def list_scheduled_query(client, resource_group_name=None):
     return client.list_by_subscription()
 
 
-def update_scheduled_query(cmd, instance, tags=None, disabled=False, condition=None, condition_query=None,
-                           description=None, actions=None, severity=None, window_size=None,
-                           evaluation_frequency=None, mute_actions_duration=None):
+def update_scheduled_query(cmd, instance, tags=None, disabled=None, condition=None, condition_query=None,
+                           description=None, actions=None, severity=None, window_size=None, display_name=None,
+                           auto_mitigate=None, evaluation_frequency=None, mute_actions_duration=None,
+                           skip_query_validation=None, check_workspace_alerts_storage=None):
     with cmd.update_context(instance) as c:
         c.set_param('tags', tags)
-        c.set_param('enabled', not disabled)
+        c.set_param('display_name', display_name)
+        if disabled is not None:
+            c.set_param('enabled', not disabled)
+        if auto_mitigate is not None:
+            c.set_param('auto_mitigate', auto_mitigate)
+        c.set_param('skip_query_validation', skip_query_validation)
+        c.set_param('check_workspace_alerts_storage_configured', check_workspace_alerts_storage)
         c.set_param('description', description)
         c.set_param('actions', actions)
         c.set_param('severity', severity)
