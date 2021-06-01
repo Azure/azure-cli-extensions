@@ -37,6 +37,7 @@
 
 
 ## COMMAND DETAILS
+
 ### group `az disk-pool`
 #### <a name="DiskPoolsListByResourceGroup">Command `az disk-pool list`</a>
 
@@ -58,7 +59,6 @@ az disk-pool list
 ##### <a name="ParametersDiskPoolsListBySubscription">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-
 #### <a name="DiskPoolsGet">Command `az disk-pool show`</a>
 
 ##### <a name="ExamplesDiskPoolsGet">Example</a>
