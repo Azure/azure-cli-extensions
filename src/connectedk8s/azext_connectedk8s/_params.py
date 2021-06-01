@@ -11,6 +11,7 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 from azext_connectedk8s._constants import Distribution_Enum_Values, Infrastructure_Enum_Values, Feature_Values
 from knack.arguments import (CLIArgumentType, CaseInsensitiveList)
 
+from._validators import validate_private_link_properties
 
 features_types = CLIArgumentType(
     nargs='+',
@@ -34,6 +35,8 @@ def load_arguments(self, _):
         c.argument('infrastructure', options_list=['--infrastructure'], help='The infrastructure on which the Kubernetes cluster represented by this connected cluster will be running on.', arg_type=get_enum_type(Infrastructure_Enum_Values))
         c.argument('disable_auto_upgrade', options_list=['--disable-auto-upgrade'], action='store_true', help='Flag to disable auto upgrade of arc agents.')
         c.argument('cl_oid', options_list=['--custom-locations-oid'], help="OID of 'custom-locations' app")
+        c.argument('enable_private_link', options_list=['--enable-private-link'], arg_group='PrivateLink', help='Flag to enable/disable private link support on a connected cluster resource. Allowed values: false, true.', is_preview=True, arg_type=get_enum_type(["true", "false"]), validator=validate_private_link_properties)
+        c.argument('private_link_scope_resource_id', options_list=['--private-link-scope-resource-id'], arg_group='PrivateLink', help='ARM resource id of the private link scope resource to which this connected cluster is associated.', is_preview=True)
 
     with self.argument_context('connectedk8s update') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')

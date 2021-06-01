@@ -39,10 +39,12 @@ from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import _resource_client_factory
 from azext_connectedk8s._client_factory import _resource_providers_client
 from azext_connectedk8s._client_factory import get_graph_client_service_principals
+from azext_connectedk8s._client_factory import cf_connected_cluster_prev_2021_04_01
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
 from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity
+from .vendored_sdks.preview_2021_04_01.models import ConnectedCluster as ConnectedClusterPreview
 from threading import Timer, Thread
 import sys
 import hashlib
@@ -57,7 +59,7 @@ logger = get_logger(__name__)
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
-                        disable_auto_upgrade=False, cl_oid=None):
+                        disable_auto_upgrade=False, cl_oid=None, enable_private_link=None, private_link_scope_resource_id=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -90,6 +92,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         raise InvalidArgumentValueError(str.format(consts.Proxy_Cert_Path_Does_Not_Exist_Error, proxy_cert))
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
+
+    # Set preview client if private link properties are provided.
+    if enable_private_link:
+        client = cf_connected_cluster_prev_2021_04_01(cmd.cli_ctx, None)
 
     # Checking whether optional extra values file has been provided.
     values_file_provided, values_file = utils.get_values_file()
@@ -179,7 +185,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
                                             configmap_cluster_name).agent_public_key_certificate
                 except Exception as e:  # pylint: disable=broad-except
                     utils.arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type, 'Failed to check if connected cluster resource already exists.')
-                cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra)
+                cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id)
                 create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
             else:
                 telemetry.set_exception(exception='The kubernetes cluster is already onboarded', fault_type=consts.Cluster_Already_Onboarded_Fault_Type,
@@ -247,7 +253,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
         raise CLIInternalError("Failed to export private key." + str(e))
 
     # Generate request payload
-    cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra)
+    cc = generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id)
 
     # Create connected cluster resource
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
@@ -512,7 +518,7 @@ def check_linux_amd64_node(configuration):
     return False
 
 
-def generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra):
+def generate_request_payload(configuration, location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id):
     # Create connected cluster resource object
     identity = ConnectedClusterIdentity(
         type="SystemAssigned"
@@ -527,6 +533,19 @@ def generate_request_payload(configuration, location, public_key, tags, kubernet
         distribution=kubernetes_distro,
         infrastructure=kubernetes_infra
     )
+
+    if enable_private_link:
+        private_link_state = "Enabled" if enable_private_link.lower() == "true" else "Disabled"
+        cc = ConnectedClusterPreview(
+            location=location,
+            identity=identity,
+            agent_public_key_certificate=public_key,
+            tags=tags,
+            distribution=kubernetes_distro,
+            infrastructure=kubernetes_infra,
+            private_link_scope_resource_id=private_link_scope_resource_id,
+            private_link_state=private_link_state
+        )
     return cc
 
 
