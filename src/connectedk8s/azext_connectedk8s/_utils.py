@@ -638,11 +638,12 @@ def display_diagnostics_report(kubectl_prior):   # pylint: disable=too-many-stat
     for retry in range(0, max_retry):
         if not apds_created:
             subprocess_cmd = kubectl_prior + ["get", "apd", "-n", "aks-periscope", "--no-headers"]
+            try:
+                apd = subprocess.check_output(subprocess_cmd, universal_newlines=True)
+            except subprocess.CalledProcessError as ex:
+                logger.debug(f"Exception while running {subprocess_cmd}: {ex.returncode}, {ex.output}. Retrying...")
+                continue
 
-            apd = subprocess.check_output(
-                subprocess_cmd,
-                universal_newlines=True
-            )
             apd_lines = apd.splitlines()
             if apd_lines and 'No resources found' in apd_lines[0]:
                 apd_lines.pop(0)

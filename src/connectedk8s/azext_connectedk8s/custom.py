@@ -1438,6 +1438,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     # Loading the kubeconfig file in kubernetes client configuration
     load_kube_config(kube_config, kube_context)
     configuration = kube_client.Configuration()
+    validate_release_namespace(client, cluster_name, resource_group_name, configuration, kube_config, kube_context)
     try:
         latest_connectedk8s_version = utils.get_latest_extension_version()
         local_connectedk8s_version = utils.get_existing_extension_version()
