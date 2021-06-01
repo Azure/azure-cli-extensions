@@ -50,5 +50,5 @@ helps['disk-pool iscsi-target update'] = """
         text: |-
                az disk-pool iscsi-target update --disk-pool-name "myDiskPool" --name "myIscsiTarget" --luns \
 name="lun0" managed-disk-azure-resource-id="/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResour\
-ceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_1" 
+ceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_1"
 """
