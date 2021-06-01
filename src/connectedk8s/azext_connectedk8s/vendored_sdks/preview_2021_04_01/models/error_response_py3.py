@@ -21,7 +21,7 @@ class ErrorResponse(Model):
     format.).
 
     :param error: The error object.
-    :type error: ~azure.mgmt.hybridkubernetes.models.ErrorDetail
+    :type error: ~connectedclusters.models.ErrorDetail
     """
 
     _attribute_map = {

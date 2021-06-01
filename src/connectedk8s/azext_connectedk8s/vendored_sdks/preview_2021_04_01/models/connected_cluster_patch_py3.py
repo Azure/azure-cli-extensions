@@ -17,17 +17,24 @@ class ConnectedClusterPatch(Model):
 
     :param tags: Resource tags.
     :type tags: dict[str, str]
-    :param properties: Describes the connected cluster resource properties
-     that can be updated during PATCH operation.
-    :type properties: object
+    :param private_link_state: Property which describes the state of private
+     link on a connected cluster resource. Possible values include: 'Enabled',
+     'Disabled'
+    :type private_link_state: str or
+     ~connectedclusters.models.PrivateLinkState
+    :param private_link_scope_resource_id: The resource id of the private link
+     scope this connected cluster is assigned to, if any.
+    :type private_link_scope_resource_id: str
     """
 
     _attribute_map = {
         'tags': {'key': 'tags', 'type': '{str}'},
-        'properties': {'key': 'properties', 'type': 'object'},
+        'private_link_state': {'key': 'properties.privateLinkState', 'type': 'str'},
+        'private_link_scope_resource_id': {'key': 'properties.privateLinkScopeResourceId', 'type': 'str'},
     }
 
-    def __init__(self, *, tags=None, properties=None, **kwargs) -> None:
+    def __init__(self, *, tags=None, private_link_state=None, private_link_scope_resource_id: str=None, **kwargs) -> None:
         super(ConnectedClusterPatch, self).__init__(**kwargs)
         self.tags = tags
-        self.properties = properties
+        self.private_link_state = private_link_state
+        self.private_link_scope_resource_id = private_link_scope_resource_id

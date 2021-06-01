@@ -57,9 +57,9 @@ class ConnectedKubernetesClient(SDKClient):
     :vartype config: ConnectedKubernetesClientConfiguration
 
     :ivar connected_cluster: ConnectedCluster operations
-    :vartype connected_cluster: azure.mgmt.hybridkubernetes.operations.ConnectedClusterOperations
+    :vartype connected_cluster: connectedclusters.operations.ConnectedClusterOperations
     :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.hybridkubernetes.operations.Operations
+    :vartype operations: connectedclusters.operations.Operations
 
     :param credentials: Credentials needed for the client to connect to Azure.
     :type credentials: :mod:`A msrestazure Credentials

@@ -33,8 +33,7 @@ class ConnectedCluster(TrackedResource):
     :param location: Required. The geo-location where the resource lives
     :type location: str
     :param identity: Required. The identity of the connected cluster.
-    :type identity:
-     ~azure.mgmt.hybridkubernetes.models.ConnectedClusterIdentity
+    :type identity: ~connectedclusters.models.ConnectedClusterIdentity
     :param agent_public_key_certificate: Required. Base64 encoded public
      certificate used by the agent to do the initial handshake to the backend
      services in Azure.
@@ -55,7 +54,7 @@ class ConnectedCluster(TrackedResource):
      resource. Possible values include: 'Succeeded', 'Failed', 'Canceled',
      'Provisioning', 'Updating', 'Deleting', 'Accepted'
     :type provisioning_state: str or
-     ~azure.mgmt.hybridkubernetes.models.ProvisioningState
+     ~connectedclusters.models.ProvisioningState
     :param distribution: The Kubernetes distribution running on this connected
      cluster.
     :type distribution: str
@@ -74,10 +73,18 @@ class ConnectedCluster(TrackedResource):
      connected cluster. Possible values include: 'Connecting', 'Connected',
      'Offline', 'Expired'
     :vartype connectivity_status: str or
-     ~azure.mgmt.hybridkubernetes.models.ConnectivityStatus
+     ~connectedclusters.models.ConnectivityStatus
+    :param private_link_state: Property which describes the state of private
+     link on a connected cluster resource. Possible values include: 'Enabled',
+     'Disabled'. Default value: "Disabled" .
+    :type private_link_state: str or
+     ~connectedclusters.models.PrivateLinkState
+    :param private_link_scope_resource_id: The resource id of the private link
+     scope this connected cluster is assigned to, if any.
+    :type private_link_scope_resource_id: str
     :ivar system_data: Metadata pertaining to creation and last modification
      of the resource
-    :vartype system_data: ~azure.mgmt.hybridkubernetes.models.SystemData
+    :vartype system_data: ~connectedclusters.models.SystemData
     """
 
     _validation = {
@@ -117,6 +124,8 @@ class ConnectedCluster(TrackedResource):
         'managed_identity_certificate_expiration_time': {'key': 'properties.managedIdentityCertificateExpirationTime', 'type': 'iso-8601'},
         'last_connectivity_time': {'key': 'properties.lastConnectivityTime', 'type': 'iso-8601'},
         'connectivity_status': {'key': 'properties.connectivityStatus', 'type': 'str'},
+        'private_link_state': {'key': 'properties.privateLinkState', 'type': 'str'},
+        'private_link_scope_resource_id': {'key': 'properties.privateLinkScopeResourceId', 'type': 'str'},
         'system_data': {'key': 'systemData', 'type': 'SystemData'},
     }
 
@@ -135,4 +144,6 @@ class ConnectedCluster(TrackedResource):
         self.managed_identity_certificate_expiration_time = None
         self.last_connectivity_time = None
         self.connectivity_status = None
+        self.private_link_state = kwargs.get('private_link_state', "Disabled")
+        self.private_link_scope_resource_id = kwargs.get('private_link_scope_resource_id', None)
         self.system_data = None

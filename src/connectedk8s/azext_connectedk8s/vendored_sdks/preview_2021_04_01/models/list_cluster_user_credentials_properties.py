@@ -20,7 +20,7 @@ class ListClusterUserCredentialsProperties(Model):
     :param authentication_method: Required. The mode of client authentication.
      Possible values include: 'Token', 'AAD'
     :type authentication_method: str or
-     ~azure.mgmt.hybridkubernetes.models.AuthenticationMethod
+     ~connectedclusters.models.AuthenticationMethod
     :param client_proxy: Required. Boolean value to indicate whether the
      request is for client side proxy or not
     :type client_proxy: bool

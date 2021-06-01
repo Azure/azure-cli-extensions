@@ -37,6 +37,12 @@ class ConnectivityStatus(str, Enum):
     expired = "Expired"
 
 
+class PrivateLinkState(str, Enum):
+
+    enabled = "Enabled"
+    disabled = "Disabled"
+
+
 class CreatedByType(str, Enum):
 
     user = "User"

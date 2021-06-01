@@ -103,8 +103,7 @@ class ConnectedClusterOperations(object):
         :type cluster_name: str
         :param connected_cluster: Parameters supplied to Create a Connected
          Cluster.
-        :type connected_cluster:
-         ~azure.mgmt.hybridkubernetes.models.ConnectedCluster
+        :type connected_cluster: ~connectedclusters.models.ConnectedCluster
         :param dict custom_headers: headers that will be added to the request
         :param bool raw: The poller return type is ClientRawResponse, the
          direct response alongside the deserialized response
@@ -113,11 +112,11 @@ class ConnectedClusterOperations(object):
         :return: An instance of LROPoller that returns ConnectedCluster or
          ClientRawResponse<ConnectedCluster> if raw==True
         :rtype:
-         ~msrestazure.azure_operation.AzureOperationPoller[~azure.mgmt.hybridkubernetes.models.ConnectedCluster]
+         ~msrestazure.azure_operation.AzureOperationPoller[~connectedclusters.models.ConnectedCluster]
          or
-         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~azure.mgmt.hybridkubernetes.models.ConnectedCluster]]
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~connectedclusters.models.ConnectedCluster]]
         :raises:
-         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
+         :class:`ErrorResponseException<connectedclusters.models.ErrorResponseException>`
         """
         raw_result = self._create_initial(
             resource_group_name=resource_group_name,
@@ -146,36 +145,9 @@ class ConnectedClusterOperations(object):
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     create.metadata = {'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}'}
 
-    def update(
-            self, resource_group_name, cluster_name, tags=None, properties=None, custom_headers=None, raw=False, **operation_config):
-        """Updates a connected cluster.
 
-        API to update certain properties of the connected cluster resource.
-
-        :param resource_group_name: The name of the resource group. The name
-         is case insensitive.
-        :type resource_group_name: str
-        :param cluster_name: The name of the Kubernetes cluster on which get
-         is called.
-        :type cluster_name: str
-        :param tags: Resource tags.
-        :type tags: dict[str, str]
-        :param properties: Describes the connected cluster resource properties
-         that can be updated during PATCH operation.
-        :type properties: object
-        :param dict custom_headers: headers that will be added to the request
-        :param bool raw: returns the direct response alongside the
-         deserialized response
-        :param operation_config: :ref:`Operation configuration
-         overrides<msrest:optionsforoperations>`.
-        :return: ConnectedCluster or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.hybridkubernetes.models.ConnectedCluster or
-         ~msrest.pipeline.ClientRawResponse
-        :raises:
-         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
-        """
-        connected_cluster_patch = models.ConnectedClusterPatch(tags=tags, properties=properties)
-
+    def _update_initial(
+            self, resource_group_name, cluster_name, connected_cluster_patch, custom_headers=None, raw=False, **operation_config):
         # Construct URL
         url = self.update.metadata['url']
         path_format_arguments = {
@@ -207,7 +179,7 @@ class ConnectedClusterOperations(object):
         request = self._client.patch(url, query_parameters, header_parameters, body_content)
         response = self._client.send(request, stream=False, **operation_config)
 
-        if response.status_code not in [200]:
+        if response.status_code not in [200, 202]:
             raise models.ErrorResponseException(self._deserialize, response)
 
         deserialized = None
@@ -220,6 +192,62 @@ class ConnectedClusterOperations(object):
             return client_raw_response
 
         return deserialized
+
+    def update(
+            self, resource_group_name, cluster_name, connected_cluster_patch, custom_headers=None, raw=False, polling=True, **operation_config):
+        """Updates a connected cluster.
+
+        API to update certain properties of the connected cluster resource.
+
+        :param resource_group_name: The name of the resource group. The name
+         is case insensitive.
+        :type resource_group_name: str
+        :param cluster_name: The name of the Kubernetes cluster on which get
+         is called.
+        :type cluster_name: str
+        :param connected_cluster_patch: Parameters supplied to update
+         Connected Cluster.
+        :type connected_cluster_patch:
+         ~connectedclusters.models.ConnectedClusterPatch
+        :param dict custom_headers: headers that will be added to the request
+        :param bool raw: The poller return type is ClientRawResponse, the
+         direct response alongside the deserialized response
+        :param polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :return: An instance of LROPoller that returns ConnectedCluster or
+         ClientRawResponse<ConnectedCluster> if raw==True
+        :rtype:
+         ~msrestazure.azure_operation.AzureOperationPoller[~connectedclusters.models.ConnectedCluster]
+         or
+         ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[~connectedclusters.models.ConnectedCluster]]
+        :raises:
+         :class:`ErrorResponseException<connectedclusters.models.ErrorResponseException>`
+        """
+        raw_result = self._update_initial(
+            resource_group_name=resource_group_name,
+            cluster_name=cluster_name,
+            connected_cluster_patch=connected_cluster_patch,
+            custom_headers=custom_headers,
+            raw=True,
+            **operation_config
+        )
+
+        def get_long_running_output(response):
+            deserialized = self._deserialize('ConnectedCluster', response)
+
+            if raw:
+                client_raw_response = ClientRawResponse(deserialized, response)
+                return client_raw_response
+
+            return deserialized
+
+        lro_delay = operation_config.get(
+            'long_running_operation_timeout',
+            self.config.long_running_operation_timeout)
+        if polling is True: polling_method = ARMPolling(lro_delay, **operation_config)
+        elif polling is False: polling_method = NoPolling()
+        else: polling_method = polling
+        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     update.metadata = {'url': '/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Kubernetes/connectedClusters/{clusterName}'}
 
     def get(
@@ -241,10 +269,10 @@ class ConnectedClusterOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: ConnectedCluster or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.hybridkubernetes.models.ConnectedCluster or
+        :rtype: ~connectedclusters.models.ConnectedCluster or
          ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
+         :class:`ErrorResponseException<connectedclusters.models.ErrorResponseException>`
         """
         # Construct URL
         url = self.get.metadata['url']
@@ -347,7 +375,7 @@ class ConnectedClusterOperations(object):
         :rtype: ~msrestazure.azure_operation.AzureOperationPoller[None] or
          ~msrestazure.azure_operation.AzureOperationPoller[~msrest.pipeline.ClientRawResponse[None]]
         :raises:
-         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
+         :class:`ErrorResponseException<connectedclusters.models.ErrorResponseException>`
         """
         raw_result = self._delete_initial(
             resource_group_name=resource_group_name,
@@ -387,7 +415,7 @@ class ConnectedClusterOperations(object):
         :param authentication_method: The mode of client authentication.
          Possible values include: 'Token', 'AAD'
         :type authentication_method: str or
-         ~azure.mgmt.hybridkubernetes.models.AuthenticationMethod
+         ~connectedclusters.models.AuthenticationMethod
         :param client_proxy: Boolean value to indicate whether the request is
          for client side proxy or not
         :type client_proxy: bool
@@ -397,10 +425,10 @@ class ConnectedClusterOperations(object):
         :param operation_config: :ref:`Operation configuration
          overrides<msrest:optionsforoperations>`.
         :return: CredentialResults or ClientRawResponse if raw=true
-        :rtype: ~azure.mgmt.hybridkubernetes.models.CredentialResults or
+        :rtype: ~connectedclusters.models.CredentialResults or
          ~msrest.pipeline.ClientRawResponse
         :raises:
-         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
+         :class:`ErrorResponseException<connectedclusters.models.ErrorResponseException>`
         """
         properties = models.ListClusterUserCredentialsProperties(authentication_method=authentication_method, client_proxy=client_proxy)
 
@@ -467,9 +495,9 @@ class ConnectedClusterOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of ConnectedCluster
         :rtype:
-         ~azure.mgmt.hybridkubernetes.models.ConnectedClusterPaged[~azure.mgmt.hybridkubernetes.models.ConnectedCluster]
+         ~connectedclusters.models.ConnectedClusterPaged[~connectedclusters.models.ConnectedCluster]
         :raises:
-         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
+         :class:`ErrorResponseException<connectedclusters.models.ErrorResponseException>`
         """
         def internal_paging(next_link=None, raw=False):
 
@@ -534,9 +562,9 @@ class ConnectedClusterOperations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of ConnectedCluster
         :rtype:
-         ~azure.mgmt.hybridkubernetes.models.ConnectedClusterPaged[~azure.mgmt.hybridkubernetes.models.ConnectedCluster]
+         ~connectedclusters.models.ConnectedClusterPaged[~connectedclusters.models.ConnectedCluster]
         :raises:
-         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
+         :class:`ErrorResponseException<connectedclusters.models.ErrorResponseException>`
         """
         def internal_paging(next_link=None, raw=False):
 

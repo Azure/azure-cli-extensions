@@ -48,9 +48,9 @@ class Operations(object):
          overrides<msrest:optionsforoperations>`.
         :return: An iterator like instance of Operation
         :rtype:
-         ~azure.mgmt.hybridkubernetes.models.OperationPaged[~azure.mgmt.hybridkubernetes.models.Operation]
+         ~connectedclusters.models.OperationPaged[~connectedclusters.models.Operation]
         :raises:
-         :class:`ErrorResponseException<azure.mgmt.hybridkubernetes.models.ErrorResponseException>`
+         :class:`ErrorResponseException<connectedclusters.models.ErrorResponseException>`
         """
         def internal_paging(next_link=None, raw=False):
 

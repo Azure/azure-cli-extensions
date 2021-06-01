@@ -31,8 +31,7 @@ class ConnectedClusterIdentity(Model):
      type 'None' means no identity is assigned to the connected cluster.
      Possible values include: 'None', 'SystemAssigned'. Default value:
      "SystemAssigned" .
-    :type type: str or
-     ~azure.mgmt.hybridkubernetes.models.ResourceIdentityType
+    :type type: str or ~connectedclusters.models.ResourceIdentityType
     """
 
     _validation = {

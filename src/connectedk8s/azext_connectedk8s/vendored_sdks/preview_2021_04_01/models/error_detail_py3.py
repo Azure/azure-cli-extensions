@@ -25,10 +25,10 @@ class ErrorDetail(Model):
     :ivar target: The error target.
     :vartype target: str
     :ivar details: The error details.
-    :vartype details: list[~azure.mgmt.hybridkubernetes.models.ErrorDetail]
+    :vartype details: list[~connectedclusters.models.ErrorDetail]
     :ivar additional_info: The error additional info.
     :vartype additional_info:
-     list[~azure.mgmt.hybridkubernetes.models.ErrorAdditionalInfo]
+     list[~connectedclusters.models.ErrorAdditionalInfo]
     """
 
     _validation = {
