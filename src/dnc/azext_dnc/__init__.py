@@ -24,7 +24,7 @@ class DNCCommandsLoader(AzCommandsLoader):
         dnc_custom = CliCommandType(
             operations_tmpl='azext_dnc.custom#{}',
             client_factory=cf_dnc_cl)
-        parent = super()
+        parent = super(DNCCommandsLoader, self)
         parent.__init__(cli_ctx=cli_ctx, custom_command_type=dnc_custom)
 
     def load_command_table(self, args):
