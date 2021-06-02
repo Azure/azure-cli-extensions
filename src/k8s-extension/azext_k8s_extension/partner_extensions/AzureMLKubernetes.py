@@ -66,6 +66,12 @@ class AzureMLKubernetes(PartnerExtensionModel):
         self.SERVICE_BUS_JOB_STATE_TOPIC = 'jobstate-updatedby-computeprovider'
         self.SERVICE_BUS_JOB_STATE_SUB = 'compute-scheduler-jobstate'
 
+        # constants for enabling SSL in inference
+        self.sslKeyPemFile = 'sslKeyPemFile'
+        self.sslCertPemFile = 'sslCertPemFile'
+        self.allowInsecureConnections = 'allowInsecureConnections'
+        self.privateEndpointILB = 'privateEndpointILB'
+
         # reference mapping
         self.reference_mapping = {
             self.RELAY_SERVER_CONNECTION_STRING: [self.RELAY_CONNECTION_STRING_KEY, self.RELAY_CONNECTION_STRING_DEPRECATED_KEY],
@@ -168,6 +174,7 @@ class AzureMLKubernetes(PartnerExtensionModel):
         if enable_inference:
             logger.warning("The installed AzureML extension for AML inference is experimental and not covered by customer support. Please use with discretion.")
             self.__validate_scoring_fe_settings(configuration_settings, configuration_protected_settings)
+            self.__set_up_inference_ssl(configuration_settings, configuration_protected_settings)
         elif not (enable_training or enable_inference):
             raise InvalidArgumentValueError(
                 "Please create Microsoft.AzureML.Kubernetes extension instance either "
@@ -181,32 +188,53 @@ class AzureMLKubernetes(PartnerExtensionModel):
         configuration_protected_settings.pop(self.ENABLE_INFERENCE, None)
 
     def __validate_scoring_fe_settings(self, configuration_settings, configuration_protected_settings):
-        clusterPurpose = _get_value_from_config_protected_config(
-            'clusterPurpose', configuration_settings, configuration_protected_settings)
-        if clusterPurpose and clusterPurpose not in ["DevTest", "FastProd"]:
-            raise InvalidArgumentValueError(
-                "Accepted values for '--configuration-settings clusterPurpose' "
-                "are 'DevTest' and 'FastProd'")
-
-        feSslCert = _get_value_from_config_protected_config(
-            'scoringFe.sslCert', configuration_settings, configuration_protected_settings)
-        sslKey = _get_value_from_config_protected_config(
-            'scoringFe.sslKey', configuration_settings, configuration_protected_settings)
+        experimentalCluster = _get_value_from_config_protected_config(
+            'experimental', configuration_settings, configuration_protected_settings)
+        experimentalCluster = str(experimentalCluster).lower() == 'true'
+        if experimentalCluster:
+            configuration_settings['clusterPurpose'] = 'DevTest'
+        else:
+            configuration_settings['clusterPurpose'] = 'FastProd'
+        feSslCertFile = configuration_protected_settings.get(self.sslCertPemFile)
+        feSslKeyFile = configuration_protected_settings.get(self.sslKeyPemFile)
         allowInsecureConnections = _get_value_from_config_protected_config(
-            'allowInsecureConnections', configuration_settings, configuration_protected_settings)
+            self.allowInsecureConnections, configuration_settings, configuration_protected_settings)
         allowInsecureConnections = str(allowInsecureConnections).lower() == 'true'
-        if (not feSslCert or not sslKey) and not allowInsecureConnections:
+        if (not feSslCertFile or not feSslKeyFile) and not allowInsecureConnections:
             raise InvalidArgumentValueError(
                 "Provide ssl certificate and key. "
                 "Otherwise explicitly allow insecure connection by specifying "
                 "'--configuration-settings allowInsecureConnections=true'")
 
         feIsInternalLoadBalancer = _get_value_from_config_protected_config(
-            'scoringFe.serviceType.internalLoadBalancer', configuration_settings, configuration_protected_settings)
+            self.privateEndpointILB, configuration_settings, configuration_protected_settings)
         feIsInternalLoadBalancer = str(feIsInternalLoadBalancer).lower() == 'true'
         if feIsInternalLoadBalancer:
             logger.warning(
                 'Internal load balancer only supported on AKS and AKS Engine Clusters.')
+            configuration_protected_settings['scoringFe.%s' % self.privateEndpointILB] = feIsInternalLoadBalancer
+
+    def __set_up_inference_ssl(self, configuration_settings, configuration_protected_settings):
+        allowInsecureConnections = _get_value_from_config_protected_config(
+            self.allowInsecureConnections, configuration_settings, configuration_protected_settings)
+        allowInsecureConnections = str(allowInsecureConnections).lower() == 'true'
+        if not allowInsecureConnections:
+            import base64
+            feSslCertFile = configuration_protected_settings.get(self.sslCertPemFile)
+            feSslKeyFile = configuration_protected_settings.get(self.sslKeyPemFile)
+            with open(feSslCertFile) as f:
+                cert_data = f.read()
+                cert_data_bytes = cert_data.encode("ascii")
+                ssl_cert = base64.b64encode(cert_data_bytes)
+                configuration_protected_settings['scoringFe.sslCert'] = ssl_cert
+            with open(feSslKeyFile) as f:
+                key_data = f.read()
+                key_data_bytes = key_data.encode("ascii")
+                ssl_key = base64.b64encode(key_data_bytes)
+                configuration_protected_settings['scoringFe.sslKey'] = ssl_key
+        else:
+            logger.warning(
+                'SSL is not enabled. Allowing insecure connections to the deployed services.')
 
     def __create_required_resource(
             self, cmd, configuration_settings, configuration_protected_settings, subscription_id, resource_group_name,
