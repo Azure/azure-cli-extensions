@@ -1,0 +1,50 @@
+interactions:
+- request:
+    body: '{"tags": {"a": "b"}, "properties": {"description": "AzureCliTest", "query":
+      "project id, name, type, location, tags"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - graph shared-query create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '118'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -q -d --tags
+      User-Agent:
+      - AZURECLI/2.21.0 azsdk-python-mgmt-resourcegraph/10.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ResourceGraph/queries/clitest000002?api-version=2020-04-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"LocationRequired","message":"The location property
+        is required for this definition."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '104'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 02 Jun 2021 18:25:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 400
+      message: Bad Request
+version: 1

@@ -26,6 +26,21 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
+class ChangeCategory(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The change category.
+    """
+
+    USER = "User"
+    SYSTEM = "System"
+
+class ChangeType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The change type for snapshot. PropertyChanges will be provided in case of Update change type
+    """
+
+    CREATE = "Create"
+    UPDATE = "Update"
+    DELETE = "Delete"
+
 class ColumnDataType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Data type of a column in a table.
     """
@@ -36,6 +51,15 @@ class ColumnDataType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     BOOLEAN = "boolean"
     OBJECT = "object"
 
+class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of identity that created the resource.
+    """
+
+    USER = "User"
+    APPLICATION = "Application"
+    MANAGED_IDENTITY = "ManagedIdentity"
+    KEY = "Key"
+
 class FacetSortOrder(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The sorting order by the selected column (count by default).
     """
@@ -43,12 +67,31 @@ class FacetSortOrder(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     ASC = "asc"
     DESC = "desc"
 
+class PropertyChangeType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The property change Type
+    """
+
+    INSERT = "Insert"
+    UPDATE = "Update"
+    REMOVE = "Remove"
+
+class ResourcesHistoryRequestOptionsResultFormat(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+
+    TABLE = "table"
+    OBJECT_ARRAY = "objectArray"
+
 class ResultFormat(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Defines in which format query result returned.
     """
 
     TABLE = "table"
     OBJECT_ARRAY = "objectArray"
+
+class ResultKind(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Enum indicating a type of graph query.
+    """
+
+    BASIC = "basic"
 
 class ResultTruncated(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Indicates whether the query results are truncated.
