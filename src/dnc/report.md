@@ -57,7 +57,7 @@
 
 ##### <a name="ExamplesControllerCreate">Example</a>
 ```
-az dnc controller create --location "eastus2euap" --resource-group "TestRG" --resource-name "testcontroller"
+az dnc controller create --location "West US" --resource-group "TestRG" --resource-name "testcontroller"
 ```
 ##### <a name="ParametersControllerCreate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -176,7 +176,7 @@ az dnc delegated-subnet-service patch-detail --tags key="value" --resource-group
 
 ##### <a name="ExamplesDelegatedSubnetServicePutDetails">Example</a>
 ```
-az dnc delegated-subnet-service put-detail --location "eastus2euap" --id "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd\
+az dnc delegated-subnet-service put-detail --location "West US" --id "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd\
 60/resourceGroups/TestRG/providers/Microsoft.DelegatedNetwork/controller/dnctestcontroller" --subnet-details-id \
 "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.Network/virtualNetworks/\
 testvnet/subnets/testsubnet" --resource-group "TestRG" --resource-name "delegated1"
@@ -228,7 +228,7 @@ az dnc orchestrator-instance-service list
 
 ##### <a name="ExamplesOrchestratorInstanceServiceCreate">Example</a>
 ```
-az dnc orchestrator-instance-service create --type "SystemAssigned" --location "eastus2euap" --api-server-endpoint \
+az dnc orchestrator-instance-service create --type "SystemAssigned" --location "West US" --api-server-endpoint \
 "https://testk8s.cloudapp.net" --cluster-root-ca "ddsadsad344mfdsfdl" --id "/subscriptions/613192d7-503f-477a-9cfe-4efc\
 3ee2bd60/resourceGroups/TestRG/providers/Microsoft.DelegatedNetwork/controller/testcontroller" --orchestrator-app-id \
 "546192d7-503f-477a-9cfe-4efc3ee2b6e1" --orchestrator-tenant-id "da6192d7-503f-477a-9cfe-4efc3ee2b6c3" \

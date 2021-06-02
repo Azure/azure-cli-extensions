@@ -58,7 +58,7 @@ def call_scenario(test, rg, rg_2):
     setup_scenario(test, rg, rg_2)
     step_controller_create(test, rg, rg_2, checks=[])
     step_controller_show_detail(test, rg, rg_2, checks=[])
-    step_controller_patch(test, rg, rg_2, checks=[])
+    #step_controller_patch(test, rg, rg_2, checks=[])
     step_delegated_subnet_service_put_detail(test, rg, rg_2, checks=[])
     #step_delegated_subnet_service_show_detail(test, rg, rg_2, checks=[])
     #step_delegated_subnet_service_patch_detail(test, rg, rg_2, checks=[])

@@ -23,7 +23,7 @@ helps['dnc controller create'] = """
     examples:
       - name: Create controller
         text: |-
-               az dnc controller create --location "eastus2euap" --resource-group "TestRG" --resource-name \
+               az dnc controller create --location "West US" --resource-group "TestRG" --resource-name \
 "testcontroller"
 """
 
@@ -96,7 +96,7 @@ helps['dnc orchestrator-instance-service create'] = """
     examples:
       - name: Create orchestrator instance
         text: |-
-               az dnc orchestrator-instance-service create --type "SystemAssigned" --location "eastus2euap" \
+               az dnc orchestrator-instance-service create --type "SystemAssigned" --location "West US" \
 --api-server-endpoint "https://testk8s.cloudapp.net" --cluster-root-ca "ddsadsad344mfdsfdl" --id \
 "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.DelegatedNetwork/control\
 ler/testcontroller" --orchestrator-app-id "546192d7-503f-477a-9cfe-4efc3ee2b6e1" --orchestrator-tenant-id \
@@ -176,7 +176,7 @@ helps['dnc delegated-subnet-service put-detail'] = """
     examples:
       - name: put delegated subnet
         text: |-
-               az dnc delegated-subnet-service put-detail --location "eastus2euap" --id "/subscriptions/613192d7-503f-477a-\
+               az dnc delegated-subnet-service put-detail --location "West US" --id "/subscriptions/613192d7-503f-477a-\
 9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.DelegatedNetwork/controller/dnctestcontroller" \
 --subnet-details-id "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.Netw\
 ork/virtualNetworks/testvnet/subnets/testsubnet" --resource-group "TestRG" --resource-name "delegated1"

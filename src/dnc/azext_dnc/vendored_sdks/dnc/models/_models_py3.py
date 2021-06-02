@@ -117,6 +117,42 @@ class DelegatedController(ControllerResource):
     :type location: str
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
+    :ivar properties: Properties of the provision operation request.
+    :vartype properties: ~dnc.models.DelegatedControllerProperties
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+        'properties': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'location': {'key': 'location', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'properties': {'key': 'properties', 'type': 'DelegatedControllerProperties'},
+    }
+
+    def __init__(
+        self,
+        *,
+        location: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
+        **kwargs
+    ):
+        super(DelegatedController, self).__init__(location=location, tags=tags, **kwargs)
+        self.properties = None
+
+
+class DelegatedControllerProperties(msrest.serialization.Model):
+    """Properties of Delegated controller resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
     :ivar resource_guid: Resource guid.
     :vartype resource_guid: str
     :ivar provisioning_state: The current state of dnc controller resource. Possible values
@@ -132,9 +168,6 @@ class DelegatedController(ControllerResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
         'resource_guid': {'readonly': True},
         'provisioning_state': {'readonly': True},
         'dnc_app_id': {'readonly': True},
@@ -143,26 +176,18 @@ class DelegatedController(ControllerResource):
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'resource_guid': {'key': 'properties.resourceGuid', 'type': 'str'},
-        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'dnc_app_id': {'key': 'properties.dncAppId', 'type': 'str'},
-        'dnc_tenant_id': {'key': 'properties.dncTenantId', 'type': 'str'},
-        'dnc_endpoint': {'key': 'properties.dncEndpoint', 'type': 'str'},
+        'resource_guid': {'key': 'resourceGuid', 'type': 'str'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'dnc_app_id': {'key': 'dncAppId', 'type': 'str'},
+        'dnc_tenant_id': {'key': 'dncTenantId', 'type': 'str'},
+        'dnc_endpoint': {'key': 'dncEndpoint', 'type': 'str'},
     }
 
     def __init__(
         self,
-        *,
-        location: Optional[str] = None,
-        tags: Optional[Dict[str, str]] = None,
         **kwargs
     ):
-        super(DelegatedController, self).__init__(location=location, tags=tags, **kwargs)
+        super(DelegatedControllerProperties, self).__init__(**kwargs)
         self.resource_guid = None
         self.provisioning_state = None
         self.dnc_app_id = None
@@ -265,6 +290,42 @@ class DelegatedSubnet(DelegatedSubnetResource):
     :type location: str
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
+    :param properties: Properties of the provision operation request.
+    :type properties: ~dnc.models.DelegatedSubnetProperties
+    """
+
+    _validation = {
+        'id': {'readonly': True},
+        'name': {'readonly': True},
+        'type': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'id': {'key': 'id', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'},
+        'type': {'key': 'type', 'type': 'str'},
+        'location': {'key': 'location', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
+        'properties': {'key': 'properties', 'type': 'DelegatedSubnetProperties'},
+    }
+
+    def __init__(
+        self,
+        *,
+        location: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
+        properties: Optional["DelegatedSubnetProperties"] = None,
+        **kwargs
+    ):
+        super(DelegatedSubnet, self).__init__(location=location, tags=tags, **kwargs)
+        self.properties = properties
+
+
+class DelegatedSubnetProperties(msrest.serialization.Model):
+    """Properties of delegated subnet.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
     :ivar resource_guid: Resource guid.
     :vartype resource_guid: str
     :ivar provisioning_state: The current state of dnc delegated subnet resource. Possible values
@@ -277,35 +338,25 @@ class DelegatedSubnet(DelegatedSubnetResource):
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
         'resource_guid': {'readonly': True},
         'provisioning_state': {'readonly': True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'location': {'key': 'location', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'resource_guid': {'key': 'properties.resourceGuid', 'type': 'str'},
-        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'subnet_details': {'key': 'properties.subnetDetails', 'type': 'SubnetDetails'},
-        'controller_details': {'key': 'properties.controllerDetails', 'type': 'ControllerDetails'},
+        'resource_guid': {'key': 'resourceGuid', 'type': 'str'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'subnet_details': {'key': 'subnetDetails', 'type': 'SubnetDetails'},
+        'controller_details': {'key': 'controllerDetails', 'type': 'ControllerDetails'},
     }
 
     def __init__(
         self,
         *,
-        location: Optional[str] = None,
-        tags: Optional[Dict[str, str]] = None,
         subnet_details: Optional["SubnetDetails"] = None,
         controller_details: Optional["ControllerDetails"] = None,
         **kwargs
     ):
-        super(DelegatedSubnet, self).__init__(location=location, tags=tags, **kwargs)
+        super(DelegatedSubnetProperties, self).__init__(**kwargs)
         self.resource_guid = None
         self.provisioning_state = None
         self.subnet_details = subnet_details
@@ -649,25 +700,8 @@ class Orchestrator(OrchestratorResource):
     :type identity: ~dnc.models.OrchestratorIdentity
     :param tags: A set of tags. The resource tags.
     :type tags: dict[str, str]
-    :ivar resource_guid: Resource guid.
-    :vartype resource_guid: str
-    :ivar provisioning_state: The current state of orchestratorInstance resource. Possible values
-     include: "Deleting", "Succeeded", "Failed", "Provisioning".
-    :vartype provisioning_state: str or ~dnc.models.OrchestratorInstanceState
-    :param orchestrator_app_id: AAD ID used with apiserver.
-    :type orchestrator_app_id: str
-    :param orchestrator_tenant_id: TenantID of server App ID.
-    :type orchestrator_tenant_id: str
-    :param cluster_root_ca: RootCA certificate of kubernetes cluster base64 encoded.
-    :type cluster_root_ca: str
-    :param api_server_endpoint: K8s APIServer url. Either one of apiServerEndpoint or
-     privateLinkResourceId can be specified.
-    :type api_server_endpoint: str
-    :param private_link_resource_id: private link arm resource id. Either one of apiServerEndpoint
-     or privateLinkResourceId can be specified.
-    :type private_link_resource_id: str
-    :param controller_details: Properties of the controller.
-    :type controller_details: ~dnc.models.ControllerDetails
+    :param properties: Properties of the provision operation request.
+    :type properties: ~dnc.models.OrchestratorResourceProperties
     """
 
     _validation = {
@@ -675,8 +709,6 @@ class Orchestrator(OrchestratorResource):
         'name': {'readonly': True},
         'type': {'readonly': True},
         'kind': {'required': True},
-        'resource_guid': {'readonly': True},
-        'provisioning_state': {'readonly': True},
     }
 
     _attribute_map = {
@@ -687,14 +719,7 @@ class Orchestrator(OrchestratorResource):
         'kind': {'key': 'kind', 'type': 'str'},
         'identity': {'key': 'identity', 'type': 'OrchestratorIdentity'},
         'tags': {'key': 'tags', 'type': '{str}'},
-        'resource_guid': {'key': 'properties.resourceGuid', 'type': 'str'},
-        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'orchestrator_app_id': {'key': 'properties.orchestratorAppId', 'type': 'str'},
-        'orchestrator_tenant_id': {'key': 'properties.orchestratorTenantId', 'type': 'str'},
-        'cluster_root_ca': {'key': 'properties.clusterRootCA', 'type': 'str'},
-        'api_server_endpoint': {'key': 'properties.apiServerEndpoint', 'type': 'str'},
-        'private_link_resource_id': {'key': 'properties.privateLinkResourceId', 'type': 'str'},
-        'controller_details': {'key': 'properties.controllerDetails', 'type': 'ControllerDetails'},
+        'properties': {'key': 'properties', 'type': 'OrchestratorResourceProperties'},
     }
 
     def __init__(
@@ -704,23 +729,11 @@ class Orchestrator(OrchestratorResource):
         location: Optional[str] = None,
         identity: Optional["OrchestratorIdentity"] = None,
         tags: Optional[Dict[str, str]] = None,
-        orchestrator_app_id: Optional[str] = None,
-        orchestrator_tenant_id: Optional[str] = None,
-        cluster_root_ca: Optional[str] = None,
-        api_server_endpoint: Optional[str] = None,
-        private_link_resource_id: Optional[str] = None,
-        controller_details: Optional["ControllerDetails"] = None,
+        properties: Optional["OrchestratorResourceProperties"] = None,
         **kwargs
     ):
         super(Orchestrator, self).__init__(location=location, kind=kind, identity=identity, tags=tags, **kwargs)
-        self.resource_guid = None
-        self.provisioning_state = None
-        self.orchestrator_app_id = orchestrator_app_id
-        self.orchestrator_tenant_id = orchestrator_tenant_id
-        self.cluster_root_ca = cluster_root_ca
-        self.api_server_endpoint = api_server_endpoint
-        self.private_link_resource_id = private_link_resource_id
-        self.controller_details = controller_details
+        self.properties = properties
 
 
 class OrchestratorIdentity(msrest.serialization.Model):
@@ -760,6 +773,73 @@ class OrchestratorIdentity(msrest.serialization.Model):
         self.principal_id = None
         self.tenant_id = None
         self.type = type
+
+
+class OrchestratorResourceProperties(msrest.serialization.Model):
+    """Properties of orchestrator.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar resource_guid: Resource guid.
+    :vartype resource_guid: str
+    :ivar provisioning_state: The current state of orchestratorInstance resource. Possible values
+     include: "Deleting", "Succeeded", "Failed", "Provisioning".
+    :vartype provisioning_state: str or ~dnc.models.OrchestratorInstanceState
+    :param orchestrator_app_id: AAD ID used with apiserver.
+    :type orchestrator_app_id: str
+    :param orchestrator_tenant_id: TenantID of server App ID.
+    :type orchestrator_tenant_id: str
+    :param cluster_root_ca: RootCA certificate of kubernetes cluster base64 encoded.
+    :type cluster_root_ca: str
+    :param api_server_endpoint: K8s APIServer url. Either one of apiServerEndpoint or
+     privateLinkResourceId can be specified.
+    :type api_server_endpoint: str
+    :param private_link_resource_id: private link arm resource id. Either one of apiServerEndpoint
+     or privateLinkResourceId can be specified.
+    :type private_link_resource_id: str
+    :param controller_details: Required. Properties of the controller.
+    :type controller_details: ~dnc.models.ControllerDetails
+    """
+
+    _validation = {
+        'resource_guid': {'readonly': True},
+        'provisioning_state': {'readonly': True},
+        'controller_details': {'required': True},
+    }
+
+    _attribute_map = {
+        'resource_guid': {'key': 'resourceGuid', 'type': 'str'},
+        'provisioning_state': {'key': 'provisioningState', 'type': 'str'},
+        'orchestrator_app_id': {'key': 'orchestratorAppId', 'type': 'str'},
+        'orchestrator_tenant_id': {'key': 'orchestratorTenantId', 'type': 'str'},
+        'cluster_root_ca': {'key': 'clusterRootCA', 'type': 'str'},
+        'api_server_endpoint': {'key': 'apiServerEndpoint', 'type': 'str'},
+        'private_link_resource_id': {'key': 'privateLinkResourceId', 'type': 'str'},
+        'controller_details': {'key': 'controllerDetails', 'type': 'ControllerDetails'},
+    }
+
+    def __init__(
+        self,
+        *,
+        controller_details: "ControllerDetails",
+        orchestrator_app_id: Optional[str] = None,
+        orchestrator_tenant_id: Optional[str] = None,
+        cluster_root_ca: Optional[str] = None,
+        api_server_endpoint: Optional[str] = None,
+        private_link_resource_id: Optional[str] = None,
+        **kwargs
+    ):
+        super(OrchestratorResourceProperties, self).__init__(**kwargs)
+        self.resource_guid = None
+        self.provisioning_state = None
+        self.orchestrator_app_id = orchestrator_app_id
+        self.orchestrator_tenant_id = orchestrator_tenant_id
+        self.cluster_root_ca = cluster_root_ca
+        self.api_server_endpoint = api_server_endpoint
+        self.private_link_resource_id = private_link_resource_id
+        self.controller_details = controller_details
 
 
 class OrchestratorResourceUpdateParameters(msrest.serialization.Model):
