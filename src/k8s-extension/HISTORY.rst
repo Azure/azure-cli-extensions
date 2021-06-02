@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.4.3
+++++++++++++++++++
+* Add SSL support for AzureML
+
+
 0.4.2
 ++++++++++++++++++
 
