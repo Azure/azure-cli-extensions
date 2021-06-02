@@ -12,11 +12,6 @@
 from knack.help_files import helps
 
 
-helps['disk-pool'] = '''
-    type: group
-    short-summary: Manage Storage Pool Management
-'''
-
 helps['disk-pool'] = """
     type: group
     short-summary: Manage disk pool with diskpool

@@ -617,22 +617,28 @@ class ErrorResponse(msrest.serialization.Model):
 class IscsiLun(msrest.serialization.Model):
     """LUN to expose the Azure Managed Disk.
 
+    Variables are only populated by the server, and will be ignored when sending a request.
+
     All required parameters must be populated in order to send to Azure.
 
     :param name: Required. User defined name for iSCSI LUN; example: "lun0".
     :type name: str
     :param managed_disk_azure_resource_id: Required. Azure Resource ID of the Managed Disk.
     :type managed_disk_azure_resource_id: str
+    :ivar lun: Specifies the Logical Unit Number of the iSCSI LUN.
+    :vartype lun: int
     """
 
     _validation = {
         'name': {'required': True},
         'managed_disk_azure_resource_id': {'required': True},
+        'lun': {'readonly': True},
     }
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
         'managed_disk_azure_resource_id': {'key': 'managedDiskAzureResourceId', 'type': 'str'},
+        'lun': {'key': 'lun', 'type': 'int'},
     }
 
     def __init__(
@@ -645,6 +651,7 @@ class IscsiLun(msrest.serialization.Model):
         super(IscsiLun, self).__init__(**kwargs)
         self.name = name
         self.managed_disk_azure_resource_id = managed_disk_azure_resource_id
+        self.lun = None
 
 
 class IscsiTarget(Resource):
