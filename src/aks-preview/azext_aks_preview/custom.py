@@ -4179,3 +4179,7 @@ def _ensure_cluster_identity_permission_on_kubelet_identity(cli_ctx, cluster_ide
     if not _add_role_assignment(cli_ctx, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,
                                 is_service_principal=False, scope=scope):
         raise CLIError('Could not grant Managed Identity Operator permission to cluster identity at scope {}'.format(scope))
+
+
+def aks_egress_endpoints_list(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
+    return client.list_outbound_network_dependencies_endpoints(resource_group_name, name)
