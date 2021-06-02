@@ -21,3 +21,34 @@ helps['disk-pool iscsi-target'] = """
     type: group
     short-summary: Manage iSCSI target with a Disk Pool.
 """
+
+helps['disk-pool iscsi-target update'] = """
+    type: command
+    short-summary: "Update an iSCSI Target."
+    parameters:
+      - name: --static-acls
+        short-summary: "Access Control List (ACL) for an iSCSI Target; defines LUN masking policy"
+        long-summary: |
+            Usage: --static-acls initiator-iqn=XX mapped-luns=XX
+
+            initiator-iqn: Required. iSCSI initiator IQN (iSCSI Qualified Name); example: \
+"iqn.2005-03.org.iscsi:client".
+            mapped-luns: Required. List of LUN names mapped to the ACL.
+
+            Multiple actions can be specified by using more than one --static-acls argument.
+      - name: --luns
+        short-summary: "List of LUNs to be exposed through iSCSI Target."
+        long-summary: |
+            Usage: --luns name=XX managed-disk-azure-resource-id=XX
+
+            name: Required. User defined name for iSCSI LUN; example: "lun0"
+            managed-disk-azure-resource-id: Required. Azure Resource ID of the Managed Disk.
+
+            Multiple actions can be specified by using more than one --luns argument.
+    examples:
+      - name: Update iSCSI Target
+        text: |-
+               az disk-pool iscsi-target update --disk-pool-name "myDiskPool" --name "myIscsiTarget" --luns \
+name="lun0" managed-disk-azure-resource-id="/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/myResour\
+ceGroup/providers/Microsoft.Compute/disks/vm-name_DataDisk_1"
+"""
