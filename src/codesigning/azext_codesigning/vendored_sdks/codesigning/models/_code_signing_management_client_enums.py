@@ -39,9 +39,6 @@ class ProfileType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Profile type of the certificate
     """
 
-    TEST = "Test"
-    TRIAL = "Trial"
-    PRIVATE_TRUST = "PrivateTrust"
     PUBLIC_TRUST = "PublicTrust"
 
 class ProvisioningState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
@@ -60,12 +57,4 @@ class RotationPolicy(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Rotation policy of the certificate
     """
 
-    MONTHLY = "Monthly"
-
-class VerificationStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Vetting status of the code sign account
-    """
-
-    COMPLETED = "Completed"
-    IN_PROGRESS = "InProgress"
-    NOT_COMPLETED = "NotCompleted"
+    THIRTY_DAYS = "30 Days"

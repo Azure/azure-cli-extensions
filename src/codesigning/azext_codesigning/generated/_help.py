@@ -14,57 +14,68 @@ from knack.help_files import helps
 
 helps['codesigning'] = """
     type: group
-    short-summary: Manage code sign account with codesigning
+    short-summary: Manage code signing account with codesigning
 """
 
 helps['codesigning list'] = """
     type: command
-    short-summary: "List Code Sign Accounts within a resource group And Lists Code Sign Accounts within a \
+    short-summary: "List Code Signing Accounts within a resource group And Lists Code Signing Accounts within a \
 subscription."
     examples:
-      - name: List Code Sign Accounts by Resource Group
+      - name: List Code Signing Accounts by Resource Group
         text: |-
                az codesigning list --resource-group "MyResourceGroup"
-      - name: List Code Sign Accounts by Subscription
+      - name: List Code Signing Accounts by Subscription
         text: |-
                az codesigning list
 """
 
 helps['codesigning show'] = """
     type: command
-    short-summary: "Get a Code Sign Account."
+    short-summary: "Get a Code Signing Account."
     examples:
-      - name: Get Code Sign Account
+      - name: Get Code Signing Account
         text: |-
-               az codesigning show --account-name "MyAccount" --resource-group "MyResourceGroup"
+               az codesigning show --name "MyAccount" --resource-group "MyResourceGroup"
 """
 
 helps['codesigning create'] = """
     type: command
-    short-summary: "Create a Code Sign Account."
+    short-summary: "Create a Code Signing Account."
     examples:
-      - name: Create Code Sign Account
+      - name: Create Code Signing Account
         text: |-
-               az codesigning create --account-name "MyAccount" --location "eastus" --resource-group "MyResourceGroup"
+               az codesigning create --name "MyAccount" --location "eastus" --resource-group "MyResourceGroup"
 """
 
 helps['codesigning update'] = """
     type: command
-    short-summary: "Update a code sign account."
+    short-summary: "Update a code signing account."
     examples:
-      - name: Update Code Sign Account
+      - name: Update Code Signing Account
         text: |-
-               az codesigning update --tags key1="value1" --account-name "MyAccount" --resource-group \
-"MyResourceGroup"
+               az codesigning update --name "MyAccount" --tags key1="value1" --resource-group "MyResourceGroup"
 """
 
 helps['codesigning delete'] = """
     type: command
-    short-summary: "Delete a Code Sign Account."
+    short-summary: "Delete Code Signing Account."
     examples:
-      - name: Delete Code Sign Account
+      - name: Delete Code Signing Account
         text: |-
-               az codesigning delete --account-name "MyAccount" --resource-group "MyResourceGroup"
+               az codesigning delete --name "MyAccount" --resource-group "MyResourceGroup"
+"""
+
+helps['codesigning wait'] = """
+    type: command
+    short-summary: Place the CLI in a waiting state until a condition of the codesigning is met.
+    examples:
+      - name: Pause executing next line of CLI script until the codesigning is successfully created.
+        text: |-
+               az codesigning wait --name "MyAccount" --resource-group "MyResourceGroup" --created
+      - name: Pause executing next line of CLI script until the codesigning is successfully deleted.
+        text: |-
+               az codesigning wait --name "MyAccount" --resource-group "MyResourceGroup" --deleted
 """
 
 helps['codesigning certificate-profile'] = """
@@ -74,7 +85,7 @@ helps['codesigning certificate-profile'] = """
 
 helps['codesigning certificate-profile list'] = """
     type: command
-    short-summary: "List certificate profiles within a code sign account."
+    short-summary: "List certificate profiles within a code signing account."
     examples:
       - name: List Certificate Profiles
         text: |-
@@ -87,8 +98,8 @@ helps['codesigning certificate-profile show'] = """
     examples:
       - name: Get Certificate Profile
         text: |-
-               az codesigning certificate-profile show --account-name "MyAccount" --profile-name "profileA" \
---resource-group "MyResourceGroup"
+               az codesigning certificate-profile show --account-name "MyAccount" --name "profileA" --resource-group \
+"MyResourceGroup"
 """
 
 helps['codesigning certificate-profile create'] = """
@@ -97,20 +108,8 @@ helps['codesigning certificate-profile create'] = """
     examples:
       - name: Create Certificate Profile
         text: |-
-               az codesigning certificate-profile create --account-name "MyAccount" --profile-name "profileA" \
---common-name "Contoso" --profile-type "PublicTrust" --subject-alternative-name "Contoso Corporate Engineering" \
---resource-group "MyResourceGroup"
-"""
-
-helps['codesigning certificate-profile update'] = """
-    type: command
-    short-summary: "Update a certificate profile."
-    examples:
-      - name: Update Certificate Profile
-        text: |-
-               az codesigning certificate-profile update --common-name "Contoso" --profile-type "Test" \
---subject-alternative-name "Contoso Corporate Engineering" --account-name "MyAccount" --profile-name "profileA" \
---resource-group "MyResourceGroup"
+               az codesigning certificate-profile create --account-name "MyAccount" --common-name "Contoso Inc" \
+--organization "Contoso Inc" --name "profileA" --resource-group "MyResourceGroup"
 """
 
 helps['codesigning certificate-profile delete'] = """
@@ -119,20 +118,22 @@ helps['codesigning certificate-profile delete'] = """
     examples:
       - name: Delete Certificate Profile
         text: |-
-               az codesigning certificate-profile delete --account-name "MyAccount" --profile-name "profileA" \
---resource-group "MyResourceGroup"
+               az codesigning certificate-profile delete --account-name "MyAccount" --name "profileA" --resource-group \
+"MyResourceGroup"
 """
 
-helps['codesigning operation'] = """
-    type: group
-    short-summary: Manage operation with codesigning
-"""
-
-helps['codesigning operation show'] = """
+helps['codesigning certificate-profile wait'] = """
     type: command
-    short-summary: "Lists all of the available API operations for code signing resource."
+    short-summary: Place the CLI in a waiting state until a condition of the codesigning certificate-profile is met.
     examples:
-      - name: List Code Sign Account operations
+      - name: Pause executing next line of CLI script until the codesigning certificate-profile is successfully \
+created.
         text: |-
-               az codesigning operation show
+               az codesigning certificate-profile wait --account-name "MyAccount" --name "profileA" --resource-group \
+"MyResourceGroup" --created
+      - name: Pause executing next line of CLI script until the codesigning certificate-profile is successfully \
+deleted.
+        text: |-
+               az codesigning certificate-profile wait --account-name "MyAccount" --name "profileA" --resource-group \
+"MyResourceGroup" --deleted
 """

@@ -12,7 +12,6 @@
 
 from azure.cli.core.commands.parameters import (
     tags_type,
-    get_enum_type,
     resource_group_name_type,
     get_location_type
 )
@@ -26,23 +25,27 @@ def load_arguments(self, _):
 
     with self.argument_context('codesigning show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('account_name', type=str, help='Code Signing account name', id_part='name')
+        c.argument('name', options_list=['--name', '-n'], type=str, help='Code Signing account name', id_part='name')
 
     with self.argument_context('codesigning create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('account_name', type=str, help='Code Signing account name')
+        c.argument('name', options_list=['--name', '-n'], type=str, help='Code Signing account name')
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
 
     with self.argument_context('codesigning update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('account_name', type=str, help='Code Signing account name', id_part='name')
+        c.argument('name', options_list=['--name', '-n'], type=str, help='Code Signing account name', id_part='name')
         c.argument('tags', tags_type)
 
     with self.argument_context('codesigning delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('account_name', type=str, help='Code Signing account name', id_part='name')
+        c.argument('name', options_list=['--name', '-n'], type=str, help='Code Signing account name', id_part='name')
+
+    with self.argument_context('codesigning wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('name', options_list=['--name', '-n'], type=str, help='Code Signing account name', id_part='name')
 
     with self.argument_context('codesigning certificate-profile list') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -51,27 +54,24 @@ def load_arguments(self, _):
     with self.argument_context('codesigning certificate-profile show') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('account_name', type=str, help='Code Signing account name', id_part='name')
-        c.argument('profile_name', type=str, help='Certificate profile name', id_part='child_name_1')
+        c.argument('name', options_list=['--name', '-n'], type=str, help='Certificate profile name',
+                   id_part='child_name_1')
 
     with self.argument_context('codesigning certificate-profile create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('account_name', type=str, help='Code Signing account name')
-        c.argument('profile_name', type=str, help='Certificate profile name')
-        c.argument('profile_type', arg_type=get_enum_type(['Test', 'Trial', 'PrivateTrust', 'PublicTrust']),
-                   help='Profile type of the certificate')
-        c.argument('common_name', type=str, help='Name of the certificate')
-        c.argument('subject_alternative_name', type=str, help='Subject Alternative Name of the certificate')
-
-    with self.argument_context('codesigning certificate-profile update') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('account_name', type=str, help='Code Signing account name', id_part='name')
-        c.argument('profile_name', type=str, help='Certificate profile name', id_part='child_name_1')
-        c.argument('profile_type', arg_type=get_enum_type(['Test', 'Trial', 'PrivateTrust', 'PublicTrust']),
-                   help='Profile type of the certificate')
-        c.argument('common_name', type=str, help='Name of the certificate')
-        c.argument('subject_alternative_name', type=str, help='Subject Alternative Name of the certificate')
+        c.argument('name', options_list=['--name', '-n'], type=str, help='Certificate profile name')
+        c.argument('common_name', type=str, help='Used as CN in the subject name of the certificate')
+        c.argument('organization', type=str, help='Used as O in the subject name of the certificate')
 
     with self.argument_context('codesigning certificate-profile delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('account_name', type=str, help='Code Signing account name', id_part='name')
-        c.argument('profile_name', type=str, help='Certificate profile name', id_part='child_name_1')
+        c.argument('name', options_list=['--name', '-n'], type=str, help='Certificate profile name',
+                   id_part='child_name_1')
+
+    with self.argument_context('codesigning certificate-profile wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('account_name', type=str, help='Code Signing account name', id_part='name')
+        c.argument('name', options_list=['--name', '-n'], type=str, help='Certificate profile name',
+                   id_part='child_name_1')

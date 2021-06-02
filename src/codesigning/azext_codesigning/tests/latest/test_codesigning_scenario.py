@@ -19,8 +19,8 @@ from .example_steps import step_update
 from .example_steps import step_certificate_profile_create
 from .example_steps import step_certificate_profile_show
 from .example_steps import step_certificate_profile_list
-from .example_steps import step_certificate_profile_update
-from .example_steps import step_operation_show
+from .example_steps import step_certificate_profile_delete
+from .example_steps import step_delete
 from .. import (
     try_manual,
     raise_if,
@@ -55,17 +55,16 @@ def call_scenario(test, rg):
     step_certificate_profile_create(test, rg, checks=[])
     step_certificate_profile_show(test, rg, checks=[])
     step_certificate_profile_list(test, rg, checks=[])
-    step_certificate_profile_update(test, rg, checks=[])
-    # STEP NOT FOUND: Delete a Certificate Profile
-    # STEP NOT FOUND: Delete a Code Sign Account
-    step_operation_show(test, rg, checks=[])
+    # STEP NOT FOUND: Update Certificate Profile
+    step_certificate_profile_delete(test, rg, checks=[])
+    step_delete(test, rg, checks=[])
+    # STEP NOT FOUND: List Code Signing Account operations
     cleanup_scenario(test, rg)
 
 
 # Test class for Scenario
 @try_manual
 class CodesigningScenarioTest(ScenarioTest):
-
     def __init__(self, *args, **kwargs):
         super(CodesigningScenarioTest, self).__init__(*args, **kwargs)
 

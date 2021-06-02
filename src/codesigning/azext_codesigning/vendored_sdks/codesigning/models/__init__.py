@@ -9,10 +9,11 @@
 try:
     from ._models_py3 import Certificate
     from ._models_py3 import CertificateProfile
+    from ._models_py3 import CertificateProfilePatch
     from ._models_py3 import CertificateProfiles
-    from ._models_py3 import CodeSignAccount
-    from ._models_py3 import CodeSignAccountPatch
-    from ._models_py3 import CodeSignAccounts
+    from ._models_py3 import CodeSigningAccount
+    from ._models_py3 import CodeSigningAccountPatch
+    from ._models_py3 import CodeSigningAccounts
     from ._models_py3 import ErrorAdditionalInfo
     from ._models_py3 import ErrorDetail
     from ._models_py3 import ErrorResponse
@@ -26,10 +27,11 @@ try:
 except (SyntaxError, ImportError):
     from ._models import Certificate  # type: ignore
     from ._models import CertificateProfile  # type: ignore
+    from ._models import CertificateProfilePatch  # type: ignore
     from ._models import CertificateProfiles  # type: ignore
-    from ._models import CodeSignAccount  # type: ignore
-    from ._models import CodeSignAccountPatch  # type: ignore
-    from ._models import CodeSignAccounts  # type: ignore
+    from ._models import CodeSigningAccount  # type: ignore
+    from ._models import CodeSigningAccountPatch  # type: ignore
+    from ._models import CodeSigningAccounts  # type: ignore
     from ._models import ErrorAdditionalInfo  # type: ignore
     from ._models import ErrorDetail  # type: ignore
     from ._models import ErrorResponse  # type: ignore
@@ -46,16 +48,16 @@ from ._code_signing_management_client_enums import (
     ProfileType,
     ProvisioningState,
     RotationPolicy,
-    VerificationStatus,
 )
 
 __all__ = [
     'Certificate',
     'CertificateProfile',
+    'CertificateProfilePatch',
     'CertificateProfiles',
-    'CodeSignAccount',
-    'CodeSignAccountPatch',
-    'CodeSignAccounts',
+    'CodeSigningAccount',
+    'CodeSigningAccountPatch',
+    'CodeSigningAccounts',
     'ErrorAdditionalInfo',
     'ErrorDetail',
     'ErrorResponse',
@@ -70,5 +72,4 @@ __all__ = [
     'ProfileType',
     'ProvisioningState',
     'RotationPolicy',
-    'VerificationStatus',
 ]

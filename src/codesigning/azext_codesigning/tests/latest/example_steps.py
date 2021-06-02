@@ -19,10 +19,9 @@ def step_certificate_profile_create(test, rg, checks=None):  # pylint: disable=u
         checks = []
     test.cmd('az codesigning certificate-profile create '
              '--account-name "MyAccount" '
-             '--profile-name "profileA" '
-             '--common-name "Contoso" '
-             '--profile-type "PublicTrust" '
-             '--subject-alternative-name "Contoso Corporate Engineering" '
+             '--common-name "Contoso Inc" '
+             '--organization "Contoso Inc" '
+             '--name "profileA" '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -34,7 +33,7 @@ def step_certificate_profile_show(test, rg, checks=None):  # pylint: disable=unu
         checks = []
     test.cmd('az codesigning certificate-profile show '
              '--account-name "MyAccount" '
-             '--profile-name "profileA" '
+             '--name "profileA" '
              '--resource-group "{rg}"',
              checks=checks)
 
@@ -50,21 +49,6 @@ def step_certificate_profile_list(test, rg, checks=None):  # pylint: disable=unu
              checks=checks)
 
 
-# EXAMPLE: /CertificateProfile/patch/Update Certificate Profile
-@try_manual
-def step_certificate_profile_update(test, rg, checks=None):  # pylint: disable=unused-argument
-    if checks is None:
-        checks = []
-    test.cmd('az codesigning certificate-profile update '
-             '--common-name "Contoso" '
-             '--profile-type "Test" '
-             '--subject-alternative-name "Contoso Corporate Engineering" '
-             '--account-name "MyAccount" '
-             '--profile-name "profileA" '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
 # EXAMPLE: /CertificateProfile/delete/Delete Certificate Profile
 @try_manual
 def step_certificate_profile_delete(test, rg, checks=None):  # pylint: disable=unused-argument
@@ -72,35 +56,35 @@ def step_certificate_profile_delete(test, rg, checks=None):  # pylint: disable=u
         checks = []
     test.cmd('az codesigning certificate-profile delete -y '
              '--account-name "MyAccount" '
-             '--profile-name "profileA" '
+             '--name "profileA" '
              '--resource-group "{rg}"',
              checks=checks)
 
 
-# EXAMPLE: /CodeSignAccount/put/Create Code Sign Account
+# EXAMPLE: /CodeSigningAccount/put/Create Code Signing Account
 @try_manual
 def step_create(test, rg, checks=None):  # pylint: disable=unused-argument
     if checks is None:
         checks = []
     test.cmd('az codesigning create '
-             '--account-name "MyAccount" '
+             '--name "MyAccount" '
              '--location "eastus" '
              '--resource-group "{rg}"',
              checks=checks)
 
 
-# EXAMPLE: /CodeSignAccount/get/Get Code Sign Account
+# EXAMPLE: /CodeSigningAccount/get/Get Code Signing Account
 @try_manual
 def step_show(test, rg, checks=None):  # pylint: disable=unused-argument
     if checks is None:
         checks = []
     test.cmd('az codesigning show '
-             '--account-name "MyAccount" '
+             '--name "MyAccount" '
              '--resource-group "{rg}"',
              checks=checks)
 
 
-# EXAMPLE: /CodeSignAccount/get/List Code Sign Accounts by Resource Group
+# EXAMPLE: /CodeSigningAccount/get/List Code Signing Accounts by Resource Group
 @try_manual
 def step_list(test, rg, checks=None):  # pylint: disable=unused-argument
     if checks is None:
@@ -110,7 +94,7 @@ def step_list(test, rg, checks=None):  # pylint: disable=unused-argument
              checks=checks)
 
 
-# EXAMPLE: /CodeSignAccount/get/List Code Sign Accounts by Subscription
+# EXAMPLE: /CodeSigningAccount/get/List Code Signing Accounts by Subscription
 @try_manual
 def step_list2(test, rg, checks=None):  # pylint: disable=unused-argument
     if checks is None:
@@ -120,33 +104,24 @@ def step_list2(test, rg, checks=None):  # pylint: disable=unused-argument
              checks=checks)
 
 
-# EXAMPLE: /CodeSignAccount/patch/Update Code Sign Account
+# EXAMPLE: /CodeSigningAccount/patch/Update Code Signing Account
 @try_manual
 def step_update(test, rg, checks=None):  # pylint: disable=unused-argument
     if checks is None:
         checks = []
     test.cmd('az codesigning update '
+             '--name "MyAccount" '
              '--tags key1="value1" '
-             '--account-name "MyAccount" '
              '--resource-group "{rg}"',
              checks=checks)
 
 
-# EXAMPLE: /CodeSignAccount/delete/Delete Code Sign Account
+# EXAMPLE: /CodeSigningAccount/delete/Delete Code Signing Account
 @try_manual
 def step_delete(test, rg, checks=None):  # pylint: disable=unused-argument
     if checks is None:
         checks = []
     test.cmd('az codesigning delete -y '
-             '--account-name "MyAccount" '
+             '--name "MyAccount" '
              '--resource-group "{rg}"',
-             checks=checks)
-
-
-# EXAMPLE: /Operations/get/List Code Sign Account operations
-@try_manual
-def step_operation_show(test, rg, checks=None):  # pylint: disable=unused-argument
-    if checks is None:
-        checks = []
-    test.cmd('az codesigning operation show',
              checks=checks)

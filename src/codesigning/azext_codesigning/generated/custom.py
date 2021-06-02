@@ -9,6 +9,8 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 
+from azure.cli.core.util import sdk_no_wait
+
 
 def codesigning_list(client,
                      resource_group_name=None):
@@ -19,102 +21,91 @@ def codesigning_list(client,
 
 def codesigning_show(client,
                      resource_group_name,
-                     account_name):
+                     name):
     return client.get(resource_group_name=resource_group_name,
-                      account_name=account_name)
+                      account_name=name)
 
 
 def codesigning_create(client,
                        resource_group_name,
-                       account_name,
+                       name,
                        tags=None,
-                       location=None):
-    code_sign_account = {}
-    code_sign_account['tags'] = tags
-    code_sign_account['location'] = location
-    return client.create(resource_group_name=resource_group_name,
-                         account_name=account_name,
-                         code_sign_account=code_sign_account)
+                       location=None,
+                       no_wait=False):
+    code_signing_account = {}
+    code_signing_account['tags'] = tags
+    code_signing_account['location'] = location
+    return sdk_no_wait(no_wait,
+                       client.begin_create,
+                       resource_group_name=resource_group_name,
+                       account_name=name,
+                       code_signing_account=code_signing_account)
 
 
 def codesigning_update(client,
                        resource_group_name,
-                       account_name,
+                       name,
                        tags=None):
-    code_sign_account_patch = {}
-    code_sign_account_patch['tags'] = tags
+    code_signing_account_patch = {}
+    code_signing_account_patch['tags'] = tags
     return client.update(resource_group_name=resource_group_name,
-                         account_name=account_name,
-                         code_sign_account_patch=code_sign_account_patch)
+                         account_name=name,
+                         code_signing_account_patch=code_signing_account_patch)
 
 
 def codesigning_delete(client,
                        resource_group_name,
-                       account_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         account_name=account_name)
+                       name,
+                       no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       account_name=name)
 
 
 def codesigning_certificate_profile_list(client,
                                          resource_group_name,
                                          account_name):
-    return client.list_by_code_sign_account(resource_group_name=resource_group_name,
-                                            account_name=account_name)
+    return client.list_by_code_signing_account(resource_group_name=resource_group_name,
+                                               account_name=account_name)
 
 
 def codesigning_certificate_profile_show(client,
                                          resource_group_name,
                                          account_name,
-                                         profile_name):
+                                         name):
     return client.get(resource_group_name=resource_group_name,
                       account_name=account_name,
-                      profile_name=profile_name)
+                      profile_name=name)
 
 
 def codesigning_certificate_profile_create(client,
                                            resource_group_name,
                                            account_name,
-                                           profile_name,
-                                           profile_type=None,
-                                           common_name=None,
-                                           subject_alternative_name=None):
+                                           name,
+                                           common_name,
+                                           organization,
+                                           no_wait=False):
     certificate_profile = {}
-    certificate_profile['profile_type'] = profile_type
-    certificate_profile['rotation_policy'] = "Monthly"
+    certificate_profile['profile_type'] = "PublicTrust"
+    certificate_profile['rotation_policy'] = "30 Days"
     certificate_profile['common_name'] = common_name
-    certificate_profile['subject_alternative_name'] = subject_alternative_name
-    return client.create(resource_group_name=resource_group_name,
-                         account_name=account_name,
-                         profile_name=profile_name,
-                         certificate_profile=certificate_profile)
-
-
-def codesigning_certificate_profile_update(client,
-                                           resource_group_name,
-                                           account_name,
-                                           profile_name,
-                                           profile_type=None,
-                                           common_name=None,
-                                           subject_alternative_name=None):
-    certificate_profile = {}
-    certificate_profile['profile_type'] = profile_type
-    certificate_profile['rotation_policy'] = "Monthly"
-    certificate_profile['common_name'] = common_name
-    certificate_profile['subject_alternative_name'] = subject_alternative_name
-    return client.update(resource_group_name=resource_group_name,
-                         account_name=account_name,
-                         profile_name=profile_name,
-                         certificate_profile=certificate_profile)
+    certificate_profile['organization'] = organization
+    return sdk_no_wait(no_wait,
+                       client.begin_create,
+                       resource_group_name=resource_group_name,
+                       account_name=account_name,
+                       profile_name=name,
+                       certificate_profile=certificate_profile)
 
 
 def codesigning_certificate_profile_delete(client,
                                            resource_group_name,
                                            account_name,
-                                           profile_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         account_name=account_name,
-                         profile_name=profile_name)
-
-
-def codesigning_operation_show(client):
-    return client.get()
+                                           name,
+                                           no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       account_name=account_name,
+                       profile_name=name)

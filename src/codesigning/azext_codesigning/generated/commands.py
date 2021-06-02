@@ -15,18 +15,19 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
-    from azext_codesigning.generated._client_factory import cf_code_sign_account
-    codesigning_code_sign_account = CliCommandType(
-        operations_tmpl='azext_codesigning.vendored_sdks.codesigning.operations._code_sign_account_operations#CodeSignA'
-        'ccountOperations.{}',
-        client_factory=cf_code_sign_account)
-    with self.command_group('codesigning', codesigning_code_sign_account, client_factory=cf_code_sign_account,
+    from azext_codesigning.generated._client_factory import cf_code_signing_account
+    codesigning_code_signing_account = CliCommandType(
+        operations_tmpl='azext_codesigning.vendored_sdks.codesigning.operations._code_signing_account_operations#CodeSi'
+        'gningAccountOperations.{}',
+        client_factory=cf_code_signing_account)
+    with self.command_group('codesigning', codesigning_code_signing_account, client_factory=cf_code_signing_account,
                             is_experimental=True) as g:
         g.custom_command('list', 'codesigning_list')
         g.custom_show_command('show', 'codesigning_show')
-        g.custom_command('create', 'codesigning_create')
+        g.custom_command('create', 'codesigning_create', supports_no_wait=True)
         g.custom_command('update', 'codesigning_update')
-        g.custom_command('delete', 'codesigning_delete', confirmation=True)
+        g.custom_command('delete', 'codesigning_delete', supports_no_wait=True, confirmation=True)
+        g.custom_wait_command('wait', 'codesigning_show')
 
     from azext_codesigning.generated._client_factory import cf_certificate_profile
     codesigning_certificate_profile = CliCommandType(
@@ -37,13 +38,6 @@ def load_command_table(self, _):
                             client_factory=cf_certificate_profile) as g:
         g.custom_command('list', 'codesigning_certificate_profile_list')
         g.custom_show_command('show', 'codesigning_certificate_profile_show')
-        g.custom_command('create', 'codesigning_certificate_profile_create')
-        g.custom_command('update', 'codesigning_certificate_profile_update')
-        g.custom_command('delete', 'codesigning_certificate_profile_delete', confirmation=True)
-
-    from azext_codesigning.generated._client_factory import cf_operation
-    codesigning_operation = CliCommandType(
-        operations_tmpl='azext_codesigning.vendored_sdks.codesigning.operations._operations_operations#Operations.{}',
-        client_factory=cf_operation)
-    with self.command_group('codesigning operation', codesigning_operation, client_factory=cf_operation) as g:
-        g.custom_show_command('show', 'codesigning_operation_show')
+        g.custom_command('create', 'codesigning_certificate_profile_create', supports_no_wait=True)
+        g.custom_command('delete', 'codesigning_certificate_profile_delete', supports_no_wait=True, confirmation=True)
+        g.custom_wait_command('wait', 'codesigning_certificate_profile_show')

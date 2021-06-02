@@ -45,7 +45,7 @@ class Operations(object):
         self._deserialize = deserializer
         self._config = config
 
-    def get(
+    def list(
         self,
         **kwargs  # type: Any
     ):
@@ -72,7 +72,7 @@ class Operations(object):
 
             if not next_link:
                 # Construct URL
-                url = self.get.metadata['url']  # type: ignore
+                url = self.list.metadata['url']  # type: ignore
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
@@ -107,4 +107,4 @@ class Operations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    get.metadata = {'url': '/providers/Microsoft.CodeSigning/operations'}  # type: ignore
+    list.metadata = {'url': '/providers/Microsoft.CodeSigning/operations'}  # type: ignore

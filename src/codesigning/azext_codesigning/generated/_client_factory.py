@@ -16,13 +16,9 @@ def cf_codesigning_cl(cli_ctx, *_):
                                    CodeSigningManagementClient)
 
 
-def cf_code_sign_account(cli_ctx, *_):
-    return cf_codesigning_cl(cli_ctx).code_sign_account
+def cf_code_signing_account(cli_ctx, *_):
+    return cf_codesigning_cl(cli_ctx).code_signing_account
 
 
 def cf_certificate_profile(cli_ctx, *_):
     return cf_codesigning_cl(cli_ctx).certificate_profile
-
-
-def cf_operation(cli_ctx, *_):
-    return cf_codesigning_cl(cli_ctx).operations

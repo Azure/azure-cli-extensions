@@ -6,12 +6,12 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._code_sign_account_operations import CodeSignAccountOperations
+from ._code_signing_account_operations import CodeSigningAccountOperations
 from ._certificate_profile_operations import CertificateProfileOperations
 from ._operations import Operations
 
 __all__ = [
-    'CodeSignAccountOperations',
+    'CodeSigningAccountOperations',
     'CertificateProfileOperations',
     'Operations',
 ]

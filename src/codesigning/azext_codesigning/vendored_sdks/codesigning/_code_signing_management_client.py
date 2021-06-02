@@ -18,17 +18,17 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
 
 from ._configuration import CodeSigningManagementClientConfiguration
-from .operations import CodeSignAccountOperations
+from .operations import CodeSigningAccountOperations
 from .operations import CertificateProfileOperations
 from .operations import Operations
 from . import models
 
 
 class CodeSigningManagementClient(object):
-    """Code Sign Resource Provider Account and Certificate Profile management API.
+    """Code Signing Resource Provider Account and Certificate Profile management API.
 
-    :ivar code_sign_account: CodeSignAccountOperations operations
-    :vartype code_sign_account: azure.mgmt.codesigning.operations.CodeSignAccountOperations
+    :ivar code_signing_account: CodeSigningAccountOperations operations
+    :vartype code_signing_account: azure.mgmt.codesigning.operations.CodeSigningAccountOperations
     :ivar certificate_profile: CertificateProfileOperations operations
     :vartype certificate_profile: azure.mgmt.codesigning.operations.CertificateProfileOperations
     :ivar operations: Operations operations
@@ -38,6 +38,7 @@ class CodeSigningManagementClient(object):
     :param subscription_id: The ID of the target subscription.
     :type subscription_id: str
     :param str base_url: Service URL
+    :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
     """
 
     def __init__(
@@ -58,7 +59,7 @@ class CodeSigningManagementClient(object):
         self._serialize.client_side_validation = False
         self._deserialize = Deserializer(client_models)
 
-        self.code_sign_account = CodeSignAccountOperations(
+        self.code_signing_account = CodeSigningAccountOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.certificate_profile = CertificateProfileOperations(
             self._client, self._config, self._serialize, self._deserialize)

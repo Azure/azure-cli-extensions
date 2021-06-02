@@ -25,8 +25,8 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class CertificateProfileOperations(object):
-    """CertificateProfileOperations operations.
+class CodeSigningAccountOperations(object):
+    """CodeSigningAccountOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -47,92 +47,15 @@ class CertificateProfileOperations(object):
         self._deserialize = deserializer
         self._config = config
 
-    def list_by_code_signing_account(
-        self,
-        resource_group_name,  # type: str
-        account_name,  # type: str
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> Iterable["models.CertificateProfiles"]
-        """List certificate profiles within a code signing account.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-        :type resource_group_name: str
-        :param account_name: Code Signing account name.
-        :type account_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either CertificateProfiles or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.codesigning.models.CertificateProfiles]
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.CertificateProfiles"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2020-12-14-preview"
-        accept = "application/json"
-
-        def prepare_request(next_link=None):
-            # Construct headers
-            header_parameters = {}  # type: Dict[str, Any]
-            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
-
-            if not next_link:
-                # Construct URL
-                url = self.list_by_code_signing_account.metadata['url']  # type: ignore
-                path_format_arguments = {
-                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
-                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-                    'accountName': self._serialize.url("account_name", account_name, 'str', pattern=r'^(?=.{3,24}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-                }
-                url = self._client.format_url(url, **path_format_arguments)
-                # Construct parameters
-                query_parameters = {}  # type: Dict[str, Any]
-                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-
-                request = self._client.get(url, query_parameters, header_parameters)
-            else:
-                url = next_link
-                query_parameters = {}  # type: Dict[str, Any]
-                request = self._client.get(url, query_parameters, header_parameters)
-            return request
-
-        def extract_data(pipeline_response):
-            deserialized = self._deserialize('CertificateProfiles', pipeline_response)
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)
-            return deserialized.next_link or None, iter(list_of_elem)
-
-        def get_next(next_link=None):
-            request = prepare_request(next_link)
-
-            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                error = self._deserialize(models.ErrorResponse, response)
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-            return pipeline_response
-
-        return ItemPaged(
-            get_next, extract_data
-        )
-    list_by_code_signing_account.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}/certificateProfiles'}  # type: ignore
-
     def _create_initial(
         self,
         resource_group_name,  # type: str
         account_name,  # type: str
-        profile_name,  # type: str
-        certificate_profile,  # type: "models.CertificateProfile"
+        code_signing_account=None,  # type: Optional["models.CodeSigningAccount"]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.CertificateProfile"
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.CertificateProfile"]
+        # type: (...) -> "models.CodeSigningAccount"
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.CodeSigningAccount"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -147,7 +70,6 @@ class CertificateProfileOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'accountName': self._serialize.url("account_name", account_name, 'str', pattern=r'^(?=.{3,24}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str', pattern=r'^(?=.{5,100}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -161,7 +83,10 @@ class CertificateProfileOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(certificate_profile, 'CertificateProfile')
+        if code_signing_account is not None:
+            body_content = self._serialize.body(code_signing_account, 'CodeSigningAccount')
+        else:
+            body_content = None
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -173,48 +98,45 @@ class CertificateProfileOperations(object):
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
-            deserialized = self._deserialize('CertificateProfile', pipeline_response)
+            deserialized = self._deserialize('CodeSigningAccount', pipeline_response)
 
         if response.status_code == 201:
-            deserialized = self._deserialize('CertificateProfile', pipeline_response)
+            deserialized = self._deserialize('CodeSigningAccount', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}/certificateProfiles/{profileName}'}  # type: ignore
+    _create_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}'}  # type: ignore
 
     def begin_create(
         self,
         resource_group_name,  # type: str
         account_name,  # type: str
-        profile_name,  # type: str
-        certificate_profile,  # type: "models.CertificateProfile"
+        code_signing_account=None,  # type: Optional["models.CodeSigningAccount"]
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller["models.CertificateProfile"]
-        """Create a certificate profile.
+        # type: (...) -> LROPoller["models.CodeSigningAccount"]
+        """Create a Code Signing Account.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param account_name: Code Signing account name.
         :type account_name: str
-        :param profile_name: Certificate profile name.
-        :type profile_name: str
-        :param certificate_profile: Parameters to create the certificate profile.
-        :type certificate_profile: ~azure.mgmt.codesigning.models.CertificateProfile
+        :param code_signing_account: Parameters to create the code signing account.
+        :type code_signing_account: ~azure.mgmt.codesigning.models.CodeSigningAccount
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of LROPoller that returns either CertificateProfile or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.codesigning.models.CertificateProfile]
+        :return: An instance of LROPoller that returns either CodeSigningAccount or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.codesigning.models.CodeSigningAccount]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.CertificateProfile"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.CodeSigningAccount"]
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
@@ -224,8 +146,7 @@ class CertificateProfileOperations(object):
             raw_result = self._create_initial(
                 resource_group_name=resource_group_name,
                 account_name=account_name,
-                profile_name=profile_name,
-                certificate_profile=certificate_profile,
+                code_signing_account=code_signing_account,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -234,7 +155,7 @@ class CertificateProfileOperations(object):
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('CertificateProfile', pipeline_response)
+            deserialized = self._deserialize('CodeSigningAccount', pipeline_response)
 
             if cls:
                 return cls(pipeline_response, deserialized, {})
@@ -244,7 +165,6 @@ class CertificateProfileOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'accountName': self._serialize.url("account_name", account_name, 'str', pattern=r'^(?=.{3,24}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str', pattern=r'^(?=.{5,100}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
 
         if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments,  **kwargs)
@@ -259,33 +179,30 @@ class CertificateProfileOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}/certificateProfiles/{profileName}'}  # type: ignore
+    begin_create.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}'}  # type: ignore
 
     def update(
         self,
         resource_group_name,  # type: str
         account_name,  # type: str
-        profile_name,  # type: str
-        certificate_profile_patch,  # type: "models.CertificateProfilePatch"
+        code_signing_account_patch,  # type: "models.CodeSigningAccountPatch"
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.CertificateProfile"
-        """Update a certificate profile.
+        # type: (...) -> "models.CodeSigningAccount"
+        """Update a code signing account.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param account_name: Code Signing account name.
         :type account_name: str
-        :param profile_name: Certificate profile name.
-        :type profile_name: str
-        :param certificate_profile_patch: Parameters supplied to update certificate profile.
-        :type certificate_profile_patch: ~azure.mgmt.codesigning.models.CertificateProfilePatch
+        :param code_signing_account_patch: Parameters supplied to update code signing account.
+        :type code_signing_account_patch: ~azure.mgmt.codesigning.models.CodeSigningAccountPatch
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: CertificateProfile, or the result of cls(response)
-        :rtype: ~azure.mgmt.codesigning.models.CertificateProfile
+        :return: CodeSigningAccount, or the result of cls(response)
+        :rtype: ~azure.mgmt.codesigning.models.CodeSigningAccount
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.CertificateProfile"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.CodeSigningAccount"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -300,7 +217,6 @@ class CertificateProfileOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'accountName': self._serialize.url("account_name", account_name, 'str', pattern=r'^(?=.{3,24}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str', pattern=r'^(?=.{5,100}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -314,7 +230,7 @@ class CertificateProfileOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(certificate_profile_patch, 'CertificateProfilePatch')
+        body_content = self._serialize.body(code_signing_account_patch, 'CodeSigningAccountPatch')
         body_content_kwargs['content'] = body_content
         request = self._client.patch(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -325,36 +241,33 @@ class CertificateProfileOperations(object):
             error = self._deserialize(models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('CertificateProfile', pipeline_response)
+        deserialized = self._deserialize('CodeSigningAccount', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}/certificateProfiles/{profileName}'}  # type: ignore
+    update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}'}  # type: ignore
 
     def get(
         self,
         resource_group_name,  # type: str
         account_name,  # type: str
-        profile_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.CertificateProfile"
-        """Get details of a certificate profile.
+        # type: (...) -> "models.CodeSigningAccount"
+        """Get a Code Signing Account.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param account_name: Code Signing account name.
         :type account_name: str
-        :param profile_name: Certificate profile name.
-        :type profile_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: CertificateProfile, or the result of cls(response)
-        :rtype: ~azure.mgmt.codesigning.models.CertificateProfile
+        :return: CodeSigningAccount, or the result of cls(response)
+        :rtype: ~azure.mgmt.codesigning.models.CodeSigningAccount
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.CertificateProfile"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.CodeSigningAccount"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -368,7 +281,6 @@ class CertificateProfileOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'accountName': self._serialize.url("account_name", account_name, 'str', pattern=r'^(?=.{3,24}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str', pattern=r'^(?=.{5,100}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -389,19 +301,18 @@ class CertificateProfileOperations(object):
             error = self._deserialize(models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('CertificateProfile', pipeline_response)
+        deserialized = self._deserialize('CodeSigningAccount', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}/certificateProfiles/{profileName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}'}  # type: ignore
 
     def _delete_initial(
         self,
         resource_group_name,  # type: str
         account_name,  # type: str
-        profile_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> None
@@ -419,7 +330,6 @@ class CertificateProfileOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'accountName': self._serialize.url("account_name", account_name, 'str', pattern=r'^(?=.{3,24}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str', pattern=r'^(?=.{5,100}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -443,24 +353,21 @@ class CertificateProfileOperations(object):
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}/certificateProfiles/{profileName}'}  # type: ignore
+    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}'}  # type: ignore
 
     def begin_delete(
         self,
         resource_group_name,  # type: str
         account_name,  # type: str
-        profile_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller[None]
-        """Delete a Certificate Profile.
+        """Delete Code Signing Account.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param account_name: Code Signing account name.
         :type account_name: str
-        :param profile_name: Certificate profile name.
-        :type profile_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -482,7 +389,6 @@ class CertificateProfileOperations(object):
             raw_result = self._delete_initial(
                 resource_group_name=resource_group_name,
                 account_name=account_name,
-                profile_name=profile_name,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -498,10 +404,9 @@ class CertificateProfileOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'accountName': self._serialize.url("account_name", account_name, 'str', pattern=r'^(?=.{3,24}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
-            'profileName': self._serialize.url("profile_name", profile_name, 'str', pattern=r'^(?=.{5,100}$)[^0-9][A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'),
         }
 
-        if polling is True: polling_method = ARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = NoPolling()
         else: polling_method = polling
         if cont_token:
@@ -513,4 +418,144 @@ class CertificateProfileOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}/certificateProfiles/{profileName}'}  # type: ignore
+    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts/{accountName}'}  # type: ignore
+
+    def list_by_subscription(
+        self,
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> Iterable["models.CodeSigningAccounts"]
+        """Lists Code Signing Accounts within a subscription.
+
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: An iterator like instance of either CodeSigningAccounts or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.codesigning.models.CodeSigningAccounts]
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.CodeSigningAccounts"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2020-12-14-preview"
+        accept = "application/json"
+
+        def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+            if not next_link:
+                # Construct URL
+                url = self.list_by_subscription.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+                request = self._client.get(url, query_parameters, header_parameters)
+            else:
+                url = next_link
+                query_parameters = {}  # type: Dict[str, Any]
+                request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        def extract_data(pipeline_response):
+            deserialized = self._deserialize('CodeSigningAccounts', pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
+
+        def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                error = self._deserialize(models.ErrorResponse, response)
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return ItemPaged(
+            get_next, extract_data
+        )
+    list_by_subscription.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.CodeSigning/codeSigningAccounts'}  # type: ignore
+
+    def list_by_resource_group(
+        self,
+        resource_group_name,  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> Iterable["models.CodeSigningAccounts"]
+        """List Code Signing Accounts within a resource group.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+        :type resource_group_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: An iterator like instance of either CodeSigningAccounts or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.codesigning.models.CodeSigningAccounts]
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.CodeSigningAccounts"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2020-12-14-preview"
+        accept = "application/json"
+
+        def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+            if not next_link:
+                # Construct URL
+                url = self.list_by_resource_group.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+                    'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+                request = self._client.get(url, query_parameters, header_parameters)
+            else:
+                url = next_link
+                query_parameters = {}  # type: Dict[str, Any]
+                request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        def extract_data(pipeline_response):
+            deserialized = self._deserialize('CodeSigningAccounts', pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
+
+        def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                error = self._deserialize(models.ErrorResponse, response)
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return ItemPaged(
+            get_next, extract_data
+        )
+    list_by_resource_group.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.CodeSigning/codeSigningAccounts'}  # type: ignore

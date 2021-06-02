@@ -39,13 +39,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 12 Mar 2021 11:22:26 GMT
+      - Wed, 02 Jun 2021 11:09:45 GMT
       p3p:
       - CP="DSP CUR OTPi IND OTRi ONL FIN"
       set-cookie:
-      - fpc=Ap37vIXv_rROrKy8fE5RCQQ; expires=Sun, 11-Apr-2021 11:22:26 GMT; path=/;
+      - fpc=AoFi0qrsTuxDoJ9BOl10KPo; expires=Fri, 02-Jul-2021 11:09:46 GMT; path=/;
         secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7Wevr6t3f-QdW1HJIPY1d1V1oE46nKlvwOjcC6ys-MuPTAfoMGkBdvC83Rnn2FztpSU8uGrvAeciQh8v0G9_N683rhJiFVSCglDMK-3PPtWCf0b9lWDL1gh98rAwgQfbQj6RMzaA4cxlb5x_i1f_GzN_t4TRueCG-Az8GOvTo2oOlLoEgAA;
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7Wevrzt2CFVGyKjLTBxUuaLBt401CiR-wqS4SM9ATwUcIAdCksyAoYhrfrTH1PhT-CjSh1Td-ZflG3tvAfmwidNp3H3QeZUmDUmTL38Fx4AqX8yNHc7ju4tn1DIdYg_8v5YrT8ookqAPwnQebqGOf3GudLsYepkXlOSB2MT3bcqgyeBcgAA;
         domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
       - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
       - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
@@ -54,7 +54,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ests-server:
-      - 2.1.11562.6 - SEASLR2 ProdSlices
+      - 2.1.11722.21 - KRSLR2 ProdSlices
     status:
       code: 200
       message: OK
@@ -74,48 +74,43 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --account-name --location --resource-group
+      - --name --location --resource-group
       User-Agent:
       - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: PUT
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSignAccounts/MyAccount?api-version=2020-12-14-preview
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount?api-version=2020-12-14-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSignAccounts/MyAccount","name":"MyAccount","type":"Microsoft.CodeSigning/codeSignAccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-03-12T11:22:30.4322131Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-12T11:22:30.4322131Z"},"properties":{"accountUri":null,"provisioningState":"Succeeded","verificationStatus":"NotCompleted"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount","name":"MyAccount","type":"microsoft.codesigning/codesigningaccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-06-02T11:09:52.2908382Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-06-02T11:09:52.2908382Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '642'
+      - '594'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 12 Mar 2021 11:22:35 GMT
+      - Wed, 02 Jun 2021 11:09:55 GMT
       etag:
-      - '"2900f273-0000-0700-0000-604b4efb0000"'
+      - '"00001b57-0000-0700-0000-60b767030000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:c73a5c90-b6dd-400a-b5e1-6c06fd162b47
-      set-cookie:
-      - ARRAffinity=2d343760a8ed36b0212d0c52481d1fee3a42070a07d1709749e873bd7238f130;Path=/;HttpOnly;Secure;Domain=codesigning-userrp-ppe.azurewebsites.net
-      - ARRAffinitySameSite=2d343760a8ed36b0212d0c52481d1fee3a42070a07d1709749e873bd7238f130;Path=/;HttpOnly;SameSite=None;Secure;Domain=codesigning-userrp-ppe.azurewebsites.net
+      - appId=
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-      x-powered-by:
-      - ASP.NET
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 75CD3DDF37904736BE88E2C1D6010B19 Ref B: MAA01EDGE0407 Ref C: 2021-06-02T11:09:46Z'
     status:
       code: 200
       message: OK
@@ -159,13 +154,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 12 Mar 2021 11:22:35 GMT
+      - Wed, 02 Jun 2021 11:09:56 GMT
       p3p:
       - CP="DSP CUR OTPi IND OTRi ONL FIN"
       set-cookie:
-      - fpc=Aj5Du2BfUeVLroZ96eisimk; expires=Sun, 11-Apr-2021 11:22:36 GMT; path=/;
+      - fpc=AvnsSycYX9VIu5jaOAC12_c; expires=Fri, 02-Jul-2021 11:09:56 GMT; path=/;
         secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevretesaV-WtcTdjoumOBcQ5isyRO8d1qmIsleGPucuSDrO8ZRfpDFr7F_9aRfp_0ukJCvqcBuzXJB1ZgwOXK1GLhL04OO4exTFv9w71ibK4I0VlOKKB14TXTQsYspnp_JSiTzOJzPz0_ft_Fo4HseYtMHSXwsQaoNtYegFeqdMssogAA;
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrkHMHlKTieOuQGMZAYQTihsYznEtTf1IqzwQtavoAQZl6muQVOi6T7QcJS_3RUEmWAmf9nrOTTM7OIFgXElV9o4F9z-2qXhW3lZvY8HiT8njtY_1P1LEF7GXeX2dOWQkQf_dlzPHcAVxZFVu6HwFipRzOhkSgboYMv_2TsO-BPd4gAA;
         domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
       - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
       - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
@@ -174,7 +169,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ests-server:
-      - 2.1.11562.6 - KRSLR2 ProdSlices
+      - 2.1.11722.21 - SEASLR1 ProdSlices
     status:
       code: 200
       message: OK
@@ -190,39 +185,39 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --account-name --resource-group
+      - --name --resource-group
       User-Agent:
       - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSignAccounts/MyAccount?api-version=2020-12-14-preview
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount?api-version=2020-12-14-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSignAccounts/MyAccount","name":"MyAccount","type":"Microsoft.CodeSigning/codeSignAccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-03-12T11:22:30.4322131Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-12T11:22:30.4322131Z"},"properties":{"accountUri":null,"provisioningState":"Succeeded","verificationStatus":"NotCompleted"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount","name":"MyAccount","type":"microsoft.codesigning/codesigningaccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-06-02T11:09:52.2908382Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-06-02T11:09:52.2908382Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '642'
+      - '594'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 12 Mar 2021 11:22:37 GMT
+      - Wed, 02 Jun 2021 11:09:57 GMT
       etag:
-      - '"2900f273-0000-0700-0000-604b4efb0000"'
+      - '"00001b57-0000-0700-0000-60b767030000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-msedge-ref:
+      - 'Ref A: 637CB604001C40AEB97CCCDF71A602C7 Ref B: MAA01EDGE0605 Ref C: 2021-06-02T11:09:56Z'
     status:
       code: 200
       message: OK
@@ -266,13 +261,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 12 Mar 2021 11:22:37 GMT
+      - Wed, 02 Jun 2021 11:09:57 GMT
       p3p:
       - CP="DSP CUR OTPi IND OTRi ONL FIN"
       set-cookie:
-      - fpc=AvxZ4XTuuntGgijvVb7GX9Q; expires=Sun, 11-Apr-2021 11:22:38 GMT; path=/;
+      - fpc=Ak24b3oMCqtLpvoAXyZBa9M; expires=Fri, 02-Jul-2021 11:09:58 GMT; path=/;
         secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrTUFmopAqaAzurc9475VrbTaFq8FlsFKW7l1i-_uuMzdlfnggXsa4uhrTRGhUejTDmovfxWev6nVTA_ToOWPCA5jL5McDGj9MZRpD_M0xp0ftyKv7xnMQ338SxLI-yz37iWJpXt-bDTKDxelLAxI5uWOaeG6VvVh5vIoi6xWdwkkgAA;
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7Wevrt3fx2VKXKcnIRgudIipIIUbYgcSjdWU_sA4Rgi2H2VZdqqDAaU3JTWGX0xWXWKMXIGJFRpabs2B9ygdNweOJSmYfmEKcB8ybkil6j9yKRnQkP8ohVCW2Cm_Zntb9W9mIVLnHnvJ3AoOsovvFthkm2GzjJrhHw8TIrHC2GbO2_gAgAA;
         domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
       - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
       - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
@@ -281,7 +276,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ests-server:
-      - 2.1.11562.6 - SEASLR2 ProdSlices
+      - 2.1.11722.21 - KRSLR1 ProdSlices
     status:
       code: 200
       message: OK
@@ -301,33 +296,35 @@ interactions:
       User-Agent:
       - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSignAccounts?api-version=2020-12-14-preview
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts?api-version=2020-12-14-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSignAccounts/MyAccount","name":"MyAccount","type":"Microsoft.CodeSigning/codeSignAccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-03-12T11:22:30.4322131Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-12T11:22:30.4322131Z"},"properties":{"accountUri":null,"provisioningState":"Succeeded","verificationStatus":"NotCompleted"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount","name":"MyAccount","type":"microsoft.codesigning/codesigningaccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-06-02T11:09:52.2908382Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-06-02T11:09:52.2908382Z"},"properties":{"provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '654'
+      - '606'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 12 Mar 2021 11:22:38 GMT
+      - Wed, 02 Jun 2021 11:09:58 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 59c73fef-75c0-4926-a196-cdeddc84a9a8
-      - 379c371c-e986-4acf-bc49-c083797fa72f
-      - 5df4f8e8-9af8-4f55-80f6-ec1748a45302
+      - f385673a-3701-493c-90e5-bf733e4cd919
+      - f5ddfbda-27d1-490b-afdc-ddf4d17be517
+      - 85a2b7ef-69e2-4572-9ee6-21e28a2a72ff
+      x-msedge-ref:
+      - 'Ref A: 24863C86222E4CEFA6C02757D60359AD Ref B: MAA01EDGE0508 Ref C: 2021-06-02T11:09:58Z'
     status:
       code: 200
       message: OK
@@ -371,13 +368,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 12 Mar 2021 11:22:39 GMT
+      - Wed, 02 Jun 2021 11:09:59 GMT
       p3p:
       - CP="DSP CUR OTPi IND OTRi ONL FIN"
       set-cookie:
-      - fpc=AutvPYazASFGr67783hcWvo; expires=Sun, 11-Apr-2021 11:22:39 GMT; path=/;
+      - fpc=ApqzJACJ5dlIs3g73L0Tb3U; expires=Fri, 02-Jul-2021 11:09:59 GMT; path=/;
         secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrP_LRsHmoCYuJRfDl_1uZY1m2uGcVN8nJqMszR4GAY4mffzXeG12wVzjmAyz8PbYQ7Tmhnr8GQdkFQsNozUoIm0qDq2fgDPzLDlcgbxs8fV4kdTTkQxG724PH0PU3vvjVZWy39qtbveQpeoWIM6O-umQa3OZUhOa8CZTR9zCk7Z0gAA;
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrjMQxeBHW2gNWFoFwzvogMq_3MoAlcrQR4zyf0D5Jw8LAZCzeBTIn_b1pNM7biaTjWVLC_uSLG0sdLmwHxXCyHrtH2qud3Yc4ke5O5n8rNVk9bFkKsrOB_07GoZ9yrXmYBMAI5TwpTxQWO-lO9VSG_T734zSGTDtPj2WB8MMqMLsgAA;
         domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
       - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
       - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
@@ -386,7 +383,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ests-server:
-      - 2.1.11562.6 - SEASLR1 ProdSlices
+      - 2.1.11722.21 - SEASLR1 ProdSlices
     status:
       code: 200
       message: OK
@@ -406,33 +403,35 @@ interactions:
       User-Agent:
       - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CodeSigning/codeSignAccounts?api-version=2020-12-14-preview
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CodeSigning/codeSigningAccounts?api-version=2020-12-14-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dogfoodRG/providers/Microsoft.CodeSigning/codeSignAccounts/Test1","name":"Test1","type":"Microsoft.CodeSigning/codeSignAccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-01-05T12:24:35.1626638Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-01-05T12:37:29.1978003Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dogfoodRG/providers/Microsoft.CodeSigning/codeSignAccounts/Vishi1","name":"Vishi1","type":"Microsoft.CodeSigning/codeSignAccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-01-12T11:27:13.5985295Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-01-12T11:27:13.5985295Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dogfoodRG/providers/Microsoft.CodeSigning/codeSignAccounts/csaCli2","name":"csaCli2","type":"Microsoft.CodeSigning/codeSignAccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-01-19T07:08:10.6124865Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-01-19T07:08:10.6124865Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amritaRG/providers/Microsoft.CodeSigning/codeSignAccounts/acc100","name":"acc100","type":"Microsoft.CodeSigning/codeSignAccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-03-04T06:11:47.0605817Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-04T06:11:47.0605817Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/demo2/providers/Microsoft.CodeSigning/codeSignAccounts/account1","name":"account1","type":"Microsoft.CodeSigning/codeSignAccounts","location":"eastus","systemData":{"createdBy":"Test1@billtest124476outlook.ccsctp.net","createdByType":"User","createdAt":"2021-03-04T07:54:17.9029536Z","lastModifiedBy":"Test1@billtest124476outlook.ccsctp.net","lastModifiedByType":"User","lastModifiedAt":"2021-03-04T07:54:17.9029536Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/demo1/providers/Microsoft.CodeSigning/codeSignAccounts/account1","name":"account1","type":"Microsoft.CodeSigning/codeSignAccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-03-04T09:20:03.1101648Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-04T09:20:03.1101648Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amritaRG/providers/Microsoft.CodeSigning/codeSignAccounts/account1","name":"account1","type":"Microsoft.CodeSigning/codeSignAccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-03-04T09:57:17.4666379Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-04T09:57:17.4666379Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amritaRG/providers/Microsoft.CodeSigning/codeSignAccounts/acc101","name":"acc101","type":"Microsoft.CodeSigning/codeSignAccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-03-05T04:01:20.0447626Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-05T04:01:20.0447626Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amritaRG/providers/Microsoft.CodeSigning/codeSignAccounts/acc102","name":"acc102","type":"Microsoft.CodeSigning/codeSignAccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-03-10T05:21:16.5057681Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-10T05:21:16.5057681Z"},"properties":{"provisioningState":"Succeeded","verificationStatus":"Completed"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amritaRG/providers/Microsoft.CodeSigning/codeSignAccounts/acc103","name":"acc103","type":"Microsoft.CodeSigning/codeSignAccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-03-10T05:25:23.8047717Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-10T05:25:23.8047717Z"},"properties":{"provisioningState":"Succeeded","verificationStatus":"Completed"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amritaRG/providers/Microsoft.CodeSigning/codeSignAccounts/acc104","name":"acc104","type":"Microsoft.CodeSigning/codeSignAccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-03-10T05:27:03.1974942Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-10T05:27:03.1974942Z"},"properties":{"accountUri":null,"provisioningState":"Succeeded","verificationStatus":"NotCompleted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.CodeSigning/codeSignAccounts/accountOne","name":"accountOne","type":"Microsoft.CodeSigning/codeSignAccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-03-10T06:05:54.8277608Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-10T06:05:54.8277608Z"},"properties":{"provisioningState":"Succeeded","verificationStatus":"NotCompleted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.CodeSigning/codeSignAccounts/accountTwo","name":"accountTwo","type":"Microsoft.CodeSigning/codeSignAccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-03-12T05:08:10.5588917Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-12T05:08:10.5588917Z"},"properties":{"provisioningState":"Succeeded","verificationStatus":"NotCompleted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myRG/providers/Microsoft.CodeSigning/codeSignAccounts/accountThree","name":"accountThree","type":"Microsoft.CodeSigning/codeSignAccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-03-12T06:30:28.9795167Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-12T06:30:28.9795167Z"},"properties":{"provisioningState":"Accepted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSignAccounts/MyAccount","name":"MyAccount","type":"Microsoft.CodeSigning/codeSignAccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-03-12T11:22:30.4322131Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-12T11:22:30.4322131Z"},"properties":{"accountUri":null,"provisioningState":"Succeeded","verificationStatus":"NotCompleted"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dogfoodRG/providers/Microsoft.CodeSigning/codeSignAccounts/Vishi2","name":"Vishi2","type":"Microsoft.CodeSigning/codeSignAccounts","location":"westus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-01-13T07:48:17.6792347Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-01-13T07:48:17.6792347Z"},"properties":{"provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/amritarg/providers/Microsoft.CodeSigning/codeSigningAccounts/account1","name":"account1","type":"microsoft.codesigning/codesigningaccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-06-02T09:07:18.735511Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-06-02T09:07:18.735511Z"},"properties":{"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount","name":"MyAccount","type":"microsoft.codesigning/codesigningaccounts","location":"eastus","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-06-02T11:09:52.2908382Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-06-02T11:09:52.2908382Z"},"properties":{"provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '8635'
+      - '1130'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 12 Mar 2021 11:22:39 GMT
+      - Wed, 02 Jun 2021 11:10:00 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 1392104e-d833-4ac6-9caa-c1c0414a2bb6
-      - fc342ebc-cde9-4d31-915b-6e57d0b631d5
-      - 01638f03-c364-4519-a5f1-22cac38e976b
+      - aa4f7a0d-4940-445a-ad2f-b5e055110299
+      - f888cb19-4a23-429f-97f5-565b016926a9
+      - 539d6220-b2d1-433f-a178-ca81baa4365f
+      x-msedge-ref:
+      - 'Ref A: 12284080070248C0A1763F7F2E69106F Ref B: MAA01EDGE0506 Ref C: 2021-06-02T11:09:59Z'
     status:
       code: 200
       message: OK
@@ -476,13 +475,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 12 Mar 2021 11:22:40 GMT
+      - Wed, 02 Jun 2021 11:10:00 GMT
       p3p:
       - CP="DSP CUR OTPi IND OTRi ONL FIN"
       set-cookie:
-      - fpc=AvzyOxbe5NZDskPG90qEuak; expires=Sun, 11-Apr-2021 11:22:40 GMT; path=/;
+      - fpc=Am-yQradxTJIjttWwFAGZ2A; expires=Fri, 02-Jul-2021 11:10:01 GMT; path=/;
         secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrAz4JZFSZAfJyy4AnHawlSUpJ1WflhZCrQkGGh-dRa0Fg4OWvPCO2NeAbSXNKkH1F67T9ORJXQSWCnFqIsHYpHhhKRoPkxPl99QNXFk179AsZXynJJlrnC4MR74mONskXXxtucnj_ikjJh4-JN-XpVBZY93acBFJ1_4kYd5X9mDMgAA;
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7Wevr3440iJkFKSBWwENLKYR5FINk61rHQcZb59iIF0X6uMQs_UIXNewlpNjEOBJ-jdlBzpc09Y8CaegQ03-Y7FyrHubO288rYUTc-7M_D6SIHWfDzvAe0ZeW-8Z6D4Uoi2Lacq81Z67N5DfSFeLKCbEkOSOY21uyT-cWkO5f_mPFiPIgAA;
         domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
       - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
       - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
@@ -491,7 +490,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ests-server:
-      - 2.1.11562.6 - SEASLR2 ProdSlices
+      - 2.1.11722.21 - KRSLR1 ProdSlices
     status:
       code: 200
       message: OK
@@ -511,41 +510,41 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --tags --account-name --resource-group
+      - --name --tags --resource-group
       User-Agent:
       - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: PATCH
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSignAccounts/MyAccount?api-version=2020-12-14-preview
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount?api-version=2020-12-14-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSignAccounts/MyAccount","name":"MyAccount","type":"Microsoft.CodeSigning/codeSignAccounts","location":"eastus","tags":{"key1":"value1"},"systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-03-12T11:22:30.4322131Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-12T11:22:42.6376759Z"},"properties":{"accountUri":null,"provisioningState":"Succeeded","verificationStatus":"NotCompleted"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount","name":"MyAccount","type":"microsoft.codesigning/codesigningaccounts","location":"eastus","tags":{"key1":"value1"},"systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-06-02T11:09:52.2908382Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-06-02T11:10:02.5447071Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '667'
+      - '619'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 12 Mar 2021 11:22:44 GMT
+      - Wed, 02 Jun 2021 11:10:05 GMT
       etag:
-      - '"2900fe74-0000-0700-0000-604b4f020000"'
+      - '"00004557-0000-0700-0000-60b7670b0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
+      x-msedge-ref:
+      - 'Ref A: 157A72FDBD0745798AD36DA21D05501C Ref B: MAA01EDGE0616 Ref C: 2021-06-02T11:10:01Z'
     status:
       code: 200
       message: OK
@@ -589,13 +588,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 12 Mar 2021 11:22:44 GMT
+      - Wed, 02 Jun 2021 11:10:05 GMT
       p3p:
       - CP="DSP CUR OTPi IND OTRi ONL FIN"
       set-cookie:
-      - fpc=ApwBukhM7g5Pg07jaHONaEQ; expires=Sun, 11-Apr-2021 11:22:44 GMT; path=/;
+      - fpc=AmhZn0A98VlIlijIl3jpDuo; expires=Fri, 02-Jul-2021 11:10:05 GMT; path=/;
         secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrUeniVKk9qEUbBq-5YcUb_har8LSARJmSLRztu33Xi4HckeXFR698W4H3Mg0e3IW20ict9yAXKuX5TPhq_0V0cGTtTZLf5wYiwyqNIVulMpV-AMGKEcTVHsIZK1s_ZspDmWLYtkqcu2SiVB3ALqETY9TjG90EsjkRE8w9GFufYcYgAA;
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrHjThGnB7_dZEYpT8Pv2NxB6my8QLaIQSmyZXBBphYm8yNj3rPAma5NKHxyLxttBV73LHi2falOLQsIy2ZV-HScc0D52HX2ZThiQbH3UuRSzzxWV7VY2r-Vp4SWlXly919FJHBFumNmmNoVtOdU3IqwdQ-uPFQCDYHx82-kq2W8YgAA;
         domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
       - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
       - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
@@ -604,13 +603,13 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ests-server:
-      - 2.1.11562.6 - SEASLR2 ProdSlices
+      - 2.1.11722.21 - SEASLR2 ProdSlices
     status:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"profileType": "PublicTrust", "rotationPolicy": "Monthly",
-      "commonName": "Contoso", "subjectAlternativeName": "Contoso Corporate Engineering"}}'
+    body: '{"properties": {"profileType": "PublicTrust", "rotationPolicy": "30 Days",
+      "commonName": "Contoso Inc", "organization": "Contoso Inc"}}'
     headers:
       Accept:
       - application/json
@@ -621,54 +620,48 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '159'
+      - '135'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --account-name --profile-name --common-name --profile-type --subject-alternative-name
-        --resource-group
+      - --account-name --common-name --organization --name --resource-group
       User-Agent:
       - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: PUT
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSignAccounts/MyAccount/certificateProfiles/profileA?api-version=2020-12-14-preview
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount/certificateProfiles/profileA?api-version=2020-12-14-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSignAccounts/MyAccount/certificateProfiles/profileA","name":"profileA","type":"Microsoft.CodeSigning/codeSignAccounts/certificateProfiles","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-03-12T11:22:45.9106409Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-12T11:22:45.9106409Z"},"properties":{"profileType":"PublicTrust","rotationPolicy":"Monthly","authority":null,"commonName":"Contoso","organization":null,"subjectAlternativeName":"Contoso
-        Corporate Engineering","streetAddress":null,"country":null,"state":null,"city":null,"provisioningState":"Succeeded","certificates":[]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount/certificateProfiles/profileA","name":"profileA","type":"microsoft.codesigning/codesigningaccounts/certificateprofiles","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-06-02T11:10:06.6020053Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-06-02T11:10:06.6020053Z"},"properties":{"profileType":"PublicTrust","rotationPolicy":"30
+        Days","commonName":"Contoso Inc","organization":"Contoso Inc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '867'
+      - '733'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 12 Mar 2021 11:22:47 GMT
+      - Wed, 02 Jun 2021 11:10:07 GMT
       etag:
-      - '"0100c67b-0000-0700-0000-604b4f070000"'
+      - '"05006708-0000-0700-0000-60b767100000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:c73a5c90-b6dd-400a-b5e1-6c06fd162b47
-      set-cookie:
-      - ARRAffinity=2d343760a8ed36b0212d0c52481d1fee3a42070a07d1709749e873bd7238f130;Path=/;HttpOnly;Secure;Domain=codesigning-userrp-ppe.azurewebsites.net
-      - ARRAffinitySameSite=2d343760a8ed36b0212d0c52481d1fee3a42070a07d1709749e873bd7238f130;Path=/;HttpOnly;SameSite=None;Secure;Domain=codesigning-userrp-ppe.azurewebsites.net
+      - appId=
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
+      - '1198'
+      x-msedge-ref:
+      - 'Ref A: 5F25B257D15D4B8A84D146EBF3F65A0D Ref B: MAA01EDGE0515 Ref C: 2021-06-02T11:10:05Z'
     status:
       code: 200
       message: OK
@@ -712,13 +705,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 12 Mar 2021 11:22:47 GMT
+      - Wed, 02 Jun 2021 11:10:08 GMT
       p3p:
       - CP="DSP CUR OTPi IND OTRi ONL FIN"
       set-cookie:
-      - fpc=An8xTnnig3dMqXvNbMNg9I0; expires=Sun, 11-Apr-2021 11:22:47 GMT; path=/;
+      - fpc=AkqglEZnuNpLh_7b8ifj7hY; expires=Fri, 02-Jul-2021 11:10:08 GMT; path=/;
         secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7Wevrbi39270RTStaSplljfny1oLrG4zH5w54V8z7XU7VhsfZ-B3Z1m4uUqDILsdw9-RH_uVZE04nX75cNRdeYhG32r3vaZfPbLBBgXpO_zIzZtKzf0qPHmvsiLWstmhBUxwoVAabVNa3CbTfXD8L77i9FFMiUNBcmMb4Kc16oVS5X-QgAA;
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrqeIG73gKp58oBhB-ZDsnMzcs6ARyrnkM2oyLRnnQYHlSiH0-HXhlQ6y9vavxcFVr5U9h2ZN0TfhAVQOumb7ROTNmLWcUirjzXu15eoDi8Z7r7cct1ypdrLFJauGJYpXuLvWzmht5Y8w9Q5LzAoxkQyJYK3N8MBAssf9Q7noHuc0gAA;
         domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
       - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
       - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
@@ -727,7 +720,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ests-server:
-      - 2.1.11562.6 - KRSLR1 ProdSlices
+      - 2.1.11722.26 - KRSLR2 ProdSlices
     status:
       code: 200
       message: OK
@@ -743,40 +736,40 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --account-name --profile-name --resource-group
+      - --account-name --name --resource-group
       User-Agent:
       - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSignAccounts/MyAccount/certificateProfiles/profileA?api-version=2020-12-14-preview
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount/certificateProfiles/profileA?api-version=2020-12-14-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSignAccounts/MyAccount/certificateProfiles/profileA","name":"profileA","type":"Microsoft.CodeSigning/codeSignAccounts/certificateProfiles","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-03-12T11:22:45.9106409Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-12T11:22:45.9106409Z"},"properties":{"profileType":"PublicTrust","rotationPolicy":"Monthly","authority":null,"commonName":"Contoso","organization":null,"subjectAlternativeName":"Contoso
-        Corporate Engineering","streetAddress":null,"country":null,"state":null,"city":null,"provisioningState":"Succeeded","certificates":[]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount/certificateProfiles/profileA","name":"profileA","type":"microsoft.codesigning/codesigningaccounts/certificateprofiles","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-06-02T11:10:06.6020053Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-06-02T11:10:06.6020053Z"},"properties":{"profileType":"PublicTrust","rotationPolicy":"30
+        Days","commonName":"Contoso Inc","organization":"Contoso Inc","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '867'
+      - '733'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 12 Mar 2021 11:22:49 GMT
+      - Wed, 02 Jun 2021 11:10:09 GMT
       etag:
-      - '"0100c67b-0000-0700-0000-604b4f070000"'
+      - '"05006708-0000-0700-0000-60b767100000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-msedge-ref:
+      - 'Ref A: C61472987504411B906EFEDFB58E5D90 Ref B: MAA01EDGE0621 Ref C: 2021-06-02T11:10:08Z'
     status:
       code: 200
       message: OK
@@ -820,13 +813,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 12 Mar 2021 11:22:48 GMT
+      - Wed, 02 Jun 2021 11:10:09 GMT
       p3p:
       - CP="DSP CUR OTPi IND OTRi ONL FIN"
       set-cookie:
-      - fpc=Aq9W0FkD7pdFpXdgM_Yeh10; expires=Sun, 11-Apr-2021 11:22:49 GMT; path=/;
+      - fpc=AsTKY75RmlRJlBUYKplvyrU; expires=Fri, 02-Jul-2021 11:10:09 GMT; path=/;
         secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7Wevr5QqBrAwfp2OnPbFEhX4KJHoecwU5sDNA5jnnncCVc8TtkN4q-W7_cgiiJAeTMgp_AwP9qsn8n5HYpaOYhjq7Hujr9Pp3PSqL3BvX7rSUbWYgcRYNNlfPOyc6aZ2cBzdy8hP469HpT1PHd_o8GHJjba5HayIhTc3UhTU4y-6RLTogAA;
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrixCumsZx0fW6DcvxK1p2GRvVbn2vetDxikt34hSqULq2xLbGKnZhjkdnJjbMg4NrqCi_dEy879qbBxEQf487LD7mjO3kurRmY_25ekyXR6ia-vsnTZ4MAfeLP4nj5fN1kxhLwrW5OsGouZYZ-zEA5gSIy68oN-9aDuARNKvqT4ggAA;
         domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
       - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
       - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
@@ -835,7 +828,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ests-server:
-      - 2.1.11562.6 - KRSLR2 ProdSlices
+      - 2.1.11722.21 - KRSLR1 ProdSlices
     status:
       code: 200
       message: OK
@@ -855,34 +848,34 @@ interactions:
       User-Agent:
       - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: GET
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSignAccounts/MyAccount/certificateProfiles?api-version=2020-12-14-preview
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount/certificateProfiles?api-version=2020-12-14-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSignAccounts/MyAccount/certificateProfiles/profileA","name":"profileA","type":"Microsoft.CodeSigning/codeSignAccounts/certificateProfiles","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-03-12T11:22:45.9106409Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-12T11:22:45.9106409Z"},"properties":{"profileType":"PublicTrust","rotationPolicy":"Monthly","authority":null,"commonName":"Contoso","organization":null,"subjectAlternativeName":"Contoso
-        Corporate Engineering","streetAddress":null,"country":null,"state":null,"city":null,"provisioningState":"Succeeded","certificates":[]}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount/certificateProfiles/profileA","name":"profileA","type":"microsoft.codesigning/codesigningaccounts/certificateprofiles","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-06-02T11:10:06.6020053Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-06-02T11:10:06.6020053Z"},"properties":{"profileType":"PublicTrust","rotationPolicy":"30
+        Days","commonName":"Contoso Inc","organization":"Contoso Inc","provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '879'
+      - '745'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 12 Mar 2021 11:22:50 GMT
+      - Wed, 02 Jun 2021 11:10:10 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-msedge-ref:
+      - 'Ref A: A448170968AC4530BE757FF31304264C Ref B: MAA01EDGE0616 Ref C: 2021-06-02T11:10:10Z'
     status:
       code: 200
       message: OK
@@ -926,13 +919,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 12 Mar 2021 11:22:50 GMT
+      - Wed, 02 Jun 2021 11:10:10 GMT
       p3p:
       - CP="DSP CUR OTPi IND OTRi ONL FIN"
       set-cookie:
-      - fpc=Ag0z1Iy7JXJLgQhEjMRZ4_E; expires=Sun, 11-Apr-2021 11:22:51 GMT; path=/;
+      - fpc=Ak2KlVy26spHk5oekdSL5Ug; expires=Fri, 02-Jul-2021 11:10:10 GMT; path=/;
         secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrY1cfbMMvgwyynCe7gB-O2cNk-upgNCuwuhuo-piYJXj0owGLVh8yhRZMGOA1T7N57PSKGjVf5iG8smRSm31G9_ifxwNmZfaAoxvg3jjsDuJBFKLgG3UUkNreqwMVAV_bNb-PBZ0fB92ybKPSy66Cvpf9G-xC8qzkqw85l4hkaq0gAA;
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7Wevr1lq0YD1eqskBa7V38fZyNaFI3ITKVKCm3pI2nuMOMMLbs3bsdwT9o5VvFJBxPgqsR_WNCI7tyR1EiNLYhhv_Wf78o0RFne1FJylX_Wryd2-lS_rf5wRKyYt3486mGe_MYlFXvGy2jvWt8XV1qJm5ZkMb2tHxmMjnnfX1DjMBNkQgAA;
         domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
       - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
       - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
@@ -941,64 +934,57 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ests-server:
-      - 2.1.11562.6 - KRSLR1 ProdSlices
+      - 2.1.11722.26 - SEASLR1 ProdSlices
     status:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"profileType": "Test", "rotationPolicy": "Monthly", "commonName":
-      "Contoso", "subjectAlternativeName": "Contoso Corporate Engineering"}}'
+    body: null
     headers:
       Accept:
       - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - codesigning certificate-profile update
+      - codesigning certificate-profile delete
       Connection:
       - keep-alive
       Content-Length:
-      - '152'
-      Content-Type:
-      - application/json
+      - '0'
       ParameterSetName:
-      - --common-name --profile-type --subject-alternative-name --account-name --profile-name
-        --resource-group
+      - -y --account-name --name --resource-group
       User-Agent:
       - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
-    method: PATCH
-    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSignAccounts/MyAccount/certificateProfiles/profileA?api-version=2020-12-14-preview
+    method: DELETE
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount/certificateProfiles/profileA?api-version=2020-12-14-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSignAccounts/MyAccount/certificateProfiles/profileA","name":"profileA","type":"Microsoft.CodeSigning/codeSignAccounts/certificateProfiles","systemData":{"createdBy":"billtest124476@outlook.com","createdByType":"User","createdAt":"2021-03-12T11:22:45.9106409Z","lastModifiedBy":"billtest124476@outlook.com","lastModifiedByType":"User","lastModifiedAt":"2021-03-12T11:22:52.3820988Z"},"properties":{"profileType":"Test","rotationPolicy":"Monthly","authority":null,"commonName":"Contoso","organization":null,"subjectAlternativeName":"Contoso
-        Corporate Engineering","streetAddress":null,"country":null,"state":null,"city":null,"provisioningState":"Succeeded","certificates":[]}}'
+      string: ''
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '860'
-      content-type:
-      - application/json; charset=utf-8
+      - '0'
       date:
-      - Fri, 12 Mar 2021 11:22:52 GMT
-      etag:
-      - '"0100d77b-0000-0700-0000-604b4f0c0000"'
+      - Wed, 02 Jun 2021 11:10:13 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      request-context:
+      - appId=
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-msedge-ref:
+      - 'Ref A: D521AE37F0C040F29733E094A3D86E09 Ref B: MAA01EDGE0606 Ref C: 2021-06-02T11:10:11Z'
     status:
       code: 200
       message: OK
@@ -1042,13 +1028,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 12 Mar 2021 11:22:52 GMT
+      - Wed, 02 Jun 2021 11:10:14 GMT
       p3p:
       - CP="DSP CUR OTPi IND OTRi ONL FIN"
       set-cookie:
-      - fpc=Ao94VW1YxjlEsHw8CslO4Fs; expires=Sun, 11-Apr-2021 11:22:53 GMT; path=/;
+      - fpc=Aidk_XMcvu9AvEMCE0-siuQ; expires=Fri, 02-Jul-2021 11:10:14 GMT; path=/;
         secure; HttpOnly; SameSite=None
-      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrOGyU7qPLbGg8TUAjVXQIHUxCEPkHMaeM58OZzDueoncacf3U7PU8qns6OYkeZky-12_FxjHPl06qQGCfKDsMpyNmgNtEvQu3sXXEfDQX6J13qegzd2DXsGBmF-CR4Vl2r2R9rBjl30Ebpi9zu32o9Wuq8Na5TWy1VUStjNdwwMEgAA;
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrSRQu_DV82mVCAHaHKEUCUhlf0emGFghgYsvrYCKTazbTAQCeCr9CRmdzlQOHwduuZV4qJ-LXsic1EztCVle7uPvWMTFr3j5osr-VpNytwHn8-y5YOkEkjGyGzjySG2u8x9_HXHidG__NuqZ8JqsSRSFsQLY4PXBmymHS79HqZmggAA;
         domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
       - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
       - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
@@ -1057,7 +1043,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ests-server:
-      - 2.1.11562.6 - SEASLR1 ProdSlices
+      - 2.1.11722.21 - KRSLR1 ProdSlices
     status:
       code: 200
       message: OK
@@ -1069,48 +1055,45 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - codesigning operation show
+      - codesigning delete
       Connection:
       - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -y --name --resource-group
       User-Agent:
       - AZURECLI/2.17.1 azsdk-python-mgmt-codesigning/0.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://api-dogfood.resources.windows-int.net/providers/Microsoft.CodeSigning/operations?api-version=2020-12-14-preview
+    method: DELETE
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.CodeSigning/codeSigningAccounts/MyAccount?api-version=2020-12-14-preview
   response:
     body:
-      string: '{"value":[{"name":"Microsoft.CodeSigning/codeSignAccounts/Read","isDataAction":false,"display":{"provider":"Microsoft.CodeSigning","resource":"codeSignAccounts","operation":"Gets/List
-        codeSignAccounts resources","description":"Read codeSignAccounts"},"properties":null},{"name":"Microsoft.CodeSigning/codeSignAccounts/Write","isDataAction":false,"display":{"provider":"Microsoft.CodeSigning","resource":"codeSignAccounts","operation":"Create/update
-        codeSignAccounts resources","description":"Writes codeSignAccounts"},"properties":null},{"name":"Microsoft.CodeSigning/codeSignAccounts/Delete","isDataAction":false,"display":{"provider":"Microsoft.CodeSigning","resource":"codeSignAccounts","operation":"Deletes
-        codeSignAccounts resource","description":"Deletes codeSignAccounts"},"properties":null},{"name":"Microsoft.CodeSigning/RegisteredSubscriptions/read","isDataAction":false,"display":{"provider":"Microsoft.CodeSigning","resource":"RegisteredSubscriptions","operation":"Gets/Lists
-        registered subscriptions","description":"Reads registered subscriptions"},"properties":null},{"name":"Microsoft.CodeSigning/certificateProfiles/Read","isDataAction":false,"display":{"provider":"Microsoft.CodeSigning","resource":"certificateProfiles","operation":"Gets/List
-        certificateProfiles resources","description":"Read certificateProfiles"},"properties":null},{"name":"Microsoft.CodeSigning/certificateProfiles/Write","isDataAction":false,"display":{"provider":"Microsoft.CodeSigning","resource":"certificateProfiles","operation":"Create/update
-        certificateProfiles resources","description":"Writes certificateProfiles"},"properties":null},{"name":"Microsoft.CodeSigning/certificateProfiles/Delete","isDataAction":false,"display":{"provider":"Microsoft.CodeSigning","resource":"certificateProfiles","operation":"Deletes
-        certificateProfiles resource","description":"Deletes certificateProfiles"},"properties":null},{"name":"Microsoft.CodeSigning/Locations/OperationStatuses/read","isDataAction":false,"display":{"provider":"Microsoft.CodeSigning","resource":"codeSignAccounts","operation":"Read
-        operation statuses of codeSignAccounts","description":"Read Operation Statuses"},"properties":null},{"name":"Microsoft.CodeSigning/Locations/OperationStatuses/write","isDataAction":false,"display":{"provider":"Microsoft.CodeSigning","resource":"codeSignAccounts","operation":"Write
-        operation statuses of codeSignAccounts","description":"Write Operation Statuses"},"properties":null}]}'
+      string: ''
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2470'
-      content-type:
-      - application/json; charset=utf-8
+      - '0'
       date:
-      - Fri, 12 Mar 2021 11:22:54 GMT
+      - Wed, 02 Jun 2021 11:10:17 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      request-context:
+      - appId=
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-msedge-ref:
+      - 'Ref A: FEDE9F16D9D24F76AEE6A9CE8133784F Ref B: MAA01EDGE0616 Ref C: 2021-06-02T11:10:14Z'
     status:
       code: 200
       message: OK
