@@ -8,8 +8,8 @@ from azure.cli.core.profiles import register_resource_type
 from azure.cli.core.commands import AzCommandGroup, AzArgumentContext
 
 import azext_storage_preview._help  # pylint: disable=unused-import
-from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_ADLS,
-                       CUSTOM_DATA_STORAGE_FILESHARE)
+from .profiles import CUSTOM_DATA_STORAGE, CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_ADLS, \
+    CUSTOM_DATA_STORAGE_FILESHARE, CUSTOM_DATA_STORAGE_FILEDATALAKE
 
 
 class StorageCommandsLoader(AzCommandsLoader):
@@ -20,6 +20,8 @@ class StorageCommandsLoader(AzCommandsLoader):
         register_resource_type('latest', CUSTOM_DATA_STORAGE_ADLS, '2019-02-02-preview')
         register_resource_type('latest', CUSTOM_MGMT_PREVIEW_STORAGE, '2020-08-01-preview')
         register_resource_type('latest', CUSTOM_DATA_STORAGE_FILESHARE, '2020-02-10')
+        register_resource_type('latest', CUSTOM_DATA_STORAGE_FILEDATALAKE, '2020-06-12')
+
         storage_custom = CliCommandType(operations_tmpl='azext_storage_preview.custom#{}')
 
         super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,
@@ -63,8 +65,9 @@ class StorageArgumentContext(AzArgumentContext):
 
         self.ignore('content_settings')
 
-        # The parameter process_md5 is used to determine whether it is compatible with the process_md5 parameter type of Python SDK
-        # When the Python SDK is fixed (Issue: https://github.com/Azure/azure-sdk-for-python/issues/15919),
+        # The parameter process_md5 is used to determine whether it is compatible with the process_md5 parameter
+        # type of Python SDK When the Python SDK is fixed
+        # (Issue: https://github.com/Azure/azure-sdk-for-python/issues/15919),
         # this parameter should not be passed in any more
         self.extra('content_type', default=None, help='The content MIME type.', arg_group=arg_group,
                    validator=get_content_setting_validator(settings_class, update, guess_from_file=guess_from_file,

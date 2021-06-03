@@ -6,7 +6,7 @@
 import os
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, record_only)
-
+from azure.cli.testsdk.checkers import StringContainCheck
 from .credential_replacer import VpnClientGeneratedURLReplacer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -516,14 +516,14 @@ class AzureVWanVHubScenario(ScenarioTest):
         })
 
         # You need to create a virtual hub and a P2S VPN gateway with connection, then connect them together before running the following command.
-        self.cmd('network vhub get-effective-routes '
+        result = self.cmd('network vhub get-effective-routes '
                  '-g {rg} '
                  '-n {vhub} '
                  '--resource-type {resource_type} '
-                 '--resource-id {resource_id}',
-                 checks=[
-                     self.check('length(value)', 5)
-                 ])
+                 '--resource-id {resource_id} '
+                 '-o table')
+        lines = result.output.strip().split('\n')
+        self.assertTrue(len(lines) == 7)
 
 
 class P2SVpnGatewayVpnClientTestScenario(ScenarioTest):

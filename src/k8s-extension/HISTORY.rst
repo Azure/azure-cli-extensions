@@ -3,6 +3,17 @@
 Release History
 ===============
 
+0.4.2
+++++++++++++++++++
+
+* Hotfix servicebus namespace creation for Track 2 changes
+* Change resource tag from 'amlk8s' to 'Azure Arc-enabled ML' in microsoft.azureml.kubernetes
+
+0.4.1
+++++++++++++++++++
+
+* Add compatible logic for the track 2 migration of resource dependence
+
 0.4.0
 ++++++++++++++++++
 
