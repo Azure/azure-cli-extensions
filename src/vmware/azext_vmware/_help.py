@@ -188,7 +188,7 @@ helps['vmware datastore net-app-volume create'] = """
     short-summary: Create a new Microsoft.NetApp provided NetApp volume in a private cloud cluster.
     examples:
     - name: Create a new Microsoft.NetApp provided NetApp volume based NFSv3 datastore.
-      text: az vmware datastore net-app-volume create --name ANFDatastore1 --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud --volume_id /subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1
+      text: az vmware datastore net-app-volume create --name ANFDatastore1 --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud --volume-id /subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1
 """
 
 helps['vmware datastore disk-pool-volume'] = """
