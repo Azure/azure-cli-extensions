@@ -74,12 +74,17 @@ def load_arguments(self, _):
     with self.argument_context('vmware datastore') as c:
         c.argument('name', options_list=['--name', '-n'], help='The name of the datastore.')
         c.argument('cluster', help='The name of the cluster.')
+        c.argument('lun_name', help='Name of the LUN to be used.')
+
+    with self.argument_context('vmware datastore create') as c:
+        c.argument('nfs_provider_ip', help='IP address of the NFS provider.')
+        c.argument('nfs_file_path', help='File path through which the NFS volume is exposed by the provider.')
+        c.argument('endpoints', nargs='*', help='iSCSI provider target IP address list.')
 
     with self.argument_context('vmware datastore net-app-volume create') as c:
         c.argument('volume_id', help='Azure resource ID of the NetApp volume.')
 
     with self.argument_context('vmware datastore disk-pool-volume create') as c:
-        c.argument('lun_name', help='Name of the LUN to be used.')
         c.argument('target_id', help='Azure resource ID of the iSCSI target.')
         c.argument('mount_option', nargs='*', help='Mode that describes whether the LUN has to be mounted as a datastore or attached as a LUN.')
         c.argument('path', help='Device path.')
