@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+
 def get_protection_status_values():
     return ['ProtectionConfigured', 'ProtectionError']
 
