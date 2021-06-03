@@ -1,3 +1,9 @@
+
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 # pylint: disable=line-too-long
 # pylint: disable=too-many-statements
 
@@ -67,7 +73,7 @@ def load_arguments(self, _):
         c.argument('vaults', type=str, nargs='+', help="List of vault names.")
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type")
         c.argument('subscriptions', type=str, nargs='+', help="List of subscription Ids.")
-        c.argument('protection_status', arg_type=get_enum_type(get_protection_status_values()), nargs='+')
+        c.argument('protection_status', arg_type=get_enum_type(get_protection_status_values()), nargs='+', help="specify protection status.")
         c.argument('datasource_id', type=str, nargs='+', help="specify datasource id filter to apply.")
 
     with self.argument_context('dataprotection job list-from-resourcegraph') as c:
@@ -94,8 +100,8 @@ def load_arguments(self, _):
     with self.argument_context('dataprotection backup-policy retention-rule create-lifecycle') as c:
         c.argument('source_datastore', arg_type=get_enum_type(get_datastore_type_values()), help="Specify source datastore.")
         c.argument('target_datastore', arg_type=get_enum_type(get_datastore_type_values()), help="Specify target datastore.")
-        c.argument('retention_duration_type', arg_type=get_enum_type(get_duration_type_values()), help="Retention duration type.")
-        c.argument('retention_duration_count', type=int, help="Retention duration count.")
+        c.argument('retention_duration_type', options_list=['--retention-duration-type', '--type'], arg_type=get_enum_type(get_duration_type_values()), help="Retention duration type.")
+        c.argument('retention_duration_count', options_list=['--retention-duration-count', '--count'], type=int, help="Retention duration count.")
         c.argument('copy_option', arg_type=get_enum_type(get_copy_option_values()), help="Specify copy option from source datastore to target datastore.")
 
     with self.argument_context('dataprotection backup-policy retention-rule set-in-policy') as c:
@@ -108,12 +114,12 @@ def load_arguments(self, _):
         c.argument('policy', type=validate_file_or_dict, help="Existing policy Json string or file.")
 
     with self.argument_context('dataprotection backup-policy tag create-absolute-criteria') as c:
-        c.argument('absolute_criteria', arg_type=get_enum_type(get_absolute_criteria_values()))
+        c.argument('absolute_criteria', arg_type=get_enum_type(get_absolute_criteria_values()), help="Specify retention criteria.")
 
     with self.argument_context('dataprotection backup-policy tag create-generic-criteria') as c:
-        c.argument('days_of_week', nargs='+', arg_type=get_enum_type(get_days_of_week_values()))
-        c.argument('weeks_of_month', nargs='+', arg_type=get_enum_type(get_weeks_of_month_values()))
-        c.argument('months_of_year', nargs='+', arg_type=get_enum_type(get_months_of_year_values()))
+        c.argument('days_of_week', nargs='+', arg_type=get_enum_type(get_days_of_week_values()), help="Specify days of week.")
+        c.argument('weeks_of_month', nargs='+', arg_type=get_enum_type(get_weeks_of_month_values()), help="Specify weeks of month")
+        c.argument('months_of_year', nargs='+', arg_type=get_enum_type(get_months_of_year_values()), help="Specify months of year.")
         c.argument('days_of_month', nargs='+', type=str, help="Specify days of month. Allowed values are 1 to 28 and Last")
 
     with self.argument_context('dataprotection backup-policy tag set-in-policy') as c:

@@ -82,7 +82,7 @@ class AdHocBackupRuleOptions(msrest.serialization.Model):
 
     All required parameters must be populated in order to send to Azure.
 
-    :param rule_name: Required.
+    :param rule_name: Required. Specify backup policy rule name.
     :type rule_name: str
     :param trigger_option: Required. Adhoc backup trigger option.
     :type trigger_option: ~data_protection_client.models.AdhocBackupTriggerOption
@@ -110,7 +110,7 @@ class AdHocBackupRuleOptions(msrest.serialization.Model):
 class AdhocBackupTriggerOption(msrest.serialization.Model):
     """Adhoc backup trigger option.
 
-    :param retention_tag_override:
+    :param retention_tag_override: Specify retention override tag.
     :type retention_tag_override: str
     """
 

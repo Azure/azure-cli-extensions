@@ -145,7 +145,7 @@ class RecoveryPointsOperations:
         :type resource_group_name: str
         :param backup_instance_name: The name of the backup instance.
         :type backup_instance_name: str
-        :param recovery_point_id:
+        :param recovery_point_id: Recovery point id.
         :type recovery_point_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: AzureBackupRecoveryPointResource, or the result of cls(response)

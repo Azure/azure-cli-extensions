@@ -26,7 +26,7 @@ helps['dataprotection backup-instance initialize'] = """
     short-summary: Initialize JSON request body for configuring backup of a resource.
     examples:
       - name: Initialize backup instance request for Azure Disk
-        text: az dataprotection backup-instance initialize --datasource-type AzureDisk -l southeastasia --policy-id {disk_policy_id} --resource-id {disk_id}
+        text: az dataprotection backup-instance initialize --datasource-type AzureDisk -l southeastasia --policy-id {disk_policy_id} --datasource-id {disk_id}
 """
 
 helps['dataprotection backup-instance create'] = """
@@ -50,9 +50,9 @@ helps['dataprotection backup-instance list-from-resourcegraph'] = """
     short-summary: List backup instances across subscriptions, resource groups and vaults.
     examples:
       - name: list backup instances across multiple vaults across multiple resource groups
-        text: az dataprotection backup-instance list-from-resourcegraph --resource-groups resourceGroup1 resourceGroup2 --vaults vault1 vault2
+        text: az dataprotection backup-instance list-from-resourcegraph --resource-groups resourceGroup1 resourceGroup2 --vaults vault1 vault2 --datasource-type AzureBlob
       - name: list backup instances in a vault which are in a protection error state.
-        text: az dataprotection backup-instance list-from-resourcegraph --resource-groups resourceGroup --vaults vault --protection-status ProtectionError
+        text: az dataprotection backup-instance list-from-resourcegraph --resource-groups resourceGroup --vaults vault --protection-status ProtectionError --datasource-type AzureDisk
 """
 
 helps['dataprotection backup-policy get-default-policy-template'] = """
@@ -75,7 +75,7 @@ helps['dataprotection backup-policy trigger create-schedule'] = """
       - name: create weekly backup schedule where backup is taken twice a week.
         text: az dataprotection backup-policy trigger create-schedule --interval-type Weekly --interval-count 1 --schedule-days 2021-05-02T05:30:00 2021-05-03T05:30:00
       - name: create hourly backup schedule where backup frequency is every 4 hours
-        text: az dataprotection backup-policy trigger create-schedule --interval-types Hourly --interval-count 6 --schedule-days 2021-05-02T05:30:00
+        text: az dataprotection backup-policy trigger create-schedule --interval-type Hourly --interval-count 6 --schedule-days 2021-05-02T05:30:00
 """
 
 helps['dataprotection backup-policy trigger set-in-policy'] = """

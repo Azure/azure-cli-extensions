@@ -54,7 +54,7 @@ class RestorableTimeRangesOperations:
         :type vault_name: str
         :param resource_group_name: The name of the resource group where the backup vault is present.
         :type resource_group_name: str
-        :param backup_instances:
+        :param backup_instances: Backup instance name.
         :type backup_instances: str
         :param parameters: Request body for operation.
         :type parameters: ~data_protection_client.models.AzureBackupFindRestorableTimeRangesRequest
