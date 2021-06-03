@@ -68,7 +68,7 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                           tags=None, zones=None, private_ranges=None, firewall_policy=None,
                           virtual_hub=None, sku=None,
                           dns_servers=None, enable_dns_proxy=None,
-                          threat_intel_mode=None, hub_public_ip_count=None, allow_active_ftp=None):
+                          threat_intel_mode=None, hub_public_ip_count=None, allow_active_ftp=None, tier=None):
     if firewall_policy and any([enable_dns_proxy, dns_servers]):
         raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
     if sku and sku.lower() == 'azfw_hub' and not all([virtual_hub, hub_public_ip_count]):
@@ -85,7 +85,7 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
                                             'AzureFirewallSku',
                                             'HubIPAddresses',
                                             'HubPublicIPAddresses')
-    sku_instance = AzureFirewallSku(name=sku, tier='Standard')
+    sku_instance = AzureFirewallSku(name=sku, tier=tier)
     firewall = AzureFirewall(location=location,
                              tags=tags,
                              zones=zones,
@@ -618,7 +618,7 @@ def update_azure_firewall_policies(cmd,
         user_assigned_identities_instance[user_assigned_identity] = user_assigned_indentity_instance
         identity_instance = ManagedServiceIdentity(
             type="UserAssigned",
-            Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties=user_assigned_identities_instance
+            user_assigned_identities=user_assigned_identities_instance
         )
         instance.identity = identity_instance
 
@@ -626,12 +626,11 @@ def update_azure_firewall_policies(cmd,
 
 
 def set_azure_firewall_policies(cmd, resource_group_name, firewall_policy_name, parameters):
-    # Firewall Policy can't contain premium only properties - Identity
-    # if parameters.identity is None:
-    #     ManagedServiceIdentity = cmd.get_models('ManagedServiceIdentity')
+    if parameters.identity is None:
+        ManagedServiceIdentity = cmd.get_models('ManagedServiceIdentity')
 
-    #     identity = ManagedServiceIdentity(type="None", Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties=None)
-    #     parameters.identity = identity
+        identity = ManagedServiceIdentity(type="None", user_assigned_identities=None)
+        parameters.identity = identity
 
     client = network_client_factory(cmd.cli_ctx).firewall_policies
     return client.begin_create_or_update(resource_group_name, firewall_policy_name, parameters)

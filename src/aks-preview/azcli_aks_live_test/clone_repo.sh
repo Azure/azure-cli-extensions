@@ -1,25 +1,40 @@
 #!/usr/bin/env bash
 
-set -eux
+# bash options
+set -o errexit
+set -o nounset
+set -o pipefail
+set -o xtrace
+
+# check var
+[[ -z "${CLI_REPO}" ]] && (echo "CLI_REPO is empty"; exit 1)
+[[ -z "${CLI_BRANCH}" ]] && (echo "CLI_BRANCH is empty"; exit 1)
+[[ -z "${EXT_REPO}" ]] && (echo "EXT_REPO is empty"; exit 1)
+[[ -z "${EXT_BRANCH}" ]] && (echo "EXT_BRANCH is empty"; exit 1)
+[[ -z "${MANUAL_EXT}" ]] && (echo "MANUAL_EXT is empty"; exit 1)
+
+# dir
 pwd
+ls -alh
 
 # clone azure-cli (default is the official repo)
 # git clone https://github.com/Azure/azure-cli.git
-git clone $CLI_REPO
+git clone ${CLI_REPO}
 
 # ckeckout to a specific azure-cli branch (default is the dev branch)
 pushd azure-cli/
 git branch -a
-git checkout $CLI_BRANCH
+git checkout ${CLI_BRANCH}
 popd
 
 # clone azure-cli-extensions when manually specify the extension repo
-if [[ $MANUAL_EXT == true && -n $EXT_REPO && -n $EXT_BRANCH ]]; then
+if [[ ${MANUAL_EXT} == true ]]; then
     echo "Manually specify the extension repo, delete the current 'azure-cli-extensions' directory!"
     rm -rf azure-cli-extensions/
-    git clone $EXT_REPO
+    git clone ${EXT_REPO}
     pushd azure-cli-extensions/
-    git checkout $EXT_BRANCH
+    git branch -a
+    git checkout ${EXT_BRANCH}
     popd
 fi
 

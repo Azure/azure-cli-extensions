@@ -8,7 +8,7 @@
 from typing import TYPE_CHECKING
 import warnings
 
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.mgmt.core.exceptions import ARMErrorFormat
@@ -17,7 +17,7 @@ from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar
+    from typing import Any, Callable, Dict, Generic, Optional, TypeVar
 
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
@@ -47,8 +47,7 @@ class ExposureControlOperations(object):
     def get_feature_value(
         self,
         location_id,  # type: str
-        feature_name=None,  # type: Optional[str]
-        feature_type=None,  # type: Optional[str]
+        exposure_control_request,  # type: "models.ExposureControlRequest"
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.ExposureControlResponse"
@@ -56,22 +55,21 @@ class ExposureControlOperations(object):
 
         :param location_id: The location identifier.
         :type location_id: str
-        :param feature_name: The feature name.
-        :type feature_name: str
-        :param feature_type: The feature type.
-        :type feature_type: str
+        :param exposure_control_request: The exposure control request.
+        :type exposure_control_request: ~data_factory_management_client.models.ExposureControlRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ExposureControlResponse, or the result of cls(response)
         :rtype: ~data_factory_management_client.models.ExposureControlResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ExposureControlResponse"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
-
-        exposure_control_request = models.ExposureControlRequest(feature_name=feature_name, feature_type=feature_type)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
         url = self.get_feature_value.metadata['url']  # type: ignore
@@ -88,13 +86,12 @@ class ExposureControlOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(exposure_control_request, 'ExposureControlRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -114,8 +111,7 @@ class ExposureControlOperations(object):
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
-        feature_name=None,  # type: Optional[str]
-        feature_type=None,  # type: Optional[str]
+        exposure_control_request,  # type: "models.ExposureControlRequest"
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.ExposureControlResponse"
@@ -125,22 +121,21 @@ class ExposureControlOperations(object):
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
-        :param feature_name: The feature name.
-        :type feature_name: str
-        :param feature_type: The feature type.
-        :type feature_type: str
+        :param exposure_control_request: The exposure control request.
+        :type exposure_control_request: ~data_factory_management_client.models.ExposureControlRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ExposureControlResponse, or the result of cls(response)
         :rtype: ~data_factory_management_client.models.ExposureControlResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ExposureControlResponse"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
-
-        exposure_control_request = models.ExposureControlRequest(feature_name=feature_name, feature_type=feature_type)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
         url = self.get_feature_value_by_factory.metadata['url']  # type: ignore
@@ -158,13 +153,12 @@ class ExposureControlOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(exposure_control_request, 'ExposureControlRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -180,11 +174,11 @@ class ExposureControlOperations(object):
         return deserialized
     get_feature_value_by_factory.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/getFeatureValue'}  # type: ignore
 
-    def query_feature_value_by_factory(
+    def query_feature_values_by_factory(
         self,
         resource_group_name,  # type: str
         factory_name,  # type: str
-        exposure_control_requests,  # type: List["models.ExposureControlRequest"]
+        exposure_control_batch_request,  # type: "models.ExposureControlBatchRequest"
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.ExposureControlBatchResponse"
@@ -194,23 +188,24 @@ class ExposureControlOperations(object):
         :type resource_group_name: str
         :param factory_name: The factory name.
         :type factory_name: str
-        :param exposure_control_requests: List of exposure control features.
-        :type exposure_control_requests: list[~data_factory_management_client.models.ExposureControlRequest]
+        :param exposure_control_batch_request: The exposure control request for list of features.
+        :type exposure_control_batch_request: ~data_factory_management_client.models.ExposureControlBatchRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ExposureControlBatchResponse, or the result of cls(response)
         :rtype: ~data_factory_management_client.models.ExposureControlBatchResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.ExposureControlBatchResponse"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
-
-        exposure_control_batch_request = models.ExposureControlBatchRequest(exposure_control_requests=exposure_control_requests)
         api_version = "2018-06-01"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
-        url = self.query_feature_value_by_factory.metadata['url']  # type: ignore
+        url = self.query_feature_values_by_factory.metadata['url']  # type: ignore
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str'),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
@@ -225,13 +220,12 @@ class ExposureControlOperations(object):
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(exposure_control_batch_request, 'ExposureControlBatchRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -245,4 +239,4 @@ class ExposureControlOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    query_feature_value_by_factory.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/queryFeaturesValue'}  # type: ignore
+    query_feature_values_by_factory.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}/queryFeaturesValue'}  # type: ignore
