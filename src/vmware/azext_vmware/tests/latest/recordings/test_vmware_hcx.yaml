@@ -1,0 +1,849 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - win32
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.3
+    method: GET
+    uri: https://login.microsoftonline.com/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=86400, private
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 03 Jun 2021 22:26:16 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=AqSO25wOgqpBnLuBKk4fIs4; expires=Sat, 03-Jul-2021 22:26:16 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7Wevr2E7BkXLN7GZZUqAW7XrppQ9yajIaHweE_C9SGYoyjfBcF40-Sq6iMl0veYEKXoXzsJHcifnhkjkXQxCmVokQIFhoKV0RT__nFq9nywH9GKYNl9sMetqvBPDz7xS8dPu2HCOwzNn4X4mc2vW6vavOj5P7Mom4LmnT8TJaKBZ5xJMgAA;
+        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
+      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.11722.21 - NCUS ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westcentralus", "tags": {}, "sku": {"name": "av20"}, "properties":
+      {"managementCluster": {"clusterSize": 4}, "internet": "Disabled", "networkBlock":
+      "192.168.48.0/22", "vcenterPassword": "UpfBXae9ZquZSDXk(", "nsxtPassword": "5rqdLj4GF3cePUe6("}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '259'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
+        --accept-eula
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2021-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1","location":"westcentralus","name":"cloud1","properties":{"endpoints":{"hcxCloudManager":"https://192.168.48.9/","nsxtManager":"https://192.168.48.3/","vcsa":"https://192.168.48.2/"},"externalCloudLinks":[],"identitySources":[],"internet":"Disabled","managementCluster":{"clusterId":1,"clusterSize":4,"hosts":["gp-fakehost17.mp01.mock01.vmcp.vs.management","gp-fakehost19.mp01.mock01.vmcp.vs.management","gp-fakehost18.mp01.mock01.vmcp.vs.management","gp-fakehost12.mp01.mock01.vmcp.vs.management"],"provisioningState":"Building"},"managementNetwork":"192.168.48.0/26","networkBlock":"192.168.48.0/22","provisioningNetwork":"192.168.50.0/25","provisioningState":"Building","vmotionNetwork":"192.168.49.128/25"},"sku":{"name":"av20"},"tags":{},"type":"Microsoft.AVS/privateClouds"}'
+    headers:
+      azure-asyncoperation:
+      - https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf?api-version=2021-06-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '975'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 03 Jun 2021 22:26:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 431A097792C3411C90C07EA44BF54933 Ref B: PDX31EDGE0108 Ref C: 2021-06-03T22:26:17Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
+        --accept-eula
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf?api-version=2021-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf","name":"04d1c3b3-364d-4750-a15b-1454113509bf","percentComplete":0,"startTime":"2021-06-03T22:26:27.5613360+00:00","status":"Building"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '385'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 03 Jun 2021 22:26:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 8E2B85DDFFA1486695E47CF6730D9AD5 Ref B: PDX31EDGE0108 Ref C: 2021-06-03T22:26:39Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
+        --accept-eula
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf?api-version=2021-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf","name":"04d1c3b3-364d-4750-a15b-1454113509bf","percentComplete":0,"startTime":"2021-06-03T22:26:27.5613360+00:00","status":"Building"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '385'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 03 Jun 2021 22:26:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: B969E803CFBC4D70970F706962F03BD8 Ref B: PDX31EDGE0108 Ref C: 2021-06-03T22:26:50Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
+        --accept-eula
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf?api-version=2021-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf","name":"04d1c3b3-364d-4750-a15b-1454113509bf","percentComplete":88.75,"startTime":"2021-06-03T22:26:27.5613360+00:00","status":"Building"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '389'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 03 Jun 2021 22:27:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 6410BBF6172444C3A5B012993F1D18BF Ref B: PDX31EDGE0108 Ref C: 2021-06-03T22:27:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
+        --accept-eula
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf?api-version=2021-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf","name":"04d1c3b3-364d-4750-a15b-1454113509bf","percentComplete":88.75,"startTime":"2021-06-03T22:26:27.5613360+00:00","status":"Building"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '389'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 03 Jun 2021 22:27:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 69DF69BDE2AF4187924532F74F5DE4AC Ref B: PDX31EDGE0108 Ref C: 2021-06-03T22:27:11Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
+        --accept-eula
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf?api-version=2021-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf","name":"04d1c3b3-364d-4750-a15b-1454113509bf","percentComplete":100,"startTime":"2021-06-03T22:26:27.5613360+00:00","status":"Building"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '387'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 03 Jun 2021 22:27:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 2061B558D3C14D4E910D1F7585F6E8D7 Ref B: PDX31EDGE0108 Ref C: 2021-06-03T22:27:21Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
+        --accept-eula
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf?api-version=2021-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf","name":"04d1c3b3-364d-4750-a15b-1454113509bf","percentComplete":100,"startTime":"2021-06-03T22:26:27.5613360+00:00","status":"Building"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '387'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 03 Jun 2021 22:27:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 304D7F804FBF41AE9F1BC0D42962C98F Ref B: PDX31EDGE0108 Ref C: 2021-06-03T22:27:31Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
+        --accept-eula
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf?api-version=2021-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf","name":"04d1c3b3-364d-4750-a15b-1454113509bf","percentComplete":100,"startTime":"2021-06-03T22:26:27.5613360+00:00","status":"Building"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '387'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 03 Jun 2021 22:27:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: CD0ABF28B2724848A34620936D43C41E Ref B: PDX31EDGE0108 Ref C: 2021-06-03T22:27:41Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
+        --accept-eula
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf?api-version=2021-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf","name":"04d1c3b3-364d-4750-a15b-1454113509bf","percentComplete":100,"startTime":"2021-06-03T22:26:27.5613360+00:00","status":"Building"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '387'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 03 Jun 2021 22:27:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 451E367B28F74820BA79547C365F76CF Ref B: PDX31EDGE0108 Ref C: 2021-06-03T22:27:52Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
+        --accept-eula
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf?api-version=2021-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf","name":"04d1c3b3-364d-4750-a15b-1454113509bf","percentComplete":100,"startTime":"2021-06-03T22:26:27.5613360+00:00","status":"Building"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '387'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 03 Jun 2021 22:28:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: FAD9939452D9460386B7F00E203BBD71 Ref B: PDX31EDGE0108 Ref C: 2021-06-03T22:28:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
+        --accept-eula
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf?api-version=2021-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf","name":"04d1c3b3-364d-4750-a15b-1454113509bf","percentComplete":100,"startTime":"2021-06-03T22:26:27.5613360+00:00","status":"Building"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '387'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 03 Jun 2021 22:28:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 12C1F4121F48479BB0CBB759A085DB32 Ref B: PDX31EDGE0108 Ref C: 2021-06-03T22:28:12Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
+        --accept-eula
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf?api-version=2021-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf","name":"04d1c3b3-364d-4750-a15b-1454113509bf","percentComplete":100,"startTime":"2021-06-03T22:26:27.5613360+00:00","status":"Building"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '387'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 03 Jun 2021 22:28:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 37C3DB4A93B140CF87AFEE5F55200836 Ref B: PDX31EDGE0108 Ref C: 2021-06-03T22:28:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
+        --accept-eula
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf?api-version=2021-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf","name":"04d1c3b3-364d-4750-a15b-1454113509bf","percentComplete":100,"startTime":"2021-06-03T22:26:27.5613360+00:00","status":"Building"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '387'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 03 Jun 2021 22:28:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 8FC23E1677BD48FAA79E56D6A46CE973 Ref B: PDX31EDGE0108 Ref C: 2021-06-03T22:28:33Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
+        --accept-eula
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf?api-version=2021-06-01
+  response:
+    body:
+      string: '{"endTime":"2021-06-03T22:28:33.7965579+00:00","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/operationstatuses/04d1c3b3-364d-4750-a15b-1454113509bf","name":"04d1c3b3-364d-4750-a15b-1454113509bf","percentComplete":100,"properties":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1","location":"westcentralus","name":"cloud1","properties":{"circuit":{"expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt64-cust-mp01-mock01/providers/Microsoft.Network/expressRouteCircuits/tnt64-cust-mp01-mock01-er","expressRoutePrivatePeeringID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt64-cust-mp01-mock01/providers/Microsoft.Network/expressRouteCircuits/tnt64-cust-mp01-mock01-er/peerings/AzurePrivatePeering","primarySubnet":"192.168.48.232/30","secondarySubnet":"192.168.48.236/30"},"endpoints":{"hcxCloudManager":"https://192.168.48.9/","nsxtManager":"https://192.168.48.3/","vcsa":"https://192.168.48.2/"},"externalCloudLinks":[],"identitySources":[],"internet":"Disabled","managementCluster":{"clusterId":1,"clusterSize":4,"hosts":["gp-fakehost17.mp01.mock01.vmcp.vs.management","gp-fakehost19.mp01.mock01.vmcp.vs.management","gp-fakehost18.mp01.mock01.vmcp.vs.management","gp-fakehost12.mp01.mock01.vmcp.vs.management"],"provisioningState":"Succeeded"},"managementNetwork":"192.168.48.0/26","networkBlock":"192.168.48.0/22","nsxtCertificateThumbprint":"B9A9474616752565A3FAF23E0A013ECE3DC8B8FF","provisioningNetwork":"192.168.50.0/25","provisioningState":"Succeeded","vcenterCertificateThumbprint":"BE8EA855AA13D9662A115571636B9B1925C6DB68","vmotionNetwork":"192.168.49.128/25"},"sku":{"name":"av20"},"tags":{},"type":"Microsoft.AVS/privateClouds"},"startTime":"2021-06-03T22:26:27.5613360+00:00","status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2067'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 03 Jun 2021 22:28:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: FE971AD8B42346899B56E07FC754981B Ref B: PDX31EDGE0108 Ref C: 2021-06-03T22:28:43Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --location --sku --cluster-size --network-block --nsxt-password --vcenter-password
+        --accept-eula
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1?api-version=2021-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1","location":"westcentralus","name":"cloud1","properties":{"circuit":{"expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt64-cust-mp01-mock01/providers/Microsoft.Network/expressRouteCircuits/tnt64-cust-mp01-mock01-er","expressRoutePrivatePeeringID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt64-cust-mp01-mock01/providers/Microsoft.Network/expressRouteCircuits/tnt64-cust-mp01-mock01-er/peerings/AzurePrivatePeering","primarySubnet":"192.168.48.232/30","secondarySubnet":"192.168.48.236/30"},"endpoints":{"hcxCloudManager":"https://192.168.48.9/","nsxtManager":"https://192.168.48.3/","vcsa":"https://192.168.48.2/"},"externalCloudLinks":[],"identitySources":[],"internet":"Disabled","managementCluster":{"clusterId":1,"clusterSize":4,"hosts":["gp-fakehost17.mp01.mock01.vmcp.vs.management","gp-fakehost19.mp01.mock01.vmcp.vs.management","gp-fakehost18.mp01.mock01.vmcp.vs.management","gp-fakehost12.mp01.mock01.vmcp.vs.management"],"provisioningState":"Succeeded"},"managementNetwork":"192.168.48.0/26","networkBlock":"192.168.48.0/22","nsxtCertificateThumbprint":"B9A9474616752565A3FAF23E0A013ECE3DC8B8FF","provisioningNetwork":"192.168.50.0/25","provisioningState":"Succeeded","vcenterCertificateThumbprint":"BE8EA855AA13D9662A115571636B9B1925C6DB68","vmotionNetwork":"192.168.49.128/25"},"sku":{"name":"av20"},"tags":{},"type":"Microsoft.AVS/privateClouds"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1619'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 03 Jun 2021 22:28:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 6BAA7AA47F6549098C1D51731EDF76A8 Ref B: PDX31EDGE0108 Ref C: 2021-06-03T22:28:43Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Charset:
+      - utf-8
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.22.0
+      return-client-request-id:
+      - 'true'
+      x-client-CPU:
+      - x64
+      x-client-OS:
+      - win32
+      x-client-SKU:
+      - Python
+      x-client-Ver:
+      - 1.2.3
+    method: GET
+    uri: https://login.microsoftonline.com/common/discovery/instance?authorization_endpoint=https%3A%2F%2Flogin.windows-ppe.net%2Ff686d426-8d16-42db-81b7-ab578e110ccd%2Foauth2%2Fauthorize&api-version=1.0
+  response:
+    body:
+      string: '{"tenant_discovery_endpoint":"https://login.windows-ppe.net/f686d426-8d16-42db-81b7-ab578e110ccd/.well-known/openid-configuration"}'
+    headers:
+      access-control-allow-methods:
+      - GET, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=86400, private
+      content-length:
+      - '131'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 03 Jun 2021 22:28:44 GMT
+      p3p:
+      - CP="DSP CUR OTPi IND OTRi ONL FIN"
+      set-cookie:
+      - fpc=ArIzp7QvWYNLh2_FzcOyajs; expires=Sat, 03-Jul-2021 22:28:45 GMT; path=/;
+        secure; HttpOnly; SameSite=None
+      - esctx=AQABAAAAAAD--DLA3VO7QrddgJg7WevrXum7S57AzN9GgPTwMCg-uub_KhsJ4KqBQFVF4t6zocVFMWfu3eLiGDWuSLhEtKkFlUynHZFSraYif03jJFQMMnbOLDAqe5fpD8jittKwrL3_45zsGnqEJQDoQ4uVRZK1B8n3_8bI4KmsKw0NoJmPMk7RvymyoZqegWnZm2mL0XogAA;
+        domain=.login.microsoftonline.com; path=/; secure; HttpOnly; SameSite=None
+      - x-ms-gateway-slice=estsfd; path=/; secure; samesite=none; httponly
+      - stsservicecookie=estsfd; path=/; secure; samesite=none; httponly
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ests-server:
+      - 2.1.11722.26 - NCUS ProdSlices
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware private-cloud list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.18.0 azsdk-python-mgmt-avs/0.1.0 Python/3.8.7 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://api-dogfood.resources.windows-int.net/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds?api-version=2021-06-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1","location":"westcentralus","name":"cloud1","properties":{"circuit":{"expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt64-cust-mp01-mock01/providers/Microsoft.Network/expressRouteCircuits/tnt64-cust-mp01-mock01-er","expressRoutePrivatePeeringID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt64-cust-mp01-mock01/providers/Microsoft.Network/expressRouteCircuits/tnt64-cust-mp01-mock01-er/peerings/AzurePrivatePeering","primarySubnet":"192.168.48.232/30","secondarySubnet":"192.168.48.236/30"},"endpoints":{"hcxCloudManager":"https://192.168.48.9/","nsxtManager":"https://192.168.48.3/","vcsa":"https://192.168.48.2/"},"externalCloudLinks":[],"identitySources":[],"internet":"Disabled","managementCluster":{"clusterId":1,"clusterSize":4,"hosts":["gp-fakehost17.mp01.mock01.vmcp.vs.management","gp-fakehost19.mp01.mock01.vmcp.vs.management","gp-fakehost18.mp01.mock01.vmcp.vs.management","gp-fakehost12.mp01.mock01.vmcp.vs.management"],"provisioningState":"Succeeded"},"managementNetwork":"192.168.48.0/26","networkBlock":"192.168.48.0/22","nsxtCertificateThumbprint":"B9A9474616752565A3FAF23E0A013ECE3DC8B8FF","provisioningNetwork":"192.168.50.0/25","provisioningState":"Succeeded","vcenterCertificateThumbprint":"BE8EA855AA13D9662A115571636B9B1925C6DB68","vmotionNetwork":"192.168.49.128/25"},"sku":{"name":"av20"},"tags":{},"type":"Microsoft.AVS/privateClouds"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1631'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 03 Jun 2021 22:28:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: C88C8167222B44459B7B077E116488AB Ref B: PDX31EDGE0115 Ref C: 2021-06-03T22:28:45Z'
+    status:
+      code: 200
+      message: OK
+version: 1
