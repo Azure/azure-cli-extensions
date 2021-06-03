@@ -51,15 +51,6 @@ class ColumnDataType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     BOOLEAN = "boolean"
     OBJECT = "object"
 
-class CreatedByType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The type of identity that created the resource.
-    """
-
-    USER = "User"
-    APPLICATION = "Application"
-    MANAGED_IDENTITY = "ManagedIdentity"
-    KEY = "Key"
-
 class FacetSortOrder(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The sorting order by the selected column (count by default).
     """

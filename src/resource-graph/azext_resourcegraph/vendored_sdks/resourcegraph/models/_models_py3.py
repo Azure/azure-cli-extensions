@@ -495,16 +495,20 @@ class Resource(msrest.serialization.Model):
     :ivar name: Azure resource name. This is GUID value. The display name should be assigned within
      properties field.
     :vartype name: str
-    :ivar location: The location of the resource.
-    :vartype location: str
+    :param location: The location of the resource.
+    :type location: str
     :ivar type: Azure resource type.
     :vartype type: str
+    :param etag: This will be used to handle Optimistic Concurrency. If not present, it will always
+     overwrite the existing resource without checking conflict.
+    :type etag: str
+    :param tags: A set of tags. Resource tags.
+    :type tags: dict[str, str]
     """
 
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
-        'location': {'readonly': True},
         'type': {'readonly': True},
     }
 
@@ -513,17 +517,25 @@ class Resource(msrest.serialization.Model):
         'name': {'key': 'name', 'type': 'str'},
         'location': {'key': 'location', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
+        'etag': {'key': 'etag', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
     }
 
     def __init__(
         self,
+        *,
+        location: Optional[str] = None,
+        etag: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
         **kwargs
     ):
         super(Resource, self).__init__(**kwargs)
         self.id = None
         self.name = None
-        self.location = None
+        self.location = location
         self.type = None
+        self.etag = etag
+        self.tags = tags
 
 
 class GraphQueryResource(Resource):
@@ -536,16 +548,15 @@ class GraphQueryResource(Resource):
     :ivar name: Azure resource name. This is GUID value. The display name should be assigned within
      properties field.
     :vartype name: str
-    :ivar location: The location of the resource.
-    :vartype location: str
+    :param location: The location of the resource.
+    :type location: str
     :ivar type: Azure resource type.
     :vartype type: str
+    :param etag: This will be used to handle Optimistic Concurrency. If not present, it will always
+     overwrite the existing resource without checking conflict.
+    :type etag: str
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
-    :ivar system_data: Metadata pertaining to creation and last modification of the resource.
-    :vartype system_data: ~azure.mgmt.resourcegraph.models.SystemData
-    :param etag: This will be used to handle Optimistic Concurrency.
-    :type etag: str
     :ivar time_modified: Date and time in UTC of the last modification that was made to this graph
      query definition.
     :vartype time_modified: ~datetime.datetime
@@ -560,9 +571,7 @@ class GraphQueryResource(Resource):
     _validation = {
         'id': {'readonly': True},
         'name': {'readonly': True},
-        'location': {'readonly': True},
         'type': {'readonly': True},
-        'system_data': {'readonly': True},
         'time_modified': {'readonly': True},
         'result_kind': {'readonly': True},
     }
@@ -572,9 +581,8 @@ class GraphQueryResource(Resource):
         'name': {'key': 'name', 'type': 'str'},
         'location': {'key': 'location', 'type': 'str'},
         'type': {'key': 'type', 'type': 'str'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
         'etag': {'key': 'etag', 'type': 'str'},
+        'tags': {'key': 'tags', 'type': '{str}'},
         'time_modified': {'key': 'properties.timeModified', 'type': 'iso-8601'},
         'description': {'key': 'properties.description', 'type': 'str'},
         'query': {'key': 'properties.query', 'type': 'str'},
@@ -584,16 +592,14 @@ class GraphQueryResource(Resource):
     def __init__(
         self,
         *,
-        tags: Optional[Dict[str, str]] = None,
+        location: Optional[str] = None,
         etag: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
         description: Optional[str] = None,
         query: Optional[str] = None,
         **kwargs
     ):
-        super(GraphQueryResource, self).__init__(**kwargs)
-        self.tags = tags
-        self.system_data = None
-        self.etag = etag
+        super(GraphQueryResource, self).__init__(location=location, etag=etag, tags=tags, **kwargs)
         self.time_modified = None
         self.description = description
         self.query = query
@@ -1349,54 +1355,6 @@ class ResourcesHistoryRequestOptions(msrest.serialization.Model):
         self.skip = skip
         self.skip_token = skip_token
         self.result_format = result_format
-
-
-class SystemData(msrest.serialization.Model):
-    """Metadata pertaining to creation and last modification of the resource.
-
-    :param created_by: The identity that created the resource.
-    :type created_by: str
-    :param created_by_type: The type of identity that created the resource. Possible values
-     include: "User", "Application", "ManagedIdentity", "Key".
-    :type created_by_type: str or ~azure.mgmt.resourcegraph.models.CreatedByType
-    :param created_at: The timestamp of resource creation (UTC).
-    :type created_at: ~datetime.datetime
-    :param last_modified_by: The identity that last modified the resource.
-    :type last_modified_by: str
-    :param last_modified_by_type: The type of identity that last modified the resource. Possible
-     values include: "User", "Application", "ManagedIdentity", "Key".
-    :type last_modified_by_type: str or ~azure.mgmt.resourcegraph.models.CreatedByType
-    :param last_modified_at: The timestamp of resource last modification (UTC).
-    :type last_modified_at: ~datetime.datetime
-    """
-
-    _attribute_map = {
-        'created_by': {'key': 'createdBy', 'type': 'str'},
-        'created_by_type': {'key': 'createdByType', 'type': 'str'},
-        'created_at': {'key': 'createdAt', 'type': 'iso-8601'},
-        'last_modified_by': {'key': 'lastModifiedBy', 'type': 'str'},
-        'last_modified_by_type': {'key': 'lastModifiedByType', 'type': 'str'},
-        'last_modified_at': {'key': 'lastModifiedAt', 'type': 'iso-8601'},
-    }
-
-    def __init__(
-        self,
-        *,
-        created_by: Optional[str] = None,
-        created_by_type: Optional[Union[str, "CreatedByType"]] = None,
-        created_at: Optional[datetime.datetime] = None,
-        last_modified_by: Optional[str] = None,
-        last_modified_by_type: Optional[Union[str, "CreatedByType"]] = None,
-        last_modified_at: Optional[datetime.datetime] = None,
-        **kwargs
-    ):
-        super(SystemData, self).__init__(**kwargs)
-        self.created_by = created_by
-        self.created_by_type = created_by_type
-        self.created_at = created_at
-        self.last_modified_by = last_modified_by
-        self.last_modified_by_type = last_modified_by_type
-        self.last_modified_at = last_modified_at
 
 
 class Table(msrest.serialization.Model):

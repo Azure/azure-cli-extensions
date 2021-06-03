@@ -40,7 +40,6 @@ try:
     from ._models_py3 import ResourceSnapshotData
     from ._models_py3 import ResourcesHistoryRequest
     from ._models_py3 import ResourcesHistoryRequestOptions
-    from ._models_py3 import SystemData
     from ._models_py3 import Table
 except (SyntaxError, ImportError):
     from ._models import Column  # type: ignore
@@ -76,14 +75,12 @@ except (SyntaxError, ImportError):
     from ._models import ResourceSnapshotData  # type: ignore
     from ._models import ResourcesHistoryRequest  # type: ignore
     from ._models import ResourcesHistoryRequestOptions  # type: ignore
-    from ._models import SystemData  # type: ignore
     from ._models import Table  # type: ignore
 
 from ._resource_graph_client_enums import (
     ChangeCategory,
     ChangeType,
     ColumnDataType,
-    CreatedByType,
     FacetSortOrder,
     PropertyChangeType,
     ResourcesHistoryRequestOptionsResultFormat,
@@ -126,12 +123,10 @@ __all__ = [
     'ResourceSnapshotData',
     'ResourcesHistoryRequest',
     'ResourcesHistoryRequestOptions',
-    'SystemData',
     'Table',
     'ChangeCategory',
     'ChangeType',
     'ColumnDataType',
-    'CreatedByType',
     'FacetSortOrder',
     'PropertyChangeType',
     'ResourcesHistoryRequestOptionsResultFormat',
