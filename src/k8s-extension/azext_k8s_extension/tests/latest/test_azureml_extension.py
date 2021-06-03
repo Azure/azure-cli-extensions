@@ -25,7 +25,7 @@ class TestAzureMlExtension(unittest.TestCase):
         self.assertTrue('scoringFe.sslCert' in protected_config)
         self.assertTrue('scoringFe.sslKey' in protected_config)
         encoded_cert_and_key_file = os.path.join(TEST_DIR, 'data', 'azure_ml', 'cert_and_key_encoded.txt')
-        with open(encoded_cert_and_key_file, "rb") as text_file:
+        with open(encoded_cert_and_key_file, "r") as text_file:
             cert = text_file.readline().rstrip()
             self.assertEquals(cert, protected_config['scoringFe.sslCert'])
             key = text_file.readline()

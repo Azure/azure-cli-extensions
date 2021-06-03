@@ -189,7 +189,7 @@ class AzureMLKubernetes(PartnerExtensionModel):
 
     def __validate_scoring_fe_settings(self, configuration_settings, configuration_protected_settings):
         experimentalCluster = _get_value_from_config_protected_config(
-            'experimental', configuration_settings, configuration_protected_settings)
+            'inferenceLoadBalancerHA', configuration_settings, configuration_protected_settings)
         experimentalCluster = str(experimentalCluster).lower() == 'true'
         if experimentalCluster:
             configuration_settings['clusterPurpose'] = 'DevTest'
@@ -225,12 +225,12 @@ class AzureMLKubernetes(PartnerExtensionModel):
             with open(feSslCertFile) as f:
                 cert_data = f.read()
                 cert_data_bytes = cert_data.encode("ascii")
-                ssl_cert = base64.b64encode(cert_data_bytes)
+                ssl_cert = base64.b64encode(cert_data_bytes).decode()
                 configuration_protected_settings['scoringFe.sslCert'] = ssl_cert
             with open(feSslKeyFile) as f:
                 key_data = f.read()
                 key_data_bytes = key_data.encode("ascii")
-                ssl_key = base64.b64encode(key_data_bytes)
+                ssl_key = base64.b64encode(key_data_bytes).decode()
                 configuration_protected_settings['scoringFe.sslKey'] = ssl_key
         else:
             logger.warning(
