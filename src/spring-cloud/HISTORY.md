@@ -1,5 +1,18 @@
 Release History
 ===============
+
+2.4.0
+-----
+* Add support to format log streaming of structured JSON output
+
+2.3.1
+-----
+* Fix disable-ssl in redis binding.
+
+2.3.0
+-----
+* Support End-to-end TLS.
+
 2.2.1
 -----
 * Fix exception in app service binding

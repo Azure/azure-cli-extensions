@@ -1,0 +1,66 @@
+name: $(Date:yyyyMMdd)$(Rev:.r)_Python$(PYTHON_VERSION)_Coverage-$(COVERAGE)_Mode-$(TEST_MODE)_Branch-$(Build.SourceBranchName)
+
+trigger: none
+
+pr:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - src/aks-preview/
+
+jobs:
+- job: LiveTest
+  pool:
+    vmImage: 'ubuntu-16.04'
+  timeoutInMinutes: 360
+  displayName: "Live Test with Python"
+  steps:
+    - bash: |
+        pwd
+        ls -alh
+        mkdir azure-cli-extensions
+        shopt -s extglob dotglob
+        mv !(azure-cli-extensions) azure-cli-extensions
+        shopt -u extglob dotglob
+        ls -alh
+      displayName: "Move All Checkout Files to the Newly Created 'azure-cli-extensions' Directory"
+    - bash: |
+        ./azure-cli-extensions/src/aks-preview/azcli_aks_live_test/clone_repo.sh
+      condition: succeeded()
+      displayName: "Clone GitHub Repo and Move Live Test Related Files"
+    - bash: |
+        ./prepare_image.sh
+      condition: succeeded()
+      displayName: "Prepare Live Test Image"
+    - bash: |
+        ./start_container.sh
+      env:
+        MAPPED_AZCLI_ALT_CLIENT_SECRET: $(AZCLI_ALT_CLIENT_SECRET)
+        BUILD_REASON: $(Build.Reason)
+        SYSTEM_PULLREQUEST_TARGETBRANCH: $(System.PullRequest.TargetBranch)
+      condition: succeeded()
+      displayName: "Start Container"
+    - bash: |
+        docker exec "azcli-aks-live-test-container" /opt/setup_venv.sh
+      condition: succeeded()
+      displayName: "Set up Virtual Environment"
+    - bash: |
+        docker exec "azcli-aks-live-test-container" /opt/test_cli_live.sh
+      condition: and(succeeded(), in(variables['COVERAGE'], 'cli', 'all'))
+      displayName: Perform Live Test for CLI
+    - bash: |
+        docker exec "azcli-aks-live-test-container" /opt/test_ext_live.sh
+      condition: and(succeededOrFailed(), in(variables['COVERAGE'], 'ext', 'all'))
+      displayName: Perform Live Test for EXT
+    - task: CopyFiles@2
+      inputs:
+        contents: 'reports/**'
+        targetFolder: $(Build.ArtifactStagingDirectory)
+      condition: succeededOrFailed()
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: $(Build.ArtifactStagingDirectory)
+        artifactName: 'live test reports'
+      condition: succeededOrFailed()

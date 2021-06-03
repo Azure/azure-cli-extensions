@@ -92,6 +92,16 @@ class DefaultAction(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     ALLOW = "Allow"
     DENY = "Deny"
 
+class DefaultSharePermission(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Default share permission for users using Kerberos authentication if RBAC role is not assigned.
+    """
+
+    NONE = "None"
+    STORAGE_FILE_DATA_SMB_SHARE_READER = "StorageFileDataSmbShareReader"
+    STORAGE_FILE_DATA_SMB_SHARE_CONTRIBUTOR = "StorageFileDataSmbShareContributor"
+    STORAGE_FILE_DATA_SMB_SHARE_ELEVATED_CONTRIBUTOR = "StorageFileDataSmbShareElevatedContributor"
+    STORAGE_FILE_DATA_SMB_SHARE_OWNER = "StorageFileDataSmbShareOwner"
+
 class DirectoryServiceOptions(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """Indicates the directory service used.
     """
@@ -249,6 +259,11 @@ class LeaseStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 class ListContainersInclude(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 
     DELETED = "deleted"
+
+class ListSharesExpand(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+
+    DELETED = "deleted"
+    SNAPSHOTS = "snapshots"
 
 class ManagementPolicyName(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
 

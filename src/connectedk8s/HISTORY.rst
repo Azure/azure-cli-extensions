@@ -3,6 +3,36 @@
 Release History
 ===============
 
+1.1.5
+++++++
+* Add custom-locations oid parameter for spn scenario
+
+
+1.1.4
+++++++
+* Add compatible logic for the track 2 migration of resource dependence
+
+
+1.1.3
+++++++
+* Fix for list_node() sdk function for AKS v1.19.x clusters
+* Some logging and telemetry fixes
+
+
+1.1.2
+++++++
+* Fix/remove bug for unused error type import from az cli version 2.16.0+
+
+
+1.1.1
+++++++
+* Adapting to the new CLI error handling guidelines
+
+
+1.1.0
+++++++
+* Adding enable/disable features support and az connectedk8s proxy
+
 1.0.0
 ++++++
 * Moving to GA API version

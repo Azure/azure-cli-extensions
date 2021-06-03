@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import unittest
+import mock
 
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
@@ -20,11 +20,13 @@ class ManagedCassandraScenarioTest(ScenarioTest):
 
         self.kwargs.update({
             'c': self.create_random_name(prefix='cli', length=10),
-            'subnet_id': self.create_subnet(resource_group)
+            'subnet_id': self.create_subnet(resource_group),
+            'seed_nodes': '127.0.0.1 127.0.0.2',
+            'certs': './test.pem'
         })
 
         # Create Cluster
-        self.cmd('az managed-cassandra cluster create -c {c} -l eastus2 -g {rg} -s {subnet_id}')
+        self.cmd('az managed-cassandra cluster create -c {c} -l eastus2 -g {rg} -s {subnet_id} -e {certs} --external-seed-nodes {seed_nodes}')
         cluster = self.cmd('az managed-cassandra cluster show -c {c} -g {rg}').get_output_in_json()
         assert cluster['properties']['provisioningState'] == 'Succeeded'
 
@@ -45,14 +47,9 @@ class ManagedCassandraScenarioTest(ScenarioTest):
         })
 
         # Create Cluster
-        self.cmd('az managed-cassandra cluster create -c {c} -l eastus2 -g {rg} -s {subnet_id}')
+        self.cmd('az managed-cassandra cluster create -c {c} -l eastus2 -g {rg} -s {subnet_id} -i password')
         cluster = self.cmd('az managed-cassandra cluster show -c {c} -g {rg}').get_output_in_json()
         assert cluster['properties']['provisioningState'] == 'Succeeded'
-
-        # Create Cluster
-        self.cmd('az managed-cassandra cluster create -c {c1} -l eastus2 -g {rg} -s {subnet_id}')
-        cluster1 = self.cmd('az managed-cassandra cluster show -c {c1} -g {rg}').get_output_in_json()
-        assert cluster1['properties']['provisioningState'] == 'Succeeded'
 
         # Create Datacenter
         self.cmd('az managed-cassandra datacenter create -c {c} -d {d} -l eastus2 -g {rg} -n 3 -s {subnet_id}')
@@ -65,21 +62,15 @@ class ManagedCassandraScenarioTest(ScenarioTest):
 
         # List Clusters in ResourceGroup
         clusters = self.cmd('az managed-cassandra cluster list -g {rg}').get_output_in_json()
-        assert len(clusters) == 2
+        assert len(clusters) == 1
 
         # List Clusters in Subscription
-        # clusters_sub = self.cmd('az cassandra-mi cluster list-by-subscription').get_output_in_json()
-        # assert len(clusters_sub) == 2
+        clusters_sub = self.cmd('az managed-cassandra cluster list').get_output_in_json()
+        assert len(clusters_sub) >= 1
 
         # Delete Cluster
         try:
             self.cmd('az managed-cassandra cluster delete -c {c} -g {rg} --yes')
-        except Exception as e:
-            print(e)
-
-        # Delete Cluster
-        try:
-            self.cmd('az managed-cassandra cluster delete -c {c1} -g {rg} --yes')
         except Exception as e:
             print(e)
 
@@ -103,7 +94,8 @@ class ManagedCassandraScenarioTest(ScenarioTest):
         })
 
         # Role Assignment.
-        vnet_resource = self.cmd('az role assignment create --assignee e5007d2c-4b13-4a74-9b6a-605d99f03501 --role 4d97b98b-1d4f-4787-a291-c67834d212e7 --scope {vnet_id}')
+        with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
+            vnet_resource = self.cmd('az role assignment create --assignee e5007d2c-4b13-4a74-9b6a-605d99f03501 --role 4d97b98b-1d4f-4787-a291-c67834d212e7 --scope {vnet_id}')
 
         # Get Delegated subnet id.
         subnet_resource = self.cmd('az network vnet subnet show -g {rg} --vnet-name {vnet} --name {subnet}').get_output_in_json()

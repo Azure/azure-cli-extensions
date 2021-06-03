@@ -574,6 +574,17 @@ def snapshot_blob(client, metadata=None, **kwargs):
     return client.get_blob_properties()
 
 
+# pylint: disable=protected-access
+def _adjust_block_blob_size(client, blob_type, length):
+    if not blob_type or blob_type != 'block':
+        return
+    # increase the block size to 4000MB when the block list will contain more than
+    # 50,000 blocks(each block 4MB)
+    if length > 50000 * 4 * 1024 * 1024:
+        client._config.max_block_size = 4000 * 1024 * 1024
+        client._config.max_single_put_size = 5000 * 1024 * 1024
+
+
 # pylint: disable=too-many-locals
 def upload_blob(cmd, client, file_path=None, container_name=None, blob_name=None, blob_type=None,
                 metadata=None, validate_content=False, maxsize_condition=None, max_connections=2, lease_id=None,
@@ -618,11 +629,13 @@ def upload_blob(cmd, client, file_path=None, container_name=None, blob_name=None
     try:
         if file_path:
             length = os.path.getsize(file_path)
+            _adjust_block_blob_size(client, blob_type, length)
             with open(file_path, 'rb') as stream:
                 response = client.upload_blob(data=stream, length=length, metadata=metadata,
                                               encryption_scope=encryption_scope,
                                               **upload_args, **kwargs)
         if data is not None:
+            _adjust_block_blob_size(client, blob_type, length)
             response = client.upload_blob(data=data, length=length, metadata=metadata,
                                           encryption_scope=encryption_scope,
                                           **upload_args, **kwargs)
