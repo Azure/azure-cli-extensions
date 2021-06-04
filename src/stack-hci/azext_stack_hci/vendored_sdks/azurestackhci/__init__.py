@@ -7,10 +7,13 @@
 # --------------------------------------------------------------------------
 
 from ._azure_stack_hci_client import AzureStackHCIClient
+from ._version import VERSION
+
+__version__ = VERSION
 __all__ = ['AzureStackHCIClient']
 
 try:
-    from ._patch import patch_sdk
+    from ._patch import patch_sdk  # type: ignore
     patch_sdk()
 except ImportError:
     pass

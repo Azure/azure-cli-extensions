@@ -1,7 +1,8 @@
 interactions:
 - request:
     body: '{"properties": {"displayName": "My Subscription", "workload": "Production",
-      "billingScope": "/providers/Microsoft.Billing/billingAccounts/9147924/enrollmentAccounts/253727"}}'
+      "billingScope": "/providers/Microsoft.Billing/billingAccounts/9147924/enrollmentAccounts/253727",
+      "resellerId": "5139005"}}'
     headers:
       Accept:
       - application/json
@@ -12,13 +13,13 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '174'
+      - '199'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --name --billing-scope --display-name --workload
+      - --name --billing-scope --display-name --workload --reseller-id
       User-Agent:
-      - AZURECLI/2.11.1 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/providers/Microsoft.Subscription/aliases/cli_alias000001?api-version=2020-09-01
   response:
@@ -32,13 +33,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Sep 2020 09:09:22 GMT
+      - Mon, 19 Oct 2020 04:31:36 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - c1c02099-f330-4cd6-9ec9-8fafe691bc5f
+      - 1db87999-9969-4750-9a50-d161a84e01e8
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -68,9 +69,9 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --billing-scope --display-name --workload
+      - --name --billing-scope --display-name --workload --reseller-id
       User-Agent:
-      - AZURECLI/2.11.1 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/providers/Microsoft.Subscription/aliases/cli_alias000001?api-version=2020-09-01
   response:
@@ -84,13 +85,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Sep 2020 09:09:52 GMT
+      - Mon, 19 Oct 2020 04:32:06 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - 6707b895-b8b5-41c2-b50e-11bdf8dab99a
+      - 97329b98-8bab-4e54-89a5-e2bdeef30ed1
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -124,7 +125,7 @@ interactions:
       ParameterSetName:
       - -n
       User-Agent:
-      - AZURECLI/2.11.1 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/providers/Microsoft.Subscription/aliases/cli_alias000001?api-version=2020-09-01
   response:
@@ -138,13 +139,65 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Sep 2020 09:09:55 GMT
+      - Mon, 19 Oct 2020 04:32:09 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - 582ad076-64bb-4f41-ba16-fc1e91479232
+      - 1a223f4d-05ad-49b6-a0b0-8201f1d71a89
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-gsm:
+      - 1.0.0.0
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account alias list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Subscription/aliases?api-version=2020-09-01
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Subscription/aliases/cli_alias000001","name":"cli_alias000001","type":"Microsoft.Subscription/aliases","properties":{"subscriptionId":"00000000-0000-0000-0000-000000000000","provisioningState":"Succeeded"}},{"id":"/providers/Microsoft.Subscription/aliases/cli_aliasz2vped63fbilta3","name":"cli_aliasz2vped63fbilta3","type":"Microsoft.Subscription/aliases","properties":{"subscriptionId":"8ce5b704-34d5-4c0e-8551-cc5fab0e0784","provisioningState":"Succeeded"}},{"id":"/providers/Microsoft.Subscription/aliases/cli_alias_newsgdbu7csc2j","name":"cli_alias_newsgdbu7csc2j","type":"Microsoft.Subscription/aliases","properties":{"subscriptionId":"8338eecb-3bd3-4162-a212-80452f84f3b3","provisioningState":"Succeeded"}},{"id":"/providers/Microsoft.Subscription/aliases/cli_aliasdxbzpmqagecs5zq","name":"cli_aliasdxbzpmqagecs5zq","type":"Microsoft.Subscription/aliases","properties":{"subscriptionId":"d50bf18c-e268-4da7-81cb-c752f2323415","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1023'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 04:32:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-id:
+      - b71d2a01-738f-4e5f-8a24-403c38f1b07c
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -176,24 +229,31 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.11.1 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions?api-version=2016-06-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"4b7571aa-8a25-4e1e-b884-e9a33cea95c5","displayName":"TestingLimit1-100","state":"Enabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"86bc4fb6-0fc8-4db5-8568-2f8aeb998e4c","displayName":"cli_subos5rknc3e66p3iniq","state":"Warned","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"6aaa903e-7c45-4492-8d3c-ef882bc009b5","displayName":"Feng
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"4b7571aa-8a25-4e1e-b884-e9a33cea95c5","displayName":"TestingLimit1-100","state":"Enabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"86bc4fb6-0fc8-4db5-8568-2f8aeb998e4c","displayName":"cli_subos5rknc3e66p3iniq","state":"Disabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"6aaa903e-7c45-4492-8d3c-ef882bc009b5","displayName":"Feng
         Alias Subscription 2","state":"Enabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"e35ea3b7-3091-4787-9216-d0b90889234f","displayName":"My
-        Subscription","state":"Enabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"00000000-0000-0000-0000-000000000000","displayName":"My
+        Subscription","state":"Disabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"e3d4b083-25f4-4418-ac6e-e94ac4974560","displayName":"My
+        Big Subscription","state":"Enabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"bf46ae24-b93e-42b8-b9c2-8f910a8d5d07","displayName":"Feng
+        Alias Subscription","state":"Enabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"bab9215e-6f79-467b-969a-c758934700d9","displayName":"My
+        Subscription","state":"Disabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"996e8f3d-9765-4bee-a716-b693914b30b5","displayName":"My
+        Subscription","state":"Disabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"8ce5b704-34d5-4c0e-8551-cc5fab0e0784","displayName":"My
+        Subscription","state":"Enabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"d50bf18c-e268-4da7-81cb-c752f2323415","displayName":"My
+        Subscription","state":"Enabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"8338eecb-3bd3-4162-a212-80452f84f3b3","displayName":"My
+        Big Subscription","state":"Enabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"00000000-0000-0000-0000-000000000000","displayName":"My
         Subscription","state":"Enabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1681'
+      - '4012'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Sep 2020 09:09:56 GMT
+      - Mon, 19 Oct 2020 04:32:13 GMT
       expires:
       - '-1'
       pragma:
@@ -221,7 +281,7 @@ interactions:
       ParameterSetName:
       - --subscription-id
       User-Agent:
-      - AZURECLI/2.11.1 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000?api-version=2016-06-01
   response:
@@ -236,7 +296,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Sep 2020 09:09:57 GMT
+      - Mon, 19 Oct 2020 04:32:13 GMT
       expires:
       - '-1'
       pragma:
@@ -264,7 +324,7 @@ interactions:
       ParameterSetName:
       - --subscription-id
       User-Agent:
-      - AZURECLI/2.11.1 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/locations?api-version=2016-06-01
   response:
@@ -319,7 +379,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Sep 2020 09:09:57 GMT
+      - Mon, 19 Oct 2020 04:32:14 GMT
       expires:
       - '-1'
       pragma:
@@ -349,7 +409,7 @@ interactions:
       ParameterSetName:
       - --subscription-id --yes
       User-Agent:
-      - AZURECLI/2.11.1 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Subscription/cancel?api-version=2020-09-01
   response:
@@ -363,13 +423,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Sep 2020 09:10:02 GMT
+      - Mon, 19 Oct 2020 04:32:18 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - 74add5cb-3703-4e92-a22d-b6d7f60cba6a
+      - e45adf23-6f80-4456-86f6-2586e87a92ba
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -405,7 +465,93 @@ interactions:
       ParameterSetName:
       - --subscription-id
       User-Agent:
-      - AZURECLI/2.11.1 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000?api-version=2016-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"00000000-0000-0000-0000-000000000000","displayName":"My
+        Subscription","state":"Enabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '329'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 04:37:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account subscription show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription-id
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000?api-version=2016-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"00000000-0000-0000-0000-000000000000","displayName":"My
+        Subscription","state":"Enabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '329'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 04:40:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account subscription show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription-id
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000?api-version=2016-06-01
   response:
@@ -420,7 +566,93 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Sep 2020 09:15:02 GMT
+      - Mon, 19 Oct 2020 04:43:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account subscription show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription-id
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000?api-version=2016-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"00000000-0000-0000-0000-000000000000","displayName":"My
+        Subscription","state":"Warned","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '328'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 04:43:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account subscription show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription-id
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000?api-version=2016-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"00000000-0000-0000-0000-000000000000","displayName":"My
+        Subscription","state":"Warned","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '328'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 04:43:22 GMT
       expires:
       - '-1'
       pragma:
@@ -450,7 +682,7 @@ interactions:
       ParameterSetName:
       - --subscription-id
       User-Agent:
-      - AZURECLI/2.11.1 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Subscription/enable?api-version=2020-09-01
   response:
@@ -464,13 +696,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Sep 2020 09:15:07 GMT
+      - Mon, 19 Oct 2020 04:43:27 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - 258279d2-320a-4af0-a384-5de245323cf5
+      - 9393ea98-4d25-4973-aa19-8b6e84375f50
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -506,7 +738,93 @@ interactions:
       ParameterSetName:
       - --subscription-id
       User-Agent:
-      - AZURECLI/2.11.1 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000?api-version=2016-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"00000000-0000-0000-0000-000000000000","displayName":"My
+        Subscription","state":"Warned","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '328'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 04:48:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account subscription show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription-id
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000?api-version=2016-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"00000000-0000-0000-0000-000000000000","displayName":"My
+        Subscription","state":"Warned","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '328'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 04:51:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account subscription show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription-id
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000?api-version=2016-06-01
   response:
@@ -521,7 +839,308 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Sep 2020 09:20:08 GMT
+      - Mon, 19 Oct 2020 04:54:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account subscription show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription-id
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000?api-version=2016-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"00000000-0000-0000-0000-000000000000","displayName":"My
+        Subscription","state":"Enabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '329'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 04:54:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account subscription show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription-id
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000?api-version=2016-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"00000000-0000-0000-0000-000000000000","displayName":"My
+        Subscription","state":"Enabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '329'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 04:54:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account subscription show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription-id
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000?api-version=2016-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"00000000-0000-0000-0000-000000000000","displayName":"My
+        Subscription","state":"Enabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '329'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 04:54:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account subscription show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription-id
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000?api-version=2016-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"00000000-0000-0000-0000-000000000000","displayName":"My
+        Subscription","state":"Warned","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '328'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 04:54:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account subscription show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription-id
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000?api-version=2016-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"00000000-0000-0000-0000-000000000000","displayName":"My
+        Subscription","state":"Enabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '329'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 04:57:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account subscription show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription-id
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000?api-version=2016-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"00000000-0000-0000-0000-000000000000","displayName":"My
+        Subscription","state":"Enabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '329'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 04:57:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account subscription show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --subscription-id
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000?api-version=2016-06-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"00000000-0000-0000-0000-000000000000","displayName":"My
+        Subscription","state":"Enabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '329'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 04:57:32 GMT
       expires:
       - '-1'
       pragma:
@@ -553,7 +1172,7 @@ interactions:
       ParameterSetName:
       - --subscription-id --name
       User-Agent:
-      - AZURECLI/2.11.1 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Subscription/rename?api-version=2020-09-01
   response:
@@ -567,13 +1186,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Sep 2020 09:20:12 GMT
+      - Mon, 19 Oct 2020 04:57:38 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - f3f68d09-b145-4b03-91ee-b1ab5a5ed5f1
+      - 30295d6b-ad3e-45fe-93c5-1b6bcf4460ae
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -603,97 +1222,11 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - account subscription show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --subscription-id
-      User-Agent:
-      - AZURECLI/2.11.1 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000?api-version=2016-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"00000000-0000-0000-0000-000000000000","displayName":"My
-        Subscription","state":"Warned","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '328'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Sep 2020 09:25:12 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - account subscription show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --subscription-id
-      User-Agent:
-      - AZURECLI/2.11.1 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000?api-version=2016-06-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"Legacy","subscriptionId":"00000000-0000-0000-0000-000000000000","displayName":"My
-        Big Subscription","state":"Enabled","subscriptionPolicies":{"locationPlacementId":"Public_2014-09-01","quotaId":"EnterpriseAgreement_2014-09-01","spendingLimit":"Off"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '333'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 04 Sep 2020 12:20:37 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
       - account tenant list
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.11.1 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
     method: GET
     uri: https://management.azure.com/tenants?api-version=2016-06-01
   response:
@@ -707,7 +1240,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Sep 2020 12:20:39 GMT
+      - Mon, 19 Oct 2020 04:57:39 GMT
       expires:
       - '-1'
       pragma:
@@ -737,7 +1270,7 @@ interactions:
       ParameterSetName:
       - -n
       User-Agent:
-      - AZURECLI/2.11.1 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
     method: DELETE
     uri: https://management.azure.com/providers/Microsoft.Subscription/aliases/cli_alias000001?api-version=2020-09-01
   response:
@@ -749,13 +1282,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 04 Sep 2020 12:20:42 GMT
+      - Mon, 19 Oct 2020 04:57:42 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - 9ee56908-7fab-4306-99cb-e2e053918afc
+      - 80a06217-b857-404d-a211-d392a5af14fe
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -767,7 +1300,7 @@ interactions:
       x-gsm:
       - 1.0.0.0
       x-ms-ratelimit-remaining-tenant-deletes:
-      - '14999'
+      - '14998'
       x-powered-by:
       - ASP.NET
     status:
@@ -791,7 +1324,7 @@ interactions:
       ParameterSetName:
       - --name --workload --subscription-id
       User-Agent:
-      - AZURECLI/2.11.1 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/providers/Microsoft.Subscription/aliases/cli_alias_new000002?api-version=2020-09-01
   response:
@@ -805,13 +1338,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 04 Sep 2020 12:20:45 GMT
+      - Mon, 19 Oct 2020 04:57:47 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - d6f3d475-ee3e-4529-b28a-b985a191b268
+      - 7312f91f-8dd9-4aa7-a4be-fe518944e572
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:
@@ -849,7 +1382,457 @@ interactions:
       ParameterSetName:
       - -n
       User-Agent:
-      - AZURECLI/2.11.1 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/providers/Microsoft.Subscription/aliases/cli_alias_new000002?api-version=2020-09-01
+  response:
+    body:
+      string: '{"error":{"code":"AuthorizationFailed","message":"The client ''kurtangle@aceeatest.onmicrosoft.com''
+        with object id ''ffe20297-4fc8-4fb8-8644-667dd932a959'' does not have authorization
+        to perform action ''Microsoft.Subscription/aliases/delete'' over scope ''/providers/Microsoft.Subscription/aliases/cli_alias_new000002''
+        or the scope is invalid. If access was recently granted, please refresh your
+        credentials."}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '411'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 05:07:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 403
+      message: Forbidden
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account alias delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/providers/Microsoft.Subscription/aliases/cli_alias_new000002?api-version=2020-09-01
+  response:
+    body:
+      string: '{"error":{"code":"AuthorizationFailed","message":"The client ''kurtangle@aceeatest.onmicrosoft.com''
+        with object id ''ffe20297-4fc8-4fb8-8644-667dd932a959'' does not have authorization
+        to perform action ''Microsoft.Subscription/aliases/delete'' over scope ''/providers/Microsoft.Subscription/aliases/cli_alias_new000002''
+        or the scope is invalid. If access was recently granted, please refresh your
+        credentials."}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '411'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 05:10:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 403
+      message: Forbidden
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account alias delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/providers/Microsoft.Subscription/aliases/cli_alias_new000002?api-version=2020-09-01
+  response:
+    body:
+      string: '{"error":{"code":"AuthorizationFailed","message":"The client ''kurtangle@aceeatest.onmicrosoft.com''
+        with object id ''ffe20297-4fc8-4fb8-8644-667dd932a959'' does not have authorization
+        to perform action ''Microsoft.Subscription/aliases/delete'' over scope ''/providers/Microsoft.Subscription/aliases/cli_alias_new000002''
+        or the scope is invalid. If access was recently granted, please refresh your
+        credentials."}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '411'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 05:13:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 403
+      message: Forbidden
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account alias delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/providers/Microsoft.Subscription/aliases/cli_alias_new000002?api-version=2020-09-01
+  response:
+    body:
+      string: '{"error":{"code":"AuthorizationFailed","message":"The client ''kurtangle@aceeatest.onmicrosoft.com''
+        with object id ''ffe20297-4fc8-4fb8-8644-667dd932a959'' does not have authorization
+        to perform action ''Microsoft.Subscription/aliases/delete'' over scope ''/providers/Microsoft.Subscription/aliases/cli_alias_new000002''
+        or the scope is invalid. If access was recently granted, please refresh your
+        credentials."}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '411'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 05:16:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 403
+      message: Forbidden
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account alias delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/providers/Microsoft.Subscription/aliases/cli_alias_new000002?api-version=2020-09-01
+  response:
+    body:
+      string: '{"error":{"code":"AuthorizationFailed","message":"The client ''kurtangle@aceeatest.onmicrosoft.com''
+        with object id ''ffe20297-4fc8-4fb8-8644-667dd932a959'' does not have authorization
+        to perform action ''Microsoft.Subscription/aliases/delete'' over scope ''/providers/Microsoft.Subscription/aliases/cli_alias_new000002''
+        or the scope is invalid. If access was recently granted, please refresh your
+        credentials."}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '411'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 05:19:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 403
+      message: Forbidden
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account alias delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/providers/Microsoft.Subscription/aliases/cli_alias_new000002?api-version=2020-09-01
+  response:
+    body:
+      string: '{"error":{"code":"AuthorizationFailed","message":"The client ''kurtangle@aceeatest.onmicrosoft.com''
+        with object id ''ffe20297-4fc8-4fb8-8644-667dd932a959'' does not have authorization
+        to perform action ''Microsoft.Subscription/aliases/delete'' over scope ''/providers/Microsoft.Subscription/aliases/cli_alias_new000002''
+        or the scope is invalid. If access was recently granted, please refresh your
+        credentials."}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '411'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 05:22:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 403
+      message: Forbidden
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account alias delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/providers/Microsoft.Subscription/aliases/cli_alias_new000002?api-version=2020-09-01
+  response:
+    body:
+      string: '{"error":{"code":"AuthorizationFailed","message":"The client ''kurtangle@aceeatest.onmicrosoft.com''
+        with object id ''ffe20297-4fc8-4fb8-8644-667dd932a959'' does not have authorization
+        to perform action ''Microsoft.Subscription/aliases/delete'' over scope ''/providers/Microsoft.Subscription/aliases/cli_alias_new000002''
+        or the scope is invalid. If access was recently granted, please refresh your
+        credentials."}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '411'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 05:25:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 403
+      message: Forbidden
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account alias delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/providers/Microsoft.Subscription/aliases/cli_alias_new000002?api-version=2020-09-01
+  response:
+    body:
+      string: '{"error":{"code":"AuthorizationFailed","message":"The client ''kurtangle@aceeatest.onmicrosoft.com''
+        with object id ''ffe20297-4fc8-4fb8-8644-667dd932a959'' does not have authorization
+        to perform action ''Microsoft.Subscription/aliases/delete'' over scope ''/providers/Microsoft.Subscription/aliases/cli_alias_new000002''
+        or the scope is invalid. If access was recently granted, please refresh your
+        credentials."}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '411'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 05:28:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 403
+      message: Forbidden
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account alias delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
+    method: DELETE
+    uri: https://management.azure.com/providers/Microsoft.Subscription/aliases/cli_alias_new000002?api-version=2020-09-01
+  response:
+    body:
+      string: '{"error":{"code":"AuthorizationFailed","message":"The client ''kurtangle@aceeatest.onmicrosoft.com''
+        with object id ''ffe20297-4fc8-4fb8-8644-667dd932a959'' does not have authorization
+        to perform action ''Microsoft.Subscription/aliases/delete'' over scope ''/providers/Microsoft.Subscription/aliases/cli_alias_new000002''
+        or the scope is invalid. If access was recently granted, please refresh your
+        credentials."}}'
+    headers:
+      cache-control:
+      - no-cache
+      connection:
+      - close
+      content-length:
+      - '411'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 19 Oct 2020 05:31:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+    status:
+      code: 403
+      message: Forbidden
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - account alias delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n
+      User-Agent:
+      - AZURECLI/2.13.0 azsdk-python-subscriptionclient/unknown Python/3.6.8 (Windows-10-10.0.19041-SP0)
     method: DELETE
     uri: https://management.azure.com/providers/Microsoft.Subscription/aliases/cli_alias_new000002?api-version=2020-09-01
   response:
@@ -861,13 +1844,13 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 09 Sep 2020 06:44:43 GMT
+      - Mon, 19 Oct 2020 05:34:55 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-id:
-      - a039b443-376d-474b-8433-c7f5c7ba4a76
+      - 6918c286-5903-49a6-8ee9-9f55b1f9ba46
       server:
       - Microsoft-IIS/10.0
       strict-transport-security:

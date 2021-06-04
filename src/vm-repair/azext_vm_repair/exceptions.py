@@ -22,3 +22,11 @@ class WindowsOsNotAvailableError(Exception):
 
 class RunScriptNotFoundForIdError(Exception):
     """Raised when the run-id is not found in the repair-script-library"""
+
+
+class SkuDoesNotSupportHyperV(Exception):
+    """Raised when the SKU size does not end with v3"""
+
+
+class ScriptReturnsError(Exception):
+    """Raised when run script returns error"""

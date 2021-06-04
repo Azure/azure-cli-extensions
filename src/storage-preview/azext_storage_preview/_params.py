@@ -3,23 +3,22 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azure.cli.core.commands.parameters import (tags_type, file_type, get_location_type, get_enum_type,
-                                                get_three_state_flag)
+from azure.cli.core.commands.parameters import (get_enum_type, get_three_state_flag, file_type)
+from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction
 
-from ._validators import (get_datetime_type, validate_metadata, validate_custom_domain, process_resource_group,
-                          validate_bypass, validate_encryption_source, storage_account_key_options, validate_key,
+from ._validators import (get_datetime_type, validate_metadata,
                           validate_azcopy_upload_destination_url, validate_azcopy_download_source_url,
                           validate_azcopy_target_url, validate_included_datasets,
                           validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url,
-                          validate_storage_data_plane_list)
-from .profiles import CUSTOM_MGMT_STORAGE
+                          validate_storage_data_plane_list,
+                          process_resource_group, add_upload_progress_callback)
+
+from .profiles import CUSTOM_MGMT_PREVIEW_STORAGE, CUSTOM_DATA_STORAGE_FILEDATALAKE
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements
     from argcomplete.completers import FilesCompleter
     from knack.arguments import CLIArgumentType
-
     from azure.cli.core.commands.parameters import get_resource_name_completion_list
 
     from .sdkutil import get_table_data_type
@@ -31,7 +30,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     acct_name_type = CLIArgumentType(options_list=['--account-name', '-n'], help='The storage account name.',
                                      id_part='name',
-                                     completer=get_resource_name_completion_list('Microsoft.Storage/storageAccounts'))
+                                     completer=get_resource_name_completion_list('Microsoft.Storage/storageAccounts'),
+                                     local_context_attribute=LocalContextAttribute(
+                                         name='storage_account_name', actions=[LocalContextAction.GET]))
     blob_name_type = CLIArgumentType(options_list=['--blob-name', '-b'], help='The blob name.',
                                      completer=get_storage_name_completion_list(t_base_blob_service, 'list_blobs',
                                                                                 parent='container_name'))
@@ -51,6 +52,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                     '"[default:]user|group|other|mask:[entity id or UPN]:r|-w|-x|-,'
                                     '[default:]user|group|other|mask:[entity id or UPN]:r|-w|-x|-,...". '
                                     'e.g."user::rwx,user:john.doe@contoso:rwx,group::r--,other::---,mask::rwx".')
+    progress_type = CLIArgumentType(help='Include this flag to disable progress reporting for the command.',
+                                    action='store_true', validator=add_upload_progress_callback)
+    timeout_type = CLIArgumentType(
+        help='Request timeout in seconds. Applies to each call to the service.', type=int
+    )
 
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
@@ -72,71 +78,75 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('if_match')
         c.argument('if_none_match')
 
-    for item in ['delete', 'show', 'update', 'keys', 'network-rule', 'failover']:
-        with self.argument_context('storage account {}'.format(item)) as c:
-            c.argument('account_name', acct_name_type, options_list=['--name', '-n'])
-            c.argument('resource_group_name', required=False, validator=process_resource_group)
+    with self.argument_context('storage account blob-inventory-policy') as c:
+        c.ignore('blob_inventory_policy_name')
+        c.argument('resource_group_name', required=False, validator=process_resource_group)
+        c.argument('account_name',
+                   help='The name of the storage account within the specified resource group. Storage account names '
+                        'must be between 3 and 24 characters in length and use numbers and lower-case letters only.')
 
-    with self.argument_context('storage account check-name') as c:
-        c.argument('name', options_list=['--name', '-n'])
+    with self.argument_context('storage account blob-inventory-policy create') as c:
+        # t_inventory_rule_type = self.get_models('InventoryRuleType', resource_type=CUSTOM_MGMT_PREVIEW_STORAGE)
+        c.argument('policy', type=file_type, completer=FilesCompleter(),
+                   help='The Storage Account Blob Inventory Policy, string in JSON format or json file path. '
+                        'See more details in: {https://review.docs.microsoft.com/en-us/azure/storage/blobs/'
+                        'blob-inventory?branch=pr-en-us-135665}.')
+        # c.argument('destination',
+        #            help='Container name where blob inventory files are stored. Must be pre-created.')
+        # c.argument('enabled', arg_type=get_three_state_flag(), help='Policy is enabled if set to true.')
+        # c.argument('type', arg_type=get_enum_type(t_inventory_rule_type), default='Inventory', required=False,
+        #            help='The valid value is Inventory. Possible values include: "Inventory".')
+        # c.argument('rule_name', arg_group='Blob Inventory Policy Rule',
+        #            help='A rule name can contain any combination of alpha numeric characters. Rule name is '
+        #            'case-sensitive. It must be unique within a policy.')
+        # c.argument('prefix_match', arg_group='Blob Inventory Policy Rule', nargs='+',
+        #            help='An array of strings for blob prefixes to be matched.')
+        # c.argument('blob_types', arg_group='Blob Inventory Policy Rule', nargs='+',
+        #            help='An array of predefined enum values. Valid values include blockBlob, appendBlob, pageBlob. '
+        #                 'Hns accounts does not support pageBlobs.')
+        # c.argument('include_blob_versions', arg_group='Blob Inventory Policy Rule', arg_type=get_three_state_flag(),
+        #            help='Include blob versions in blob inventory when value set to true.')
+        # c.argument('include_snapshots', arg_group='Blob Inventory Policy Rule', arg_type=get_three_state_flag(),
+        #            help='Include blob snapshots in blob inventory when value set to true.')
 
-    with self.argument_context('storage account create') as c:
-        t_account_type, t_sku_name, t_kind = self.get_models('AccountType', 'SkuName', 'Kind',
-                                                             resource_type=CUSTOM_MGMT_STORAGE)
-        c.register_common_storage_account_options()
-        c.argument('hierarchical_namespace', help='Allows the blob service to exhibit filesystem semantics.',
-                   arg_type=get_three_state_flag())
-        c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
-        c.argument('account_type', help='The storage account type', arg_type=get_enum_type(t_account_type))
-        c.argument('account_name', acct_name_type, options_list=['--name', '-n'], completer=None)
-        c.argument('kind', help='Indicates the type of storage account.',
-                   arg_type=get_enum_type(t_kind, default='storage'))
-        c.argument('tags', tags_type)
-        c.argument('custom_domain', help='User domain assigned to the storage account. Name is the CNAME source.')
-        c.argument('sku', help='The storage account SKU.', arg_type=get_enum_type(t_sku_name, default='standard_ragrs'))
+    # with self.argument_context('storage account blob-inventory-policy rule') as c:
+    #     c.argument('destination', help='')
+    #     c.argument('enabled', help='')
+    #     c.argument('type', help='')
 
-    with self.argument_context('storage account update') as c:
-        c.register_common_storage_account_options()
-        c.argument('custom_domain',
-                   help='User domain assigned to the storage account. Name is the CNAME source. Use "" to clear '
-                        'existing value.',
-                   validator=validate_custom_domain)
-        c.argument('use_subdomain', help='Specify whether to use indirect CNAME validation.',
-                   arg_type=get_enum_type(['true', 'false']))
-        c.argument('tags', tags_type, default=None)
-
-    with self.argument_context('storage account update', arg_group='Customer managed key', min_api='2017-06-01') as c:
-        c.extra('encryption_key_name', help='The name of the KeyVault key', )
-        c.extra('encryption_key_vault', help='The Uri of the KeyVault')
-        c.extra('encryption_key_version', help='The version of the KeyVault key')
-        c.argument('encryption_key_source',
-                   arg_type=get_enum_type(['Microsoft.Storage', 'Microsoft.Keyvault'], 'Microsoft.Storage'),
-                   help='The default encryption service',
-                   validator=validate_encryption_source)
-        c.ignore('encryption_key_vault_properties')
-
-    for scope in ['storage account create', 'storage account update']:
-        with self.argument_context(scope, resource_type=CUSTOM_MGMT_STORAGE, min_api='2017-06-01',
-                                   arg_group='Network Rule') as c:
-            t_bypass, t_default_action = self.get_models('Bypass', 'DefaultAction',
-                                                         resource_type=CUSTOM_MGMT_STORAGE)
-
-            c.argument('bypass', nargs='+', validator=validate_bypass, arg_type=get_enum_type(t_bypass),
-                       help='Bypass traffic for space-separated uses.')
-            c.argument('default_action', arg_type=get_enum_type(t_default_action),
-                       help='Default action to apply when no rule matches.')
-
-    with self.argument_context('storage account show') as c:
-        c.argument('expand', arg_type=get_enum_type(
-            self.get_models('StorageAccountExpand', resource_type=CUSTOM_MGMT_STORAGE)))
-
-    with self.argument_context('storage account keys renew') as c:
-        c.argument('key_name', options_list=['--key'], help='The key to regenerate.', validator=validate_key,
-                   arg_type=get_enum_type(list(storage_account_key_options.keys())))
+    with self.argument_context('storage account file-service-properties show',
+                               resource_type=CUSTOM_MGMT_PREVIEW_STORAGE) as c:
         c.argument('account_name', acct_name_type, id_part=None)
+        c.argument('resource_group_name', required=False, validator=process_resource_group)
 
-    with self.argument_context('storage account keys list') as c:
+    with self.argument_context('storage account file-service-properties update',
+                               resource_type=CUSTOM_MGMT_PREVIEW_STORAGE) as c:
+        from azure.cli.command_modules.storage._validators import validate_file_delete_retention_days
         c.argument('account_name', acct_name_type, id_part=None)
+        c.argument('resource_group_name', required=False, validator=process_resource_group)
+        c.argument('enable_delete_retention', arg_type=get_three_state_flag(), arg_group='Delete Retention Policy',
+                   min_api='2019-06-01', help='Enable file service properties for share soft delete.')
+        c.argument('delete_retention_days', type=int, arg_group='Delete Retention Policy',
+                   validator=validate_file_delete_retention_days, min_api='2019-06-01',
+                   help=' Indicate the number of days that the deleted item should be retained. The minimum specified '
+                        'value can be 1 and the maximum value can be 365.')
+        c.argument('enable_smb_multichannel', options_list=['--enable-smb-multichannel', '--mc'],
+                   arg_type=get_three_state_flag(), min_api='2020-08-01-preview', arg_group='SMB Setting',
+                   help='Set SMB Multichannel setting for file service. Applies to Premium FileStorage only.')
+        c.argument('versions', arg_group='SMB Setting', min_api='2020-08-01-preview',
+                   help="SMB protocol versions supported by server. Valid values are SMB2.1, SMB3.0, "
+                        "SMB3.1.1. Should be passed as a string with delimiter ';'.")
+        c.argument('authentication_methods', options_list='--auth-methods', arg_group='SMB Setting',
+                   min_api='2020-08-01-preview',
+                   help="SMB authentication methods supported by server. Valid values are NTLMv2, Kerberos. "
+                        "Should be passed as a string with delimiter ';'.")
+        c.argument('kerberos_ticket_encryption', options_list=['--kerb-ticket-encryption', '-k'],
+                   arg_group='SMB Setting', min_api='2020-08-01-preview',
+                   help="Kerberos ticket encryption supported by server. Valid values are RC4-HMAC, AES-256. "
+                        "Should be passed as a string with delimiter ';'.")
+        c.argument('channel_encryption', arg_group='SMB Setting', min_api='2020-08-01-preview',
+                   help="SMB channel encryption supported by server. Valid values are AES-CCM-128, AES-GCM-128, "
+                        "AES-GCM-256. Should be passed as a string with delimiter ';'.")
 
     with self.argument_context('storage account network-rule') as c:
         from ._validators import validate_subnet
@@ -145,27 +155,20 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('subnet', help='Name or ID of subnet. If name is supplied, `--vnet-name` must be supplied.')
         c.argument('vnet_name', help='Name of a virtual network.', validator=validate_subnet)
         c.argument('action', help='The action of virtual network rule.')
-
-    with self.argument_context('storage account management-policy create') as c:
-        c.argument('policy', type=file_type, completer=FilesCompleter(),
-                   help='The Storage Account ManagementPolicies Rules, in JSON format. See more details in: '
-                        'https://docs.microsoft.com/azure/storage/common/storage-lifecycle-managment-concepts.')
-        c.argument('account_name', help='The name of the storage account within the specified resource group.')
-
-    with self.argument_context('storage account management-policy update') as c:
-        c.argument('account_name', help='The name of the storage account within the specified resource group.')
+        c.argument('resource_id', help='The resource id to add in network rule.')
+        c.argument('tenant_id', help='The tenant id to add in network rule.')
 
     with self.argument_context('storage blob service-properties update') as c:
         c.argument('delete_retention', arg_type=get_three_state_flag(), arg_group='Soft Delete',
-                   help='Enables soft-delete.')
+                   help='Enable soft-delete.')
         c.argument('days_retained', type=int, arg_group='Soft Delete',
                    help='Number of days that soft-deleted blob will be retained. Must be in range [1,365].')
         c.argument('static_website', arg_group='Static Website', arg_type=get_three_state_flag(),
-                   help='Enables static-website.')
+                   help='Enable static-website.')
         c.argument('index_document', help='Represents the name of the index document. This is commonly "index.html".',
                    arg_group='Static Website')
         c.argument('error_document_404_path', options_list=['--404-document'], arg_group='Static Website',
-                   help='Represents the path to the error document that should be shown when an error 404 is issued,'
+                   help='Represent the path to the error document that should be shown when an error 404 is issued,'
                         ' in other words, when a browser requests a page that does not exist.')
 
     with self.argument_context('storage azcopy blob upload') as c:
@@ -347,3 +350,61 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help='Recursively upload blobs. If enabled, all the blobs including the blobs in subdirectories will'
                         ' be uploaded.')
         c.ignore('destination')
+
+    with self.argument_context('storage file upload') as c:
+        t_file_content_settings = self.get_sdk('file.models#ContentSettings')
+
+        c.register_path_argument(default_file_param='local_file_path')
+        c.register_content_settings_argument(t_file_content_settings, update=False, guess_from_file='local_file_path',
+                                             process_md5=True)
+        c.argument('local_file_path', options_list='--source', type=file_type, completer=FilesCompleter(),
+                   help='Path of the local file to upload as the file content.')
+        c.extra('no_progress', progress_type)
+        c.argument('max_connections', type=int, help='Maximum number of parallel connections to use.')
+        c.extra('share_name', share_name_type, required=True)
+        c.argument('validate_content', action='store_true', min_api='2016-05-31',
+                   help='If true, calculates an MD5 hash for each range of the file. The storage service checks the '
+                        'hash of the content that has arrived with the hash that was sent. This is primarily valuable '
+                        'for detecting bitflips on the wire if using http instead of https as https (the default) will '
+                        'already validate. Note that this MD5 hash is not stored with the file.')
+
+    with self.argument_context('storage file upload-batch') as c:
+        from ._validators import process_file_upload_batch_parameters
+        c.argument('source', options_list=('--source', '-s'), validator=process_file_upload_batch_parameters)
+        c.argument('destination', options_list=('--destination', '-d'))
+        c.argument('max_connections', arg_group='Upload Control', type=int)
+        c.argument('validate_content', action='store_true', min_api='2016-05-31')
+        c.register_content_settings_argument(t_file_content_settings, update=False, arg_group='Content Settings',
+                                             process_md5=True)
+        c.extra('no_progress', progress_type)
+
+    with self.argument_context('storage fs service-properties update', resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE,
+                               min_api='2020-06-12') as c:
+        c.argument('delete_retention', arg_type=get_three_state_flag(), arg_group='Soft Delete',
+                   help='Enable soft-delete.')
+        c.argument('delete_retention_period', type=int, arg_group='Soft Delete',
+                   options_list=['--delete-retention-period', '--period'],
+                   help='Number of days that soft-deleted fs will be retained. Must be in range [1,365].')
+        c.argument('enable_static_website', options_list=['--static-website'], arg_group='Static Website',
+                   arg_type=get_three_state_flag(),
+                   help='Enable static-website.')
+        c.argument('index_document', help='Represent the name of the index document. This is commonly "index.html".',
+                   arg_group='Static Website')
+        c.argument('error_document_404_path', options_list=['--404-document'], arg_group='Static Website',
+                   help='Represent the path to the error document that should be shown when an error 404 is issued,'
+                        ' in other words, when a browser requests a page that does not exist.')
+
+    for item in ['list-deleted-path', 'undelete-path']:
+        with self.argument_context('storage fs {}'.format(item)) as c:
+            c.extra('file_system_name', options_list=['--file-system', '-f'],
+                    help="File system name.", required=True)
+            c.extra('timeout', timeout_type)
+
+    with self.argument_context('storage fs list-deleted-path') as c:
+        c.argument('path_prefix', help='Filter the results to return only paths under the specified path.')
+        c.argument('num_results', type=int, help='Specify the maximum number to return.')
+        c.argument('marker', help='A string value that identifies the portion of the list of containers to be '
+                   'returned with the next listing operation. The operation returns the NextMarker value within '
+                   'the response body if the listing operation did not return all containers remaining to be listed '
+                   'with the current page. If specified, this generator will begin returning results from the point '
+                   'where the previous generator stopped.')

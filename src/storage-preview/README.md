@@ -8,81 +8,6 @@ az extension add --name storage-preview
 ```
 
 ### Included Features
-#### Management Policy:
-Manage data policy rules associated with a storage account: [more info](https://docs.microsoft.com/azure/storage/common/storage-lifecycle-managment-concepts)\
-*Examples:*
-```
-az storage account management-policy create \
-    --account-name accountName \
-    --resource-group groupName \
-    --policy @{path}
-```
-
-#### Static Website:
-Manage static website configurations: [more info](https://docs.microsoft.com/azure/storage/blobs/storage-blob-static-website)\
-*Examples:*
-```
-az storage blob service-properties update \
-    --account-name accountName \
-    --static-website \
-    --404-document error.html \
-    --index-document index.html
-```
-
-#### Hierarchical Namespace:
-Enable the blob service to exhibit filesystem semantics: [more info](https://docs.microsoft.com/azure/storage/data-lake-storage/namespace)\
-*Examples:*
-```
-az storage account create \
-    --name accountName \
-    --resource-group groupName \
-    --kind StorageV2 \
-    --hierarchical-namespace
-```
-
-#### File AAD Integration:
-Enable AAD integration for Azure files, which will support SMB access: [more info](https://docs.microsoft.com/azure/storage/files/storage-files-active-directory-enable)\
-*Examples:*
-```
-az storage account create \
-    --name accountName \
-    --resource-group groupName \
-    --kind StorageV2
-
-az storage account update \
-    --name accountName \
-    --resource-group groupName
-```
-
-#### Premium Blobs/Files:
-Create premium blob/file storage accounts.\
-More info:[premium blobs](https://azure.microsoft.com/blog/introducing-azure-premium-blob-storage-limited-public-preview/) [premium files](https://docs.microsoft.com/azure/storage/files/storage-files-introduction)\
-*Examples:*
-```
-az storage account create \
-    --name accountName \
-    --resource-group groupName \
-    --sku Premium_LRS \
-    --kind BlockBlobStorage
-
-az storage account create \
-    --name accountName \
-    --resource-group groupName \
-    --sku Premium_LRS \
-    --kind FileStorage
-```
-
-#### Customer-Controlled Failover:
-Failover GRS/RA-GRS storage accounts from the primary cluster to the secondary cluster: [more info](https://docs.microsoft.com/azure/storage/common/storage-disaster-recovery-guidance)\
-*Examples:*
-```
-az storage account show \
-    --name accountName \
-    --expand geoReplicationStats
-
-az storage account failover \
-    --name accountName
-```
 
 #### AzCopy Integration:
 [EXPERIMENTAL] Azure CLI is releasing new versions of the blob upload/download/delete commands that rely on the AzCopy tool. Users should see higher performance metrics: [more info](https://github.com/Azure/azure-storage-azcopy)\
@@ -309,6 +234,141 @@ az storage blob access update --owner [entityId/UPN] -b my-directory/upload.txt 
 az storage blob directory access update --group [entityId/UPN] -d my-directory -c my-file-system --account-name mystorageaccount
 
 az storage blob access update --group [entityId/UPN] -b my-directory/upload.txt -c my-file-system --account-name mystorageaccount
+```
+
+#### Storage account network rules
+##### Add resource access rule to storage account
+```
+az storage account network-rule add \
+    --resource-id /subscriptions/a7e99807-abbf-4642-bdec-2c809a96a8bc/resourceGroups/res9407/providers/Microsoft.Synapse/workspaces/testworkspace1 \
+    --tenant-id 72f988bf-86f1-41af-91ab-2d7cd011db47 \
+    -g myResourceGroup \
+    --account-name mystorageaccount
+```
+
+##### List all network rules for storage account
+```
+az storage account network-rule list \
+    -g myResourceGroup \
+    --account-name mystorageaccount
+```
+
+##### Remove resource access rule in storage account
+```
+az storage account network-rule remove \
+    --resource-id /subscriptions/a7e99807-abbf-4642-bdec-2c809a96a8bc/resourceGroups/res9407/providers/Microsoft.Synapse/workspaces/testworkspace1 \
+    --tenant-id 72f988bf-86f1-41af-91ab-2d7cd011db47 \
+    -g myResourceGroup \
+    --account-name mystorageaccount
+```
+
+#### Storage account file service properties
+##### Enable soft delete policy and set delete retention days to 100 for file service
+```
+az storage account file-service-properties update \
+    --enable-delete-retention true \
+    --delete-retention-days 100 \
+    -n mystorageaccount \
+    -g MyResourceGroup
+```
+
+##### Disable soft delete policy for file service
+```
+az storage account file-service-properties update \
+    --enable-delete-retention false \
+    -n mystorageaccount \
+    -g MyResourceGroup
+```
+
+##### Prepare for SMB multichannel
+
+###### Prepare FileStorage storage account
+```
+az storage account create \
+    --kind FileStorage \
+    --sku Premium_LRS \
+    -g MyResourceGroup
+```
+
+##### Enable SMB Multichannel for file service
+```
+az storage account file-service-properties update \
+    --enable-smb-multichannel \
+    -n mystorageaccount \
+    -g MyResourceGroup
+```
+
+##### Disable SMB Multichannel for file service
+```
+az storage account file-service-properties update \
+    --enable-smb-multichannel false \
+    -n mystorageaccount \
+    -g MyResourceGroup
+```
+
+#### Soft Delete for ADLS Gen2 storage
+##### Prepare resource
+1. ADLS Gen2 storage account with soft delete support
+```
+az storage account create \
+    -n myadls \
+    -g myresourcegroup \
+    --hns
+``` 
+To get connection string, you could use the following command:
+```
+az storage account show-connection-string \
+    -n myadls \
+    -g myresourcegroup
+``` 
+2. Prepare file system in the ADLS Gen2 storage account
+```
+az storage fs create \
+    -n myfilesystem \
+    --connection-string myconnectionstring 
+```
+##### Enable delete retention
+```
+az storage fs service-properties update \
+    --delete-retention \
+    --delete-retention-period 5 \
+    --connection-string myconnectionstring
+```
+##### Upload file to file system
+```
+az storage fs file upload \
+    -s ".\test.txt" \
+    -p test \
+    -f filesystemcetk2triyptlaa \
+    --connection-string $con
+```
+##### List deleted path
+```
+az storage fs file delete \
+    -p test \
+    -f filesystemcetk2triyptlaa \ 
+    --connection-string $con
+```
+##### List deleted path
+```
+az storage fs list-deleted-path \
+    -f filesystemcetk2triyptlaa \
+    --connection-string $con
+```
+##### Undelete deleted path
+```
+az storage fs undelete-path \
+    -f filesystemcetk2triyptlaa \
+    -f filesystemcetk2triyptlaa \
+    --deleted-path-name test \
+    --deleted-path-version 132549163 \
+    --connection-string $con
+```
+##### Disable delete retention
+```
+az storage fs service-properties update \
+    --delete-retention false \
+    --connection-string $con
 ```
 
 If you have issues, please give feedback by opening an issue at https://github.com/Azure/azure-cli-extensions/issues.

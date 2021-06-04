@@ -21,16 +21,21 @@ try:
     from ._models_py3 import AmazonRedshiftLinkedService
     from ._models_py3 import AmazonRedshiftSource
     from ._models_py3 import AmazonRedshiftTableDataset
+    from ._models_py3 import AmazonS3CompatibleLinkedService
+    from ._models_py3 import AmazonS3CompatibleLocation
+    from ._models_py3 import AmazonS3CompatibleReadSettings
     from ._models_py3 import AmazonS3Dataset
     from ._models_py3 import AmazonS3LinkedService
     from ._models_py3 import AmazonS3Location
     from ._models_py3 import AmazonS3ReadSettings
     from ._models_py3 import AppendVariableActivity
+    from ._models_py3 import ArmIdWrapper
     from ._models_py3 import AvroDataset
     from ._models_py3 import AvroFormat
     from ._models_py3 import AvroSink
     from ._models_py3 import AvroSource
     from ._models_py3 import AvroWriteSettings
+    from ._models_py3 import AzPowerShellSetup
     from ._models_py3 import AzureBatchLinkedService
     from ._models_py3 import AzureBlobDataset
     from ._models_py3 import AzureBlobFsDataset
@@ -57,17 +62,24 @@ try:
     from ._models_py3 import AzureDataLakeStoreSink
     from ._models_py3 import AzureDataLakeStoreSource
     from ._models_py3 import AzureDataLakeStoreWriteSettings
+    from ._models_py3 import AzureDatabricksDeltaLakeDataset
+    from ._models_py3 import AzureDatabricksDeltaLakeExportCommand
+    from ._models_py3 import AzureDatabricksDeltaLakeImportCommand
+    from ._models_py3 import AzureDatabricksDeltaLakeLinkedService
+    from ._models_py3 import AzureDatabricksDeltaLakeSink
+    from ._models_py3 import AzureDatabricksDeltaLakeSource
     from ._models_py3 import AzureDatabricksLinkedService
     from ._models_py3 import AzureFileStorageLinkedService
     from ._models_py3 import AzureFileStorageLocation
     from ._models_py3 import AzureFileStorageReadSettings
+    from ._models_py3 import AzureFileStorageWriteSettings
     from ._models_py3 import AzureFunctionActivity
     from ._models_py3 import AzureFunctionLinkedService
     from ._models_py3 import AzureKeyVaultLinkedService
     from ._models_py3 import AzureKeyVaultSecretReference
-    from ._models_py3 import AzureMariaDBLinkedService
-    from ._models_py3 import AzureMariaDBSource
-    from ._models_py3 import AzureMariaDBTableDataset
+    from ._models_py3 import AzureMariaDbLinkedService
+    from ._models_py3 import AzureMariaDbSource
+    from ._models_py3 import AzureMariaDbTableDataset
     from ._models_py3 import AzureMlBatchExecutionActivity
     from ._models_py3 import AzureMlExecutePipelineActivity
     from ._models_py3 import AzureMlLinkedService
@@ -86,9 +98,9 @@ try:
     from ._models_py3 import AzureSearchIndexDataset
     from ._models_py3 import AzureSearchIndexSink
     from ._models_py3 import AzureSearchLinkedService
-    from ._models_py3 import AzureSqlDWLinkedService
-    from ._models_py3 import AzureSqlDWTableDataset
     from ._models_py3 import AzureSqlDatabaseLinkedService
+    from ._models_py3 import AzureSqlDwLinkedService
+    from ._models_py3 import AzureSqlDwTableDataset
     from ._models_py3 import AzureSqlMiLinkedService
     from ._models_py3 import AzureSqlMiTableDataset
     from ._models_py3 import AzureSqlSink
@@ -113,6 +125,7 @@ try:
     from ._models_py3 import ChainingTrigger
     from ._models_py3 import CloudError
     from ._models_py3 import CmdkeySetup
+    from ._models_py3 import CmkIdentityDefinition
     from ._models_py3 import CommonDataServiceForAppsEntityDataset
     from ._models_py3 import CommonDataServiceForAppsLinkedService
     from ._models_py3 import CommonDataServiceForAppsSink
@@ -122,19 +135,21 @@ try:
     from ._models_py3 import ConcurLinkedService
     from ._models_py3 import ConcurObjectDataset
     from ._models_py3 import ConcurSource
+    from ._models_py3 import ConnectionStateProperties
     from ._models_py3 import ControlActivity
     from ._models_py3 import CopyActivity
+    from ._models_py3 import CopyActivityLogSettings
     from ._models_py3 import CopySink
     from ._models_py3 import CopySource
     from ._models_py3 import CopyTranslator
-    from ._models_py3 import CosmosDBLinkedService
-    from ._models_py3 import CosmosDBMongoDBApiCollectionDataset
-    from ._models_py3 import CosmosDBMongoDBApiLinkedService
-    from ._models_py3 import CosmosDBMongoDBApiSink
-    from ._models_py3 import CosmosDBMongoDBApiSource
-    from ._models_py3 import CosmosDBSqlApiCollectionDataset
-    from ._models_py3 import CosmosDBSqlApiSink
-    from ._models_py3 import CosmosDBSqlApiSource
+    from ._models_py3 import CosmosDbLinkedService
+    from ._models_py3 import CosmosDbMongoDbApiCollectionDataset
+    from ._models_py3 import CosmosDbMongoDbApiLinkedService
+    from ._models_py3 import CosmosDbMongoDbApiSink
+    from ._models_py3 import CosmosDbMongoDbApiSource
+    from ._models_py3 import CosmosDbSqlApiCollectionDataset
+    from ._models_py3 import CosmosDbSqlApiSink
+    from ._models_py3 import CosmosDbSqlApiSource
     from ._models_py3 import CouchbaseLinkedService
     from ._models_py3 import CouchbaseSource
     from ._models_py3 import CouchbaseTableDataset
@@ -146,14 +161,14 @@ try:
     from ._models_py3 import CustomActivityReferenceObject
     from ._models_py3 import CustomDataSourceLinkedService
     from ._models_py3 import CustomDataset
+    from ._models_py3 import CustomEventsTrigger
     from ._models_py3 import CustomSetupBase
-    from ._models_py3 import DWCopyCommandDefaultValue
-    from ._models_py3 import DWCopyCommandSettings
     from ._models_py3 import DataFlow
     from ._models_py3 import DataFlowDebugCommandPayload
     from ._models_py3 import DataFlowDebugCommandRequest
     from ._models_py3 import DataFlowDebugCommandResponse
     from ._models_py3 import DataFlowDebugPackage
+    from ._models_py3 import DataFlowDebugPackageDebugSettings
     from ._models_py3 import DataFlowDebugResource
     from ._models_py3 import DataFlowDebugSessionInfo
     from ._models_py3 import DataFlowFolder
@@ -182,6 +197,8 @@ try:
     from ._models_py3 import DatasetResource
     from ._models_py3 import DatasetSchemaDataElement
     from ._models_py3 import DatasetStorageFormat
+    from ._models_py3 import DatasetTarCompression
+    from ._models_py3 import DatasetTarGZipCompression
     from ._models_py3 import DatasetZipDeflateCompression
     from ._models_py3 import Db2LinkedService
     from ._models_py3 import Db2Source
@@ -195,12 +212,14 @@ try:
     from ._models_py3 import DelimitedTextWriteSettings
     from ._models_py3 import DependencyReference
     from ._models_py3 import DistcpSettings
-    from ._models_py3 import DocumentDBCollectionDataset
-    from ._models_py3 import DocumentDBCollectionSink
-    from ._models_py3 import DocumentDBCollectionSource
+    from ._models_py3 import DocumentDbCollectionDataset
+    from ._models_py3 import DocumentDbCollectionSink
+    from ._models_py3 import DocumentDbCollectionSource
     from ._models_py3 import DrillLinkedService
     from ._models_py3 import DrillSource
     from ._models_py3 import DrillTableDataset
+    from ._models_py3 import DwCopyCommandDefaultValue
+    from ._models_py3 import DwCopyCommandSettings
     from ._models_py3 import DynamicsAxLinkedService
     from ._models_py3 import DynamicsAxResourceDataset
     from ._models_py3 import DynamicsAxSource
@@ -215,6 +234,7 @@ try:
     from ._models_py3 import EloquaLinkedService
     from ._models_py3 import EloquaObjectDataset
     from ._models_py3 import EloquaSource
+    from ._models_py3 import EncryptionConfiguration
     from ._models_py3 import EntityReference
     from ._models_py3 import EnvironmentVariableSetup
     from ._models_py3 import ExcelDataset
@@ -225,6 +245,8 @@ try:
     from ._models_py3 import ExecuteSsisPackageActivity
     from ._models_py3 import ExecutionActivity
     from ._models_py3 import ExportSettings
+    from ._models_py3 import ExposureControlBatchRequest
+    from ._models_py3 import ExposureControlBatchResponse
     from ._models_py3 import ExposureControlRequest
     from ._models_py3 import ExposureControlResponse
     from ._models_py3 import Expression
@@ -342,6 +364,8 @@ try:
     from ._models_py3 import LinkedServiceListResponse
     from ._models_py3 import LinkedServiceReference
     from ._models_py3 import LinkedServiceResource
+    from ._models_py3 import LogLocationSettings
+    from ._models_py3 import LogSettings
     from ._models_py3 import LogStorageSettings
     from ._models_py3 import LookupActivity
     from ._models_py3 import MagentoLinkedService
@@ -352,10 +376,17 @@ try:
     from ._models_py3 import ManagedIntegrationRuntimeNode
     from ._models_py3 import ManagedIntegrationRuntimeOperationResult
     from ._models_py3 import ManagedIntegrationRuntimeStatus
+    from ._models_py3 import ManagedPrivateEndpoint
+    from ._models_py3 import ManagedPrivateEndpointListResponse
+    from ._models_py3 import ManagedPrivateEndpointResource
+    from ._models_py3 import ManagedVirtualNetwork
+    from ._models_py3 import ManagedVirtualNetworkListResponse
+    from ._models_py3 import ManagedVirtualNetworkReference
+    from ._models_py3 import ManagedVirtualNetworkResource
     from ._models_py3 import MappingDataFlow
-    from ._models_py3 import MariaDBLinkedService
-    from ._models_py3 import MariaDBSource
-    from ._models_py3 import MariaDBTableDataset
+    from ._models_py3 import MariaDbLinkedService
+    from ._models_py3 import MariaDbSource
+    from ._models_py3 import MariaDbTableDataset
     from ._models_py3 import MarketoLinkedService
     from ._models_py3 import MarketoObjectDataset
     from ._models_py3 import MarketoSource
@@ -363,13 +394,16 @@ try:
     from ._models_py3 import MicrosoftAccessSink
     from ._models_py3 import MicrosoftAccessSource
     from ._models_py3 import MicrosoftAccessTableDataset
-    from ._models_py3 import MongoDBCollectionDataset
-    from ._models_py3 import MongoDBCursorMethodsProperties
-    from ._models_py3 import MongoDBLinkedService
-    from ._models_py3 import MongoDBSource
-    from ._models_py3 import MongoDBV2CollectionDataset
-    from ._models_py3 import MongoDBV2LinkedService
-    from ._models_py3 import MongoDBV2Source
+    from ._models_py3 import MongoDbAtlasCollectionDataset
+    from ._models_py3 import MongoDbAtlasLinkedService
+    from ._models_py3 import MongoDbAtlasSource
+    from ._models_py3 import MongoDbCollectionDataset
+    from ._models_py3 import MongoDbCursorMethodsProperties
+    from ._models_py3 import MongoDbLinkedService
+    from ._models_py3 import MongoDbSource
+    from ._models_py3 import MongoDbV2CollectionDataset
+    from ._models_py3 import MongoDbV2LinkedService
+    from ._models_py3 import MongoDbV2Source
     from ._models_py3 import MultiplePipelineTrigger
     from ._models_py3 import MySqlLinkedService
     from ._models_py3 import MySqlSource
@@ -396,6 +430,9 @@ try:
     from ._models_py3 import OperationMetricDimension
     from ._models_py3 import OperationMetricSpecification
     from ._models_py3 import OperationServiceSpecification
+    from ._models_py3 import OracleCloudStorageLinkedService
+    from ._models_py3 import OracleCloudStorageLocation
+    from ._models_py3 import OracleCloudStorageReadSettings
     from ._models_py3 import OracleLinkedService
     from ._models_py3 import OraclePartitionSettings
     from ._models_py3 import OracleServiceCloudLinkedService
@@ -408,19 +445,24 @@ try:
     from ._models_py3 import OrcFormat
     from ._models_py3 import OrcSink
     from ._models_py3 import OrcSource
+    from ._models_py3 import OrcWriteSettings
     from ._models_py3 import PackageStore
     from ._models_py3 import ParameterSpecification
     from ._models_py3 import ParquetDataset
     from ._models_py3 import ParquetFormat
     from ._models_py3 import ParquetSink
     from ._models_py3 import ParquetSource
+    from ._models_py3 import ParquetWriteSettings
     from ._models_py3 import PaypalLinkedService
     from ._models_py3 import PaypalObjectDataset
     from ._models_py3 import PaypalSource
     from ._models_py3 import PhoenixLinkedService
     from ._models_py3 import PhoenixObjectDataset
     from ._models_py3 import PhoenixSource
+    from ._models_py3 import PipelineElapsedTimeMetricPolicy
+    from ._models_py3 import PipelineFolder
     from ._models_py3 import PipelineListResponse
+    from ._models_py3 import PipelinePolicy
     from ._models_py3 import PipelineReference
     from ._models_py3 import PipelineResource
     from ._models_py3 import PipelineRun
@@ -433,6 +475,14 @@ try:
     from ._models_py3 import PrestoLinkedService
     from ._models_py3 import PrestoObjectDataset
     from ._models_py3 import PrestoSource
+    from ._models_py3 import PrivateEndpointConnectionListResponse
+    from ._models_py3 import PrivateEndpointConnectionResource
+    from ._models_py3 import PrivateLinkConnectionApprovalRequest
+    from ._models_py3 import PrivateLinkConnectionApprovalRequestResource
+    from ._models_py3 import PrivateLinkConnectionState
+    from ._models_py3 import PrivateLinkResource
+    from ._models_py3 import PrivateLinkResourceProperties
+    from ._models_py3 import PrivateLinkResourcesWrapper
     from ._models_py3 import QueryDataFlowDebugSessionsResponse
     from ._models_py3 import QuickBooksLinkedService
     from ._models_py3 import QuickBooksObjectDataset
@@ -443,6 +493,7 @@ try:
     from ._models_py3 import RedshiftUnloadSettings
     from ._models_py3 import RelationalSource
     from ._models_py3 import RelationalTableDataset
+    from ._models_py3 import RemotePrivateEndpointConnection
     from ._models_py3 import RerunTumblingWindowTrigger
     from ._models_py3 import Resource
     from ._models_py3 import ResponsysLinkedService
@@ -450,6 +501,7 @@ try:
     from ._models_py3 import ResponsysSource
     from ._models_py3 import RestResourceDataset
     from ._models_py3 import RestServiceLinkedService
+    from ._models_py3 import RestSink
     from ._models_py3 import RestSource
     from ._models_py3 import RetryPolicy
     from ._models_py3 import RunFilterParameters
@@ -520,8 +572,9 @@ try:
     from ._models_py3 import SparkLinkedService
     from ._models_py3 import SparkObjectDataset
     from ._models_py3 import SparkSource
-    from ._models_py3 import SqlDWSink
-    from ._models_py3 import SqlDWSource
+    from ._models_py3 import SqlAlwaysEncryptedProperties
+    from ._models_py3 import SqlDwSink
+    from ._models_py3 import SqlDwSource
     from ._models_py3 import SqlMiSink
     from ._models_py3 import SqlMiSource
     from ._models_py3 import SqlPartitionSettings
@@ -565,6 +618,8 @@ try:
     from ._models_py3 import SybaseTableDataset
     from ._models_py3 import TabularSource
     from ._models_py3 import TabularTranslator
+    from ._models_py3 import TarGZipReadSettings
+    from ._models_py3 import TarReadSettings
     from ._models_py3 import TeradataLinkedService
     from ._models_py3 import TeradataPartitionSettings
     from ._models_py3 import TeradataSource
@@ -631,16 +686,21 @@ except (SyntaxError, ImportError):
     from ._models import AmazonRedshiftLinkedService  # type: ignore
     from ._models import AmazonRedshiftSource  # type: ignore
     from ._models import AmazonRedshiftTableDataset  # type: ignore
+    from ._models import AmazonS3CompatibleLinkedService  # type: ignore
+    from ._models import AmazonS3CompatibleLocation  # type: ignore
+    from ._models import AmazonS3CompatibleReadSettings  # type: ignore
     from ._models import AmazonS3Dataset  # type: ignore
     from ._models import AmazonS3LinkedService  # type: ignore
     from ._models import AmazonS3Location  # type: ignore
     from ._models import AmazonS3ReadSettings  # type: ignore
     from ._models import AppendVariableActivity  # type: ignore
+    from ._models import ArmIdWrapper  # type: ignore
     from ._models import AvroDataset  # type: ignore
     from ._models import AvroFormat  # type: ignore
     from ._models import AvroSink  # type: ignore
     from ._models import AvroSource  # type: ignore
     from ._models import AvroWriteSettings  # type: ignore
+    from ._models import AzPowerShellSetup  # type: ignore
     from ._models import AzureBatchLinkedService  # type: ignore
     from ._models import AzureBlobDataset  # type: ignore
     from ._models import AzureBlobFsDataset  # type: ignore
@@ -667,17 +727,24 @@ except (SyntaxError, ImportError):
     from ._models import AzureDataLakeStoreSink  # type: ignore
     from ._models import AzureDataLakeStoreSource  # type: ignore
     from ._models import AzureDataLakeStoreWriteSettings  # type: ignore
+    from ._models import AzureDatabricksDeltaLakeDataset  # type: ignore
+    from ._models import AzureDatabricksDeltaLakeExportCommand  # type: ignore
+    from ._models import AzureDatabricksDeltaLakeImportCommand  # type: ignore
+    from ._models import AzureDatabricksDeltaLakeLinkedService  # type: ignore
+    from ._models import AzureDatabricksDeltaLakeSink  # type: ignore
+    from ._models import AzureDatabricksDeltaLakeSource  # type: ignore
     from ._models import AzureDatabricksLinkedService  # type: ignore
     from ._models import AzureFileStorageLinkedService  # type: ignore
     from ._models import AzureFileStorageLocation  # type: ignore
     from ._models import AzureFileStorageReadSettings  # type: ignore
+    from ._models import AzureFileStorageWriteSettings  # type: ignore
     from ._models import AzureFunctionActivity  # type: ignore
     from ._models import AzureFunctionLinkedService  # type: ignore
     from ._models import AzureKeyVaultLinkedService  # type: ignore
     from ._models import AzureKeyVaultSecretReference  # type: ignore
-    from ._models import AzureMariaDBLinkedService  # type: ignore
-    from ._models import AzureMariaDBSource  # type: ignore
-    from ._models import AzureMariaDBTableDataset  # type: ignore
+    from ._models import AzureMariaDbLinkedService  # type: ignore
+    from ._models import AzureMariaDbSource  # type: ignore
+    from ._models import AzureMariaDbTableDataset  # type: ignore
     from ._models import AzureMlBatchExecutionActivity  # type: ignore
     from ._models import AzureMlExecutePipelineActivity  # type: ignore
     from ._models import AzureMlLinkedService  # type: ignore
@@ -696,9 +763,9 @@ except (SyntaxError, ImportError):
     from ._models import AzureSearchIndexDataset  # type: ignore
     from ._models import AzureSearchIndexSink  # type: ignore
     from ._models import AzureSearchLinkedService  # type: ignore
-    from ._models import AzureSqlDWLinkedService  # type: ignore
-    from ._models import AzureSqlDWTableDataset  # type: ignore
     from ._models import AzureSqlDatabaseLinkedService  # type: ignore
+    from ._models import AzureSqlDwLinkedService  # type: ignore
+    from ._models import AzureSqlDwTableDataset  # type: ignore
     from ._models import AzureSqlMiLinkedService  # type: ignore
     from ._models import AzureSqlMiTableDataset  # type: ignore
     from ._models import AzureSqlSink  # type: ignore
@@ -723,6 +790,7 @@ except (SyntaxError, ImportError):
     from ._models import ChainingTrigger  # type: ignore
     from ._models import CloudError  # type: ignore
     from ._models import CmdkeySetup  # type: ignore
+    from ._models import CmkIdentityDefinition  # type: ignore
     from ._models import CommonDataServiceForAppsEntityDataset  # type: ignore
     from ._models import CommonDataServiceForAppsLinkedService  # type: ignore
     from ._models import CommonDataServiceForAppsSink  # type: ignore
@@ -732,19 +800,21 @@ except (SyntaxError, ImportError):
     from ._models import ConcurLinkedService  # type: ignore
     from ._models import ConcurObjectDataset  # type: ignore
     from ._models import ConcurSource  # type: ignore
+    from ._models import ConnectionStateProperties  # type: ignore
     from ._models import ControlActivity  # type: ignore
     from ._models import CopyActivity  # type: ignore
+    from ._models import CopyActivityLogSettings  # type: ignore
     from ._models import CopySink  # type: ignore
     from ._models import CopySource  # type: ignore
     from ._models import CopyTranslator  # type: ignore
-    from ._models import CosmosDBLinkedService  # type: ignore
-    from ._models import CosmosDBMongoDBApiCollectionDataset  # type: ignore
-    from ._models import CosmosDBMongoDBApiLinkedService  # type: ignore
-    from ._models import CosmosDBMongoDBApiSink  # type: ignore
-    from ._models import CosmosDBMongoDBApiSource  # type: ignore
-    from ._models import CosmosDBSqlApiCollectionDataset  # type: ignore
-    from ._models import CosmosDBSqlApiSink  # type: ignore
-    from ._models import CosmosDBSqlApiSource  # type: ignore
+    from ._models import CosmosDbLinkedService  # type: ignore
+    from ._models import CosmosDbMongoDbApiCollectionDataset  # type: ignore
+    from ._models import CosmosDbMongoDbApiLinkedService  # type: ignore
+    from ._models import CosmosDbMongoDbApiSink  # type: ignore
+    from ._models import CosmosDbMongoDbApiSource  # type: ignore
+    from ._models import CosmosDbSqlApiCollectionDataset  # type: ignore
+    from ._models import CosmosDbSqlApiSink  # type: ignore
+    from ._models import CosmosDbSqlApiSource  # type: ignore
     from ._models import CouchbaseLinkedService  # type: ignore
     from ._models import CouchbaseSource  # type: ignore
     from ._models import CouchbaseTableDataset  # type: ignore
@@ -756,14 +826,14 @@ except (SyntaxError, ImportError):
     from ._models import CustomActivityReferenceObject  # type: ignore
     from ._models import CustomDataSourceLinkedService  # type: ignore
     from ._models import CustomDataset  # type: ignore
+    from ._models import CustomEventsTrigger  # type: ignore
     from ._models import CustomSetupBase  # type: ignore
-    from ._models import DWCopyCommandDefaultValue  # type: ignore
-    from ._models import DWCopyCommandSettings  # type: ignore
     from ._models import DataFlow  # type: ignore
     from ._models import DataFlowDebugCommandPayload  # type: ignore
     from ._models import DataFlowDebugCommandRequest  # type: ignore
     from ._models import DataFlowDebugCommandResponse  # type: ignore
     from ._models import DataFlowDebugPackage  # type: ignore
+    from ._models import DataFlowDebugPackageDebugSettings  # type: ignore
     from ._models import DataFlowDebugResource  # type: ignore
     from ._models import DataFlowDebugSessionInfo  # type: ignore
     from ._models import DataFlowFolder  # type: ignore
@@ -792,6 +862,8 @@ except (SyntaxError, ImportError):
     from ._models import DatasetResource  # type: ignore
     from ._models import DatasetSchemaDataElement  # type: ignore
     from ._models import DatasetStorageFormat  # type: ignore
+    from ._models import DatasetTarCompression  # type: ignore
+    from ._models import DatasetTarGZipCompression  # type: ignore
     from ._models import DatasetZipDeflateCompression  # type: ignore
     from ._models import Db2LinkedService  # type: ignore
     from ._models import Db2Source  # type: ignore
@@ -805,12 +877,14 @@ except (SyntaxError, ImportError):
     from ._models import DelimitedTextWriteSettings  # type: ignore
     from ._models import DependencyReference  # type: ignore
     from ._models import DistcpSettings  # type: ignore
-    from ._models import DocumentDBCollectionDataset  # type: ignore
-    from ._models import DocumentDBCollectionSink  # type: ignore
-    from ._models import DocumentDBCollectionSource  # type: ignore
+    from ._models import DocumentDbCollectionDataset  # type: ignore
+    from ._models import DocumentDbCollectionSink  # type: ignore
+    from ._models import DocumentDbCollectionSource  # type: ignore
     from ._models import DrillLinkedService  # type: ignore
     from ._models import DrillSource  # type: ignore
     from ._models import DrillTableDataset  # type: ignore
+    from ._models import DwCopyCommandDefaultValue  # type: ignore
+    from ._models import DwCopyCommandSettings  # type: ignore
     from ._models import DynamicsAxLinkedService  # type: ignore
     from ._models import DynamicsAxResourceDataset  # type: ignore
     from ._models import DynamicsAxSource  # type: ignore
@@ -825,6 +899,7 @@ except (SyntaxError, ImportError):
     from ._models import EloquaLinkedService  # type: ignore
     from ._models import EloquaObjectDataset  # type: ignore
     from ._models import EloquaSource  # type: ignore
+    from ._models import EncryptionConfiguration  # type: ignore
     from ._models import EntityReference  # type: ignore
     from ._models import EnvironmentVariableSetup  # type: ignore
     from ._models import ExcelDataset  # type: ignore
@@ -835,6 +910,8 @@ except (SyntaxError, ImportError):
     from ._models import ExecuteSsisPackageActivity  # type: ignore
     from ._models import ExecutionActivity  # type: ignore
     from ._models import ExportSettings  # type: ignore
+    from ._models import ExposureControlBatchRequest  # type: ignore
+    from ._models import ExposureControlBatchResponse  # type: ignore
     from ._models import ExposureControlRequest  # type: ignore
     from ._models import ExposureControlResponse  # type: ignore
     from ._models import Expression  # type: ignore
@@ -952,6 +1029,8 @@ except (SyntaxError, ImportError):
     from ._models import LinkedServiceListResponse  # type: ignore
     from ._models import LinkedServiceReference  # type: ignore
     from ._models import LinkedServiceResource  # type: ignore
+    from ._models import LogLocationSettings  # type: ignore
+    from ._models import LogSettings  # type: ignore
     from ._models import LogStorageSettings  # type: ignore
     from ._models import LookupActivity  # type: ignore
     from ._models import MagentoLinkedService  # type: ignore
@@ -962,10 +1041,17 @@ except (SyntaxError, ImportError):
     from ._models import ManagedIntegrationRuntimeNode  # type: ignore
     from ._models import ManagedIntegrationRuntimeOperationResult  # type: ignore
     from ._models import ManagedIntegrationRuntimeStatus  # type: ignore
+    from ._models import ManagedPrivateEndpoint  # type: ignore
+    from ._models import ManagedPrivateEndpointListResponse  # type: ignore
+    from ._models import ManagedPrivateEndpointResource  # type: ignore
+    from ._models import ManagedVirtualNetwork  # type: ignore
+    from ._models import ManagedVirtualNetworkListResponse  # type: ignore
+    from ._models import ManagedVirtualNetworkReference  # type: ignore
+    from ._models import ManagedVirtualNetworkResource  # type: ignore
     from ._models import MappingDataFlow  # type: ignore
-    from ._models import MariaDBLinkedService  # type: ignore
-    from ._models import MariaDBSource  # type: ignore
-    from ._models import MariaDBTableDataset  # type: ignore
+    from ._models import MariaDbLinkedService  # type: ignore
+    from ._models import MariaDbSource  # type: ignore
+    from ._models import MariaDbTableDataset  # type: ignore
     from ._models import MarketoLinkedService  # type: ignore
     from ._models import MarketoObjectDataset  # type: ignore
     from ._models import MarketoSource  # type: ignore
@@ -973,13 +1059,16 @@ except (SyntaxError, ImportError):
     from ._models import MicrosoftAccessSink  # type: ignore
     from ._models import MicrosoftAccessSource  # type: ignore
     from ._models import MicrosoftAccessTableDataset  # type: ignore
-    from ._models import MongoDBCollectionDataset  # type: ignore
-    from ._models import MongoDBCursorMethodsProperties  # type: ignore
-    from ._models import MongoDBLinkedService  # type: ignore
-    from ._models import MongoDBSource  # type: ignore
-    from ._models import MongoDBV2CollectionDataset  # type: ignore
-    from ._models import MongoDBV2LinkedService  # type: ignore
-    from ._models import MongoDBV2Source  # type: ignore
+    from ._models import MongoDbAtlasCollectionDataset  # type: ignore
+    from ._models import MongoDbAtlasLinkedService  # type: ignore
+    from ._models import MongoDbAtlasSource  # type: ignore
+    from ._models import MongoDbCollectionDataset  # type: ignore
+    from ._models import MongoDbCursorMethodsProperties  # type: ignore
+    from ._models import MongoDbLinkedService  # type: ignore
+    from ._models import MongoDbSource  # type: ignore
+    from ._models import MongoDbV2CollectionDataset  # type: ignore
+    from ._models import MongoDbV2LinkedService  # type: ignore
+    from ._models import MongoDbV2Source  # type: ignore
     from ._models import MultiplePipelineTrigger  # type: ignore
     from ._models import MySqlLinkedService  # type: ignore
     from ._models import MySqlSource  # type: ignore
@@ -1006,6 +1095,9 @@ except (SyntaxError, ImportError):
     from ._models import OperationMetricDimension  # type: ignore
     from ._models import OperationMetricSpecification  # type: ignore
     from ._models import OperationServiceSpecification  # type: ignore
+    from ._models import OracleCloudStorageLinkedService  # type: ignore
+    from ._models import OracleCloudStorageLocation  # type: ignore
+    from ._models import OracleCloudStorageReadSettings  # type: ignore
     from ._models import OracleLinkedService  # type: ignore
     from ._models import OraclePartitionSettings  # type: ignore
     from ._models import OracleServiceCloudLinkedService  # type: ignore
@@ -1018,19 +1110,24 @@ except (SyntaxError, ImportError):
     from ._models import OrcFormat  # type: ignore
     from ._models import OrcSink  # type: ignore
     from ._models import OrcSource  # type: ignore
+    from ._models import OrcWriteSettings  # type: ignore
     from ._models import PackageStore  # type: ignore
     from ._models import ParameterSpecification  # type: ignore
     from ._models import ParquetDataset  # type: ignore
     from ._models import ParquetFormat  # type: ignore
     from ._models import ParquetSink  # type: ignore
     from ._models import ParquetSource  # type: ignore
+    from ._models import ParquetWriteSettings  # type: ignore
     from ._models import PaypalLinkedService  # type: ignore
     from ._models import PaypalObjectDataset  # type: ignore
     from ._models import PaypalSource  # type: ignore
     from ._models import PhoenixLinkedService  # type: ignore
     from ._models import PhoenixObjectDataset  # type: ignore
     from ._models import PhoenixSource  # type: ignore
+    from ._models import PipelineElapsedTimeMetricPolicy  # type: ignore
+    from ._models import PipelineFolder  # type: ignore
     from ._models import PipelineListResponse  # type: ignore
+    from ._models import PipelinePolicy  # type: ignore
     from ._models import PipelineReference  # type: ignore
     from ._models import PipelineResource  # type: ignore
     from ._models import PipelineRun  # type: ignore
@@ -1043,6 +1140,14 @@ except (SyntaxError, ImportError):
     from ._models import PrestoLinkedService  # type: ignore
     from ._models import PrestoObjectDataset  # type: ignore
     from ._models import PrestoSource  # type: ignore
+    from ._models import PrivateEndpointConnectionListResponse  # type: ignore
+    from ._models import PrivateEndpointConnectionResource  # type: ignore
+    from ._models import PrivateLinkConnectionApprovalRequest  # type: ignore
+    from ._models import PrivateLinkConnectionApprovalRequestResource  # type: ignore
+    from ._models import PrivateLinkConnectionState  # type: ignore
+    from ._models import PrivateLinkResource  # type: ignore
+    from ._models import PrivateLinkResourceProperties  # type: ignore
+    from ._models import PrivateLinkResourcesWrapper  # type: ignore
     from ._models import QueryDataFlowDebugSessionsResponse  # type: ignore
     from ._models import QuickBooksLinkedService  # type: ignore
     from ._models import QuickBooksObjectDataset  # type: ignore
@@ -1053,6 +1158,7 @@ except (SyntaxError, ImportError):
     from ._models import RedshiftUnloadSettings  # type: ignore
     from ._models import RelationalSource  # type: ignore
     from ._models import RelationalTableDataset  # type: ignore
+    from ._models import RemotePrivateEndpointConnection  # type: ignore
     from ._models import RerunTumblingWindowTrigger  # type: ignore
     from ._models import Resource  # type: ignore
     from ._models import ResponsysLinkedService  # type: ignore
@@ -1060,6 +1166,7 @@ except (SyntaxError, ImportError):
     from ._models import ResponsysSource  # type: ignore
     from ._models import RestResourceDataset  # type: ignore
     from ._models import RestServiceLinkedService  # type: ignore
+    from ._models import RestSink  # type: ignore
     from ._models import RestSource  # type: ignore
     from ._models import RetryPolicy  # type: ignore
     from ._models import RunFilterParameters  # type: ignore
@@ -1130,8 +1237,9 @@ except (SyntaxError, ImportError):
     from ._models import SparkLinkedService  # type: ignore
     from ._models import SparkObjectDataset  # type: ignore
     from ._models import SparkSource  # type: ignore
-    from ._models import SqlDWSink  # type: ignore
-    from ._models import SqlDWSource  # type: ignore
+    from ._models import SqlAlwaysEncryptedProperties  # type: ignore
+    from ._models import SqlDwSink  # type: ignore
+    from ._models import SqlDwSource  # type: ignore
     from ._models import SqlMiSink  # type: ignore
     from ._models import SqlMiSource  # type: ignore
     from ._models import SqlPartitionSettings  # type: ignore
@@ -1175,6 +1283,8 @@ except (SyntaxError, ImportError):
     from ._models import SybaseTableDataset  # type: ignore
     from ._models import TabularSource  # type: ignore
     from ._models import TabularTranslator  # type: ignore
+    from ._models import TarGZipReadSettings  # type: ignore
+    from ._models import TarReadSettings  # type: ignore
     from ._models import TeradataLinkedService  # type: ignore
     from ._models import TeradataPartitionSettings  # type: ignore
     from ._models import TeradataSource  # type: ignore
@@ -1235,16 +1345,21 @@ from ._data_factory_management_client_enums import (
     CassandraSourceReadConsistencyLevels,
     CompressionCodec,
     CopyBehaviorType,
+    CosmosDbConnectionMode,
+    CosmosDbServicePrincipalCredentialType,
     DataFlowComputeType,
     DataFlowDebugCommandType,
     DatasetCompressionLevel,
     DayOfWeek,
     DaysOfWeek,
+    Db2AuthenticationType,
     DependencyCondition,
     DynamicsAuthenticationType,
     DynamicsDeploymentType,
     DynamicsServicePrincipalCredentialType,
+    DynamicsSinkWriteBehavior,
     EventSubscriptionStatus,
+    FactoryIdentityType,
     FtpAuthenticationType,
     GlobalParameterType,
     GoogleAdWordsAuthenticationType,
@@ -1270,7 +1385,7 @@ from ._data_factory_management_client_enums import (
     JsonFormatFilePattern,
     JsonWriteFilePattern,
     ManagedIntegrationRuntimeNodeStatus,
-    MongoDBAuthenticationType,
+    MongoDbAuthenticationType,
     NetezzaPartitionOption,
     ODataAadServicePrincipalCredentialType,
     ODataAuthenticationType,
@@ -1280,6 +1395,7 @@ from ._data_factory_management_client_enums import (
     PhoenixAuthenticationType,
     PolybaseSettingsRejectType,
     PrestoAuthenticationType,
+    PublicNetworkAccess,
     RecurrenceFrequency,
     RestServiceAuthenticationType,
     RunQueryFilterOperand,
@@ -1298,7 +1414,9 @@ from ._data_factory_management_client_enums import (
     SparkAuthenticationType,
     SparkServerType,
     SparkThriftTransportProtocol,
+    SqlAlwaysEncryptedAkvAuthType,
     SqlPartitionOption,
+    SsisLogLocationType,
     SsisObjectMetadataType,
     SsisPackageLocationType,
     StoredProcedureParameterType,
@@ -1311,6 +1429,7 @@ from ._data_factory_management_client_enums import (
     VariableType,
     WebActivityMethod,
     WebAuthenticationType,
+    WebHookActivityMethod,
 )
 
 __all__ = [
@@ -1328,16 +1447,21 @@ __all__ = [
     'AmazonRedshiftLinkedService',
     'AmazonRedshiftSource',
     'AmazonRedshiftTableDataset',
+    'AmazonS3CompatibleLinkedService',
+    'AmazonS3CompatibleLocation',
+    'AmazonS3CompatibleReadSettings',
     'AmazonS3Dataset',
     'AmazonS3LinkedService',
     'AmazonS3Location',
     'AmazonS3ReadSettings',
     'AppendVariableActivity',
+    'ArmIdWrapper',
     'AvroDataset',
     'AvroFormat',
     'AvroSink',
     'AvroSource',
     'AvroWriteSettings',
+    'AzPowerShellSetup',
     'AzureBatchLinkedService',
     'AzureBlobDataset',
     'AzureBlobFsDataset',
@@ -1364,17 +1488,24 @@ __all__ = [
     'AzureDataLakeStoreSink',
     'AzureDataLakeStoreSource',
     'AzureDataLakeStoreWriteSettings',
+    'AzureDatabricksDeltaLakeDataset',
+    'AzureDatabricksDeltaLakeExportCommand',
+    'AzureDatabricksDeltaLakeImportCommand',
+    'AzureDatabricksDeltaLakeLinkedService',
+    'AzureDatabricksDeltaLakeSink',
+    'AzureDatabricksDeltaLakeSource',
     'AzureDatabricksLinkedService',
     'AzureFileStorageLinkedService',
     'AzureFileStorageLocation',
     'AzureFileStorageReadSettings',
+    'AzureFileStorageWriteSettings',
     'AzureFunctionActivity',
     'AzureFunctionLinkedService',
     'AzureKeyVaultLinkedService',
     'AzureKeyVaultSecretReference',
-    'AzureMariaDBLinkedService',
-    'AzureMariaDBSource',
-    'AzureMariaDBTableDataset',
+    'AzureMariaDbLinkedService',
+    'AzureMariaDbSource',
+    'AzureMariaDbTableDataset',
     'AzureMlBatchExecutionActivity',
     'AzureMlExecutePipelineActivity',
     'AzureMlLinkedService',
@@ -1393,9 +1524,9 @@ __all__ = [
     'AzureSearchIndexDataset',
     'AzureSearchIndexSink',
     'AzureSearchLinkedService',
-    'AzureSqlDWLinkedService',
-    'AzureSqlDWTableDataset',
     'AzureSqlDatabaseLinkedService',
+    'AzureSqlDwLinkedService',
+    'AzureSqlDwTableDataset',
     'AzureSqlMiLinkedService',
     'AzureSqlMiTableDataset',
     'AzureSqlSink',
@@ -1420,6 +1551,7 @@ __all__ = [
     'ChainingTrigger',
     'CloudError',
     'CmdkeySetup',
+    'CmkIdentityDefinition',
     'CommonDataServiceForAppsEntityDataset',
     'CommonDataServiceForAppsLinkedService',
     'CommonDataServiceForAppsSink',
@@ -1429,19 +1561,21 @@ __all__ = [
     'ConcurLinkedService',
     'ConcurObjectDataset',
     'ConcurSource',
+    'ConnectionStateProperties',
     'ControlActivity',
     'CopyActivity',
+    'CopyActivityLogSettings',
     'CopySink',
     'CopySource',
     'CopyTranslator',
-    'CosmosDBLinkedService',
-    'CosmosDBMongoDBApiCollectionDataset',
-    'CosmosDBMongoDBApiLinkedService',
-    'CosmosDBMongoDBApiSink',
-    'CosmosDBMongoDBApiSource',
-    'CosmosDBSqlApiCollectionDataset',
-    'CosmosDBSqlApiSink',
-    'CosmosDBSqlApiSource',
+    'CosmosDbLinkedService',
+    'CosmosDbMongoDbApiCollectionDataset',
+    'CosmosDbMongoDbApiLinkedService',
+    'CosmosDbMongoDbApiSink',
+    'CosmosDbMongoDbApiSource',
+    'CosmosDbSqlApiCollectionDataset',
+    'CosmosDbSqlApiSink',
+    'CosmosDbSqlApiSource',
     'CouchbaseLinkedService',
     'CouchbaseSource',
     'CouchbaseTableDataset',
@@ -1453,14 +1587,14 @@ __all__ = [
     'CustomActivityReferenceObject',
     'CustomDataSourceLinkedService',
     'CustomDataset',
+    'CustomEventsTrigger',
     'CustomSetupBase',
-    'DWCopyCommandDefaultValue',
-    'DWCopyCommandSettings',
     'DataFlow',
     'DataFlowDebugCommandPayload',
     'DataFlowDebugCommandRequest',
     'DataFlowDebugCommandResponse',
     'DataFlowDebugPackage',
+    'DataFlowDebugPackageDebugSettings',
     'DataFlowDebugResource',
     'DataFlowDebugSessionInfo',
     'DataFlowFolder',
@@ -1489,6 +1623,8 @@ __all__ = [
     'DatasetResource',
     'DatasetSchemaDataElement',
     'DatasetStorageFormat',
+    'DatasetTarCompression',
+    'DatasetTarGZipCompression',
     'DatasetZipDeflateCompression',
     'Db2LinkedService',
     'Db2Source',
@@ -1502,12 +1638,14 @@ __all__ = [
     'DelimitedTextWriteSettings',
     'DependencyReference',
     'DistcpSettings',
-    'DocumentDBCollectionDataset',
-    'DocumentDBCollectionSink',
-    'DocumentDBCollectionSource',
+    'DocumentDbCollectionDataset',
+    'DocumentDbCollectionSink',
+    'DocumentDbCollectionSource',
     'DrillLinkedService',
     'DrillSource',
     'DrillTableDataset',
+    'DwCopyCommandDefaultValue',
+    'DwCopyCommandSettings',
     'DynamicsAxLinkedService',
     'DynamicsAxResourceDataset',
     'DynamicsAxSource',
@@ -1522,6 +1660,7 @@ __all__ = [
     'EloquaLinkedService',
     'EloquaObjectDataset',
     'EloquaSource',
+    'EncryptionConfiguration',
     'EntityReference',
     'EnvironmentVariableSetup',
     'ExcelDataset',
@@ -1532,6 +1671,8 @@ __all__ = [
     'ExecuteSsisPackageActivity',
     'ExecutionActivity',
     'ExportSettings',
+    'ExposureControlBatchRequest',
+    'ExposureControlBatchResponse',
     'ExposureControlRequest',
     'ExposureControlResponse',
     'Expression',
@@ -1649,6 +1790,8 @@ __all__ = [
     'LinkedServiceListResponse',
     'LinkedServiceReference',
     'LinkedServiceResource',
+    'LogLocationSettings',
+    'LogSettings',
     'LogStorageSettings',
     'LookupActivity',
     'MagentoLinkedService',
@@ -1659,10 +1802,17 @@ __all__ = [
     'ManagedIntegrationRuntimeNode',
     'ManagedIntegrationRuntimeOperationResult',
     'ManagedIntegrationRuntimeStatus',
+    'ManagedPrivateEndpoint',
+    'ManagedPrivateEndpointListResponse',
+    'ManagedPrivateEndpointResource',
+    'ManagedVirtualNetwork',
+    'ManagedVirtualNetworkListResponse',
+    'ManagedVirtualNetworkReference',
+    'ManagedVirtualNetworkResource',
     'MappingDataFlow',
-    'MariaDBLinkedService',
-    'MariaDBSource',
-    'MariaDBTableDataset',
+    'MariaDbLinkedService',
+    'MariaDbSource',
+    'MariaDbTableDataset',
     'MarketoLinkedService',
     'MarketoObjectDataset',
     'MarketoSource',
@@ -1670,13 +1820,16 @@ __all__ = [
     'MicrosoftAccessSink',
     'MicrosoftAccessSource',
     'MicrosoftAccessTableDataset',
-    'MongoDBCollectionDataset',
-    'MongoDBCursorMethodsProperties',
-    'MongoDBLinkedService',
-    'MongoDBSource',
-    'MongoDBV2CollectionDataset',
-    'MongoDBV2LinkedService',
-    'MongoDBV2Source',
+    'MongoDbAtlasCollectionDataset',
+    'MongoDbAtlasLinkedService',
+    'MongoDbAtlasSource',
+    'MongoDbCollectionDataset',
+    'MongoDbCursorMethodsProperties',
+    'MongoDbLinkedService',
+    'MongoDbSource',
+    'MongoDbV2CollectionDataset',
+    'MongoDbV2LinkedService',
+    'MongoDbV2Source',
     'MultiplePipelineTrigger',
     'MySqlLinkedService',
     'MySqlSource',
@@ -1703,6 +1856,9 @@ __all__ = [
     'OperationMetricDimension',
     'OperationMetricSpecification',
     'OperationServiceSpecification',
+    'OracleCloudStorageLinkedService',
+    'OracleCloudStorageLocation',
+    'OracleCloudStorageReadSettings',
     'OracleLinkedService',
     'OraclePartitionSettings',
     'OracleServiceCloudLinkedService',
@@ -1715,19 +1871,24 @@ __all__ = [
     'OrcFormat',
     'OrcSink',
     'OrcSource',
+    'OrcWriteSettings',
     'PackageStore',
     'ParameterSpecification',
     'ParquetDataset',
     'ParquetFormat',
     'ParquetSink',
     'ParquetSource',
+    'ParquetWriteSettings',
     'PaypalLinkedService',
     'PaypalObjectDataset',
     'PaypalSource',
     'PhoenixLinkedService',
     'PhoenixObjectDataset',
     'PhoenixSource',
+    'PipelineElapsedTimeMetricPolicy',
+    'PipelineFolder',
     'PipelineListResponse',
+    'PipelinePolicy',
     'PipelineReference',
     'PipelineResource',
     'PipelineRun',
@@ -1740,6 +1901,14 @@ __all__ = [
     'PrestoLinkedService',
     'PrestoObjectDataset',
     'PrestoSource',
+    'PrivateEndpointConnectionListResponse',
+    'PrivateEndpointConnectionResource',
+    'PrivateLinkConnectionApprovalRequest',
+    'PrivateLinkConnectionApprovalRequestResource',
+    'PrivateLinkConnectionState',
+    'PrivateLinkResource',
+    'PrivateLinkResourceProperties',
+    'PrivateLinkResourcesWrapper',
     'QueryDataFlowDebugSessionsResponse',
     'QuickBooksLinkedService',
     'QuickBooksObjectDataset',
@@ -1750,6 +1919,7 @@ __all__ = [
     'RedshiftUnloadSettings',
     'RelationalSource',
     'RelationalTableDataset',
+    'RemotePrivateEndpointConnection',
     'RerunTumblingWindowTrigger',
     'Resource',
     'ResponsysLinkedService',
@@ -1757,6 +1927,7 @@ __all__ = [
     'ResponsysSource',
     'RestResourceDataset',
     'RestServiceLinkedService',
+    'RestSink',
     'RestSource',
     'RetryPolicy',
     'RunFilterParameters',
@@ -1827,8 +1998,9 @@ __all__ = [
     'SparkLinkedService',
     'SparkObjectDataset',
     'SparkSource',
-    'SqlDWSink',
-    'SqlDWSource',
+    'SqlAlwaysEncryptedProperties',
+    'SqlDwSink',
+    'SqlDwSource',
     'SqlMiSink',
     'SqlMiSource',
     'SqlPartitionSettings',
@@ -1872,6 +2044,8 @@ __all__ = [
     'SybaseTableDataset',
     'TabularSource',
     'TabularTranslator',
+    'TarGZipReadSettings',
+    'TarReadSettings',
     'TeradataLinkedService',
     'TeradataPartitionSettings',
     'TeradataSource',
@@ -1930,16 +2104,21 @@ __all__ = [
     'CassandraSourceReadConsistencyLevels',
     'CompressionCodec',
     'CopyBehaviorType',
+    'CosmosDbConnectionMode',
+    'CosmosDbServicePrincipalCredentialType',
     'DataFlowComputeType',
     'DataFlowDebugCommandType',
     'DatasetCompressionLevel',
     'DayOfWeek',
     'DaysOfWeek',
+    'Db2AuthenticationType',
     'DependencyCondition',
     'DynamicsAuthenticationType',
     'DynamicsDeploymentType',
     'DynamicsServicePrincipalCredentialType',
+    'DynamicsSinkWriteBehavior',
     'EventSubscriptionStatus',
+    'FactoryIdentityType',
     'FtpAuthenticationType',
     'GlobalParameterType',
     'GoogleAdWordsAuthenticationType',
@@ -1965,7 +2144,7 @@ __all__ = [
     'JsonFormatFilePattern',
     'JsonWriteFilePattern',
     'ManagedIntegrationRuntimeNodeStatus',
-    'MongoDBAuthenticationType',
+    'MongoDbAuthenticationType',
     'NetezzaPartitionOption',
     'ODataAadServicePrincipalCredentialType',
     'ODataAuthenticationType',
@@ -1975,6 +2154,7 @@ __all__ = [
     'PhoenixAuthenticationType',
     'PolybaseSettingsRejectType',
     'PrestoAuthenticationType',
+    'PublicNetworkAccess',
     'RecurrenceFrequency',
     'RestServiceAuthenticationType',
     'RunQueryFilterOperand',
@@ -1993,7 +2173,9 @@ __all__ = [
     'SparkAuthenticationType',
     'SparkServerType',
     'SparkThriftTransportProtocol',
+    'SqlAlwaysEncryptedAkvAuthType',
     'SqlPartitionOption',
+    'SsisLogLocationType',
     'SsisObjectMetadataType',
     'SsisPackageLocationType',
     'StoredProcedureParameterType',
@@ -2006,4 +2188,5 @@ __all__ = [
     'VariableType',
     'WebActivityMethod',
     'WebAuthenticationType',
+    'WebHookActivityMethod',
 ]

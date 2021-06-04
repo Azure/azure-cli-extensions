@@ -32,6 +32,7 @@ class SSHUtilsTests(unittest.TestCase):
     @mock.patch('azext_ssh.ssh_utils.file_utils.make_dirs_for_file')
     def test_write_ssh_config_ip_and_vm(self, mock_make_dirs):
         expected_lines = [
+            "",
             "Host rg-vm",
             "\tUser username",
             "\tHostName 1.2.3.4",
@@ -39,7 +40,6 @@ class SSHUtilsTests(unittest.TestCase):
             "\tIdentityFile privatekey",
             "Host 1.2.3.4",
             "\tUser username",
-            "\tHostName 1.2.3.4",
             "\tCertificateFile cert",
             "\tIdentityFile privatekey"
         ]
@@ -48,7 +48,7 @@ class SSHUtilsTests(unittest.TestCase):
             mock_file = mock.Mock()
             mock_open.return_value.__enter__.return_value = mock_file
             ssh_utils.write_ssh_config(
-                "path/to/file", "rg", "vm", "1.2.3.4", "username", "cert", "privatekey"
+                "path/to/file", "rg", "vm", True, "1.2.3.4", "username", "cert", "privatekey"
             )
 
         mock_make_dirs.assert_called_once_with("path/to/file")
@@ -56,11 +56,16 @@ class SSHUtilsTests(unittest.TestCase):
         mock_file.write.assert_called_once_with('\n'.join(expected_lines))
 
     @mock.patch('azext_ssh.ssh_utils.file_utils.make_dirs_for_file')
-    def test_write_ssh_config_ip_only(self, mock_make_dirs):
+    def test_write_ssh_config_append(self, mock_make_dirs):
         expected_lines = [
-            "Host 1.2.3.4",
+            "",
+            "Host rg-vm",
             "\tUser username",
             "\tHostName 1.2.3.4",
+            "\tCertificateFile cert",
+            "\tIdentityFile privatekey",
+            "Host 1.2.3.4",
+            "\tUser username",
             "\tCertificateFile cert",
             "\tIdentityFile privatekey"
         ]
@@ -69,7 +74,28 @@ class SSHUtilsTests(unittest.TestCase):
             mock_file = mock.Mock()
             mock_open.return_value.__enter__.return_value = mock_file
             ssh_utils.write_ssh_config(
-                "path/to/file", None, None, "1.2.3.4", "username", "cert", "privatekey"
+                "path/to/file", "rg", "vm", False, "1.2.3.4", "username", "cert", "privatekey"
+            )
+
+        mock_make_dirs.assert_called_once_with("path/to/file")
+        mock_open.assert_called_once_with("path/to/file", "a")
+        mock_file.write.assert_called_once_with('\n'.join(expected_lines))
+
+    @mock.patch('azext_ssh.ssh_utils.file_utils.make_dirs_for_file')
+    def test_write_ssh_config_ip_only(self, mock_make_dirs):
+        expected_lines = [
+            "",
+            "Host 1.2.3.4",
+            "\tUser username",
+            "\tCertificateFile cert",
+            "\tIdentityFile privatekey"
+        ]
+
+        with mock.patch('builtins.open') as mock_open:
+            mock_file = mock.Mock()
+            mock_open.return_value.__enter__.return_value = mock_file
+            ssh_utils.write_ssh_config(
+                "path/to/file", None, None, True, "1.2.3.4", "username", "cert", "privatekey"
             )
 
         mock_make_dirs.assert_called_once_with("path/to/file")

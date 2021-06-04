@@ -10,71 +10,43 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import (
     tags_type,
     resource_group_name_type,
-    get_location_type,
-    file_type,
-    get_resource_name_completion_list,
-    get_enum_type
+    get_location_type
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from knack.arguments import CLIArgumentType
+from azext_attestation.action import AddPolicySigningCertificatesKeys
 
 
 def load_arguments(self, _):
-    from ..vendored_sdks.azure_attestation.models import TeeKind
 
-    attestation_name_type = CLIArgumentType(
-        help='Name of the attestation.', options_list=['--name', '-n'], metavar='NAME', id_part=None,
-        completer=get_resource_name_completion_list('Microsoft.Attestation/attestationProviders'))
-
-    with self.argument_context('attestation list') as c:
+    with self.argument_context('attestation attestation-provider list') as c:
         c.argument('resource_group_name', resource_group_name_type)
 
-    with self.argument_context('attestation show') as c:
+    with self.argument_context('attestation attestation-provider show') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('provider_name', options_list=['--name', '-n'], help='Name of the attestation service instance',
-                   id_part='name')
+        c.argument('provider_name', type=str, help='Name of the attestation service instance', id_part='name')
 
-    with self.argument_context('attestation create') as c:
+    with self.argument_context('attestation attestation-provider create') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('provider_name', options_list=['--name', '-n'], help='Name of the attestation service')
+        c.argument('provider_name', type=str, help='Name of the attestation service instance.')
         c.argument('location', arg_type=get_location_type(self.cli_ctx),
                    validator=get_default_location_from_resource_group)
         c.argument('tags', tags_type)
-        c.argument('attestation_policy', help='Name of attestation policy.')
-        c.argument('certs_input_path', type=file_type, help='The path to the policy signing certificates PEM file.',
-                   completer=FilesCompleter())
+        c.argument('policy_signing_certificates_keys', action=AddPolicySigningCertificatesKeys, nargs='*', help='The '
+                   'value of the "keys" parameter is an array of JWK values.  By default, the order of the JWK values '
+                   'within the array does not imply an order of preference among them, although applications of JWK '
+                   'Sets can choose to assign a meaning to the order for their purposes, if desired.')
 
-    with self.argument_context('attestation delete') as c:
+    with self.argument_context('attestation attestation-provider update') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('provider_name', options_list=['--name', '-n'], help='Name of the attestation service',
-                   id_part='name')
+        c.argument('provider_name', type=str, help='Name of the attestation service instance.', id_part='name')
+        c.argument('tags', tags_type)
 
-    for item in ['list', 'add', 'remove']:
-        with self.argument_context('attestation signer {}'.format(item)) as c:
-            c.extra('resource_group_name', resource_group_name_type, required=False)
-            c.extra('attestation_name', attestation_name_type, required=False)
-            c.argument('tenant_base_url', options_list=['--attestation-base-url', '-u'], required=False,
-                       help='URL of the attestation, for example: https://myatt.eus2.attest.azure.net. '
-                            'You can ignore --name and --resource-group if you specified the URL.')
-            if item in ['add', 'remove']:
-                c.argument('policy_certificate_to_{}'.format(item), options_list=['--signer'],
-                           help='The policy certificate to {}. An RFC7519 JSON Web Token containing a claim named '
-                                '"aas-policyCertificate" whose value is an RFC7517 JSON Web Key which specifies a '
-                                'new key to update. The RFC7519 JWT must be signed with one of the existing signing '
-                                'certificates'.format(item))
+    with self.argument_context('attestation attestation-provider delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('provider_name', type=str, help='Name of the attestation service', id_part='name')
 
-    for item in ['set', 'reset', 'show']:
-        with self.argument_context('attestation policy {}'.format(item)) as c:
-            c.extra('resource_group_name', resource_group_name_type, required=False)
-            c.extra('attestation_name', attestation_name_type, required=False)
-            c.argument('tenant_base_url', options_list=['--attestation-base-url', '-u'], required=False,
-                       help='URL of the attestation, for example: https://myatt.eus2.attest.azure.net. '
-                            'You can ignore --name and --resource-group if you specified the URL.')
-            c.argument('tee', arg_type=get_enum_type(TeeKind))
-
-    with self.argument_context('attestation policy set') as c:
-        c.argument('new_attestation_policy', options_list=['--new-attestation-policy', '-p'])
+    with self.argument_context('attestation attestation-provider get-default-by-location') as c:
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), id_part='name')

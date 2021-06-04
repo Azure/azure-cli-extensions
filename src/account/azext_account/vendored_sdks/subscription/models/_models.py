@@ -316,6 +316,8 @@ class PutAliasRequestProperties(msrest.serialization.Model):
     :param subscription_id: This parameter can be used to create alias for existing subscription
      Id.
     :type subscription_id: str
+    :param reseller_id: Reseller ID, basically MPN Id.
+    :type reseller_id: str
     """
 
     _attribute_map = {
@@ -323,6 +325,7 @@ class PutAliasRequestProperties(msrest.serialization.Model):
         'workload': {'key': 'workload', 'type': 'str'},
         'billing_scope': {'key': 'billingScope', 'type': 'str'},
         'subscription_id': {'key': 'subscriptionId', 'type': 'str'},
+        'reseller_id': {'key': 'resellerId', 'type': 'str'},
     }
 
     def __init__(
@@ -330,10 +333,11 @@ class PutAliasRequestProperties(msrest.serialization.Model):
         **kwargs
     ):
         super(PutAliasRequestProperties, self).__init__(**kwargs)
-        self.display_name = kwargs['display_name']
-        self.workload = kwargs['workload']
-        self.billing_scope = kwargs['billing_scope']
+        self.display_name = kwargs.get('display_name', None)
+        self.workload = kwargs.get('workload', None)
+        self.billing_scope = kwargs.get('billing_scope', None)
         self.subscription_id = kwargs.get('subscription_id', None)
+        self.reseller_id = kwargs.get('reseller_id', None)
 
 
 class PutAliasResponse(msrest.serialization.Model):

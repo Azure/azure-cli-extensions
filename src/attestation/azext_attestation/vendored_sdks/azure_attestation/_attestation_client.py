@@ -17,6 +17,7 @@ from .operations import PolicyOperations
 from .operations import PolicyCertificatesOperations
 from .operations import SigningCertificatesOperations
 from .operations import MetadataConfigurationOperations
+from .operations import AttestOperations
 from . import models
 
 
@@ -47,7 +48,7 @@ class AttestationClient(SDKClient):
         super(AttestationClient, self).__init__(self.config.credentials, self.config)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
-        self.api_version = '2018-09-01-preview'
+        self.api_version = '2020-10-01'
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
@@ -58,4 +59,6 @@ class AttestationClient(SDKClient):
         self.signing_certificates = SigningCertificatesOperations(
             self._client, self.config, self._serialize, self._deserialize)
         self.metadata_configuration = MetadataConfigurationOperations(
+            self._client, self.config, self._serialize, self._deserialize)
+        self.attest = AttestOperations(
             self._client, self.config, self._serialize, self._deserialize)

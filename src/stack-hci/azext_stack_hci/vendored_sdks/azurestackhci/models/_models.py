@@ -10,18 +10,42 @@ from azure.core.exceptions import HttpResponseError
 import msrest.serialization
 
 
+class AvailableOperations(msrest.serialization.Model):
+    """Available operations of the service.
+
+    :param value: Collection of available operation details.
+    :type value: list[~azure.mgmt.azurestackhci.models.OperationDetail]
+    :param next_link: URL client should use to fetch the next page (per server side paging).
+     It's null for now, added for future use.
+    :type next_link: str
+    """
+
+    _attribute_map = {
+        'value': {'key': 'value', 'type': '[OperationDetail]'},
+        'next_link': {'key': 'nextLink', 'type': 'str'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(AvailableOperations, self).__init__(**kwargs)
+        self.value = kwargs.get('value', None)
+        self.next_link = kwargs.get('next_link', None)
+
+
 class Resource(msrest.serialization.Model):
-    """Resource.
+    """Common fields that are returned in the response for all Azure Resource Manager resources.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     """
 
@@ -48,19 +72,19 @@ class Resource(msrest.serialization.Model):
 
 
 class TrackedResource(Resource):
-    """The resource model definition for a ARM tracked top level resource.
+    """The resource model definition for an Azure Resource Manager tracked top level resource.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
@@ -99,13 +123,13 @@ class Cluster(TrackedResource):
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar id: Fully qualified resource Id for the resource. Ex -
+    :ivar id: Fully qualified resource ID for the resource. Ex -
      /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
-    :ivar type: The type of the resource. Ex- Microsoft.Compute/virtualMachines or
-     Microsoft.Storage/storageAccounts.
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
     :vartype type: str
     :param tags: A set of tags. Resource tags.
     :type tags: dict[str, str]
@@ -113,30 +137,28 @@ class Cluster(TrackedResource):
     :type location: str
     :ivar provisioning_state: Provisioning state. Possible values include: "Succeeded", "Failed",
      "Canceled", "Accepted", "Provisioning".
-    :vartype provisioning_state: str or ~azure_stack_hci_client.models.ProvisioningState
-    :ivar status: Status of the cluster agent. Possible values include: "NeverConnected",
-     "ConnectedRecently", "NotConnectedRecently", "Expired", "Error".
-    :vartype status: str or ~azure_stack_hci_client.models.Status
+    :vartype provisioning_state: str or ~azure.mgmt.azurestackhci.models.ProvisioningState
+    :ivar status: Status of the cluster agent. Possible values include: "NotYetRegistered",
+     "ConnectedRecently", "NotConnectedRecently", "Disconnected", "Error".
+    :vartype status: str or ~azure.mgmt.azurestackhci.models.Status
     :ivar cloud_id: Unique, immutable resource id.
     :vartype cloud_id: str
     :param aad_client_id: App id of cluster AAD identity.
     :type aad_client_id: str
     :param aad_tenant_id: Tenant id of cluster AAD identity.
     :type aad_tenant_id: str
+    :param reported_properties: Properties reported by cluster agent.
+    :type reported_properties: ~azure.mgmt.azurestackhci.models.ClusterReportedProperties
     :ivar trial_days_remaining: Number of days remaining in the trial period.
     :vartype trial_days_remaining: float
     :ivar billing_model: Type of billing applied to the resource.
     :vartype billing_model: str
-    :ivar cluster_name: Name of the on-prem cluster connected to this resource.
-    :vartype cluster_name: str
-    :ivar cluster_id: Unique id generated by the on-prem cluster.
-    :vartype cluster_id: str
-    :ivar cluster_version: Version of the cluster software.
-    :vartype cluster_version: str
-    :ivar nodes: List of nodes reported by the cluster.
-    :vartype nodes: list[~azure_stack_hci_client.models.ClusterNode]
-    :ivar last_updated: Last time the cluster reported the data.
-    :vartype last_updated: ~datetime.datetime
+    :ivar registration_timestamp: First cluster sync timestamp.
+    :vartype registration_timestamp: ~datetime.datetime
+    :ivar last_sync_timestamp: Most recent cluster sync timestamp.
+    :vartype last_sync_timestamp: ~datetime.datetime
+    :ivar last_billing_timestamp: Most recent billing meter timestamp.
+    :vartype last_billing_timestamp: ~datetime.datetime
     """
 
     _validation = {
@@ -149,11 +171,9 @@ class Cluster(TrackedResource):
         'cloud_id': {'readonly': True},
         'trial_days_remaining': {'readonly': True},
         'billing_model': {'readonly': True},
-        'cluster_name': {'readonly': True},
-        'cluster_id': {'readonly': True},
-        'cluster_version': {'readonly': True},
-        'nodes': {'readonly': True},
-        'last_updated': {'readonly': True},
+        'registration_timestamp': {'readonly': True},
+        'last_sync_timestamp': {'readonly': True},
+        'last_billing_timestamp': {'readonly': True},
     }
 
     _attribute_map = {
@@ -167,13 +187,12 @@ class Cluster(TrackedResource):
         'cloud_id': {'key': 'properties.cloudId', 'type': 'str'},
         'aad_client_id': {'key': 'properties.aadClientId', 'type': 'str'},
         'aad_tenant_id': {'key': 'properties.aadTenantId', 'type': 'str'},
+        'reported_properties': {'key': 'properties.reportedProperties', 'type': 'ClusterReportedProperties'},
         'trial_days_remaining': {'key': 'properties.trialDaysRemaining', 'type': 'float'},
         'billing_model': {'key': 'properties.billingModel', 'type': 'str'},
-        'cluster_name': {'key': 'properties.reportedProperties.clusterName', 'type': 'str'},
-        'cluster_id': {'key': 'properties.reportedProperties.clusterId', 'type': 'str'},
-        'cluster_version': {'key': 'properties.reportedProperties.clusterVersion', 'type': 'str'},
-        'nodes': {'key': 'properties.reportedProperties.nodes', 'type': '[ClusterNode]'},
-        'last_updated': {'key': 'properties.reportedProperties.lastUpdated', 'type': 'iso-8601'},
+        'registration_timestamp': {'key': 'properties.registrationTimestamp', 'type': 'iso-8601'},
+        'last_sync_timestamp': {'key': 'properties.lastSyncTimestamp', 'type': 'iso-8601'},
+        'last_billing_timestamp': {'key': 'properties.lastBillingTimestamp', 'type': 'iso-8601'},
     }
 
     def __init__(
@@ -186,13 +205,12 @@ class Cluster(TrackedResource):
         self.cloud_id = None
         self.aad_client_id = kwargs.get('aad_client_id', None)
         self.aad_tenant_id = kwargs.get('aad_tenant_id', None)
+        self.reported_properties = kwargs.get('reported_properties', None)
         self.trial_days_remaining = None
         self.billing_model = None
-        self.cluster_name = None
-        self.cluster_id = None
-        self.cluster_version = None
-        self.nodes = None
-        self.last_updated = None
+        self.registration_timestamp = None
+        self.last_sync_timestamp = None
+        self.last_billing_timestamp = None
 
 
 class ClusterList(msrest.serialization.Model):
@@ -201,7 +219,7 @@ class ClusterList(msrest.serialization.Model):
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :param value: List of clusters.
-    :type value: list[~azure_stack_hci_client.models.Cluster]
+    :type value: list[~azure.mgmt.azurestackhci.models.Cluster]
     :ivar next_link: Link to the next set of results.
     :vartype next_link: str
     """
@@ -289,6 +307,51 @@ class ClusterNode(msrest.serialization.Model):
         self.memory_in_gi_b = None
 
 
+class ClusterReportedProperties(msrest.serialization.Model):
+    """Properties reported by cluster agent.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar cluster_name: Name of the on-prem cluster connected to this resource.
+    :vartype cluster_name: str
+    :ivar cluster_id: Unique id generated by the on-prem cluster.
+    :vartype cluster_id: str
+    :ivar cluster_version: Version of the cluster software.
+    :vartype cluster_version: str
+    :ivar nodes: List of nodes reported by the cluster.
+    :vartype nodes: list[~azure.mgmt.azurestackhci.models.ClusterNode]
+    :ivar last_updated: Last time the cluster reported the data.
+    :vartype last_updated: ~datetime.datetime
+    """
+
+    _validation = {
+        'cluster_name': {'readonly': True},
+        'cluster_id': {'readonly': True},
+        'cluster_version': {'readonly': True},
+        'nodes': {'readonly': True},
+        'last_updated': {'readonly': True},
+    }
+
+    _attribute_map = {
+        'cluster_name': {'key': 'clusterName', 'type': 'str'},
+        'cluster_id': {'key': 'clusterId', 'type': 'str'},
+        'cluster_version': {'key': 'clusterVersion', 'type': 'str'},
+        'nodes': {'key': 'nodes', 'type': '[ClusterNode]'},
+        'last_updated': {'key': 'lastUpdated', 'type': 'iso-8601'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(ClusterReportedProperties, self).__init__(**kwargs)
+        self.cluster_name = None
+        self.cluster_id = None
+        self.cluster_version = None
+        self.nodes = None
+        self.last_updated = None
+
+
 class ClusterUpdate(msrest.serialization.Model):
     """Cluster details to update.
 
@@ -338,27 +401,8 @@ class ErrorAdditionalInfo(msrest.serialization.Model):
         self.info = None
 
 
-class ErrorResponse(msrest.serialization.Model):
-    """The resource management error response.
-
-    :param error: The error object.
-    :type error: ~azure_stack_hci_client.models.ErrorResponseError
-    """
-
-    _attribute_map = {
-        'error': {'key': 'error', 'type': 'ErrorResponseError'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(ErrorResponse, self).__init__(**kwargs)
-        self.error = kwargs.get('error', None)
-
-
-class ErrorResponseError(msrest.serialization.Model):
-    """The error object.
+class ErrorDetail(msrest.serialization.Model):
+    """The error detail.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
@@ -369,9 +413,9 @@ class ErrorResponseError(msrest.serialization.Model):
     :ivar target: The error target.
     :vartype target: str
     :ivar details: The error details.
-    :vartype details: list[~azure_stack_hci_client.models.ErrorResponse]
+    :vartype details: list[~azure.mgmt.azurestackhci.models.ErrorDetail]
     :ivar additional_info: The error additional info.
-    :vartype additional_info: list[~azure_stack_hci_client.models.ErrorAdditionalInfo]
+    :vartype additional_info: list[~azure.mgmt.azurestackhci.models.ErrorAdditionalInfo]
     """
 
     _validation = {
@@ -386,7 +430,7 @@ class ErrorResponseError(msrest.serialization.Model):
         'code': {'key': 'code', 'type': 'str'},
         'message': {'key': 'message', 'type': 'str'},
         'target': {'key': 'target', 'type': 'str'},
-        'details': {'key': 'details', 'type': '[ErrorResponse]'},
+        'details': {'key': 'details', 'type': '[ErrorDetail]'},
         'additional_info': {'key': 'additionalInfo', 'type': '[ErrorAdditionalInfo]'},
     }
 
@@ -394,7 +438,7 @@ class ErrorResponseError(msrest.serialization.Model):
         self,
         **kwargs
     ):
-        super(ErrorResponseError, self).__init__(**kwargs)
+        super(ErrorDetail, self).__init__(**kwargs)
         self.code = None
         self.message = None
         self.target = None
@@ -402,45 +446,70 @@ class ErrorResponseError(msrest.serialization.Model):
         self.additional_info = None
 
 
-class Operation(msrest.serialization.Model):
-    """Operation details.
+class ErrorResponse(msrest.serialization.Model):
+    """Common error response for all Azure Resource Manager APIs to return error details for failed operations. (This also follows the OData error response format.).
 
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar name: Name of the operation.
-    :vartype name: str
-    :param display: Operation properties.
-    :type display: ~azure_stack_hci_client.models.OperationDisplay
+    :param error: The error object.
+    :type error: ~azure.mgmt.azurestackhci.models.ErrorDetail
     """
 
-    _validation = {
-        'name': {'readonly': True},
-    }
-
     _attribute_map = {
-        'name': {'key': 'name', 'type': 'str'},
-        'display': {'key': 'display', 'type': 'OperationDisplay'},
+        'error': {'key': 'error', 'type': 'ErrorDetail'},
     }
 
     def __init__(
         self,
         **kwargs
     ):
-        super(Operation, self).__init__(**kwargs)
-        self.name = None
+        super(ErrorResponse, self).__init__(**kwargs)
+        self.error = kwargs.get('error', None)
+
+
+class OperationDetail(msrest.serialization.Model):
+    """Operation detail payload.
+
+    :param name: Name of the operation.
+    :type name: str
+    :param is_data_action: Indicates whether the operation is a data action.
+    :type is_data_action: bool
+    :param display: Display of the operation.
+    :type display: ~azure.mgmt.azurestackhci.models.OperationDisplay
+    :param origin: Origin of the operation.
+    :type origin: str
+    :param properties: Properties of the operation.
+    :type properties: object
+    """
+
+    _attribute_map = {
+        'name': {'key': 'name', 'type': 'str'},
+        'is_data_action': {'key': 'isDataAction', 'type': 'bool'},
+        'display': {'key': 'display', 'type': 'OperationDisplay'},
+        'origin': {'key': 'origin', 'type': 'str'},
+        'properties': {'key': 'properties', 'type': 'object'},
+    }
+
+    def __init__(
+        self,
+        **kwargs
+    ):
+        super(OperationDetail, self).__init__(**kwargs)
+        self.name = kwargs.get('name', None)
+        self.is_data_action = kwargs.get('is_data_action', None)
         self.display = kwargs.get('display', None)
+        self.origin = kwargs.get('origin', None)
+        self.properties = kwargs.get('properties', None)
 
 
 class OperationDisplay(msrest.serialization.Model):
-    """Operation properties.
+    """Operation display payload.
 
-    :param provider: Resource provider name.
+    :param provider: Resource provider of the operation.
     :type provider: str
-    :param resource: Resource type name.
+    :param resource: Resource of the operation.
     :type resource: str
-    :param operation: Operation name.
+    :param operation: Localized friendly name for the operation.
     :type operation: str
-    :param description: Operation description.
+    :param description: Localized friendly description for the operation.
     :type description: str
     """
 
@@ -460,32 +529,3 @@ class OperationDisplay(msrest.serialization.Model):
         self.resource = kwargs.get('resource', None)
         self.operation = kwargs.get('operation', None)
         self.description = kwargs.get('description', None)
-
-
-class OperationList(msrest.serialization.Model):
-    """List of available operations.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :param value: List of operations.
-    :type value: list[~azure_stack_hci_client.models.Operation]
-    :ivar next_link: Link to the next set of results.
-    :vartype next_link: str
-    """
-
-    _validation = {
-        'next_link': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'value': {'key': 'value', 'type': '[Operation]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        super(OperationList, self).__init__(**kwargs)
-        self.value = kwargs.get('value', None)
-        self.next_link = None

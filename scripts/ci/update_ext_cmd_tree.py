@@ -16,6 +16,7 @@ from sync_extensions import download_file
 STORAGE_ACCOUNT_KEY = os.getenv('AZURE_EXTENSION_CMD_TREE_STORAGE_ACCOUNT_KEY')
 STORAGE_ACCOUNT = os.getenv('AZURE_EXTENSION_CMD_TREE_STORAGE_ACCOUNT')
 STORAGE_CONTAINER = os.getenv('AZURE_EXTENSION_CMD_TREE_STORAGE_CONTAINER')
+BLOB_PREFIX = os.getenv('AZURE_EXTENSION_CMD_TREE_BLOB_PREFIX')
 
 az_cli = get_default_cli()
 file_name = 'extCmdTreeToUpload.json'
@@ -24,7 +25,7 @@ file_name = 'extCmdTreeToUpload.json'
 def merge(data, key, value):
     if isinstance(value, str):
         if key in data:
-            raise Exception(f"Key: {key} already exists. 2 extensions cannot have the same command!")
+            raise Exception(f"Key: {key} already exists in {data[key]}. 2 extensions cannot have the same command!")
         data[key] = value
     else:
         data.setdefault(key, {})
@@ -49,7 +50,14 @@ def update_cmd_tree(ext_name):
     EXT_CMD_TREE_TO_UPLOAD = Session()
     EXT_CMD_TREE_TO_UPLOAD.load(os.path.expanduser(os.path.join('~', '.azure', file_name)))
     root = {}
-    for cmd_name, _ in extension_command_table.items():
+    for cmd_name, ext_cmd in extension_command_table.items():
+        try:
+            # do not include hidden deprecated command
+            if ext_cmd.deprecate_info.hide:
+                print(f"Skip hidden deprecated command: {cmd_name}")
+                continue
+        except AttributeError:
+            pass
         parts = cmd_name.split()
         parent = root
         for i, part in enumerate(parts):
@@ -68,6 +76,8 @@ def update_cmd_tree(ext_name):
 
 def upload_cmd_tree():
     blob_file_name = 'extensionCommandTree.json'
+    if BLOB_PREFIX:
+        blob_file_name = f'{BLOB_PREFIX}/{blob_file_name}'
     downloaded_file_name = 'extCmdTreeDownloaded.json'
     file_path = os.path.expanduser(os.path.join('~', '.azure', file_name))
 
@@ -88,4 +98,5 @@ def upload_cmd_tree():
 if __name__ == '__main__':
     for ext in sys.argv[1:]:
         update_cmd_tree(ext)
+        print()
     upload_cmd_tree()

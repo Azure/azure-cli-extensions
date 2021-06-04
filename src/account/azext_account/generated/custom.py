@@ -57,12 +57,14 @@ def account_alias_create(client,
                          billing_scope=None,
                          display_name=None,
                          subscription_id=None,
+                         reseller_id=None,
                          no_wait=False):
     properties = {
         'display_name': display_name,
         'workload': workload,
         'billing_scope': billing_scope,
-        'subscription_id': subscription_id
+        'subscription_id': subscription_id,
+        'reseller_id': reseller_id
     }
     return sdk_no_wait(no_wait,
                        client.begin_create,

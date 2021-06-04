@@ -1,21 +1,113 @@
 # Azure CLI Module Creation Report
 
-### maintenance applyupdate create
-
-create a maintenance applyupdate.
-
-#### Command group
-|Name (az)|Swagger name|
+## EXTENSION
+|CLI Extension|Command Groups|
 |---------|------------|
-|maintenance applyupdate|ApplyUpdates|
+|az maintenance|[groups](#CommandGroups)
 
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|create|CreateOrUpdateParent|
-|create|CreateOrUpdate#Create|
+## GROUPS
+### <a name="CommandGroups">Command groups in `az maintenance` extension </a>
+|CLI Command Group|Group Swagger name|Commands|
+|---------|------------|--------|
+|az maintenance public-configuration|PublicMaintenanceConfigurations|[commands](#CommandsInPublicMaintenanceConfigurations)|
+|az maintenance applyupdate|ApplyUpdates|[commands](#CommandsInApplyUpdates)|
+|az maintenance assignment|ConfigurationAssignments|[commands](#CommandsInConfigurationAssignments)|
+|az maintenance configuration|MaintenanceConfigurations|[commands](#CommandsInMaintenanceConfigurations)|
+|az maintenance configuration-for-resource-group|MaintenanceConfigurationsForResourceGroup|[commands](#CommandsInMaintenanceConfigurationsForResourceGroup)|
+|az maintenance applyupdate-for-resource-group|ApplyUpdateForResourceGroup|[commands](#CommandsInApplyUpdateForResourceGroup)|
+|az maintenance update|Updates|[commands](#CommandsInUpdates)|
 
-#### Parameters
+## COMMANDS
+### <a name="CommandsInApplyUpdates">Commands in `az maintenance applyupdate` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az maintenance applyupdate list](#ApplyUpdatesList)|List|[Parameters](#ParametersApplyUpdatesList)|[Example](#ExamplesApplyUpdatesList)|
+|[az maintenance applyupdate show](#ApplyUpdatesGet)|Get|[Parameters](#ParametersApplyUpdatesGet)|[Example](#ExamplesApplyUpdatesGet)|
+|[az maintenance applyupdate create](#ApplyUpdatesCreateOrUpdateParent)|CreateOrUpdateParent|[Parameters](#ParametersApplyUpdatesCreateOrUpdateParent)|[Example](#ExamplesApplyUpdatesCreateOrUpdateParent)|
+|[az maintenance applyupdate create](#ApplyUpdatesCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersApplyUpdatesCreateOrUpdate#Create)|[Example](#ExamplesApplyUpdatesCreateOrUpdate#Create)|
+|[az maintenance applyupdate update](#ApplyUpdatesCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersApplyUpdatesCreateOrUpdate#Update)|Not Found|
+|[az maintenance applyupdate show-parent](#ApplyUpdatesGetParent)|GetParent|[Parameters](#ParametersApplyUpdatesGetParent)|[Example](#ExamplesApplyUpdatesGetParent)|
+
+### <a name="CommandsInApplyUpdateForResourceGroup">Commands in `az maintenance applyupdate-for-resource-group` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az maintenance applyupdate-for-resource-group list](#ApplyUpdateForResourceGroupList)|List|[Parameters](#ParametersApplyUpdateForResourceGroupList)|[Example](#ExamplesApplyUpdateForResourceGroupList)|
+
+### <a name="CommandsInConfigurationAssignments">Commands in `az maintenance assignment` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az maintenance assignment list](#ConfigurationAssignmentsList)|List|[Parameters](#ParametersConfigurationAssignmentsList)|[Example](#ExamplesConfigurationAssignmentsList)|
+|[az maintenance assignment create](#ConfigurationAssignmentsCreateOrUpdateParent)|CreateOrUpdateParent|[Parameters](#ParametersConfigurationAssignmentsCreateOrUpdateParent)|[Example](#ExamplesConfigurationAssignmentsCreateOrUpdateParent)|
+|[az maintenance assignment create](#ConfigurationAssignmentsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersConfigurationAssignmentsCreateOrUpdate#Create)|[Example](#ExamplesConfigurationAssignmentsCreateOrUpdate#Create)|
+|[az maintenance assignment update](#ConfigurationAssignmentsCreateOrUpdate#Update)|CreateOrUpdate#Update|[Parameters](#ParametersConfigurationAssignmentsCreateOrUpdate#Update)|Not Found|
+|[az maintenance assignment delete](#ConfigurationAssignmentsDeleteParent)|DeleteParent|[Parameters](#ParametersConfigurationAssignmentsDeleteParent)|[Example](#ExamplesConfigurationAssignmentsDeleteParent)|
+|[az maintenance assignment delete](#ConfigurationAssignmentsDelete)|Delete|[Parameters](#ParametersConfigurationAssignmentsDelete)|[Example](#ExamplesConfigurationAssignmentsDelete)|
+|[az maintenance assignment list-parent](#ConfigurationAssignmentsListParent)|ListParent|[Parameters](#ParametersConfigurationAssignmentsListParent)|[Example](#ExamplesConfigurationAssignmentsListParent)|
+
+### <a name="CommandsInMaintenanceConfigurations">Commands in `az maintenance configuration` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az maintenance configuration list](#MaintenanceConfigurationsList)|List|[Parameters](#ParametersMaintenanceConfigurationsList)|[Example](#ExamplesMaintenanceConfigurationsList)|
+|[az maintenance configuration show](#MaintenanceConfigurationsGet)|Get|[Parameters](#ParametersMaintenanceConfigurationsGet)|[Example](#ExamplesMaintenanceConfigurationsGet)|
+|[az maintenance configuration create](#MaintenanceConfigurationsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersMaintenanceConfigurationsCreateOrUpdate#Create)|[Example](#ExamplesMaintenanceConfigurationsCreateOrUpdate#Create)|
+|[az maintenance configuration update](#MaintenanceConfigurationsUpdate)|Update|[Parameters](#ParametersMaintenanceConfigurationsUpdate)|[Example](#ExamplesMaintenanceConfigurationsUpdate)|
+|[az maintenance configuration delete](#MaintenanceConfigurationsDelete)|Delete|[Parameters](#ParametersMaintenanceConfigurationsDelete)|[Example](#ExamplesMaintenanceConfigurationsDelete)|
+
+### <a name="CommandsInMaintenanceConfigurationsForResourceGroup">Commands in `az maintenance configuration-for-resource-group` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az maintenance configuration-for-resource-group list](#MaintenanceConfigurationsForResourceGroupList)|List|[Parameters](#ParametersMaintenanceConfigurationsForResourceGroupList)|[Example](#ExamplesMaintenanceConfigurationsForResourceGroupList)|
+
+### <a name="CommandsInPublicMaintenanceConfigurations">Commands in `az maintenance public-configuration` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az maintenance public-configuration list](#PublicMaintenanceConfigurationsList)|List|[Parameters](#ParametersPublicMaintenanceConfigurationsList)|[Example](#ExamplesPublicMaintenanceConfigurationsList)|
+|[az maintenance public-configuration show](#PublicMaintenanceConfigurationsGet)|Get|[Parameters](#ParametersPublicMaintenanceConfigurationsGet)|[Example](#ExamplesPublicMaintenanceConfigurationsGet)|
+
+### <a name="CommandsInUpdates">Commands in `az maintenance update` group</a>
+|CLI Command|Operation Swagger name|Parameters|Examples|
+|---------|------------|--------|-----------|
+|[az maintenance update list](#UpdatesList)|List|[Parameters](#ParametersUpdatesList)|[Example](#ExamplesUpdatesList)|
+|[az maintenance update list-parent](#UpdatesListParent)|ListParent|[Parameters](#ParametersUpdatesListParent)|[Example](#ExamplesUpdatesListParent)|
+
+
+## COMMAND DETAILS
+
+### group `az maintenance applyupdate`
+#### <a name="ApplyUpdatesList">Command `az maintenance applyupdate list`</a>
+
+##### <a name="ExamplesApplyUpdatesList">Example</a>
+```
+az maintenance applyupdate list
+```
+##### <a name="ParametersApplyUpdatesList">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+#### <a name="ApplyUpdatesGet">Command `az maintenance applyupdate show`</a>
+
+##### <a name="ExamplesApplyUpdatesGet">Example</a>
+```
+az maintenance applyupdate show --name "e9b9685d-78e4-44c4-a81c-64a14f9b87b6" --provider-name "Microsoft.Compute" \
+--resource-group "examplerg" --resource-name "smdtest1" --resource-type "virtualMachineScaleSets"
+```
+##### <a name="ParametersApplyUpdatesGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Resource group name|resource_group_name|resourceGroupName|
+|**--provider-name**|string|Resource provider name|provider_name|providerName|
+|**--resource-type**|string|Resource type|resource_type|resourceType|
+|**--resource-name**|string|Resource identifier|resource_name|resourceName|
+|**--apply-update-name**|string|applyUpdate Id|apply_update_name|applyUpdateName|
+
+#### <a name="ApplyUpdatesCreateOrUpdateParent">Command `az maintenance applyupdate create`</a>
+
+##### <a name="ExamplesApplyUpdatesCreateOrUpdateParent">Example</a>
+```
+az maintenance applyupdate create --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name \
+"smdvm1" --resource-parent-name "smdtest1" --resource-parent-type "virtualMachineScaleSets" --resource-type \
+"virtualMachines"
+```
+##### <a name="ParametersApplyUpdatesCreateOrUpdateParent">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|Resource group name|resource_group_name|resourceGroupName|
@@ -25,21 +117,35 @@ create a maintenance applyupdate.
 |**--resource-type**|string|Resource type|resource_type|resourceType|
 |**--resource-name**|string|Resource identifier|resource_name|resourceName|
 
-### maintenance applyupdate get-parent
+#### <a name="ApplyUpdatesCreateOrUpdate#Create">Command `az maintenance applyupdate create`</a>
 
-get-parent a maintenance applyupdate.
+##### <a name="ExamplesApplyUpdatesCreateOrUpdate#Create">Example</a>
+```
+az maintenance applyupdate create --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name \
+"smdtest1" --resource-type "virtualMachineScaleSets"
+```
+##### <a name="ParametersApplyUpdatesCreateOrUpdate#Create">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+#### <a name="ApplyUpdatesCreateOrUpdate#Update">Command `az maintenance applyupdate update`</a>
 
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|maintenance applyupdate|ApplyUpdates|
+##### <a name="ParametersApplyUpdatesCreateOrUpdate#Update">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Resource group name|resource_group_name|resourceGroupName|
+|**--provider-name**|string|Resource provider name|provider_name|providerName|
+|**--resource-type**|string|Resource type|resource_type|resourceType|
+|**--resource-name**|string|Resource identifier|resource_name|resourceName|
 
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|get-parent|GetParent|
+#### <a name="ApplyUpdatesGetParent">Command `az maintenance applyupdate show-parent`</a>
 
-#### Parameters
+##### <a name="ExamplesApplyUpdatesGetParent">Example</a>
+```
+az maintenance applyupdate show-parent --name "e9b9685d-78e4-44c4-a81c-64a14f9b87b6" --provider-name \
+"Microsoft.Compute" --resource-group "examplerg" --resource-name "smdvm1" --resource-parent-name "smdtest1" \
+--resource-parent-type "virtualMachineScaleSets" --resource-type "virtualMachines"
+```
+##### <a name="ParametersApplyUpdatesGetParent">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|Resource group name|resource_group_name|resourceGroupName|
@@ -50,44 +156,27 @@ get-parent a maintenance applyupdate.
 |**--resource-name**|string|Resource identifier|resource_name|resourceName|
 |**--apply-update-name**|string|applyUpdate Id|apply_update_name|applyUpdateName|
 
-### maintenance applyupdate show
+### group `az maintenance applyupdate-for-resource-group`
+#### <a name="ApplyUpdateForResourceGroupList">Command `az maintenance applyupdate-for-resource-group list`</a>
 
-show a maintenance applyupdate.
-
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|maintenance applyupdate|ApplyUpdates|
-
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|show|Get|
-
-#### Parameters
+##### <a name="ExamplesApplyUpdateForResourceGroupList">Example</a>
+```
+az maintenance applyupdate-for-resource-group list --resource-group "examplerg"
+```
+##### <a name="ParametersApplyUpdateForResourceGroupList">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Resource group name|resource_group_name|resourceGroupName|
-|**--provider-name**|string|Resource provider name|provider_name|providerName|
-|**--resource-type**|string|Resource type|resource_type|resourceType|
-|**--resource-name**|string|Resource identifier|resource_name|resourceName|
-|**--apply-update-name**|string|applyUpdate Id|apply_update_name|applyUpdateName|
+|**--resource-group-name**|string|Resource Group Name|resource_group_name|resourceGroupName|
 
-### maintenance applyupdate update
+### group `az maintenance assignment`
+#### <a name="ConfigurationAssignmentsList">Command `az maintenance assignment list`</a>
 
-update a maintenance applyupdate.
-
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|maintenance applyupdate|ApplyUpdates|
-
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|update|CreateOrUpdate#Update|
-
-#### Parameters
+##### <a name="ExamplesConfigurationAssignmentsList">Example</a>
+```
+az maintenance assignment list --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name \
+"smdtest1" --resource-type "virtualMachineScaleSets"
+```
+##### <a name="ParametersConfigurationAssignmentsList">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|Resource group name|resource_group_name|resourceGroupName|
@@ -95,22 +184,16 @@ update a maintenance applyupdate.
 |**--resource-type**|string|Resource type|resource_type|resourceType|
 |**--resource-name**|string|Resource identifier|resource_name|resourceName|
 
-### maintenance assignment create
+#### <a name="ConfigurationAssignmentsCreateOrUpdateParent">Command `az maintenance assignment create`</a>
 
-create a maintenance assignment.
-
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|maintenance assignment|ConfigurationAssignments|
-
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|create|CreateOrUpdateParent|
-|create|CreateOrUpdate#Create|
-
-#### Parameters
+##### <a name="ExamplesConfigurationAssignmentsCreateOrUpdateParent">Example</a>
+```
+az maintenance assignment create --maintenance-configuration-id "/subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/re\
+sourcegroups/examplerg/providers/Microsoft.Maintenance/maintenanceConfigurations/policy1" --name "workervmPolicy" \
+--provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdvm1" --resource-parent-name \
+"smdtest1" --resource-parent-type "virtualMachineScaleSets" --resource-type "virtualMachines"
+```
+##### <a name="ParametersConfigurationAssignmentsCreateOrUpdateParent">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|Resource group name|resource_group_name|resourceGroupName|
@@ -124,22 +207,41 @@ create a maintenance assignment.
 |**--maintenance-configuration-id**|string|The maintenance configuration Id|maintenance_configuration_id|maintenanceConfigurationId|
 |**--resource-id**|string|The unique resourceId|resource_id|resourceId|
 
-### maintenance assignment delete
+#### <a name="ConfigurationAssignmentsCreateOrUpdate#Create">Command `az maintenance assignment create`</a>
 
-delete a maintenance assignment.
+##### <a name="ExamplesConfigurationAssignmentsCreateOrUpdate#Create">Example</a>
+```
+az maintenance assignment create --maintenance-configuration-id "/subscriptions/5b4b650e-28b9-4790-b3ab-ddbd88d727c4/re\
+sourcegroups/examplerg/providers/Microsoft.Maintenance/maintenanceConfigurations/configuration1" --name \
+"workervmConfiguration" --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdtest1" \
+--resource-type "virtualMachineScaleSets"
+```
+##### <a name="ParametersConfigurationAssignmentsCreateOrUpdate#Create">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+#### <a name="ConfigurationAssignmentsCreateOrUpdate#Update">Command `az maintenance assignment update`</a>
 
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|maintenance assignment|ConfigurationAssignments|
+##### <a name="ParametersConfigurationAssignmentsCreateOrUpdate#Update">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Resource group name|resource_group_name|resourceGroupName|
+|**--provider-name**|string|Resource provider name|provider_name|providerName|
+|**--resource-type**|string|Resource type|resource_type|resourceType|
+|**--resource-name**|string|Resource identifier|resource_name|resourceName|
+|**--configuration-assignment-name**|string|Configuration assignment name|configuration_assignment_name|configurationAssignmentName|
+|**--location**|string|Location of the resource|location|location|
+|**--maintenance-configuration-id**|string|The maintenance configuration Id|maintenance_configuration_id|maintenanceConfigurationId|
+|**--resource-id**|string|The unique resourceId|resource_id|resourceId|
 
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|delete|DeleteParent|
-|delete|Delete|
+#### <a name="ConfigurationAssignmentsDeleteParent">Command `az maintenance assignment delete`</a>
 
-#### Parameters
+##### <a name="ExamplesConfigurationAssignmentsDeleteParent">Example</a>
+```
+az maintenance assignment delete --name "workervmConfiguration" --provider-name "Microsoft.Compute" --resource-group \
+"examplerg" --resource-name "smdvm1" --resource-parent-name "smdtest1" --resource-parent-type \
+"virtualMachineScaleSets" --resource-type "virtualMachines"
+```
+##### <a name="ParametersConfigurationAssignmentsDeleteParent">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|Resource group name|resource_group_name|resourceGroupName|
@@ -150,43 +252,25 @@ delete a maintenance assignment.
 |**--resource-name**|string|Resource identifier|resource_name|resourceName|
 |**--configuration-assignment-name**|string|Unique configuration assignment name|configuration_assignment_name|configurationAssignmentName|
 
-### maintenance assignment list
+#### <a name="ConfigurationAssignmentsDelete">Command `az maintenance assignment delete`</a>
 
-list a maintenance assignment.
-
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|maintenance assignment|ConfigurationAssignments|
-
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|list|List|
-
-#### Parameters
+##### <a name="ExamplesConfigurationAssignmentsDelete">Example</a>
+```
+az maintenance assignment delete --name "workervmConfiguration" --provider-name "Microsoft.Compute" --resource-group \
+"examplerg" --resource-name "smdtest1" --resource-type "virtualMachineScaleSets"
+```
+##### <a name="ParametersConfigurationAssignmentsDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Resource group name|resource_group_name|resourceGroupName|
-|**--provider-name**|string|Resource provider name|provider_name|providerName|
-|**--resource-type**|string|Resource type|resource_type|resourceType|
-|**--resource-name**|string|Resource identifier|resource_name|resourceName|
+#### <a name="ConfigurationAssignmentsListParent">Command `az maintenance assignment list-parent`</a>
 
-### maintenance assignment list-parent
-
-list-parent a maintenance assignment.
-
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|maintenance assignment|ConfigurationAssignments|
-
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|list-parent|ListParent|
-
-#### Parameters
+##### <a name="ExamplesConfigurationAssignmentsListParent">Example</a>
+```
+az maintenance assignment list-parent --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name \
+"smdtestvm1" --resource-parent-name "smdtest1" --resource-parent-type "virtualMachineScaleSets" --resource-type \
+"virtualMachines"
+```
+##### <a name="ParametersConfigurationAssignmentsListParent">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|Resource group name|resource_group_name|resourceGroupName|
@@ -196,204 +280,136 @@ list-parent a maintenance assignment.
 |**--resource-type**|string|Resource type|resource_type|resourceType|
 |**--resource-name**|string|Resource identifier|resource_name|resourceName|
 
-### maintenance assignment update
+### group `az maintenance configuration`
+#### <a name="MaintenanceConfigurationsList">Command `az maintenance configuration list`</a>
 
-update a maintenance assignment.
-
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|maintenance assignment|ConfigurationAssignments|
-
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|update|CreateOrUpdate#Update|
-
-#### Parameters
+##### <a name="ExamplesMaintenanceConfigurationsList">Example</a>
+```
+az maintenance configuration list
+```
+##### <a name="ParametersMaintenanceConfigurationsList">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Resource group name|resource_group_name|resourceGroupName|
-|**--provider-name**|string|Resource provider name|provider_name|providerName|
-|**--resource-type**|string|Resource type|resource_type|resourceType|
-|**--resource-name**|string|Resource identifier|resource_name|resourceName|
-|**--configuration-assignment-name**|string|Configuration assignment name|configuration_assignment_name|configurationAssignmentName|
-|**--location**|string|Location of the resource|location|location|
-|**--maintenance-configuration-id**|string|The maintenance configuration Id|maintenance_configuration_id|maintenanceConfigurationId|
-|**--resource-id**|string|The unique resourceId|resource_id|resourceId|
+#### <a name="MaintenanceConfigurationsGet">Command `az maintenance configuration show`</a>
 
-### maintenance configuration create
-
-create a maintenance configuration.
-
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|maintenance configuration|MaintenanceConfigurations|
-
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|create|CreateOrUpdate#Create|
-
-#### Parameters
+##### <a name="ExamplesMaintenanceConfigurationsGet">Example</a>
+```
+az maintenance configuration show --resource-group "examplerg" --resource-name "configuration1"
+```
+##### <a name="ParametersMaintenanceConfigurationsGet">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|Resource Group Name|resource_group_name|resourceGroupName|
-|**--resource-name**|string|Resource Identifier|resource_name|resourceName|
+|**--resource-name**|string|Maintenance Configuration Name|resource_name|resourceName|
+
+#### <a name="MaintenanceConfigurationsCreateOrUpdate#Create">Command `az maintenance configuration create`</a>
+
+##### <a name="ExamplesMaintenanceConfigurationsCreateOrUpdate#Create">Example</a>
+```
+az maintenance configuration create --location "westus2" --maintenance-scope "Host" --maintenance-window-duration \
+"05:00" --maintenance-window-expiration-date-time "9999-12-31 00:00" --maintenance-window-recur-every "Day" \
+--maintenance-window-start-date-time "2025-04-30 08:00" --maintenance-window-time-zone "Pacific Standard Time" \
+--namespace "Microsoft.Maintenance" --visibility "Custom" --resource-group "examplerg" --resource-name \
+"configuration1"
+```
+##### <a name="ParametersMaintenanceConfigurationsCreateOrUpdate#Create">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Resource Group Name|resource_group_name|resourceGroupName|
+|**--resource-name**|string|Maintenance Configuration Name|resource_name|resourceName|
 |**--location**|string|Gets or sets location of the resource|location|location|
 |**--tags**|dictionary|Gets or sets tags of the resource|tags|tags|
 |**--namespace**|string|Gets or sets namespace of the resource|namespace|namespace|
 |**--extension-properties**|dictionary|Gets or sets extensionProperties of the maintenanceConfiguration|extension_properties|extensionProperties|
 |**--maintenance-scope**|choice|Gets or sets maintenanceScope of the configuration|maintenance_scope|maintenanceScope|
-|**--visibility**|choice|Gets or sets the visibility of the configuration|visibility|visibility|
-|**--maintenance-window-start-date-time**|string|Effective start date of the maintenance window in YYYY-MM-DD hh:mm format. The start date can be set to either the current date or future date. The window will be created in the time zone provided and adjusted to daylight savings according to that time zone.|start_date_time|startDateTime|
-|**--maintenance-window-expiration-date-time**|string|Effective expiration date of the maintenance window in YYYY-MM-DD hh:mm format. The window will be created in the time zone provided and adjusted to daylight savings according to that time zone. Expiration date must be set to a future date. If not provided, it will be set to the maximum datetime 9999-12-31 23:59:59.|expiration_date_time|expirationDateTime|
-|**--maintenance-window-duration**|string|Duration of the maintenance window in HH:mm format. If not provided, default value will be used based on maintenance scope provided. Example: 05:00.|duration|duration|
-|**--maintenance-window-time-zone**|string|Name of the timezone. List of timezones can be obtained by executing [System.TimeZoneInfo]::GetSystemTimeZones() in PowerShell. Example: Pacific Standard Time, UTC, W. Europe Standard Time, Korea Standard Time, Cen. Australia Standard Time.|time_zone|timeZone|
-|**--maintenance-window-recur-every**|string|Rate at which a Maintenance window is expected to recur. The rate can be expressed as daily, weekly, or monthly schedules. Daily schedule are formatted as recurEvery: [Frequency as integer]['Day(s)']. If no frequency is provided, the default frequency is 1. Daily schedule examples are recurEvery: Day, recurEvery: 3Days.  Weekly schedule are formatted as recurEvery: [Frequency as integer]['Week(s)'] [Optional comma separated list of weekdays Monday-Sunday]. Weekly schedule examples are recurEvery: 3Weeks, recurEvery: Week Saturday,Sunday. Monthly schedules are formatted as [Frequency as integer]['Month(s)'] [Comma separated list of month days] or [Frequency as integer]['Month(s)'] [Week of Month (First, Second, Third, Fourth, Last)] [Weekday Monday-Sunday]. Monthly schedule examples are recurEvery: Month, recurEvery: 2Months, recurEvery: Month day23,day24, recurEvery: Month Last Sunday, recurEvery: Month Fourth Monday.|recur_every|recurEvery|
+|**--visibility**|choice|Gets or sets the visibility of the configuration. The default value is 'Custom'|visibility|visibility|
+|**--start-date-time**|string|Effective start date of the maintenance window in YYYY-MM-DD hh:mm format. The start date can be set to either the current date or future date. The window will be created in the time zone provided and adjusted to daylight savings according to that time zone.|start_date_time|startDateTime|
+|**--expiration-date-time**|string|Effective expiration date of the maintenance window in YYYY-MM-DD hh:mm format. The window will be created in the time zone provided and adjusted to daylight savings according to that time zone. Expiration date must be set to a future date. If not provided, it will be set to the maximum datetime 9999-12-31 23:59:59.|expiration_date_time|expirationDateTime|
+|**--duration**|string|Duration of the maintenance window in HH:mm format. If not provided, default value will be used based on maintenance scope provided. Example: 05:00.|duration|duration|
+|**--time-zone**|string|Name of the timezone. List of timezones can be obtained by executing [System.TimeZoneInfo]::GetSystemTimeZones() in PowerShell. Example: Pacific Standard Time, UTC, W. Europe Standard Time, Korea Standard Time, Cen. Australia Standard Time.|time_zone|timeZone|
+|**--recur-every**|string|Rate at which a Maintenance window is expected to recur. The rate can be expressed as daily, weekly, or monthly schedules. Daily schedule are formatted as recurEvery: [Frequency as integer]['Day(s)']. If no frequency is provided, the default frequency is 1. Daily schedule examples are recurEvery: Day, recurEvery: 3Days.  Weekly schedule are formatted as recurEvery: [Frequency as integer]['Week(s)'] [Optional comma separated list of weekdays Monday-Sunday]. Weekly schedule examples are recurEvery: 3Weeks, recurEvery: Week Saturday,Sunday. Monthly schedules are formatted as [Frequency as integer]['Month(s)'] [Comma separated list of month days] or [Frequency as integer]['Month(s)'] [Week of Month (First, Second, Third, Fourth, Last)] [Weekday Monday-Sunday]. Monthly schedule examples are recurEvery: Month, recurEvery: 2Months, recurEvery: Month day23,day24, recurEvery: Month Last Sunday, recurEvery: Month Fourth Monday.|recur_every|recurEvery|
 
-### maintenance configuration delete
+#### <a name="MaintenanceConfigurationsUpdate">Command `az maintenance configuration update`</a>
 
-delete a maintenance configuration.
-
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|maintenance configuration|MaintenanceConfigurations|
-
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|delete|Delete|
-
-#### Parameters
+##### <a name="ExamplesMaintenanceConfigurationsUpdate">Example</a>
+```
+az maintenance configuration update --location "westus2" --maintenance-scope "Host" --maintenance-window-duration \
+"05:00" --maintenance-window-expiration-date-time "9999-12-31 00:00" --maintenance-window-recur-every "Month Third \
+Sunday" --maintenance-window-start-date-time "2025-04-30 08:00" --maintenance-window-time-zone "Pacific Standard Time" \
+--namespace "Microsoft.Maintenance" --visibility "Custom" --resource-group "examplerg" --resource-name \
+"configuration1"
+```
+##### <a name="ParametersMaintenanceConfigurationsUpdate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|Resource Group Name|resource_group_name|resourceGroupName|
-|**--resource-name**|string|Resource Identifier|resource_name|resourceName|
-
-### maintenance configuration list
-
-list a maintenance configuration.
-
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|maintenance configuration|MaintenanceConfigurations|
-
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|list|List|
-
-#### Parameters
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-
-### maintenance configuration show
-
-show a maintenance configuration.
-
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|maintenance configuration|MaintenanceConfigurations|
-
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|show|Get|
-
-#### Parameters
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Resource Group Name|resource_group_name|resourceGroupName|
-|**--resource-name**|string|Resource Identifier|resource_name|resourceName|
-
-### maintenance configuration update
-
-update a maintenance configuration.
-
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|maintenance configuration|MaintenanceConfigurations|
-
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|update|Update|
-
-#### Parameters
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|Resource Group Name|resource_group_name|resourceGroupName|
-|**--resource-name**|string|Resource Identifier|resource_name|resourceName|
+|**--resource-name**|string|Maintenance Configuration Name|resource_name|resourceName|
 |**--location**|string|Gets or sets location of the resource|location|location|
 |**--tags**|dictionary|Gets or sets tags of the resource|tags|tags|
 |**--namespace**|string|Gets or sets namespace of the resource|namespace|namespace|
 |**--extension-properties**|dictionary|Gets or sets extensionProperties of the maintenanceConfiguration|extension_properties|extensionProperties|
 |**--maintenance-scope**|choice|Gets or sets maintenanceScope of the configuration|maintenance_scope|maintenanceScope|
-|**--visibility**|choice|Gets or sets the visibility of the configuration|visibility|visibility|
-|**--maintenance-window-start-date-time**|string|Effective start date of the maintenance window in YYYY-MM-DD hh:mm format. The start date can be set to either the current date or future date. The window will be created in the time zone provided and adjusted to daylight savings according to that time zone.|start_date_time|startDateTime|
-|**--maintenance-window-expiration-date-time**|string|Effective expiration date of the maintenance window in YYYY-MM-DD hh:mm format. The window will be created in the time zone provided and adjusted to daylight savings according to that time zone. Expiration date must be set to a future date. If not provided, it will be set to the maximum datetime 9999-12-31 23:59:59.|expiration_date_time|expirationDateTime|
-|**--maintenance-window-duration**|string|Duration of the maintenance window in HH:mm format. If not provided, default value will be used based on maintenance scope provided. Example: 05:00.|duration|duration|
-|**--maintenance-window-time-zone**|string|Name of the timezone. List of timezones can be obtained by executing [System.TimeZoneInfo]::GetSystemTimeZones() in PowerShell. Example: Pacific Standard Time, UTC, W. Europe Standard Time, Korea Standard Time, Cen. Australia Standard Time.|time_zone|timeZone|
-|**--maintenance-window-recur-every**|string|Rate at which a Maintenance window is expected to recur. The rate can be expressed as daily, weekly, or monthly schedules. Daily schedule are formatted as recurEvery: [Frequency as integer]['Day(s)']. If no frequency is provided, the default frequency is 1. Daily schedule examples are recurEvery: Day, recurEvery: 3Days.  Weekly schedule are formatted as recurEvery: [Frequency as integer]['Week(s)'] [Optional comma separated list of weekdays Monday-Sunday]. Weekly schedule examples are recurEvery: 3Weeks, recurEvery: Week Saturday,Sunday. Monthly schedules are formatted as [Frequency as integer]['Month(s)'] [Comma separated list of month days] or [Frequency as integer]['Month(s)'] [Week of Month (First, Second, Third, Fourth, Last)] [Weekday Monday-Sunday]. Monthly schedule examples are recurEvery: Month, recurEvery: 2Months, recurEvery: Month day23,day24, recurEvery: Month Last Sunday, recurEvery: Month Fourth Monday.|recur_every|recurEvery|
+|**--visibility**|choice|Gets or sets the visibility of the configuration. The default value is 'Custom'|visibility|visibility|
+|**--start-date-time**|string|Effective start date of the maintenance window in YYYY-MM-DD hh:mm format. The start date can be set to either the current date or future date. The window will be created in the time zone provided and adjusted to daylight savings according to that time zone.|start_date_time|startDateTime|
+|**--expiration-date-time**|string|Effective expiration date of the maintenance window in YYYY-MM-DD hh:mm format. The window will be created in the time zone provided and adjusted to daylight savings according to that time zone. Expiration date must be set to a future date. If not provided, it will be set to the maximum datetime 9999-12-31 23:59:59.|expiration_date_time|expirationDateTime|
+|**--duration**|string|Duration of the maintenance window in HH:mm format. If not provided, default value will be used based on maintenance scope provided. Example: 05:00.|duration|duration|
+|**--time-zone**|string|Name of the timezone. List of timezones can be obtained by executing [System.TimeZoneInfo]::GetSystemTimeZones() in PowerShell. Example: Pacific Standard Time, UTC, W. Europe Standard Time, Korea Standard Time, Cen. Australia Standard Time.|time_zone|timeZone|
+|**--recur-every**|string|Rate at which a Maintenance window is expected to recur. The rate can be expressed as daily, weekly, or monthly schedules. Daily schedule are formatted as recurEvery: [Frequency as integer]['Day(s)']. If no frequency is provided, the default frequency is 1. Daily schedule examples are recurEvery: Day, recurEvery: 3Days.  Weekly schedule are formatted as recurEvery: [Frequency as integer]['Week(s)'] [Optional comma separated list of weekdays Monday-Sunday]. Weekly schedule examples are recurEvery: 3Weeks, recurEvery: Week Saturday,Sunday. Monthly schedules are formatted as [Frequency as integer]['Month(s)'] [Comma separated list of month days] or [Frequency as integer]['Month(s)'] [Week of Month (First, Second, Third, Fourth, Last)] [Weekday Monday-Sunday]. Monthly schedule examples are recurEvery: Month, recurEvery: 2Months, recurEvery: Month day23,day24, recurEvery: Month Last Sunday, recurEvery: Month Fourth Monday.|recur_every|recurEvery|
 
-### maintenance public-configuration list
+#### <a name="MaintenanceConfigurationsDelete">Command `az maintenance configuration delete`</a>
 
-list a maintenance public-configuration.
-
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|maintenance public-configuration|PublicMaintenanceConfigurations|
-
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|list|List|
-
-#### Parameters
+##### <a name="ExamplesMaintenanceConfigurationsDelete">Example</a>
+```
+az maintenance configuration delete --resource-group "examplerg" --resource-name "example1"
+```
+##### <a name="ParametersMaintenanceConfigurationsDelete">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
+|**--resource-group-name**|string|Resource Group Name|resource_group_name|resourceGroupName|
+|**--resource-name**|string|Maintenance Configuration Name|resource_name|resourceName|
 
-### maintenance public-configuration show
+### group `az maintenance configuration-for-resource-group`
+#### <a name="MaintenanceConfigurationsForResourceGroupList">Command `az maintenance configuration-for-resource-group list`</a>
 
-show a maintenance public-configuration.
-
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|maintenance public-configuration|PublicMaintenanceConfigurations|
-
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|show|Get|
-
-#### Parameters
+##### <a name="ExamplesMaintenanceConfigurationsForResourceGroupList">Example</a>
+```
+az maintenance configuration-for-resource-group list --resource-group "examplerg"
+```
+##### <a name="ParametersMaintenanceConfigurationsForResourceGroupList">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
-|**--resource-name**|string|Resource Identifier|resource_name|resourceName|
+|**--resource-group-name**|string|Resource Group Name|resource_group_name|resourceGroupName|
 
-### maintenance update list
+### group `az maintenance public-configuration`
+#### <a name="PublicMaintenanceConfigurationsList">Command `az maintenance public-configuration list`</a>
 
-list a maintenance update.
+##### <a name="ExamplesPublicMaintenanceConfigurationsList">Example</a>
+```
+az maintenance public-configuration list
+```
+##### <a name="ParametersPublicMaintenanceConfigurationsList">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+#### <a name="PublicMaintenanceConfigurationsGet">Command `az maintenance public-configuration show`</a>
 
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|maintenance update|Updates|
+##### <a name="ExamplesPublicMaintenanceConfigurationsGet">Example</a>
+```
+az maintenance public-configuration show --resource-name "configuration1"
+```
+##### <a name="ParametersPublicMaintenanceConfigurationsGet">Parameters</a> 
+|Option|Type|Description|Path (SDK)|Swagger name|
+|------|----|-----------|----------|------------|
+|**--resource-name**|string|Maintenance Configuration Name|resource_name|resourceName|
 
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|list|List|
+### group `az maintenance update`
+#### <a name="UpdatesList">Command `az maintenance update list`</a>
 
-#### Parameters
+##### <a name="ExamplesUpdatesList">Example</a>
+```
+az maintenance update list --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name "smdtest1" \
+--resource-type "virtualMachineScaleSets"
+```
+##### <a name="ParametersUpdatesList">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|Resource group name|resource_group_name|resourceGroupName|
@@ -401,21 +417,14 @@ list a maintenance update.
 |**--resource-type**|string|Resource type|resource_type|resourceType|
 |**--resource-name**|string|Resource identifier|resource_name|resourceName|
 
-### maintenance update list-parent
+#### <a name="UpdatesListParent">Command `az maintenance update list-parent`</a>
 
-list-parent a maintenance update.
-
-#### Command group
-|Name (az)|Swagger name|
-|---------|------------|
-|maintenance update|Updates|
-
-#### Methods
-|Name (az)|Swagger name|
-|---------|------------|
-|list-parent|ListParent|
-
-#### Parameters
+##### <a name="ExamplesUpdatesListParent">Example</a>
+```
+az maintenance update list-parent --provider-name "Microsoft.Compute" --resource-group "examplerg" --resource-name "1" \
+--resource-parent-name "smdtest1" --resource-parent-type "virtualMachineScaleSets" --resource-type "virtualMachines"
+```
+##### <a name="ParametersUpdatesListParent">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|Resource group name|resource_group_name|resourceGroupName|

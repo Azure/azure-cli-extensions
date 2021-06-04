@@ -1,0 +1,43 @@
+{
+    "coverage": {
+        "test_aks_commands": [
+            "AzureKubernetesServiceScenarioTest"
+        ]
+    },
+    "exclude": {
+        "need additional feature": [
+            "test_aks_create_addon_with_azurekeyvaultsecretsprovider_with_secret_rotation",
+            "test_aks_create_with_auto_upgrade_channel",
+            "test_aks_create_with_pod_identity_enabled",
+            "test_aks_create_with_azurekeyvaultsecretsprovider_addon",
+            "test_aks_create_using_azurecni_with_pod_identity_enabled",
+            "test_aks_create_with_gitops_addon",
+            "test_aks_create_with_node_config",
+            "test_aks_custom_kubelet_identity",
+            "test_aks_disable_addon_gitops",
+            "test_aks_disable_addon_openservicemesh",
+            "test_aks_pod_identity_usage",
+            "test_aks_create_with_openservicemesh_addon",
+            "test_aks_update_azurekeyvaultsecretsprovider_with_secret_rotation",
+            "test_aks_enable_addon_with_azurekeyvaultsecretsprovider",
+            "test_aks_enable_addon_with_gitops",
+            "test_aks_create_with_fips",
+            "test_aks_disable_local_accounts",
+            "test_aks_nodepool_add_with_ossku",
+            "test_aks_create_with_ossku"
+        ],
+        "unknown": [
+            "test_aks_create_and_update_with_managed_aad_enable_azure_rbac",
+            "test_aks_create_with_virtual_node_addon",
+            "test_aks_update_to_msi_cluster_with_addons"
+        ],
+        "code bug": [
+            "test_aks_create_with_ingress_appgw_addon_with_deprecated_subet_prefix",
+            "test_aks_byo_subnet_with_ingress_appgw_addon",
+            "test_aks_nodepool_get_upgrades",
+            "test_aks_byo_appgw_with_ingress_appgw_addon",
+            "test_aks_enable_addon_with_openservicemesh",
+            "test_aks_create_with_ingress_appgw_addon"
+        ]
+    }
+}

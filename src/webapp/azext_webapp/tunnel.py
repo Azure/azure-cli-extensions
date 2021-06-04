@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=import-error,unused-import
+# pylint: disable=import-error,unused-import,import-outside-toplevel,super-with-arguments
 import sys
 import ssl
 import socket

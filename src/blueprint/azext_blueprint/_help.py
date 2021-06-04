@@ -87,6 +87,16 @@ helps['blueprint import'] = """
                --input-path "path/to/blueprint/directory"
 """
 
+helps['blueprint export'] = """
+    type: command
+    short-summary: Export a blueprint definition and artifacts to json file(s).
+    examples:
+      - name: Export a blueprint definition and artifacts
+        text: |-
+               az blueprint export --name MyBlueprint \\
+               --output-path "path/to/blueprint/directory"
+"""
+
 helps['blueprint resource-group'] = """
     type: group
     short-summary: Commands to manage blueprint resource group artifact.
@@ -390,7 +400,8 @@ helps['blueprint assignment create'] = """
         text: |-
                az blueprint assignment create --subscription MySubscription --name \\
                MyBlueprintAssignment --location eastus --identity-type UserAssigned \\
-               --user-assigned-identities identity-id \\
+               --user-assigned-identity "/subscriptions/00000000-0000-0000-0000-000000000000 \\
+               /resourcegroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myIdentity"\\
                --description "Enforce pre-defined MyBlueprint to this subscription." \\
                --blueprint-version "/providers/Microsoft.Management/managementGroups/ContosoOnlineGroup \\
                /providers/Microsoft.Blueprint/blueprints/MyBlueprint/versions/v2" \\

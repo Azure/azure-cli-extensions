@@ -19,10 +19,12 @@ helps['k8sconfiguration create'] = """
       - name: Create a Kubernetes configuration
         text: |-
             az k8sconfiguration create --resource-group MyResourceGroup --cluster-name MyClusterName \\
-            --cluster-type connectedClusters --name MyConfigurationName --operator-instance-name OperatorInst01 \\
-            --operator-namespace OperatorNamespace01 --repository-url git://github.com/fluxHowTo/flux-get-started \\
-            --operator-params "'--git-readonly'" --enable-helm-operator --helm-operator-version 0.6.0 \\
-            --scope namespace --helm-operator-params '--set helm.versions=v3'
+            --cluster-type connectedClusters --name MyGitConfig --operator-instance-name OperatorInst01 \\
+            --operator-namespace OperatorNamespace01 --operator-type flux --operator-params "'--git-readonly'" \\
+            --repository-url git://github.com/fluxHowTo/flux-get-started --enable-helm-operator  \\
+            --helm-operator-version 1.2.0 --scope namespace --helm-operator-params '--set helm.versions=v3' \\
+            --ssh-private-key '' --ssh-private-key-file '' --https-user '' --https-key '' \\
+            --ssh-known-hosts '' --ssh-known-hosts-file ''
 """
 
 helps['k8sconfiguration list'] = """
@@ -64,5 +66,5 @@ helps['k8sconfiguration update'] = """
             az k8sconfiguration update --resource-group MyResourceGroup --cluster-name MyClusterName \\
             --cluster-type connectedClusters --name MyConfigurationName --enable-helm-operator \\
             --repository-url git://github.com/fluxHowTo/flux-get-started --operator-params "'--git-readonly'" \\
-            --helm-operator-version 0.6.0 --helm-operator-params '--set helm.versions=v3'
+            --helm-operator-version 1.2.0 --helm-operator-params '--set helm.versions=v3'
 """

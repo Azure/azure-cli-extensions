@@ -43,6 +43,12 @@ def validate_sku(namespace):
             raise CLIError("The pricing tier only accepts value [Basic, Standard]")
 
 
+def validate_instance_count(namespace):
+    if namespace.instance_count is not None:
+        if namespace.instance_count < 1:
+            raise CLIError("--instance-count must be greater than 0")
+
+
 def validate_name(namespace):
     namespace.name = namespace.name.lower()
     matchObj = match(r'^[a-z][a-z0-9-]{2,30}[a-z0-9]$', namespace.name)
@@ -145,6 +151,36 @@ def validate_jvm_options(namespace):
         namespace.jvm_options = namespace.jvm_options.strip('\'')
 
 
+def validate_tracing_parameters(namespace):
+    if namespace.disable_app_insights and namespace.disable_distributed_tracing:
+        raise CLIError("Conflict detected: '--disable-app-insights' can not be set with '--disable-distributed-tracing'.")
+    if (namespace.app_insights or namespace.app_insights_key) and namespace.disable_app_insights:
+        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key'"
+                       "can not be set with '--disable-app-insights'.")
+    if (namespace.app_insights or namespace.app_insights_key) and namespace.disable_distributed_tracing:
+        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key'"
+                       "can not be set with '--disable-distributed-tracing'.")
+    if namespace.app_insights and namespace.app_insights_key:
+        raise CLIError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
+    if namespace.app_insights == "":
+        raise CLIError("Conflict detected: '--app-insights' can not be empty.")
+
+
+def validate_java_agent_parameters(namespace):
+    if namespace.disable_app_insights and namespace.enable_java_agent:
+        raise CLIError("Conflict detected: '--enable-java-in-process-agent' and '--disable-app-insights' can not be set at the same time.")
+
+
+def validate_app_insights_parameters(namespace):
+    if (namespace.app_insights or namespace.app_insights_key or namespace.sampling_rate) and namespace.disable:
+        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate'"
+                       "can not be set with '--disable'.")
+    if namespace.app_insights and namespace.app_insights_key:
+        raise CLIError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
+    if namespace.sampling_rate and (namespace.sampling_rate < 0 or namespace.sampling_rate > 100):
+        raise CLIError("Sampling Rate must be in the range [0,100].")
+
+
 def validate_vnet(cmd, namespace):
     if not namespace.vnet and not namespace.app_subnet and \
        not namespace.service_runtime_subnet and not namespace.reserved_cidr_range:
@@ -192,6 +228,7 @@ def validate_vnet(cmd, namespace):
         raise CLIError('--vnet and Azure Spring Cloud instance should be in the same location.')
     for subnet in vnet_obj.subnets:
         _validate_subnet(namespace, subnet)
+    _validate_route_table(namespace, vnet_obj)
 
     if namespace.reserved_cidr_range:
         _validate_cidr_range(namespace)
@@ -206,14 +243,12 @@ def _validate_subnet(namespace, subnet):
     limit = 32
     if subnet.id.lower() == namespace.app_subnet.lower():
         name = 'app-subnet'
-        limit = 24
+        limit = 28
     elif subnet.id.lower() == namespace.service_runtime_subnet.lower():
         name = 'service-runtime-subnet'
         limit = 28
     else:
         return
-    if subnet.route_table:
-        raise CLIError('--{} should not associate with any route table.'.format(name))
     if subnet.ip_configurations:
         raise CLIError('--{} should not have connected device.'.format(name))
     address = ip_network(subnet.address_prefix, strict=False)
@@ -383,3 +418,21 @@ def _validate_resource_group_name(name, message_name):
     matchObj = match(r'^[-\w\._\(\)]+$', name)
     if matchObj is None:
         raise CLIError('--{0} must conform to the following pattern: \'^[-\\w\\._\\(\\)]+$\'.'.format(message_name))
+
+
+def _validate_route_table(namespace, vnet_obj):
+    app_route_table_id = ""
+    runtime_route_table_id = ""
+    for subnet in vnet_obj.subnets:
+        if subnet.id.lower() == namespace.app_subnet.lower() and subnet.route_table:
+            app_route_table_id = subnet.route_table.id
+        if subnet.id.lower() == namespace.service_runtime_subnet.lower() and subnet.route_table:
+            runtime_route_table_id = subnet.route_table.id
+
+    if app_route_table_id and runtime_route_table_id:
+        if app_route_table_id == runtime_route_table_id:
+            raise CLIError('--service-runtime-subnet and --app-subnet should associate with different route tables.')
+    if (app_route_table_id and not runtime_route_table_id) \
+            or (not app_route_table_id and runtime_route_table_id):
+        raise CLIError(
+            '--service-runtime-subnet and --app-subnet should both associate with different route tables or neither.')

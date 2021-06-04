@@ -14,7 +14,12 @@ from enum import Enum
 
 class TeeKind(str, Enum):
 
-    sgx_enclave = "SgxEnclave"  #: Intel Software Guard eXtensions
-    open_enclave = "OpenEnclave"  #: OpenEnclave extensions to SGX
-    cy_res_component = "CyResComponent"  #: IoT Edge validation
-    vsm_enclave = "VSMEnclave"  #: VSM Enclave Attestation
+    sgx_intel_sdk = "SGX-IntelSDK"
+    sgx_open_enclave_sdk = "SGX-OpenEnclaveSDK"
+    tpm = "TPM"
+
+
+class DataType(str, Enum):
+
+    json = 'JSON'
+    binary = 'Binary'
