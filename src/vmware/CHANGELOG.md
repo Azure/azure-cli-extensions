@@ -8,6 +8,10 @@ Other changes:
 - update to AVS 2021-06-01 API
 - add `az vmware private-cloud rotate-vcenter-password`
 - add `az vmware private-cloud rotate-nsxt-password`
+- add `az vmware addon` command group
+- add `az vmware addon hcx` command group to manage a HCX addon
+- add `az vmware addon srm` command group to manage a Site Recovery Manager (SRM) addon
+- add `az vmware addon vr` command group to manage a vSphere Replication (VR) addon
 
 ## 2.0.1 (2021-02)
 - Update the minimum az cli version to 2.11.0 [#3045](https://github.com/Azure/azure-cli-extensions/issues/3045)
