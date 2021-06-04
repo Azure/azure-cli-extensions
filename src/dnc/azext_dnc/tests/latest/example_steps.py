@@ -26,10 +26,10 @@ def step_controller_create(test, rg, rg_2, checks=None):
 
 # EXAMPLE: /Controller/get/Get details of a controller
 @try_manual
-def step_controller_show_detail(test, rg, rg_2, checks=None):
+def step_controller_show(test, rg, rg_2, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dnc controller show-detail '
+    test.cmd('az dnc controller show '
              '--resource-group "{rg}" '
              '--resource-name "{myController}"',
              checks=checks)
@@ -37,10 +37,10 @@ def step_controller_show_detail(test, rg, rg_2, checks=None):
 
 # EXAMPLE: /DelegatedSubnetService/put/put delegated subnet
 @try_manual
-def step_delegated_subnet_service_put_detail(test, rg, rg_2, checks=None):
+def step_delegated_subnet_service_create(test, rg, rg_2, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dnc delegated-subnet-service put-detail '
+    test.cmd('az dnc delegated-subnet-service create '
              '--location "West US" '
              '--id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DelegatedNetwork/controlle'
              'r/{myController2}" '
@@ -53,10 +53,10 @@ def step_delegated_subnet_service_put_detail(test, rg, rg_2, checks=None):
 
 # EXAMPLE: /DelegatedSubnetService/get/Get details of a delegated subnet
 @try_manual
-def step_delegated_subnet_service_show_detail(test, rg, rg_2, checks=None):
+def step_delegated_subnet_service_show(test, rg, rg_2, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dnc delegated-subnet-service show-detail '
+    test.cmd('az dnc delegated-subnet-service show '
              '--resource-group "{rg}" '
              '--resource-name "delegated1"',
              checks=checks)
@@ -97,10 +97,10 @@ def step_orchestrator_instance_service_create(test, rg, rg_2, checks=None):
 
 # EXAMPLE: /OrchestratorInstanceService/get/Get details of a orchestratorInstance
 @try_manual
-def step_orchestrator_instance_service_show_detail(test, rg, rg_2, checks=None):
+def step_orchestrator_instance_service_show(test, rg, rg_2, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dnc orchestrator-instance-service show-detail '
+    test.cmd('az dnc orchestrator-instance-service show '
              '--resource-group "{rg}" '
              '--resource-name "testk8s1"',
              checks=checks)

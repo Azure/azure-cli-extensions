@@ -9,32 +9,40 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 
+from azure.cli.core.util import sdk_no_wait
+
+
+def dnc_controller_show(client,
+                        resource_group_name,
+                        resource_name):
+    return client.get_details(resource_group_name=resource_group_name,
+                              resource_name=resource_name)
+
 
 def dnc_controller_create(client,
                           resource_group_name,
                           resource_name,
                           location=None,
-                          tags=None):
+                          tags=None,
+                          no_wait=False):
     parameters = {}
     parameters['location'] = location
     parameters['tags'] = tags
-    return client.begin_create(resource_group_name=resource_group_name,
-                               resource_name=resource_name,
-                               parameters=parameters)
+    return sdk_no_wait(no_wait,
+                       client.begin_create,
+                       resource_group_name=resource_group_name,
+                       resource_name=resource_name,
+                       parameters=parameters)
 
 
 def dnc_controller_delete(client,
                           resource_group_name,
-                          resource_name):
-    return client.begin_delete(resource_group_name=resource_group_name,
-                               resource_name=resource_name)
-
-
-def dnc_controller_show_detail(client,
-                               resource_group_name,
-                               resource_name):
-    return client.get_details(resource_group_name=resource_group_name,
-                              resource_name=resource_name)
+                          resource_name,
+                          no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       resource_name=resource_name)
 
 
 def dnc_delegated_network_list(client,
@@ -51,6 +59,13 @@ def dnc_orchestrator_instance_service_list(client,
     return client.list_by_subscription()
 
 
+def dnc_orchestrator_instance_service_show(client,
+                                           resource_group_name,
+                                           resource_name):
+    return client.get_details(resource_group_name=resource_group_name,
+                              resource_name=resource_name)
+
+
 def dnc_orchestrator_instance_service_create(client,
                                              resource_group_name,
                                              resource_name,
@@ -62,7 +77,8 @@ def dnc_orchestrator_instance_service_create(client,
                                              cluster_root_ca=None,
                                              api_server_endpoint=None,
                                              private_link_resource_id=None,
-                                             id_=None):
+                                             id_=None,
+                                             no_wait=False):
     parameters = {}
     parameters['location'] = location
     parameters['kind'] = "Kubernetes"
@@ -77,23 +93,21 @@ def dnc_orchestrator_instance_service_create(client,
     parameters['properties']['private_link_resource_id'] = private_link_resource_id
     parameters['properties']['controller_details'] = {}
     parameters['properties']['controller_details']['id'] = id_
-    return client.begin_create(resource_group_name=resource_group_name,
-                               resource_name=resource_name,
-                               parameters=parameters)
+    return sdk_no_wait(no_wait,
+                       client.begin_create,
+                       resource_group_name=resource_group_name,
+                       resource_name=resource_name,
+                       parameters=parameters)
 
 
 def dnc_orchestrator_instance_service_delete(client,
                                              resource_group_name,
-                                             resource_name):
-    return client.begin_delete(resource_group_name=resource_group_name,
-                               resource_name=resource_name)
-
-
-def dnc_orchestrator_instance_service_show_detail(client,
-                                                  resource_group_name,
-                                                  resource_name):
-    return client.get_details(resource_group_name=resource_group_name,
-                              resource_name=resource_name)
+                                             resource_name,
+                                             no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete,
+                       resource_group_name=resource_group_name,
+                       resource_name=resource_name)
 
 
 def dnc_delegated_subnet_service_list(client,
@@ -103,33 +117,21 @@ def dnc_delegated_subnet_service_list(client,
     return client.list_by_subscription()
 
 
-def dnc_delegated_subnet_service_delete(client,
+def dnc_delegated_subnet_service_show(client,
+                                      resource_group_name,
+                                      resource_name):
+    return client.get_details(resource_group_name=resource_group_name,
+                              resource_name=resource_name)
+
+
+def dnc_delegated_subnet_service_create(client,
                                         resource_group_name,
                                         resource_name,
-                                        force_delete=None):
-    return client.begin_delete_details(resource_group_name=resource_group_name,
-                                       resource_name=resource_name,
-                                       force_delete=force_delete)
-
-
-def dnc_delegated_subnet_service_patch_detail(client,
-                                              resource_group_name,
-                                              resource_name,
-                                              tags=None):
-    parameters = {}
-    parameters['tags'] = tags
-    return client.begin_patch_details(resource_group_name=resource_group_name,
-                                      resource_name=resource_name,
-                                      parameters=parameters)
-
-
-def dnc_delegated_subnet_service_put_detail(client,
-                                            resource_group_name,
-                                            resource_name,
-                                            location=None,
-                                            tags=None,
-                                            id_=None,
-                                            subnet_details_id=None):
+                                        location=None,
+                                        tags=None,
+                                        id_=None,
+                                        subnet_details_id=None,
+                                        no_wait=False):
     parameters = {}
     parameters['location'] = location
     parameters['tags'] = tags
@@ -137,13 +139,34 @@ def dnc_delegated_subnet_service_put_detail(client,
     parameters['controller_details']['id'] = id_
     parameters['subnet_details'] = {}
     parameters['subnet_details']['id'] = subnet_details_id
-    return client.begin_put_details(resource_group_name=resource_group_name,
-                                    resource_name=resource_name,
-                                    parameters=parameters)
+    return sdk_no_wait(no_wait,
+                       client.begin_put_details,
+                       resource_group_name=resource_group_name,
+                       resource_name=resource_name,
+                       parameters=parameters)
 
 
-def dnc_delegated_subnet_service_show_detail(client,
-                                             resource_group_name,
-                                             resource_name):
-    return client.get_details(resource_group_name=resource_group_name,
-                              resource_name=resource_name)
+def dnc_delegated_subnet_service_delete(client,
+                                        resource_group_name,
+                                        resource_name,
+                                        force_delete=None,
+                                        no_wait=False):
+    return sdk_no_wait(no_wait,
+                       client.begin_delete_details,
+                       resource_group_name=resource_group_name,
+                       resource_name=resource_name,
+                       force_delete=force_delete)
+
+
+def dnc_delegated_subnet_service_patch_detail(client,
+                                              resource_group_name,
+                                              resource_name,
+                                              tags=None,
+                                              no_wait=False):
+    parameters = {}
+    parameters['tags'] = tags
+    return sdk_no_wait(no_wait,
+                       client.begin_patch_details,
+                       resource_group_name=resource_group_name,
+                       resource_name=resource_name,
+                       parameters=parameters)

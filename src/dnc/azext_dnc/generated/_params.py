@@ -22,6 +22,11 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 
 def load_arguments(self, _):
 
+    with self.argument_context('dnc controller show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('resource_name', type=str, help='The name of the resource. It must be a minimum of 3 characters, '
+                   'and a maximum of 63.', id_part='name')
+
     with self.argument_context('dnc controller create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('resource_name', type=str, help='The name of the resource. It must be a minimum of 3 characters, '
@@ -35,7 +40,7 @@ def load_arguments(self, _):
         c.argument('resource_name', type=str, help='The name of the resource. It must be a minimum of 3 characters, '
                    'and a maximum of 63.', id_part='name')
 
-    with self.argument_context('dnc controller show-detail') as c:
+    with self.argument_context('dnc controller wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('resource_name', type=str, help='The name of the resource. It must be a minimum of 3 characters, '
                    'and a maximum of 63.', id_part='name')
@@ -45,6 +50,11 @@ def load_arguments(self, _):
 
     with self.argument_context('dnc orchestrator-instance-service list') as c:
         c.argument('resource_group_name', resource_group_name_type)
+
+    with self.argument_context('dnc orchestrator-instance-service show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('resource_name', type=str, help='The name of the resource. It must be a minimum of 3 characters, '
+                   'and a maximum of 63.', id_part='name')
 
     with self.argument_context('dnc orchestrator-instance-service create') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -71,13 +81,29 @@ def load_arguments(self, _):
         c.argument('resource_name', type=str, help='The name of the resource. It must be a minimum of 3 characters, '
                    'and a maximum of 63.', id_part='name')
 
-    with self.argument_context('dnc orchestrator-instance-service show-detail') as c:
+    with self.argument_context('dnc orchestrator-instance-service wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('resource_name', type=str, help='The name of the resource. It must be a minimum of 3 characters, '
                    'and a maximum of 63.', id_part='name')
 
     with self.argument_context('dnc delegated-subnet-service list') as c:
         c.argument('resource_group_name', resource_group_name_type)
+
+    with self.argument_context('dnc delegated-subnet-service show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('resource_name', type=str, help='The name of the resource. It must be a minimum of 3 characters, '
+                   'and a maximum of 63.', id_part='name')
+
+    with self.argument_context('dnc delegated-subnet-service create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('resource_name', type=str, help='The name of the resource. It must be a minimum of 3 characters, '
+                   'and a maximum of 63.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+                   validator=get_default_location_from_resource_group)
+        c.argument('tags', tags_type)
+        c.argument('id_', options_list=['--id'], type=str, help='controller arm resource id', arg_group='Controller '
+                   'Details')
+        c.argument('subnet_details_id', type=str, help='subnet arm resource id', arg_group='Subnet Details')
 
     with self.argument_context('dnc delegated-subnet-service delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -91,18 +117,7 @@ def load_arguments(self, _):
                    'and a maximum of 63.', id_part='name')
         c.argument('tags', tags_type)
 
-    with self.argument_context('dnc delegated-subnet-service put-detail') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('resource_name', type=str, help='The name of the resource. It must be a minimum of 3 characters, '
-                   'and a maximum of 63.', id_part='name')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
-                   validator=get_default_location_from_resource_group)
-        c.argument('tags', tags_type)
-        c.argument('id_', options_list=['--id'], type=str, help='controller arm resource id', arg_group='Controller '
-                   'Details')
-        c.argument('subnet_details_id', type=str, help='subnet arm resource id', arg_group='Subnet Details')
-
-    with self.argument_context('dnc delegated-subnet-service show-detail') as c:
+    with self.argument_context('dnc delegated-subnet-service wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('resource_name', type=str, help='The name of the resource. It must be a minimum of 3 characters, '
                    'and a maximum of 63.', id_part='name')

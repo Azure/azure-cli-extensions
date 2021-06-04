@@ -13,16 +13,14 @@ from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
 from .preparers import VirtualNetworkPreparer
 from .example_steps import step_controller_create
-from .example_steps import step_controller_show_detail
-from .example_steps import step_controller_patch
-from .example_steps import step_delegated_subnet_service_put_detail
-from .example_steps import step_delegated_subnet_service_show_detail
+from .example_steps import step_controller_show
+from .example_steps import step_delegated_subnet_service_create
+from .example_steps import step_delegated_subnet_service_show
 from .example_steps import step_delegated_subnet_service_patch_detail
 from .example_steps import step_orchestrator_instance_service_create
-from .example_steps import step_orchestrator_instance_service_show_detail
+from .example_steps import step_orchestrator_instance_service_show
 from .example_steps import step_orchestrator_instance_service_list
 from .example_steps import step_orchestrator_instance_service_list2
-from .example_steps import step_orchestrator_instance_service_patch
 from .example_steps import step_orchestrator_instance_service_delete
 from .example_steps import step_controller_delete
 from .example_steps import step_delegated_network_list
@@ -49,9 +47,9 @@ def cleanup_scenario(test, rg, rg_2):
 def call_scenario(test, rg, rg_2):
     setup_scenario(test, rg, rg_2)
     step_controller_create(test, rg, rg_2, checks=[])
-    step_controller_show_detail(test, rg, rg_2, checks=[])
+    step_controller_show(test, rg, rg_2, checks=[])
     step_orchestrator_instance_service_create(test, rg, rg_2, checks=[])
-    step_orchestrator_instance_service_show_detail(test, rg, rg_2, checks=[])
+    step_orchestrator_instance_service_show(test, rg, rg_2, checks=[])
     step_orchestrator_instance_service_delete(test, rg, rg_2, checks=[])
     step_controller_delete(test, rg, rg_2, checks=[])
     cleanup_scenario(test, rg, rg_2)

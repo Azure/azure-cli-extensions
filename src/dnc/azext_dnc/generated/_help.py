@@ -17,6 +17,15 @@ helps['dnc controller'] = """
     short-summary: Manage controller with dnc
 """
 
+helps['dnc controller show'] = """
+    type: command
+    short-summary: "Gets details about the specified dnc controller."
+    examples:
+      - name: Get details of a controller
+        text: |-
+               az dnc controller show --resource-group "TestRG" --resource-name "testcontroller"
+"""
+
 helps['dnc controller create'] = """
     type: command
     short-summary: "Create a dnc controller."
@@ -36,13 +45,16 @@ helps['dnc controller delete'] = """
                az dnc controller delete --resource-group "TestRG" --resource-name "testcontroller"
 """
 
-helps['dnc controller show-detail'] = """
+helps['dnc controller wait'] = """
     type: command
-    short-summary: "Gets details about the specified dnc controller."
+    short-summary: Place the CLI in a waiting state until a condition of the dnc controller is met.
     examples:
-      - name: Get details of a controller
+      - name: Pause executing next line of CLI script until the dnc controller is successfully created.
         text: |-
-               az dnc controller show-detail --resource-group "TestRG" --resource-name "testcontroller"
+               az dnc controller wait --resource-group "TestRG" --resource-name "testcontroller" --created
+      - name: Pause executing next line of CLI script until the dnc controller is successfully deleted.
+        text: |-
+               az dnc controller wait --resource-group "TestRG" --resource-name "testcontroller" --deleted
 """
 
 helps['dnc delegated-network'] = """
@@ -81,6 +93,15 @@ orchestratorInstance resources in a subscription."
                az dnc orchestrator-instance-service list
 """
 
+helps['dnc orchestrator-instance-service show'] = """
+    type: command
+    short-summary: "Gets details about the orchestrator instance."
+    examples:
+      - name: Get details of a orchestratorInstance
+        text: |-
+               az dnc orchestrator-instance-service show --resource-group "TestRG" --resource-name "testk8s1"
+"""
+
 helps['dnc orchestrator-instance-service create'] = """
     type: command
     short-summary: "Create a orchestrator instance."
@@ -105,13 +126,20 @@ helps['dnc orchestrator-instance-service delete'] = """
                az dnc orchestrator-instance-service delete --resource-group "TestRG" --resource-name "k8stest1"
 """
 
-helps['dnc orchestrator-instance-service show-detail'] = """
+helps['dnc orchestrator-instance-service wait'] = """
     type: command
-    short-summary: "Gets details about the orchestrator instance."
+    short-summary: Place the CLI in a waiting state until a condition of the dnc orchestrator-instance-service is met.
     examples:
-      - name: Get details of a orchestratorInstance
+      - name: Pause executing next line of CLI script until the dnc orchestrator-instance-service is successfully \
+created.
         text: |-
-               az dnc orchestrator-instance-service show-detail --resource-group "TestRG" --resource-name "testk8s1"
+               az dnc orchestrator-instance-service wait --resource-group "TestRG" --resource-name "testk8s1" \
+--created
+      - name: Pause executing next line of CLI script until the dnc orchestrator-instance-service is successfully \
+deleted.
+        text: |-
+               az dnc orchestrator-instance-service wait --resource-group "TestRG" --resource-name "testk8s1" \
+--deleted
 """
 
 helps['dnc delegated-subnet-service'] = """
@@ -130,6 +158,27 @@ resources in a subscription."
       - name: Get DelegatedSubnets resources by subscription
         text: |-
                az dnc delegated-subnet-service list
+"""
+
+helps['dnc delegated-subnet-service show'] = """
+    type: command
+    short-summary: "Gets details about the specified dnc DelegatedSubnet Link."
+    examples:
+      - name: Get details of a delegated subnet
+        text: |-
+               az dnc delegated-subnet-service show --resource-group "TestRG" --resource-name "delegated1"
+"""
+
+helps['dnc delegated-subnet-service create'] = """
+    type: command
+    short-summary: "Put delegated subnet resource."
+    examples:
+      - name: put delegated subnet
+        text: |-
+               az dnc delegated-subnet-service create --location "West US" --id "/subscriptions/613192d7-503f-477a-9cfe\
+-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.DelegatedNetwork/controller/dnctestcontroller" \
+--subnet-details-id "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.Netw\
+ork/virtualNetworks/testvnet/subnets/testsubnet" --resource-group "TestRG" --resource-name "delegated1"
 """
 
 helps['dnc delegated-subnet-service delete'] = """
@@ -151,23 +200,14 @@ helps['dnc delegated-subnet-service patch-detail'] = """
 --resource-name "delegated1"
 """
 
-helps['dnc delegated-subnet-service put-detail'] = """
+helps['dnc delegated-subnet-service wait'] = """
     type: command
-    short-summary: "Put delegated subnet resource."
+    short-summary: Place the CLI in a waiting state until a condition of the dnc delegated-subnet-service is met.
     examples:
-      - name: put delegated subnet
+      - name: Pause executing next line of CLI script until the dnc delegated-subnet-service is successfully created.
         text: |-
-               az dnc delegated-subnet-service put-detail --location "West US" --id "/subscriptions/613192d7-503f-477a-\
-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.DelegatedNetwork/controller/dnctestcontroller" \
---subnet-details-id "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.Netw\
-ork/virtualNetworks/testvnet/subnets/testsubnet" --resource-group "TestRG" --resource-name "delegated1"
-"""
-
-helps['dnc delegated-subnet-service show-detail'] = """
-    type: command
-    short-summary: "Gets details about the specified dnc DelegatedSubnet Link."
-    examples:
-      - name: Get details of a delegated subnet
+               az dnc delegated-subnet-service wait --resource-group "TestRG" --resource-name "delegated1" --created
+      - name: Pause executing next line of CLI script until the dnc delegated-subnet-service is successfully deleted.
         text: |-
-               az dnc delegated-subnet-service show-detail --resource-group "TestRG" --resource-name "delegated1"
+               az dnc delegated-subnet-service wait --resource-group "TestRG" --resource-name "delegated1" --deleted
 """

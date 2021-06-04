@@ -21,31 +21,20 @@ def step_controller_create(test, rg, rg_2, checks=None):
 
 
 # EXAMPLE: /Controller/get/Get details of a controller
-def step_controller_show_detail(test, rg, rg_2, checks=None):
+def step_controller_show(test, rg, rg_2, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dnc controller show-detail '
-             '--resource-group "{rg}" '
-             '--resource-name "{myController}"',
-             checks=checks)
-
-
-# EXAMPLE: /Controller/patch/update controller
-def step_controller_patch(test, rg, rg_2, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az dnc controller patch '
-             '--tags key="value" '
+    test.cmd('az dnc controller show '
              '--resource-group "{rg}" '
              '--resource-name "{myController}"',
              checks=checks)
 
 
 # EXAMPLE: /DelegatedSubnetService/put/put delegated subnet
-def step_delegated_subnet_service_put_detail(test, rg, rg_2, checks=None):
+def step_delegated_subnet_service_create(test, rg, rg_2, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dnc delegated-subnet-service put-detail '
+    test.cmd('az dnc delegated-subnet-service create '
              '--location "eastus2euap" '
              '--id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DelegatedNetwork/controlle'
              'r/{myController}" '
@@ -57,10 +46,10 @@ def step_delegated_subnet_service_put_detail(test, rg, rg_2, checks=None):
 
 
 # EXAMPLE: /DelegatedSubnetService/get/Get details of a delegated subnet
-def step_delegated_subnet_service_show_detail(test, rg, rg_2, checks=None):
+def step_delegated_subnet_service_show(test, rg, rg_2, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dnc delegated-subnet-service show-detail '
+    test.cmd('az dnc delegated-subnet-service show '
              '--resource-group "{rg}" '
              '--resource-name "delegated1"',
              checks=checks)
@@ -83,7 +72,7 @@ def step_orchestrator_instance_service_create(test, rg, rg_2, checks=None):
         checks = []
     test.cmd('az dnc orchestrator-instance-service create '
              '--type "SystemAssigned" '
-             '--location "easatus2euap" '
+             '--location "eastus2euap" '
              '--api-server-endpoint "https://testk8s.cloudapp.net" '
              '--cluster-root-ca "ddsadsad344mfdsfdl" '
              '--id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DelegatedNetwork/controlle'
@@ -97,10 +86,10 @@ def step_orchestrator_instance_service_create(test, rg, rg_2, checks=None):
              checks=checks)
 
 # EXAMPLE: /OrchestratorInstanceService/get/Get details of a orchestratorInstance
-def step_orchestrator_instance_service_show_detail(test, rg, rg_2, checks=None):
+def step_orchestrator_instance_service_show(test, rg, rg_2, checks=None):
     if checks is None:
         checks = []
-    test.cmd('az dnc orchestrator-instance-service show-detail '
+    test.cmd('az dnc orchestrator-instance-service show '
              '--resource-group "{rg}" '
              '--resource-name "testk8s1"',
              checks=checks)
@@ -121,17 +110,6 @@ def step_orchestrator_instance_service_list2(test, rg, rg_2, checks=None):
         checks = []
     test.cmd('az dnc orchestrator-instance-service list '
              '-g ""',
-             checks=checks)
-
-
-# EXAMPLE: /OrchestratorInstanceService/patch/update Orchestrator Instance
-def step_orchestrator_instance_service_patch(test, rg, rg_2, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az dnc orchestrator-instance-service patch '
-             '--tags key="value" '
-             '--resource-group "{rg}" '
-             '--resource-name "testk8s1"',
              checks=checks)
 
 
@@ -199,4 +177,3 @@ def step_delegated_subnet_service_delete(test, rg, rg_2, checks=None):
              '--resource-group "{rg}" '
              '--resource-name "delegated1"',
              checks=checks)
-
