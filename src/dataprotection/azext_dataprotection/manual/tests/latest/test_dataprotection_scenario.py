@@ -2,13 +2,17 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
+# pylint: disable=unused-import
+
 
 def setup(test):
-    import time
+    # import time
     test.kwargs.update({
         "vaultName": "cli-test-new-vault",
         "rg": "sarath-rg",
         "diskname": "cli-test-disk-new",
+        "restorediskname": "cli-test-disk-new-restored",
         "policyname": "diskpolicy"
     })
     account_res = test.cmd('az account show').get_output_in_json()
@@ -28,6 +32,7 @@ def setup(test):
     # time.sleep(180)
     # test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Backup Reader" --scope "{diskid}"')
     # test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Snapshot Contributor" --scope "{rgid}"')
+    # test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Restore Operator" --scope "{rgid}"')
 
 
 def create_policy(test):
@@ -37,6 +42,69 @@ def create_policy(test):
 
     policy_id = test.cmd('az dataprotection backup-policy show -g "{rg}" --vault-name "{vaultName}" -n "{policyname}" --query "id"').get_output_in_json()
     test.kwargs.update({"policyid": policy_id})
+
+    lifecycle_json = test.cmd('az dataprotection backup-policy retention-rule create-lifecycle'
+                              ' --count 12 --type Days --source-datastore OperationalStore').get_output_in_json()
+    test.kwargs.update({"lifecycle": lifecycle_json})
+    policy_json = test.cmd('az dataprotection backup-policy retention-rule set-in-policy '
+                           ' --name Daily --policy "{policyjson}" --lifecycles "{lifecycle}"').get_output_in_json()
+    test.kwargs.update({"policyjson": policy_json})
+
+    criteria_json = test.cmd('az dataprotection backup-policy tag create-absolute-criteria --absolute-criteria FirstOfDay').get_output_in_json()
+    test.kwargs.update({"criteria": criteria_json})
+    policy_json = test.cmd('az dataprotection backup-policy tag set-in-policy '
+                           ' --name Daily --policy "{policyjson}" --criteria "{criteria}"').get_output_in_json()
+    test.kwargs.update({"policyjson": policy_json})
+
+    schedule_json = test.cmd('az dataprotection backup-policy trigger create-schedule --interval-type Hourly --interval-count 6 --schedule-days 2021-05-02T05:30:00').get_output_in_json()
+    test.kwargs.update({"repeating_time_interval": schedule_json[0]})
+
+    policy_json = test.cmd('az dataprotection backup-policy trigger set-in-policy '
+                           ' --policy "{policyjson}" --schedule "{repeating_time_interval}"').get_output_in_json()
+    test.kwargs.update({"policyjson": policy_json})
+    test.cmd('az dataprotection backup-policy create -n diskhourlypolicy --policy "{policyjson}" -g "{rg}" --vault-name "{vaultName}"')
+
+
+def trigger_disk_backup(test):
+    # import time
+    response_json = test.cmd('az dataprotection backup-instance adhoc-backup -n "{backup_instance_name}" -g "{rg}" --vault-name "{vaultName}" --rule-name BackupHourly --retention-tag-override Default').get_output_in_json()
+    job_status = None
+    test.kwargs.update({"backup_job_id": response_json["jobId"]})
+    while job_status != "Completed":
+        # run the below code only in record mode
+        # time.sleep(10)
+        job_response = test.cmd('az dataprotection job show --ids "{backup_job_id}"').get_output_in_json()
+        job_status = job_response["properties"]["status"]
+        if job_status not in ["Completed", "InProgress"]:
+            raise Exception("Undefined job status received")
+
+
+def trigger_disk_restore(test):
+    # import time
+    rp_json = test.cmd('az dataprotection recovery-point list --backup-instance-name "{backup_instance_name}" -g "{rg}" --vault-name "{vaultName}"').get_output_in_json()
+    test.kwargs.update({"rp_id": rp_json[0]["name"]})
+    split_disk_id = test.kwargs["diskid"].split("/")
+    split_disk_id[-1] = test.kwargs["restorediskname"]
+    restore_disk_id = "/".join(split_disk_id)
+    test.kwargs.update({"restore_disk_id": restore_disk_id})
+
+    restore_json = test.cmd('az dataprotection backup-instance restore  initialize-for-data-recovery'
+                            ' --datasource-type AzureDisk --restore-location centraluseuap --source-datastore OperationalStore '
+                            '--recovery-point-id "{rp_id}" --target-resource-id "{restore_disk_id}"').get_output_in_json()
+    test.kwargs.update({"restore_request": restore_json})
+    test.cmd('az dataprotection backup-instance validate-for-restore -g "{rg}" --vault-name "{vaultName}" -n "{backup_instance_name}" --restore-request-object "{restore_request}"')
+
+    response_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rg}" --vault-name "{vaultName}"'
+                             ' -n "{backup_instance_name}" --parameters "{restore_request}"').get_output_in_json()
+    job_status = None
+    test.kwargs.update({"backup_job_id": response_json["jobId"]})
+    while job_status != "Completed":
+        # run the below code only in record mode
+        # time.sleep(10)
+        job_response = test.cmd('az dataprotection job show --ids "{backup_job_id}"').get_output_in_json()
+        job_status = job_response["properties"]["status"]
+        if job_status not in ["Completed", "InProgress"]:
+            raise Exception("Undefined job status received")
 
 
 def configure_backup(test):
@@ -61,7 +129,7 @@ def configure_backup(test):
         protection_status = backup_instance_res["status"]
 
     # run the below line only in record mode
-    # time.sleep(30)
+    time.sleep(30)
 
 
 def delete_backup(test):
@@ -73,6 +141,7 @@ def cleanup(test):
     test.cmd('az dataprotection backup-vault delete '
              ' -g "{rg}" --vault-name "{vaultName}" --yes')
     test.cmd('az disk delete --name "{diskname}" --resource-group "{rg}" --yes')
+    test.cmd('az disk delete --name "{restorediskname}" --resource-group "{rg}" --yes')
 
 
 def call_scenario(test):
@@ -80,6 +149,8 @@ def call_scenario(test):
     try:
         create_policy(test)
         configure_backup(test)
+        trigger_disk_backup(test)
+        trigger_disk_restore(test)
     except Exception as e:
         raise e
     finally:
