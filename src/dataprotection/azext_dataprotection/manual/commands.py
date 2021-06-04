@@ -40,7 +40,7 @@ def load_command_table(self, _):
         g.custom_command('remove', "dataprotection_backup_policy_tag_remove_in_policy")
 
     with self.command_group('dataprotection job') as g:
-        g.custom_command('list-from-resourcegraph', "dataproection_job_list_from_resourcegraph", client_factory=cf_resource_graph_client)
+        g.custom_command('list-from-resourcegraph', "dataprotection_job_list_from_resourcegraph", client_factory=cf_resource_graph_client)
 
     dataprotection_backup_instance = CliCommandType(
         operations_tmpl='azext_dataprotection.vendored_sdks.dataprotection.operations._backup_instances_operations#BackupInstancesOperations.{}',
