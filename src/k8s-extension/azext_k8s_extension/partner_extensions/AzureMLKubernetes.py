@@ -4,6 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=unused-argument
+# pylint: disable=line-too-long
+# pylint: disable=too-many-locals
+
 import copy
 from hashlib import md5
 from typing import Any, Dict, List, Tuple
@@ -17,8 +20,6 @@ import azure.mgmt.storage
 import azure.mgmt.storage.models
 import azure.mgmt.loganalytics
 import azure.mgmt.loganalytics.models
-from ..vendored_sdks.models import (
-    ExtensionInstance, ExtensionInstanceUpdate, Scope, ScopeCluster)
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.mgmt.resource.locks.models import ManagementLockObject
@@ -27,12 +28,19 @@ from msrestazure.azure_exceptions import CloudError
 
 from .._client_factory import cf_resources
 from .PartnerExtensionModel import PartnerExtensionModel
+from ..vendored_sdks.models import (
+    ExtensionInstance,
+    ExtensionInstanceUpdate,
+    Scope,
+    ScopeCluster
+)
 
 logger = get_logger(__name__)
 
 resource_tag = {'created_by': 'Azure Arc-enabled ML'}
 
 
+# pylint: disable=too-many-instance-attributes
 class AzureMLKubernetes(PartnerExtensionModel):
     def __init__(self):
         # constants for configuration settings.
@@ -157,7 +165,7 @@ class AzureMLKubernetes(PartnerExtensionModel):
         config_keys = configuration_settings.keys()
         config_protected_keys = configuration_protected_settings.keys()
         dup_keys = set(config_keys) & set(config_protected_keys)
-        if len(dup_keys) > 0:
+        if dup_keys:
             for key in dup_keys:
                 logger.warning(
                     'Duplicate keys found in both configuration settings and configuration protected setttings: %s', key)
@@ -250,9 +258,8 @@ class AzureMLKubernetes(PartnerExtensionModel):
             configuration_settings[self.AZURE_LOG_ANALYTICS_CUSTOMER_ID_KEY] = ws_costumer_id
             configuration_protected_settings[self.AZURE_LOG_ANALYTICS_CONNECTION_STRING] = shared_key
 
-        if not configuration_settings.get(
-                self.RELAY_SERVER_CONNECTION_STRING) and not configuration_protected_settings.get(
-                self.RELAY_SERVER_CONNECTION_STRING):
+        if not configuration_settings.get(self.RELAY_SERVER_CONNECTION_STRING) and \
+                not configuration_protected_settings.get(self.RELAY_SERVER_CONNECTION_STRING):
             logger.info('==== BEGIN RELAY CREATION ====')
             relay_connection_string, hc_resource_id, hc_name = _get_relay_connection_str(
                 cmd, subscription_id, resource_group_name, cluster_name, cluster_location, self.RELAY_HC_AUTH_NAME)
@@ -261,9 +268,8 @@ class AzureMLKubernetes(PartnerExtensionModel):
             configuration_settings[self.HC_RESOURCE_ID_KEY] = hc_resource_id
             configuration_settings[self.RELAY_HC_NAME_KEY] = hc_name
 
-        if not configuration_settings.get(
-                self.SERVICE_BUS_CONNECTION_STRING) and not configuration_protected_settings.get(
-                self.SERVICE_BUS_CONNECTION_STRING):
+        if not configuration_settings.get(self.SERVICE_BUS_CONNECTION_STRING) and \
+                not configuration_protected_settings.get(self.SERVICE_BUS_CONNECTION_STRING):
             logger.info('==== BEGIN SERVICE BUS CREATION ====')
             topic_sub_mapping = {
                 self.SERVICE_BUS_COMPUTE_STATE_TOPIC: self.SERVICE_BUS_COMPUTE_STATE_SUB,
@@ -280,7 +286,7 @@ class AzureMLKubernetes(PartnerExtensionModel):
 
 def _get_valid_name(input_name: str, suffix_len: int, max_len: int) -> str:
     normalized_str = ''.join(filter(str.isalnum, input_name))
-    assert len(normalized_str) > 0, "normalized name empty"
+    assert normalized_str, "normalized name empty"
 
     if len(normalized_str) <= max_len:
         return normalized_str
@@ -295,6 +301,7 @@ def _get_valid_name(input_name: str, suffix_len: int, max_len: int) -> str:
     return new_name
 
 
+# pylint: disable=broad-except
 def _lock_resource(cmd, lock_scope, lock_level='CanNotDelete'):
     lock_client: azure.mgmt.resource.locks.ManagementLockClient = get_mgmt_service_client(
         cmd.cli_ctx, azure.mgmt.resource.locks.ManagementLockClient)
@@ -303,14 +310,13 @@ def _lock_resource(cmd, lock_scope, lock_level='CanNotDelete'):
     try:
         lock_client.management_locks.create_or_update_by_scope(
             scope=lock_scope, lock_name='amlarc-resource-lock', parameters=lock_object)
-    except:
+    except Exception:
         # try to lock the resource if user has the owner privilege
         pass
 
 
 def _get_relay_connection_str(
-        cmd, subscription_id, resource_group_name, cluster_name, cluster_location, auth_rule_name) -> Tuple[
-        str, str, str]:
+        cmd, subscription_id, resource_group_name, cluster_name, cluster_location, auth_rule_name) -> Tuple[str, str, str]:
     relay_client: azure.mgmt.relay.RelayManagementClient = get_mgmt_service_client(
         cmd.cli_ctx, azure.mgmt.relay.RelayManagementClient)
 
@@ -398,8 +404,7 @@ def _get_service_bus_connection_string(cmd, subscription_id, resource_group_name
 
 
 def _get_log_analytics_ws_connection_string(
-        cmd, subscription_id, resource_group_name, cluster_name, cluster_location) -> Tuple[
-        str, str]:
+        cmd, subscription_id, resource_group_name, cluster_name, cluster_location) -> Tuple[str, str]:
     log_analytics_ws_client: azure.mgmt.loganalytics.LogAnalyticsManagementClient = get_mgmt_service_client(
         cmd.cli_ctx, azure.mgmt.loganalytics.LogAnalyticsManagementClient)
 

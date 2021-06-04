@@ -3,9 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os
-import unittest
+# pylint: disable=line-too-long
 
+import os
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, record_only)
 
 
@@ -27,13 +27,16 @@ class K8sExtensionScenarioTest(ScenarioTest):
             'version': '0.1.0'
         })
 
-        self.cmd('k8s-extension create -g {rg} -n {name} -c {cluster_name} --cluster-type {cluster_type} --extension-type {extension_type} --release-train {release_train} --version {version}', checks=[
-            self.check('name', '{name}'),
-            self.check('releaseTrain', '{release_train}'),
-            self.check('version', '{version}'),
-            self.check('resourceGroup', '{rg}'),
-            self.check('extensionType', '{extension_type}')
-        ])
+        self.cmd('k8s-extension create -g {rg} -n {name} -c {cluster_name} --cluster-type {cluster_type} '
+                 '--extension-type {extension_type} --release-train {release_train} --version {version}',
+                 checks=[
+                     self.check('name', '{name}'),
+                     self.check('releaseTrain', '{release_train}'),
+                     self.check('version', '{version}'),
+                     self.check('resourceGroup', '{rg}'),
+                     self.check('extensionType', '{extension_type}')
+                 ]
+                )
 
         # Update is disabled for now
         # self.cmd('k8s-extension update -g {rg} -n {name} --tags foo=boo', checks=[

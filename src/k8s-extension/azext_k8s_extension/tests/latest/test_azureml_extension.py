@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=protected-access
+
 import os
 import unittest
 
@@ -13,7 +15,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class TestAzureMlExtension(unittest.TestCase):
-  
+
     def test_set_up_inference_ssl(self):
         azremlk8sInstance = AzureMLKubernetes()
         config = {'allowInsecureConnections': 'false'}
@@ -27,6 +29,6 @@ class TestAzureMlExtension(unittest.TestCase):
         encoded_cert_and_key_file = os.path.join(TEST_DIR, 'data', 'azure_ml', 'cert_and_key_encoded.txt')
         with open(encoded_cert_and_key_file, "r") as text_file:
             cert = text_file.readline().rstrip()
-            self.assertEquals(cert, protected_config['scoringFe.sslCert'])
+            assert cert == protected_config['scoringFe.sslCert']
             key = text_file.readline()
-            self.assertEquals(key, protected_config['scoringFe.sslKey'])
+            assert key == protected_config['scoringFe.sslKey']
