@@ -3512,6 +3512,7 @@
                     },
                     "extras": [],
                     "generator": "bdist_wheel (0.30.0)",
+                    "keywords": ["az", "sql", "arcdata", "cli", "azure", "sqlmi", "dc"],                    
                     "license": "MIT",
                     "metadata_version": "2.0",
                     "name": "application-insights",
@@ -3743,8 +3744,10 @@
         "arcdata": [
             {
                 "downloadUrl": "https://azurearcdatacli.blob.core.windows.net/cli-extensions/arcdata-0.0.1-py2.py3-none-any.whl",
-                "filename": "arcdata-0.0.1-py2.py3-none-any.whl",
+                "filename": "arcdata-0.0.1-py2.py3-none-any.whl",               
                 "metadata": {
+                    "azext.isExperimental": false,
+                    "azext.minCliCoreVersion": "2.3.1",                     
                     "classifiers": [
                         "Development Status :: 1 - Beta",
                         "Intended Audience :: Developers",
@@ -3760,40 +3763,40 @@
                             "contacts": [
                                 {
                                     "email": "dpgswdist@microsoft.com",
-                                    "name": "Microsoft",
+                                    "name": "Microsoft Corporation",
                                     "role": "author"
                                 }
                             ],
                             "document_names": {
-                                "description": "DESCRIPTION.rst",
-                                "license": "LICENSE"
+                                "description": "DESCRIPTION.rst"
                             },
                             "project_urls": {
                                 "Home": "https://docs.microsoft.com/en-us/sql/sql-server/azure-arc/overview?view=sql-server-ver15"
                             }
                         }
                     },
-
                     "extras": [],
                     "generator": "bdist_wheel (0.30.0)",
+                    "keywords": ["az", "sql", "arcdata", "cli", "azure", "sqlmi", "dc"],                    
                     "license": "MIT",
+                    "license_file": "LICENSE",
                     "metadata_version": "2.0",
                     "name": "arcdata",
                     "run_requires": [
                         {
-                            "requires": [
-                                "kubernetes (==11.0.0)",
-                                "pydash (==4.8.0)",
+                            "requires": [                                                                
                                 "jinja2 (==2.10.3)",
+                                "jsonpatch (==1.24)",                                
                                 "jsonpath-ng (==1.4.3)",
-                                "jsonpatch (==1.24)"
+                                "kubernetes (==11.0.0)",
+                                "pydash (==4.8.0)"
                             ]
                         }
                     ],
                     "summary": "Tools for managing ArcData.",
                     "version": "0.0.1"
                 },
-                "sha256Digest": "29f90899b6afca8e18aaab66830362db29208bddd69a13dc780a55c5b97b5267"
+                "sha256Digest": "73a4f975e454fc4e39ad24f0adfc2e962423d5ebeefa51a42791dab637f76958"
             }
         ],        
         "attestation": [
