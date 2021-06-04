@@ -68,15 +68,6 @@ def dataprotection_backup_vault_delete(client,
                          resource_group_name=resource_group_name)
 
 
-def dataprotection_backup_vault_list_in_resource_group(client,
-                                                       resource_group_name):
-    return client.get_in_resource_group(resource_group_name=resource_group_name)
-
-
-def dataprotection_backup_vault_list_in_subscription(client):
-    return client.get_in_subscription()
-
-
 def dataprotection_backup_policy_list(client,
                                       vault_name,
                                       resource_group_name):

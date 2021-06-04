@@ -26,18 +26,18 @@ def load_command_table(self, _):
 
     with self.command_group('dataprotection backup-policy trigger') as g:
         g.custom_command('create-schedule', "dataprotection_backup_policy_trigger_create_schedule")
-        g.custom_command('set-in-policy', "dataprotection_backup_policy_trigger_set_in_policy")
+        g.custom_command('set', "dataprotection_backup_policy_trigger_set_in_policy")
 
     with self.command_group('dataprotection backup-policy retention-rule') as g:
         g.custom_command('create-lifecycle', "dataprotection_backup_policy_create_lifecycle")
-        g.custom_command('set-in-policy', "dataprotection_backup_policy_retention_set_in_policy")
-        g.custom_command('remove-in-policy', "dataprotection_backup_policy_retention_remove_in_policy")
+        g.custom_command('set', "dataprotection_backup_policy_retention_set_in_policy")
+        g.custom_command('remove', "dataprotection_backup_policy_retention_remove_in_policy")
 
     with self.command_group('dataprotection backup-policy tag') as g:
         g.custom_command('create-absolute-criteria', "dataprotection_backup_policy_create_absolute_criteria")
         g.custom_command('create-generic-criteria', "dataprotection_backup_policy_create_generic_criteria")
-        g.custom_command('set-in-policy', "dataprotection_backup_policy_tag_set_in_policy")
-        g.custom_command('remove-in-policy', "dataprotection_backup_policy_tag_remove_in_policy")
+        g.custom_command('set', "dataprotection_backup_policy_tag_set_in_policy")
+        g.custom_command('remove', "dataprotection_backup_policy_tag_remove_in_policy")
 
     with self.command_group('dataprotection job') as g:
         g.custom_command('list-from-resourcegraph', "dataproection_job_list_from_resourcegraph", client_factory=cf_resource_graph_client)

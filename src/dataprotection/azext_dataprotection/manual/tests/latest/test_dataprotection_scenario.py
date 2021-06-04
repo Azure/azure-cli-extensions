@@ -46,20 +46,20 @@ def create_policy(test):
     lifecycle_json = test.cmd('az dataprotection backup-policy retention-rule create-lifecycle'
                               ' --count 12 --type Days --source-datastore OperationalStore').get_output_in_json()
     test.kwargs.update({"lifecycle": lifecycle_json})
-    policy_json = test.cmd('az dataprotection backup-policy retention-rule set-in-policy '
+    policy_json = test.cmd('az dataprotection backup-policy retention-rule set '
                            ' --name Daily --policy "{policyjson}" --lifecycles "{lifecycle}"').get_output_in_json()
     test.kwargs.update({"policyjson": policy_json})
 
     criteria_json = test.cmd('az dataprotection backup-policy tag create-absolute-criteria --absolute-criteria FirstOfDay').get_output_in_json()
     test.kwargs.update({"criteria": criteria_json})
-    policy_json = test.cmd('az dataprotection backup-policy tag set-in-policy '
+    policy_json = test.cmd('az dataprotection backup-policy tag set '
                            ' --name Daily --policy "{policyjson}" --criteria "{criteria}"').get_output_in_json()
     test.kwargs.update({"policyjson": policy_json})
 
     schedule_json = test.cmd('az dataprotection backup-policy trigger create-schedule --interval-type Hourly --interval-count 6 --schedule-days 2021-05-02T05:30:00').get_output_in_json()
     test.kwargs.update({"repeating_time_interval": schedule_json[0]})
 
-    policy_json = test.cmd('az dataprotection backup-policy trigger set-in-policy '
+    policy_json = test.cmd('az dataprotection backup-policy trigger set '
                            ' --policy "{policyjson}" --schedule "{repeating_time_interval}"').get_output_in_json()
     test.kwargs.update({"policyjson": policy_json})
     test.cmd('az dataprotection backup-policy create -n diskhourlypolicy --policy "{policyjson}" -g "{rg}" --vault-name "{vaultName}"')

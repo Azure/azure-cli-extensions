@@ -44,8 +44,6 @@
 |[az dataprotection backup-vault create](#BackupVaultsCreateOrUpdate#Create)|CreateOrUpdate#Create|[Parameters](#ParametersBackupVaultsCreateOrUpdate#Create)|[Example](#ExamplesBackupVaultsCreateOrUpdate#Create)|
 |[az dataprotection backup-vault update](#BackupVaultsUpdate)|Update|[Parameters](#ParametersBackupVaultsUpdate)|[Example](#ExamplesBackupVaultsUpdate)|
 |[az dataprotection backup-vault delete](#BackupVaultsDelete)|Delete|[Parameters](#ParametersBackupVaultsDelete)|[Example](#ExamplesBackupVaultsDelete)|
-|[az dataprotection backup-vault list-in-resource-group](#BackupVaultsGetInResourceGroup)|GetInResourceGroup|[Parameters](#ParametersBackupVaultsGetInResourceGroup)|[Example](#ExamplesBackupVaultsGetInResourceGroup)|
-|[az dataprotection backup-vault list-in-subscription](#BackupVaultsGetInSubscription)|GetInSubscription|[Parameters](#ParametersBackupVaultsGetInSubscription)|[Example](#ExamplesBackupVaultsGetInSubscription)|
 
 ### <a name="CommandsInJobs">Commands in `az dataprotection job` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
@@ -390,26 +388,6 @@ az dataprotection backup-vault delete --resource-group "SampleResourceGroup" --v
 |**--vault-name**|string|The name of the backup vault.|vault_name|vaultName|
 |**--resource-group-name**|string|The name of the resource group where the backup vault is present.|resource_group_name|resourceGroupName|
 
-#### <a name="BackupVaultsGetInResourceGroup">Command `az dataprotection backup-vault list-in-resource-group`</a>
-
-##### <a name="ExamplesBackupVaultsGetInResourceGroup">Example</a>
-```
-az dataprotection backup-vault list-in-resource-group --resource-group "SampleResourceGroup"
-```
-##### <a name="ParametersBackupVaultsGetInResourceGroup">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The name of the resource group where the backup vault is present.|resource_group_name|resourceGroupName|
-
-#### <a name="BackupVaultsGetInSubscription">Command `az dataprotection backup-vault list-in-subscription`</a>
-
-##### <a name="ExamplesBackupVaultsGetInSubscription">Example</a>
-```
-az dataprotection backup-vault list-in-subscription
-```
-##### <a name="ParametersBackupVaultsGetInSubscription">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
 ### group `az dataprotection job`
 #### <a name="JobsList">Command `az dataprotection job list`</a>
 

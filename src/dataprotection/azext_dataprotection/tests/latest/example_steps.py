@@ -262,25 +262,6 @@ def step_backup_vault_show2(test, checks=None):
     return step_backup_vault_show(test, checks)
 
 
-# EXAMPLE: /BackupVaults/get/Get BackupVaults in ResourceGroup
-@try_manual
-def step_backup_vault_list_in_resource_group(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az dataprotection backup-vault list-in-resource-group '
-             '--resource-group "{rg}"',
-             checks=checks)
-
-
-# EXAMPLE: /BackupVaults/get/Get BackupVaults in Subscription
-@try_manual
-def step_backup_vault_list_in_subscription(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az dataprotection backup-vault list-in-subscription',
-             checks=checks)
-
-
 # EXAMPLE: /BackupVaults/patch/Patch BackupVault
 @try_manual
 def step_backup_vault_update(test, checks=None):

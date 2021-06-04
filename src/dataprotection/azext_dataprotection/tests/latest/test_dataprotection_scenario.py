@@ -15,7 +15,6 @@ from .example_steps import step_backup_policy_create
 from .example_steps import step_backup_policy_show
 from .example_steps import step_backup_policy_list
 from .example_steps import step_backup_instance_create
-from .example_steps import step_backup_instance_show
 from .example_steps import step_backup_instance_list
 from .example_steps import step_backup_instance_adhoc_backup
 from .example_steps import step_backup_instance_restore_trigger
@@ -28,9 +27,8 @@ from .example_steps import step_backup_vault_create
 from .example_steps import step_backup_vault_create2
 from .example_steps import step_backup_vault_show
 from .example_steps import step_backup_vault_show2
-from .example_steps import step_backup_vault_list_in_resource_group
-from .example_steps import step_backup_vault_list_in_subscription
 from .example_steps import step_backup_vault_update
+from .example_steps import step_backup_instance_show
 from .example_steps import step_backup_instance_delete
 from .example_steps import step_backup_vault_delete
 from .example_steps import step_job_show
@@ -86,13 +84,6 @@ def call_scenario(test):
         test.check("policyInfo.policyParameters.dataStoreParametersList[0].resourceGroupId",
                    "/subscriptions/{subscription_id}/resourceGroups/{rg_3}", case_sensitive=False),
     ])
-    step_backup_instance_show(test, checks=[
-        test.check("friendlyName", "harshitbi2", case_sensitive=False),
-        test.check("objectType", "BackupInstance", case_sensitive=False),
-        test.check("policyInfo.policyId", "/subscriptions/{subscription_id}/resourceGroups/{rg_2}/providers/Microsoft.D"
-                   "ataProtection/Backupvaults/{myBackupVault}/backupPolicies/{myBackupPolicy2}",
-                   case_sensitive=False),
-    ])
     step_backup_instance_list(test, checks=[
         test.check('length(@)', 1),
     ])
@@ -107,9 +98,8 @@ def call_scenario(test):
     step_backup_vault_create2(test, checks=[])
     step_backup_vault_show(test, checks=[])
     step_backup_vault_show2(test, checks=[])
-    step_backup_vault_list_in_resource_group(test, checks=[])
-    step_backup_vault_list_in_subscription(test, checks=[])
     step_backup_vault_update(test, checks=[])
+    step_backup_instance_show(test, checks=[])
     step_backup_instance_delete(test, checks=[])
     step_backup_vault_delete(test, checks=[])
     step_job_show(test, checks=[])

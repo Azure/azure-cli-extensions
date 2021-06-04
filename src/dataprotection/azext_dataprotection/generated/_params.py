@@ -57,9 +57,6 @@ def load_arguments(self, _):
         c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
 
-    with self.argument_context('dataprotection backup-vault list-in-resource-group') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-
     with self.argument_context('dataprotection backup-vault wait') as c:
         c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('resource_group_name', resource_group_name_type)
@@ -192,7 +189,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('backup_instances', type=str, help='Backup instance name.', id_part='child_name_1')
         c.argument('source_data_store_type', arg_type=get_enum_type(['OperationalStore', 'VaultStore',
-                                                                     'ArchiveStore']), help='Specify the '
-                                                                                            'source data store.')
+                                                                     'ArchiveStore']), help='Gets or sets the type of '
+                                                                     'the source data store.')
         c.argument('start_time', type=str, help='Start time for the List Restore Ranges request')
         c.argument('end_time', type=str, help='End time for the List Restore Ranges request')

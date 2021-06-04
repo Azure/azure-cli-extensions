@@ -93,7 +93,7 @@ def load_arguments(self, _):
         c.argument('interval_count', type=int, help="Specify duration of backup frequency.")
         c.argument('schedule_days', type=schedule_days_type, nargs='+', help="specify the backup schedule time in UTC (yyyy-mm-ddTHH:MM:SS)")
 
-    with self.argument_context('dataprotection backup-policy trigger set-in-policy') as c:
+    with self.argument_context('dataprotection backup-policy trigger set') as c:
         c.argument('policy', type=validate_file_or_dict, help="Existing policy Json string or file.")
         c.argument('schedule', type=str, nargs='+', help="Specify schedule time intervals for backup rule.")
 
@@ -104,7 +104,7 @@ def load_arguments(self, _):
         c.argument('retention_duration_count', options_list=['--retention-duration-count', '--count'], type=int, help="Retention duration count.")
         c.argument('copy_option', arg_type=get_enum_type(get_copy_option_values()), help="Specify copy option from source datastore to target datastore.")
 
-    with self.argument_context('dataprotection backup-policy retention-rule set-in-policy') as c:
+    with self.argument_context('dataprotection backup-policy retention-rule set') as c:
         c.argument('name', arg_type=get_enum_type(get_retention_rule_name_values()), help="Specify the retention rule name to be edited in policy.")
         c.argument('policy', type=validate_file_or_dict, help="Policy Json string or file.")
         c.argument('lifecycles', type=validate_file_or_dict, nargs='+', help="lifecycles to be associated with the retention rule. Specify space separated json file names.")
@@ -122,7 +122,7 @@ def load_arguments(self, _):
         c.argument('months_of_year', nargs='+', arg_type=get_enum_type(get_months_of_year_values()), help="Specify months of year.")
         c.argument('days_of_month', nargs='+', type=str, help="Specify days of month. Allowed values are 1 to 28 and Last")
 
-    with self.argument_context('dataprotection backup-policy tag set-in-policy') as c:
+    with self.argument_context('dataprotection backup-policy tag set') as c:
         c.argument('name', arg_type=get_enum_type(get_tag_name_values()), help="Specify the tag name to be edited in policy.")
         c.argument('policy', type=validate_file_or_dict, help="Policy Json string or file.")
         c.argument('criteria', type=validate_file_or_dict, nargs='+', help="crtierias to be associated with the tag. Specify space separated json file names.")

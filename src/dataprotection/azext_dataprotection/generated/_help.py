@@ -83,24 +83,6 @@ helps['dataprotection backup-vault delete'] = """
 "swaggerExample"
 """
 
-helps['dataprotection backup-vault list-in-resource-group'] = """
-    type: command
-    short-summary: "Returns resource collection belonging to a resource group."
-    examples:
-      - name: Get BackupVaults in ResourceGroup
-        text: |-
-               az dataprotection backup-vault list-in-resource-group --resource-group "SampleResourceGroup"
-"""
-
-helps['dataprotection backup-vault list-in-subscription'] = """
-    type: command
-    short-summary: "Returns resource collection belonging to a subscription."
-    examples:
-      - name: Get BackupVaults in Subscription
-        text: |-
-               az dataprotection backup-vault list-in-subscription
-"""
-
 helps['dataprotection backup-vault wait'] = """
     type: command
     short-summary: Place the CLI in a waiting state until a condition of the dataprotection backup-vault is met.

@@ -68,8 +68,6 @@ def load_command_table(self, _):
         g.custom_command('create', 'dataprotection_backup_vault_create', supports_no_wait=True)
         g.custom_command('update', 'dataprotection_backup_vault_update', supports_no_wait=True)
         g.custom_command('delete', 'dataprotection_backup_vault_delete', confirmation=True)
-        g.custom_command('list-in-resource-group', 'dataprotection_backup_vault_list_in_resource_group')
-        g.custom_command('list-in-subscription', 'dataprotection_backup_vault_list_in_subscription')
         g.custom_wait_command('wait', 'dataprotection_backup_vault_show')
 
     with self.command_group(

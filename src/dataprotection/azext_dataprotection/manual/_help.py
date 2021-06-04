@@ -78,12 +78,12 @@ helps['dataprotection backup-policy trigger create-schedule'] = """
         text: az dataprotection backup-policy trigger create-schedule --interval-type Hourly --interval-count 6 --schedule-days 2021-05-02T05:30:00
 """
 
-helps['dataprotection backup-policy trigger set-in-policy'] = """
+helps['dataprotection backup-policy trigger set'] = """
     type: command
     short-summary: Associate backup schedule to a backup policy.
     examples:
       - name: associate daily backup schedule
-        text: az dataprotection backup-policy trigger set-in-policy --policy policy.json --schedule R/2021-05-02T05:30:00+00:00/P1D
+        text: az dataprotection backup-policy trigger set --policy policy.json --schedule R/2021-05-02T05:30:00+00:00/P1D
 """
 
 helps['dataprotection backup-policy retention-rule'] = """
@@ -99,20 +99,20 @@ helps['dataprotection backup-policy retention-rule create-lifecycle'] = """
         text: az dataprotection backup-policy retention-rule create-lifecycle --retention-duration-count 12 --retention-duration-type Days --source-datastore OperationalStore
 """
 
-helps['dataprotection backup-policy retention-rule set-in-policy'] = """
+helps['dataprotection backup-policy retention-rule set'] = """
     type: command
     short-summary: Add new retention rule or update existing retention rule.
     examples:
       - name: Add daily retention rule
-        text: az dataprotection backup-policy retention-rule set-in-policy --lifecycles dailylifecycle.json --name Daily --policy policy.json
+        text: az dataprotection backup-policy retention-rule set --lifecycles dailylifecycle.json --name Daily --policy policy.json
 """
 
-helps['dataprotection backup-policy retention-rule remove-in-policy'] = """
+helps['dataprotection backup-policy retention-rule remove'] = """
     type: command
     short-summary: remove existing retention rule in a backup policy
     examples:
       - name: Remove retention rule
-        text: az dataprotection backup-policy retention-rule remove-in-policy --name Daily --policy policy.json
+        text: az dataprotection backup-policy retention-rule remove --name Daily --policy policy.json
 """
 
 helps['dataprotection backup-policy tag'] = """
@@ -136,20 +136,20 @@ helps['dataprotection backup-policy tag create-generic-criteria'] = """
         text: az dataprotection backup-policy tag create-generic-criteria --days-of-week Sunday Monday
 """
 
-helps['dataprotection backup-policy tag set-in-policy'] = """
+helps['dataprotection backup-policy tag set'] = """
     type: command
     short-summary: Add new tag or update existing tag of a backup policy.
     examples:
       - name: Add tag for daily retention in a backup policy.
-        text: az dataprotection backup-policy tag set-in-policy --criteria criteria.json --name Daily --policy policy.json
+        text: az dataprotection backup-policy tag set --criteria criteria.json --name Daily --policy policy.json
 """
 
-helps['dataprotection backup-policy tag remove-in-policy'] = """
+helps['dataprotection backup-policy tag remove'] = """
     type: command
     short-summary: Remove existing tag from a backup policy.
     examples:
       - name: Remove daily tag.
-        text: az dataprotection backup-policy tag remove-in-policy --name Daily --policy policy.json
+        text: az dataprotection backup-policy tag remove --name Daily --policy policy.json
 """
 
 helps['dataprotection backup-instance restore'] = """
@@ -187,4 +187,14 @@ helps['dataprotection backup-policy create'] = """
     examples:
       - name: Create backup policy
         text: az dataprotection backup-policy create -g sarath-rg --vault-name sarath-vault -n mypolicy --policy policy.json
+"""
+
+helps['dataprotection backup-vault list'] = """
+    type: command
+    short-summary:  Gets list of backup vault in a subscription or in a resource group.
+    examples:
+      - name: List backup vault in a subscription
+        text: az dataprotection backup-vault list
+      - name: List backup vault in a resource group
+        text: az dataprotection backup-vault list -g sarath-rg
 """
