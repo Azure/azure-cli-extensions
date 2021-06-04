@@ -9,7 +9,7 @@
 
 from azure.cli.core.commands import CliCommandType
 from azext_dataprotection.generated._client_factory import (
-    cf_backup_instance
+    cf_backup_instance, cf_backup_vault
 )
 
 from azext_dataprotection.manual._client_factory import cf_resource_graph_client
@@ -40,7 +40,7 @@ def load_command_table(self, _):
         g.custom_command('remove-in-policy', "dataprotection_backup_policy_tag_remove_in_policy")
 
     with self.command_group('dataprotection job') as g:
-        g.custom_command('list-from-resourcegraph', "dataprotection_job_list_from_resourcegraph", client_factory=cf_resource_graph_client)
+        g.custom_command('list-from-resourcegraph', "dataproection_job_list_from_resourcegraph", client_factory=cf_resource_graph_client)
 
     dataprotection_backup_instance = CliCommandType(
         operations_tmpl='azext_dataprotection.vendored_sdks.dataprotection.operations._backup_instances_operations#BackupInstancesOperations.{}',
@@ -50,3 +50,6 @@ def load_command_table(self, _):
     with self.command_group('dataprotection backup-instance restore', dataprotection_backup_instance, client_factory=cf_backup_instance) as g:
         g.custom_command('initialize-for-data-recovery', 'restore_initialize_for_data_recovery')
         g.custom_command('initialize-for-item-recovery', 'restore_initialize_for_item_recovery')
+
+    with self.command_group('dataprotection backup-vault') as g:
+        g.custom_command('list', 'dataprotection_backup_vault_list', client_factory=cf_backup_vault)

@@ -149,3 +149,6 @@ def load_arguments(self, _):
         c.argument('container_list', type=str, nargs='+', help="specify the list of containers to restore.")
         c.argument('from_prefix_pattern', type=str, nargs='+', help="specify the prefix pattern for start range.")
         c.argument('to_prefix_pattern', type=str, nargs='+', help="specify the prefix pattern for end range.")
+
+    with self.argument_context('dataprotection backup-vault list') as c:
+        c.argument('resource_group_name', resource_group_name_type)

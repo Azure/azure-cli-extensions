@@ -22,6 +22,12 @@ import azext_dataprotection.manual.backupcenter_helper as backupcenter_helper
 logger = get_logger(__name__)
 
 
+def dataprotection_backup_vault_list(client, resource_group_name=None):
+    if resource_group_name is not None:
+        return client.get_in_resource_group(resource_group_name=resource_group_name)
+    return client.get_in_subscription()
+
+
 def dataprotection_backup_instance_create(client, vault_name, resource_group_name, backup_instance, no_wait=False):
     backup_instance_name = backup_instance["backup_instance_name"]
     validate_backup_instance = copy.deepcopy(backup_instance)
