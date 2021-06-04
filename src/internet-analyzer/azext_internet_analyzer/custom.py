@@ -9,12 +9,12 @@
 # pylint: disable=unused-argument
 
 
-def begin_create_internet_analyzer_profile(cmd, client,
-                                           resource_group,
-                                           name,
-                                           location=None,
-                                           tags=None,
-                                           enabled_state=None):
+def create_internet_analyzer_profile(cmd, client,
+                                     resource_group,
+                                     name,
+                                     location=None,
+                                     tags=None,
+                                     enabled_state=None):
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
@@ -22,12 +22,12 @@ def begin_create_internet_analyzer_profile(cmd, client,
     return client.begin_create_or_update(resource_group_name=resource_group, profile_name=name, parameters=body)
 
 
-def begin_update_internet_analyzer_profile(cmd, client,
-                                           resource_group,
-                                           name,
-                                           location=None,
-                                           tags=None,
-                                           enabled_state=None):
+def update_internet_analyzer_profile(cmd, client,
+                                     resource_group,
+                                     name,
+                                     location=None,
+                                     tags=None,
+                                     enabled_state=None):
     body = client.get(resource_group_name=resource_group, profile_name=name).as_dict()
     if location is not None:
         body['location'] = location  # str
@@ -38,9 +38,9 @@ def begin_update_internet_analyzer_profile(cmd, client,
     return client.begin_create_or_update(resource_group_name=resource_group, profile_name=name, parameters=body)
 
 
-def begin_delete_internet_analyzer_profile(cmd, client,
-                                           resource_group,
-                                           name):
+def delete_internet_analyzer_profile(cmd, client,
+                                     resource_group,
+                                     name):
     return client.begin_delete(resource_group_name=resource_group, profile_name=name)
 
 
@@ -63,18 +63,18 @@ def list_internet_analyzer_preconfigured_endpoint(cmd, client,
     return client.list(resource_group_name=resource_group, profile_name=profile_name)
 
 
-def begin_create_internet_analyzer_test(cmd, client,
-                                        resource_group,
-                                        profile_name,
-                                        name,
-                                        location=None,
-                                        tags=None,
-                                        description=None,
-                                        endpoint_a_name=None,
-                                        endpoint_a_endpoint=None,
-                                        endpoint_b_name=None,
-                                        endpoint_b_endpoint=None,
-                                        enabled_state=None):
+def create_internet_analyzer_test(cmd, client,
+                                  resource_group,
+                                  profile_name,
+                                  name,
+                                  location=None,
+                                  tags=None,
+                                  description=None,
+                                  endpoint_a_name=None,
+                                  endpoint_a_endpoint=None,
+                                  endpoint_b_name=None,
+                                  endpoint_b_endpoint=None,
+                                  enabled_state=None):
     body = {}
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
@@ -87,18 +87,18 @@ def begin_create_internet_analyzer_test(cmd, client,
     return client.begin_create_or_update(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name, parameters=body)
 
 
-def begin_update_internet_analyzer_test(cmd, client,
-                                        resource_group,
-                                        profile_name,
-                                        name,
-                                        location=None,
-                                        tags=None,
-                                        description=None,
-                                        endpoint_a_name=None,
-                                        endpoint_a_endpoint=None,
-                                        endpoint_b_name=None,
-                                        endpoint_b_endpoint=None,
-                                        enabled_state=None):
+def update_internet_analyzer_test(cmd, client,
+                                  resource_group,
+                                  profile_name,
+                                  name,
+                                  location=None,
+                                  tags=None,
+                                  description=None,
+                                  endpoint_a_name=None,
+                                  endpoint_a_endpoint=None,
+                                  endpoint_b_name=None,
+                                  endpoint_b_endpoint=None,
+                                  enabled_state=None):
     body = client.get(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name).as_dict()
     if location is not None:
         body['location'] = location  # str
@@ -119,7 +119,7 @@ def begin_update_internet_analyzer_test(cmd, client,
     return client.begin_create_or_update(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name, parameters=body)
 
 
-def begin_delete_internet_analyzer_test(cmd, client,
+def delete_internet_analyzer_test(cmd, client,
                                         resource_group,
                                         profile_name,
                                         name):

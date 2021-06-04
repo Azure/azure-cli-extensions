@@ -3,7 +3,7 @@
 Release History
 ===============
 
-0.1.0rc7
+0.1.0rc6
 ++++++
 * Migrate to Track2 SDK.
 
