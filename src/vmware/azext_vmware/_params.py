@@ -81,7 +81,7 @@ def load_arguments(self, _):
         c.argument('nfs_file_path', help='File path through which the NFS volume is exposed by the provider.')
         c.argument('endpoints', nargs='*', help='iSCSI provider target IP address list.')
 
-    with self.argument_context('vmware datastore net-app-volume create') as c:
+    with self.argument_context('vmware datastore netapp-volume create') as c:
         c.argument('volume_id', help='Azure resource ID of the NetApp volume.')
 
     with self.argument_context('vmware datastore disk-pool-volume create') as c:

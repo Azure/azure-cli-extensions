@@ -170,7 +170,7 @@ def hcxenterprisesite_delete(cmd, client: AVSClient, resource_group_name, privat
 
 
 def datastore_create(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name, nfs_provider_ip=None, nfs_file_path=None, endpoints=[], lun_name=None):
-    print('Please use "az vmware datastore net-app-volume create" or "az vmware datastore disk-pool-volume create" instead.')
+    print('Please use "az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create" instead.')
 
 
 def datastore_netappvolume_create(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name, volume_id):

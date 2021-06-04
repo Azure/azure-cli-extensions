@@ -2,7 +2,7 @@
 
 ## 3.0.0 (2021-06)
 This version has **breaking changes**:
-- `az vmware datastore create` has been removed. Please use `az vmware datastore net-app-volume create` or `az vmware datastore disk-pool-volume create` instead.
+- `az vmware datastore create` has been removed. Please use `az vmware datastore netapp-volume create` or `az vmware datastore disk-pool-volume create` instead.
 
 Other changes:
 - update to AVS 2021-06-01 API

@@ -195,30 +195,30 @@ helps['vmware location checktrialavailability'] = """
 
 helps['vmware datastore create'] = """
     type: command
-    short-summary: Please use "net-app-volume create" or "disk-pool-volume create" instead.
+    short-summary: Please use "netapp-volume create" or "disk-pool-volume create" instead.
 """
 
-helps['vmware datastore net-app-volume'] = """
+helps['vmware datastore netapp-volume'] = """
     type: group
     short-summary: Create a new Microsoft.NetApp provided NetApp volume in a private cloud cluster.
 """
 
-helps['vmware datastore net-app-volume create'] = """
+helps['vmware datastore netapp-volume create'] = """
     type: command
     short-summary: Create a new Microsoft.NetApp provided NetApp volume in a private cloud cluster.
     examples:
     - name: Create a new Microsoft.NetApp provided NetApp volume based NFSv3 datastore.
-      text: az vmware datastore net-app-volume create --name ANFDatastore1 --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud --volume-id /subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1
+      text: az vmware datastore netapp-volume create --name ANFDatastore1 --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud --volume-id /subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/ResourceGroup1/providers/Microsoft.NetApp/netAppAccounts/NetAppAccount1/capacityPools/CapacityPool1/volumes/NFSVol1
 """
 
 helps['vmware datastore disk-pool-volume'] = """
     type: group
-    short-summary: Create a new Microsoft.StoragePool provided disk pool based iSCSI datastore in a private cloud cluster.
+    short-summary: Create a VMFS datastore in a private cloud cluster using Microsoft.StoragePool provided iSCSI target.
 """
 
 helps['vmware datastore disk-pool-volume create'] = """
     type: command
-    short-summary: Create a new Microsoft.StoragePool provided disk pool based iSCSI datastore in a private cloud cluster.
+    short-summary: Create a VMFS datastore in a private cloud cluster using Microsoft.StoragePool provided iSCSI target.
     examples:
     - name: Create a new Microsoft.StoragePool provided disk pool based iSCSI datastore.
       text: az vmware datastore disk-pool-volume create --name iSCSIDatastore1 --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud --target-id /subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/ResourceGroup1/providers/Microsoft.StoragePool/diskPools/mpio-diskpool/iscsiTargets/mpio-iscsi-target --lun-name lun0
