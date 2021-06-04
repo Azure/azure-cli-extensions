@@ -195,3 +195,66 @@ def datastore_show(cmd, client: AVSClient, resource_group_name, private_cloud, c
 
 def datastore_delete(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name):
     return client.datastores.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name)
+
+def addon_list(cmd, client: AVSClient, resource_group_name, private_cloud):
+    return client.addons.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def addon_vr_create(cmd, client: AVSClient, resource_group_name, private_cloud, vrs_count: int):
+    from azext_vmware.vendored_sdks.avs_client.models import Addon, AddonVrProperties
+    properties=AddonVrProperties(vrs_count=vrs_count)
+    return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="vr", properties=properties)
+
+
+def addon_hcx_create(cmd, client: AVSClient, resource_group_name, private_cloud, offer: str):
+    from azext_vmware.vendored_sdks.avs_client.models import Addon, AddonHcxProperties
+    properties=AddonHcxProperties(offer=offer)
+    return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="hcx", properties=properties)
+
+
+def addon_srm_create(cmd, client: AVSClient, resource_group_name, private_cloud, license_key: str):
+    from azext_vmware.vendored_sdks.avs_client.models import Addon, AddonSrmProperties
+    properties=AddonSrmProperties(license_key=license_key)
+    return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="srm", properties=properties)
+
+
+def addon_vr_show(cmd, client: AVSClient, resource_group_name, private_cloud):
+    return client.addons.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="vr")
+
+
+def addon_hcx_show(cmd, client: AVSClient, resource_group_name, private_cloud):
+    return client.addons.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="hcx")
+
+
+def addon_srm_show(cmd, client: AVSClient, resource_group_name, private_cloud):
+    return client.addons.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="srm")
+
+
+def addon_vr_update(cmd, client: AVSClient, resource_group_name, private_cloud, vrs_count: int):
+    from azext_vmware.vendored_sdks.avs_client.models import Addon, AddonVrProperties
+    properties=AddonVrProperties(vrs_count=vrs_count)
+    return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="vr", properties=properties)
+
+
+def addon_hcx_update(cmd, client: AVSClient, resource_group_name, private_cloud, offer: str):
+    from azext_vmware.vendored_sdks.avs_client.models import Addon, AddonHcxProperties
+    properties=AddonHcxProperties(offer=offer)
+    return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="hcx", properties=properties)
+
+
+def addon_srm_update(cmd, client: AVSClient, resource_group_name, private_cloud, license_key: str):
+    from azext_vmware.vendored_sdks.avs_client.models import Addon, AddonSrmProperties
+    properties=AddonSrmProperties(license_key=license_key)
+    return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="srm", properties=properties)
+
+
+def addon_vr_delete(cmd, client: AVSClient, resource_group_name, private_cloud):
+    return client.addons.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="vr")
+
+
+def addon_hcx_delete(cmd, client: AVSClient, resource_group_name, private_cloud):
+    return client.addons.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="hcx")
+
+
+def addon_srm_delete(cmd, client: AVSClient, resource_group_name, private_cloud):
+    return client.addons.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="srm")

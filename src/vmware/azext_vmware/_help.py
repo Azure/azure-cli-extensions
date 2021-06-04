@@ -12,6 +12,26 @@ helps['vmware'] = """
     short-summary: Commands to manage Azure VMware Solution.
 """
 
+helps['vmware addon'] = """
+    type: group
+    short-summary: Commands to manage addons for a private cloud.
+"""
+
+helps['vmware addon hcx'] = """
+    type: group
+    short-summary: Commands to manage a HCX addon.
+"""
+
+helps['vmware addon srm'] = """
+    type: group
+    short-summary: Commands to manage a Site Recovery Manager (SRM) addon.
+"""
+
+helps['vmware addon vr'] = """
+    type: group
+    short-summary: Commands to manage a vSphere Replication (VR) addon.
+"""
+
 helps['vmware private-cloud'] = """
     type: group
     short-summary: Commands to manage private clouds.
@@ -226,4 +246,108 @@ helps['vmware datastore delete'] = """
     examples:
     - name: Delete an iSCSI or NFS based datastore.
       text: az vmware datastore delete --name MyCloudSANDatastore1 --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud
+"""
+
+helps['vmware addon list'] = """
+    type: command
+    short-summary: List addons in a private cloud.
+    examples:
+    - name: List addons in a private cloud.
+      text: az vmware addon list --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+"""
+
+helps['vmware addon vr create'] = """
+    type: command
+    short-summary: Create a vSphere Replication (VR) addon for a private cloud.
+    examples:
+    - name: Create a vSphere Replication (VR) addon.
+      text: az vmware addon vr create --resource-group MyResourceGroup --private-cloud MyPrivateCloud --vrs-count 1
+"""
+
+helps['vmware addon hcx create'] = """
+    type: command
+    short-summary: Create a HCX addon for a private cloud.
+    examples:
+    - name: Create a HCX addon.
+      text: az vmware addon hcx create --resource-group MyResourceGroup --private-cloud MyPrivateCloud --offer "VMware MaaS Cloud Provider (Enterprise)"
+"""
+
+helps['vmware addon srm create'] = """
+    type: command
+    short-summary: Create a Site Recovery Manager (SRM) addon for a private cloud.
+    examples:
+    - name: Create a Site Recovery Manager (SRM) addon.
+      text: az vmware addon srm create --resource-group MyResourceGroup --private-cloud MyPrivateCloud --license-key "41915178-A8FF-4A4D-B683-6D735AF5E3F5"
+"""
+
+helps['vmware addon vr show'] = """
+    type: command
+    short-summary: Show details of a vSphere Replication (VR) addon for a private cloud.
+    examples:
+    - name: Show details of a vSphere Replication (VR) addon.
+      text: az vmware addon vr show --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+"""
+
+helps['vmware addon hcx show'] = """
+    type: command
+    short-summary: Show details of a HCX addon for a private cloud.
+    examples:
+    - name: Show details of a HCX addon.
+      text: az vmware addon hcx show --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+"""
+
+helps['vmware addon srm show'] = """
+    type: command
+    short-summary: Show details of a Site Recovery Manager (SRM) addon for a private cloud.
+    examples:
+    - name: Show details of a Site Recovery Manager (SRM) addon.
+      text: az vmware addon srm show --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+"""
+
+helps['vmware addon vr update'] = """
+    type: command
+    short-summary: Update a vSphere Replication (VR) addon for a private cloud.
+    examples:
+    - name: Update a vSphere Replication (VR) addon.
+      text: az vmware addon vr update --resource-group MyResourceGroup --private-cloud MyPrivateCloud --vrs-count 1
+"""
+
+helps['vmware addon hcx update'] = """
+    type: command
+    short-summary: Update a HCX addon for a private cloud.
+    examples:
+    - name: Update a HCX addon.
+      text: az vmware addon hcx update --resource-group MyResourceGroup --private-cloud MyPrivateCloud --offer "VMware MaaS Cloud Provider (Enterprise)"
+"""
+
+helps['vmware addon srm update'] = """
+    type: command
+    short-summary: Update a Site Recovery Manager (SRM) addon for a private cloud.
+    examples:
+    - name: Update a Site Recovery Manager (SRM) addon.
+      text: az vmware addon srm update --resource-group MyResourceGroup --private-cloud MyPrivateCloud --license-key "41915178-A8FF-4A4D-B683-6D735AF5E3F5"
+"""
+
+helps['vmware addon vr delete'] = """
+    type: command
+    short-summary: Delete a vSphere Replication (VR) addon for a private cloud.
+    examples:
+    - name: Delete a vSphere Replication (VR) addon.
+      text: az vmware addon vr delete --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+"""
+
+helps['vmware addon hcx delete'] = """
+    type: command
+    short-summary: Delete a HCX addon for a private cloud.
+    examples:
+    - name: Delete a HCX addon.
+      text: az vmware addon hcx delete --resource-group MyResourceGroup --private-cloud MyPrivateCloud
+"""
+
+helps['vmware addon srm delete'] = """
+    type: command
+    short-summary: Delete a Site Recovery Manager (SRM) addon for a private cloud.
+    examples:
+    - name: Delete a Site Recovery Manager (SRM) addon.
+      text: az vmware addon srm delete --resource-group MyResourceGroup --private-cloud MyPrivateCloud
 """

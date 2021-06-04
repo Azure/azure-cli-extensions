@@ -88,3 +88,15 @@ def load_arguments(self, _):
         c.argument('target_id', help='Azure resource ID of the iSCSI target.')
         c.argument('mount_option', nargs='*', help='Mode that describes whether the LUN has to be mounted as a datastore or attached as a LUN.')
         c.argument('path', help='Device path.')
+
+    with self.argument_context('vmware addon') as c:
+        c.argument('name', options_list=['--name', '-n'], help='Name of the addon.')
+
+    with self.argument_context('vmware addon vr') as c:
+        c.argument('vrs_count', help='The vSphere Replication Server (VRS) count.')
+
+    with self.argument_context('vmware addon hcx') as c:
+        c.argument('offer', help='The HCX offer, example "VMware MaaS Cloud Provider (Enterprise)".')
+
+    with self.argument_context('vmware addon srm') as c:
+        c.argument('license_key', help='The Site Recovery Manager (SRM) license.')
