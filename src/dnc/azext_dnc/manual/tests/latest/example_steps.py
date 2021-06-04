@@ -83,19 +83,18 @@ def step_orchestrator_instance_service_create(test, rg, rg_2, checks=None):
         checks = []
     test.cmd('az dnc orchestrator-instance-service create '
              '--type "SystemAssigned" '
-             '--location "eastus2euap" '
+             '--location "easatus2euap" '
              '--api-server-endpoint "https://testk8s.cloudapp.net" '
              '--cluster-root-ca "ddsadsad344mfdsfdl" '
              '--id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.DelegatedNetwork/controlle'
              'r/{myController}" '
              '--orchestrator-app-id "546192d7-503f-477a-9cfe-4efc3ee2b6e1" '
              '--orchestrator-tenant-id "da6192d7-503f-477a-9cfe-4efc3ee2b6c3" '
-             '--private-link-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Netw'
-             'ork/privateLinkServices/plresource1" '
+             '--privlinkresourceid "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/pr'
+             'ivateLinkServices/plresource1" '
              '--resource-group "{rg}" '
              '--resource-name "testk8s1"',
              checks=checks)
-
 
 # EXAMPLE: /OrchestratorInstanceService/get/Get details of a orchestratorInstance
 def step_orchestrator_instance_service_show_detail(test, rg, rg_2, checks=None):

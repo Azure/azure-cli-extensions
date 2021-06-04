@@ -22,7 +22,6 @@ def load_command_table(self, _):
     with self.command_group('dnc controller', dnc_controller, client_factory=cf_controller) as g:
         g.custom_command('create', 'dnc_controller_create')
         g.custom_command('delete', 'dnc_controller_delete', confirmation=True)
-        g.custom_command('patch', 'dnc_controller_patch')
         g.custom_command('show-detail', 'dnc_controller_show_detail')
 
     from azext_dnc.generated._client_factory import cf_delegated_network
@@ -43,7 +42,6 @@ def load_command_table(self, _):
         g.custom_command('list', 'dnc_orchestrator_instance_service_list')
         g.custom_command('create', 'dnc_orchestrator_instance_service_create')
         g.custom_command('delete', 'dnc_orchestrator_instance_service_delete', confirmation=True)
-        g.custom_command('patch', 'dnc_orchestrator_instance_service_patch')
         g.custom_command('show-detail', 'dnc_orchestrator_instance_service_show_detail')
 
     from azext_dnc.generated._client_factory import cf_delegated_subnet_service

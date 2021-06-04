@@ -30,17 +30,6 @@ def dnc_controller_delete(client,
                                resource_name=resource_name)
 
 
-def dnc_controller_patch(client,
-                         resource_group_name,
-                         resource_name,
-                         tags=None):
-    parameters = {}
-    parameters['tags'] = tags
-    return client.patch(resource_group_name=resource_group_name,
-                        resource_name=resource_name,
-                        parameters=parameters)
-
-
 def dnc_controller_show_detail(client,
                                resource_group_name,
                                resource_name):
@@ -98,17 +87,6 @@ def dnc_orchestrator_instance_service_delete(client,
                                              resource_name):
     return client.begin_delete(resource_group_name=resource_group_name,
                                resource_name=resource_name)
-
-
-def dnc_orchestrator_instance_service_patch(client,
-                                            resource_group_name,
-                                            resource_name,
-                                            tags=None):
-    parameters = {}
-    parameters['tags'] = tags
-    return client.patch(resource_group_name=resource_group_name,
-                        resource_name=resource_name,
-                        parameters=parameters)
 
 
 def dnc_orchestrator_instance_service_show_detail(client,

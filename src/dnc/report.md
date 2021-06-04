@@ -20,7 +20,6 @@
 |---------|------------|--------|-----------|
 |[az dnc controller create](#ControllerCreate)|Create|[Parameters](#ParametersControllerCreate)|[Example](#ExamplesControllerCreate)|
 |[az dnc controller delete](#ControllerDelete)|Delete|[Parameters](#ParametersControllerDelete)|[Example](#ExamplesControllerDelete)|
-|[az dnc controller patch](#ControllerPatch)|Patch|[Parameters](#ParametersControllerPatch)|[Example](#ExamplesControllerPatch)|
 |[az dnc controller show-detail](#ControllerGetDetails)|GetDetails|[Parameters](#ParametersControllerGetDetails)|[Example](#ExamplesControllerGetDetails)|
 
 ### <a name="CommandsInDelegatedNetwork">Commands in `az dnc delegated-network` group</a>
@@ -46,7 +45,6 @@
 |[az dnc orchestrator-instance-service list](#OrchestratorInstanceServiceListBySubscription)|ListBySubscription|[Parameters](#ParametersOrchestratorInstanceServiceListBySubscription)|[Example](#ExamplesOrchestratorInstanceServiceListBySubscription)|
 |[az dnc orchestrator-instance-service create](#OrchestratorInstanceServiceCreate)|Create|[Parameters](#ParametersOrchestratorInstanceServiceCreate)|[Example](#ExamplesOrchestratorInstanceServiceCreate)|
 |[az dnc orchestrator-instance-service delete](#OrchestratorInstanceServiceDelete)|Delete|[Parameters](#ParametersOrchestratorInstanceServiceDelete)|[Example](#ExamplesOrchestratorInstanceServiceDelete)|
-|[az dnc orchestrator-instance-service patch](#OrchestratorInstanceServicePatch)|Patch|[Parameters](#ParametersOrchestratorInstanceServicePatch)|[Example](#ExamplesOrchestratorInstanceServicePatch)|
 |[az dnc orchestrator-instance-service show-detail](#OrchestratorInstanceServiceGetDetails)|GetDetails|[Parameters](#ParametersOrchestratorInstanceServiceGetDetails)|[Example](#ExamplesOrchestratorInstanceServiceGetDetails)|
 
 
@@ -78,19 +76,6 @@ az dnc controller delete --resource-group "TestRG" --resource-name "testcontroll
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--resource-name**|string|The name of the resource. It must be a minimum of 3 characters, and a maximum of 63.|resource_name|resourceName|
-
-#### <a name="ControllerPatch">Command `az dnc controller patch`</a>
-
-##### <a name="ExamplesControllerPatch">Example</a>
-```
-az dnc controller patch --tags key="value" --resource-group "TestRG" --resource-name "testcontroller"
-```
-##### <a name="ParametersControllerPatch">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--resource-name**|string|The name of the resource. It must be a minimum of 3 characters, and a maximum of 63.|resource_name|resourceName|
-|**--tags**|dictionary|The resource tags.|tags|tags|
 
 #### <a name="ControllerGetDetails">Command `az dnc controller show-detail`</a>
 
@@ -232,8 +217,8 @@ az dnc orchestrator-instance-service create --type "SystemAssigned" --location "
 "https://testk8s.cloudapp.net" --cluster-root-ca "ddsadsad344mfdsfdl" --id "/subscriptions/613192d7-503f-477a-9cfe-4efc\
 3ee2bd60/resourceGroups/TestRG/providers/Microsoft.DelegatedNetwork/controller/testcontroller" --orchestrator-app-id \
 "546192d7-503f-477a-9cfe-4efc3ee2b6e1" --orchestrator-tenant-id "da6192d7-503f-477a-9cfe-4efc3ee2b6c3" \
---private-link-resource-id "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microso\
-ft.Network/privateLinkServices/plresource1" --resource-group "TestRG" --resource-name "testk8s1"
+--privlinkresourceid "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.Net\
+work/privateLinkServices/plresource1" --resource-group "TestRG" --resource-name "testk8s1"
 ```
 ##### <a name="ParametersOrchestratorInstanceServiceCreate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -261,19 +246,6 @@ az dnc orchestrator-instance-service delete --resource-group "TestRG" --resource
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--resource-name**|string|The name of the resource. It must be a minimum of 3 characters, and a maximum of 63.|resource_name|resourceName|
-
-#### <a name="OrchestratorInstanceServicePatch">Command `az dnc orchestrator-instance-service patch`</a>
-
-##### <a name="ExamplesOrchestratorInstanceServicePatch">Example</a>
-```
-az dnc orchestrator-instance-service patch --tags key="value" --resource-group "TestRG" --resource-name "testk8s1"
-```
-##### <a name="ParametersOrchestratorInstanceServicePatch">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--resource-name**|string|The name of the resource. It must be a minimum of 3 characters, and a maximum of 63.|resource_name|resourceName|
-|**--tags**|dictionary|The resource tags.|tags|tags|
 
 #### <a name="OrchestratorInstanceServiceGetDetails">Command `az dnc orchestrator-instance-service show-detail`</a>
 

@@ -36,15 +36,6 @@ helps['dnc controller delete'] = """
                az dnc controller delete --resource-group "TestRG" --resource-name "testcontroller"
 """
 
-helps['dnc controller patch'] = """
-    type: command
-    short-summary: "Update dnc controller."
-    examples:
-      - name: update controller
-        text: |-
-               az dnc controller patch --tags key="value" --resource-group "TestRG" --resource-name "testcontroller"
-"""
-
 helps['dnc controller show-detail'] = """
     type: command
     short-summary: "Gets details about the specified dnc controller."
@@ -100,9 +91,9 @@ helps['dnc orchestrator-instance-service create'] = """
 --api-server-endpoint "https://testk8s.cloudapp.net" --cluster-root-ca "ddsadsad344mfdsfdl" --id \
 "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.DelegatedNetwork/control\
 ler/testcontroller" --orchestrator-app-id "546192d7-503f-477a-9cfe-4efc3ee2b6e1" --orchestrator-tenant-id \
-"da6192d7-503f-477a-9cfe-4efc3ee2b6c3" --private-link-resource-id "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/\
-resourceGroups/TestRG/providers/Microsoft.Network/privateLinkServices/plresource1" --resource-group "TestRG" \
---resource-name "testk8s1"
+"da6192d7-503f-477a-9cfe-4efc3ee2b6c3" --privlinkresourceid "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resour\
+ceGroups/TestRG/providers/Microsoft.Network/privateLinkServices/plresource1" --resource-group "TestRG" --resource-name \
+"testk8s1"
 """
 
 helps['dnc orchestrator-instance-service delete'] = """
@@ -112,16 +103,6 @@ helps['dnc orchestrator-instance-service delete'] = """
       - name: Delete Orchestrator Instance
         text: |-
                az dnc orchestrator-instance-service delete --resource-group "TestRG" --resource-name "k8stest1"
-"""
-
-helps['dnc orchestrator-instance-service patch'] = """
-    type: command
-    short-summary: "Update Orchestrator Instance."
-    examples:
-      - name: update Orchestrator Instance
-        text: |-
-               az dnc orchestrator-instance-service patch --tags key="value" --resource-group "TestRG" --resource-name \
-"testk8s1"
 """
 
 helps['dnc orchestrator-instance-service show-detail'] = """
