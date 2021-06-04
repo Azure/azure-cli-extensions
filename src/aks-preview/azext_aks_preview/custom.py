@@ -1010,6 +1010,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                private_dns_zone=None,
                enable_managed_identity=True,
                fqdn_subdomain=None,
+               enable_public_fqdn=False,
                api_server_authorized_ip_ranges=None,
                aks_custom_headers=None,
                appgw_name=None,
@@ -1398,6 +1399,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         mc.node_resource_group = node_resource_group
 
     use_custom_private_dns_zone = False
+    if not enable_private_cluster and enable_public_fqdn:
+        raise CLIError("--enable-public-fqdn should only be used with --enable-private-cluster")
     if enable_private_cluster:
         if load_balancer_sku.lower() != "standard":
             raise CLIError(
@@ -1405,6 +1408,8 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         mc.api_server_access_profile = ManagedClusterAPIServerAccessProfile(
             enable_private_cluster=True
         )
+        if enable_public_fqdn:
+            mc.api_server_access_profile.enable_private_cluster_public_fqdn = True
 
     if private_dns_zone:
         if not enable_private_cluster:
@@ -1501,6 +1506,8 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                disable_secret_rotation=False,
                disable_local_accounts=False,
                enable_local_accounts=False,
+               enable_public_fqdn=False,
+               disable_public_fqdn=False,
                yes=False,
                tags=None,
                windows_admin_password=None,
@@ -1540,7 +1547,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
        not tags and \
        not windows_admin_password and \
        not enable_local_accounts and \
-       not disable_local_accounts:
+       not disable_local_accounts and \
+       not enable_public_fqdn and \
+       not disable_public_fqdn:
         raise CLIError('Please specify "--enable-cluster-autoscaler" or '
                        '"--disable-cluster-autoscaler" or '
                        '"--update-cluster-autoscaler" or '
@@ -1571,7 +1580,9 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
                        '"--enable-azure-rbac" or '
                        '"--disable-azure-rbac" or '
                        '"--enable-local-accounts" or '
-                       '"--disable-local-accounts"')
+                       '"--disable-local-accounts" or '
+                       '"--enable-public-fqdn" or '
+                       '"--disable-public-fqdn"')
     instance = client.get(resource_group_name, name)
 
     if update_autoscaler and len(instance.agent_pool_profiles) > 1:
@@ -1740,6 +1751,21 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
     if disable_ahub:
         instance.windows_profile.license_type = 'None'
 
+    if enable_public_fqdn and disable_public_fqdn:
+        raise CLIError(
+            'Cannot specify "--enable-public-fqdn" and "--disable-public-fqdn" at the same time')
+    is_private_cluster = instance.api_server_access_profile is not None and instance.api_server_access_profile.enable_private_cluster
+    if enable_public_fqdn:
+        if not is_private_cluster:
+            raise CLIError('--enable-public-fqdn can only be used for private cluster')
+        instance.api_server_access_profile.enable_private_cluster_public_fqdn = True
+    if disable_public_fqdn:
+        if not is_private_cluster:
+            raise CLIError('--disable-public-fqdn can only be used for private cluster')
+        if instance.api_server_access_profile.private_dns_zone.lower() == CONST_PRIVATE_DNS_ZONE_NONE:
+            raise CLIError('--disable-public-fqdn cannot be applied for none mode private dns zone cluster')
+        instance.api_server_access_profile.enable_private_cluster_public_fqdn = False
+
     if instance.auto_upgrade_profile is None:
         instance.auto_upgrade_profile = ManagedClusterAutoUpgradeProfile()
 
@@ -1891,18 +1917,22 @@ def aks_get_credentials(cmd,    # pylint: disable=unused-argument
                         path=os.path.join(os.path.expanduser(
                             '~'), '.kube', 'config'),
                         overwrite_existing=False,
-                        context_name=None):
+                        context_name=None,
+                        public_fqdn=False):
     credentialResults = None
+    serverType = None
+    if public_fqdn:
+        serverType = 'public'
     if admin:
         credentialResults = client.list_cluster_admin_credentials(
-            resource_group_name, name)
+            resource_group_name, name, serverType)
     else:
         if user.lower() == 'clusteruser':
             credentialResults = client.list_cluster_user_credentials(
-                resource_group_name, name)
+                resource_group_name, name, serverType)
         elif user.lower() == 'clustermonitoringuser':
             credentialResults = client.list_cluster_monitoring_user_credentials(
-                resource_group_name, name)
+                resource_group_name, name, serverType)
         else:
             raise CLIError("The user is invalid.")
     if not credentialResults:
