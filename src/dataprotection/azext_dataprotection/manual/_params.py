@@ -109,7 +109,7 @@ def load_arguments(self, _):
         c.argument('policy', type=validate_file_or_dict, help="Policy Json string or file.")
         c.argument('lifecycles', type=validate_file_or_dict, nargs='+', help="lifecycles to be associated with the retention rule. Specify space separated json file names.")
 
-    with self.argument_context('dataprotection backup-policy retention-rule remove-in-policy') as c:
+    with self.argument_context('dataprotection backup-policy retention-rule remove') as c:
         c.argument('name', arg_type=get_enum_type(get_retention_rule_name_values()), help="Specify the retention rule name to be removed in policy.")
         c.argument('policy', type=validate_file_or_dict, help="Existing policy Json string or file.")
 
@@ -127,7 +127,7 @@ def load_arguments(self, _):
         c.argument('policy', type=validate_file_or_dict, help="Policy Json string or file.")
         c.argument('criteria', type=validate_file_or_dict, nargs='+', help="crtierias to be associated with the tag. Specify space separated json file names.")
 
-    with self.argument_context('dataprotection backup-policy tag remove-in-policy') as c:
+    with self.argument_context('dataprotection backup-policy tag remove') as c:
         c.argument('name', arg_type=get_enum_type(get_tag_name_values()), help="Specify the tag name to be removed in policy.")
         c.argument('policy', type=validate_file_or_dict, help="Existing policy Json string or file.")
 
