@@ -1,7 +1,7 @@
 0.14.0
 ++++++++++++++++++
 
-* Resolving issue from rest respose exception.
+* Resolving issue from rest response exception.
 
 0.13.0
 ++++++++++++++++++
