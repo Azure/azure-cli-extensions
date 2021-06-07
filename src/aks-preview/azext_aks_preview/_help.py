@@ -262,7 +262,7 @@ helps['aks create'] = """
           type: string
           short-summary: Prefix for FQDN that is created for private cluster with custom private dns zone scenario.
         - name: --enable-public-fqdn
-          tyoe: bool
+          type: bool
           short-summary: (Preview) Enable public fqdn feature for private cluster.
         - name: --enable-node-public-ip
           type: bool
@@ -549,10 +549,10 @@ helps['aks update'] = """
           type: bool
           short-summary: (Preview) If set to true, will enable getting static credential for this cluster.
         - name: --enable-public-fqdn
-          tyoe: bool
+          type: bool
           short-summary: (Preview) Enable public fqdn feature for private cluster.
         - name: --disable-public-fqdn
-          tyoe: bool
+          type: bool
           short-summary: (Preview) Disable public fqdn feature for private cluster.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
