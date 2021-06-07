@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.15
++++++
+* Update to use 2021-05-01 api-version
+
 0.5.14
 +++++
 * Add os-sku argument for cluster and nodepool creation
