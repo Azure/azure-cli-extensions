@@ -6,6 +6,7 @@
 # pylint: disable=line-too-long
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest, StorageAccountPreparer
 from .recording_processors import StorageAccountSASReplacer
+from azure_devtools.scenario_tests import AllowLargeResponse
 
 
 class ApplicationInsightsManagementClientTests(ScenarioTest):
@@ -246,9 +247,10 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         with self.assertRaisesRegexp(SystemExit, '3'):
             self.cmd('monitor app-insights component linked-storage show --app {name_a} -g {resource_group}')
 
+    @AllowLargeResponse()
     @ResourceGroupPreparer(parameter_name_for_location='location')
-    @StorageAccountPreparer(name_prefix='component', kind='StorageV2')
-    @StorageAccountPreparer(name_prefix='component', kind='StorageV2', location='westus2', parameter_name='storage_account_2')
+    @StorageAccountPreparer(kind='StorageV2')
+    @StorageAccountPreparer(kind='StorageV2', location='westus2', parameter_name='storage_account_2')
     def test_component_continues_export(self, resource_group, location, storage_account, storage_account_2):
         from datetime import datetime, timedelta
         expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%MZ')

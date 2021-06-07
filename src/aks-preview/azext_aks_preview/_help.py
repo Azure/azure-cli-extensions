@@ -171,6 +171,7 @@ helps['aks create'] = """
                 open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
                 gitops                          - enable GitOps (PREVIEW).
                 azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon (PREVIEW).
+                azure-defender                  - enable Azure Defender addon (PREVIEW).
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -213,6 +214,9 @@ helps['aks create'] = """
         - name: --ppg
           type: string
           short-summary: The ID of a PPG.
+        - name: --os-sku
+          type: string
+          short-summary: The os-sku of the agent node pool. Ubuntu or CBLMariner.
         - name: --enable-fips-image
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
@@ -372,6 +376,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --assign-identity <control-plane-identity-resource-id> --assign-kubelet-identity <kubelet-identity-resource-id>
         - name: Create a kubernetes cluster with Azure RBAC enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-aad --enable-azure-rbac
+        - name: Create a kubernetes cluster with a specific os-sku
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --os-sku Ubuntu
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -858,6 +864,9 @@ helps['aks nodepool add'] = """
         - name: --os-type
           type: string
           short-summary: The OS Type. Linux or Windows.
+        - name: --os-sku
+          type: string
+          short-summary: The os-sku of the agent node pool. Ubuntu or CBLMariner.
         - name: --enable-fips-image
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
@@ -914,6 +923,8 @@ helps['aks nodepool add'] = """
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
         - name: Create a nodepool with EncryptionAtHost enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --enable-encryption-at-host
+        - name: Create a nodepool cluster with a specific os-sku
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --os-sku Ubuntu
 """
 
 helps['aks nodepool scale'] = """
@@ -1009,6 +1020,8 @@ long-summary: |-
         open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
         gitops                          - enable GitOps (PREVIEW).
         azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon (PREVIEW).
+        azure-defender                  - enable Azure Defender addon (PREVIEW).
+
 parameters:
   - name: --addons -a
     type: string
@@ -1052,6 +1065,9 @@ examples:
     crafted: true
   - name: Enable open-service-mesh addon.
     text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons open-service-mesh
+    crafted: true
+  - name: Enable azure-defender addon with workspace resourceId.
+    text: az aks enable-addons --name MyManagedCluster --resource-group MyResourceGroup --addons azure-defender --workspace-resource-id WorkspaceResourceId
     crafted: true
 """
 

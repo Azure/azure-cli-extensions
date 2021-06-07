@@ -57,7 +57,7 @@ logger = get_logger(__name__)
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='auto', infrastructure='auto',
-                        disable_auto_upgrade=False):
+                        disable_auto_upgrade=False, cl_oid=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -140,7 +140,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     # Checking if it is an AKS cluster
     is_aks_cluster = check_aks_cluster(kube_config, kube_context)
     if is_aks_cluster:
-        logger.warning("The cluster you are trying to connect to Azure Arc is an Azure Kubernetes Service (AKS) cluster. While Arc onboarding an AKS cluster is possible, it's not necessary. Learn more at {}.".format(" https://go.microsoft.com/fwlink/?linkid=2144200"))
+        logger.warning("Connecting an Azure Kubernetes Service (AKS) cluster to Azure Arc is only required for running Arc enabled services like App Services and Data Services on the cluster. Other features like Azure Monitor and Azure Defender are natively available on AKS. Learn more at {}.".format(" https://go.microsoft.com/fwlink/?linkid=2144200"))
 
     # Checking helm installation
     check_helm_install(kube_config, kube_context)
@@ -201,9 +201,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
 
     # Resource group Creation
     if resource_group_exists(cmd.cli_ctx, resource_group_name, subscription_id) is False:
-        resource_group_params = {'location': location}
+        from azure.cli.core.profiles import ResourceType
+        ResourceGroup = cmd.get_models('ResourceGroup', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
+        parameters = ResourceGroup(location=location)
         try:
-            resourceClient.resource_groups.create_or_update(resource_group_name, resource_group_params)
+            resourceClient.resource_groups.create_or_update(resource_group_name, parameters)
         except Exception as e:  # pylint: disable=broad-except
             utils.arm_exception_handler(e, consts.Create_ResourceGroup_Fault_Type, 'Failed to create the resource group')
 
@@ -251,7 +253,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, https_pr
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
 
     # Checking if custom locations rp is registered and fetching oid if it is registered
-    enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd)
+    enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid)
 
     # Install azure-arc agents
     utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
@@ -1126,7 +1128,7 @@ def get_all_helm_values(release_namespace, kube_config, kube_context):
 
 
 def enable_features(cmd, client, resource_group_name, cluster_name, features, kube_config=None, kube_context=None,
-                    azrbac_client_id=None, azrbac_client_secret=None, azrbac_skip_authz_check=None):
+                    azrbac_client_id=None, azrbac_client_secret=None, azrbac_skip_authz_check=None, cl_oid=None):
     logger.warning("Ensure that you have the latest helm version installed before proceeding.")
     logger.warning("This operation might take a while...\n")
 
@@ -1143,7 +1145,7 @@ def enable_features(cmd, client, resource_group_name, cluster_name, features, ku
         azrbac_skip_authz_check = escape_proxy_settings(azrbac_skip_authz_check)
 
     if enable_cl:
-        enable_cl, custom_locations_oid = check_cl_registration_and_get_oid(cmd)
+        enable_cl, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid)
         if not enable_cluster_connect and enable_cl:
             enable_cluster_connect = True
             logger.warning("Enabling 'custom-locations' feature will enable 'cluster-connect' feature too.")
@@ -1933,27 +1935,38 @@ def check_process(processName):
     return False
 
 
-def get_custom_locations_oid(cmd):
+def get_custom_locations_oid(cmd, cl_oid):
     try:
         sp_graph_client = get_graph_client_service_principals(cmd.cli_ctx)
         sub_filters = []
         sub_filters.append("displayName eq '{}'".format("Custom Locations RP"))
         result = list(sp_graph_client.list(filter=(' and '.join(sub_filters))))
         if len(result) != 0:
-            return result[0].object_id
-        else:
-            logger.warning("Unable to fetch oid of 'custom-locations' app. Proceeding without enabling the feature.")
+            if cl_oid is not None and cl_oid != result[0].object_id:
+                logger.debug("The 'Custom-locations' OID passed is different from the actual OID({}) of the Custom Locations RP app. Proceeding with the correct one...".format(result[0].object_id))
+            return result[0].object_id  # Using the fetched OID
+
+        if cl_oid is None:
+            logger.warning("Failed to enable Custom Locations feature on the cluster. Unable to fetch Object ID of Azure AD application used by Azure Arc service. Try enabling the feature by passing the --custom-locations-oid parameter directly. Learn more at https://aka.ms/CustomLocationsObjectID")
             telemetry.set_exception(exception='Unable to fetch oid of custom locations app.', fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type,
                                     summary='Unable to fetch oid for custom locations app.')
             return ""
+        else:
+            return cl_oid
     except Exception as e:
-        logger.warning("Unable to fetch oid of 'custom-locations' app. Proceeding without enabling the feature. " + str(e))
+        log_string = "Unable to fetch the Object ID of the Azure AD application used by Azure Arc service. "
         telemetry.set_exception(exception=e, fault_type=consts.Custom_Locations_OID_Fetch_Fault_Type,
                                 summary='Unable to fetch oid for custom locations app.')
+        if cl_oid:
+            log_string += "Proceeding with the Object ID provided to enable the 'custom-locations' feature."
+            logger.warning(log_string)
+            return cl_oid
+        log_string += "Unable to enable the 'custom-locations' feature. " + str(e)
+        logger.warning(log_string)
         return ""
 
 
-def check_cl_registration_and_get_oid(cmd):
+def check_cl_registration_and_get_oid(cmd, cl_oid):
     enable_custom_locations = True
     custom_locations_oid = ""
     try:
@@ -1963,7 +1976,7 @@ def check_cl_registration_and_get_oid(cmd):
             enable_custom_locations = False
             logger.warning("'Custom-locations' feature couldn't be enabled on this cluster as the pre-requisite registration of 'Microsoft.ExtendedLocation' was not met. More details for enabling this feature later on this cluster can be found here - https://aka.ms/EnableCustomLocations")
         else:
-            custom_locations_oid = get_custom_locations_oid(cmd)
+            custom_locations_oid = get_custom_locations_oid(cmd, cl_oid)
             if custom_locations_oid == "":
                 enable_custom_locations = False
     except Exception as e:

@@ -142,8 +142,8 @@ helps['datadog monitor update'] = """
     examples:
       - name: Monitors_Update
         text: |-
-               az datadog monitor update --name "myMonitor" --tags Environment="Dev" --resource-group \
-"myResourceGroup"
+               az datadog monitor update --name "myMonitor" --tags Environment="Dev" --monitoring-status "Disabled" \
+--resource-group "myResourceGroup"
 """
 
 helps['datadog monitor delete'] = """
@@ -226,6 +226,9 @@ helps['datadog monitor wait'] = """
       - name: Pause executing next line of CLI script until the datadog monitor is successfully created.
         text: |-
                az datadog monitor wait --name "myMonitor" --resource-group "myResourceGroup" --created
+      - name: Pause executing next line of CLI script until the datadog monitor is successfully updated.
+        text: |-
+               az datadog monitor wait --name "myMonitor" --resource-group "myResourceGroup" --updated
       - name: Pause executing next line of CLI script until the datadog monitor is successfully deleted.
         text: |-
                az datadog monitor wait --name "myMonitor" --resource-group "myResourceGroup" --deleted
@@ -354,7 +357,7 @@ helps['datadog sso-config create'] = """
     parameters:
       - name: --properties
         long-summary: |
-            Usage: --properties provisioning-state=XX single-sign-on-state=XX enterprise-app-id=XX
+            Usage: --properties single-sign-on-state=XX enterprise-app-id=XX
 
             single-sign-on-state: Various states of the SSO resource
             enterprise-app-id: The Id of the Enterprise App used for Single sign-on.
@@ -372,7 +375,7 @@ helps['datadog sso-config update'] = """
     parameters:
       - name: --properties
         long-summary: |
-            Usage: --properties provisioning-state=XX single-sign-on-state=XX enterprise-app-id=XX
+            Usage: --properties single-sign-on-state=XX enterprise-app-id=XX
 
             single-sign-on-state: Various states of the SSO resource
             enterprise-app-id: The Id of the Enterprise App used for Single sign-on.
