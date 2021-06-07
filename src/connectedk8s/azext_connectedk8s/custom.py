@@ -1500,10 +1500,11 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         storage_account_name, sas_token, readonly_sas_token = utils.setup_validate_storage_account(cmd.cli_ctx, storage_account, sas_token, resource_group_name)
         if storage_account_name:  # When validated the storage account
             utils.try_upload_log_file(cluster_name, storage_account_name, sas_token, troubleshoot_log_path)
+            utils.collect_periscope_logs(resource_group_name, cluster_name, storage_account_name, sas_token, readonly_sas_token, kube_context, kube_config)
             utils.try_archive_log_file(troubleshoot_log_path, output_file)
             # token_in_storage_account_url = readonly_sas_token if readonly_sas_token is not None else sas_token.
-            utils.collect_periscope_logs(resource_group_name, cluster_name, storage_account_name, sas_token, readonly_sas_token, kube_context, kube_config)
         else:
+            utils.collect_periscope_logs(resource_group_name, cluster_name, storage_account_name, sas_token, readonly_sas_token, kube_context, kube_config)
             utils.try_archive_log_file(troubleshoot_log_path, output_file)
 
     except Exception as ex:

@@ -728,6 +728,16 @@ def collect_periscope_logs(resource_group_name, name, storage_account_name=None,
     if kube_context:
         kubectl_prior.extend(["--context", kube_context])
 
+    fd, temp_yaml_path = tempfile.mkstemp()
+    temp_yaml_file = os.fdopen(fd, 'w+t')
+    deployment_yaml = urlopen(
+        "https://raw.githubusercontent.com/Azure/aks-periscope/latest/deployment/aks-periscope.yaml").read().decode()
+    
+    if not storage_account_name or not sas_token:
+        print('No storage account specified. Downloading logs to local machine.')
+        apply_periscope_yaml(kubectl_prior, deployment_yaml, temp_yaml_file, temp_yaml_path)
+        copy_and_zip_periscope_files(kubectl_prior)
+        return
     readonly_sas_token = readonly_sas_token.strip('?')
 
     from knack.prompting import prompt_y_n
@@ -746,12 +756,32 @@ def collect_periscope_logs(resource_group_name, name, storage_account_name=None,
 
     sas_token = sas_token.strip('?')
 
-    deployment_yaml = urlopen(
-        "https://raw.githubusercontent.com/Azure/aks-periscope/latest/deployment/aks-periscope.yaml").read().decode()
     deployment_yaml = deployment_yaml.replace("# <accountName, base64 encoded>",
                                               (base64.b64encode(bytes(storage_account_name, 'ascii'))).decode('ascii'))
     deployment_yaml = deployment_yaml.replace("# <saskey, base64 encoded>",
                                               (base64.b64encode(bytes("?" + sas_token, 'ascii'))).decode('ascii'))
+    apply_periscope_yaml(kubectl_prior, deployment_yaml, temp_yaml_file, temp_yaml_path)
+    print()
+    # log_storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/"
+
+    print(f'{colorama.Fore.GREEN}Your logs are being uploaded to storage account {format_bright(storage_account_name)}...')
+
+    print()
+    print(f'You can download Azure Storage Explorer here '
+          f'{format_hyperlink("https://azure.microsoft.com/en-us/features/storage-explorer/")}'
+          f' to check the logs by accessing the storage account {storage_account_name}.')
+    # f' to check the logs by adding the storage account using the following URL:')
+    # print(f'{format_hyperlink(log_storage_account_url)}')
+
+    print()
+    if not prompt_y_n('Do you want to see analysis results now?', default="n"):
+        print(f"You can rerun 'az connectedk8s troubleshoot -g {resource_group_name} -n {name}' "
+              f"anytime to check the analysis results.")
+    else:
+        display_diagnostics_report(kubectl_prior)
+
+
+def apply_periscope_yaml(kubectl_prior, deployment_yaml, temp_yaml_file, temp_yaml_path):
     container_logs = "azure-arc"
     kube_objects = "azure-arc/pod azure-arc/service azure-arc/deployment"
     yaml_lines = deployment_yaml.splitlines()
@@ -765,8 +795,7 @@ def collect_periscope_logs(resource_group_name, name, storage_account_name=None,
 
     deployment_yaml = '\n'.join(yaml_lines)
 
-    fd, temp_yaml_path = tempfile.mkstemp()
-    temp_yaml_file = os.fdopen(fd, 'w+t')
+
     try:
         temp_yaml_file.write(deployment_yaml)
         temp_yaml_file.flush()
@@ -791,31 +820,52 @@ def collect_periscope_logs(resource_group_name, name, storage_account_name=None,
 
             print()
             print(f"{colorama.Fore.GREEN}Deploying diagnostic container on the K8s cluster...")
-            subprocess_cmd = kubectl_prior + ["apply", "-f", temp_yaml_path, "-n", "aks-periscope"]
+            subprocess_cmd = kubectl_prior + ["apply", "-f", temp_yaml_path, "-n", "aks-periscope", "--validate=false"]
             subprocess.check_output(subprocess_cmd, stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as err:
             raise CLIInternalError(err.output)
     finally:
         os.remove(temp_yaml_path)
 
-    print()
-    # log_storage_account_url = f"https://{storage_account_name}.blob.core.windows.net/"
 
-    print(f'{colorama.Fore.GREEN}Your logs are being uploaded to storage account {format_bright(storage_account_name)}...')
 
-    print()
-    print(f'You can download Azure Storage Explorer here '
-          f'{format_hyperlink("https://azure.microsoft.com/en-us/features/storage-explorer/")}'
-          f' to check the logs by accessing the storage account {storage_account_name}.')
-    # f' to check the logs by adding the storage account using the following URL:')
-    # print(f'{format_hyperlink(log_storage_account_url)}')
+def copy_and_zip_periscope_files(kubectl_prior):
+    periscope_files = []
+    time.sleep(5)   
+    subprocess_cmd = kubectl_prior + ["get", "pods", "-n", "aks-periscope", "-o", "wide", "--no-headers"]
+    subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
+    pods = subprocess.check_output(
+        subprocess_cmd,
+        universal_newlines=True)
+    pod_lines = pods.splitlines()
+    for line in pod_lines:
+        info = line.split()
+        pod = info[0]
+        status = info[2]
+        node = info[6]
+        if status != "Running":
+            continue
+        file = node+".zip"
 
-    print()
-    if not prompt_y_n('Do you want to see analysis results now?', default="n"):
-        print(f"You can rerun 'az connectedk8s troubleshoot -g {resource_group_name} -n {name}' "
-              f"anytime to check the analysis results.")
-    else:
-        display_diagnostics_report(kubectl_prior)
+        time.sleep(5)
+        subprocess_cmd = kubectl_prior + ["cp", "-n", "aks-periscope", pod+":"+file, file]
+        subprocess.call(subprocess_cmd, stderr=subprocess.STDOUT)
+        periscope_files.append(file)
+    try:
+        periscope_zip = os.path.join(os.path.expanduser('~'), '.azure', 'periscope_output.tar.gz')
+        periscope_log_path = os.path.join(os.path.expanduser('~'), '.azure')
+        # Creating the .tar.gz for logs and deleting the actual log file
+        import tarfile
+        with tarfile.open(periscope_zip , "w:gz") as tar:
+            for file in periscope_files:
+                tar.add(file, file)
+                #logging.shutdown()  # To release log file handler, so that the actual log file can be removed after archiving
+                os.remove(file)
+
+        print(f"{colorama.Style.BRIGHT}{colorama.Fore.GREEN}Some diagnostic logs have been collected and archived at '{periscope_zip}'.")
+    except Exception as ex:
+        logger.error("Error occured while archiving the periscope logs: {}".format(str(ex)))
+        print(f"{colorama.Style.BRIGHT}{colorama.Fore.GREEN}You can find the unarchived periscope logs at '{periscope_log_path}'.")
 
 
 def which(binary):
@@ -836,12 +886,15 @@ def which(binary):
 
 def try_archive_log_file(troubleshoot_log_path, output_file):
     try:
+        periscope_zip = os.path.join(os.path.expanduser('~'), '.azure', 'periscope_output.tar.gz')
         # Creating the .tar.gz for logs and deleting the actual log file
         import tarfile
         with tarfile.open(output_file, "w:gz") as tar:
             tar.add(troubleshoot_log_path, 'connected8s_troubleshoot.log')
+            tar.add(periscope_zip, 'periscope_output.tar.gz')
         logging.shutdown()  # To release log file handler, so that the actual log file can be removed after archiving
         os.remove(troubleshoot_log_path)
+        os.remove(periscope_zip)
         print(f"{colorama.Style.BRIGHT}{colorama.Fore.GREEN}Some diagnostic logs have been collected and archived at '{output_file}'.")
     except Exception as ex:
         logger.error("Error occured while archiving the log file: {}".format(str(ex)))
