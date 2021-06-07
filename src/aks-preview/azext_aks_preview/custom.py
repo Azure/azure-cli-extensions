@@ -1422,8 +1422,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             if is_valid_resource_id(private_dns_zone):
                 use_custom_private_dns_zone = True
             else:
-                raise ResourceNotFoundError(private_dns_zone +
-                               " is not a valid Azure resource ID.")
+                raise ResourceNotFoundError(private_dns_zone + " is not a valid Azure resource ID.")
 
     if fqdn_subdomain:
         if not use_custom_private_dns_zone:
