@@ -39,93 +39,9 @@ def providerhub_custom_rollout_create(client,
 def providerhub_custom_rollout_update(instance,
                                       provider_namespace,
                                       rollout_name,
-                                      canary,
-                                      provisioning_state=None,
-                                      completed_regions=None,
-                                      failed_or_skipped_regions=None,
-                                      resource_type_registrations=None,
-                                      provider_authentication=None,
-                                      provider_authorizations=None,
-                                      namespace=None,
-                                      provider_version=None,
-                                      provider_type=None,
-                                      required_features=None,
-                                      capabilities=None,
-                                      metadata=None,
-                                      template_deployment_options=None,
-                                      schema_owners=None,
-                                      manifest_owners=None,
-                                      incident_routing_service=None,
-                                      incident_routing_team=None,
-                                      incident_contact_email=None,
-                                      service_tree_infos=None,
-                                      resource_access_policy=None,
-                                      resource_access_roles=None,
-                                      opt_in_headers=None,
-                                      required_features_policy=None,
-                                      provisioning_state1=None,
-                                      subscription_state_override_actions=None,
-                                      soft_delete_ttl=None,
-                                      provider_hub_metadata_provider_authorizations=None,
-                                      resource_provider_authentication=None,
-                                      authorizations=None,
-                                      managed_by_tenant_id=None):
-    if provisioning_state is not None:
-        instance.properties.provisioning_state = provisioning_state
-    if completed_regions is not None:
-        instance.properties.status.completed_regions = completed_regions
-    if failed_or_skipped_regions is not None:
-        instance.properties.status.failed_or_skipped_regions = failed_or_skipped_regions
+                                      canary):
     if canary is not None:
         instance.properties.specification.canary = canary
-    if resource_type_registrations is not None:
-        instance.properties.specification.resource_type_registrations = resource_type_registrations
-    if namespace is not None:
-        instance.undefined = namespace
-    if provider_version is not None:
-        instance.undefined = provider_version
-    if provider_type is not None:
-        instance.undefined = provider_type
-    if required_features is not None:
-        instance.undefined = required_features
-    if capabilities is not None:
-        instance.undefined = capabilities
-    if metadata is not None:
-        instance.undefined = metadata
-    if template_deployment_options is not None:
-        instance.undefined = template_deployment_options
-    if schema_owners is not None:
-        instance.undefined = schema_owners
-    if manifest_owners is not None:
-        instance.undefined = manifest_owners
-    if incident_routing_service is not None:
-        instance.undefined = incident_routing_service
-    if incident_routing_team is not None:
-        instance.undefined = incident_routing_team
-    if incident_contact_email is not None:
-        instance.undefined = incident_contact_email
-    if service_tree_infos is not None:
-        instance.undefined = service_tree_infos
-    if resource_access_policy is not None:
-        instance.undefined = resource_access_policy
-    if resource_access_roles is not None:
-        instance.undefined = resource_access_roles
-    if opt_in_headers is not None:
-        instance.undefined = opt_in_headers
-    if required_features_policy is not None:
-        instance.undefined = required_features_policy
-    if provisioning_state1 is not None:
-        instance.properties.provisioning_state = provisioning_state1
-    if soft_delete_ttl is not None:
-        instance.undefined = soft_delete_ttl
-    if provider_hub_metadata_provider_authorizations is not None:
-        instance.undefined = provider_hub_metadata_provider_authorizations
-    if resource_provider_authentication is not None:
-        instance.undefined = resource_provider_authentication
-    if authorizations is not None:
-        instance.undefined = authorizations
-    if managed_by_tenant_id is not None:
-        instance.undefined = managed_by_tenant_id
     return instance
 
 
@@ -159,37 +75,13 @@ def providerhub_default_rollout_create(client,
 def providerhub_default_rollout_update(instance,
                                        provider_namespace,
                                        rollout_name,
-                                       provisioning_state=None,
-                                       status=None,
-                                       canary=None,
-                                       low_traffic=None,
-                                       medium_traffic=None,
-                                       high_traffic=None,
-                                       rest_of_the_world_group_one=None,
-                                       rest_of_the_world_group_two=None,
-                                       provider_registration=None,
-                                       resource_type_registrations=None,
+                                       row2_wait_duration=None,
+                                       skip_regions=None,
                                        no_wait=False):
-    if provisioning_state is not None:
-        instance.properties.provisioning_state = provisioning_state
-    if status is not None:
-        instance.properties.status = status
-    if canary is not None:
-        instance.properties.specification.canary = canary
-    if low_traffic is not None:
-        instance.properties.specification.low_traffic = low_traffic
-    if medium_traffic is not None:
-        instance.properties.specification.medium_traffic = medium_traffic
-    if high_traffic is not None:
-        instance.properties.specification.high_traffic = high_traffic
-    if rest_of_the_world_group_one is not None:
-        instance.properties.specification.rest_of_the_world_group_one = rest_of_the_world_group_one
     if rest_of_the_world_group_two is not None:
-        instance.properties.specification.rest_of_the_world_group_two = rest_of_the_world_group_two
+        instance.properties.specification.rest_of_the_world_group_two.wait_duration = row2_wait_duration
     if provider_registration is not None:
-        instance.properties.specification.provider_registration = provider_registration
-    if resource_type_registrations is not None:
-        instance.properties.specification.resource_type_registrations = resource_type_registrations
+        instance.properties.specification.skip_regions = skip_regions
     return instance
 
 
@@ -393,13 +285,12 @@ def providerhub_provider_registration_update(instance,
                                              resource_access_roles=None,
                                              opt_in_headers=None,
                                              required_features_policy=None,
-                                             provisioning_state=None,
                                              subscription_state_override_actions=None,
                                              soft_delete_ttl=None,
-                                             provider_hub_metadata_provider_authorizations=None,
-                                             resource_provider_authentication=None,
-                                             authorizations=None,
                                              managed_by_tenant_id=None,
+                                             providerhub_metadata_authorizations=None,
+                                             providerhub_metadata_authentication=None,
+                                             lighthouse_authorizations=None,
                                              no_wait=False):
     if provider_authentication is not None:
         instance.undefined = provider_authentication
@@ -439,16 +330,10 @@ def providerhub_provider_registration_update(instance,
         instance.undefined = opt_in_headers
     if required_features_policy is not None:
         instance.undefined = required_features_policy
-    if provisioning_state is not None:
-        instance.properties.provisioning_state = provisioning_state
     if subscription_state_override_actions is not None:
         instance.properties.subscription_lifecycle_notification_specifications.subscription_state_override_actions = subscription_state_override_actions
     if soft_delete_ttl is not None:
         instance.properties.subscription_lifecycle_notification_specifications.soft_delete_ttl = soft_delete_ttl
-    if provider_hub_metadata_provider_authorizations is not None:
-        instance.properties.provider_hub_metadata.provider_authorizations = provider_hub_metadata_provider_authorizations
-    if resource_provider_authentication is not None:
-        instance.properties.provider_hub_metadata.provider_authentication = resource_provider_authentication
     return instance
 
 
@@ -553,6 +438,7 @@ def providerhub_resource_type_registration_create(client,
 def providerhub_resource_type_registration_update(instance,
                                                   provider_namespace,
                                                   resource_type,
+                                                  nested_resource_type=None,
                                                   routing_type=None,
                                                   regionality=None,
                                                   endpoints=None,
@@ -566,7 +452,6 @@ def providerhub_resource_type_registration_update(instance,
                                                   throttling_rules=None,
                                                   required_features=None,
                                                   enable_async_operation=None,
-                                                  provisioning_state=None,
                                                   enable_third_party_s2s=None,
                                                   is_pure_proxy=None,
                                                   identity_management=None,
@@ -583,6 +468,7 @@ def providerhub_resource_type_registration_update(instance,
                                                   soft_delete_ttl=None,
                                                   required_features_policy=None,
                                                   resource_creation_begin=None,
+                                                  resource_patch_begin=None,
                                                   no_wait=False):
     if routing_type is not None:
         instance.properties.routing_type = routing_type
@@ -610,8 +496,6 @@ def providerhub_resource_type_registration_update(instance,
         instance.properties.required_features = required_features
     if enable_async_operation is not None:
         instance.properties.enable_async_operation = enable_async_operation
-    if provisioning_state is not None:
-        instance.properties.provisioning_state = provisioning_state
     if enable_third_party_s2s is not None:
         instance.properties.enable_third_party_s2s = enable_third_party_s2s
     if is_pure_proxy is not None:

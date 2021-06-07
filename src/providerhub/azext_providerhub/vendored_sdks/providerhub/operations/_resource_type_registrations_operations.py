@@ -179,6 +179,7 @@ class ResourceTypeRegistrationsOperations(object):
             'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
+        url = url + nestedResourceTypeSuffix
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]

@@ -170,13 +170,13 @@ class AddSkipRegions(argparse.Action):
         return generate_list(values[0])
 
 
-class AddRequiredFeatures(argparse.Action):
+class AddRequiredFeatures(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values)
         namespace.required_features = action
 
     def get_action(self, values):  # pylint: disable=no-self-use
-        return generate_list(values[0])
+        return values
 
 
 class AddTemplateDeploymentOptions(argparse.Action):
@@ -262,7 +262,7 @@ class AddResourceTypeEndpointProperties(argparse._AppendAction):
             elif kl == 'locations':
                 d['locations'] = generate_list(v[0])
             elif kl == 'required-features':
-                d['required_features'] = generate_list(v[0])
+                d['required_features'] = v
             elif kl == 'extensions':
                 d['extensions'] = json.loads(v[0])
             elif kl == 'extension-endpoint-uri':
@@ -296,9 +296,9 @@ class AddExtensionOptions(argparse.Action):
             kl = k.lower()
             v = properties[k]
             if kl == 'request':
-                d['request'] = generate_list(v[0])
+                d['request'] = v
             elif kl == 'response':
-                d['response'] = generate_list(v[0])
+                d['response'] = v
             else:
                 raise CLIError('Unsupported Key {} is provided for parameter resource_creation_begin. '
                                'All possible keys are: request, response'.format(k))
@@ -324,9 +324,9 @@ class AddResourcePatchBegin(argparse.Action):
             kl = k.lower()
             v = properties[k]
             if kl == 'request':
-                d['request'] = generate_list(v[0])
+                d['request'] = v
             elif kl == 'response':
-                d['response'] = generate_list(v[0])
+                d['response'] = v
             else:
                 raise CLIError('Unsupported Key {} is provided for parameter resource_patch_begin. '
                                'All possible keys are: request, response'.format(k))

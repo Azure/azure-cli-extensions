@@ -270,9 +270,8 @@ def step_resource_type_registration_show(test, checks=None):
              '--resource-type "employees"',
              checks=checks)
 
+
 # EXAMPLE: /ResourceTypeRegistration/put/ResourceTypeRegistration_CreateOrUpdate
-
-
 @AllowLargeResponse()
 @try_manual
 def step_nested_resource_type_registration_create(test, checks=None):
@@ -295,9 +294,8 @@ def step_nested_resource_type_registration_create(test, checks=None):
              '--nested-resource-type "{nestedResourceType}"',
              checks=checks)
 
+
 # EXAMPLE: /ResourceTypeRegistration/put/ResourceTypeRegistration_CreateOrUpdate
-
-
 @AllowLargeResponse()
 @try_manual
 def step_nested_resource_type_registration_extensions_create(test, checks=None):
