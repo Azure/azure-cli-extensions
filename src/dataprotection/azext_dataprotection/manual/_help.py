@@ -198,3 +198,11 @@ helps['dataprotection backup-vault list'] = """
       - name: List backup vault in a resource group
         text: az dataprotection backup-vault list -g sarath-rg
 """
+
+helps['dataprotection backup-instance restore trigger'] = """
+    type: command
+    short-summary: Triggers restore for a BackupInstance.
+    examples:
+      - name: Trigger restore
+        text: az dataprotection backup-instance restore trigger -g sarath-rg --vault-name sarath-vault --backup-instance-name {backup_instance_name} --parameters restore_request.json
+"""
