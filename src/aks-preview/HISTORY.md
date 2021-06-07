@@ -11,6 +11,7 @@ Release History
 0.5.15
 +++++
 * Update to use 2021-05-01 api-version
+* Add parameter '--enable-ultra-ssd' to enable UltraSSD on agent node pool
 
 0.5.14
 +++++
