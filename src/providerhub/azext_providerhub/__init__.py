@@ -11,6 +11,7 @@
 # pylint: disable=unused-import
 # pylint: disable=reimported
 # pylint: disable=import-outside-toplevel
+# pylint: disable=super-with-arguments
 
 from azure.cli.core import AzCommandsLoader
 from azext_providerhub.generated._help import helps  # pylint: disable=unused-import
