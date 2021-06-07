@@ -18,31 +18,33 @@ from azure.cli.core.commands.parameters import (
 )
 from azure.cli.core.commands.validators import validate_file_or_dict
 from azext_providerhub.action import (
-    AddCanary,
+    AddCustomrolloutsCanary,
     AddProviderAuthentication,
     AddProviderAuthorizations,
-    AddResourceProviderAuthentication,
     AddCapabilities,
     AddSkipRegions,
     AddTemplateDeploymentOptions,
-    AddServiceTreeInfos,
     AddResourceTypeEndpointProperties,
+    AddSubscriptionStateOverrideActions,
     AddProviderHubMetadataProviderAuthorizations,
+    AddProviderHubMetadataAuthentication,
     AddAuthorizations,
+    AddDefaultrolloutsCanary,
+    AddNotificationEndpoints,
     AddSwaggerSpecifications,
     AddAuthorizationActionMappings,
     AddLinkedAccessChecks,
     AddThrottlingRules,
     AddIdentityManagement,
     AddCheckNameAvailabilitySpecifications,
-    AddResourcetyperegistrationServiceTreeInfos,
+    AddServiceTreeInfos,
     AddSubscriptionStateRules,
     AddExtendedLocations,
     AddResourceMovePolicy,
     AddRequiredFeatures,
-    AddResourceCreationBegin,
+    AddExtensionOptions,
     AddResourcePatchBegin,
-    AddLoggingRules,
+    AddLoggingRules
 )
 
 
@@ -62,16 +64,16 @@ def load_arguments(self, _):
         c.argument('provider_namespace', type=str,
                    help='The name of the resource provider hosted within ProviderHub.')
         c.argument('rollout_name', type=str, help='The rollout name.')
-        c.argument('canary', action=AddCanary, nargs='+',
-                   help='The canary regions to apply the manifest.')
+        c.argument('canary', action=AddCustomrolloutsCanary, nargs='+',
+                   help='The canary regions to apply the manifest.', arg_group='Specification')
 
     with self.argument_context('providerhub custom-rollout update') as c:
         c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
                    id_part='name')
         c.argument('rollout_name', type=str,
                    help='The rollout name.', id_part='child_name_1')
-        c.argument('canary', action=AddCanary, nargs='+',
-                   help='The canary regions to apply the manifest.')
+        c.argument('canary', action=AddCustomrolloutsCanary, nargs='+',
+                   help='The canary regions to apply the manifest.', arg_group='Specification')
 
     with self.argument_context('providerhub default-rollout list') as c:
         c.argument('provider_namespace', type=str,
@@ -93,11 +95,12 @@ def load_arguments(self, _):
                    nargs='*', help='The canary regions to skip.')
 
     with self.argument_context('providerhub default-rollout update') as c:
-        c.argument('provider_namespace', type=str,
-                   help='The name of the resource provider hosted within ProviderHub.')
-        c.argument('rollout_name', type=str, help='The rollout name.')
-        c.argument('row2_wait_duration', type=str, help='The wait duration before the rollout begins '
-                   'in rest of the world two.')
+        c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
+                   id_part='name')
+        c.argument('rollout_name', type=str,
+                   help='The rollout name.', id_part='child_name_1')
+        c.argument('row2_wait_duration', type=str, help='The wait duration before the rollout '
+                   'begins in rest of the world two.')
         c.argument('skip_regions', action=AddSkipRegions,
                    nargs='*', help='The canary regions to skip.')
 
@@ -122,8 +125,8 @@ def load_arguments(self, _):
     with self.argument_context('providerhub manifest checkin') as c:
         c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
                    id_part='name')
-        c.argument('environment', type=str, help='The environment supplied to the checkin manifest '
-                   'operation.')
+        c.argument('environment', type=str,
+                   help='The environment supplied to the checkin manifest operation.')
         c.argument('arm_manifest_location', type=str, help='The baseline ARM manifest location supplied to '
                    'the checkin manifest operation.')
 
@@ -131,8 +134,68 @@ def load_arguments(self, _):
         c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
                    id_part='name')
 
-    with self.argument_context('providerhub provider-registration list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
+    with self.argument_context('providerhub notification-registration list') as c:
+        c.argument('provider_namespace', type=str,
+                   help='The name of the resource provider hosted within ProviderHub.')
+
+    with self.argument_context('providerhub notification-registration show') as c:
+        c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
+                   id_part='name')
+        c.argument('notification_registration_name', options_list=['--name', '-n', '--notification-registration-name'],
+                   type=str, help='The notification registration.', id_part='child_name_1')
+
+    with self.argument_context('providerhub notification-registration create') as c:
+        c.argument('provider_namespace', type=str,
+                   help='The name of the resource provider hosted within ProviderHub.')
+        c.argument('notification_registration_name', options_list=['--name', '-n', '--notification-registration-name'],
+                   type=str, help='The notification registration.')
+        c.argument('notification_mode', arg_type=get_enum_type(
+            ['NotSpecified', 'EventHub', 'WebHook']), help='')
+        c.argument('message_scope', arg_type=get_enum_type(
+            ['NotSpecified', 'RegisteredSubscriptions']), help='')
+        c.argument('included_events', nargs='+', help='')
+        c.argument('notification_endpoints',
+                   action=AddNotificationEndpoints, nargs='+', help='')
+
+    with self.argument_context('providerhub notification-registration update') as c:
+        c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
+                   id_part='name')
+        c.argument('notification_registration_name', options_list=['--name', '-n', '--notification-registration-name'],
+                   type=str, help='The notification registration.', id_part='child_name_1')
+        c.argument('notification_mode', arg_type=get_enum_type(
+            ['NotSpecified', 'EventHub', 'WebHook']), help='')
+        c.argument('message_scope', arg_type=get_enum_type(
+            ['NotSpecified', 'RegisteredSubscriptions']), help='')
+        c.argument('included_events', nargs='+', help='')
+        c.argument('notification_endpoints',
+                   action=AddNotificationEndpoints, nargs='+', help='')
+        c.ignore('properties')
+
+    with self.argument_context('providerhub notification-registration delete') as c:
+        c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
+                   id_part='name')
+        c.argument('notification_registration_name', options_list=['--name', '-n', '--notification-registration-name'],
+                   type=str, help='The notification registration.', id_part='child_name_1')
+
+    with self.argument_context('providerhub operation list') as c:
+        c.argument('provider_namespace', type=str,
+                   help='The name of the resource provider hosted within ProviderHub.')
+
+    with self.argument_context('providerhub operation create') as c:
+        c.argument('provider_namespace', type=str,
+                   help='The name of the resource provider hosted within ProviderHub.')
+        c.argument('contents', type=validate_file_or_dict,
+                   help=' Expected value: json-string/@json-file.')
+
+    with self.argument_context('providerhub operation update') as c:
+        c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
+                   id_part='name')
+        c.argument('contents', type=validate_file_or_dict,
+                   help=' Expected value: json-string/@json-file.')
+
+    with self.argument_context('providerhub operation delete') as c:
+        c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
+                   id_part='name')
 
     with self.argument_context('providerhub provider-registration show') as c:
         c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
@@ -147,9 +210,7 @@ def load_arguments(self, _):
                    nargs='+', help='The resource provider authorizations.')
         c.argument('provider_version', type=str,
                    help='The provider version. 2.0 is the only supported version.')
-        c.argument('provider_type', arg_type=get_enum_type(['NotSpecified', 'Internal', 'External', 'Hidden',
-                                                            'RegistrationFree', 'LegacyRegistrationRequired',
-                                                            'TenantOnly', 'AuthorizationFree']), help='Value can be "Internal", "External", "Hidden", "RegistrationFree", "TenantOnly" or "LegacyRegistrationRequired". RegistrationFree is for providers that do not need subscriptions to explicitly register to use the provider. Hidden flag ensures that discovery APIs (GET /Providers) will not show the provider, however a user can still write to the provider explicitly. TenantOnly will not appear in Get /Providers and will not allow registration from users. LegacyRegistrationRequired is for legacy providers that need RDFE registration in addition to ARM registration.')
+        c.argument('provider_type', type=str, help='Value can be "Internal", "External", "Hidden", "RegistrationFree", "TenantOnly" or "LegacyRegistrationRequired". RegistrationFree is for providers that do not need subscriptions to explicitly register to use the provider. Hidden flag ensures that discovery APIs (GET /Providers) will not show the provider, however a user can still write to the provider explicitly. TenantOnly will not appear in Get /Providers and will not allow registration from users. LegacyRegistrationRequired is for legacy providers that need RDFE registration in addition to ARM registration.')
         c.argument('capabilities', action=AddCapabilities, nargs='+', help='Allow the access to the resource provider from a restrictive subscription quota (DreamSpark_2015-02-01 and CSP_2015-05-01​). The required​Features array is optional, if specified the subscription should meet the quota ​and at least one of the features. If no capabilities is specified the provider will be available to every subscription but the restrictive quotas. New providers are required to allow CSP_2015-05-01​​')
         c.argument('metadata', type=validate_file_or_dict,
                    help='The metadata.')
@@ -170,19 +231,27 @@ def load_arguments(self, _):
         c.argument('resource_access_policy', arg_type=get_enum_type(['NotSpecified', 'AcisReadAllowed',
                                                                      'AcisActionAllowed']), help='The resource access policy.',
                    arg_group='Management')
+        c.argument('resource_access_roles', type=validate_file_or_dict,
+                   help='The resource access roles. Expected value: json-string/@json-file.', arg_group='Management')
         c.argument('opt_in_headers', arg_type=get_enum_type(['NotSpecified', 'SignedUserToken',
                                                              'ClientGroupMembership', 'SignedAuxiliaryTokens',
                                                              'UnboundedClientGroupMembership']), help='ARM allows customized headers when sending requests to the RP. This can be done both at the provider level or at the individual resource type level.',
                    arg_group='Request Header Options')
         c.argument('required_features_policy', arg_type=get_enum_type(['Any', 'All']), help='The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​', arg_group='Features '
                    'Rule')
-        c.argument('providerhub_metadata_provider_authorizations',
+        c.argument('subscription_state_override_actions', action=AddSubscriptionStateOverrideActions, nargs='+',
+                   help='', arg_group='Subscription Lifecycle Notification Specifications')
+        c.argument('soft_delete_ttl', help='',
+                   arg_group='Subscription Lifecycle Notification Specifications')
+        c.argument('providerhub_metadata_authorizations',
                    action=AddProviderHubMetadataProviderAuthorizations, nargs='+', help='Available only for first party providers, this section can be used to bootstrap Service-to-Service authentication and authorization for the provider\'s application. When set, it would allow provider to access users\' subscription registered with them.', arg_group='Provider Hub Metadata')
-        c.argument('providerhub_metadata_rp_authentication', action=AddResourceProviderAuthentication, nargs='+', help='Used to set alternative "audiences or resources" that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers.',
+        c.argument('providerhub_metadata_authentication', action=AddProviderHubMetadataAuthentication, nargs='+', help='Used to set alternative "audiences or resources" that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers.',
                    arg_group='Provider Hub Metadata')
-        c.argument('lighthouse_authorizations', action=AddAuthorizations, nargs='+', help='The lighthouse authorizations.', arg_group='Provider Hub Metadata '
+        c.argument('authorizations', action=AddAuthorizations, nargs='+', help='', arg_group='Provider Hub Metadata '
                    'Third Party Provider Authorization')
-        c.argument('managed_by_tenant_id', type=str, help='The managed by tenant ID.', arg_group='Provider Hub Metadata Third Party Provider '
+        c.argument('lighthouse_authorizations', action=AddAuthorizations, nargs='+', help='', arg_group='Provider Hub Metadata '
+                   'Third Party Provider Authorization')
+        c.argument('managed_by_tenant_id', type=str, help='', arg_group='Provider Hub Metadata Third Party Provider '
                    'Authorization')
 
     with self.argument_context('providerhub provider-registration update') as c:
@@ -225,14 +294,18 @@ def load_arguments(self, _):
                                                              'ClientGroupMembership', 'SignedAuxiliaryTokens',
                                                              'UnboundedClientGroupMembership']), help='ARM allows customized headers when sending requests to the RP. This can be done both at the provider level or at the individual resource type level.',
                    arg_group='Request Header Options')
-        c.argument('required_features_policy', arg_type=get_enum_type(['Any', 'All']), help='The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​', arg_group='Features '
-                   'Rule')
-        c.argument('providerhub_metadata_provider_authorizations',
-                   action=AddProviderHubMetadataProviderAuthorizations, nargs='+', help='Available only for first party providers, this section can be used to bootstrap Service-to-Service authentication and authorization for the provider\'s application. When set, it would allow provider to access users\' subscription registered with them.', arg_group='Provider Hub '
+        c.argument('required_features_policy', arg_type=get_enum_type(
+            ['Any', 'All']), help='The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.', arg_group='Features Rule')
+        c.argument('subscription_state_override_actions', action=AddSubscriptionStateOverrideActions, nargs='+',
+                   help='', arg_group='Subscription Lifecycle Notification Specifications')
+        c.argument('soft_delete_ttl', help='',
+                   arg_group='Subscription Lifecycle Notification Specifications')
+        c.argument('provider_hub_metadata_provider_authorizations',
+                   action=AddProviderHubMetadataProviderAuthorizations, nargs='+', help='', arg_group='Provider Hub '
                    'Metadata')
-        c.argument('providerhub_metadata_rp_authentication', action=AddResourceProviderAuthentication, nargs='+', help='Used to set alternative "audiences or resources" that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers.',
+        c.argument('resource_provider_authentication', action=AddProviderAuthentication, nargs='+', help='',
                    arg_group='Provider Hub Metadata')
-        c.argument('lighthouse_authorizations', action=AddAuthorizations, nargs='+', help='The lighthouse authorizations.', arg_group='Provider Hub Metadata '
+        c.argument('authorizations', action=AddAuthorizations, nargs='+', help='', arg_group='Provider Hub Metadata '
                    'Third Party Provider Authorization')
         c.argument('managed_by_tenant_id', type=str, help='The managed by tenant ID.', arg_group='Provider Hub Metadata Third Party Provider '
                    'Authorization')
@@ -259,22 +332,20 @@ def load_arguments(self, _):
                    id_part='name')
         c.argument('resource_type', type=str,
                    help='The resource type.', id_part='child_name_1')
+        c.argument('nested_resource_type', type=str,
+                   help='The nested resource type.', id_part='child_name_2')
 
     with self.argument_context('providerhub resource-type-registration create') as c:
         c.argument('provider_namespace', type=str,
                    help='The name of the resource provider hosted within ProviderHub.')
         c.argument('resource_type', type=str, help='The resource type.')
-        c.argument('routing_type', arg_type=get_enum_type(['Default', 'ProxyOnly', 'HostBased', 'Extension',
-                                                           'Tenant', 'Fanout', 'LocationBased', 'Failover',
-                                                           'CascadeExtension']), help='The resource routing type.')
+        c.argument('nested_resource_type', type=str,
+                   help='The nested resource type.', id_part='child_name_2')
+        c.argument('routing_type', type=str, help='The resource routing type.')
         c.argument('regionality', arg_type=get_enum_type(
             ['NotSpecified', 'Global', 'Regional']), help='The regionality of the resource type.')
         c.argument('endpoints', action=AddResourceTypeEndpointProperties, nargs='+', help='The resource '
                    'type endpoint properties.')
-        c.argument('resource_creation_begin', action=AddResourceCreationBegin, nargs='+',
-                   help='Extension options for handling the resource creation begin extension request.')
-        c.argument('resource_patch_begin', action=AddResourcePatchBegin, nargs='+',
-                   help='Extension options for handling the resource patch begin extension request.')
         c.argument('marketplace_type', arg_type=get_enum_type(
             ['NotSpecified', 'AddOn', 'Bypass', 'Store']), help='The resource type behavior in the marketplace.')
         c.argument('swagger_specifications', action=AddSwaggerSpecifications, nargs='+',
@@ -291,105 +362,209 @@ def load_arguments(self, _):
                    help='Enables additional event logs RP wants customers to see in their subscription for a particular action.')
         c.argument('throttling_rules', action=AddThrottlingRules, nargs='+',
                    help='Allows RPs to set individual limits for different actions in terms of number of requests or number of resources (for collection read requests only).')
-        c.argument('required_features', action=AddRequiredFeatures, nargs='+',
-                   help='If specified, only subscriptions registered to the corresponding feature flag will be allowed.')
-        c.argument('required_features_policy', arg_type=get_enum_type(['Any', 'All']), help='The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​', arg_group='Features '
-                   'Rule')
-        c.argument('enable_async_operation', arg_type=get_three_state_flag(
-        ), help='Indicates whether the async operation is enabled for this resource type.')
-        c.argument('enable_third_party_s2s', arg_type=get_three_state_flag(
-        ), help='Indicates whether to enable third party s2s.')
-        c.argument('is_pure_proxy', arg_type=get_three_state_flag(),
-                   help='Indicates whether this is a "PureProxy" resource type.')
-        c.argument('identity_management', action=AddIdentityManagement, nargs='+',
-                   help='MSI related settings. RPaaS supports Managed Identity and can help simplify the onboarding process.')
+        c.argument('enable_async_operation',
+                   arg_type=get_three_state_flag(), help='')
+        c.argument('enable_third_party_s2s',
+                   arg_type=get_three_state_flag(), help='')
+        c.argument('is_pure_proxy', arg_type=get_three_state_flag(), help='')
+        c.argument('identity_management',
+                   action=AddIdentityManagement, nargs='+', help='')
         c.argument('check_name_availability_specifications', action=AddCheckNameAvailabilitySpecifications, nargs='+',
-                   help='RPaaS provides this feature at the platform level to help UserRPs with name availability checks without calling into the POST extension endpoints for the "checkNameAvailability" resource type.')
-        c.argument('disallowed_action_verbs', nargs='+',
-                   help='The supported values are "read", "write", "delete", "action".  This setting will block all operations of the specified type on the resource type. These actions map to the corresponding HTTP verbs.')
-        c.argument('service_tree_infos', action=AddResourcetyperegistrationServiceTreeInfos,
-                   nargs='+', help='The ServiceTree information for the resource provider.')
+                   help='')
+        c.argument('disallowed_action_verbs', nargs='+', help='')
+        c.argument('service_tree_infos',
+                   action=AddServiceTreeInfos, nargs='+', help='')
+        c.argument('subscription_state_rules',
+                   action=AddSubscriptionStateRules, nargs='+', help='')
+        c.argument('template_deployment_options',
+                   action=AddTemplateDeploymentOptions, nargs='+', help='')
+        c.argument('extended_locations',
+                   action=AddExtendedLocations, nargs='+', help='')
+        c.argument('resource_move_policy',
+                   action=AddResourceMovePolicy, nargs='+', help='')
+        c.argument('resource_deletion_policy', arg_type=get_enum_type(['NotSpecified', 'CascadeDeleteAll',
+                                                                       'CascadeDeleteProxyOnlyChildren']), help='')
         c.argument('opt_in_headers', arg_type=get_enum_type(['NotSpecified', 'SignedUserToken',
                                                              'ClientGroupMembership', 'SignedAuxiliaryTokens',
-                                                             'UnboundedClientGroupMembership']), help='ARM allows customized headers when sending requests to the RP. This can be done both at the provider level or at the individual resource type level.',
+                                                             'UnboundedClientGroupMembership']), help='',
                    arg_group='Request Header Options')
-        c.argument('subscription_state_rules', action=AddSubscriptionStateRules,
-                   nargs='+', help='The subscription policy.')
-        c.argument('template_deployment_options', action=AddTemplateDeploymentOptions,
-                   nargs='+', help='The field for preflight options.')
-        c.argument('extended_locations', action=AddExtendedLocations,
-                   nargs='+', help='The extended locations property.')
-        c.argument('resource_move_policy', action=AddResourceMovePolicy, nargs='+',
-                   help='Indicates the resource type has opted in to move operations.')
-        c.argument('resource_deletion_policy', arg_type=get_enum_type(['NotSpecified', 'CascadeDeleteAll',
-                                                                       'CascadeDeleteProxyOnlyChildren']), help='The property to customize RPaaS deletion operation.')
+        c.argument('subscription_state_override_actions', action=AddSubscriptionStateOverrideActions, nargs='+',
+                   help='', arg_group='Subscription Lifecycle Notification Specifications')
+        c.argument('soft_delete_ttl', help='',
+                   arg_group='Subscription Lifecycle Notification Specifications')
+        c.argument('required_features_policy', arg_type=get_enum_type(['Any', 'All']), help='', arg_group='Features '
+                   'Rule')
+        c.argument('resource_creation_begin', action=AddExtensionOptions, nargs='+', help='',
+                   arg_group='Extension Options')
+        c.argument('resource_patch_begin', action=AddExtensionOptions, nargs='+', help='',
+                   arg_group='Extension Options')
 
     with self.argument_context('providerhub resource-type-registration update') as c:
-        c.argument('provider_namespace', type=str,
-                   help='The name of the resource provider hosted within ProviderHub.')
-        c.argument('resource_type', type=str, help='The resource type.')
-        c.argument('routing_type', arg_type=get_enum_type(['Default', 'ProxyOnly', 'HostBased', 'Extension',
-                                                           'Tenant', 'Fanout', 'LocationBased', 'Failover',
-                                                           'CascadeExtension']), help='The resource routing type.')
+        c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
+                   id_part='name')
+        c.argument('resource_type', type=str,
+                   help='The resource type.', id_part='child_name_1')
+        c.argument('routing_type', arg_type=get_enum_type(['Default', 'ProxyOnly', 'HostBased', 'Extension', 'Tenant',
+                                                           'Fanout', 'LocationBased', 'Failover', 'CascadeExtension']),
+                   help='')
         c.argument('regionality', arg_type=get_enum_type(
-            ['NotSpecified', 'Global', 'Regional']), help='The regionality of the resource type.')
-        c.argument('endpoints', action=AddResourceTypeEndpointProperties, nargs='+', help='The resource '
-                   'type endpoint properties.')
-        c.argument('resource_creation_begin', action=AddResourceCreationBegin, nargs='+',
-                   help='Extension options for handling the resource creation begin extension request.')
-        c.argument('resource_patch_begin', action=AddResourcePatchBegin, nargs='+',
-                   help='Extension options for handling the resource patch begin extension request.')
+            ['NotSpecified', 'Global', 'Regional']), help='')
+        c.argument('endpoints', type=validate_file_or_dict,
+                   help=' Expected value: json-string/@json-file.')
         c.argument('marketplace_type', arg_type=get_enum_type(
-            ['NotSpecified', 'AddOn', 'Bypass', 'Store']), help='The resource type behavior in the marketplace.')
-        c.argument('swagger_specifications', action=AddSwaggerSpecifications, nargs='+',
-                   help='The OpenAPI (swagger specs) of the resource type. RPaaS will use the swagger specs to validate http requests/responses.')
-        c.argument('allowed_unauthorized_actions', nargs='+',
-                   help='The allowed unauthorized actions.')
-        c.argument('authorization_action_mappings', action=AddAuthorizationActionMappings,
-                   nargs='+', help='Allows RP to override action verb for RBAC purposes at ARM.')
-        c.argument('linked_access_checks', action=AddLinkedAccessChecks, nargs='+',
-                   help='Enables additional Role Based Access Control (RBAC) checks on related resources.')
-        c.argument('default_api_version', type=str,
-                   help='The default API version for the endpoint.')
-        c.argument('logging_rules', type=AddLoggingRules,
-                   help='Enables additional event logs RP wants customers to see in their subscription for a particular action.')
-        c.argument('throttling_rules', action=AddThrottlingRules, nargs='+',
-                   help='Allows RPs to set individual limits for different actions in terms of number of requests or number of resources (for collection read requests only).')
-        c.argument('required_features', action=AddRequiredFeatures, nargs='+',
-                   help='If specified, only subscriptions registered to the corresponding feature flag will be allowed.')
-        c.argument('required_features_policy', arg_type=get_enum_type(['Any', 'All']), help='The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​', arg_group='Features '
-                   'Rule')
-        c.argument('enable_async_operation', arg_type=get_three_state_flag(
-        ), help='Indicates whether the async operation is enabled for this resource type.')
-        c.argument('enable_third_party_s2s', arg_type=get_three_state_flag(
-        ), help='Indicates whether to enable third party s2s.')
-        c.argument('is_pure_proxy', arg_type=get_three_state_flag(),
-                   help='Indicates whether this is a "PureProxy" resource type.')
-        c.argument('identity_management', action=AddIdentityManagement, nargs='+',
-                   help='MSI related settings. RPaaS supports Managed Identity and can help simplify the onboarding process.')
+            ['NotSpecified', 'AddOn', 'Bypass', 'Store']), help='')
+        c.argument('swagger_specifications',
+                   action=AddSwaggerSpecifications, nargs='+', help='')
+        c.argument('allowed_unauthorized_actions', nargs='+', help='')
+        c.argument('authorization_action_mappings',
+                   action=AddAuthorizationActionMappings, nargs='+', help='')
+        c.argument('linked_access_checks',
+                   action=AddLinkedAccessChecks, nargs='+', help='')
+        c.argument('default_api_version', type=str, help='')
+        c.argument('logging_rules', type=validate_file_or_dict,
+                   help=' Expected value: json-string/@json-file.')
+        c.argument('throttling_rules',
+                   action=AddThrottlingRules, nargs='+', help='')
+        c.argument('required_features', nargs='+', help='')
+        c.argument('enable_async_operation',
+                   arg_type=get_three_state_flag(), help='')
+        c.argument('provisioning_state', arg_type=get_enum_type(['NotSpecified', 'Accepted', 'Running', 'Creating',
+                                                                 'Created', 'Deleting', 'Deleted', 'Canceled',
+                                                                 'Failed', 'Succeeded', 'MovingResources',
+                                                                 'TransientFailure', 'RolloutInProgress']), help='')
+        c.argument('enable_third_party_s2s',
+                   arg_type=get_three_state_flag(), help='')
+        c.argument('is_pure_proxy', arg_type=get_three_state_flag(), help='')
+        c.argument('identity_management',
+                   action=AddIdentityManagement, nargs='+', help='')
         c.argument('check_name_availability_specifications', action=AddCheckNameAvailabilitySpecifications, nargs='+',
-                   help='RPaaS provides this feature at the platform level to help UserRPs with name availability checks without calling into the POST extension endpoints for the "checkNameAvailability" resource type.')
-        c.argument('disallowed_action_verbs', nargs='+',
-                   help='The supported values are "read", "write", "delete", "action".  This setting will block all operations of the specified type on the resource type. These actions map to the corresponding HTTP verbs.')
-        c.argument('service_tree_infos', action=AddResourcetyperegistrationServiceTreeInfos,
-                   nargs='+', help='The ServiceTree information for the resource provider.')
+                   help='')
+        c.argument('disallowed_action_verbs', nargs='+', help='')
+        c.argument('service_tree_infos',
+                   action=AddServiceTreeInfos, nargs='+', help='')
+        c.argument('subscription_state_rules',
+                   action=AddSubscriptionStateRules, nargs='+', help='')
+        c.argument('template_deployment_options',
+                   action=AddTemplateDeploymentOptions, nargs='+', help='')
+        c.argument('extended_locations',
+                   action=AddExtendedLocations, nargs='+', help='')
+        c.argument('resource_move_policy',
+                   action=AddResourceMovePolicy, nargs='+', help='')
+        c.argument('resource_deletion_policy', arg_type=get_enum_type(['NotSpecified', 'CascadeDeleteAll',
+                                                                       'CascadeDeleteProxyOnlyChildren']), help='')
         c.argument('opt_in_headers', arg_type=get_enum_type(['NotSpecified', 'SignedUserToken',
                                                              'ClientGroupMembership', 'SignedAuxiliaryTokens',
-                                                             'UnboundedClientGroupMembership']), help='ARM allows customized headers when sending requests to the RP. This can be done both at the provider level or at the individual resource type level.',
+                                                             'UnboundedClientGroupMembership']), help='',
                    arg_group='Request Header Options')
-        c.argument('subscription_state_rules', action=AddSubscriptionStateRules,
-                   nargs='+', help='The subscription policy.')
-        c.argument('template_deployment_options', action=AddTemplateDeploymentOptions,
-                   nargs='+', help='The field for preflight options.')
-        c.argument('extended_locations', action=AddExtendedLocations,
-                   nargs='+', help='The extended locations property.')
-        c.argument('resource_move_policy', action=AddResourceMovePolicy, nargs='+',
-                   help='Indicates the resource type has opted in to move operations.')
-        c.argument('resource_deletion_policy', arg_type=get_enum_type(['NotSpecified', 'CascadeDeleteAll',
-                                                                       'CascadeDeleteProxyOnlyChildren']), help='The property to customize RPaaS deletion operation.')
+        c.argument('subscription_state_override_actions', action=AddSubscriptionStateOverrideActions, nargs='+',
+                   help='', arg_group='Subscription Lifecycle Notification Specifications')
+        c.argument('soft_delete_ttl', help='',
+                   arg_group='Subscription Lifecycle Notification Specifications')
+        c.argument('required_features_policy', arg_type=get_enum_type(['Any', 'All']), help='', arg_group='Features '
+                   'Rule')
+        c.argument('resource_creation_begin', action=AddExtensionOptions, nargs='+', help='',
+                   arg_group='Extension Options')
+        c.ignore('properties')
 
     with self.argument_context('providerhub resource-type-registration delete') as c:
         c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
                    id_part='name')
         c.argument('resource_type', type=str,
                    help='The resource type.', id_part='child_name_1')
+        c.argument('nested_resource_type', type=str,
+                   help='The nested resource type.', id_part='child_name_2')
+
+    with self.argument_context('providerhub resource-type-registration wait') as c:
+        c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
+                   id_part='name')
+        c.argument('resource_type', type=str,
+                   help='The resource type.', id_part='child_name_1')
+        c.argument('nested_resource_type', type=str,
+                   help='The nested resource type.', id_part='child_name_2')
+
+    with self.argument_context('providerhub sku list') as c:
+        c.argument('provider_namespace', type=str,
+                   help='The name of the resource provider hosted within ProviderHub.')
+        c.argument('resource_type', type=str, help='The resource type.')
+        c.argument('nested_resource_type_first', type=str,
+                   help='The first child resource type.')
+        c.argument('nested_resource_type_second', type=str,
+                   help='The second child resource type.')
+        c.argument('nested_resource_type_third', type=str,
+                   help='The third child resource type.')
+
+    with self.argument_context('providerhub sku show') as c:
+        c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
+                   id_part='name')
+        c.argument('resource_type', type=str,
+                   help='The resource type.', id_part='child_name_1')
+        c.argument('sku', type=str, help='The SKU.', id_part='child_name_2')
+
+    with self.argument_context('providerhub sku create') as c:
+        c.argument('provider_namespace', type=str,
+                   help='The name of the resource provider hosted within ProviderHub.')
+        c.argument('resource_type', type=str, help='The resource type.')
+        c.argument('nested_resource_type_first', type=str,
+                   help='The first child resource type.')
+        c.argument('nested_resource_type_second', type=str,
+                   help='The second child resource type.')
+        c.argument('nested_resource_type_third', type=str,
+                   help='The third child resource type.')
+        c.argument('sku', type=str, help='The SKU.')
+        c.argument('sku_settings', type=validate_file_or_dict,
+                   help=' Expected value: json-string/@json-file.')
+
+    with self.argument_context('providerhub sku update') as c:
+        c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
+                   id_part='name')
+        c.argument('resource_type', type=str,
+                   help='The resource type.', id_part='child_name_1')
+        c.argument('sku', type=str, help='The SKU.', id_part='child_name_2')
+        c.argument('sku_settings', type=validate_file_or_dict,
+                   help=' Expected value: json-string/@json-file.')
+
+    with self.argument_context('providerhub sku delete') as c:
+        c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
+                   id_part='name')
+        c.argument('resource_type', type=str,
+                   help='The resource type.', id_part='child_name_1')
+        c.argument('nested_resource_type_first', type=str, help='The first child resource type.',
+                   id_part='child_name_2')
+        c.argument('nested_resource_type_second', type=str, help='The second child resource type.',
+                   id_part='child_name_3')
+        c.argument('nested_resource_type_third', type=str, help='The third child resource type.',
+                   id_part='child_name_4')
+        c.argument('sku', type=str, help='The SKU.', id_part='child_name_5')
+
+    with self.argument_context('providerhub sku show-nested-resource-type-first') as c:
+        c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
+                   id_part='name')
+        c.argument('resource_type', type=str,
+                   help='The resource type.', id_part='child_name_1')
+        c.argument('nested_resource_type_first', type=str, help='The first child resource type.',
+                   id_part='child_name_2')
+        c.argument('sku', type=str, help='The SKU.', id_part='child_name_3')
+
+    with self.argument_context('providerhub sku show-nested-resource-type-second') as c:
+        c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
+                   id_part='name')
+        c.argument('resource_type', type=str,
+                   help='The resource type.', id_part='child_name_1')
+        c.argument('nested_resource_type_first', type=str, help='The first child resource type.',
+                   id_part='child_name_2')
+        c.argument('nested_resource_type_second', type=str, help='The second child resource type.',
+                   id_part='child_name_3')
+        c.argument('sku', type=str, help='The SKU.', id_part='child_name_4')
+
+    with self.argument_context('providerhub sku show-nested-resource-type-third') as c:
+        c.argument('provider_namespace', type=str, help='The name of the resource provider hosted within ProviderHub.',
+                   id_part='name')
+        c.argument('resource_type', type=str,
+                   help='The resource type.', id_part='child_name_1')
+        c.argument('nested_resource_type_first', type=str, help='The first child resource type.',
+                   id_part='child_name_2')
+        c.argument('nested_resource_type_second', type=str, help='The second child resource type.',
+                   id_part='child_name_3')
+        c.argument('nested_resource_type_third', type=str, help='The third child resource type.',
+                   id_part='child_name_4')
+        c.argument('sku', type=str, help='The SKU.', id_part='child_name_5')

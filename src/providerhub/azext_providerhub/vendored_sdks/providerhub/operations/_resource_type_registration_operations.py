@@ -53,7 +53,8 @@ class ResourceTypeRegistrationOperations(object):
         self,
         provider_namespace,  # type: str
         resource_type,  # type: str
-        routing_type,  # type: "models.RoutingType"
+        nested_resource_type,  # type: str
+        routing_type,  # type: str or "models.RoutingType"
         regionality,  # type: "models.Regionality"
         endpoints,  # type: list["models.ResourceTypeEndpoint"]
         resource_creation_begin,  # type: "models.ExtensionOptions"
@@ -83,6 +84,7 @@ class ResourceTypeRegistrationOperations(object):
         resource_deletion_policy,  # type: "models.ResourceDeletionPolicy"
         opt_in_headers,  # type: "models.OptInHeaderType"
         required_features_policy,  # type: "models.FeaturesPolicy"
+        extensions, # type: "models.ResourceTypeExtension"
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.ResourceTypeRegistration"
@@ -98,12 +100,14 @@ class ResourceTypeRegistrationOperations(object):
 
         # Construct URL
         url = self._create_or_update_initial.metadata['url']  # type: ignore
+        nestedResourceTypeSuffix = f'/resourcetypeRegistrations/{nested_resource_type}' if nested_resource_type else ''
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
             'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
+        url = url + nestedResourceTypeSuffix
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
@@ -121,14 +125,16 @@ class ResourceTypeRegistrationOperations(object):
             opt_in_headers=opt_in_headers) if opt_in_headers else None
         features_rule = models.FeaturesRule(
             required_features_policy=required_features_policy) if required_features_policy else None
+        extensions = models.ResourceTypeExtension(
+            extensions=extensions) if extensions else None
         extension_options = models.ResourceTypeExtensionOptions(resource_creation_begin=resource_creation_begin,
                                                                 resource_patch_begin=resource_patch_begin) if resource_creation_begin or resource_patch_begin else None
 
-        params = models.ResourceTypeRegistration(routing_type=routing_type, regionality=regionality, endpoints=endpoints, extension_options=extension_options, marketplace_type=marketplace_type, swagger_specifications=swagger_specifications, allowed_unauthorized_actions=allowed_unauthorized_actions, authorization_action_mappings=authorization_action_mappings, linked_access_checks=linked_access_checks, default_api_version=default_api_version, logging_rules=logging_rules, throttling_rules=throttling_rules, required_features=required_features, features_rule=features_rule, enable_async_operation=enable_async_operation,
+        properties = models.ResourceTypeRegistration(routing_type=routing_type, regionality=regionality, endpoints=endpoints, extension_options=extension_options, marketplace_type=marketplace_type, swagger_specifications=swagger_specifications, allowed_unauthorized_actions=allowed_unauthorized_actions, authorization_action_mappings=authorization_action_mappings, linked_access_checks=linked_access_checks, default_api_version=default_api_version, logging_rules=logging_rules, throttling_rules=throttling_rules, required_features=required_features, features_rule=features_rule, enable_async_operation=enable_async_operation,
                                                  enable_third_party_s2s=enable_third_party_s2s, is_pure_proxy=is_pure_proxy, identity_management=identity_management, check_name_availability_specifications=check_name_availability_specifications, disallowed_action_verbs=disallowed_action_verbs, service_tree_infos=service_tree_infos, request_header_options=request_header_options, subscription_state_rules=subscription_state_rules, template_deployment_options=template_deployment_options, extended_locations=extended_locations, resource_move_policy=resource_move_policy, resource_deletion_policy=resource_deletion_policy)
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(params, 'ResourceTypeRegistration')
+        body_content = self._serialize.body(properties, 'ResourceTypeRegistration')
         body_content_kwargs['content'] = body_content
         request = self._client.put(
             url, query_parameters, header_parameters, **body_content_kwargs)
@@ -162,7 +168,8 @@ class ResourceTypeRegistrationOperations(object):
         self,
         provider_namespace,  # type: str
         resource_type,  # type: str
-        routing_type,  # type: "models.RoutingType"
+        nested_resource_type,  # type: str
+        routing_type,  # type: str or "models.RoutingType"
         regionality,  # type: "models.Regionality"
         endpoints,  # type: list["models.ResourceTypeEndpoint"]
         resource_creation_begin,  # type: "models.ExtensionOptions"
@@ -192,6 +199,7 @@ class ResourceTypeRegistrationOperations(object):
         resource_deletion_policy,  # type: "models.ResourceDeletionPolicy"
         opt_in_headers,  # type: "models.OptInHeaderType"
         required_features_policy,  # type: "models.FeaturesPolicy"
+        extensions, # type: "models.ResourceTypeExtension",
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["models.ResourceTypeRegistration"]
@@ -227,6 +235,7 @@ class ResourceTypeRegistrationOperations(object):
             raw_result = self._create_or_update_initial(
                 provider_namespace=provider_namespace,
                 resource_type=resource_type,
+                nested_resource_type=nested_resource_type,
                 routing_type=routing_type,
                 regionality=regionality,
                 endpoints=endpoints,
@@ -255,6 +264,7 @@ class ResourceTypeRegistrationOperations(object):
                 resource_deletion_policy=resource_deletion_policy,
                 opt_in_headers=opt_in_headers,
                 required_features_policy=required_features_policy,
+                extensions=extensions,
                 cls=lambda x, y, z: x,
                 **kwargs
             )
@@ -270,6 +280,7 @@ class ResourceTypeRegistrationOperations(object):
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
+        nestedResourceTypeSuffix = f'/resourcetypeRegistrations/{nested_resource_type}' if nested_resource_type else ''
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
@@ -299,6 +310,7 @@ class ResourceTypeRegistrationOperations(object):
         self,
         provider_namespace,  # type: str
         resource_type,  # type: str
+        nested_resource_type,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> None
@@ -321,14 +333,17 @@ class ResourceTypeRegistrationOperations(object):
         api_version = "2020-11-20"
         accept = "application/json"
 
+
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
+        nestedResourceTypeSuffix = f'/resourcetypeRegistrations/{nested_resource_type}' if nested_resource_type else ''
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
             'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
+        url = url + nestedResourceTypeSuffix
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]

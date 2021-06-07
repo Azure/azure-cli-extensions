@@ -1,20 +1,25 @@
 |Scenario|Result|ErrorMessage|ErrorStack|ErrorNormalized|StartDt|EndDt|
-|step_custom_rollout_create|successed||||2021-01-13 01:41:07.261039|2021-01-13 01:41:12.879376|
-|step_custom_rollout_show|successed||||2021-01-13 01:41:12.880378|2021-01-13 01:41:13.645307|
-|step_custom_rollout_list|successed||||2021-01-13 01:41:13.646328|2021-01-13 01:41:14.438678|
-|step_default_rollout_list|successed||||2021-01-13 01:41:18.056142|2021-01-13 01:41:18.908663|
-|step_default_rollout_show|successed||||2021-01-13 01:41:18.909661|2021-01-13 01:41:19.623311|
-|step_default_rollout_stop|successed||||2021-01-13 01:41:19.624315|2021-01-13 01:41:21.161668|
-|step_default_rollout_delete|successed||||2021-01-13 01:41:21.162662|2021-01-13 01:41:21.928006|
-|step_manifest_generate|successed||||2021-01-13 01:41:21.928994|2021-01-13 01:41:23.096705|
-|step_manifest_checkin|successed||||2021-01-13 01:41:23.097756|2021-01-13 01:41:25.246395|
-|step_provider_registration_create|successed||||2021-01-13 01:41:30.020627|2021-01-13 01:41:31.932222|
-|step_provider_registration_show|successed||||2021-01-13 01:41:26.903766|2021-01-13 01:41:28.061203|
-|step_provider_registration_list|successed||||2021-01-13 01:41:28.062244|2021-01-13 01:41:29.121825|
-|step_provider_registration_delete|successed||||2021-01-13 01:41:29.122822|2021-01-13 01:41:30.019575|
-|step_provider_registration_generate_operation|successed||||2021-01-13 01:41:31.933165|2021-01-13 01:41:34.786072|
-|step_resource_type_registration_create|successed||||2021-01-13 01:41:50.020725|2021-01-13 01:42:01.929241|
-|step_resource_type_registration_show|successed||||2021-01-13 01:41:47.851452|2021-01-13 01:41:48.601877|
-|step_resource_type_registration_list|successed||||2021-01-13 01:41:48.601877|2021-01-13 01:41:49.202365|
-|step_resource_type_registration_delete|successed||||2021-01-13 01:41:49.203286|2021-01-13 01:41:50.019731|
-Coverage: 18/18
+|step_provider_registration_create|successed||||2021-06-07 17:29:00.948376|2021-06-07 17:29:01.980437|
+|step_provider_registration_show|successed||||2021-06-07 17:28:58.376721|2021-06-07 17:28:59.117867|
+|step_provider_registration_list|successed||||2021-06-07 17:28:59.117867|2021-06-07 17:29:00.078919|
+|step_provider_registration_delete|successed||||2021-06-07 17:29:00.079920|2021-06-07 17:29:00.947374|
+|step_provider_registration_generate_operation|successed||||2021-06-07 17:29:01.981437|2021-06-07 17:29:03.325164|
+|step_resource_type_registration_create|successed||||2021-06-07 17:29:03.326167|2021-06-07 17:29:06.294550|
+|step_resource_type_registration_show|successed||||2021-06-07 17:29:06.295556|2021-06-07 17:29:06.655041|
+|step_resource_type_registration_list|successed||||2021-06-07 17:29:06.655041|2021-06-07 17:29:07.032018|
+|step_nested_resource_type_registration_extensions_create|successed||||2021-06-07 17:29:07.032018|2021-06-07 17:29:08.808925|
+|step_nested_resource_type_registration_create|successed||||2021-06-07 17:29:08.808925|2021-06-07 17:29:09.527545|
+|step_nested_resource_type_registration_show|successed||||2021-06-07 17:29:09.527545|2021-06-07 17:29:09.867435|
+|step_nested_resource_type_registration_delete|successed||||2021-06-07 17:29:09.868437|2021-06-07 17:29:10.457193|
+|step_notification_registration_create|successed||||2021-06-07 17:29:10.458193|2021-06-07 17:29:11.861275|
+|step_notification_registration_show|successed||||2021-06-07 17:29:11.862267|2021-06-07 17:29:12.359311|
+|step_notification_registration_list|successed||||2021-06-07 17:29:12.359311|2021-06-07 17:29:12.730495|
+|step_notification_registration_delete|successed||||2021-06-07 17:29:12.730495|2021-06-07 17:29:13.160586|
+|step_operation_list|successed||||2021-06-07 17:29:13.160586|2021-06-07 17:29:13.546195|
+|step_operation_create|successed||||2021-06-07 17:29:13.546195|2021-06-07 17:29:14.151834|
+|step_operation_delete|successed||||2021-06-07 17:29:14.151834|2021-06-07 17:29:14.573461|
+|step_sku_create|successed||||2021-06-07 17:29:14.574473|2021-06-07 17:29:15.032236|
+|step_sku_show|successed||||2021-06-07 17:29:15.032236|2021-06-07 17:29:15.433017|
+|step_sku_list|successed||||2021-06-07 17:29:15.433017|2021-06-07 17:29:15.772557|
+|step_sku_delete|successed||||2021-06-07 17:29:15.773557|2021-06-07 17:29:16.273071|
+Coverage: 23/23

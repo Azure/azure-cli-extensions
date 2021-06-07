@@ -12,19 +12,17 @@ from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, 
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.mgmt.core.exceptions import ARMErrorFormat
-from typing import Any, Callable, Dict, Generic, Optional, TypeVar
-from .. import models
 
+from .. import models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
+    from typing import Any, Callable, Dict, Generic, Optional, TypeVar
 
     T = TypeVar('T')
-    ClsType = Optional[Callable[[
-        PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
+    ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-
-class ProviderhubOperationsMixin(object):
+class ProviderHubOperationsMixin(object):
     """ProviderhubOperationsMixin operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
@@ -58,11 +56,10 @@ class ProviderhubOperationsMixin(object):
         :type provider_namespace: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ResourceProviderManifest, or the result of cls(response)
-        :rtype: ~providerhub.models.ResourceProviderManifest
+        :rtype: ~provider_hub.models.ResourceProviderManifest
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop(
-            'cls', None)  # type: ClsType["models.ResourceProviderManifest"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.ResourceProviderManifest"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -80,35 +77,28 @@ class ProviderhubOperationsMixin(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query(
-            "api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.post(url, query_parameters, header_parameters)
-        pipeline_response = self._client._pipeline.run(
-            request, stream=False, **kwargs)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code,
-                      response=response, error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(
-                response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize(
-            'ResourceProviderManifest', pipeline_response)
+        deserialized = self._deserialize('ResourceProviderManifest', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    generate_manifest.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/generateManifest'}  # type: ignore
+    generate_manifest.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/generateManifest'}  # type: ignore
 
     def checkin_manifest(
         self,
@@ -123,14 +113,13 @@ class ProviderhubOperationsMixin(object):
         :type provider_namespace: str
         :param checkin_manifest_params: The required body parameters supplied to the checkin manifest
          operation.
-        :type checkin_manifest_params: ~providerhub.models.CheckinManifestParams
+        :type checkin_manifest_params: ~provider_hub.models.CheckinManifestParams
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: CheckinManifestInfo, or the result of cls(response)
-        :rtype: ~providerhub.models.CheckinManifestInfo
+        :rtype: ~provider_hub.models.CheckinManifestInfo
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop(
-            'cls', None)  # type: ClsType["models.CheckinManifestInfo"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.CheckinManifestInfo"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -149,39 +138,29 @@ class ProviderhubOperationsMixin(object):
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
-        query_parameters['api-version'] = self._serialize.query(
-            "api_version", api_version, 'str')
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Content-Type'] = self._serialize.header(
-            "content_type", content_type, 'str')
-        header_parameters['Accept'] = self._serialize.header(
-            "accept", accept, 'str')
+        header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(
-            checkin_manifest_params, 'CheckinManifestParams')
+        body_content = self._serialize.body(checkin_manifest_params, 'CheckinManifestParams')
         body_content_kwargs['content'] = body_content
-        request = self._client.post(
-            url, query_parameters, header_parameters, **body_content_kwargs)
-        pipeline_response = self._client._pipeline.run(
-            request, stream=False, **kwargs)
+        request = self._client.post(url, query_parameters, header_parameters, **body_content_kwargs)
+        pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
         if response.status_code not in [200]:
-            map_error(status_code=response.status_code,
-                      response=response, error_map=error_map)
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize(models.ErrorResponse, response)
-            raise HttpResponseError(
-                response=response, model=error, error_format=ARMErrorFormat)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize(
-            'CheckinManifestInfo', pipeline_response)
+        deserialized = self._deserialize('CheckinManifestInfo', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    checkin_manifest.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/checkinManifest'}  # type: ignore
+    checkin_manifest.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/checkinManifest'}  # type: ignore
