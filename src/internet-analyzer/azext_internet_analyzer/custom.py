@@ -120,9 +120,9 @@ def update_internet_analyzer_test(cmd, client,
 
 
 def delete_internet_analyzer_test(cmd, client,
-                                        resource_group,
-                                        profile_name,
-                                        name):
+                                  resource_group,
+                                  profile_name,
+                                  name):
     return client.begin_delete(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name)
 
 
