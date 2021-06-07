@@ -1256,6 +1256,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('apiServerAccessProfile.enablePrivateClusterPublicFqdn', True),
         ])
 
+        # update
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
+                     '--disable-public-fqdn --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnablePrivateClusterPublicFQDN'
+        self.cmd(update_cmd, checks=[
+            self.exists('privateFqdn'),
+            self.check('fqdn', None),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('apiServerAccessProfile.enablePrivateClusterPublicFqdn', False),
+        ])
+
     @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')

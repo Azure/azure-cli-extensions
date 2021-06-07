@@ -43,6 +43,7 @@ from msrestazure.azure_exceptions import CloudError
 import colorama  # pylint: disable=import-error
 from tabulate import tabulate  # pylint: disable=import-error
 from azure.cli.core.api import get_config_dir
+from azure.cli.core.azclierror import ManualInterrupt, InvalidArgumentValueError, UnclassifiedUserFault, CLIInternalError, FileOperationError, ClientRequestError, DeploymentError, ValidationError, ArgumentUsageError, MutuallyExclusiveArgumentError, RequiredArgumentMissingError, ResourceNotFoundError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.keys import is_valid_ssh_rsa_public_key
 from azure.cli.core.util import get_file_json, in_cloud_console, shell_safe_json_parse, truncate_text, sdk_no_wait
@@ -1400,10 +1401,10 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
 
     use_custom_private_dns_zone = False
     if not enable_private_cluster and enable_public_fqdn:
-        raise CLIError("--enable-public-fqdn should only be used with --enable-private-cluster")
+        raise ArgumentUsageError("--enable-public-fqdn should only be used with --enable-private-cluster")
     if enable_private_cluster:
         if load_balancer_sku.lower() != "standard":
-            raise CLIError(
+            raise ArgumentUsageError(
                 "Please use standard load balancer for private cluster")
         mc.api_server_access_profile = ManagedClusterAPIServerAccessProfile(
             enable_private_cluster=True
@@ -1413,7 +1414,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
 
     if private_dns_zone:
         if not enable_private_cluster:
-            raise CLIError(
+            raise ArgumentUsageError(
                 "Invalid private dns zone for public cluster. It should always be empty for public cluster")
         mc.api_server_access_profile.private_dns_zone = private_dns_zone
         from msrestazure.tools import is_valid_resource_id
@@ -1421,12 +1422,12 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             if is_valid_resource_id(private_dns_zone):
                 use_custom_private_dns_zone = True
             else:
-                raise CLIError(private_dns_zone +
+                raise ResourceNotFoundError(private_dns_zone +
                                " is not a valid Azure resource ID.")
 
     if fqdn_subdomain:
         if not use_custom_private_dns_zone:
-            raise CLIError(
+            raise ArgumentUsageError(
                 "--fqdn-subdomain should only be used for private cluster with custom private dns zone")
         mc.fqdn_subdomain = fqdn_subdomain
 
@@ -1752,18 +1753,18 @@ def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,
         instance.windows_profile.license_type = 'None'
 
     if enable_public_fqdn and disable_public_fqdn:
-        raise CLIError(
+        raise MutuallyExclusiveArgumentError(
             'Cannot specify "--enable-public-fqdn" and "--disable-public-fqdn" at the same time')
     is_private_cluster = instance.api_server_access_profile is not None and instance.api_server_access_profile.enable_private_cluster
     if enable_public_fqdn:
         if not is_private_cluster:
-            raise CLIError('--enable-public-fqdn can only be used for private cluster')
+            raise ArgumentUsageError('--enable-public-fqdn can only be used for private cluster')
         instance.api_server_access_profile.enable_private_cluster_public_fqdn = True
     if disable_public_fqdn:
         if not is_private_cluster:
-            raise CLIError('--disable-public-fqdn can only be used for private cluster')
+            raise ArgumentUsageError('--disable-public-fqdn can only be used for private cluster')
         if instance.api_server_access_profile.private_dns_zone.lower() == CONST_PRIVATE_DNS_ZONE_NONE:
-            raise CLIError('--disable-public-fqdn cannot be applied for none mode private dns zone cluster')
+            raise ArgumentUsageError('--disable-public-fqdn cannot be applied for none mode private dns zone cluster')
         instance.api_server_access_profile.enable_private_cluster_public_fqdn = False
 
     if instance.auto_upgrade_profile is None:
