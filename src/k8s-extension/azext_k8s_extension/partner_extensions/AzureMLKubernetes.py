@@ -20,7 +20,7 @@ import azure.mgmt.storage
 import azure.mgmt.storage.models
 import azure.mgmt.loganalytics
 import azure.mgmt.loganalytics.models
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, MutuallyExclusiveArgumentError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.mgmt.resource.locks.models import ManagementLockObject
 from knack.log import get_logger
@@ -79,6 +79,8 @@ class AzureMLKubernetes(PartnerExtensionModel):
         self.sslCertPemFile = 'sslCertPemFile'
         self.allowInsecureConnections = 'allowInsecureConnections'
         self.privateEndpointILB = 'privateEndpointILB'
+        self.privateEndpointNodeport = 'privateEndpointNodeport'
+        self.inferenceLoadBalancerHA = 'inferenceLoadBalancerHA'
 
         # reference mapping
         self.reference_mapping = {
@@ -196,10 +198,10 @@ class AzureMLKubernetes(PartnerExtensionModel):
         configuration_protected_settings.pop(self.ENABLE_INFERENCE, None)
 
     def __validate_scoring_fe_settings(self, configuration_settings, configuration_protected_settings):
-        experimentalCluster = _get_value_from_config_protected_config(
-            'inferenceLoadBalancerHA', configuration_settings, configuration_protected_settings)
-        experimentalCluster = str(experimentalCluster).lower() == 'true'
-        if experimentalCluster:
+        isTestCluster = _get_value_from_config_protected_config(
+            self.inferenceLoadBalancerHA, configuration_settings, configuration_protected_settings)
+        isTestCluster = str(isTestCluster).lower() == 'false'
+        if isTestCluster:
             configuration_settings['clusterPurpose'] = 'DevTest'
         else:
             configuration_settings['clusterPurpose'] = 'FastProd'
@@ -214,13 +216,22 @@ class AzureMLKubernetes(PartnerExtensionModel):
                 "Otherwise explicitly allow insecure connection by specifying "
                 "'--configuration-settings allowInsecureConnections=true'")
 
+        feIsNodePort = _get_value_from_config_protected_config(
+            self.privateEndpointNodeport, configuration_settings, configuration_protected_settings)
+        feIsNodePort = str(feIsNodePort).lower() == 'true'
         feIsInternalLoadBalancer = _get_value_from_config_protected_config(
             self.privateEndpointILB, configuration_settings, configuration_protected_settings)
         feIsInternalLoadBalancer = str(feIsInternalLoadBalancer).lower() == 'true'
-        if feIsInternalLoadBalancer:
+
+        if feIsNodePort and feIsInternalLoadBalancer:
+            raise MutuallyExclusiveArgumentError(
+                "Specify either privateEndpointNodeport=true or privateEndpointILB=true, but not both.")
+        elif feIsNodePort:
+            configuration_settings['scoringFe.serviceType.nodePort'] = feIsNodePort
+        elif feIsInternalLoadBalancer:
+            configuration_settings['scoringFe.serviceType.internalLoadBalancer'] = feIsInternalLoadBalancer
             logger.warning(
                 'Internal load balancer only supported on AKS and AKS Engine Clusters.')
-            configuration_protected_settings['scoringFe.%s' % self.privateEndpointILB] = feIsInternalLoadBalancer
 
     def __set_up_inference_ssl(self, configuration_settings, configuration_protected_settings):
         allowInsecureConnections = _get_value_from_config_protected_config(
