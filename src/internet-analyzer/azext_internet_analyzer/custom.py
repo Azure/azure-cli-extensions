@@ -19,7 +19,7 @@ def create_internet_analyzer_profile(cmd, client,
     body['location'] = location  # str
     body['tags'] = tags  # dictionary
     body['enabled_state'] = enabled_state  # str
-    return client.create_or_update(resource_group_name=resource_group, profile_name=name, parameters=body)
+    return client.begin_create_or_update(resource_group_name=resource_group, profile_name=name, parameters=body)
 
 
 def update_internet_analyzer_profile(cmd, client,
@@ -35,13 +35,13 @@ def update_internet_analyzer_profile(cmd, client,
         body['tags'] = tags  # dictionary
     if enabled_state is not None:
         body['enabled_state'] = enabled_state  # str
-    return client.create_or_update(resource_group_name=resource_group, profile_name=name, parameters=body)
+    return client.begin_create_or_update(resource_group_name=resource_group, profile_name=name, parameters=body)
 
 
 def delete_internet_analyzer_profile(cmd, client,
                                      resource_group,
                                      name):
-    return client.delete(resource_group_name=resource_group, profile_name=name)
+    return client.begin_delete(resource_group_name=resource_group, profile_name=name)
 
 
 def list_internet_analyzer_profile(cmd, client,
@@ -84,7 +84,7 @@ def create_internet_analyzer_test(cmd, client,
     body.setdefault('endpoint_b', {})['name'] = endpoint_b_name  # str
     body.setdefault('endpoint_b', {})['endpoint'] = endpoint_b_endpoint  # str
     body['enabled_state'] = enabled_state  # str
-    return client.create_or_update(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name, parameters=body)
+    return client.begin_create_or_update(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name, parameters=body)
 
 
 def update_internet_analyzer_test(cmd, client,
@@ -116,14 +116,14 @@ def update_internet_analyzer_test(cmd, client,
         body.setdefault('endpoint_b', {})['endpoint'] = endpoint_b_endpoint  # str
     if enabled_state is not None:
         body['enabled_state'] = enabled_state  # str
-    return client.create_or_update(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name, parameters=body)
+    return client.begin_create_or_update(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name, parameters=body)
 
 
 def delete_internet_analyzer_test(cmd, client,
                                   resource_group,
                                   profile_name,
                                   name):
-    return client.delete(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name)
+    return client.begin_delete(resource_group_name=resource_group, profile_name=profile_name, experiment_name=name)
 
 
 def list_internet_analyzer_test(cmd, client,
