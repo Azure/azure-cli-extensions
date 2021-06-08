@@ -15,6 +15,7 @@ from ._util import (
     list_network_resource_property,
     get_network_resource_property_entry
 )
+from ._format import transform_effective_route_table
 
 ROUTE_TABLE_DEPRECATION_INFO = 'network vhub route-table'
 
@@ -109,7 +110,7 @@ def load_command_table(self, _):
         g.show_command('show')
         g.custom_command('list', 'list_virtual_hubs')
         g.generic_update_command('update', custom_func_name='update_virtual_hub', setter_name="begin_create_or_update", setter_arg_name='virtual_hub_parameters', supports_no_wait=True)
-        g.custom_command('get-effective-routes', 'get_effective_virtual_hub_routes', supports_no_wait=True)
+        g.custom_command('get-effective-routes', 'get_effective_virtual_hub_routes', supports_no_wait=True, table_transformer=transform_effective_route_table)
 
     with self.command_group('network vhub connection', network_vhub_connection_sdk) as g:
         g.custom_command('create', 'create_hub_vnet_connection', supports_no_wait=True)

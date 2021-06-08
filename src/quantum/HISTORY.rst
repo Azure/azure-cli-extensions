@@ -3,9 +3,15 @@
 Release History
 ===============
 
+0.5.0
+++++++
+* [2021-05-25] Version intended to work with QDK version v0.17.2105.143879
+* Adapted to 'az' tool version 2.23.0
+* Added user agent information on calls to Azure Quantum Service.
+
 0.4.0
 ++++++
-* [2021-05-03] Version intended to work with QDK version v0.16.2104.138035
+* [2021-05-07] Version intended to work with QDK version v0.16.2104.138035
 * Updated generated clients for Azure Quantum control plane to include support for restricted plans.
 * Fixed regression on offerings commands dependent on Azure Markeplace APIs.
 

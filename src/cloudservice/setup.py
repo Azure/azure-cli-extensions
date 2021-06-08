@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.1.0'
+VERSION = '0.2.0'
 try:
     from azext_cloudservice.manual.version import VERSION
 except ImportError:
@@ -31,7 +31,7 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'azure-mgmt-compute~=19.0.0'
+    'azure-mgmt-compute~=20.0.0'
 ]
 
 try:

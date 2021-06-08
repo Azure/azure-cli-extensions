@@ -306,4 +306,69 @@ az storage account file-service-properties update \
     -g MyResourceGroup
 ```
 
+#### Soft Delete for ADLS Gen2 storage
+##### Prepare resource
+1. ADLS Gen2 storage account with soft delete support
+```
+az storage account create \
+    -n myadls \
+    -g myresourcegroup \
+    --hns
+``` 
+To get connection string, you could use the following command:
+```
+az storage account show-connection-string \
+    -n myadls \
+    -g myresourcegroup
+``` 
+2. Prepare file system in the ADLS Gen2 storage account
+```
+az storage fs create \
+    -n myfilesystem \
+    --connection-string myconnectionstring 
+```
+##### Enable delete retention
+```
+az storage fs service-properties update \
+    --delete-retention \
+    --delete-retention-period 5 \
+    --connection-string myconnectionstring
+```
+##### Upload file to file system
+```
+az storage fs file upload \
+    -s ".\test.txt" \
+    -p test \
+    -f filesystemcetk2triyptlaa \
+    --connection-string $con
+```
+##### List deleted path
+```
+az storage fs file delete \
+    -p test \
+    -f filesystemcetk2triyptlaa \ 
+    --connection-string $con
+```
+##### List deleted path
+```
+az storage fs list-deleted-path \
+    -f filesystemcetk2triyptlaa \
+    --connection-string $con
+```
+##### Undelete deleted path
+```
+az storage fs undelete-path \
+    -f filesystemcetk2triyptlaa \
+    -f filesystemcetk2triyptlaa \
+    --deleted-path-name test \
+    --deleted-path-version 132549163 \
+    --connection-string $con
+```
+##### Disable delete retention
+```
+az storage fs service-properties update \
+    --delete-retention false \
+    --connection-string $con
+```
+
 If you have issues, please give feedback by opening an issue at https://github.com/Azure/azure-cli-extensions/issues.
