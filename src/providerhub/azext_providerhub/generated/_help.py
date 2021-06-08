@@ -91,8 +91,10 @@ helps['providerhub default-rollout create'] = """
     examples:
       - name: DefaultRollouts_CreateOrUpdate
         text: |-
-               az providerhub default-rollout create --canary skip-regions="eastus2euap" --rest-of-the-world-group-two \
-wait-duration="PT2H" --provider-namespace "Microsoft.Contoso" --rollout-name "2021week20"
+               az providerhub default-rollout create \
+                --provider-namespace "Microsoft.Contoso" --rollout-name "2021week20" \
+                --canary skip-regions="eastus2euap" \
+                --rest-of-the-world-group-two wait-duration="PT2H"
 """
 
 helps['providerhub default-rollout delete'] = """
@@ -178,10 +180,10 @@ helps['providerhub notification-registration create'] = """
         text: |-
                az providerhub notification-registration create --name "testNotificationRegistration" --included-events \
 "*/write" "Microsoft.Contoso/employees/delete" --message-scope "RegisteredSubscriptions" --notification-endpoints \
-locations="" locations="East US" notification-destination="/subscriptions/ac6bcfb5-3dc1-491f-95a6-646b89bf3e88/resource\
+locations="" locations="East US" notification-destination="/subscriptions/00000000-0000-0000-0000-000000000000/resource\
 Groups/mgmtexp-eastus/providers/Microsoft.EventHub/namespaces/unitedstates-mgmtexpint/eventhubs/armlinkednotifications"\
- --notification-endpoints locations="North Europe" notification-destination="/subscriptions/ac6bcfb5-3dc1-491f-95a6-646\
-b89bf3e88/resourceGroups/mgmtexp-northeurope/providers/Microsoft.EventHub/namespaces/europe-mgmtexpint/eventhubs/armlin\
+ --notification-endpoints locations="North Europe" notification-destination="/subscriptions/00000000-0000-0000-0000-000000000000\
+   /resourceGroups/mgmtexp-northeurope/providers/Microsoft.EventHub/namespaces/europe-mgmtexpint/eventhubs/armlin\
 kednotifications" --notification-mode "EventHub" --provider-namespace "Microsoft.Contoso"
 """
 
@@ -402,10 +404,21 @@ argument.
     examples:
       - name: ProviderRegistrations_CreateOrUpdate
         text: |-
-               az providerhub provider-registration create --capabilities effect="Allow" quota-id="CSP_2015-05-01" \
---capabilities effect="Allow" quota-id="CSP_MG_2017-12-01" --incident-contact-email "helpme@contoso.com" \
---incident-routing-service "Contoso Resource Provider" --incident-routing-team "Contoso Triage" --provider-type \
-"Internal" --provider-version "2.0" --provider-namespace "Microsoft.Contoso"
+               az providerhub provider-registration create \
+    --providerhub-metadata-authorizations application-id="00000000-0000-0000-0000-000000000000" \
+    role-definition-id="00000000-0000-0000-0000-000000000000" \
+    --providerhub-metadata-authentication allowed-audiences="https://management.core.windows.net/" \
+    --service-tree-infos service-id="00000000-0000-0000-0000-000000000000" \
+    component-id="00000000-0000-0000-0000-000000000000" \
+    --capabilities effect="Allow" quota-id="CSP_2015-05-01" \
+    --capabilities effect="Allow" quota-id="CSP_MG_2017-12-01" \
+    --manifest-owners "SPARTA-PlatformServiceAdministrator" \
+    --incident-contact-email "helpme@contoso.com" \
+    --incident-routing-service "Contoso Resource Provider" \
+    --incident-routing-team "Contoso Triage" \
+    --provider-type "Internal" \
+    --provider-version "2.0" \
+    --provider-namespace "Microsoft.Contoso"
 """
 
 helps['providerhub provider-registration delete'] = """
@@ -680,11 +693,20 @@ cross-subscription-move-enabled=XX
     examples:
       - name: ResourceTypeRegistrations_CreateOrUpdate
         text: |-
-               az providerhub resource-type-registration create --endpoints "[{\\"apiVersions\\":[\\"2021-06-01-preview\
-\\"],\\"locations\\":[\\"West US\\",\\"East US\\",\\"North Europe\\"],\\"requiredFeatures\\":[\\"<feature flag>\\"]}]" \
---regionality "Regional" --routing-type "Default" --swagger-specifications api-versions="2021-06-01-preview" \
-swagger-spec-folder-uri="https://github.com/Azure/azure-rest-api-specs/blob/feature/azure/contoso/specification/contoso\
-/resource-manager/Microsoft.SampleRP/" --provider-namespace "Microsoft.Contoso" --resource-type "employees"
+               az providerhub resource-type-registration create \
+    --endpoints api-versions="2019-01-01" locations="Global" \
+    required-features="Microsoft.Contoso/RPaaSSampleApp" \
+    extension-endpoint-uri="https://contoso-test-extension-endpoint.com/" \
+    extension-categories="ResourceReadValidate" extension-categories="ResourceDeletionValidate" \
+    --regionality "Global" \
+    --routing-type "ProxyOnly" \
+    --swagger-specifications api-versions="2019-01-01" \
+    swagger-spec-folder-uri="https://github.com/pathtoresourceproviderswaggerspecfolder" \
+    --provider-namespace "Microsoft.Contoso" \
+    --enable-async-operation false \
+    --template-deployment-options preflight-supported="true" \
+    preflight-options="DefaultValidationOnly" preflight-options="continueDeploymentOnFailure" \
+    --resource-type "testResourceType"
 """
 
 helps['providerhub resource-type-registration delete'] = """

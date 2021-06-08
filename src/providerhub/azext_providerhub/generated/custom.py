@@ -86,8 +86,8 @@ def providerhub_default_rollout_update(instance,
                                        no_wait=False):
     if rest_of_the_world_group_two is not None:
         instance.properties.specification.rest_of_the_world_group_two = rest_of_the_world_group_two
-    if skip_regions is not None:
-        instance.properties.specification.skip_regions = skip_regions
+    if canary is not None:
+        instance.properties.specification.canary = canary
     return instance
 
 

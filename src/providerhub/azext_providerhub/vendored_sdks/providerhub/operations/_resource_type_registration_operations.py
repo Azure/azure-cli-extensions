@@ -49,6 +49,77 @@ class ResourceTypeRegistrationOperations(object):
         self._deserialize = deserializer
         self._config = config
 
+    def get(
+        self,
+        provider_namespace,  # type: str
+        resource_type,  # type: str
+        nested_resource_type,  # type: str
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> "models.ResourceTypeRegistration"
+        """Gets a resource type details in the given subscription and provider.
+
+        :param provider_namespace: The name of the resource provider hosted within ProviderHub.
+        :type provider_namespace: str
+        :param resource_type: The resource type.
+        :type resource_type: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: ResourceTypeRegistration, or the result of cls(response)
+        :rtype: ~provider_hub.models.ResourceTypeRegistration
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop(
+            'cls', None)  # type: ClsType["models.ResourceTypeRegistration"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2020-11-20"
+        accept = "application/json"
+
+        # Construct URL
+        url = self.get.metadata['url']  # type: ignore
+        resourceTypes = resource_type.split("/")
+        resourceTypeUrlSuffix = "/resourcetypeRegistrations/".join(resourceTypes)
+        path_format_arguments = {
+            'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
+            'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
+            'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+        url = url + resourceTypeUrlSuffix
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query(
+            "api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header(
+            "accept", accept, 'str')
+
+        request = self._client.get(url, query_parameters, header_parameters)
+        pipeline_response = self._client._pipeline.run(
+            request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code,
+                      response=response, error_map=error_map)
+            error = self._deserialize(models.ErrorResponse, response)
+            raise HttpResponseError(
+                response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize(
+            'ResourceTypeRegistration', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/'}  # type: ignore
+
     def _create_or_update_initial(
         self,
         provider_namespace,  # type: str
