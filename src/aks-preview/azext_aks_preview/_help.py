@@ -1170,10 +1170,10 @@ helps['aks pod-identity exception list'] = """
 
 helps['aks egress-endpoints'] = """
     type: group
-    short-summary: see detail usage in 'az aks egress-endpoints list'.
+    short-summary: Commands to manage egress endpoints in managed Kubernetes cluster.
 """
 
 helps['aks egress-endpoints list'] = """
     type: command
-    short-summary: list egress endpoints that are required or recommended to be whitelisted for a cluster.
+    short-summary: List egress endpoints that are required or recommended to be whitelisted for a cluster.
 """
