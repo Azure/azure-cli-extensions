@@ -60,27 +60,33 @@ def providerhub_default_rollout_show(client,
 def providerhub_default_rollout_create(client,
                                        provider_namespace,
                                        rollout_name,
-                                       row2_wait_duration=None,
-                                       skip_regions=None,
+                                       rest_of_the_world_group_two=None,
+                                       canary=None,
                                        no_wait=False):
-
+    properties = {
+        'properties': {
+            'specification': {
+                'canary': canary,
+                'rest_of_the_world_group_two': rest_of_the_world_group_two
+            }
+        }
+    }
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        provider_namespace=provider_namespace,
                        rollout_name=rollout_name,
-                       row2_wait_duration=row2_wait_duration,
-                       skip_regions=skip_regions)
+                       properties=properties)
 
 
 def providerhub_default_rollout_update(instance,
                                        provider_namespace,
                                        rollout_name,
-                                       row2_wait_duration=None,
-                                       skip_regions=None,
+                                       rest_of_the_world_group_two=None,
+                                       canary=None,
                                        no_wait=False):
     if rest_of_the_world_group_two is not None:
-        instance.properties.specification.rest_of_the_world_group_two.wait_duration = row2_wait_duration
-    if provider_registration is not None:
+        instance.properties.specification.rest_of_the_world_group_two = rest_of_the_world_group_two
+    if skip_regions is not None:
         instance.properties.specification.skip_regions = skip_regions
     return instance
 

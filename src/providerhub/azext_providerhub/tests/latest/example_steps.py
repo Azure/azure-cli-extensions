@@ -56,8 +56,8 @@ def step_default_rollout_create(test, checks=None):
     test.cmd('az providerhub default-rollout create '
              '--provider-namespace "{providerNamespace}" '
              '--rollout-name "{defaultRolloutName}" '
-             '--row2-wait-duration "PT2H" '
-             '--skip-regions "centraluseuap"',
+             '--rest-of-the-world-group-two wait-duration="PT2H" '
+             '--canary skip-regions="centraluseuap"',
              checks=checks)
 
 
@@ -290,8 +290,7 @@ def step_nested_resource_type_registration_create(test, checks=None):
              '--provider-namespace "{providerNamespace}" '
              '--enable-async-operation false '
              '--template-deployment-options preflight-supported="true" preflight-options="DefaultValidationOnly" preflight-options="continueDeploymentOnFailure" '
-             '--resource-type "{resourceType}" '
-             '--nested-resource-type "{nestedResourceType}"',
+             '--resource-type "{resourceType}/{nestedResourceType}"',
              checks=checks)
 
 
@@ -314,8 +313,7 @@ def step_nested_resource_type_registration_extensions_create(test, checks=None):
              '--provider-namespace "{providerNamespace}" '
              '--enable-async-operation false '
              '--template-deployment-options preflight-supported="true" preflight-options="DefaultValidationOnly" preflight-options="continueDeploymentOnFailure" '
-             '--resource-type "{resourceType}" '
-             '--nested-resource-type "{nestedResourceType}"',
+             '--resource-type "{resourceType}/{nestedResourceType}"',
              checks=checks)
 
 
@@ -326,8 +324,7 @@ def step_nested_resource_type_registration_delete(test, checks=None):
         checks = []
     test.cmd('az providerhub resource-type-registration delete -y '
              '--provider-namespace "{providerNamespace}" '
-             '--resource-type "{resourceType}" '
-             '--nested-resource-type "{nestedResourceType}"',
+             '--resource-type "{resourceType}/{nestedResourceType}"',
              checks=checks)
 
 
@@ -339,8 +336,7 @@ def step_nested_resource_type_registration_show(test, checks=None):
         checks = []
     test.cmd('az providerhub resource-type-registration show '
              '--provider-namespace "{providerNamespace}" '
-             '--resource-type "{resourceType}" '
-             '--nested-resource-type "{nestedResourceType}"',
+             '--resource-type "{resourceType}/{nestedResourceType}"',
              checks=checks)
 
 # EXAMPLE: /NotificationRegistrations/put/NotificationRegistrations_CreateOrUpdate

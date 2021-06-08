@@ -18,7 +18,8 @@ from azure.cli.core.commands.parameters import (
 )
 from azure.cli.core.commands.validators import validate_file_or_dict
 from azext_providerhub.action import (
-    AddCustomrolloutsCanary,
+    AddCanaryRegion,
+    AddDefaultRolloutROW2,
     AddProviderAuthentication,
     AddProviderAuthorizations,
     AddCapabilities,
@@ -29,7 +30,6 @@ from azext_providerhub.action import (
     AddProviderHubMetadataProviderAuthorizations,
     AddProviderHubMetadataAuthentication,
     AddAuthorizations,
-    AddDefaultrolloutsCanary,
     AddNotificationEndpoints,
     AddSwaggerSpecifications,
     AddAuthorizationActionMappings,
@@ -64,14 +64,14 @@ def load_arguments(self, _):
         c.argument('provider_namespace', type=str,
                    help='The name of the resource provider hosted within ProviderHub.')
         c.argument('rollout_name', type=str, help='The rollout name.')
-        c.argument('canary', action=AddCustomrolloutsCanary, nargs='+',
+        c.argument('canary', action=AddCanaryRegion, nargs='+',
                    help='The canary regions to apply the manifest.', arg_group='Specification')
 
     with self.argument_context('providerhub custom-rollout update') as c:
         c.argument('provider_namespace', type=str,
                    help='The name of the resource provider hosted within ProviderHub.')
         c.argument('rollout_name', type=str, help='The rollout name.')
-        c.argument('canary', action=AddCustomrolloutsCanary, nargs='+',
+        c.argument('canary', action=AddCanaryRegion, nargs='+',
                    help='The canary regions to apply the manifest.', arg_group='Specification')
 
     with self.argument_context('providerhub default-rollout list') as c:
@@ -88,18 +88,18 @@ def load_arguments(self, _):
         c.argument('provider_namespace', type=str,
                    help='The name of the resource provider hosted within ProviderHub.')
         c.argument('rollout_name', type=str, help='The rollout name.')
-        c.argument('row2_wait_duration', type=str, help='The wait duration before the rollout '
-                   'begins in rest of the world two.')
-        c.argument('skip_regions', action=AddSkipRegions,
+        c.argument('rest_of_the_world_group_two', action=AddDefaultRolloutROW2,
+                   nargs='+', help='DefaultRollout rest of the world group two.')
+        c.argument('canary', action=AddCanaryRegion,
                    nargs='*', help='The canary regions to skip.')
 
     with self.argument_context('providerhub default-rollout update') as c:
         c.argument('provider_namespace', type=str,
                    help='The name of the resource provider hosted within ProviderHub.')
         c.argument('rollout_name', type=str, help='The rollout name.')
-        c.argument('row2_wait_duration', type=str, help='The wait duration before the rollout '
-                   'begins in rest of the world two.')
-        c.argument('skip_regions', action=AddSkipRegions,
+        c.argument('rest_of_the_world_group_two', action=AddDefaultRolloutROW2,
+                   nargs='+', help='DefaultRollout rest of the world group two.')
+        c.argument('canary', action=AddCanaryRegion,
                    nargs='*', help='The canary regions to skip.')
 
     with self.argument_context('providerhub default-rollout delete') as c:

@@ -168,8 +168,7 @@ class DefaultRolloutsOperations(object):
         self,
         provider_namespace,  # type: str
         rollout_name,  # type: str
-        row2_wait_duration,  # type: str
-        skip_regions,  # type: list[str]
+        properties, # type: models.DefaultRolloutProperties
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.DefaultRollout"
@@ -200,17 +199,6 @@ class DefaultRolloutsOperations(object):
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
-        properties = models.DefaultRollout(
-            specification = models.DefaultRolloutSpecification(
-                canary=models.CanaryTrafficRegionRolloutConfiguration(
-                    skip_regions=skip_regions
-                ),
-                rest_of_the_world_group_two=models.TrafficRegionRolloutConfiguration(
-                    wait_duration=row2_wait_duration
-                )
-            )
-        )
-
         body_content_kwargs = {}  # type: Dict[str, Any]
         body_content = self._serialize.body(properties, 'DefaultRollout')
         body_content_kwargs['content'] = body_content
@@ -239,8 +227,7 @@ class DefaultRolloutsOperations(object):
         self,
         provider_namespace,  # type: str
         rollout_name,  # type: str
-        row2_wait_duration,  # type: str
-        skip_regions,  # type: list[str]
+        properties, # type: models.DefaultRolloutProperties
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller["models.DefaultRollout"]
@@ -273,8 +260,7 @@ class DefaultRolloutsOperations(object):
             raw_result = self._create_or_update_initial(
                 provider_namespace=provider_namespace,
                 rollout_name=rollout_name,
-                row2_wait_duration=row2_wait_duration,
-                skip_regions=skip_regions,
+                properties=properties,
                 cls=lambda x,y,z: x,
                 **kwargs
             )

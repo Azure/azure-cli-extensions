@@ -11,7 +11,7 @@ az extension add --name providerhub
 #### providerhub custom-rollout ####
 ##### Create #####
 ```
-az providerhub custom-rollout create --provider-namespace "Microsoft.Contoso" --rollout-name "brazilUsShoeBoxTesting"
+az providerhub custom-rollout create --provider-namespace "Microsoft.Contoso" --rollout-name "canaryTesting99"
 ```
 ##### Show #####
 ```
@@ -24,11 +24,11 @@ az providerhub custom-rollout list --provider-namespace "Microsoft.Contoso"
 #### providerhub default-rollout ####
 ##### Create #####
 ```
-az providerhub default-rollout create --provider-namespace "Microsoft.Contoso" --rollout-name "2020week10"
+az providerhub default-rollout create --provider-namespace "Microsoft.Contoso" --rollout-name "2021week20"
 ```
 ##### Show #####
 ```
-az providerhub default-rollout show --provider-namespace "Microsoft.Contoso" --rollout-name "2020week10"
+az providerhub default-rollout show --provider-namespace "Microsoft.Contoso" --rollout-name "2021week20"
 ```
 ##### List #####
 ```
@@ -36,11 +36,11 @@ az providerhub default-rollout list --provider-namespace "Microsoft.Contoso"
 ```
 ##### Stop #####
 ```
-az providerhub default-rollout stop --provider-namespace "Microsoft.Contoso" --rollout-name "2020week10"
+az providerhub default-rollout stop --provider-namespace "Microsoft.Contoso" --rollout-name "2021week20"
 ```
 ##### Delete #####
 ```
-az providerhub default-rollout delete --provider-namespace "Microsoft.Contoso" --rollout-name "2020week10"
+az providerhub default-rollout delete --provider-namespace "Microsoft.Contoso" --rollout-name "2021week20"
 ```
 #### providerhub manifest ####
 ##### Checkin #####

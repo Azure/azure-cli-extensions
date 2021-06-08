@@ -79,14 +79,15 @@ class ResourceTypeRegistrationsOperations(object):
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
-        nestedResourceTypeSuffix = f'/resourcetypeRegistrations/{nested_resource_type}' if nested_resource_type else ''
+        resourceTypes = resource_type.split("/")
+        resourceTypeUrlSuffix = "/resourcetypeRegistrations/".join(resourceTypes)
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
             'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
-        url = url + nestedResourceTypeSuffix
+        url = url + resourceTypeUrlSuffix
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
@@ -117,7 +118,7 @@ class ResourceTypeRegistrationsOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/'}  # type: ignore
 
     def _create_or_update_initial(
         self,
@@ -172,14 +173,15 @@ class ResourceTypeRegistrationsOperations(object):
 
         # Construct URL
         url = self._create_or_update_initial.metadata['url']  # type: ignore
-        nestedResourceTypeSuffix = f'/resourcetypeRegistrations/{nested_resource_type}' if nested_resource_type else ''
+        resourceTypes = resource_type.split("/")
+        resourceTypeUrlSuffix = "/resourcetypeRegistrations/".join(resourceTypes)
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
             'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
-        url = url + nestedResourceTypeSuffix
+        url = url + resourceTypeUrlSuffix
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
@@ -237,7 +239,7 @@ class ResourceTypeRegistrationsOperations(object):
 
         return deserialized
     _create_or_update_initial.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}'}  # type: ignore
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/'}  # type: ignore
 
     def begin_create_or_update(
         self,
@@ -359,7 +361,6 @@ class ResourceTypeRegistrationsOperations(object):
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        nestedResourceTypeSuffix = f'/resourcetypeRegistrations/{nested_resource_type}' if nested_resource_type else ''
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
@@ -383,7 +384,7 @@ class ResourceTypeRegistrationsOperations(object):
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_create_or_update.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}'}  # type: ignore
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/'}  # type: ignore
 
     def delete(
         self,
@@ -414,14 +415,15 @@ class ResourceTypeRegistrationsOperations(object):
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
-        nestedResourceTypeSuffix = f'/resourcetypeRegistrations/{nested_resource_type}' if nested_resource_type else ''
+        resourceTypes = resource_type.split("/")
+        resourceTypeUrlSuffix = "/resourcetypeRegistrations/".join(resourceTypes)
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
             'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
-        url = url + nestedResourceTypeSuffix
+        url = url + resourceTypeUrlSuffix
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
@@ -449,7 +451,7 @@ class ResourceTypeRegistrationsOperations(object):
             return cls(pipeline_response, None, {})
 
     delete.metadata = {
-        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}'}  # type: ignore
+        'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/'}  # type: ignore
 
     def list_by_provider_registration(
         self,

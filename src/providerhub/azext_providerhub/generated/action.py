@@ -21,10 +21,10 @@ def generate_list(inputStr):
     return [word.strip() for word in inputStr.split(',')]
 
 
-class AddCustomrolloutsCanary(argparse.Action):
+class AddDefaultRolloutROW2(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
-        namespace.canary = action
+        namespace.rest_of_the_world_group_two = action
 
     def get_action(self, values, option_string):  # pylint: disable=no-self-use
         try:
@@ -39,10 +39,10 @@ class AddCustomrolloutsCanary(argparse.Action):
         for k in properties:
             kl = k.lower()
             v = properties[k]
-            if kl == 'regions':
-                d['regions'] = v
+            if kl == 'wait-duration':
+                d['wait_duration'] = v[0]
             else:
-                raise CLIError('Unsupported Key {} is provided for parameter canary. All possible keys are: regions'.
+                raise CLIError('Unsupported Key {} is provided for parameter rest_of_the_world_group_two. All possible keys are: wait-duration'.
                                format(k))
         return d
 
@@ -423,7 +423,7 @@ class AddAuthorizations(argparse._AppendAction):
         return d
 
 
-class AddDefaultrolloutsCanary(argparse.Action):
+class AddCanaryRegion(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
         namespace.canary = action
