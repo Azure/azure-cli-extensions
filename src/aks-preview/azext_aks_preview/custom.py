@@ -2416,7 +2416,7 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
         addon_profiles[CONST_MONITORING_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True, config={CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id})
         addons.remove('monitoring')
 
-    # error out if '--enable-addons=monitoring/azure-defender' isn't set but workspace_resource_id is
+    # error out if '--enable-addons=monitoring' isn't set but workspace_resource_id is
     elif workspace_resource_id:
         raise CLIError(
             '"--workspace-resource-id" requires "--enable-addons monitoring".')
@@ -3376,7 +3376,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                 addon, ManagedClusterAddonProfile(enabled=False))
             # special config handling for certain addons
             if addon == CONST_MONITORING_ADDON_NAME:
-                logAnalyticsConstName = CONST_MONITORING_ADDON_NAME
+                logAnalyticsConstName = CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID 
                 if addon_profile.enabled:
                     raise CLIError('The monitoring addon is already enabled for this managed cluster.\n'
                                    'To change monitoring configuration, run "az aks disable-addons -a monitoring"'
