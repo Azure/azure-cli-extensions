@@ -76,7 +76,7 @@ def load_arguments(self, _):
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
         c.argument('storage_account', options_list=['--storage-account'], help='Name or ID of the storage account to save the diagnostic information')
         c.argument('sas_token', options_list=['--sas-token'], help='The SAS token with writable permission for the storage account.')
-        c.argument('output_file', options_list=['--output-file'], type=file_type, default=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz'), help="Output zipped file path for the logs collected during troubleshoot.")
+        c.argument('output_file', options_list=['--output-file-path'], type=file_type, default=os.path.join(os.path.expanduser('~'), '.azure', 'az_connectedk8s_troubleshoot_output.tar.gz'), help="Output zipped file path for the logs collected during troubleshoot.")
 
     with self.argument_context('connectedk8s list') as c:
         pass
