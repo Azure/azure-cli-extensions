@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.5.16
++++++
+* Vendor SDK using latest swagger with optional query parameter added
+* Support private cluster public fqdn feature
+
 0.5.15
 +++++
 * Update to use 2021-05-01 api-version
