@@ -223,6 +223,9 @@ helps['aks create'] = """
         - name: --workspace-resource-id
           type: string
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
+        - name: --enable_aad_msi_auth
+          type: bool
+          short-summary: Sends monitoring data using a managed cluster identity instead of a Log Analytics workspace shared key.
         - name: --enable-cluster-autoscaler
           type: bool
           short-summary: Enable cluster autoscaler, default value is false.
@@ -1029,6 +1032,9 @@ parameters:
   - name: --workspace-resource-id
     type: string
     short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data.
+  - name: --enable_aad_msi_auth
+    type: bool
+    short-summary: Sends monitoring data using a managed cluster identity instead of a Log Analytics workspace shared key.
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
