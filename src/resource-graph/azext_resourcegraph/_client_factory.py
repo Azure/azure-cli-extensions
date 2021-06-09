@@ -11,4 +11,4 @@ def cf_resource_graph(cli_ctx, _):
 
 
 def cf_resource_graph_graph_query(cli_ctx, _):
-    return cf_resource_graph(cli_ctx, _).graph_query
+    return cf_resource_graph(cli_ctx, _)
