@@ -3376,7 +3376,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                 addon, ManagedClusterAddonProfile(enabled=False))
             # special config handling for certain addons
             if addon == CONST_MONITORING_ADDON_NAME:
-                logAnalyticsConstName = CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID 
+                logAnalyticsConstName = CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
                 if addon_profile.enabled:
                     raise CLIError('The monitoring addon is already enabled for this managed cluster.\n'
                                    'To change monitoring configuration, run "az aks disable-addons -a monitoring"'
