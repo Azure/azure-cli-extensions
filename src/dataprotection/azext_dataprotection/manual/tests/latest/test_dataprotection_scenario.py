@@ -95,7 +95,7 @@ def trigger_disk_restore(test):
     test.cmd('az dataprotection backup-instance validate-for-restore -g "{rg}" --vault-name "{vaultName}" -n "{backup_instance_name}" --restore-request-object "{restore_request}"')
 
     response_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rg}" --vault-name "{vaultName}"'
-                             ' -n "{backup_instance_name}" --parameters "{restore_request}"').get_output_in_json()
+                             ' -n "{backup_instance_name}" --restore-request-object "{restore_request}"').get_output_in_json()
     job_status = None
     test.kwargs.update({"backup_job_id": response_json["jobId"]})
     while job_status != "Completed":

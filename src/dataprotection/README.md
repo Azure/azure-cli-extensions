@@ -77,7 +77,7 @@ az dataprotection backup-instance validate-for-restore --name "testInstance1" --
 ##### Trigger restore #####
 ```
 az dataprotection backup-instance restore trigger -g sarath-rg --vault-name sarath-vault \
-    --backup-instance-name {backup_instance_name} --parameters restore_request.json
+    --backup-instance-name {backup_instance_name} --restore=request-object restore_request.json
 ```
 #### dataprotection backup-vault ####
 ##### Create #####

@@ -274,7 +274,7 @@ helps['dataprotection backup-instance restore trigger'] = """
     examples:
       - name: Trigger Restore
         text: |-
-               az dataprotection backup-instance restore trigger --name "testInstance1" --parameters \
+               az dataprotection backup-instance restore trigger --name "testInstance1" --restore-request-object \
 "{\\"objectType\\":\\"AzureBackupRecoveryPointBasedRestoreRequest\\",\\"recoveryPointId\\":\\"hardcodedRP\\",\\"restore\
 TargetInfo\\":{\\"datasourceInfo\\":{\\"datasourceType\\":\\"OssDB\\",\\"objectType\\":\\"Datasource\\",\\"resourceID\\\
 ":\\"/subscriptions/f75d8d8b-6735-4697-82e1-1a7a3ff0d5d4/resourceGroups/viveksipgtest/providers/Microsoft.DBforPostgreS\
@@ -288,7 +288,7 @@ rceUri\\":\\"\\"},\\"objectType\\":\\"RestoreTargetInfo\\",\\"recoveryOption\\":
 "PratikPrivatePreviewVault1"
       - name: Trigger Restore As Files
         text: |-
-               az dataprotection backup-instance restore trigger --name "testInstance1" --parameters \
+               az dataprotection backup-instance restore trigger --name "testInstance1" --restore-request-object \
 "{\\"objectType\\":\\"AzureBackupRecoveryPointBasedRestoreRequest\\",\\"recoveryPointId\\":\\"hardcodedRP\\",\\"restore\
 TargetInfo\\":{\\"objectType\\":\\"RestoreFilesTargetInfo\\",\\"recoveryOption\\":\\"FailIfExists\\",\\"restoreLocation\
 \\":\\"southeastasia\\",\\"targetDetails\\":{\\"filePrefix\\":\\"restoredblob\\",\\"restoreTargetLocationType\\":\\"Azu\
@@ -296,7 +296,7 @@ reBlobs\\",\\"url\\":\\"https://teststorage.blob.core.windows.net/restoretest\\"
 ore\\"}" --resource-group "000pikumar" --vault-name "PrivatePreviewVault1"
       - name: Trigger Restore With Rehydration
         text: |-
-               az dataprotection backup-instance restore trigger --name "testInstance1" --parameters \
+               az dataprotection backup-instance restore trigger --name "testInstance1" --restore-request-object \
 "{\\"objectType\\":\\"AzureBackupRestoreWithRehydrationRequest\\",\\"recoveryPointId\\":\\"hardcodedRP\\",\\"rehydratio\
 nPriority\\":\\"High\\",\\"rehydrationRetentionDuration\\":\\"7D\\",\\"restoreTargetInfo\\":{\\"datasourceInfo\\":{\\"d\
 atasourceType\\":\\"OssDB\\",\\"objectType\\":\\"Datasource\\",\\"resourceID\\":\\"/subscriptions/f75d8d8b-6735-4697-82\

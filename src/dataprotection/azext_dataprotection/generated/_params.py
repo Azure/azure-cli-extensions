@@ -130,8 +130,8 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('backup_instance_name', options_list=['--name', '-n', '--backup-instance-name'], type=str,
                    help='The name of the backup instance', id_part='child_name_1')
-        c.argument('parameters', type=validate_file_or_dict, help='Request body for operation Expected value: '
-                   'json-string/@json-file.')
+        c.argument('parameters', options_list=['--restore-request-object'], type=validate_file_or_dict, help='Request '
+                   'body for operation Expected value: json-string/@json-file.')
 
     with self.argument_context('dataprotection backup-instance validate-for-backup') as c:
         c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')

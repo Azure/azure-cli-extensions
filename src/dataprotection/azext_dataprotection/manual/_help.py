@@ -204,5 +204,5 @@ helps['dataprotection backup-instance restore trigger'] = """
     short-summary: Triggers restore for a BackupInstance.
     examples:
       - name: Trigger restore
-        text: az dataprotection backup-instance restore trigger -g sarath-rg --vault-name sarath-vault --backup-instance-name {backup_instance_name} --parameters restore_request.json
+        text: az dataprotection backup-instance restore trigger -g sarath-rg --vault-name sarath-vault --backup-instance-name {backup_instance_name} --restore-request-object restore_request.json
 """

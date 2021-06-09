@@ -93,6 +93,31 @@ def step_backup_instance_create(test, checks=None):
              checks=checks)
 
 
+# EXAMPLE: /BackupInstances/get/List BackupInstances in a Vault
+@try_manual
+def step_backup_instance_list(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az dataprotection backup-instance list '
+             '--resource-group "{rg_2}" '
+             '--vault-name "{myBackupVault}"',
+             checks=checks)
+
+
+# EXAMPLE: /BackupInstances/post/Trigger Adhoc Backup
+@try_manual
+def step_backup_instance_adhoc_backup(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az dataprotection backup-instance adhoc-backup '
+             '--name "{myBackupInstance}" '
+             '--rule-name "BackupWeekly" '
+             '--retention-tag-override "yearly" '
+             '--resource-group "{rg_2}" '
+             '--vault-name "{myBackupVault}"',
+             checks=checks)
+
+
 # EXAMPLE: /BackupInstances/post/Trigger Restore
 @try_manual
 def step_backup_instance_restore_trigger(test, checks=None):
@@ -100,17 +125,17 @@ def step_backup_instance_restore_trigger(test, checks=None):
         checks = []
     test.cmd('az dataprotection backup-instance restore trigger '
              '--name "{myBackupInstance}" '
-             '--parameters "{{\\"objectType\\":\\"AzureBackupRecoveryPointBasedRestoreRequest\\",\\"recoveryPointId\\":'
-             '\\"hardcodedRP\\",\\"restoreTargetInfo\\":{{\\"datasourceInfo\\":{{\\"datasourceType\\":\\"OssDB\\",\\"ob'
-             'jectType\\":\\"Datasource\\",\\"resourceID\\":\\"/subscriptions/{subscription_id}/resourceGroups/{rg_3}/p'
-             'roviders/Microsoft.DBforPostgreSQL/servers/{rg_3}/databases/testdb\\",\\"resourceLocation\\":\\"\\",\\"re'
-             'sourceName\\":\\"testdb\\",\\"resourceType\\":\\"Microsoft.DBforPostgreSQL/servers/databases\\",\\"resour'
-             'ceUri\\":\\"\\"}},\\"datasourceSetInfo\\":{{\\"datasourceType\\":\\"OssDB\\",\\"objectType\\":\\"Datasour'
-             'ceSet\\",\\"resourceID\\":\\"/subscriptions/{subscription_id}/resourceGroups/{rg_3}/providers/Microsoft.D'
-             'BforPostgreSQL/servers/{rg_3}\\",\\"resourceLocation\\":\\"\\",\\"resourceName\\":\\"{rg_3}\\",\\"resourc'
-             'eType\\":\\"Microsoft.DBforPostgreSQL/servers\\",\\"resourceUri\\":\\"\\"}},\\"objectType\\":\\"RestoreTa'
-             'rgetInfo\\",\\"recoveryOption\\":\\"FailIfExists\\",\\"restoreLocation\\":\\"southeastasia\\"}},\\"source'
-             'DataStoreType\\":\\"VaultStore\\"}}" '
+             '--restore-request-object "{{\\"objectType\\":\\"AzureBackupRecoveryPointBasedRestoreRequest\\",\\"recover'
+             'yPointId\\":\\"hardcodedRP\\",\\"restoreTargetInfo\\":{{\\"datasourceInfo\\":{{\\"datasourceType\\":\\"Os'
+             'sDB\\",\\"objectType\\":\\"Datasource\\",\\"resourceID\\":\\"/subscriptions/{subscription_id}/resourceGro'
+             'ups/{rg_3}/providers/Microsoft.DBforPostgreSQL/servers/{rg_3}/databases/testdb\\",\\"resourceLocation\\":'
+             '\\"\\",\\"resourceName\\":\\"testdb\\",\\"resourceType\\":\\"Microsoft.DBforPostgreSQL/servers/databases'
+             '\\",\\"resourceUri\\":\\"\\"}},\\"datasourceSetInfo\\":{{\\"datasourceType\\":\\"OssDB\\",\\"objectType\\'
+             '":\\"DatasourceSet\\",\\"resourceID\\":\\"/subscriptions/{subscription_id}/resourceGroups/{rg_3}/provider'
+             's/Microsoft.DBforPostgreSQL/servers/{rg_3}\\",\\"resourceLocation\\":\\"\\",\\"resourceName\\":\\"{rg_3}'
+             '\\",\\"resourceType\\":\\"Microsoft.DBforPostgreSQL/servers\\",\\"resourceUri\\":\\"\\"}},\\"objectType\\'
+             '":\\"RestoreTargetInfo\\",\\"recoveryOption\\":\\"FailIfExists\\",\\"restoreLocation\\":\\"southeastasia'
+             '\\"}},\\"sourceDataStoreType\\":\\"VaultStore\\"}}" '
              '--resource-group "{rg_2}" '
              '--vault-name "{myBackupVault}"',
              checks=checks)
@@ -123,11 +148,11 @@ def step_backup_instance_restore_trigger2(test, checks=None):
         checks = []
     test.cmd('az dataprotection backup-instance restore trigger '
              '--name "{myBackupInstance}" '
-             '--parameters "{{\\"objectType\\":\\"AzureBackupRecoveryPointBasedRestoreRequest\\",\\"recoveryPointId\\":'
-             '\\"hardcodedRP\\",\\"restoreTargetInfo\\":{{\\"objectType\\":\\"RestoreFilesTargetInfo\\",\\"recoveryOpti'
-             'on\\":\\"FailIfExists\\",\\"restoreLocation\\":\\"southeastasia\\",\\"targetDetails\\":{{\\"filePrefix\\"'
-             ':\\"restoredblob\\",\\"restoreTargetLocationType\\":\\"AzureBlobs\\",\\"url\\":\\"https://teststorage.blo'
-             'b.core.windows.net/restoretest\\"}}}},\\"sourceDataStoreType\\":\\"VaultStore\\"}}" '
+             '--restore-request-object "{{\\"objectType\\":\\"AzureBackupRecoveryPointBasedRestoreRequest\\",\\"recover'
+             'yPointId\\":\\"hardcodedRP\\",\\"restoreTargetInfo\\":{{\\"objectType\\":\\"RestoreFilesTargetInfo\\",\\"'
+             'recoveryOption\\":\\"FailIfExists\\",\\"restoreLocation\\":\\"southeastasia\\",\\"targetDetails\\":{{\\"f'
+             'ilePrefix\\":\\"restoredblob\\",\\"restoreTargetLocationType\\":\\"AzureBlobs\\",\\"url\\":\\"https://tes'
+             'tstorage.blob.core.windows.net/restoretest\\"}}}},\\"sourceDataStoreType\\":\\"VaultStore\\"}}" '
              '--resource-group "{rg_2}" '
              '--vault-name "PrivatePreviewVault1"',
              checks=checks)
@@ -140,18 +165,18 @@ def step_backup_instance_restore_trigger3(test, checks=None):
         checks = []
     test.cmd('az dataprotection backup-instance restore trigger '
              '--name "{myBackupInstance}" '
-             '--parameters "{{\\"objectType\\":\\"AzureBackupRestoreWithRehydrationRequest\\",\\"recoveryPointId\\":\\"'
-             'hardcodedRP\\",\\"rehydrationPriority\\":\\"High\\",\\"rehydrationRetentionDuration\\":\\"7D\\",\\"restor'
-             'eTargetInfo\\":{{\\"datasourceInfo\\":{{\\"datasourceType\\":\\"OssDB\\",\\"objectType\\":\\"Datasource\\'
-             '",\\"resourceID\\":\\"/subscriptions/{subscription_id}/resourceGroups/{rg_3}/providers/Microsoft.DBforPos'
-             'tgreSQL/servers/{rg_3}/databases/testdb\\",\\"resourceLocation\\":\\"\\",\\"resourceName\\":\\"testdb\\",'
-             '\\"resourceType\\":\\"Microsoft.DBforPostgreSQL/servers/databases\\",\\"resourceUri\\":\\"\\"}},\\"dataso'
-             'urceSetInfo\\":{{\\"datasourceType\\":\\"OssDB\\",\\"objectType\\":\\"DatasourceSet\\",\\"resourceID\\":'
-             '\\"/subscriptions/{subscription_id}/resourceGroups/{rg_3}/providers/Microsoft.DBforPostgreSQL/servers/{rg'
-             '_3}\\",\\"resourceLocation\\":\\"\\",\\"resourceName\\":\\"{rg_3}\\",\\"resourceType\\":\\"Microsoft.DBfo'
-             'rPostgreSQL/servers\\",\\"resourceUri\\":\\"\\"}},\\"objectType\\":\\"RestoreTargetInfo\\",\\"recoveryOpt'
-             'ion\\":\\"FailIfExists\\",\\"restoreLocation\\":\\"southeastasia\\"}},\\"sourceDataStoreType\\":\\"VaultS'
-             'tore\\"}}" '
+             '--restore-request-object "{{\\"objectType\\":\\"AzureBackupRestoreWithRehydrationRequest\\",\\"recoveryPo'
+             'intId\\":\\"hardcodedRP\\",\\"rehydrationPriority\\":\\"High\\",\\"rehydrationRetentionDuration\\":\\"7D'
+             '\\",\\"restoreTargetInfo\\":{{\\"datasourceInfo\\":{{\\"datasourceType\\":\\"OssDB\\",\\"objectType\\":\\'
+             '"Datasource\\",\\"resourceID\\":\\"/subscriptions/{subscription_id}/resourceGroups/{rg_3}/providers/Micro'
+             'soft.DBforPostgreSQL/servers/{rg_3}/databases/testdb\\",\\"resourceLocation\\":\\"\\",\\"resourceName\\":'
+             '\\"testdb\\",\\"resourceType\\":\\"Microsoft.DBforPostgreSQL/servers/databases\\",\\"resourceUri\\":\\"\\'
+             '"}},\\"datasourceSetInfo\\":{{\\"datasourceType\\":\\"OssDB\\",\\"objectType\\":\\"DatasourceSet\\",\\"re'
+             'sourceID\\":\\"/subscriptions/{subscription_id}/resourceGroups/{rg_3}/providers/Microsoft.DBforPostgreSQL'
+             '/servers/{rg_3}\\",\\"resourceLocation\\":\\"\\",\\"resourceName\\":\\"{rg_3}\\",\\"resourceType\\":\\"Mi'
+             'crosoft.DBforPostgreSQL/servers\\",\\"resourceUri\\":\\"\\"}},\\"objectType\\":\\"RestoreTargetInfo\\",\\'
+             '"recoveryOption\\":\\"FailIfExists\\",\\"restoreLocation\\":\\"southeastasia\\"}},\\"sourceDataStoreType'
+             '\\":\\"VaultStore\\"}}" '
              '--resource-group "{rg_2}" '
              '--vault-name "{myBackupVault}"',
              checks=checks)
@@ -281,31 +306,6 @@ def step_backup_instance_show(test, checks=None):
         checks = []
     test.cmd('az dataprotection backup-instance show '
              '--name "{myBackupInstance}" '
-             '--resource-group "{rg_2}" '
-             '--vault-name "{myBackupVault}"',
-             checks=checks)
-
-
-# EXAMPLE: /BackupInstances/get/List BackupInstances in a Vault
-@try_manual
-def step_backup_instance_list(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az dataprotection backup-instance list '
-             '--resource-group "{rg_2}" '
-             '--vault-name "{myBackupVault}"',
-             checks=checks)
-
-
-# EXAMPLE: /BackupInstances/post/Trigger Adhoc Backup
-@try_manual
-def step_backup_instance_adhoc_backup(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az dataprotection backup-instance adhoc-backup '
-             '--name "{myBackupInstance}" '
-             '--rule-name "BackupWeekly" '
-             '--retention-tag-override "yearly" '
              '--resource-group "{rg_2}" '
              '--vault-name "{myBackupVault}"',
              checks=checks)
