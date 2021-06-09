@@ -3878,6 +3878,10 @@ def _get_kubelet_config(file_path):
     config_object.allowed_unsafe_sysctls = kubelet_config.get(
         "allowedUnsafeSysctls", None)
     config_object.fail_swap_on = kubelet_config.get("failSwapOn", None)
+    config_object.container_log_max_files = kubelet_config.get(
+        "containerLogMaxFiles", None)
+    config_object.container_log_max_size_mb = kubelet_config.get(
+        "containerLogMaxSizeMb", None)
 
     return config_object
 
