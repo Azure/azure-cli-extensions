@@ -1140,6 +1140,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('identity.type', 'SystemAssigned')
         ])
 
+        # check egress
+        endpoints = self.cmd('aks egress-endpoints list --resource-group={resource_group} --name={name}').get_output_in_json()
+        categories = [e["category"] for e in endpoints]
+        assert "addon-monitoring" in categories
+
         # delete
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
