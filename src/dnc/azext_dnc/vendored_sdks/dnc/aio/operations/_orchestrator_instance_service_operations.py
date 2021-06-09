@@ -237,6 +237,7 @@ class OrchestratorInstanceServiceOperations:
         self,
         resource_group_name: str,
         resource_name: str,
+        force_delete: Optional[bool] = None,
         **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
@@ -259,6 +260,8 @@ class OrchestratorInstanceServiceOperations:
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+        if force_delete is not None:
+            query_parameters['forceDelete'] = self._serialize.query("force_delete", force_delete, 'bool')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
@@ -282,6 +285,7 @@ class OrchestratorInstanceServiceOperations:
         self,
         resource_group_name: str,
         resource_name: str,
+        force_delete: Optional[bool] = None,
         **kwargs
     ) -> AsyncLROPoller[None]:
         """Deletes the Orchestrator Instance.
@@ -291,6 +295,8 @@ class OrchestratorInstanceServiceOperations:
         :param resource_name: The name of the resource. It must be a minimum of 3 characters, and a
          maximum of 63.
         :type resource_name: str
+        :param force_delete: Force delete resource.
+        :type force_delete: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -312,6 +318,7 @@ class OrchestratorInstanceServiceOperations:
             raw_result = await self._delete_initial(
                 resource_group_name=resource_group_name,
                 resource_name=resource_name,
+                force_delete=force_delete,
                 cls=lambda x,y,z: x,
                 **kwargs
             )

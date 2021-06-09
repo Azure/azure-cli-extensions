@@ -15,8 +15,8 @@ from .preparers import VirtualNetworkPreparer
 from .example_steps import step_controller_create
 from .example_steps import step_controller_show
 from .example_steps import step_delegated_subnet_service_create
+from .example_steps import step_delegated_subnet_service_list
 from .example_steps import step_delegated_subnet_service_show
-from .example_steps import step_delegated_subnet_service_patch_detail
 from .example_steps import step_orchestrator_instance_service_create
 from .example_steps import step_orchestrator_instance_service_show
 from .example_steps import step_orchestrator_instance_service_list
@@ -25,7 +25,6 @@ from .example_steps import step_orchestrator_instance_service_delete
 from .example_steps import step_controller_delete
 from .example_steps import step_delegated_network_list
 from .example_steps import step_delegated_network_list2
-from .example_steps import step_delegated_subnet_service_list
 from .example_steps import step_delegated_subnet_service_list2
 from .example_steps import step_delegated_subnet_service_delete
 

@@ -58,7 +58,6 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'dnc_delegated_subnet_service_show')
         g.custom_command('create', 'dnc_delegated_subnet_service_create', supports_no_wait=True)
         g.custom_command('delete', 'dnc_delegated_subnet_service_delete', supports_no_wait=True, confirmation=True)
-        g.custom_command('patch-detail', 'dnc_delegated_subnet_service_patch_detail', supports_no_wait=True)
         g.custom_wait_command('wait', 'dnc_delegated_subnet_service_show')
 
     with self.command_group('dnc', is_experimental=True):

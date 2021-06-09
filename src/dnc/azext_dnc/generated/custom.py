@@ -103,11 +103,13 @@ def dnc_orchestrator_instance_service_create(client,
 def dnc_orchestrator_instance_service_delete(client,
                                              resource_group_name,
                                              resource_name,
+                                             force_delete=None,
                                              no_wait=False):
     return sdk_no_wait(no_wait,
                        client.begin_delete,
                        resource_group_name=resource_group_name,
-                       resource_name=resource_name)
+                       resource_name=resource_name,
+                       force_delete=force_delete)
 
 
 def dnc_delegated_subnet_service_list(client,
@@ -156,17 +158,3 @@ def dnc_delegated_subnet_service_delete(client,
                        resource_group_name=resource_group_name,
                        resource_name=resource_name,
                        force_delete=force_delete)
-
-
-def dnc_delegated_subnet_service_patch_detail(client,
-                                              resource_group_name,
-                                              resource_name,
-                                              tags=None,
-                                              no_wait=False):
-    parameters = {}
-    parameters['tags'] = tags
-    return sdk_no_wait(no_wait,
-                       client.begin_patch_details,
-                       resource_group_name=resource_group_name,
-                       resource_name=resource_name,
-                       parameters=parameters)

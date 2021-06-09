@@ -51,24 +51,22 @@ def step_delegated_subnet_service_create(test, rg, rg_2, checks=None):
              checks=checks)
 
 
+# EXAMPLE: /DelegatedSubnetService/get/Get DelegatedSubnets resources by subscription
+@try_manual
+def step_delegated_subnet_service_list(test, rg, rg_2, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az dnc delegated-subnet-service list '
+             '-g ""',
+             checks=checks)
+
+
 # EXAMPLE: /DelegatedSubnetService/get/Get details of a delegated subnet
 @try_manual
 def step_delegated_subnet_service_show(test, rg, rg_2, checks=None):
     if checks is None:
         checks = []
     test.cmd('az dnc delegated-subnet-service show '
-             '--resource-group "{rg}" '
-             '--resource-name "delegated1"',
-             checks=checks)
-
-
-# EXAMPLE: /DelegatedSubnetService/patch/patch delegated subnet
-@try_manual
-def step_delegated_subnet_service_patch_detail(test, rg, rg_2, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az dnc delegated-subnet-service patch-detail '
-             '--tags key="value" '
              '--resource-group "{rg}" '
              '--resource-name "delegated1"',
              checks=checks)
@@ -88,8 +86,8 @@ def step_orchestrator_instance_service_create(test, rg, rg_2, checks=None):
              'r/{myController}" '
              '--orchestrator-app-id "546192d7-503f-477a-9cfe-4efc3ee2b6e1" '
              '--orchestrator-tenant-id "da6192d7-503f-477a-9cfe-4efc3ee2b6c3" '
-             '--privlinkresourceid "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/pr'
-             'ivateLinkServices/plresource1" '
+             '--priv-link-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network'
+             '/privateLinkServices/plresource1" '
              '--resource-group "{rg}" '
              '--resource-name "testk8s1"',
              checks=checks)
@@ -170,21 +168,11 @@ def step_delegated_network_list2(test, rg, rg_2, checks=None):
 
 # EXAMPLE: /DelegatedSubnetService/get/Get DelegatedSubnets resources by resource group
 @try_manual
-def step_delegated_subnet_service_list(test, rg, rg_2, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az dnc delegated-subnet-service list '
-             '--resource-group "{rg_2}"',
-             checks=checks)
-
-
-# EXAMPLE: /DelegatedSubnetService/get/Get DelegatedSubnets resources by subscription
-@try_manual
 def step_delegated_subnet_service_list2(test, rg, rg_2, checks=None):
     if checks is None:
         checks = []
     test.cmd('az dnc delegated-subnet-service list '
-             '-g ""',
+             '--resource-group "{rg_2}"',
              checks=checks)
 
 

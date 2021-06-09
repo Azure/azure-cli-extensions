@@ -18,7 +18,7 @@ def step_controller_create(test, rg, rg_2, checks=None):
              '--resource-group "{rg}" '
              '--resource-name "{myController}"',
              checks=checks)
-
+             
 
 # EXAMPLE: /Controller/get/Get details of a controller
 def step_controller_show(test, rg, rg_2, checks=None):
@@ -79,8 +79,8 @@ def step_orchestrator_instance_service_create(test, rg, rg_2, checks=None):
              'r/{myController}" '
              '--orchestrator-app-id "546192d7-503f-477a-9cfe-4efc3ee2b6e1" '
              '--orchestrator-tenant-id "da6192d7-503f-477a-9cfe-4efc3ee2b6c3" '
-             '--privlinkresourceid "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network/pr'
-             'ivateLinkServices/plresource1" '
+             '--priv-link-resource-id "/subscriptions/{subscription_id}/resourceGroups/{rg}/providers/Microsoft.Network'
+             '/privateLinkServices/plresource1" '
              '--resource-group "{rg}" '
              '--resource-name "testk8s1"',
              checks=checks)

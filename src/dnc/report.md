@@ -36,7 +36,6 @@
 |[az dnc delegated-subnet-service show](#DelegatedSubnetServiceGetDetails)|GetDetails|[Parameters](#ParametersDelegatedSubnetServiceGetDetails)|[Example](#ExamplesDelegatedSubnetServiceGetDetails)|
 |[az dnc delegated-subnet-service create](#DelegatedSubnetServicePutDetails)|PutDetails|[Parameters](#ParametersDelegatedSubnetServicePutDetails)|[Example](#ExamplesDelegatedSubnetServicePutDetails)|
 |[az dnc delegated-subnet-service delete](#DelegatedSubnetServiceDeleteDetails)|DeleteDetails|[Parameters](#ParametersDelegatedSubnetServiceDeleteDetails)|[Example](#ExamplesDelegatedSubnetServiceDeleteDetails)|
-|[az dnc delegated-subnet-service patch-detail](#DelegatedSubnetServicePatchDetails)|PatchDetails|[Parameters](#ParametersDelegatedSubnetServicePatchDetails)|[Example](#ExamplesDelegatedSubnetServicePatchDetails)|
 
 ### <a name="CommandsInOrchestratorInstanceService">Commands in `az dnc orchestrator-instance-service` group</a>
 |CLI Command|Operation Swagger name|Parameters|Examples|
@@ -175,19 +174,6 @@ az dnc delegated-subnet-service delete --resource-group "TestRG" --resource-name
 |**--resource-name**|string|The name of the resource. It must be a minimum of 3 characters, and a maximum of 63.|resource_name|resourceName|
 |**--force-delete**|boolean|Force delete resource|force_delete|forceDelete|
 
-#### <a name="DelegatedSubnetServicePatchDetails">Command `az dnc delegated-subnet-service patch-detail`</a>
-
-##### <a name="ExamplesDelegatedSubnetServicePatchDetails">Example</a>
-```
-az dnc delegated-subnet-service patch-detail --tags key="value" --resource-group "TestRG" --resource-name "delegated1"
-```
-##### <a name="ParametersDelegatedSubnetServicePatchDetails">Parameters</a> 
-|Option|Type|Description|Path (SDK)|Swagger name|
-|------|----|-----------|----------|------------|
-|**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
-|**--resource-name**|string|The name of the resource. It must be a minimum of 3 characters, and a maximum of 63.|resource_name|resourceName|
-|**--tags**|dictionary|The resource tags.|tags|tags|
-
 ### group `az dnc orchestrator-instance-service`
 #### <a name="OrchestratorInstanceServiceListByResourceGroup">Command `az dnc orchestrator-instance-service list`</a>
 
@@ -229,8 +215,8 @@ az dnc orchestrator-instance-service create --type "SystemAssigned" --location "
 "https://testk8s.cloudapp.net" --cluster-root-ca "ddsadsad344mfdsfdl" --id "/subscriptions/613192d7-503f-477a-9cfe-4efc\
 3ee2bd60/resourceGroups/TestRG/providers/Microsoft.DelegatedNetwork/controller/testcontroller" --orchestrator-app-id \
 "546192d7-503f-477a-9cfe-4efc3ee2b6e1" --orchestrator-tenant-id "da6192d7-503f-477a-9cfe-4efc3ee2b6c3" \
---privlinkresourceid "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.Net\
-work/privateLinkServices/plresource1" --resource-group "TestRG" --resource-name "testk8s1"
+--priv-link-resource-id "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.\
+Network/privateLinkServices/plresource1" --resource-group "TestRG" --resource-name "testk8s1"
 ```
 ##### <a name="ParametersOrchestratorInstanceServiceCreate">Parameters</a> 
 |Option|Type|Description|Path (SDK)|Swagger name|
@@ -258,3 +244,4 @@ az dnc orchestrator-instance-service delete --resource-group "TestRG" --resource
 |------|----|-----------|----------|------------|
 |**--resource-group-name**|string|The name of the resource group. The name is case insensitive.|resource_group_name|resourceGroupName|
 |**--resource-name**|string|The name of the resource. It must be a minimum of 3 characters, and a maximum of 63.|resource_name|resourceName|
+|**--force-delete**|boolean|Force delete resource|force_delete|forceDelete|

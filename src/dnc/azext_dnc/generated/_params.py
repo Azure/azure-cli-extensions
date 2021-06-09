@@ -71,8 +71,8 @@ def load_arguments(self, _):
         c.argument('cluster_root_ca', type=str, help='RootCA certificate of kubernetes cluster base64 encoded')
         c.argument('api_server_endpoint', type=str, help='K8s APIServer url. Either one of apiServerEndpoint or '
                    'privateLinkResourceId can be specified')
-        c.argument('private_link_resource_id', options_list=['--privlinkresourceid'], type=str, help='private link arm '
-                   'resource id. Either one of apiServerEndpoint or privateLinkResourceId can be specified')
+        c.argument('private_link_resource_id', options_list=['--priv-link-resource-id'], type=str, help='private link '
+                   'arm resource id. Either one of apiServerEndpoint or privateLinkResourceId can be specified')
         c.argument('id_', options_list=['--id'], type=str, help='controller arm resource id', arg_group='Controller '
                    'Details')
 
@@ -80,6 +80,7 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('resource_name', type=str, help='The name of the resource. It must be a minimum of 3 characters, '
                    'and a maximum of 63.', id_part='name')
+        c.argument('force_delete', arg_type=get_three_state_flag(), help='Force delete resource')
 
     with self.argument_context('dnc orchestrator-instance-service wait') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -110,12 +111,6 @@ def load_arguments(self, _):
         c.argument('resource_name', type=str, help='The name of the resource. It must be a minimum of 3 characters, '
                    'and a maximum of 63.', id_part='name')
         c.argument('force_delete', arg_type=get_three_state_flag(), help='Force delete resource')
-
-    with self.argument_context('dnc delegated-subnet-service patch-detail') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('resource_name', type=str, help='The name of the resource. It must be a minimum of 3 characters, '
-                   'and a maximum of 63.', id_part='name')
-        c.argument('tags', tags_type)
 
     with self.argument_context('dnc delegated-subnet-service wait') as c:
         c.argument('resource_group_name', resource_group_name_type)

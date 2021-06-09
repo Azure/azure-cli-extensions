@@ -112,9 +112,9 @@ helps['dnc orchestrator-instance-service create'] = """
 --api-server-endpoint "https://testk8s.cloudapp.net" --cluster-root-ca "ddsadsad344mfdsfdl" --id \
 "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resourceGroups/TestRG/providers/Microsoft.DelegatedNetwork/control\
 ler/testcontroller" --orchestrator-app-id "546192d7-503f-477a-9cfe-4efc3ee2b6e1" --orchestrator-tenant-id \
-"da6192d7-503f-477a-9cfe-4efc3ee2b6c3" --privlinkresourceid "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/resour\
-ceGroups/TestRG/providers/Microsoft.Network/privateLinkServices/plresource1" --resource-group "TestRG" --resource-name \
-"testk8s1"
+"da6192d7-503f-477a-9cfe-4efc3ee2b6c3" --priv-link-resource-id "/subscriptions/613192d7-503f-477a-9cfe-4efc3ee2bd60/res\
+ourceGroups/TestRG/providers/Microsoft.Network/privateLinkServices/plresource1" --resource-group "TestRG" \
+--resource-name "testk8s1"
 """
 
 helps['dnc orchestrator-instance-service delete'] = """
@@ -188,16 +188,6 @@ helps['dnc delegated-subnet-service delete'] = """
       - name: delete delegated subnet
         text: |-
                az dnc delegated-subnet-service delete --resource-group "TestRG" --resource-name "delegated1"
-"""
-
-helps['dnc delegated-subnet-service patch-detail'] = """
-    type: command
-    short-summary: "Patch delegated subnet resource."
-    examples:
-      - name: patch delegated subnet
-        text: |-
-               az dnc delegated-subnet-service patch-detail --tags key="value" --resource-group "TestRG" \
---resource-name "delegated1"
 """
 
 helps['dnc delegated-subnet-service wait'] = """
