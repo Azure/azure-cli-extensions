@@ -1032,6 +1032,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_pod_identity=False,
                enable_pod_identity_with_kubenet=False,
                enable_encryption_at_host=False,
+               enable_ultra_ssd=False,
                enable_secret_rotation=False,
                disable_local_accounts=False,
                no_wait=False,
@@ -1093,6 +1094,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         enable_fips=enable_fips_image,
         node_public_ip_prefix_id=node_public_ip_prefix_id,
         enable_encryption_at_host=enable_encryption_at_host,
+        enable_ultra_ssd=enable_ultra_ssd,
         max_pods=int(max_pods) if max_pods else None,
         type=vm_set_type
     )
@@ -3022,6 +3024,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       kubelet_config=None,
                       linux_os_config=None,
                       enable_encryption_at_host=False,
+                      enable_ultra_ssd=False,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -3073,6 +3076,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         scale_set_priority=priority,
         upgrade_settings=upgradeSettings,
         enable_encryption_at_host=enable_encryption_at_host,
+        enable_ultra_ssd=enable_ultra_ssd,
         mode=mode
     )
 

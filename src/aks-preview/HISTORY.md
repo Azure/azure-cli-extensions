@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.5.17
++++++
+* Add parameter '--enable-ultra-ssd' to enable UltraSSD on agent node pool
 
 0.5.16
 +++++
