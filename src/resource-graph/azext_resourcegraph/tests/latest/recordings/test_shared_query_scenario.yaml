@@ -1,7 +1,7 @@
 interactions:
 - request:
-    body: '{"location": "global", "properties": {"description": "AzureCliTest", "query":
-      "project id, name, type, location, tags"}}'
+    body: '{"location": "global", "tags": {"a": "b"}, "properties": {"description":
+      "AzureCliTest", "query": "project id, name, type, location, tags"}}'
     headers:
       Accept:
       - application/json
@@ -12,28 +12,28 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '120'
+      - '140'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -n -q -d
+      - -g -n -q -d --tags
       User-Agent:
       - AZURECLI/2.21.0 azsdk-python-mgmt-resourcegraph/10.1.0 Python/3.7.9 (Windows-10-10.0.19041-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ResourceGraph/queries/clitest000002?api-version=2018-09-01-preview
   response:
     body:
-      string: '{"properties":{"resultKind":"UnKnown","timeModified":"2021-06-03T04:01:09.2882757Z","query":"project
-        id, name, type, location, tags","description":"AzureCliTest"},"type":"microsoft.resourcegraph/queries","location":"global","subscriptionId":"34e09169-36e2-4117-ae05-98b60ea39dc4","resourceGroup":"clitest.rg000001","name":"clitest000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.resourcegraph/queries/clitest000002","etag":"\"fe00a557-0000-0100-0000-60b854050000\""}'
+      string: '{"properties":{"resultKind":"UnKnown","timeModified":"2021-06-09T07:20:29.179434Z","query":"project
+        id, name, type, location, tags","description":"AzureCliTest"},"type":"microsoft.resourcegraph/queries","location":"global","subscriptionId":"34e09169-36e2-4117-ae05-98b60ea39dc4","resourceGroup":"clitest.rg000001","name":"clitest000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.resourcegraph/queries/clitest000002","tags":{"a":"b"},"etag":"\"0700ff83-0000-0100-0000-60c06bbd0000\""}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '667'
+      - '683'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 03 Jun 2021 04:01:09 GMT
+      - Wed, 09 Jun 2021 07:20:29 GMT
       expires:
       - '-1'
       pragma:
@@ -78,17 +78,17 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ResourceGraph/queries/clitest000002?api-version=2018-09-01-preview
   response:
     body:
-      string: '{"properties":{"resultKind":"UnKnown","timeModified":"2021-06-03T04:01:09.2882757Z","query":"project
-        id, name, type, location, tags","description":"AzureCliTest"},"type":"microsoft.resourcegraph/queries","location":"global","subscriptionId":"34e09169-36e2-4117-ae05-98b60ea39dc4","resourceGroup":"clitest.rg000001","name":"clitest000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.resourcegraph/queries/clitest000002","etag":"\"fe00a557-0000-0100-0000-60b854050000\""}'
+      string: '{"properties":{"resultKind":"UnKnown","timeModified":"2021-06-09T07:20:29.179434Z","query":"project
+        id, name, type, location, tags","description":"AzureCliTest"},"type":"microsoft.resourcegraph/queries","location":"global","subscriptionId":"34e09169-36e2-4117-ae05-98b60ea39dc4","resourceGroup":"clitest.rg000001","name":"clitest000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.resourcegraph/queries/clitest000002","tags":{"a":"b"},"etag":"\"0700ff83-0000-0100-0000-60c06bbd0000\""}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '667'
+      - '683'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 03 Jun 2021 04:01:09 GMT
+      - Wed, 09 Jun 2021 07:20:29 GMT
       expires:
       - '-1'
       pragma:
@@ -131,17 +131,17 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ResourceGraph/queries?api-version=2018-09-01-preview
   response:
     body:
-      string: '{"value":[{"properties":{"resultKind":"UnKnown","timeModified":"2021-06-03T04:01:09.2882757Z","query":"project
-        id, name, type, location, tags","description":"AzureCliTest"},"type":"microsoft.resourcegraph/queries","location":"global","subscriptionId":"34e09169-36e2-4117-ae05-98b60ea39dc4","resourceGroup":"clitest.rg000001","name":"clitest000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.resourcegraph/queries/clitest000002","etag":"\"fe00a557-0000-0100-0000-60b854050000\""}]}'
+      string: '{"value":[{"properties":{"resultKind":"UnKnown","timeModified":"2021-06-09T07:20:29.179434Z","query":"project
+        id, name, type, location, tags","description":"AzureCliTest"},"type":"microsoft.resourcegraph/queries","location":"global","subscriptionId":"34e09169-36e2-4117-ae05-98b60ea39dc4","resourceGroup":"clitest.rg000001","name":"clitest000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/microsoft.resourcegraph/queries/clitest000002","tags":{"a":"b"},"etag":"\"0700ff83-0000-0100-0000-60c06bbd0000\""}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '679'
+      - '695'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 03 Jun 2021 04:01:10 GMT
+      - Wed, 09 Jun 2021 07:20:30 GMT
       expires:
       - '-1'
       pragma:
@@ -193,7 +193,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 03 Jun 2021 04:01:13 GMT
+      - Wed, 09 Jun 2021 07:20:32 GMT
       expires:
       - '-1'
       pragma:
@@ -245,7 +245,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 03 Jun 2021 04:01:13 GMT
+      - Wed, 09 Jun 2021 07:20:32 GMT
       expires:
       - '-1'
       pragma:
