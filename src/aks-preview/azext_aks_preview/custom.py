@@ -1031,6 +1031,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                enable_pod_identity=False,
                enable_pod_identity_with_kubenet=False,
                enable_encryption_at_host=False,
+               enable_ultra_ssd=False,
                enable_secret_rotation=False,
                disable_local_accounts=False,
                no_wait=False,
@@ -1092,6 +1093,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         enable_fips=enable_fips_image,
         node_public_ip_prefix_id=node_public_ip_prefix_id,
         enable_encryption_at_host=enable_encryption_at_host,
+        enable_ultra_ssd=enable_ultra_ssd,
         max_pods=int(max_pods) if max_pods else None,
         type=vm_set_type
     )
@@ -3018,6 +3020,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
                       kubelet_config=None,
                       linux_os_config=None,
                       enable_encryption_at_host=False,
+                      enable_ultra_ssd=False,
                       no_wait=False):
     instances = client.list(resource_group_name, cluster_name)
     for agentpool_profile in instances:
@@ -3069,6 +3072,7 @@ def aks_agentpool_add(cmd,      # pylint: disable=unused-argument,too-many-local
         scale_set_priority=priority,
         upgrade_settings=upgradeSettings,
         enable_encryption_at_host=enable_encryption_at_host,
+        enable_ultra_ssd=enable_ultra_ssd,
         mode=mode
     )
 
@@ -3870,6 +3874,10 @@ def _get_kubelet_config(file_path):
     config_object.allowed_unsafe_sysctls = kubelet_config.get(
         "allowedUnsafeSysctls", None)
     config_object.fail_swap_on = kubelet_config.get("failSwapOn", None)
+    config_object.container_log_max_files = kubelet_config.get(
+        "containerLogMaxFiles", None)
+    config_object.container_log_max_size_mb = kubelet_config.get(
+        "containerLogMaxSizeMb", None)
 
     return config_object
 
@@ -4205,3 +4213,7 @@ def _ensure_cluster_identity_permission_on_kubelet_identity(cli_ctx, cluster_ide
     if not _add_role_assignment(cli_ctx, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,
                                 is_service_principal=False, scope=scope):
         raise CLIError('Could not grant Managed Identity Operator permission to cluster identity at scope {}'.format(scope))
+
+
+def aks_egress_endpoints_list(cmd, client, resource_group_name, name):   # pylint: disable=unused-argument
+    return client.list_outbound_network_dependencies_endpoints(resource_group_name, name)

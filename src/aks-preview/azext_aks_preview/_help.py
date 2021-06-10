@@ -329,6 +329,9 @@ helps['aks create'] = """
         - name: --enable-encryption-at-host
           type: bool
           short-summary: Enable EncryptionAtHost on agent node pool.
+        - name: --enable-ultra-ssd
+          type: bool
+          short-summary: Enable UltraSSD on agent node pool.
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
@@ -374,6 +377,8 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --tags "foo=bar" "baz=qux"
         - name: Create a kubernetes cluster with EncryptionAtHost enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-encryption-at-host
+        - name: Create a kubernetes cluster with UltraSSD enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-ultra-ssd
         - name: Create a kubernetes cluster with custom control plane identity and kubelet identity.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --assign-identity <control-plane-identity-resource-id> --assign-kubelet-identity <kubelet-identity-resource-id>
         - name: Create a kubernetes cluster with Azure RBAC enabled.
@@ -925,6 +930,9 @@ helps['aks nodepool add'] = """
         - name: --enable-encryption-at-host
           type: bool
           short-summary: Enable EncryptionAtHost on agent node pool.
+        - name: --enable-ultra-ssd
+          type: bool
+          short-summary: Enable UltraSSD on agent node pool.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1171,4 +1179,14 @@ helps['aks pod-identity exception update'] = """
 helps['aks pod-identity exception list'] = """
     type: command
     short-summary: List pod identity exceptions in a managed Kubernetes cluster
+"""
+
+helps['aks egress-endpoints'] = """
+    type: group
+    short-summary: Commands to manage egress endpoints in managed Kubernetes cluster.
+"""
+
+helps['aks egress-endpoints list'] = """
+    type: command
+    short-summary: List egress endpoints that are required or recommended to be whitelisted for a cluster.
 """
