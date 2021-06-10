@@ -18,8 +18,8 @@ az extension add --name providerhub
 
 ```
 az providerhub custom-rollout create \
-    --provider-namespace "Microsoft.Contoso" --rollout-name "canaryTesting99" \
-    --canary regions="EastUS2EUAP" regions="centraluseuap"
+--provider-namespace "Microsoft.Contoso" --rollout-name "canaryTesting99" \
+--canary regions="EastUS2EUAP" regions="centraluseuap"
 ```
 
 ##### Show
@@ -39,7 +39,10 @@ az providerhub custom-rollout list --provider-namespace "Microsoft.Contoso"
 ##### Create
 
 ```
-az providerhub default-rollout create --provider-namespace "Microsoft.Contoso" --rollout-name "2021week20"
+az providerhub default-rollout create \
+--provider-namespace "Microsoft.Contoso" --rollout-name "2021week20" \
+--canary skip-regions="eastus2euap" \
+--rest-of-the-world-group-two wait-duration="PT4H"
 ```
 
 ##### Show
@@ -86,20 +89,20 @@ az providerhub manifest generate --provider-namespace "Microsoft.Contoso"
 
 ```
 az providerhub provider-registration create \
-    --providerhub-metadata-authorizations application-id="00000000-0000-0000-0000-000000000000" \
-    role-definition-id="00000000-0000-0000-0000-000000000000" \
-    --providerhub-metadata-authentication allowed-audiences="https://management.core.windows.net/" \
-    --service-tree-infos service-id="00000000-0000-0000-0000-000000000000" \
-    component-id="00000000-0000-0000-0000-000000000000" \
-    --capabilities effect="Allow" quota-id="CSP_2015-05-01" \
-    --capabilities effect="Allow" quota-id="CSP_MG_2017-12-01" \
-    --manifest-owners "SPARTA-PlatformServiceAdministrator" \
-    --incident-contact-email "helpme@contoso.com" \
-    --incident-routing-service "Contoso Resource Provider" \
-    --incident-routing-team "Contoso Triage" \
-    --provider-type "Internal" \
-    --provider-version "2.0" \
-    --provider-namespace "Microsoft.Contoso"
+--providerhub-metadata-authorizations application-id="00000000-0000-0000-0000-000000000000" \
+role-definition-id="00000000-0000-0000-0000-000000000000" \
+--providerhub-metadata-authentication allowed-audiences="https://management.core.windows.net/" \
+--service-tree-infos service-id="00000000-0000-0000-0000-000000000000" \
+component-id="00000000-0000-0000-0000-000000000000" \
+--capabilities effect="Allow" quota-id="CSP_2015-05-01" \
+--capabilities effect="Allow" quota-id="CSP_MG_2017-12-01" \
+--manifest-owners "SPARTA-PlatformServiceAdministrator" \
+--incident-contact-email "helpme@contoso.com" \
+--incident-routing-service "Contoso Resource Provider" \
+--incident-routing-team "Contoso Triage" \
+--provider-type "Internal" \
+--provider-version "2.0" \
+--provider-namespace "Microsoft.Contoso"
 ```
 
 ##### Show
@@ -140,43 +143,142 @@ az providerhub resource-type-registration list --provider-namespace "Microsoft.C
 az providerhub resource-type-registration show --provider-namespace "Microsoft.Contoso" --resource-type "testResourceType"
 ```
 
-#### providerhub resource-type-registration
-
 ##### Create
 
 ```
 az providerhub resource-type-registration create \
-    --resource-type "testResourceType" \
-    --endpoints api-versions="2019-01-01" locations="Global" \
-    required-features="Microsoft.Contoso/RPaaSSampleApp" \
-    extension-endpoint-uri="https://contoso-test-extension-endpoint.com/" \
-    extension-categories="ResourceReadValidate" extension-categories="ResourceDeletionValidate" \
-    --regionality "Global" \
-    --routing-type "ProxyOnly" \
-    --swagger-specifications api-versions="2019-01-01" \
-    swagger-spec-folder-uri="https://github.com/pathtoresourceproviderswaggerspecfolder" \
-    --provider-namespace "Microsoft.Contoso" \
-    --enable-async-operation false \
-    --template-deployment-options preflight-supported="true" \
-    preflight-options="DefaultValidationOnly" preflight-options="continueDeploymentOnFailure"
+--resource-type "testResourceType" \
+--endpoints api-versions="2018-11-01-preview" api-versions="2020-01-01-preview" api-versions="2019-01-01" locations="West US" locations="North Europe" \
+required-features="Microsoft.Contoso/RPaaSSampleApp" \
+extension-endpoint-uri="https://contoso-test-extension-endpoint.com/" \
+extension-categories="ResourceReadValidate" extension-categories="ResourceDeletionValidate" \
+--regionality "Regional" \
+--routing-type "ProxyOnly" \
+--swagger-specifications api-versions="2018-11-01-preview" api-versions="2020-01-01-preview" api-versions="2019-01-01" \
+swagger-spec-folder-uri="https://github.com/pathtoresourceproviderswaggerspecfolder" \
+--provider-namespace "Microsoft.Contoso" \
+--enable-async-operation false \
+--template-deployment-options preflight-supported="true" \
+preflight-options="DefaultValidationOnly" preflight-options="continueDeploymentOnFailure"
 ```
 
 ```
 az providerhub resource-type-registration create \
-    --resource-type "testResourceType/nestedResourceType" \
-    --endpoints api-versions="2019-01-01" locations="Global" \
-    required-features="Microsoft.Contoso/RPaaSSampleApp" \
-    extensions=[{{\\"endpointUri\\":\\"https://contoso-test-extension-endpoint.com/\\",\\"extensionCategories\\":[\\"ResourceReadValidate\\",\\"ResourceDeletionValidate\\"]}}] \
-    --regionality "Global" \
-    --routing-type "ProxyOnly" \
-    --swagger-specifications api-versions="2019-01-01" \
-    swagger-spec-folder-uri="https://github.com/pathtoresourceproviderswaggerspecfolder" \
-    --provider-namespace "Microsoft.Contoso"
+--resource-type "testResourceType/nestedResourceType" \
+--endpoints api-versions="2019-01-01" locations="Global" \
+required-features="Microsoft.Contoso/RPaaSSampleApp" \
+extensions=[{{\\"endpointUri\\":\\"https://contoso-test-extension-endpoint.com/\\",\\"extensionCategories\\":[\\"ResourceReadValidate\\",\\"ResourceDeletionValidate\\"]}}] \
+--regionality "Global" \
+--routing-type "ProxyOnly" \
+--swagger-specifications api-versions="2019-01-01" \
+swagger-spec-folder-uri="https://github.com/Azuew/pathtoresourceproviderswaggerspecfolder" \
+--provider-namespace "Microsoft.Contoso"
 ```
 
 ##### Delete
 
 ```
-az providerhub resource-type-registration delete --provider-namespace "Microsoft.Contoso" \
-    --resource-type "testResourceType"
+az providerhub resource-type-registration delete \
+--provider-namespace "Microsoft.Contoso" \
+--resource-type "testResourceType"
+```
+
+#### providerhub notification-registration
+
+##### Create
+
+```
+az providerhub notification-registration create \
+--name "notificationRegistrationName" \
+--included-events "*/write" "Microsoft.Contoso/employees/delete" \
+--message-scope "RegisteredSubscriptions" \
+--notification-endpoints locations="" locations="East US" notification-destination="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mgmtexp-eastus/providers/Microsoft.EventHub/namespaces/unitedstates-mgmtexpint/eventhubs/armlinkednotifications" \
+--notification-endpoints locations="East US" notification-destination="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/providers/Microsoft.EventHub/namespaces/europe-mgmtexpint/eventhubs/armlinkednotifications" \
+--notification-mode "EventHub" \
+--provider-namespace "Microsoft.Contoso"
+```
+
+#### Show
+
+```
+az providerhub notification-registration show \
+--name "notificationRegistrationName" \
+--provider-namespace "Microsoft.Contoso"
+```
+
+#### List
+
+```
+az providerhub notification-registration list \
+--provider-namespace "Microsoft.Contoso"
+```
+
+#### Delete
+
+```
+az providerhub notification-registration delete -y \
+--name "notificationRegistrationName" \
+--provider-namespace "Microsoft.Contoso"
+```
+
+### providerhub operation
+
+#### Create
+
+```
+az providerhub operation create \
+--contents "[{{\\"name\\":\\"Microsoft.Contoso/testResource/Read\\",\\"display\\":{{\\"description\\":\\"Read testResource\\",\\"operation\\":\\"Gets/List testResource resources\\",\\"provider\\":\\"Microsoft.Contoso\\",\\"resource\\":\\"testResource\\"}}}}]" \
+--provider-namespace "Microsoft.Contoso"
+```
+
+#### List
+
+```
+az providerhub operation list \
+--provider-namespace "Microsoft.Contoso"
+```
+
+#### Delete
+
+```
+az providerhub operation delete -y \
+--provider-namespace "Microsoft.Contoso"
+```
+
+### providerhub sku
+
+#### Create
+
+```
+az providerhub sku create \
+--sku-settings "[{{\\"name\\":\\"freeSku\\",\\"kind\\":\\"Standard\\",\\"tier\\":\\"Tier1\\"}},{{\\"name\\":\\"premiumSku\\",\\"costs\\":[{{\\"meterId\\":\\"xxx\\"}}],\\"kind\\":\\"Premium\\",\\"tier\\":\\"Tier2\\"}}]" \
+--provider-namespace "Microsoft.Contoso" \
+--resource-type "resourceTypeName" \
+--sku "skuName"
+```
+
+#### Show
+
+```
+az providerhub sku show \
+--provider-namespace "Microsoft.Contoso" \
+--resource-type "resourceTypeName" \
+--sku "skuName"
+```
+
+#### List
+
+```
+az providerhub sku list \
+--provider-namespace "Microsoft.Contoso" \
+--resource-type "resourceTypeName"
+```
+
+#### Delete
+
+```
+az providerhub sku delete -y \
+--provider-namespace "Microsoft.Contoso" \
+--resource-type "resourceTypeName" \
+--sku "skuName"
 ```

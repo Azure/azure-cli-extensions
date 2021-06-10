@@ -339,9 +339,8 @@ def step_nested_resource_type_registration_show(test, checks=None):
              '--resource-type "{resourceType}/{nestedResourceType}"',
              checks=checks)
 
+
 # EXAMPLE: /NotificationRegistrations/put/NotificationRegistrations_CreateOrUpdate
-
-
 @try_manual
 def step_notification_registration_create(test, checks=None):
     if checks is None:

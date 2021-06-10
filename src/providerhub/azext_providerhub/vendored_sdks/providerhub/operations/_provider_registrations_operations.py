@@ -133,6 +133,7 @@ class ProviderRegistrationsOperations(object):
         service_tree_infos,  # type: list["models.ServiceTreeInfo"]
         resource_access_policy,  # type: "models.ResourceProviderManagementResourceAccessPolicy"
         required_features_policy,  # type: "models.FeaturesPolicy"
+        required_features,  # type: list[str]
         opt_in_headers,  # type: "models.OptInHeaderType"
         managed_by_tenant_id,  # type: str
         # type: "models.ResourceProviderAuthorization"
@@ -193,7 +194,8 @@ class ProviderRegistrationsOperations(object):
 
         properties = models.ProviderRegistration(
             properties=models.ProviderRegistrationProperties(provider_authentication=provider_authentication, provider_authorizations=provider_authorizations, provider_version=provider_version, provider_type=provider_type, provider_hub_metadata=providerhub_metadata, namespace=namespace,
-                                                             features_rule=features_rule, management=management, capabilities=capabilities, metadata=metadata, template_deployment_options=template_deployment_options)
+                                                             features_rule=features_rule, management=management, capabilities=capabilities, metadata=metadata, template_deployment_options=template_deployment_options,
+                                                             required_features=required_features)
         )
 
         body_content_kwargs = {}  # type: Dict[str, Any]
@@ -243,6 +245,7 @@ class ProviderRegistrationsOperations(object):
         service_tree_infos,  # type: list["models.ServiceTreeInfo"]
         resource_access_policy,  # type: "models.ResourceProviderManagementResourceAccessPolicy"
         required_features_policy,  # type: "models.FeaturesPolicy"
+        required_features,  # type: list[str]
         opt_in_headers,  # type: "models.OptInHeaderType"
         managed_by_tenant_id,  # type: str
         # type: "models.ResourceProviderAuthorization"
@@ -303,6 +306,7 @@ class ProviderRegistrationsOperations(object):
                 service_tree_infos=service_tree_infos,
                 resource_access_policy=resource_access_policy,
                 required_features_policy=required_features_policy,
+                required_features=required_features,
                 opt_in_headers=opt_in_headers,
                 managed_by_tenant_id=managed_by_tenant_id,
                 providerhub_metadata_authorizations=providerhub_metadata_authorizations,

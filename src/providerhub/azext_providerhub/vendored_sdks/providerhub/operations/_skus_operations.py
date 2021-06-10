@@ -83,6 +83,7 @@ class SkusOperations(object):
             'sku': self._serialize.url("sku", sku, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
+        url = self.constructResourceTypeUrl(url, resource_type, sku)
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
@@ -107,7 +108,7 @@ class SkusOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/skus/{sku}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/'}  # type: ignore
 
     def create_or_update(
         self,
@@ -151,6 +152,7 @@ class SkusOperations(object):
             'sku': self._serialize.url("sku", sku, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
+        url = self.constructResourceTypeUrl(url, resource_type, sku)
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
@@ -182,7 +184,7 @@ class SkusOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/skus/{sku}'}  # type: ignore
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/'}  # type: ignore
 
     def delete(
         self,
@@ -222,6 +224,7 @@ class SkusOperations(object):
             'sku': self._serialize.url("sku", sku, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
+        url = self.constructResourceTypeUrl(url, resource_type, sku)
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
@@ -243,7 +246,7 @@ class SkusOperations(object):
         if cls:
             return cls(pipeline_response, None, {})
 
-    delete.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/skus/{sku}'}  # type: ignore
+    delete.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/'}  # type: ignore
 
     def get_nested_resource_type_first(
         self,
@@ -948,6 +951,7 @@ class SkusOperations(object):
                     'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
+                url = self.constructResourceTypeUrl(url, resource_type)
                 # Construct parameters
                 query_parameters = {}  # type: Dict[str, Any]
                 query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
@@ -982,7 +986,7 @@ class SkusOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_resource_type_registrations.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/skus'}  # type: ignore
+    list_by_resource_type_registrations.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/'}  # type: ignore
 
     def list_by_resource_type_registrations_nested_resource_type_first(
         self,
@@ -1235,3 +1239,16 @@ class SkusOperations(object):
             get_next, extract_data
         )
     list_by_resource_type_registrations_nested_resource_type_third.metadata = {'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations/{resourceType}/resourcetypeRegistrations/{nestedResourceTypeFirst}/resourcetypeRegistrations/{nestedResourceTypeSecond}/resourcetypeRegistrations/{nestedResourceTypeThird}/skus'}  # type: ignore
+
+    def constructResourceTypeUrl(
+        self,
+        url,
+        resourceName,
+        sku=None
+    ):
+        # type: str
+        resourceName = resourceName.split("/")
+        resourceTypeUrlSegment = "/resourcetypeRegistrations/".join(resourceName)
+        skuUrlSegment = f"/skus/{sku}" if sku else "/skus"
+
+        return url + resourceTypeUrlSegment + skuUrlSegment

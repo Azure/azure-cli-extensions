@@ -79,15 +79,13 @@ class ResourceTypeRegistrationsOperations(object):
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
-        resourceTypes = resource_type.split("/")
-        resourceTypeUrlSuffix = "/resourcetypeRegistrations/".join(resourceTypes)
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
             'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
-        url = url + resourceTypeUrlSuffix
+        url = self.constructResourceTypeUrl(url, resource_type)
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
@@ -173,15 +171,13 @@ class ResourceTypeRegistrationsOperations(object):
 
         # Construct URL
         url = self._create_or_update_initial.metadata['url']  # type: ignore
-        resourceTypes = resource_type.split("/")
-        resourceTypeUrlSuffix = "/resourcetypeRegistrations/".join(resourceTypes)
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
             'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
-        url = url + resourceTypeUrlSuffix
+        url = self.constructResourceTypeUrl(url, resource_type)
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
@@ -415,15 +411,13 @@ class ResourceTypeRegistrationsOperations(object):
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
-        resourceTypes = resource_type.split("/")
-        resourceTypeUrlSuffix = "/resourcetypeRegistrations/".join(resourceTypes)
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'providerNamespace': self._serialize.url("provider_namespace", provider_namespace, 'str'),
             'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
-        url = url + resourceTypeUrlSuffix
+        url = self.constructResourceTypeUrl(url, resource_type)
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
@@ -535,3 +529,13 @@ class ResourceTypeRegistrationsOperations(object):
         )
     list_by_provider_registration.metadata = {
         'url': '/subscriptions/{subscriptionId}/providers/Microsoft.ProviderHub/providerRegistrations/{providerNamespace}/resourcetypeRegistrations'}  # type: ignore
+
+    def constructResourceTypeUrl(
+        self,
+        url,
+        resourceName
+    ):
+        # type: str
+        resourceName = resourceName.split("/")
+        resourceTypeUrlSuffix = "/resourcetypeRegistrations/".join(resourceName)
+        return url + resourceTypeUrlSuffix
