@@ -5,7 +5,7 @@ Release History
 
 0.5.17
 +++++
-* Remove azure-defender from list of available addons to install
+* Remove azure-defender from list of available addons to install via `az aks enable-addons` command
 
 0.5.16
 +++++
@@ -28,6 +28,7 @@ Release History
 +++++
 * Add --enable-azure-rbac and --disable-azure-rbac in aks update
 * Support disabling local accounts
+* Add addon `azure-defender` to list of available addons under `az aks enable-addons` command
 
 0.5.11
 +++++
