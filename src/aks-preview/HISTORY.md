@@ -2,10 +2,13 @@
 
 Release History
 ===============
+0.5.19
++++++
+* Remove azure-defender from list of available addons to install via `az aks enable-addons` command
+
 0.5.18
 +++++
 * Fix issue with node config not consuming logging settings
-* Remove azure-defender from list of available addons to install via `az aks enable-addons` command
 
 0.5.17
 +++++
