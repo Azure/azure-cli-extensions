@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.17
++++++
+* Remove azure-defender from list of available addons to install
+
 0.5.16
 +++++
 * Vendor SDK using latest swagger with optional query parameter added
