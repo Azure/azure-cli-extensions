@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.log import get_logger
-from azext_k8s_extension._client_factory import _resource_providers_client
+from ._client_factory import _resource_providers_client
 from . import consts
 
 

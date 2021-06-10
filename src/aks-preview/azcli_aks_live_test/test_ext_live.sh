@@ -14,6 +14,7 @@ set -o xtrace
 [[ -z "${TEST_MODE}" ]] && (echo "TEST_MODE is empty"; exit 1)
 [[ -z "${PARALLELISM}" ]] && (echo "PARALLELISM is empty"; exit 1)
 [[ -z "${TEST_CASES}" ]] && (echo "TEST_CASES is empty")
+[[ -z "${EXT_TEST_MATRIX}" ]] && (echo "EXT_TEST_MATRIX is empty")
 [[ -z "${EXT_TEST_FILTER}" ]] && (echo "EXT_TEST_FILTER is empty")
 [[ -z "${EXT_TEST_COVERAGE}" ]] && (echo "EXT_TEST_COVERAGE is empty")
 
@@ -55,6 +56,10 @@ fi
 if [[ -n ${TEST_CASES} ]]; then
     run_flags+=" -t ${TEST_CASES}"
 fi
+# ext matrix
+if [[ -n ${EXT_TEST_MATRIX} ]]; then
+    run_flags+=" -em ${EXT_TEST_MATRIX}"
+fi
 # ext extra filter
 if [[ -n ${EXT_TEST_FILTER} ]]; then
     run_flags+=" -ef ${EXT_TEST_FILTER}"
@@ -70,7 +75,7 @@ if [[ ${TEST_MODE} == "record" || ${TEST_MODE} == "all" ]]; then
     run_flags+=" --json-report-file=ext_report.json"
     run_flags+=" --xml-file=ext_result.xml"
     echo "run flags: ${run_flags}"
-    echo ${run_flags} | xargs python -u az_aks_tool/main.py
+    echo "${run_flags}" | xargs python -u az_aks_tool/main.py
 fi
 
 # live test
@@ -82,5 +87,5 @@ if [[ ${TEST_MODE} == "live" || ${TEST_MODE} == "all" ]]; then
     run_flags+=" -l --json-report-file=ext_live_report.json"
     run_flags+=" --xml-file=ext_live_result.xml"
     echo "run flags: ${run_flags}"
-    echo ${run_flags} | xargs python -u az_aks_tool/main.py 
+    echo "${run_flags}" | xargs python -u az_aks_tool/main.py 
 fi

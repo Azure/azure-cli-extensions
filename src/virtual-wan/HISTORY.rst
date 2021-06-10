@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.2.6
+++++++
+* `az network vhub get-effective-routes` support `-o table` outputs.
+
 0.2.5
 ++++++
 * Migrate to Track2 SDK.

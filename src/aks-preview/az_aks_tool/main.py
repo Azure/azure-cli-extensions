@@ -67,6 +67,9 @@ def main():
     print("raw args: {}".format(sys.argv))
     args = init_argparse(sys.argv[1:])
 
+    # check directory
+    utils.create_directory(args.report_path)
+
     # setup logger
     root_module_name = log.parse_module_name(levels=1)
     log.setup_logging(root_module_name, os.path.join(

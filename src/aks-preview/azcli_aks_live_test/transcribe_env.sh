@@ -17,6 +17,7 @@ set -o xtrace
 [[ -z "${TEST_MODE}" ]] && (echo "TEST_MODE is empty"; exit 1)
 [[ -z "${PARALLELISM}" ]] && (echo "PARALLELISM is empty"; exit 1)
 [[ -z "${TEST_CASES}" ]] && (echo "TEST_CASES is empty")
+[[ -z "${EXT_TEST_MATRIX}" ]] && (echo "EXT_TEST_MATRIX is empty")
 [[ -z "${EXT_TEST_FILTER}" ]] && (echo "EXT_TEST_FILTER is empty")
 [[ -z "${EXT_TEST_COVERAGE}" ]] && (echo "EXT_TEST_COVERAGE is empty")
 [[ -z "${CLI_REPO}" ]] && (echo "CLI_REPO is empty"; exit 1)
@@ -50,6 +51,7 @@ echo "COVERAGE=${COVERAGE}" >> env.list
 echo "TEST_MODE=${TEST_MODE}" >> env.list
 echo "PARALLELISM=${PARALLELISM}" >> env.list
 echo "TEST_CASES=${TEST_CASES}" >> env.list
+echo "EXT_TEST_MATRIX=${EXT_TEST_MATRIX}" >> env.list
 echo "EXT_TEST_FILTER=${EXT_TEST_FILTER}" >> env.list
 echo "EXT_TEST_COVERAGE=${EXT_TEST_COVERAGE}" >> env.list
 

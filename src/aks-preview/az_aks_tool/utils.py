@@ -8,10 +8,19 @@ import os
 import sys
 import re
 import logging
+import pathlib
 
-import az_aks_tool.const as const
 import az_aks_tool.filter as custom_filter
 logger = logging.getLogger(__name__)
+
+
+def create_directory(dir_path):
+    if dir_path:
+        if not os.path.isdir(dir_path):
+            print("Directory '{}' not exist, creating...".format(dir_path))
+            pathlib.Path(dir_path).mkdir(parents=True, exist_ok=True)
+    else:
+        print("Invalid dir path: '{}'".format(dir_path))
 
 
 def check_file_existence(file_path):

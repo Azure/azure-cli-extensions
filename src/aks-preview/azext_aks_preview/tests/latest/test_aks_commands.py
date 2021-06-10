@@ -823,7 +823,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                  checks=[
                      # if rerun the recording, please update latestNodeImageVersion to the latest value
                      self.check('latestNodeImageVersion',
-                                'AKSUbuntu-1804gen2containerd-2021.04.27'),
+                                'AKSUbuntu-1804gen2containerd-2021.05.19'),
                      self.check(
                          'type', "Microsoft.ContainerService/managedClusters/agentPools/upgradeProfiles")
                  ])
@@ -1140,6 +1140,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('identity.type', 'SystemAssigned')
         ])
 
+        # check egress
+        endpoints = self.cmd('aks egress-endpoints list --resource-group={resource_group} --name={name}').get_output_in_json()
+        categories = [e["category"] for e in endpoints]
+        assert "addon-monitoring" in categories
+
         # delete
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
@@ -1232,6 +1237,39 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # delete
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_private_cluster_public_fqdn(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name
+        })
+
+        # create
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--node-count=1 --generate-ssh-keys ' \
+                     '--enable-public-fqdn --enable-private-cluster --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnablePrivateClusterPublicFQDN'
+        self.cmd(create_cmd, checks=[
+            self.exists('privateFqdn'),
+            self.exists('fqdn'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('apiServerAccessProfile.enablePrivateClusterPublicFqdn', True),
+        ])
+
+        # update
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
+                     '--disable-public-fqdn --aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnablePrivateClusterPublicFQDN'
+        self.cmd(update_cmd, checks=[
+            self.exists('privateFqdn'),
+            self.check('fqdn', None),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('apiServerAccessProfile.enablePrivateClusterPublicFqdn', False),
+        ])
 
     @live_only()
     @AllowLargeResponse()
@@ -1649,7 +1687,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @live_only()
     @AllowLargeResponse()
-    @ResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_disable_local_accounts(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -1667,6 +1705,25 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd('aks update --resource-group={resource_group} --name={name} --enable-local-accounts', checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('disableLocalAccounts', False)
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_enable_utlra_ssd(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --node-vm-size Standard_D2s_v3 --zones 1 2 3 --enable-ultra-ssd'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded')
         ])
 
         # delete
