@@ -114,7 +114,6 @@ from ._consts import CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_
 from ._consts import CONST_CONFCOM_ADDON_NAME, CONST_ACC_SGX_QUOTE_HELPER_ENABLED
 from ._consts import CONST_OPEN_SERVICE_MESH_ADDON_NAME
 from ._consts import CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME, CONST_SECRET_ROTATION_ENABLED
-from ._consts import CONST_AZURE_DEFENDER_ADDON_NAME, CONST_AZURE_DEFENDER_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
 from ._consts import CONST_MANAGED_IDENTITY_OPERATOR_ROLE, CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID
 from ._consts import ADDONS
 from .maintenanceconfiguration import aks_maintenanceconfiguration_update_internal
@@ -2408,7 +2407,7 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
             enabled=True)
         addons.remove('kube-dashboard')
     # TODO: can we help the user find a workspace resource ID?
-    if 'monitoring' in addons or 'azure-defender' in addons:
+    if 'monitoring' in addons:
         if not workspace_resource_id:
             # use default workspace if exists else create default workspace
             workspace_resource_id = _ensure_default_log_analytics_workspace_for_monitoring(
@@ -2416,16 +2415,13 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
 
         workspace_resource_id = _sanitize_loganalytics_ws_resource_id(workspace_resource_id)
 
-        if 'monitoring' in addons:
-            addon_profiles[CONST_MONITORING_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True, config={CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id})
-            addons.remove('monitoring')
-        if 'azure-defender' in addons:
-            addon_profiles[CONST_AZURE_DEFENDER_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True, config={CONST_AZURE_DEFENDER_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id})
-            addons.remove('azure-defender')
-    # error out if '--enable-addons=monitoring/azure-defender' isn't set but workspace_resource_id is
+        addon_profiles[CONST_MONITORING_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True, config={CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id})
+        addons.remove('monitoring')
+
+    # error out if '--enable-addons=monitoring' isn't set but workspace_resource_id is
     elif workspace_resource_id:
         raise CLIError(
-            '"--workspace-resource-id" requires "--enable-addons [monitoring/azure-defender]".')
+            '"--workspace-resource-id" requires "--enable-addons monitoring".')
     if 'azure-policy' in addons:
         addon_profiles[CONST_AZURE_POLICY_ADDON_NAME] = ManagedClusterAddonProfile(
             enabled=True)
@@ -3383,11 +3379,11 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
             addon_profile = addon_profiles.get(
                 addon, ManagedClusterAddonProfile(enabled=False))
             # special config handling for certain addons
-            if addon in [CONST_MONITORING_ADDON_NAME, CONST_AZURE_DEFENDER_ADDON_NAME]:
-                logAnalyticsConstName = CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID if addon == CONST_MONITORING_ADDON_NAME else CONST_AZURE_DEFENDER_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
+            if addon == CONST_MONITORING_ADDON_NAME:
+                logAnalyticsConstName = CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID
                 if addon_profile.enabled:
-                    raise CLIError(f'The {addon} addon is already enabled for this managed cluster.\n'
-                                   f'To change {addon} configuration, run "az aks disable-addons -a {addon}"'
+                    raise CLIError('The monitoring addon is already enabled for this managed cluster.\n'
+                                   'To change monitoring configuration, run "az aks disable-addons -a monitoring"'
                                    'before enabling it again.')
                 if not workspace_resource_id:
                     workspace_resource_id = _ensure_default_log_analytics_workspace_for_monitoring(
