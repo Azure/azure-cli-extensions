@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.5.20
++++++
+* Add podMaxPids argument for node config
+
 0.5.19
 +++++
 * Remove azure-defender from list of available addons to install via `az aks enable-addons` command

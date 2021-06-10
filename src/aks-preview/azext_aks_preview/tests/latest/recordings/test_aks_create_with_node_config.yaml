@@ -291,7 +291,7 @@ interactions:
       "Delete", "kubeletConfig": {"cpuManagerPolicy": "static", "cpuCfsQuota": true,
       "cpuCfsQuotaPeriod": "200ms", "imageGcHighThreshold": 90, "imageGcLowThreshold":
       70, "topologyManagerPolicy": "best-effort", "allowedUnsafeSysctls": ["kernel.msg*",
-      "net.*"], "failSwapOn": false, "containerLogMaxFiles": 10, "containerLogMaxSizeMb": 20}, "linuxOSConfig": {"sysctls": {"netCoreSomaxconn":
+      "net.*"], "failSwapOn": false, "containerLogMaxFiles": 10, "containerLogMaxSizeMb": 20, "podMaxPids": 120}, "linuxOSConfig": {"sysctls": {"netCoreSomaxconn":
       163849, "netIpv4TcpTwReuse": true, "netIpv4IpLocalPortRange": "32000 60000"},
       "transparentHugePageEnabled": "madvise", "transparentHugePageDefrag": "defer+madvise",
       "swapFileSizeMB": 1500}, "name": "nodepool1"}], "linuxProfile": {"adminUsername":
@@ -365,7 +365,7 @@ interactions:
       "Delete", "kubeletConfig": {"cpuManagerPolicy": "static", "cpuCfsQuota": true,
       "cpuCfsQuotaPeriod": "200ms", "imageGcHighThreshold": 90, "imageGcLowThreshold":
       70, "topologyManagerPolicy": "best-effort", "allowedUnsafeSysctls": ["kernel.msg*",
-      "net.*"], "failSwapOn": false, "containerLogMaxFiles": 10, "containerLogMaxSizeMb": 20}, "linuxOSConfig": {"sysctls": {"netCoreSomaxconn":
+      "net.*"], "failSwapOn": false, "containerLogMaxFiles": 10, "containerLogMaxSizeMb": 20, "podMaxPids": 120}, "linuxOSConfig": {"sysctls": {"netCoreSomaxconn":
       163849, "netIpv4TcpTwReuse": true, "netIpv4IpLocalPortRange": "32000 60000"},
       "transparentHugePageEnabled": "madvise", "transparentHugePageDefrag": "defer+madvise",
       "swapFileSizeMB": 1500}, "name": "nodepool1"}], "linuxProfile": {"adminUsername":
@@ -421,7 +421,7 @@ interactions:
         : 70,\n      \"topologyManagerPolicy\": \"best-effort\",\n      \"allowedUnsafeSysctls\"\
         : [\n       \"kernel.msg*\",\n       \"net.*\"\n      ],\n      \"failSwapOn\"\
         : false,\n      \"containerLogMaxFiles\": 10,\n      \"containerLogMaxSizeMb\": 
-        20\n     },\n     \"linuxOSConfig\": {\n      \"sysctls\": {\n      \
+        20,\n      \"podMaxPids\": 120},\n     \"linuxOSConfig\": {\n      \"sysctls\": {\n      \
         \ \"netCoreSomaxconn\": 163849,\n       \"netIpv4TcpTwReuse\": true,\n   \
         \    \"netIpv4IpLocalPortRange\": \"32000 60000\"\n      },\n      \"transparentHugePageEnabled\"\
         : \"madvise\",\n      \"transparentHugePageDefrag\": \"defer+madvise\",\n\
@@ -801,7 +801,7 @@ interactions:
         : 70,\n      \"topologyManagerPolicy\": \"best-effort\",\n      \"allowedUnsafeSysctls\"\
         : [\n       \"kernel.msg*\",\n       \"net.*\"\n      ],\n      \"failSwapOn\"\
         : false,\n      \"containerLogMaxFiles\": 10,\n      \"containerLogMaxSizeMb\": 
-        20\n     },\n     \"linuxOSConfig\": {\n      \"sysctls\": {\n      \
+        20,\n      \"podMaxPids\": 120},\n     \"linuxOSConfig\": {\n      \"sysctls\": {\n      \
         \ \"netCoreSomaxconn\": 163849,\n       \"netIpv4TcpTwReuse\": true,\n   \
         \    \"netIpv4IpLocalPortRange\": \"32000 60000\"\n      },\n      \"transparentHugePageEnabled\"\
         : \"madvise\",\n      \"transparentHugePageDefrag\": \"defer+madvise\",\n\
@@ -885,7 +885,7 @@ interactions:
         \ 90,\n      \"imageGcLowThreshold\": 70,\n      \"topologyManagerPolicy\"\
         : \"best-effort\",\n      \"allowedUnsafeSysctls\": [\n       \"kernel.msg*\"\
         ,\n       \"net.*\"\n      ],\n      \"failSwapOn\": false,\n      \"containerLogMaxFiles\": 
-        10,\n      \"containerLogMaxSizeMb\": 20\n     },\n    \
+        10,\n      \"containerLogMaxSizeMb\": 20,\n      \"podMaxPids\": 120},\n    \
         \ \"linuxOSConfig\": {\n      \"sysctls\": {\n       \"netCoreSomaxconn\"\
         : 163849,\n       \"netIpv4TcpTwReuse\": true,\n       \"netIpv4IpLocalPortRange\"\
         : \"32000 60000\"\n      },\n      \"transparentHugePageEnabled\": \"madvise\"\
@@ -925,7 +925,7 @@ interactions:
       [], "kubeletConfig": {"cpuManagerPolicy": "static", "cpuCfsQuota": true, "cpuCfsQuotaPeriod":
       "200ms", "imageGcHighThreshold": 90, "imageGcLowThreshold": 70, "topologyManagerPolicy":
       "best-effort", "allowedUnsafeSysctls": ["kernel.msg*", "net.*"], "failSwapOn":
-      false, "containerLogMaxFiles": 10, "containerLogMaxSizeMb": 20}, "linuxOSConfig": 
+      false, "containerLogMaxFiles": 10, "containerLogMaxSizeMb": 20, "podMaxPids": 120}, "linuxOSConfig": 
       {"sysctls": {"netCoreSomaxconn": 163849, "netIpv4TcpTwReuse": true, "netIpv4IpLocalPortRange": 
       "32000 60000"}, "transparentHugePageEnabled": "madvise", "transparentHugePageDefrag": 
       "defer+madvise", "swapFileSizeMB": 1500}}}'
@@ -968,8 +968,8 @@ interactions:
         ,\n    \"imageGcHighThreshold\": 90,\n    \"imageGcLowThreshold\": 70,\n \
         \   \"topologyManagerPolicy\": \"best-effort\",\n    \"allowedUnsafeSysctls\"\
         : [\n     \"kernel.msg*\",\n     \"net.*\"\n    ],\n    \"failSwapOn\": false,\n      
-        \"containerLogMaxFiles\": 10,\n      \"containerLogMaxSizeMb\": 20\n\
-        \   },\n   \"linuxOSConfig\": {\n    \"sysctls\": {\n     \"netCoreSomaxconn\"\
+        \"containerLogMaxFiles\": 10,\n      \"containerLogMaxSizeMb\": 20,\n\
+        \         \"podMaxPids\": 120},\n   \"linuxOSConfig\": {\n    \"sysctls\": {\n     \"netCoreSomaxconn\"\
         : 163849,\n     \"netIpv4TcpTwReuse\": true,\n     \"netIpv4IpLocalPortRange\"\
         : \"32000 60000\"\n    },\n    \"transparentHugePageEnabled\": \"madvise\"\
         ,\n    \"transparentHugePageDefrag\": \"defer+madvise\",\n    \"swapFileSizeMB\"\
@@ -1868,8 +1868,8 @@ interactions:
         ,\n    \"imageGcHighThreshold\": 90,\n    \"imageGcLowThreshold\": 70,\n \
         \   \"topologyManagerPolicy\": \"best-effort\",\n    \"allowedUnsafeSysctls\"\
         : [\n     \"kernel.msg*\",\n     \"net.*\"\n    ],\n    \"failSwapOn\": false
-        ,\n      \"containerLogMaxFiles\": 10,\n      \"containerLogMaxSizeMb\": 20\n\
-        \   },\n   \"linuxOSConfig\": {\n    \"sysctls\": {\n     \"netCoreSomaxconn\"\
+        ,\n      \"containerLogMaxFiles\": 10,\n      \"containerLogMaxSizeMb\": 20,\n\
+        \         \"podMaxPids\": 120},\n   \"linuxOSConfig\": {\n    \"sysctls\": {\n     \"netCoreSomaxconn\"\
         : 163849,\n     \"netIpv4TcpTwReuse\": true,\n     \"netIpv4IpLocalPortRange\"\
         : \"32000 60000\"\n    },\n    \"transparentHugePageEnabled\": \"madvise\"\
         ,\n    \"transparentHugePageDefrag\": \"defer+madvise\",\n    \"swapFileSizeMB\"\
