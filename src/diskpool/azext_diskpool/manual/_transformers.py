@@ -35,8 +35,32 @@ def transform_disk_pool_list_output(result):
     usable by the CLI and tools such as jpterm. """
     return build_table_output(result, [
         ('Name', 'name'),
-        ('Availability Zones', 'availabilityZones'),
+        ('Resource Group', 'resourceGroup'),
         ('Status', 'status'),
         ('Location', 'location'),
         ('Last Modified', 'systemData.lastModifiedAt')
     ])
+
+
+def transform_disk_pool_iscsi_target_list_output(result):
+    """ Transform to convert SDK output into a form that is more readily
+    usable by the CLI and tools such as jpterm. """
+    return build_table_output(result, [
+        ('Name', 'name'),
+        ('Acl Mode', 'aclMode'),
+        ('Status', 'status'),
+        ('Provisioning State', 'provisioningState'),
+        ('Target Iqn', 'targetIqn')
+    ])
+
+
+def transform_disk_pool_iscsi_target_show_output(result):
+    from collections import OrderedDict
+
+    new_result = OrderedDict()
+    new_result['Name'] = result.pop('PartitionKey')
+    new_result['Acl Mode'] = result.pop('RowKey')
+    new_result['Status'] = result['status']
+    new_result['Provisioning State'] = result['provisioningState']
+    new_result['Target Iqn'] = result['targetIqn']
+    return new_result

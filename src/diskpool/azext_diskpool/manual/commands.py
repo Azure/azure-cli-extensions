@@ -14,7 +14,7 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):
 
-    from azext_diskpool.generated._client_factory import cf_disk_pool
+    from azext_diskpool.generated._client_factory import cf_disk_pool, cf_iscsi_target
     from azext_diskpool.manual._client_factory import cf_disk_pool_zone
     diskpool_disk_pool = CliCommandType(
         operations_tmpl='azext_diskpool.vendored_sdks.storagepool.operations._disk_pools_operations#DiskPoolsOperations'
@@ -24,3 +24,11 @@ def load_command_table(self, _):
         from ._transformers import transform_disk_pool_list_output
         g.custom_command('list', 'disk_pool_list', table_transformer=transform_disk_pool_list_output)
         g.custom_command('list-skus', 'disk_pool_list_skus', client_factory=cf_disk_pool_zone)
+
+    with self.command_group('disk-pool iscsi-target', client_factory=cf_iscsi_target) as g:
+        from ._transformers import transform_disk_pool_iscsi_target_list_output, \
+            transform_disk_pool_iscsi_target_show_output
+        g.custom_command('list', 'disk_pool_iscsi_target_list',
+                         table_transformer=transform_disk_pool_iscsi_target_list_output)
+        g.custom_show_command('show', 'disk_pool_iscsi_target_show',
+                              table_transformer=transform_disk_pool_iscsi_target_show_output)

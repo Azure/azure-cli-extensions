@@ -37,7 +37,7 @@ class AddSku(argparse.Action):
                 d['tier'] = v[0]
             else:
                 raise CLIError('Unsupported Key {} is provided for parameter sku. All possible keys are: name, tier'.
-                               format(k))
+                format(k))
         return d
 
 
@@ -49,7 +49,7 @@ class AddDiskPoolCreateDisks(argparse._AppendAction):
 
     def get_action(self, values, option_string=None):
         try:
-            value_chunk_list = [values[x:x + 1] for x in range(0, len(values), 1)]
+            value_chunk_list = [values[x:x+1] for x in range(0, len(values), 1)]
             value_list = []
             for chunk in value_chunk_list:
                 id, = chunk
@@ -71,7 +71,7 @@ class AddDiskPoolUpdateDisks(argparse._AppendAction):
 
     def get_action(self, values, option_string=None):
         try:
-            value_chunk_list = [values[x:x + 1] for x in range(0, len(values), 1)]
+            value_chunk_list = [values[x:x+1] for x in range(0, len(values), 1)]
             value_list = []
             for chunk in value_chunk_list:
                 id, = chunk
