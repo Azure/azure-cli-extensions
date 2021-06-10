@@ -42,7 +42,7 @@ az providerhub custom-rollout list --provider-namespace "Microsoft.Contoso"
 az providerhub default-rollout create \
 --provider-namespace "Microsoft.Contoso" --rollout-name "2021week20" \
 --canary skip-regions="eastus2euap" \
---rest-of-the-world-group-two wait-duration="PT4H"
+--row2 wait-duration="PT4H"
 ```
 
 ##### Show

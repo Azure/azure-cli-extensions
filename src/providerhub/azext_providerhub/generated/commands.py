@@ -25,8 +25,6 @@ def load_command_table(self, _):
         g.custom_command('list', 'providerhub_custom_rollout_list')
         g.custom_show_command('show', 'providerhub_custom_rollout_show')
         g.custom_command('create', 'providerhub_custom_rollout_create')
-        g.generic_update_command('update', setter_arg_name='properties',
-                                 custom_func_name='providerhub_custom_rollout_update')
 
     from azext_providerhub.generated._client_factory import cf_default_rollout
     providerhub_default_rollout = CliCommandType(
@@ -38,11 +36,8 @@ def load_command_table(self, _):
         g.custom_command('list', 'providerhub_default_rollout_list')
         g.custom_show_command('show', 'providerhub_default_rollout_show')
         g.custom_command('create', 'providerhub_default_rollout_create', supports_no_wait=True)
-        g.generic_update_command('update', setter_arg_name='properties', setter_name='begin_create_or_update',
-                                 custom_func_name='providerhub_default_rollout_update', supports_no_wait=True)
         g.custom_command('delete', 'providerhub_default_rollout_delete', confirmation=True)
         g.custom_command('stop', 'providerhub_default_rollout_stop')
-        g.custom_wait_command('wait', 'providerhub_default_rollout_show')
 
     from azext_providerhub.generated._client_factory import cf_providerhub
     providerhub_ = CliCommandType(
@@ -63,8 +58,6 @@ def load_command_table(self, _):
         g.custom_command('list', 'providerhub_notification_registration_list')
         g.custom_show_command('show', 'providerhub_notification_registration_show')
         g.custom_command('create', 'providerhub_notification_registration_create')
-        g.generic_update_command('update', setter_arg_name='properties',
-                                 custom_func_name='providerhub_notification_registration_update')
         g.custom_command('delete', 'providerhub_notification_registration_delete', confirmation=True)
 
     from azext_providerhub.generated._client_factory import cf_operation
@@ -74,7 +67,6 @@ def load_command_table(self, _):
     with self.command_group('providerhub operation', providerhub_operation, client_factory=cf_operation) as g:
         g.custom_command('list', 'providerhub_operation_list')
         g.custom_command('create', 'providerhub_operation_create')
-        g.custom_command('update', 'providerhub_operation_update')
         g.custom_command('delete', 'providerhub_operation_delete', confirmation=True)
 
     from azext_providerhub.generated._client_factory import cf_provider_registration
@@ -87,11 +79,8 @@ def load_command_table(self, _):
         g.custom_command('list', 'providerhub_provider_registration_list')
         g.custom_show_command('show', 'providerhub_provider_registration_show')
         g.custom_command('create', 'providerhub_provider_registration_create', supports_no_wait=True)
-        g.generic_update_command('update', setter_arg_name='properties', setter_name='begin_create_or_update',
-                                 custom_func_name='providerhub_provider_registration_update', supports_no_wait=True)
         g.custom_command('delete', 'providerhub_provider_registration_delete', confirmation=True)
         g.custom_command('generate-operation', 'providerhub_provider_registration_generate_operation')
-        g.custom_wait_command('wait', 'providerhub_provider_registration_show')
 
     from azext_providerhub.generated._client_factory import cf_resource_type_registration
     providerhub_resource_type_registration = CliCommandType(
@@ -113,10 +102,6 @@ def load_command_table(self, _):
             'create', 'providerhub_resource_type_registration_create')
         g.custom_command(
             'delete', 'providerhub_resource_type_registration_delete', confirmation=True)
-        g.generic_update_command('update', setter_arg_name='properties', setter_name='begin_create_or_update',
-                                 custom_func_name='providerhub_resource_type_registration_update',
-                                 supports_no_wait=True)
-        g.custom_wait_command('wait', 'providerhub_resource_type_registration_show')
 
     from azext_providerhub.generated._client_factory import cf_sku
     providerhub_sku = CliCommandType(
@@ -126,7 +111,6 @@ def load_command_table(self, _):
         g.custom_command('list', 'providerhub_sku_list')
         g.custom_show_command('show', 'providerhub_sku_show')
         g.custom_command('create', 'providerhub_sku_create')
-        g.custom_command('update', 'providerhub_sku_update')
         g.custom_command('delete', 'providerhub_sku_delete', confirmation=True)
         g.custom_command('show-nested-resource-type-first', 'providerhub_sku_show_nested_resource_type_first')
         g.custom_command('show-nested-resource-type-second', 'providerhub_sku_show_nested_resource_type_second')

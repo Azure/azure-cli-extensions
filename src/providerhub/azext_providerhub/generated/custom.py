@@ -361,19 +361,14 @@ def providerhub_resource_type_registration_list(client,
 
 def providerhub_resource_type_registration_show(client,
                                                 provider_namespace,
-                                                resource_type,
-                                                nested_resource_type=None):
-    if nested_resource_type is None:
-        nested_resource_type = ''
+                                                resource_type):
     return client.get(provider_namespace=provider_namespace,
-                      resource_type=resource_type,
-                      nested_resource_type=nested_resource_type)
+                      resource_type=resource_type)
 
 
 def providerhub_resource_type_registration_create(client,
                                                   provider_namespace,
                                                   resource_type,
-                                                  nested_resource_type=None,
                                                   routing_type=None,
                                                   regionality=None,
                                                   endpoints=None,
@@ -409,7 +404,6 @@ def providerhub_resource_type_registration_create(client,
                        client.begin_create_or_update,
                        provider_namespace=provider_namespace,
                        resource_type=resource_type,
-                       nested_resource_type=nested_resource_type,
                        routing_type=routing_type,
                        regionality=regionality,
                        endpoints=endpoints,
@@ -445,7 +439,6 @@ def providerhub_resource_type_registration_create(client,
 def providerhub_resource_type_registration_update(instance,
                                                   provider_namespace,
                                                   resource_type,
-                                                  nested_resource_type=None,
                                                   routing_type=None,
                                                   regionality=None,
                                                   endpoints=None,
@@ -540,11 +533,9 @@ def providerhub_resource_type_registration_update(instance,
 
 def providerhub_resource_type_registration_delete(client,
                                                   provider_namespace,
-                                                  resource_type,
-                                                  nested_resource_type=None):
+                                                  resource_type):
     return client.delete(provider_namespace=provider_namespace,
-                         resource_type=resource_type,
-                         nested_resource_type=nested_resource_type)
+                         resource_type=resource_type)
 
 
 def providerhub_sku_list(client,

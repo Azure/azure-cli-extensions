@@ -178,7 +178,7 @@ az providerhub default-rollout show --provider-namespace "Microsoft.Contoso" --r
 az providerhub default-rollout create \
 --provider-namespace "Microsoft.Contoso" --rollout-name "2021week20" \
 --canary skip-regions="eastus2euap" \
---rest-of-the-world-group-two wait-duration="PT4H"
+--row2 wait-duration="PT4H"
 ```
 ##### <a name="ParametersDefaultRolloutsCreateOrUpdate#Create">Parameters</a>
 |Option|Type|Description|Path (SDK)|Swagger name|

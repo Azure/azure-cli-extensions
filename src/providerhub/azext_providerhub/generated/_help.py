@@ -84,9 +84,13 @@ helps['providerhub default-rollout create'] = """
         long-summary: |
             Usage: --canary skip-regions=XX
 
-      - name: --rest-of-the-world-group-two
+            skip-regions: Required. The canary skip regions.
+
+      - name: --rest-of-the-world-group-two --row2
         long-summary: |
             Usage: --rest-of-the-world-group-two wait-duration=XX
+
+            wait-duration: Required. The rest of the world group two wait duration.
 
     examples:
       - name: DefaultRollouts_CreateOrUpdate
@@ -258,14 +262,14 @@ helps['providerhub provider-registration create'] = """
     type: command
     short-summary: "Create the provider registration."
     parameters:
-      - name: --provider-authentication
+      - name: --provider-authentication --provider-authn
         short-summary: 'Used to set alternative audiences or resources that ARM should accept from the token while authenticating requests for the provider.'
         long-summary: |
             Usage: --provider-authentication allowed-audiences=XX
 
             allowed-audiences: Required. The allowed audiences.
 
-      - name: --provider-authorizations
+      - name: --provider-authorizations --provider-authz
         short-summary: 'The resource provider authorizations.'
         long-summary: |
             Usage: --provider-authorizations application-id=XX role-definition-id=XX managed-by-role-definition-id=XX
@@ -300,7 +304,7 @@ helps['providerhub provider-registration create'] = """
 
 
             Multiple actions can be specified by using more than one --capabilities argument.
-      - name: --template-deployment-options
+      - name: --template-deployment-options --tmplt-deploy-opt
         short-summary: 'The template deployment options.'
         long-summary: |
             Usage: --template-deployment-options preflight-supported=XX preflight-options=XX
@@ -317,13 +321,13 @@ helps['providerhub provider-registration create'] = """
             Usage: --manifest-owners "SPARTA-PlatformServiceAdministrator"
 
              Multiple actions can be specified by using more than one --manifest-owners argument.
-      - name: --incident-routing-service
+      - name: --incident-routing-service --incident-service
         type: string
         short-summary: 'The service in IcM when creating or transferring incidents to the RP.'
         long-summary: |
             Usage: --incident-routing-service "Contoso Resource Provider"
 
-      - name: --incident-routing-team
+      - name: --incident-routing-team --incident-team
         type: string
         short-summary: 'The team in IcM when creating or transferring incidents to the RP.'
         long-summary: |
@@ -345,13 +349,13 @@ helps['providerhub provider-registration create'] = """
 
 
             Multiple actions can be specified by using more than one --service-tree-infos argument.
-      - name: --subscription-state-override-actions
+      - name: --subscription-state-override-actions --sub-override
         long-summary: |
             Usage: --subscription-state-override-actions state=XX action=XX
 
 
             Multiple actions can be specified by using more than one --subscription-state-override-actions argument.
-      - name: --providerhub-metadata-authorizations
+      - name: --providerhub-metadata-authorizations --metadata-authz
         long-summary: |
             Usage: --providerhub-metadata-authorizations application-id=XX role-definition-id=XX \
 managed-by-role-definition-id=XX
@@ -362,20 +366,13 @@ managed-by-role-definition-id=XX
 
             Multiple actions can be specified by using more than one --providerhub-metadata-authorizations \
 argument.
-      - name: --providerhub-metadata-authentication
+      - name: --providerhub-metadata-authentication --metadata-authn
         short-summary: 'Used to set alternative audiences or resources that ARM should accept from the token while authenticating requests for the provider.'
         long-summary: |
             Usage: --providerhub-metadata-authentication allowed-audiences=XX
 
             allowed-audiences: Required. The allowed audiences.
 
-      - name: --authorizations
-        short-summary: 'The resource provider authorizations.'
-        long-summary: |
-            Usage: --authorizations principal-id=XX role-definition-id=XX
-
-
-            Multiple actions can be specified by using more than one --authorizations argument.
       - name: --resource-access-policy
         type: string
         short-summary: 'The resource access policy.'
@@ -495,14 +492,14 @@ helps['providerhub resource-type-registration create'] = """
             locations: Required. Comma separated list of locations.
             required-features: Required. List of required features. Multiple required-features can be specified.
             Multiple actions can be specified by using more than one --endpoints argument.
-      - name: --resource-creation-begin
+      - name: --resource-creation-begin --creation-begin
         type: string
         short-summary: 'Extension options for handling the resource creation begin extension request.'
         long-summary: |
             Usage: --resource-creation-begin request=XX response=XX
             request: The list of extension option types.
             response: The list of extension option types.
-      - name: --resource-patch-begin
+      - name: --resource-patch-begin --patch-begin
         type: string
         short-summary: 'Extension options for handling the resource patch begin extension request.'
         long-summary: |
@@ -514,12 +511,12 @@ helps['providerhub resource-type-registration create'] = """
         short-summary: 'The type of marketplace behavior for the resource type.'
         long-summary: |
             Usage: --marketplace-type "AddOn"
-      - name: --allowed-unauthorized-actions
+      - name: --allowed-unauthorized-actions --aua
         type: string
         short-summary: 'The allowed unauthorized actions'
         long-summary: |
             Usage: --allowed-unauthorized-actions "Microsoft.Contoso/rpResourceType/read, Microsoft.Contoso/rpResourceType/delete"
-      - name: --authorization-action-mappings
+      - name: --authorization-action-mappings --auth-mappings
         short-summary: 'Allows RP to override action verb for RBAC purposes at ARM.'
         long-summary: |
             Usage: --authorization-action-mappings original=XX desired=XX
@@ -575,7 +572,7 @@ linked-type=XX
         long-summary: |
             Usage: --required-features "Microsoft.Contoso/feature1, Microsoft.Contoso/feature2"
 
-      - name: --required-features-policy
+      - name: --required-features-policy --req-features-policy
         type: string
         short-summary: 'The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​'
         long-summary: |
@@ -608,7 +605,7 @@ linked-type=XX
             type: The type of the identity management.
             application-id: The application ID that handles the identity.
 
-      - name: --check-name-availability-specifications
+      - name: --check-name-availability-specifications --checkname-specs
         short-summary: 'Name availability checks feature at the platform level.'
         long-summary: |
             Usage: --check-name-availability-specifications enable-default-validation=XX \
@@ -638,7 +635,7 @@ resource-types-with-custom-validation=XX
         long-summary: |
             Usage: --opt-in-headers "SignedUserToken"
 
-      - name: --subscription-state-rules
+      - name: --subscription-state-rules --sub-state-rules
         short-summary: 'The subscription state rules.'
         long-summary: |
             Usage: --subscription-state-rules state=XX allowed-actions=XX
@@ -647,7 +644,7 @@ resource-types-with-custom-validation=XX
             allowed-actions: The allowed actions.
 
             Multiple actions can be specified by using more than one --subscription-state-rules argument.
-      - name: --template-deployment-options
+      - name: --template-deployment-options --tmplt-deploy-opt
         short-summary: 'The template deployment options.'
         long-summary: |
             Usage: --template-deployment-options preflight-supported=XX preflight-options=XX
@@ -674,19 +671,19 @@ cross-subscription-move-enabled=XX
             cross-resource-group-move-enabled: Boolean indicating whether moving resources across resource groups is allowed.
             cross-subscription-move-enabled: Boolean indicating whether moving resources across subscriptions is allowed.
 
-      - name: --resource-deletion-policy
+      - name: --resource-deletion-policy --res-del-policy
         type: string
         short-summary: 'The resource deletion policy.'
         long-summary: |
             Usage: --resource-deletion-policy "CascadeDeleteAll"
 
-      - name: --subscription-state-override-actions
+      - name: --subscription-state-override-actions --sub-override
         long-summary: |
             Usage: --subscription-state-override-actions state=XX action=XX
 
 
             Multiple actions can be specified by using more than one --subscription-state-override-actions argument.
-      - name: --resource-creation-begin
+      - name: --resource-creation-begin --res-create-begin
         long-summary: |
             Usage: --resource-creation-begin request=XX response=XX
 

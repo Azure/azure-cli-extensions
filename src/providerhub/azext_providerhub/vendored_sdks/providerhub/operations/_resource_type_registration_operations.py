@@ -53,7 +53,6 @@ class ResourceTypeRegistrationOperations(object):
         self,
         provider_namespace,  # type: str
         resource_type,  # type: str
-        nested_resource_type,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> "models.ResourceTypeRegistration"
@@ -122,7 +121,6 @@ class ResourceTypeRegistrationOperations(object):
         self,
         provider_namespace,  # type: str
         resource_type,  # type: str
-        nested_resource_type,  # type: str
         routing_type,  # type: str or "models.RoutingType"
         regionality,  # type: "models.Regionality"
         endpoints,  # type: list["models.ResourceTypeEndpoint"]
@@ -236,7 +234,6 @@ class ResourceTypeRegistrationOperations(object):
         self,
         provider_namespace,  # type: str
         resource_type,  # type: str
-        nested_resource_type,  # type: str
         routing_type,  # type: str or "models.RoutingType"
         regionality,  # type: "models.Regionality"
         endpoints,  # type: list["models.ResourceTypeEndpoint"]
@@ -303,7 +300,6 @@ class ResourceTypeRegistrationOperations(object):
             raw_result = self._create_or_update_initial(
                 provider_namespace=provider_namespace,
                 resource_type=resource_type,
-                nested_resource_type=nested_resource_type,
                 routing_type=routing_type,
                 regionality=regionality,
                 endpoints=endpoints,
@@ -377,7 +373,6 @@ class ResourceTypeRegistrationOperations(object):
         self,
         provider_namespace,  # type: str
         resource_type,  # type: str
-        nested_resource_type,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> None
