@@ -25,8 +25,8 @@ if TYPE_CHECKING:
     T = TypeVar('T')
     ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
-class DatastoresOperations(object):
-    """DatastoresOperations operations.
+class CloudLinksOperations(object):
+    """CloudLinksOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -51,26 +51,23 @@ class DatastoresOperations(object):
         self,
         resource_group_name,  # type: str
         private_cloud_name,  # type: str
-        cluster_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["_models.DatastoreList"]
-        """List datastores in a private cloud cluster.
+        # type: (...) -> Iterable["_models.CloudLinkList"]
+        """List cloud link in a private cloud.
 
-        List datastores in a private cloud cluster.
+        List cloud link in a private cloud.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param private_cloud_name: Name of the private cloud.
         :type private_cloud_name: str
-        :param cluster_name: Name of the cluster in the private cloud.
-        :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either DatastoreList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.DatastoreList]
+        :return: An iterator like instance of either CloudLinkList or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~avs_client.models.CloudLinkList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.DatastoreList"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.CloudLinkList"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -90,7 +87,6 @@ class DatastoresOperations(object):
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
                     'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-                    'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -105,7 +101,7 @@ class DatastoresOperations(object):
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize('DatastoreList', pipeline_response)
+            deserialized = self._deserialize('CloudLinkList', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -126,35 +122,32 @@ class DatastoresOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/clusters/{clusterName}/datastores'}  # type: ignore
+    list.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/cloudLinks'}  # type: ignore
 
     def get(
         self,
         resource_group_name,  # type: str
         private_cloud_name,  # type: str
-        cluster_name,  # type: str
-        datastore_name,  # type: str
+        cloud_link_name,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.Datastore"
-        """Get a datastore in a private cloud cluster.
+        # type: (...) -> "_models.CloudLink"
+        """Get an cloud link by name in a private cloud.
 
-        Get a datastore in a private cloud cluster.
+        Get an cloud link by name in a private cloud.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param private_cloud_name: Name of the private cloud.
         :type private_cloud_name: str
-        :param cluster_name: Name of the cluster in the private cloud.
-        :type cluster_name: str
-        :param datastore_name: Name of the datastore in the private cloud cluster.
-        :type datastore_name: str
+        :param cloud_link_name: Name of the cloud link resource.
+        :type cloud_link_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: Datastore, or the result of cls(response)
-        :rtype: ~avs_client.models.Datastore
+        :return: CloudLink, or the result of cls(response)
+        :rtype: ~avs_client.models.CloudLink
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Datastore"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.CloudLink"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -168,8 +161,7 @@ class DatastoresOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
-            'datastoreName': self._serialize.url("datastore_name", datastore_name, 'str'),
+            'cloudLinkName': self._serialize.url("cloud_link_name", cloud_link_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -189,32 +181,30 @@ class DatastoresOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('Datastore', pipeline_response)
+        deserialized = self._deserialize('CloudLink', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/clusters/{clusterName}/datastores/{datastoreName}'}  # type: ignore
+    get.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/cloudLinks/{cloudLinkName}'}  # type: ignore
 
     def _create_or_update_initial(
         self,
         resource_group_name,  # type: str
         private_cloud_name,  # type: str
-        cluster_name,  # type: str
-        datastore_name,  # type: str
-        net_app_volume=None,  # type: Optional["_models.NetAppVolume"]
-        disk_pool_volume=None,  # type: Optional["_models.DiskPoolVolume"]
+        cloud_link_name,  # type: str
+        linked_cloud=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.Datastore"
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Datastore"]
+        # type: (...) -> "_models.CloudLink"
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.CloudLink"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        _datastore = _models.Datastore(net_app_volume=net_app_volume, disk_pool_volume=disk_pool_volume)
+        _cloud_link = _models.CloudLink(linked_cloud=linked_cloud)
         api_version = "2021-06-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
@@ -225,8 +215,7 @@ class DatastoresOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
-            'datastoreName': self._serialize.url("datastore_name", datastore_name, 'str'),
+            'cloudLinkName': self._serialize.url("cloud_link_name", cloud_link_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -240,7 +229,7 @@ class DatastoresOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_datastore, 'Datastore')
+        body_content = self._serialize.body(_cloud_link, 'CloudLink')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -251,56 +240,50 @@ class DatastoresOperations(object):
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if response.status_code == 200:
-            deserialized = self._deserialize('Datastore', pipeline_response)
+            deserialized = self._deserialize('CloudLink', pipeline_response)
 
         if response.status_code == 201:
-            deserialized = self._deserialize('Datastore', pipeline_response)
+            deserialized = self._deserialize('CloudLink', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/clusters/{clusterName}/datastores/{datastoreName}'}  # type: ignore
+    _create_or_update_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/cloudLinks/{cloudLinkName}'}  # type: ignore
 
     def begin_create_or_update(
         self,
         resource_group_name,  # type: str
         private_cloud_name,  # type: str
-        cluster_name,  # type: str
-        datastore_name,  # type: str
-        net_app_volume=None,  # type: Optional["_models.NetAppVolume"]
-        disk_pool_volume=None,  # type: Optional["_models.DiskPoolVolume"]
+        cloud_link_name,  # type: str
+        linked_cloud=None,  # type: Optional[str]
         **kwargs  # type: Any
     ):
-        # type: (...) -> LROPoller["_models.Datastore"]
-        """Create or update a datastore in a private cloud cluster.
+        # type: (...) -> LROPoller["_models.CloudLink"]
+        """Create or update a cloud link in a private cloud.
 
-        Create or update a datastore in a private cloud cluster.
+        Create or update a cloud link in a private cloud.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param private_cloud_name: Name of the private cloud.
+        :param private_cloud_name: The name of the private cloud.
         :type private_cloud_name: str
-        :param cluster_name: Name of the cluster in the private cloud.
-        :type cluster_name: str
-        :param datastore_name: Name of the datastore in the private cloud cluster.
-        :type datastore_name: str
-        :param net_app_volume: An Azure NetApp Files volume.
-        :type net_app_volume: ~avs_client.models.NetAppVolume
-        :param disk_pool_volume: An iSCSI volume.
-        :type disk_pool_volume: ~avs_client.models.DiskPoolVolume
+        :param cloud_link_name: Name of the cloud link resource.
+        :type cloud_link_name: str
+        :param linked_cloud: Identifier of the other private cloud participating in the link.
+        :type linked_cloud: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
          Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of LROPoller that returns either Datastore or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.Datastore]
+        :return: An instance of LROPoller that returns either CloudLink or the result of cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~avs_client.models.CloudLink]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.Datastore"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.CloudLink"]
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
@@ -310,10 +293,8 @@ class DatastoresOperations(object):
             raw_result = self._create_or_update_initial(
                 resource_group_name=resource_group_name,
                 private_cloud_name=private_cloud_name,
-                cluster_name=cluster_name,
-                datastore_name=datastore_name,
-                net_app_volume=net_app_volume,
-                disk_pool_volume=disk_pool_volume,
+                cloud_link_name=cloud_link_name,
+                linked_cloud=linked_cloud,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -322,7 +303,7 @@ class DatastoresOperations(object):
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize('Datastore', pipeline_response)
+            deserialized = self._deserialize('CloudLink', pipeline_response)
 
             if cls:
                 return cls(pipeline_response, deserialized, {})
@@ -332,8 +313,7 @@ class DatastoresOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
-            'datastoreName': self._serialize.url("datastore_name", datastore_name, 'str'),
+            'cloudLinkName': self._serialize.url("cloud_link_name", cloud_link_name, 'str'),
         }
 
         if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -348,14 +328,13 @@ class DatastoresOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/clusters/{clusterName}/datastores/{datastoreName}'}  # type: ignore
+    begin_create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/cloudLinks/{cloudLinkName}'}  # type: ignore
 
     def _delete_initial(
         self,
         resource_group_name,  # type: str
         private_cloud_name,  # type: str
-        cluster_name,  # type: str
-        datastore_name,  # type: str
+        cloud_link_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> None
@@ -373,8 +352,7 @@ class DatastoresOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
-            'datastoreName': self._serialize.url("datastore_name", datastore_name, 'str'),
+            'cloudLinkName': self._serialize.url("cloud_link_name", cloud_link_name, 'str'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -397,29 +375,26 @@ class DatastoresOperations(object):
         if cls:
             return cls(pipeline_response, None, {})
 
-    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/clusters/{clusterName}/datastores/{datastoreName}'}  # type: ignore
+    _delete_initial.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/cloudLinks/{cloudLinkName}'}  # type: ignore
 
     def begin_delete(
         self,
         resource_group_name,  # type: str
         private_cloud_name,  # type: str
-        cluster_name,  # type: str
-        datastore_name,  # type: str
+        cloud_link_name,  # type: str
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller[None]
-        """Delete a datastore in a private cloud cluster.
+        """Delete a cloud link in a private cloud.
 
-        Delete a datastore in a private cloud cluster.
+        Delete a cloud link in a private cloud.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
         :param private_cloud_name: Name of the private cloud.
         :type private_cloud_name: str
-        :param cluster_name: Name of the cluster in the private cloud.
-        :type cluster_name: str
-        :param datastore_name: Name of the datastore in the private cloud cluster.
-        :type datastore_name: str
+        :param cloud_link_name: Name of the cloud link resource.
+        :type cloud_link_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling.
@@ -441,8 +416,7 @@ class DatastoresOperations(object):
             raw_result = self._delete_initial(
                 resource_group_name=resource_group_name,
                 private_cloud_name=private_cloud_name,
-                cluster_name=cluster_name,
-                datastore_name=datastore_name,
+                cloud_link_name=cloud_link_name,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -458,8 +432,7 @@ class DatastoresOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
             'privateCloudName': self._serialize.url("private_cloud_name", private_cloud_name, 'str'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str'),
-            'datastoreName': self._serialize.url("datastore_name", datastore_name, 'str'),
+            'cloudLinkName': self._serialize.url("cloud_link_name", cloud_link_name, 'str'),
         }
 
         if polling is True: polling_method = ARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -474,4 +447,4 @@ class DatastoresOperations(object):
             )
         else:
             return LROPoller(self._client, raw_result, get_long_running_output, polling_method)
-    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/clusters/{clusterName}/datastores/{datastoreName}'}  # type: ignore
+    begin_delete.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/cloudLinks/{cloudLinkName}'}  # type: ignore
