@@ -91,7 +91,7 @@ def load_arguments(self, _):
         c.argument('pod_subnet_id', type=str, validator=validate_pod_subnet_id)
         c.argument('ppg')
         c.argument('workspace_resource_id')
-        c.argument('enable_aad_msi_auth', arg_type=get_three_state_flag(), is_preview=True, help="HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR ")
+        c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True, help="HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR HURDUR ")
         c.argument('skip_subnet_role_assignment', action='store_true')
         c.argument('enable_fips_image', action='store_true', is_preview=True)
         c.argument('enable_cluster_autoscaler', action='store_true')

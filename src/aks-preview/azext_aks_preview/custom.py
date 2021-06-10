@@ -318,8 +318,6 @@ def _invoke_deployment(cmd, resource_group_name, deployment_name, template, para
         logger.info(json.dumps(template, indent=2))
         logger.info('==== END TEMPLATE ====')
 
-    import pdb
-    pdb.set_trace()
     Deployment = cmd.get_models('Deployment', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
     deployment = Deployment(properties=properties)
     if validate:
@@ -990,6 +988,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                outbound_type=None,
                enable_addons=None,
                workspace_resource_id=None,
+               enable_msi_auth_for_monitoring=False,
                min_count=None,
                max_count=None,
                vnet_subnet_id=None,
@@ -1270,8 +1269,9 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
     monitoring = False
     if CONST_MONITORING_ADDON_NAME in addon_profiles:
         monitoring = True
-        _ensure_container_insights_for_monitoring(
-            cmd, addon_profiles[CONST_MONITORING_ADDON_NAME])
+        if enable_msi_auth_for_monitoring and not enable_managed_identity:
+            raise CLIError("--enable-msi-auth-for-monitoring can not be used on clusters with service principal auth.")
+        _ensure_container_insights_for_monitoring(cmd, addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name, location, aad_route=enable_msi_auth_for_monitoring, create_dcr=True, create_dcra=False)
 
     # addon is in the list and is enabled
     ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in addon_profiles and \
@@ -1457,14 +1457,21 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                 attach_acr,
                 headers,
                 no_wait)
-            return created_cluster
+            break
         except CloudError as ex:
             retry_exception = ex
             if 'not found in Active Directory tenant' in ex.message:
                 time.sleep(3)
             else:
                 raise ex
-    raise retry_exception
+    else:
+        raise retry_exception
+
+    # Create the DCR Association here, it must be done after the cluster is created.
+    if monitoring and enable_msi_auth_for_monitoring:
+        _ensure_container_insights_for_monitoring(cmd, addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name, location, aad_route=enable_msi_auth_for_monitoring, create_dcr=False, create_dcra=True)
+
+    return created_cluster
 
 
 def aks_update(cmd,     # pylint: disable=too-many-statements,too-many-branches,too-many-locals
@@ -2357,6 +2364,7 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
                         resource_group_name,
                         addon_profiles=None,
                         workspace_resource_id=None,
+                        enable_msi_auth_for_monitoring=False,
                         appgw_name=None,
                         appgw_subnet_prefix=None,
                         appgw_subnet_cidr=None,
@@ -2388,7 +2396,7 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
         workspace_resource_id = _sanitize_loganalytics_ws_resource_id(workspace_resource_id)
 
         if 'monitoring' in addons:
-            addon_profiles[CONST_MONITORING_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True, config={CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id})
+            addon_profiles[CONST_MONITORING_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True, config={CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id, CONST_MONITORING_USING_AAD_MSI_AUTH: enable_msi_auth_for_monitoring})
             addons.remove('monitoring')
         if 'azure-defender' in addons:
             addon_profiles[CONST_AZURE_DEFENDER_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True, config={CONST_AZURE_DEFENDER_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id})
@@ -2639,14 +2647,14 @@ def _sanitize_loganalytics_ws_resource_id(workspace_resource_id):
         workspace_resource_id = workspace_resource_id.rstrip('/')
     return workspace_resource_id
 
-
-def _ensure_DCR_monitoring(cmd, addon, cluster_subscription, cluster_resource_group_name, cluster_name):
+def _ensure_container_insights_for_monitoring(cmd, addon, cluster_subscription, cluster_resource_group_name, cluster_name, cluster_region, remove_monitoring=False, aad_route=False, create_dcr=False, create_dcra=False):
     """
-    Ensures a DCR (data collection rule) exists and is associated with the current AKS cluster
+    Adds the ContainerInsights solution to a LA workspace
+    Set remove_monitoring to True and create_dcra to True to remove the DCR-Association (DCR = Data Collection Rule) created for monitoring with the AAD route. The association makes 
+    it very hard to manually delete either the DCR or cluster, and it is not obvious how to manually delete the association from the portal.
+
+    create_dcr and create_dcra have no effect if aad_route == False
     """
-
-    cluster_resource_id = f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/Microsoft.ContainerService/managedClusters/{cluster_name}"
-
     if not addon.enabled:
         return None
 
@@ -2674,241 +2682,179 @@ def _ensure_DCR_monitoring(cmd, addon, cluster_subscription, cluster_resource_gr
             'Could not locate resource group in workspace-resource-id URL.')
 
     # region of workspace can be different from region of RG so find the location of the workspace_resource_id
-    resources = cf_resources(cmd.cli_ctx, subscription_id)
-    from azure.core.exceptions import HttpResponseError
-    try:
-        resource = resources.get_by_id(
-            workspace_resource_id, '2015-11-01-preview')
-        location = resource.location
-    except HttpResponseError as ex:
-        raise ex
+    if not remove_monitoring:
+        resources = cf_resources(cmd.cli_ctx, subscription_id)
+        from azure.core.exceptions import HttpResponseError
+        try:
+            resource = resources.get_by_id(
+                workspace_resource_id, '2015-11-01-preview')
+            location = resource.location
+        except HttpResponseError as ex:
+            raise ex
 
+    if aad_route:
+        cluster_resource_id = f"/subscriptions/{cluster_subscription}/resourceGroups/{cluster_resource_group_name}/providers/Microsoft.ContainerService/managedClusters/{cluster_name}"
+        dataCollectionRuleName = f"DCR-{workspace_name}"
+        dcr_resource_id = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
+        from azure.cli.core.util import send_raw_request
 
-    # todo: check if region supports DCRs and DCR-A
-    # DCR provider: dataCollectionRules
-    # DCRA type: dataCollectionRuleAssociations
-    # URL: GET https://management.azure.com/subscriptions/72c8e8ca-dc16-47dc-b65c-6b5875eb600a/providers/Microsoft.Insights/dataCollectionRules?api-version=2021-04-01
+        if create_dcr:
+            # first get the association between region display names and region IDs (because for some reason the "which RPs are available in which regions check returns region display names")
+            region_names_to_id = {}
+            # TODO: does this need retries?
+            r = send_raw_request(cmd.cli_ctx, "GET", f"https://management.azure.com/subscriptions/{subscription_id}/locations?api-version=2019-11-01")
+            json_response = json.loads(r.text)
+            for region_data in json_response["value"]:
+                region_names_to_id[region_data["displayName"]] = region_data["name"]
 
+            # check if region supports DCRs and DCR-A
+            r = send_raw_request(cmd.cli_ctx, "GET", f"https://management.azure.com/subscriptions/{subscription_id}/providers/Microsoft.Insights?api-version=2020-10-01")
+            json_response = json.loads(r.text)
+            for resource in json_response["resourceTypes"]:
+                region_ids = map(lambda x: region_names_to_id[x], resource["locations"])  # map is lazy, so doing this for every region isn't slow
+                if resource["resourceType"] == "dataCollectionRules" and location not in region_ids:
+                        raise CLIError(f'Data Collection Rules are not enabled for LA workspace region {location}')
+                elif resource["resourceType"] == "dataCollectionRuleAssociations" and cluster_region not in region_ids:
+                        raise CLIError(f'Data Collection Rule Associations are not enabled for cluster region {location}')
 
-
-
-
-    dataCollectionRuleName = f"DCR-{workspace_name}"  # TODO: decide on a naming scheme
-    dcr_resource_id = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
-
-    # # get auth token
-    # from azure.cli.core._profile import Profile
-    # profile = Profile(cli_ctx=cmd.cli_ctx)
-    # token_info, _, _ = profile.get_raw_token(None, subscription=subscription_id)
-    # token_type, token, _ = token_info
-    # # headers = {}
-    # # headers['Authorization'] = '{} {}'.format(token_type, token)
-    # # headers["Content-type"] = "application/json"
-    # # # doesn't work: headers = ['{"Content-type": "application/json"}']
-
-
-    # create the DCR
-
-    dcr_creation_body = json.dumps({"location": location,
-                        "properties": {
-                            "dataFlows": [
-                                {
-                                    "streams": [
-                                        "Microsoft-Perf",
-                                        "Microsoft-ContainerInventory",
-                                        "Microsoft-ContainerLog",
-                                        "Microsoft-ContainerNodeInventory",
-                                        "Microsoft-KubeEvents",
-                                        "Microsoft-KubeHealth",
-                                        "Microsoft-KubeMonAgentEvents",
-                                        "Microsoft-KubeNodeInventory",
-                                        "Microsoft-KubePodInventory",
-                                        "Microsoft-KubePVInventory",
-                                        "Microsoft-KubeServices",
-                                        "Microsoft-InsightsMetrics"
+            # create the DCR        
+            dcr_creation_body = json.dumps({"location": location,
+                                "properties": {
+                                    "dataFlows": [
+                                        {
+                                            "streams": [
+                                                "Microsoft-Perf",
+                                                "Microsoft-ContainerInventory",
+                                                "Microsoft-ContainerLog",
+                                                "Microsoft-ContainerNodeInventory",
+                                                "Microsoft-KubeEvents",
+                                                "Microsoft-KubeHealth",
+                                                "Microsoft-KubeMonAgentEvents",
+                                                "Microsoft-KubeNodeInventory",
+                                                "Microsoft-KubePodInventory",
+                                                "Microsoft-KubePVInventory",
+                                                "Microsoft-KubeServices",
+                                                "Microsoft-InsightsMetrics"
+                                            ],
+                                            "destinations": [
+                                                workspace_name
+                                            ]
+                                        }
                                     ],
-                                    "destinations": [
-                                        workspace_name
-                                    ]
-                                }
-                            ],
-                            "destinations": {
-                                "logAnalytics": [
-                                    {
-                                    "workspaceResourceId": workspace_resource_id,
-                                    "name": workspace_name
+                                    "destinations": {
+                                        "logAnalytics": [
+                                            {
+                                            "workspaceResourceId": workspace_resource_id,
+                                            "name": workspace_name
+                                            }
+                                        ]
                                     }
-                                ]
-                            }
-                        }
-                    })
+                                }
+                            })
 
-    url = f"https://management.azure.com/{dcr_resource_id}?api-version=2019-11-01-preview"
-    url_params = {"dcr_resource_id": dcr_resource_id}
+            url = f"https://management.azure.com/{dcr_resource_id}?api-version=2019-11-01-preview"
+            r = send_raw_request(cmd.cli_ctx, "PUT", url, body=dcr_creation_body)
+        
+        if create_dcra:
+            # only create or delete the association between the DCR and cluster
+            association_body = json.dumps({"location": cluster_region,
+                                "properties": {
+                                "dataCollectionRuleId": dcr_resource_id,
+                                "description": "routes monitoring data to a Log Analytics workspace"
+                                }
+                            })
+            association_url = f"https://management.azure.com/{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/send-to-{workspace_name}?api-version=2019-11-01-preview"
+            r = send_raw_request(cmd.cli_ctx, "PUT" if not remove_monitoring else "DELETE", association_url, body=association_body)
 
-    # import pdb
-    # pdb.set_trace()
+    elif not aad_route:
 
-    # from requests import Session, Request
-    # s = Session()
-    # req = Request(method="PUT", url=url, headers=headers, params=url_params, data=dcr_creation_body)
-    # prepped = s.prepare_request(req)
-    # r = s.send(prepped)
-    # if not r.ok:
-    #     reason = r.reason
-    #     if r.text:
-    #         reason += '({})'.format(r.text)
-    #     raise CLIError(reason)
+        raise CLIError("solution about to be created")
 
-    from azure.cli.core.util import send_raw_request
-    # TODO: does this need retries?
-    r = send_raw_request(cmd.cli_ctx, "PUT", url, body=dcr_creation_body)
+        # legacy auth with LA workspace solution
+        unix_time_in_millis = int(
+            (datetime.datetime.utcnow() - datetime.datetime.utcfromtimestamp(0)).total_seconds() * 1000.0)
 
+        solution_deployment_name = 'ContainerInsights-{}'.format(
+            unix_time_in_millis)
 
-    # now create the association between the DCR and cluster
-    association_body = json.dumps({"properties": {
-                        "dataCollectionRuleId": dcr_resource_id,
-                        "description": "routes monitoring data to a Log Analytics workspace"
-                        }
-                    })
-    association_url = f"https://management.azure.com/{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/send-to-{cluster_name}?api-version=2019-11-01-preview"
-
-    r = send_raw_request(cmd.cli_ctx, "PUT", association_url, body=association_body)
-
-    # s = Session()
-    # req = Request(method="PUT", url=url, headers=headers, params=url_params, data=association_creation_body)
-    # prepped = s.prepare_request(req)
-    # r = s.send(prepped)
-    # if not r.ok:
-    #     reason = r.reason
-    #     if r.text:
-    #         reason += '({})'.format(r.text)
-    #     raise CLIError(reason)
-
-
-def _ensure_container_insights_for_monitoring(cmd, addon):
-    """
-    Adds the ContainerInsights solution to a LA workspace
-    """
-    if not addon.enabled:
-        return None
-
-    # workaround for this addon key which has been seen lowercased in the wild
-    for key in list(addon.config):
-        if key.lower() == CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID.lower() and key != CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID:
-            addon.config[CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID] = addon.config.pop(
-                key)
-
-    workspace_resource_id = addon.config[CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID].strip(
-    )
-    if not workspace_resource_id.startswith('/'):
-        workspace_resource_id = '/' + workspace_resource_id
-
-    if workspace_resource_id.endswith('/'):
-        workspace_resource_id = workspace_resource_id.rstrip('/')
-
-    # extract subscription ID and resource group from workspace_resource_id URL
-    try:
-        subscription_id = workspace_resource_id.split('/')[2]
-        resource_group = workspace_resource_id.split('/')[4]
-    except IndexError:
-        raise CLIError(
-            'Could not locate resource group in workspace-resource-id URL.')
-
-    # region of workspace can be different from region of RG so find the location of the workspace_resource_id
-    resources = cf_resources(cmd.cli_ctx, subscription_id)
-    from azure.core.exceptions import HttpResponseError
-    try:
-        resource = resources.get_by_id(
-            workspace_resource_id, '2015-11-01-preview')
-        location = resource.location
-    except HttpResponseError as ex:
-        raise ex
-
-    unix_time_in_millis = int(
-        (datetime.datetime.utcnow() - datetime.datetime.utcfromtimestamp(0)).total_seconds() * 1000.0)
-
-    solution_deployment_name = 'ContainerInsights-{}'.format(
-        unix_time_in_millis)
-
-    # pylint: disable=line-too-long
-    template = {
-        "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-        "contentVersion": "1.0.0.0",
-        "parameters": {
-            "workspaceResourceId": {
-                "type": "string",
-                "metadata": {
-                    "description": "Azure Monitor Log Analytics Resource ID"
+        # pylint: disable=line-too-long
+        template = {
+            "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+                "workspaceResourceId": {
+                    "type": "string",
+                    "metadata": {
+                        "description": "Azure Monitor Log Analytics Resource ID"
+                    }
+                },
+                "workspaceRegion": {
+                    "type": "string",
+                    "metadata": {
+                        "description": "Azure Monitor Log Analytics workspace region"
+                    }
+                },
+                "solutionDeploymentName": {
+                    "type": "string",
+                    "metadata": {
+                        "description": "Name of the solution deployment"
+                    }
                 }
+            },
+            "resources": [
+                {
+                    "type": "Microsoft.Resources/deployments",
+                    "name": "[parameters('solutionDeploymentName')]",
+                    "apiVersion": "2017-05-10",
+                    "subscriptionId": "[split(parameters('workspaceResourceId'),'/')[2]]",
+                    "resourceGroup": "[split(parameters('workspaceResourceId'),'/')[4]]",
+                    "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                            "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                            "contentVersion": "1.0.0.0",
+                            "parameters": {},
+                            "variables": {},
+                            "resources": [
+                                {
+                                    "apiVersion": "2015-11-01-preview",
+                                    "type": "Microsoft.OperationsManagement/solutions",
+                                    "location": "[parameters('workspaceRegion')]",
+                                    "name": "[Concat('ContainerInsights', '(', split(parameters('workspaceResourceId'),'/')[8], ')')]",
+                                    "properties": {
+                                        "workspaceResourceId": "[parameters('workspaceResourceId')]"
+                                    },
+                                    "plan": {
+                                        "name": "[Concat('ContainerInsights', '(', split(parameters('workspaceResourceId'),'/')[8], ')')]",
+                                        "product": "[Concat('OMSGallery/', 'ContainerInsights')]",
+                                        "promotionCode": "",
+                                        "publisher": "Microsoft"
+                                    }
+                                }
+                            ]
+                        },
+                        "parameters": {}
+                    }
+                }
+            ]
+        }
+
+        params = {
+            "workspaceResourceId": {
+                "value": workspace_resource_id
             },
             "workspaceRegion": {
-                "type": "string",
-                "metadata": {
-                    "description": "Azure Monitor Log Analytics workspace region"
-                }
+                "value": location
             },
             "solutionDeploymentName": {
-                "type": "string",
-                "metadata": {
-                    "description": "Name of the solution deployment"
-                }
+                "value": solution_deployment_name
             }
-        },
-        "resources": [
-            {
-                "type": "Microsoft.Resources/deployments",
-                "name": "[parameters('solutionDeploymentName')]",
-                "apiVersion": "2017-05-10",
-                "subscriptionId": "[split(parameters('workspaceResourceId'),'/')[2]]",
-                "resourceGroup": "[split(parameters('workspaceResourceId'),'/')[4]]",
-                "properties": {
-                    "mode": "Incremental",
-                    "template": {
-                        "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-                        "contentVersion": "1.0.0.0",
-                        "parameters": {},
-                        "variables": {},
-                        "resources": [
-                            {
-                                "apiVersion": "2015-11-01-preview",
-                                "type": "Microsoft.OperationsManagement/solutions",
-                                "location": "[parameters('workspaceRegion')]",
-                                "name": "[Concat('ContainerInsights', '(', split(parameters('workspaceResourceId'),'/')[8], ')')]",
-                                "properties": {
-                                    "workspaceResourceId": "[parameters('workspaceResourceId')]"
-                                },
-                                "plan": {
-                                    "name": "[Concat('ContainerInsights', '(', split(parameters('workspaceResourceId'),'/')[8], ')')]",
-                                    "product": "[Concat('OMSGallery/', 'ContainerInsights')]",
-                                    "promotionCode": "",
-                                    "publisher": "Microsoft"
-                                }
-                            }
-                        ]
-                    },
-                    "parameters": {}
-                }
-            }
-        ]
-    }
-
-    params = {
-        "workspaceResourceId": {
-            "value": workspace_resource_id
-        },
-        "workspaceRegion": {
-            "value": location
-        },
-        "solutionDeploymentName": {
-            "value": solution_deployment_name
         }
-    }
 
-    deployment_name = 'aks-monitoring-{}'.format(unix_time_in_millis)
-    # publish the Container Insights solution to the Log Analytics workspace
-    return _invoke_deployment(cmd, resource_group, deployment_name, template, params,
-                              validate=False, no_wait=False, subscription_id=subscription_id)
+        deployment_name = 'aks-monitoring-{}'.format(unix_time_in_millis)
+        # publish the Container Insights solution to the Log Analytics workspace
+        return _invoke_deployment(cmd, resource_group, deployment_name, template, params,
+                                validate=False, no_wait=False, subscription_id=subscription_id)
 
 
 def _ensure_aks_service_principal(cli_ctx,
@@ -3379,7 +3325,12 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
     instance = client.get(resource_group_name, name)
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
-
+    try:
+        if addons == "monitoring" and CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[CONST_MONITORING_USING_AAD_MSI_AUTH]:
+            # remove the DCR association because the DCR otherwise can't be deleted
+            _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name, instance.location, remove_monitoring=True, aad_route=True, create_dcr=False, create_dcra=True)
+    except TypeError:
+        pass
 
     instance = _update_addons(
         cmd,
@@ -3398,12 +3349,12 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
 
 def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_resource_id=None,
                       subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None, appgw_subnet_id=None,
-                      appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, no_wait=False, enable_aad_msi_auth=False):
+                      appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, no_wait=False, enable_msi_auth_for_monitoring=False):
 
     instance = client.get(resource_group_name, name)
     subscription_id = get_subscription_id(cmd.cli_ctx)
     instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
-                              workspace_resource_id=workspace_resource_id, enable_aad_msi_auth=enable_aad_msi_auth, subnet_name=subnet_name,
+                              workspace_resource_id=workspace_resource_id, enable_msi_auth_for_monitoring=enable_msi_auth_for_monitoring, subnet_name=subnet_name,
                               appgw_name=appgw_name, appgw_subnet_prefix=appgw_subnet_prefix, appgw_subnet_cidr=appgw_subnet_cidr, appgw_id=appgw_id, appgw_subnet_id=appgw_subnet_id, appgw_watch_namespace=appgw_watch_namespace,
                               enable_sgxquotehelper=enable_sgxquotehelper, enable_secret_rotation=enable_secret_rotation, no_wait=no_wait)
 
@@ -3413,15 +3364,14 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
             try:
                 if instance.servicePrincipalProfile.clientId != "": # just checking if this field exists
                     pass
-                raise CLIError("--enable-aad-msi-auth can not be used on clusters with service principal auth.")
+                raise CLIError("--enable-msi-auth-for-monitoring can not be used on clusters with service principal auth.")
             except AttributeError:
                 pass
             # create a Data Collection Rule (DCR) and associate it with the cluster
-            _ensure_DCR_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name)
+            _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name, instance.location, aad_route=True, create_dcr=True, create_dcra=True)
         else:
             # monitoring addon will use legacy path
-            _ensure_container_insights_for_monitoring(
-                cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME])
+            _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME], aad_route=False)
 
     monitoring = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
         CONST_MONITORING_ADDON_NAME].enabled
@@ -3479,7 +3429,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    addons,
                    enable,
                    workspace_resource_id=None,
-                   enable_aad_msi_auth=False,
+                   enable_msi_auth_for_monitoring=False,
                    subnet_name=None,
                    appgw_name=None,
                    appgw_subnet_prefix=None,
@@ -3533,7 +3483,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                 addon_profile.config = {
                     logAnalyticsConstName: workspace_resource_id}
                 if addon == CONST_MONITORING_ADDON_NAME:  # TODO: What is the azure defender addon? Does it use omsagent?
-                    addon_profile.config[CONST_MONITORING_USING_AAD_MSI_AUTH] = enable_aad_msi_auth
+                    addon_profile.config[CONST_MONITORING_USING_AAD_MSI_AUTH] = enable_msi_auth_for_monitoring
             elif addon == (CONST_VIRTUAL_NODE_ADDON_NAME + os_type):
                 if addon_profile.enabled:
                     raise CLIError('The virtual-node addon is already enabled for this managed cluster.\n'
