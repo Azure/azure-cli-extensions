@@ -5,14 +5,11 @@ Release History
 0.5.18
 +++++
 * Fix issue with node config not consuming logging settings
+* Remove azure-defender from list of available addons to install via `az aks enable-addons` command
 
 0.5.17
 +++++
 * Add parameter '--enable-ultra-ssd' to enable UltraSSD on agent node pool
-
-0.5.17
-+++++
-* Remove azure-defender from list of available addons to install via `az aks enable-addons` command
 
 0.5.16
 +++++
