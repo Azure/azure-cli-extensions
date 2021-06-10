@@ -1,6 +1,10 @@
 Release History
 ===============
 
+2.5.0
+-----
+* Add support for 0.5 core, 512 Mi resource requests in app deployment
+
 2.4.0
 -----
 * Add support to format log streaming of structured JSON output
