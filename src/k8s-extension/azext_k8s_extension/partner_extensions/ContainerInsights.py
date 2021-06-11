@@ -14,7 +14,6 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.util import sdk_no_wait
-from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
 from ..vendored_sdks.models import ExtensionInstance
@@ -104,8 +103,7 @@ def _invoke_deployment(cmd, resource_group_name, deployment_name, template, para
         if cmd.supported_api_version(min_api='2019-10-01', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES):
             validation_poller = smc.begin_validate(resource_group_name, deployment_name, deployment)
             return LongRunningOperation(cmd.cli_ctx)(validation_poller)
-        else:
-            return smc.validate(resource_group_name, deployment_name, deployment)
+        return smc.validate(resource_group_name, deployment_name, deployment)
 
     return sdk_no_wait(no_wait, smc.begin_create_or_update, resource_group_name, deployment_name, deployment)
 
