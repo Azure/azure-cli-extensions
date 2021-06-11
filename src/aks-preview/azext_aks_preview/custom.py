@@ -2647,10 +2647,11 @@ def _sanitize_loganalytics_ws_resource_id(workspace_resource_id):
         workspace_resource_id = workspace_resource_id.rstrip('/')
     return workspace_resource_id
 
+
 def _ensure_container_insights_for_monitoring(cmd, addon, cluster_subscription, cluster_resource_group_name, cluster_name, cluster_region, remove_monitoring=False, aad_route=False, create_dcr=False, create_dcra=False):
     """
     Adds the ContainerInsights solution to a LA workspace
-    Set remove_monitoring to True and create_dcra to True to remove the DCR-Association (DCR = Data Collection Rule) created for monitoring with the AAD route. The association makes 
+    Set remove_monitoring to True and create_dcra to True to remove the DCR-Association (DCR = Data Collection Rule) created for monitoring with the AAD route. The association makes
     it very hard to manually delete either the DCR or cluster, and it is not obvious how to manually delete the association from the portal.
 
     create_dcr and create_dcra have no effect if aad_route == False
@@ -2713,56 +2714,54 @@ def _ensure_container_insights_for_monitoring(cmd, addon, cluster_subscription, 
             for resource in json_response["resourceTypes"]:
                 region_ids = map(lambda x: region_names_to_id[x], resource["locations"])  # map is lazy, so doing this for every region isn't slow
                 if resource["resourceType"] == "dataCollectionRules" and location not in region_ids:
-                        raise CLIError(f'Data Collection Rules are not enabled for LA workspace region {location}')
+                    raise CLIError(f'Data Collection Rules are not enabled for LA workspace region {location}')
                 elif resource["resourceType"] == "dataCollectionRuleAssociations" and cluster_region not in region_ids:
-                        raise CLIError(f'Data Collection Rule Associations are not enabled for cluster region {location}')
+                    raise CLIError(f'Data Collection Rule Associations are not enabled for cluster region {location}')
 
-            # create the DCR        
+            # create the DCR
             dcr_creation_body = json.dumps({"location": location,
-                                "properties": {
-                                    "dataFlows": [
-                                        {
-                                            "streams": [
-                                                "Microsoft-Perf",
-                                                "Microsoft-ContainerInventory",
-                                                "Microsoft-ContainerLog",
-                                                "Microsoft-ContainerNodeInventory",
-                                                "Microsoft-KubeEvents",
-                                                "Microsoft-KubeHealth",
-                                                "Microsoft-KubeMonAgentEvents",
-                                                "Microsoft-KubeNodeInventory",
-                                                "Microsoft-KubePodInventory",
-                                                "Microsoft-KubePVInventory",
-                                                "Microsoft-KubeServices",
-                                                "Microsoft-InsightsMetrics"
-                                            ],
-                                            "destinations": [
-                                                workspace_name
-                                            ]
-                                        }
-                                    ],
-                                    "destinations": {
-                                        "logAnalytics": [
-                                            {
-                                            "workspaceResourceId": workspace_resource_id,
-                                            "name": workspace_name
-                                            }
-                                        ]
-                                    }
-                                }
-                            })
+                                            "properties": {
+                                                "dataFlows": [
+                                                    {
+                                                        "streams": [
+                                                            "Microsoft-Perf",
+                                                            "Microsoft-ContainerInventory",
+                                                            "Microsoft-ContainerLog",
+                                                            "Microsoft-ContainerNodeInventory",
+                                                            "Microsoft-KubeEvents",
+                                                            "Microsoft-KubeHealth",
+                                                            "Microsoft-KubeMonAgentEvents",
+                                                            "Microsoft-KubeNodeInventory",
+                                                            "Microsoft-KubePodInventory",
+                                                            "Microsoft-KubePVInventory",
+                                                            "Microsoft-KubeServices",
+                                                            "Microsoft-InsightsMetrics"
+                                                        ],
+                                                        "destinations": [
+                                                            workspace_name
+                                                        ]
+                                                    }
+                                                ],
+                                                "destinations": {
+                                                    "logAnalytics": [
+                                                        {
+                                                            "workspaceResourceId": workspace_resource_id,
+                                                            "name": workspace_name
+                                                        }
+                                                    ]
+                                                }
+                                            }})
 
             url = f"https://management.azure.com/{dcr_resource_id}?api-version=2019-11-01-preview"
             r = send_raw_request(cmd.cli_ctx, "PUT", url, body=dcr_creation_body)
-        
+
         if create_dcra:
             # only create or delete the association between the DCR and cluster
             association_body = json.dumps({"location": cluster_region,
-                                "properties": {
-                                "dataCollectionRuleId": dcr_resource_id,
-                                "description": "routes monitoring data to a Log Analytics workspace"
-                                }
-                            })
+                                           "properties": {
+                                               "dataCollectionRuleId": dcr_resource_id,
+                                               "description": "routes monitoring data to a Log Analytics workspace"
+                                           }})
             association_url = f"https://management.azure.com/{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/send-to-{workspace_name}?api-version=2019-11-01-preview"
             r = send_raw_request(cmd.cli_ctx, "PUT" if not remove_monitoring else "DELETE", association_url, body=association_body)
 
@@ -2850,8 +2849,7 @@ def _ensure_container_insights_for_monitoring(cmd, addon, cluster_subscription, 
 
         deployment_name = 'aks-monitoring-{}'.format(unix_time_in_millis)
         # publish the Container Insights solution to the Log Analytics workspace
-        return _invoke_deployment(cmd, resource_group, deployment_name, template, params,
-                                validate=False, no_wait=False, subscription_id=subscription_id)
+        return _invoke_deployment(cmd, resource_group, deployment_name, template, params, validate=False, no_wait=False, subscription_id=subscription_id)
 
 
 def _ensure_aks_service_principal(cli_ctx,
@@ -3359,7 +3357,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
         if instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[CONST_MONITORING_USING_AAD_MSI_AUTH]:
             # Ensure the cluster does not use service principal auth
             try:
-                if instance.servicePrincipalProfile.clientId != "": # just checking if this field exists
+                if instance.servicePrincipalProfile.clientId != "":  # just checking if this field exists
                     pass
                 raise CLIError("--enable-msi-auth-for-monitoring can not be used on clusters with service principal auth.")
             except AttributeError:

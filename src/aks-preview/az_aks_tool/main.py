@@ -26,13 +26,13 @@ def init_argparse(args):
     parser.add_argument("-a", "--all", action="store_true", default=False,
                         help="enbale all tests (cli & ext)")
     parser.add_argument("-t", "--tests", nargs='+', help="test case names")
-    parser.add_argument("-cm", "--cli-matrix",  type=str,
+    parser.add_argument("-cm", "--cli-matrix", type=str,
                         help="full path to cli test matrix")
     parser.add_argument("-cc", "--cli-coverage", nargs="+",
                         help="cli test extra coverage")
     parser.add_argument("-cf", "--cli-filter", nargs="+",
                         help="cli test filter")
-    parser.add_argument("-em", "--ext-matrix",  type=str,
+    parser.add_argument("-em", "--ext-matrix", type=str,
                         help="full path to extension test matrix")
     parser.add_argument("-ec", "--ext-coverage", nargs="+",
                         help="extension test extra coverage")
