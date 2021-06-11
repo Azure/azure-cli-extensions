@@ -7,7 +7,6 @@ Release History
 ++++++++++++++++++
 * Add SSL support for AzureML
 
-
 0.4.2
 ++++++++++++++++++
 
