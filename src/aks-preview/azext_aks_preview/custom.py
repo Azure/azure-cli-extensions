@@ -2767,9 +2767,6 @@ def _ensure_container_insights_for_monitoring(cmd, addon, cluster_subscription, 
             r = send_raw_request(cmd.cli_ctx, "PUT" if not remove_monitoring else "DELETE", association_url, body=association_body)
 
     elif not aad_route:
-
-        raise CLIError("solution about to be created")
-
         # legacy auth with LA workspace solution
         unix_time_in_millis = int(
             (datetime.datetime.utcnow() - datetime.datetime.utcfromtimestamp(0)).total_seconds() * 1000.0)
