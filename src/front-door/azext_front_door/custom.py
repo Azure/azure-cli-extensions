@@ -331,11 +331,11 @@ def configure_fd_frontend_endpoint_enable_https(cmd, resource_group_name, front_
     from azure.cli.core.azclierror import ArgumentUsageError
     if certificate_source != 'AzureKeyVault' and any([vault_id, secret_name, secret_version]):
         raise ArgumentUsageError("usage error: no need to specify --vault-id, --secret-name and --secret-version "
-                       "for Front Door managed certificate source.")
+                                 "for Front Door managed certificate source.")
 
     if certificate_source == 'AzureKeyVault' and not all([vault_id, secret_name]):
         raise ArgumentUsageError("usage error: at least --vault-id and --secret-name are rquired for "
-                       "Azure Key Vault certificate source.")
+                                 "Azure Key Vault certificate source.")
 
     # if not being disabled, then must be enabled
     if certificate_source == 'FrontDoor':
@@ -470,7 +470,7 @@ def update_fd_backend(cmd, resource_group_name, front_door_name, backend_pool_na
         from azure.cli.core.azclierror import InvalidArgumentValueError
         raise InvalidArgumentValueError("Backend range is from 1 to {}, index '{}' could not be found on frontdoor '{}'".format(
             len(backend_pool.backends), index, front_door_name))
-    backend = backend_pool.backends[index-1]
+    backend = backend_pool.backends[index - 1]
     with UpdateContext(backend) as c:
         c.update_param('address', address, None)
         c.update_param('http_port', http_port, None)
@@ -961,7 +961,7 @@ def add_exclusion_azure_managed_rule_set(cmd, resource_group_name, policy_name, 
     else:
         if rule_id:
             raise ResourceNotFoundError("rule {} within group {} within type '{}' not found"
-                           .format(rule_id, rule_group_id, rule_set_type))
+                                        .format(rule_id, rule_group_id, rule_set_type))
         raise ResourceNotFoundError("group {} within type '{}' not found".format(rule_group_id, rule_set_type))
 
     return client.begin_create_or_update(resource_group_name, policy_name, policy)
