@@ -240,7 +240,7 @@ def load_arguments(self, _):
                    arg_group='Request Header Options')
         c.argument('required_features_policy', options_list=['--required-features-policy', '--req-features-policy'], arg_type=get_enum_type(['Any', 'All']), help='The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​', arg_group='Features '
                    'Rule')
-        c.argument('subscription_state_override_actions', options_list=['--subscription-state-override-action', '--sub-override'], action=AddSubscriptionStateOverrideActions, nargs='+',
+        c.argument('subscription_state_override_actions', options_list=['--subscription-state-override-actions', '--override-actions'], action=AddSubscriptionStateOverrideActions, nargs='+',
                    help='The subscription state override actions.', arg_group='Subscription Lifecycle Notification Specifications')
         c.argument('soft_delete_ttl', help='The soft delete time to live.',
                    arg_group='Subscription Lifecycle Notification Specifications')
@@ -293,7 +293,7 @@ def load_arguments(self, _):
                    arg_group='Request Header Options')
         c.argument('required_features_policy', options_list=['--required-features-policy', '--req-features-policy'], arg_type=get_enum_type(['Any', 'All']), help='The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​', arg_group='Features '
                    'Rule')
-        c.argument('subscription_state_override_actions', options_list=['--subscription-state-override-action', '--sub-override'], action=AddSubscriptionStateOverrideActions, nargs='+',
+        c.argument('subscription_state_override_actions', options_list=['--subscription-state-override-actions', '--override-actions'], action=AddSubscriptionStateOverrideActions, nargs='+',
                    help='The subscription state override actions.', arg_group='Subscription Lifecycle Notification Specifications')
         c.argument('soft_delete_ttl', help='The soft delete time to live.',
                    arg_group='Subscription Lifecycle Notification Specifications')
@@ -375,13 +375,13 @@ def load_arguments(self, _):
                    action=AddExtendedLocations, nargs='+', help='The extended locations.')
         c.argument('resource_move_policy',
                    action=AddResourceMovePolicy, nargs='+', help='The resource move policy.')
-        c.argument('resource_deletion_policy', options_list=['--resource-deletion-policy', '--res-del-policy'], arg_type=get_enum_type(['NotSpecified', 'CascadeDeleteAll',
+        c.argument('resource_deletion_policy', options_list=['--resource-deletion-policy', '--deletion-policy'], arg_type=get_enum_type(['NotSpecified', 'CascadeDeleteAll',
                                                                                                                                         'CascadeDeleteProxyOnlyChildren']), help='The resource deletion policy.')
         c.argument('opt_in_headers', arg_type=get_enum_type(['NotSpecified', 'SignedUserToken',
                                                              'ClientGroupMembership', 'SignedAuxiliaryTokens',
                                                              'UnboundedClientGroupMembership']), help='The opt in headers.',
                    arg_group='Request Header Options')
-        c.argument('subscription_state_override_actions', options_list=['--subscription-state-override-action', '--sub-override'], action=AddSubscriptionStateOverrideActions, nargs='+',
+        c.argument('subscription_state_override_actions', options_list=['--subscription-state-override-actions', '--override-actions'], action=AddSubscriptionStateOverrideActions, nargs='+',
                    help='The subscription state override action.', arg_group='Subscription Lifecycle Notification Specifications')
         c.argument('soft_delete_ttl', help='The soft delete time to live.',
                    arg_group='Subscription Lifecycle Notification Specifications')
@@ -439,13 +439,13 @@ def load_arguments(self, _):
                    action=AddExtendedLocations, nargs='+', help='The extended locations.')
         c.argument('resource_move_policy',
                    action=AddResourceMovePolicy, nargs='+', help='The resource move policy.')
-        c.argument('resource_deletion_policy', options_list=['--resource-deletion-policy', '--res-del-policy'], arg_type=get_enum_type(['NotSpecified', 'CascadeDeleteAll',
+        c.argument('resource_deletion_policy', options_list=['--resource-deletion-policy', '--deletion-policy'], arg_type=get_enum_type(['NotSpecified', 'CascadeDeleteAll',
                                                                                                                                         'CascadeDeleteProxyOnlyChildren']), help='The resource deletion policy.')
         c.argument('opt_in_headers', arg_type=get_enum_type(['NotSpecified', 'SignedUserToken',
                                                              'ClientGroupMembership', 'SignedAuxiliaryTokens',
                                                              'UnboundedClientGroupMembership']), help='The opt in headers.',
                    arg_group='Request Header Options')
-        c.argument('subscription_state_override_actions', options_list=['--subscription-state-override-action', '--sub-override'], action=AddSubscriptionStateOverrideActions, nargs='+',
+        c.argument('subscription_state_override_actions', options_list=['--subscription-state-override-actions', '--override-actions'], action=AddSubscriptionStateOverrideActions, nargs='+',
                    help='The subscription state override action.', arg_group='Subscription Lifecycle Notification Specifications')
         c.argument('soft_delete_ttl', help='The soft delete time to live.',
                    arg_group='Subscription Lifecycle Notification Specifications')

@@ -349,13 +349,15 @@ helps['providerhub provider-registration create'] = """
 
 
             Multiple actions can be specified by using more than one --service-tree-infos argument.
-      - name: --subscription-state-override-actions --sub-override
+      - name: --subscription-state-override-actions --override-actions
+        short-summary: 'The subscription state override actions.'
         long-summary: |
             Usage: --subscription-state-override-actions state=XX action=XX
 
 
             Multiple actions can be specified by using more than one --subscription-state-override-actions argument.
       - name: --providerhub-metadata-authorizations --metadata-authz
+        short-summary: 'The ProviderHub metadata authorizations.'
         long-summary: |
             Usage: --providerhub-metadata-authorizations application-id=XX role-definition-id=XX \
 managed-by-role-definition-id=XX
@@ -367,7 +369,7 @@ managed-by-role-definition-id=XX
             Multiple actions can be specified by using more than one --providerhub-metadata-authorizations \
 argument.
       - name: --providerhub-metadata-authentication --metadata-authn
-        short-summary: 'Used to set alternative audiences or resources that ARM should accept from the token while authenticating requests for the provider.'
+        short-summary: 'The ProviderHub metadata authentication.'
         long-summary: |
             Usage: --providerhub-metadata-authentication allowed-audiences=XX
 
@@ -385,7 +387,7 @@ argument.
         long-summary: |
             Usage: --opt-in-headers "SignedUserToken"
 
-      - name: --lighthouse-authorizations
+      - name: --lighthouse-authorizations --lighthouse-auth
         short-summary: 'The lighthouse authorizations.'
         long-summary: |
             Usage: --lighthouse-authorizations principal-id=XX role-definition-id=XX
@@ -493,14 +495,12 @@ helps['providerhub resource-type-registration create'] = """
             required-features: Required. List of required features. Multiple required-features can be specified.
             Multiple actions can be specified by using more than one --endpoints argument.
       - name: --resource-creation-begin --creation-begin
-        type: string
         short-summary: 'Extension options for handling the resource creation begin extension request.'
         long-summary: |
             Usage: --resource-creation-begin request=XX response=XX
             request: The list of extension option types.
             response: The list of extension option types.
       - name: --resource-patch-begin --patch-begin
-        type: string
         short-summary: 'Extension options for handling the resource patch begin extension request.'
         long-summary: |
             Usage: --resource-patch-begin request=XX response=XX
@@ -573,7 +573,6 @@ linked-type=XX
             Usage: --required-features "Microsoft.Contoso/feature1, Microsoft.Contoso/feature2"
 
       - name: --required-features-policy --req-features-policy
-        type: string
         short-summary: 'The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​'
         long-summary: |
             Usage: --required-features-policy "All"
@@ -614,7 +613,7 @@ resource-types-with-custom-validation=XX
             enable-default-validation: Boolean indicating whether RP has chosen to opt-out of RPaaS to perform check name.
             resource-types-with-custom-validation: The types which needs additional validation from the RP.
 
-      - name: --disallowed-action-verbs
+      - name: --disallowed-action-verbs --dav
         type: string
         short-summary: 'The disallowed action verbs.'
         long-summary: |
@@ -671,21 +670,19 @@ cross-subscription-move-enabled=XX
             cross-resource-group-move-enabled: Boolean indicating whether moving resources across resource groups is allowed.
             cross-subscription-move-enabled: Boolean indicating whether moving resources across subscriptions is allowed.
 
-      - name: --resource-deletion-policy --res-del-policy
+      - name: --resource-deletion-policy --deletion-policy
         type: string
         short-summary: 'The resource deletion policy.'
         long-summary: |
             Usage: --resource-deletion-policy "CascadeDeleteAll"
 
-      - name: --subscription-state-override-actions --sub-override
+      - name: --subscription-state-override-actions --override-actions
+        short-summary: 'The subscription state override actions.'
         long-summary: |
             Usage: --subscription-state-override-actions state=XX action=XX
 
 
             Multiple actions can be specified by using more than one --subscription-state-override-actions argument.
-      - name: --resource-creation-begin --res-create-begin
-        long-summary: |
-            Usage: --resource-creation-begin request=XX response=XX
 
     examples:
       - name: ResourceTypeRegistrations_CreateOrUpdate
