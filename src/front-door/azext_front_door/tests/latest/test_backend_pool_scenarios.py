@@ -80,7 +80,7 @@ class BackendPoolScenarioTest(ScenarioTest):
                  '--resource-group {rg} '
                  '--front-door-name {front_door} '
                  '--pool-name {bkp1} '
-                 '--index 1 '
+                 '--index 2 '
                  '--disabled false ',
                  checks=[
                      self.check('enabledState', 'Enabled'),
@@ -92,5 +92,5 @@ class BackendPoolScenarioTest(ScenarioTest):
                     '--resource-group {rg} '
                     '--front-door-name {front_door} '
                     '--pool-name {bkp1} '
-                    '--index 2 '
+                    '--index 3 '
                     '--disabled false ')
