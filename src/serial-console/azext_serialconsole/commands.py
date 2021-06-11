@@ -16,13 +16,10 @@ def load_command_table(self, _):
     #    client_factory=cf_serialconsole)
 
 
-    with self.command_group('serialconsole') as g:
+    with self.command_group('serial-console') as g:
         g.custom_command('connect', 'connect_serialconsole')
-        g.custom_command('send-nmi', 'send_nmi_serialconsole')
-        g.custom_command('reset-vm', 'send_reset_serialconsole')
-        g.custom_command('send-sysrq', 'send_sysrq_serialconsole')
 
-
-    with self.command_group('serialconsole', is_preview=True):
-        pass
-
+    with self.command_group('serial-console send') as g:
+        g.custom_command('nmi', 'send_nmi_serialconsole')
+        g.custom_command('reset', 'send_reset_serialconsole')
+        g.custom_command('sysrq', 'send_sysrq_serialconsole')

@@ -5,17 +5,21 @@
 
 # from knack.util import CLIError
 # from requests.api import get
-import requests
 import json
-import websocket
+from os import stat
 import threading
 import sys
 import uuid
 import time
 import re
 import textwrap
-import numpy
-import wsaccel
+import numpy     # pylint: disable=unused-import
+import wsaccel   # pylint: disable=unused-import
+import websocket
+import requests
+from azure.cli.core.azclierror import UnclassifiedUserFault
+from azure.cli.core.azclierror import ResourceNotFoundError
+from azure.cli.core.azclierror import AzureConnectionError
 
 
 class GlobalVariables:
@@ -30,22 +34,39 @@ class GlobalVariables:
         self.trycount = 0
 
 
+GV = GlobalVariables()
+
+
+def quitapp(fromWebsocket=False, message="", error_message=None, error_recommendation=None, error_func=None):
+    PC.print(message + "\r\n", color=PrintClass.RED)
+    GV.terminatingApp = True
+    GV.loading = False
+    if GV.terminalInstance:
+        GV.terminalInstance.revertTerminal()
+        GV.terminalInstance = None
+    if not fromWebsocket and GV.webSocket:
+        GV.webSocket.close()
+        GV.webSocket = None
+    if error_message and error_func:
+        raise error_func(error_message, error_recommendation)
+    sys.exit()
+
+
 class PrintClass:
     CYAN = 36
     YELLOW = 33
     RED = 91
 
-    def __init__(self, GV):
+    def __init__(self):
         self.messageBuffer = ""
-        self.GV = GV
 
     def print(self, message, color=None, buffer=True):
         if color:
             message = "\x1b[" + str(color) + "m" + message + "\x1b[0m"
-        if self.GV.blockPrint and buffer:
+        if GV.blockPrint and buffer:
             self.messageBuffer += message
         else:
-            if not self.GV.blockPrint:
+            if not GV.blockPrint:
                 self.emptyMessageBuffer()
             print(message, end="", flush=True)
 
@@ -81,12 +102,12 @@ class PrintClass:
         return int(groups[0]), int(groups[1])
 
     def getTerminalWidth(self, getch):
-        PC.hideCursor(buffer=False)
+        self.hideCursor(buffer=False)
         _, originalCol = self.getCursorPosition(getch)
         self.setCursorHorizontalPosition(999, buffer=False)
         _, width = self.getCursorPosition(getch)
         self.setCursorHorizontalPosition(originalCol, buffer=False)
-        PC.showCursor(buffer=False)
+        self.showCursor(buffer=False)
         return width
 
     def hideCursor(self, buffer=True):
@@ -95,22 +116,45 @@ class PrintClass:
     def showCursor(self, buffer=True):
         self.print("\x1b[?25h", buffer=buffer)
 
+    @staticmethod
+    def getMaxWidthOfString(s):
+        maxWidth = -1
+        currWidth = 0
+        i = 0
+        while i < len(s):
+            if s[i] == '\r' or s[i] == '\n':
+                i += 2
+                maxWidth = max(currWidth, maxWidth)
+                currWidth = 0
+            else:
+                i += 1
+                currWidth += 1
+        return max(maxWidth, currWidth)
 
-GV = GlobalVariables()
-PC = PrintClass(GV)
+    def prompt(self, getch, message, lines=1):
+        GV.blockPrint = True
+        width = self.getTerminalWidth(getch)
+        _, col = self.getCursorPosition(getch)
+        # adjust message if it is too wide to fit in console
+        if width < self.getMaxWidthOfString(message):
+            wrapped = textwrap.wrap(message.replace(
+                "\r\n", " ").replace("\n\r", " "), width=width)
+            message = "\r\n".join(wrapped)
+            lines = len(wrapped)
+        self.print("\r\n" + message, color=PrintClass.YELLOW, buffer=False)
+        c = getch()
+        self.hideCursor(buffer=False)
+        for _ in range(lines):
+            self.clearLine(buffer=False)
+            self.cursorUp(buffer=False)
+        self.setCursorHorizontalPosition(col, buffer=False)
+        self.showCursor(buffer=False)
+        self.emptyMessageBuffer()
+        GV.blockPrint = False
+        return c
 
 
-def quitapp(fromWebsocket=False, message=""):
-    PC.print(message + "\r\n", color=PrintClass.RED)
-    GV.terminatingApp = True
-    GV.loading = False
-    if GV.terminalInstance:
-        GV.terminalInstance.revertTerminal()
-        GV.terminalInstance = None
-    if not fromWebsocket and GV.webSocket:
-        GV.webSocket.close()
-        GV.webSocket = None
-    sys.exit()
+PC = PrintClass()
 
 
 class _Getch:
@@ -131,7 +175,8 @@ class _Getch:
     def __call__(self):
         return self.impl()
 
-    def _getchUnix(self):
+    @staticmethod
+    def _getchUnix():
         return sys.stdin.read(1).encode()
 
     def _getchWindows(self):
@@ -148,6 +193,9 @@ class _Getch:
 
 
 class Terminal:
+    ERROR_MESSAGE = "Unable to configure terminal."
+    RECOMENDATION = "Make sure that app in running in a terminal on a Windows 10 or Unix based machine. Versions earlier than Windows 10 are not supported."
+
     def __init__(self):
         self.winOriginalOutMode = None
         self.winOriginalInMode = None
@@ -174,12 +222,9 @@ class Terminal:
             dwOriginalInMode = wintypes.DWORD()
             self.winOut = kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
             self.winIn = kernel32.GetStdHandle(STD_INPUT_HANDLE)
-            errorMessage = "Error configuring terminal: Make sure that app in running in a Windows 10 console."
-
-            if not kernel32.GetConsoleMode(self.winOut, ctypes.byref(dwOriginalOutMode)):
-                quitapp(message=errorMessage)
-            if not kernel32.GetConsoleMode(self.winIn, ctypes.byref(dwOriginalInMode)):
-                quitapp(message=errorMessage)
+            if not kernel32.GetConsoleMode(self.winOut, ctypes.byref(dwOriginalOutMode)) or not kernel32.GetConsoleMode(self.winIn, ctypes.byref(dwOriginalInMode)):
+                quitapp(error_message=Terminal.ERROR_MESSAGE,
+                        error_recommendation=Terminal.RECOMENDATION, error_func=UnclassifiedUserFault)
 
             self.winOriginalOutMode = dwOriginalOutMode.value
             self.winOriginalInMode = dwOriginalInMode.value
@@ -188,18 +233,18 @@ class Terminal:
             dwInMode = (self.winOriginalInMode |
                         ENABLE_VIRTUAL_TERMINAL_INPUT) & DISABLE
 
-            if not kernel32.SetConsoleMode(self.winOut, dwOutMode):
-                quitapp(message=errorMessage)
-            if not kernel32.SetConsoleMode(self.winIn, dwInMode):
-                quitapp(message=errorMessage)
+            if not kernel32.SetConsoleMode(self.winOut, dwOutMode) or not kernel32.SetConsoleMode(self.winIn, dwInMode):
+                quitapp(error_message=Terminal.ERROR_MESSAGE,
+                        error_recommendation=Terminal.RECOMENDATION, error_func=UnclassifiedUserFault)
         else:
-            import tty
-            import termios
-            errorMessage = "Error configuring terminal: Make sure that app in running in a terminal."
             try:
+                import tty
+                import termios
                 fd = sys.stdin.fileno()
-            except ValueError:
-                quitapp(message=errorMessage)
+            except (ModuleNotFoundError, ValueError):
+                quitapp(error_message=Terminal.ERROR_MESSAGE,
+                        error_recommendation=Terminal.RECOMENDATION, error_func=UnclassifiedUserFault)
+
             self.unixOriginalMode = termios.tcgetattr(fd)
             tty.setraw(fd)
 
@@ -212,115 +257,13 @@ class Terminal:
             if self.winOriginalInMode:
                 kernel32.SetConsoleMode(self.winIn, self.winOriginalInMode)
         else:
-            import termios
             if self.unixOriginalMode:
+                import termios
                 try:
                     fd = sys.stdin.fileno()
                 except ValueError:
                     return
                 termios.tcsetattr(fd, termios.TCSADRAIN, self.unixOriginalMode)
-
-
-def getMaxWidthOfString(s):
-    maxWidth = -1
-    currWidth = 0
-    i = 0
-    while i < len(s):
-        if s[i] == '\r' or s[i] == '\n':
-            i += 2
-            maxWidth = max(currWidth, maxWidth)
-            currWidth = 0
-        else:
-            i += 1
-            currWidth += 1
-    return max(maxWidth, currWidth)
-
-
-def prompt(getch, message, lines=1):
-    GV.blockPrint = True
-    width = PC.getTerminalWidth(getch)
-    _, col = PC.getCursorPosition(getch)
-    # adjust string if it is too wide to fit in console
-    if width < getMaxWidthOfString(message):
-        wrapped = textwrap.wrap(message.replace(
-            "\r\n", " ").replace("\n\r", " "), width=width)
-        message = "\r\n".join(wrapped)
-        lines = len(wrapped)
-    PC.print("\r\n" + message, color=PrintClass.YELLOW, buffer=False)
-    c = getch()
-    PC.hideCursor(buffer=False)
-    for _ in range(lines):
-        PC.clearLine(buffer=False)
-        PC.cursorUp(buffer=False)
-    PC.setCursorHorizontalPosition(col, buffer=False)
-    PC.showCursor(buffer=False)
-    PC.emptyMessageBuffer()
-    GV.blockPrint = False
-    return c
-
-
-def listenForKeys():
-    getch = _Getch()
-    while True:
-        c = getch()
-        if GV.webSocket and not GV.firstMessage:
-            if c == b'\x1d':
-                c = prompt(
-                    getch, "| Press n for NMI | s for SysRq | r to Reset VM |\r\n| q to quit Console | CTRL + ] to forward input |", lines=2)
-                if c == b'n':
-                    c = prompt(getch, "Warning: A Non-Maskable Interrupt (NMI) is used in debugging\r\nscenarios and is designed to crash your target Virtual Machine.\r\nAre you sure you want to send an NMI? (Y/n): ", lines=3)
-                    if c == b"Y":
-                        GV.serialConsoleInstance.sendNMI()
-                    continue
-                if c == b'r':
-                    c = prompt(getch, "Warning: This results in a hard restart, like powering the computer\r\ndown, then back up again. This can result in data loss in the virtual\r\nmachine. You should only perform this operation if a graceful restart\r\nis not effective.\r\nAre you sure you want to Hard Reset the VM? (Y/n): ", lines=5)
-                    if c == b"Y":
-                        GV.serialConsoleInstance.sendReset()
-                    continue
-                if c == b's':
-                    c = prompt(
-                        getch, "Which SysRq command would you like to send? Press h for help: ")
-                    GV.serialConsoleInstance.sendSysRq(c.decode())
-                    continue
-                if c == b'q':
-                    quitapp()
-                    return
-                if c != b'\x1d':
-                    continue
-            try:
-                if GV.webSocket:
-                    GV.webSocket.send(c)
-            except (AttributeError, websocket.WebSocketConnectionClosedException):
-                pass
-        else:
-            if c == b'\r':
-                GV.serialConsoleInstance.connect()
-            elif c == b'\x1d':
-                c = prompt(getch, "| Press q to quit Console |")
-                if c == b'q':
-                    quitapp()
-                    return
-
-
-def loadingMessage(clearScreen=True):
-    if clearScreen:
-        PC.clearScreen()
-    PC.print("For more information on the Azure Serial Console, see <https://aka.ms/serialconsolelinux>.\r\n",
-             color=PrintClass.YELLOW)
-    indx = 0
-    numberOfSquares = 3
-    chars = ["\u25A1"] * numberOfSquares
-    while GV.loading:
-        PC.hideCursor()
-        charsCopy = chars.copy()
-        charsCopy[indx] = "\u25A0"
-        squares = " ".join(charsCopy)
-        PC.clearLine()
-        PC.print("Connecting to console of VM   " +
-                 squares, color=PrintClass.CYAN)
-        PC.showCursor()
-        indx = (indx + 1) % numberOfSquares
-        time.sleep(0.5)
 
 
 class SerialConsole:
@@ -329,13 +272,91 @@ class SerialConsole:
         armEndpoint = "https://management.azure.com"
         RP_PROVIDER = "Microsoft.SerialConsole"
         subscriptionId = get_subscription_id(cmd.cli_ctx)
-        vmPath = f"virtualMachineScaleSets/{vm_vmss_name}/virtualMachines/{vmss_instanceid}" if vmss_instanceid else f"virtualMachines/{vm_vmss_name}"
+        vmPath = f"virtualMachineScaleSets/{vm_vmss_name}/virtualMachines/{vmss_instanceid}" \
+            if vmss_instanceid else f"virtualMachines/{vm_vmss_name}"
         self.connectionUrl = (f"{armEndpoint}/subscriptions/{subscriptionId}/resourcegroups/{resource_group_name}"
                               f"/providers/Microsoft.Compute/{vmPath}"
                               f"/providers/{RP_PROVIDER}/serialPorts/0"
                               f"/connect?api-version=2018-05-01")
         self.websocketURL = None
         self.accessToken = None
+
+    @staticmethod
+    def listenForKeys():
+        getch = _Getch()
+        while True:
+            c = getch()
+            if GV.webSocket and not GV.firstMessage:
+                if c == b'\x1d':
+                    c = PC.prompt(
+                        getch, "| Press n for NMI | s for SysRq | r to Reset VM |\r\n| q to quit Console | CTRL + ] to forward input |", lines=2)
+                    if c == b'n':
+                        c = PC.prompt(
+                            getch, "Warning: A Non-Maskable Interrupt (NMI) is used in debugging\r\nscenarios and is designed to crash your target Virtual Machine.\r\nAre you sure you want to send an NMI? (Y/n): ", lines=3)
+                        if c == b"Y":
+                            GV.serialConsoleInstance.sendNMI()
+                        continue
+                    if c == b'r':
+                        c = PC.prompt(getch, "Warning: This results in a hard restart, like powering the computer\r\ndown, then back up again. This can result in data loss in the virtual\r\nmachine. You should only perform this operation if a graceful restart\r\nis not effective.\r\nAre you sure you want to Hard Reset the VM? (Y/n): ", lines=5)
+                        if c == b"Y":
+                            GV.serialConsoleInstance.sendReset()
+                        continue
+                    if c == b's':
+                        c = PC.prompt(
+                            getch, "Which SysRq command would you like to send? Press h for help: ")
+                        GV.serialConsoleInstance.sendSysRq(c.decode())
+                        continue
+                    if c == b'q':
+                        quitapp()
+                        return
+                    if c != b'\x1d':
+                        continue
+                try:
+                    if GV.webSocket:
+                        GV.webSocket.send(c)
+                except (AttributeError, websocket.WebSocketConnectionClosedException):
+                    pass
+            else:
+                if c == b'\r':
+                    GV.serialConsoleInstance.connect()
+                elif c == b'\x1d':
+                    c = PC.prompt(getch, "| Press q to quit Console |")
+                    if c == b'q':
+                        quitapp()
+                        return
+
+    @staticmethod
+    def connectLoadingMessage():
+        PC.clearScreen()
+        PC.print("For more information on the Azure Serial Console, see <https://aka.ms/serialconsolelinux>.\r\n",
+                 color=PrintClass.YELLOW)
+        indx = 0
+        numberOfSquares = 3
+        chars = ["\u25A1"] * numberOfSquares
+        while GV.loading:
+            PC.hideCursor()
+            charsCopy = chars.copy()
+            charsCopy[indx] = "\u25A0"
+            squares = " ".join(charsCopy)
+            PC.clearLine()
+            PC.print("Connecting to console of VM   " +
+                     squares, color=PrintClass.CYAN)
+            PC.showCursor()
+            indx = (indx + 1) % numberOfSquares
+            time.sleep(0.5)
+
+    @staticmethod
+    def sendLoadingMessage(loadingText):
+        indx = 0
+        numberOfSquares = 3
+        chars = ["\u25A1"] * numberOfSquares
+        while GV.loading:
+            charsCopy = chars.copy()
+            charsCopy[indx] = "\u25A0"
+            squares = " ".join(charsCopy)
+            print(loadingText + "   " + squares, end="\r")
+            indx = (indx + 1) % numberOfSquares
+            time.sleep(0.5)
 
     # Returns True if successful, False otherwise
     def loadWebSocketURL(self):
@@ -395,7 +416,7 @@ class SerialConsole:
         GV.loading = True
         GV.firstMessage = True
 
-        th1 = threading.Thread(target=loadingMessage, args=())
+        th1 = threading.Thread(target=self.connectLoadingMessage, args=())
         th1.daemon = True
         th1.start()
 
@@ -406,7 +427,7 @@ class SerialConsole:
     def launchConsole(self):
         GV.terminalInstance = Terminal()
         GV.terminalInstance.configureTerminal()
-        th = threading.Thread(target=listenForKeys, args=())
+        th = threading.Thread(target=self.listenForKeys, args=())
         th.daemon = True
         th.start()
         self.connect()
@@ -425,6 +446,7 @@ class SerialConsole:
                     'commandParameters': commandParameters}
             result = requests.post(url, headers=headers, data=json.dumps(data))
             return result.status_code == 200
+        return False
 
     def sendNMI(self):
         return self.sendAdminCommand("nmi", {})
@@ -435,29 +457,31 @@ class SerialConsole:
     def sendSysRq(self, key):
         return self.sendAdminCommand("sysrq", {"SysRqCommand": key})
 
-    def connectAndSendAdminCommand(self, command, arg_character=None):
+    def connectAndSendAdminCommand(self, command, arg_characters=None):
         if command == "nmi":
             func = self.sendNMI
-            successMessage = "NMI sent successfully\r\n"
-            failureMessage = "Failed to send NMI\r\n"
+            successMessage = "NMI sent successfully    \r\n"
+            failureMessage = "Failed to send NMI       \r\n"
+            loadingText = "Sending NMI to VM"
         elif command == "reset":
             func = self.sendReset
-            successMessage = "Successfully Hard Reset VM\r\n"
-            failureMessage = "Failed to Hard Reset VM\r\n"
-        elif command == "sysrq" and arg_character is not None and len(arg_character) == 1:
+            successMessage = "Successfully Hard Reset VM      \r\n"
+            failureMessage = "Failed to Hard Reset VM         \r\n"
+            loadingText = "Forcing VM to Hard Reset"
+        elif command == "sysrq" and arg_characters is not None:
             def wrapper():
-                return self.sendSysRq(arg_character)
+                return self.sendSysRq(arg_characters)
             func = wrapper
             successMessage = "Successfully sent SysRq command\r\n"
-            failureMessage = "Failed to send SysRq command\r\n"
+            failureMessage = "Failed to send SysRq command   \r\n"
+            loadingText = "Sending SysRq to VM"
         else:
             return
 
-        GV.terminalInstance = Terminal()
-        GV.terminalInstance.configureTerminal()
         GV.loading = True
 
-        th1 = threading.Thread(target=loadingMessage, args=(False,))
+        th1 = threading.Thread(
+            target=self.sendLoadingMessage, args=(loadingText,))
         th1.daemon = True
         th1.start()
 
@@ -467,32 +491,29 @@ class SerialConsole:
                 if func():
                     GV.loading = False
                     GV.terminatingApp = True
-                    PC.clearLine()
-                    PC.print(successMessage)
+                    print(successMessage, end="")
                     ws.close()
-                    return
-                if GV.trycount >= 2:
+                elif GV.trycount >= 2:
                     GV.loading = False
                     GV.terminatingApp = True
-                    PC.clearLine()
-                    PC.print(failureMessage, color=PrintClass.RED)
+                    print(failureMessage, end="")
                     ws.close()
 
-            def on_close(_):
-                if not GV.terminatingApp:
-                    PC.clearLine()
-                    PC.print(
-                        "Could not establish connection to VM or VMSS. Make sure that it is powered on and try again.\r\n", color=PrintClass.RED)
-
             wsapp = websocket.WebSocketApp(
-                self.websocketURL + "?authorization=" + self.accessToken, on_message=on_message, on_close=on_close)
+                self.websocketURL + "?authorization=" + self.accessToken, on_message=on_message)
             wsapp.run_forever()
+            GV.loading = False
+            if GV.trycount == 0:
+                error_message = "Could not establish connection to VM or VMSS since it is not running."
+                recommendation = 'You can power on the VM with "az vm start".'
+                raise AzureConnectionError(
+                    error_message, recommendation=recommendation)
         else:
             GV.loading = False
-            PC.print("\r\nCould not establish connection to VM or VMSS. Make sure that input parameters are correct and try again.\r\n", color=PrintClass.RED)
-
-        GV.loading = False
-        GV.terminalInstance.revertTerminal()
+            error_message = "Could not establish connection to VM or VMSS."
+            recommendation = "Make sure the parameters name/resource-group/vmss-instance are correct."
+            raise ResourceNotFoundError(
+                error_message, recommendation=recommendation)
 
 
 def connect_serialconsole(cmd, resource_group_name, vm_vmss_name, vmss_instanceid=None):
@@ -517,4 +538,4 @@ def send_sysrq_serialconsole(cmd, resource_group_name, vm_vmss_name, sysrqinput,
     GV.serialConsoleInstance = SerialConsole(
         cmd, resource_group_name, vm_vmss_name, vmss_instanceid)
     GV.serialConsoleInstance.connectAndSendAdminCommand(
-        "sysrq", arg_character=sysrqinput)
+        "sysrq", arg_characters=sysrqinput)
