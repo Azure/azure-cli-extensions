@@ -125,7 +125,7 @@ def load_arguments(self, _):
                    id_part='name')
         c.argument('environment', type=str,
                    help='The environment supplied to the checkin manifest operation.')
-        c.argument('baseline_arm_manifest_location', options_list=['--location', '--baseline-arm-manifest-location'], type=str, help='The baseline ARM manifest location supplied to '
+        c.argument('baseline_arm_manifest_location', options_list=['--baseline-arm-manifest-location', '--location'], type=str, help='The baseline ARM manifest location supplied to '
                    'the checkin manifest operation.')
 
     with self.argument_context('providerhub manifest generate') as c:
@@ -203,9 +203,9 @@ def load_arguments(self, _):
     with self.argument_context('providerhub provider-registration create') as c:
         c.argument('provider_namespace', type=str,
                    help='The name of the resource provider hosted within ProviderHub.')
-        c.argument('provider_authentication', options_list=['--provider-authn', '--provider-authentication'], action=AddProviderAuthentication, nargs='+',
+        c.argument('provider_authentication', options_list=['--provider-authentication', '--provider-authn'], action=AddProviderAuthentication, nargs='+',
                    help='Used to set alternative "audiences or resources" that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers.')
-        c.argument('provider_authorizations', options_list=['--provider-authz', '--provider-authorizations'], action=AddProviderAuthorizations,
+        c.argument('provider_authorizations', options_list=['--provider-authorizations', '--provider-authz'], action=AddProviderAuthorizations,
                    nargs='+', help='The resource provider authorizations.')
         c.argument('provider_version', type=str,
                    help='The provider version. 2.0 is the only supported version.')
@@ -213,7 +213,7 @@ def load_arguments(self, _):
         c.argument('capabilities', action=AddCapabilities, nargs='+', help='Allow the access to the resource provider from a restrictive subscription quota (DreamSpark_2015-02-01 and CSP_2015-05-01​). The required​Features array is optional, if specified the subscription should meet the quota ​and at least one of the features. If no capabilities is specified the provider will be available to every subscription but the restrictive quotas. New providers are required to allow CSP_2015-05-01​​')
         c.argument('metadata', type=validate_file_or_dict,
                    help='The metadata.')
-        c.argument('template_deployment_options', options_list=['--tmplt-deploy-opt', '--template-deployment-options'], action=AddTemplateDeploymentOptions,
+        c.argument('template_deployment_options', options_list=['--template-deployment-options', '--tmplt-deploy-opt'], action=AddTemplateDeploymentOptions,
                    nargs='+', help='The field for preflight options.')
         c.argument('schema_owners', nargs='+',
                    help='Specifies an array of needed ACIS claims to modify the resource provider schema via ACIS.', arg_group='Management')
@@ -221,9 +221,9 @@ def load_arguments(self, _):
                    help='Specifies an array of required ACIS claims to modify the resource provider\'s manifest content via ACIS.', arg_group='Management')
         c.argument('required_features', nargs='+',
                    help='The required features.', arg_group='Management')
-        c.argument('incident_routing_service', options_list=['--incident-service', '--incident-routing-service'], type=str,
+        c.argument('incident_routing_service', options_list=['--incident-routing-service', '--incident-service'], type=str,
                    help='The Service in IcM when creating or transferring incidents to the RP.', arg_group='Management')
-        c.argument('incident_routing_team', options_list=['--incident-team', '--incident-routing-team'], type=str,
+        c.argument('incident_routing_team', options_list=['--incident-routing-team', '--incident-team'], type=str,
                    help='The Team in IcM when creating or transferring incidents to the RP.', arg_group='Management')
         c.argument('incident_contact_email', type=str,
                    help='The email address of contacts for incidents related to the RP.', arg_group='Management')
@@ -238,17 +238,17 @@ def load_arguments(self, _):
                                                              'ClientGroupMembership', 'SignedAuxiliaryTokens',
                                                              'UnboundedClientGroupMembership']), help='ARM allows customized headers when sending requests to the RP. This can be done both at the provider level or at the individual resource type level.',
                    arg_group='Request Header Options')
-        c.argument('required_features_policy', options_list=['--req-features-policy', '--required-features-policy'], arg_type=get_enum_type(['Any', 'All']), help='The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​', arg_group='Features '
+        c.argument('required_features_policy', options_list=['--required-features-policy', '--req-features-policy'], arg_type=get_enum_type(['Any', 'All']), help='The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​', arg_group='Features '
                    'Rule')
-        c.argument('subscription_state_override_actions', options_list=['--sub-override', '--subscription-state-override-action'], action=AddSubscriptionStateOverrideActions, nargs='+',
+        c.argument('subscription_state_override_actions', options_list=['--subscription-state-override-action', '--sub-override'], action=AddSubscriptionStateOverrideActions, nargs='+',
                    help='The subscription state override actions.', arg_group='Subscription Lifecycle Notification Specifications')
         c.argument('soft_delete_ttl', help='The soft delete time to live.',
                    arg_group='Subscription Lifecycle Notification Specifications')
-        c.argument('providerhub_metadata_authorizations', options_list=['--metadata-authz', '--providerhub-metadata-authorizations'],
+        c.argument('providerhub_metadata_authorizations', options_list=['--providerhub-metadata-authorizations', '--metadata-authz'],
                    action=AddProviderHubMetadataProviderAuthorizations, nargs='+', help='Available only for first party providers, this section can be used to bootstrap Service-to-Service authentication and authorization for the provider\'s application. When set, it would allow provider to access users\' subscription registered with them.', arg_group='Provider Hub Metadata')
-        c.argument('providerhub_metadata_authentication', options_list=['--metadata-authn', '--providerhub-metadata-authentication'], action=AddProviderHubMetadataAuthentication, nargs='+', help='Used to set alternative "audiences or resources" that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers.',
+        c.argument('providerhub_metadata_authentication', options_list=['--providerhub-metadata-authentication', '--metadata-authn'], action=AddProviderHubMetadataAuthentication, nargs='+', help='Used to set alternative "audiences or resources" that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers.',
                    arg_group='Provider Hub Metadata')
-        c.argument('lighthouse_authorizations', options_list=['--lighthouse-auth', '--lighthouse-authorizations'], action=AddAuthorizations, nargs='+', help='The lighthouse authorizations.', arg_group='Provider Hub Metadata '
+        c.argument('lighthouse_authorizations', options_list=['--lighthouse-authorizations', '--lighthouse-auth'], action=AddAuthorizations, nargs='+', help='The lighthouse authorizations.', arg_group='Provider Hub Metadata '
                    'Third Party Provider Authorization')
         c.argument('managed_by_tenant_id', type=str, help='The managed by tenant identifier.', arg_group='Provider Hub Metadata Third Party Provider '
                    'Authorization')
@@ -256,9 +256,9 @@ def load_arguments(self, _):
     with self.argument_context('providerhub provider-registration update') as c:
         c.argument('provider_namespace', type=str,
                    help='The name of the resource provider hosted within ProviderHub.')
-        c.argument('provider_authentication', options_list=['--provider-authn', '--provider-authentication'], action=AddProviderAuthentication, nargs='+',
+        c.argument('provider_authentication', options_list=['--provider-authentication', '--provider-authn'], action=AddProviderAuthentication, nargs='+',
                    help='Used to set alternative "audiences or resources" that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers.')
-        c.argument('provider_authorizations', options_list=['--provider-authz', '--provider-authorizations'], action=AddProviderAuthorizations,
+        c.argument('provider_authorizations', options_list=['--provider-authorizations', '--provider-authz'], action=AddProviderAuthorizations,
                    nargs='+', help='The resource provider authorizations.')
         c.argument('provider_version', type=str,
                    help='The provider version. 2.0 is the only supported version.')
@@ -266,7 +266,7 @@ def load_arguments(self, _):
         c.argument('capabilities', action=AddCapabilities, nargs='+', help='Allow the access to the resource provider from a restrictive subscription quota (DreamSpark_2015-02-01 and CSP_2015-05-01​). The required​Features array is optional, if specified the subscription should meet the quota ​and at least one of the features. If no capabilities is specified the provider will be available to every subscription but the restrictive quotas. New providers are required to allow CSP_2015-05-01​​')
         c.argument('metadata', type=validate_file_or_dict,
                    help='The metadata.')
-        c.argument('template_deployment_options', options_list=['--tmplt-deploy-opt', '--template-deployment-options'], action=AddTemplateDeploymentOptions,
+        c.argument('template_deployment_options', options_list=['--template-deployment-options', '--tmplt-deploy-opt'], action=AddTemplateDeploymentOptions,
                    nargs='+', help='The field for preflight options.')
         c.argument('schema_owners', nargs='+',
                    help='Specifies an array of needed ACIS claims to modify the resource provider schema via ACIS.', arg_group='Management')
@@ -274,9 +274,9 @@ def load_arguments(self, _):
                    help='Specifies an array of required ACIS claims to modify the resource provider\'s manifest content via ACIS.', arg_group='Management')
         c.argument('required_features', nargs='+',
                    help='The required features.', arg_group='Management')
-        c.argument('incident_routing_service', options_list=['--incident-service', '--incident-routing-service'], type=str,
+        c.argument('incident_routing_service', options_list=['--incident-routing-service', '--incident-service'], type=str,
                    help='The Service in IcM when creating or transferring incidents to the RP.', arg_group='Management')
-        c.argument('incident_routing_team', options_list=['--incident-team', '--incident-routing-team'], type=str,
+        c.argument('incident_routing_team', options_list=['--incident-routing-team', '--incident-team'], type=str,
                    help='The Team in IcM when creating or transferring incidents to the RP.', arg_group='Management')
         c.argument('incident_contact_email', type=str,
                    help='The email address of contacts for incidents related to the RP.', arg_group='Management')
@@ -291,17 +291,17 @@ def load_arguments(self, _):
                                                              'ClientGroupMembership', 'SignedAuxiliaryTokens',
                                                              'UnboundedClientGroupMembership']), help='ARM allows customized headers when sending requests to the RP. This can be done both at the provider level or at the individual resource type level.',
                    arg_group='Request Header Options')
-        c.argument('required_features_policy', options_list=['--req-features-policy', '--required-features-policy'], arg_type=get_enum_type(['Any', 'All']), help='The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​', arg_group='Features '
+        c.argument('required_features_policy', options_list=['--required-features-policy', '--req-features-policy'], arg_type=get_enum_type(['Any', 'All']), help='The accepted values are "Any" or "All". If the value is "All", then only the subscriptions registered to all the corresponding feature flag will be allowed.​', arg_group='Features '
                    'Rule')
-        c.argument('subscription_state_override_actions', options_list=['--sub-override', '--subscription-state-override-action'], action=AddSubscriptionStateOverrideActions, nargs='+',
+        c.argument('subscription_state_override_actions', options_list=['--subscription-state-override-action', '--sub-override'], action=AddSubscriptionStateOverrideActions, nargs='+',
                    help='The subscription state override actions.', arg_group='Subscription Lifecycle Notification Specifications')
         c.argument('soft_delete_ttl', help='The soft delete time to live.',
                    arg_group='Subscription Lifecycle Notification Specifications')
-        c.argument('providerhub_metadata_authorizations', options_list=['--metadata-authz', '--providerhub-metadata-authorizations'],
+        c.argument('providerhub_metadata_authorizations', options_list=['--providerhub-metadata-authorizations', '--metadata-authz'],
                    action=AddProviderHubMetadataProviderAuthorizations, nargs='+', help='Available only for first party providers, this section can be used to bootstrap Service-to-Service authentication and authorization for the provider\'s application. When set, it would allow provider to access users\' subscription registered with them.', arg_group='Provider Hub Metadata')
-        c.argument('providerhub_metadata_authentication', options_list=['--metadata-authn', '--providerhub-metadata-authentication'], action=AddProviderHubMetadataAuthentication, nargs='+', help='Used to set alternative "audiences or resources" that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers.',
+        c.argument('providerhub_metadata_authentication', options_list=['--providerhub-metadata-authentication', '--metadata-authn'], action=AddProviderHubMetadataAuthentication, nargs='+', help='Used to set alternative "audiences or resources" that ARM should accept from the token while authenticating requests for the provider. Only available to tenant level providers.',
                    arg_group='Provider Hub Metadata')
-        c.argument('lighthouse_authorizations', options_list=['--lighthouse-auth', '--lighthouse-authorizations'], action=AddAuthorizations, nargs='+', help='The lighthouse authorizations.', arg_group='Provider Hub Metadata '
+        c.argument('lighthouse_authorizations', options_list=['--lighthouse-authorizations', '--lighthouse-auth'], action=AddAuthorizations, nargs='+', help='The lighthouse authorizations.', arg_group='Provider Hub Metadata '
                    'Third Party Provider Authorization')
         c.argument('managed_by_tenant_id', type=str, help='The managed by tenant identifier.', arg_group='Provider Hub Metadata Third Party Provider '
                    'Authorization')
@@ -341,9 +341,9 @@ def load_arguments(self, _):
             ['NotSpecified', 'AddOn', 'Bypass', 'Store']), help='The resource type behavior in the marketplace.')
         c.argument('swagger_specifications', action=AddSwaggerSpecifications, nargs='+',
                    help='The OpenAPI (swagger specs) of the resource type. RPaaS will use the swagger specs to validate http requests/responses.')
-        c.argument('allowed_unauthorized_actions', options_list=['--aua', '--allowed-unauthorized-actions'], nargs='+',
+        c.argument('allowed_unauthorized_actions', options_list=['--allowed-unauthorized-actions', '--aua'], nargs='+',
                    help='The allowed unauthorized actions.')
-        c.argument('authorization_action_mappings', options_list=['--auth-mappings', '--authorization-action-mappings'], action=AddAuthorizationActionMappings,
+        c.argument('authorization_action_mappings', options_list=['--authorization-action-mappings', '--auth-mappings'], action=AddAuthorizationActionMappings,
                    nargs='+', help='Allows RP to override action verb for RBAC purposes at ARM.')
         c.argument('linked_access_checks', action=AddLinkedAccessChecks, nargs='+',
                    help='Enables additional Role Based Access Control (RBAC) checks on related resources.')
@@ -361,35 +361,35 @@ def load_arguments(self, _):
                    help='The flag to indicate a pure proxy resource.')
         c.argument('identity_management',
                    action=AddIdentityManagement, nargs='+', help='The Managed Identity Support.')
-        c.argument('check_name_availability_specifications', options_list=['--checkname-specs', '--check-name-availability-specifications'], action=AddCheckNameAvailabilitySpecifications, nargs='+',
+        c.argument('check_name_availability_specifications', options_list=['--check-name-availability-specifications', '--checkname-specs'], action=AddCheckNameAvailabilitySpecifications, nargs='+',
                    help='The checkname availability specifications.')
         c.argument('disallowed_action_verbs', options_list=[
-                   '--dav', '--disallowed-action-verbs'], nargs='+', help='The disallowed action verbs.')
+                   '--disallowed-action-verbs', '--dav'], nargs='+', help='The disallowed action verbs.')
         c.argument('service_tree_infos',
                    action=AddServiceTreeInfos, nargs='+', help='The service tree infos.')
-        c.argument('subscription_state_rules', options_list=['--sub-state-rules', '--subscription-state-rules'],
+        c.argument('subscription_state_rules', options_list=['--subscription-state-rules', '--sub-state-rules'],
                    action=AddSubscriptionStateRules, nargs='+', help='The subscription state rules.')
-        c.argument('template_deployment_options', options_list=['--tmplt-deploy-opt', '--template-deployment-options'],
+        c.argument('template_deployment_options', options_list=['--template-deployment-options', '--tmplt-deploy-opt'],
                    action=AddTemplateDeploymentOptions, nargs='+', help='The template deployment options.')
         c.argument('extended_locations',
                    action=AddExtendedLocations, nargs='+', help='The extended locations.')
         c.argument('resource_move_policy',
                    action=AddResourceMovePolicy, nargs='+', help='The resource move policy.')
-        c.argument('resource_deletion_policy', options_list=['--res-del-policy', '--resource-deletion-policy'], arg_type=get_enum_type(['NotSpecified', 'CascadeDeleteAll',
+        c.argument('resource_deletion_policy', options_list=['--resource-deletion-policy', '--res-del-policy'], arg_type=get_enum_type(['NotSpecified', 'CascadeDeleteAll',
                                                                                                                                         'CascadeDeleteProxyOnlyChildren']), help='The resource deletion policy.')
         c.argument('opt_in_headers', arg_type=get_enum_type(['NotSpecified', 'SignedUserToken',
                                                              'ClientGroupMembership', 'SignedAuxiliaryTokens',
                                                              'UnboundedClientGroupMembership']), help='The opt in headers.',
                    arg_group='Request Header Options')
-        c.argument('subscription_state_override_actions', options_list=['--sub-override', '--subscription-state-override-action'], action=AddSubscriptionStateOverrideActions, nargs='+',
+        c.argument('subscription_state_override_actions', options_list=['--subscription-state-override-action', '--sub-override'], action=AddSubscriptionStateOverrideActions, nargs='+',
                    help='The subscription state override action.', arg_group='Subscription Lifecycle Notification Specifications')
         c.argument('soft_delete_ttl', help='The soft delete time to live.',
                    arg_group='Subscription Lifecycle Notification Specifications')
-        c.argument('required_features_policy', options_list=['--req-features-policy', '--required-features-policy'], arg_type=get_enum_type(['Any', 'All']), help='The required features policy.', arg_group='Features '
+        c.argument('required_features_policy', options_list=['--required-features-policy', '--req-features-policy'], arg_type=get_enum_type(['Any', 'All']), help='The required features policy.', arg_group='Features '
                    'Rule')
-        c.argument('resource_creation_begin', options_list=['--creation-begin', '--resource-creation-begin'], action=AddExtensionOptions, nargs='+', help='The resource creation begin extion option.',
+        c.argument('resource_creation_begin', options_list=['--resource-creation-begin', '--creation-begin'], action=AddExtensionOptions, nargs='+', help='The resource creation begin extion option.',
                    arg_group='Extension Options')
-        c.argument('resource_patch_begin', options_list=['--patch-begin', '--resource-patch-begin'], action=AddExtensionOptions, nargs='+', help='The resource patch begin extion option.',
+        c.argument('resource_patch_begin', options_list=['--resource-patch-begin', '--patch-begin'], action=AddExtensionOptions, nargs='+', help='The resource patch begin extion option.',
                    arg_group='Extension Options')
 
     with self.argument_context('providerhub resource-type-registration update') as c:
@@ -405,9 +405,9 @@ def load_arguments(self, _):
             ['NotSpecified', 'AddOn', 'Bypass', 'Store']), help='The resource type behavior in the marketplace.')
         c.argument('swagger_specifications', action=AddSwaggerSpecifications, nargs='+',
                    help='The OpenAPI (swagger specs) of the resource type. RPaaS will use the swagger specs to validate http requests/responses.')
-        c.argument('allowed_unauthorized_actions', options_list=['--aua', '--allowed-unauthorized-actions'], nargs='+',
+        c.argument('allowed_unauthorized_actions', options_list=['--allowed-unauthorized-actions', '--aua'], nargs='+',
                    help='The allowed unauthorized actions.')
-        c.argument('authorization_action_mappings', options_list=['--auth-mappings', '--authorization-action-mappings'], action=AddAuthorizationActionMappings,
+        c.argument('authorization_action_mappings', options_list=['--authorization-action-mappings', '--auth-mappings'], action=AddAuthorizationActionMappings,
                    nargs='+', help='Allows RP to override action verb for RBAC purposes at ARM.')
         c.argument('linked_access_checks', action=AddLinkedAccessChecks, nargs='+',
                    help='Enables additional Role Based Access Control (RBAC) checks on related resources.')
@@ -425,35 +425,35 @@ def load_arguments(self, _):
                    help='The flag to indicate a pure proxy resource.')
         c.argument('identity_management',
                    action=AddIdentityManagement, nargs='+', help='The Managed Identity Support.')
-        c.argument('check_name_availability_specifications', options_list=['--checkname-specs', '--check-name-availability-specifications'], action=AddCheckNameAvailabilitySpecifications, nargs='+',
+        c.argument('check_name_availability_specifications', options_list=['--check-name-availability-specifications', '--checkname-specs'], action=AddCheckNameAvailabilitySpecifications, nargs='+',
                    help='The checkname availability specifications.')
         c.argument('disallowed_action_verbs', options_list=[
-                   '--dav', '--disallowed-action-verbs'], nargs='+', help='The disallowed action verbs.')
+                   '--disallowed-action-verbs', '--dav'], nargs='+', help='The disallowed action verbs.')
         c.argument('service_tree_infos',
                    action=AddServiceTreeInfos, nargs='+', help='The service tree infos.')
-        c.argument('subscription_state_rules', options_list=['--sub-state-rules', '--subscription-state-rules'],
+        c.argument('subscription_state_rules', options_list=['--subscription-state-rules', '--sub-state-rules'],
                    action=AddSubscriptionStateRules, nargs='+', help='The subscription state rules.')
-        c.argument('template_deployment_options', options_list=['--tmplt-deploy-opt', '--template-deployment-options'],
+        c.argument('template_deployment_options', options_list=['--template-deployment-options', '--tmplt-deploy-opt'],
                    action=AddTemplateDeploymentOptions, nargs='+', help='The template deployment options.')
         c.argument('extended_locations',
                    action=AddExtendedLocations, nargs='+', help='The extended locations.')
         c.argument('resource_move_policy',
                    action=AddResourceMovePolicy, nargs='+', help='The resource move policy.')
-        c.argument('resource_deletion_policy', options_list=['--res-del-policy', '--resource-deletion-policy'], arg_type=get_enum_type(['NotSpecified', 'CascadeDeleteAll',
+        c.argument('resource_deletion_policy', options_list=['--resource-deletion-policy', '--res-del-policy'], arg_type=get_enum_type(['NotSpecified', 'CascadeDeleteAll',
                                                                                                                                         'CascadeDeleteProxyOnlyChildren']), help='The resource deletion policy.')
         c.argument('opt_in_headers', arg_type=get_enum_type(['NotSpecified', 'SignedUserToken',
                                                              'ClientGroupMembership', 'SignedAuxiliaryTokens',
                                                              'UnboundedClientGroupMembership']), help='The opt in headers.',
                    arg_group='Request Header Options')
-        c.argument('subscription_state_override_actions', options_list=['--sub-override', '--subscription-state-override-action'], action=AddSubscriptionStateOverrideActions, nargs='+',
+        c.argument('subscription_state_override_actions', options_list=['--subscription-state-override-action', '--sub-override'], action=AddSubscriptionStateOverrideActions, nargs='+',
                    help='The subscription state override action.', arg_group='Subscription Lifecycle Notification Specifications')
         c.argument('soft_delete_ttl', help='The soft delete time to live.',
                    arg_group='Subscription Lifecycle Notification Specifications')
-        c.argument('required_features_policy', options_list=['--req-features-policy', '--required-features-policy'], arg_type=get_enum_type(['Any', 'All']), help='The required features policy.', arg_group='Features '
+        c.argument('required_features_policy', options_list=['--required-features-policy', '--req-features-policy'], arg_type=get_enum_type(['Any', 'All']), help='The required features policy.', arg_group='Features '
                    'Rule')
-        c.argument('resource_creation_begin', options_list=['--creation-begin', '--resource-creation-begin'], action=AddExtensionOptions, nargs='+', help='The resource creation begin extion option.',
+        c.argument('resource_creation_begin', options_list=['--resource-creation-begin', '--creation-begin'], action=AddExtensionOptions, nargs='+', help='The resource creation begin extion option.',
                    arg_group='Extension Options')
-        c.argument('resource_patch_begin', options_list=['--patch-begin', '--resource-patch-begin'], action=AddExtensionOptions, nargs='+', help='The resource patch begin extion option.',
+        c.argument('resource_patch_begin', options_list=['--resource-patch-begin', '--patch-begin'], action=AddExtensionOptions, nargs='+', help='The resource patch begin extion option.',
                    arg_group='Extension Options')
 
     with self.argument_context('providerhub resource-type-registration delete') as c:
