@@ -16,8 +16,7 @@ class SerialconsoleCommandsLoader(AzCommandsLoader):
         serialconsole_custom = CliCommandType(
             operations_tmpl='azext_serialconsole.custom#{}',
             client_factory=cf_serialconsole)
-        super(SerialconsoleCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                  custom_command_type=serialconsole_custom)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=serialconsole_custom)
 
     def load_command_table(self, args):
         from azext_serialconsole.commands import load_command_table

@@ -16,8 +16,8 @@ helps['serial-console connect'] = """
     type: command
     short-summary: Connect to Serial Console VM or VMSS Instance
     long-summary: >
-        This command provides access to a text-based console for Linux and Windows virtual machines (VMs) and virtual machine scale set instances. This serial connection connects to the ttys0 serial port of the VM or virtual machine scale set instance, providing access to it independent of the network or operating system state. To exit serial console type Ctrl + ] and then q. To send an NMI/SysRq/Reset type Ctrl + ] and then n/s/r respectively. 
-    parameters: 
+        This command provides access to a text-based console for Linux and Windows virtual machines (VMs) and virtual machine scale set instances. This serial connection connects to the ttys0 serial port of the VM or virtual machine scale set instance, providing access to it independent of the network or operating system state. To exit serial console type Ctrl + ] and then q. To send an NMI/SysRq/Reset type Ctrl + ] and then n/s/r respectively.
+    parameters:
       - name: --name -n
         short-summary: Name of the Virtual Machine or Virtual Machine Scale Set.
       - name: --resource-group -g
@@ -40,7 +40,7 @@ helps['serial-console send nmi'] = """
     short-summary: Sends a Non-Maskable Interrupt (NMI) to a VM or VMSS Instance
     long-summary: >
         A Non-Maskable Interrupt (NMI) is used in debugging scenarios and is designed to crash your target Virtual Machine.
-    parameters: 
+    parameters:
       - name: --name -n
         short-summary: Name of the Virtual Machine or Virtual Machine Scale Set.
       - name: --resource-group -g
@@ -63,7 +63,7 @@ helps['serial-console send sysrq'] = """
     short-summary: Send SysRq sequence to a VM or VMSS Instance
     long-summary:
         A SysRq is a sequence of keys understood by the Linux operation system kernel, which can trigger a set of pre-defined actions. These commands are often used when virtual machine troubleshooting or recovery can't be performed through traditional administration (for example, if the VM is not responding).
-    parameters: 
+    parameters:
       - name: --name -n
         short-summary: Name of the Virtual Machine or Virtual Machine Scale Set.
       - name: --resource-group -g
@@ -73,7 +73,7 @@ helps['serial-console send sysrq'] = """
       - name: --subscription
         short-summary: Name or ID of subscription. You can configure the default subscription using az account set -s NAME_OR_ID.
       - name: --input
-        short-summary: Input key to send over serial console. Must be one character. 
+        short-summary: Input key to send over serial console. Must be one character.
     examples:
       - name: Send SysRq to VM
         text: >
@@ -88,7 +88,7 @@ helps['serial-console send reset'] = """
     short-summary: Performs a "hard" restart of the VM or VMSS Instance
     long-summary: >
         This results in a "hard" restart, like powering the computer down, then back up again. This can result in data loss in the virtual machine. You should only perform this operation if a graceful restart is not effective.
-    parameters: 
+    parameters:
       - name: --name -n
         short-summary: Name of the Virtual Machine or Virtual Machine Scale Set.
       - name: --resource-group -g

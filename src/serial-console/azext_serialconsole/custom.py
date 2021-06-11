@@ -6,7 +6,6 @@
 # from knack.util import CLIError
 # from requests.api import get
 import json
-from os import stat
 import threading
 import sys
 import uuid
@@ -22,6 +21,8 @@ from azure.cli.core.azclierror import ResourceNotFoundError
 from azure.cli.core.azclierror import AzureConnectionError
 
 
+# pylint: disable=too-few-public-methods
+# pylint: disable=too-many-instance-attributes
 class GlobalVariables:
     def __init__(self):
         self.webSocket = None
@@ -131,7 +132,7 @@ class PrintClass:
                 currWidth += 1
         return max(maxWidth, currWidth)
 
-    def prompt(self, getch, message, lines=1):
+    def prompt(self, getch, message):
         GV.blockPrint = True
         width = self.getTerminalWidth(getch)
         _, col = self.getCursorPosition(getch)
@@ -140,7 +141,7 @@ class PrintClass:
             wrapped = textwrap.wrap(message.replace(
                 "\r\n", " ").replace("\n\r", " "), width=width)
             message = "\r\n".join(wrapped)
-            lines = len(wrapped)
+        lines = message.count("\r\n") + message.count("\n\r") + 1
         self.print("\r\n" + message, color=PrintClass.YELLOW, buffer=False)
         c = getch()
         self.hideCursor(buffer=False)
@@ -157,6 +158,7 @@ class PrintClass:
 PC = PrintClass()
 
 
+# pylint: disable=too-few-public-methods
 class _Getch:
     def __init__(self):
         if sys.platform.startswith('win'):
@@ -194,7 +196,8 @@ class _Getch:
 
 class Terminal:
     ERROR_MESSAGE = "Unable to configure terminal."
-    RECOMENDATION = "Make sure that app in running in a terminal on a Windows 10 or Unix based machine. Versions earlier than Windows 10 are not supported."
+    RECOMENDATION = ("Make sure that app in running in a terminal on a Windows 10 "
+                     "or Unix based machine. Versions earlier than Windows 10 are not supported.")
 
     def __init__(self):
         self.winOriginalOutMode = None
@@ -222,7 +225,8 @@ class Terminal:
             dwOriginalInMode = wintypes.DWORD()
             self.winOut = kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
             self.winIn = kernel32.GetStdHandle(STD_INPUT_HANDLE)
-            if not kernel32.GetConsoleMode(self.winOut, ctypes.byref(dwOriginalOutMode)) or not kernel32.GetConsoleMode(self.winIn, ctypes.byref(dwOriginalInMode)):
+            if (not kernel32.GetConsoleMode(self.winOut, ctypes.byref(dwOriginalOutMode)) or
+                    not kernel32.GetConsoleMode(self.winIn, ctypes.byref(dwOriginalInMode))):
                 quitapp(error_message=Terminal.ERROR_MESSAGE,
                         error_recommendation=Terminal.RECOMENDATION, error_func=UnclassifiedUserFault)
 
@@ -233,13 +237,14 @@ class Terminal:
             dwInMode = (self.winOriginalInMode |
                         ENABLE_VIRTUAL_TERMINAL_INPUT) & DISABLE
 
-            if not kernel32.SetConsoleMode(self.winOut, dwOutMode) or not kernel32.SetConsoleMode(self.winIn, dwInMode):
+            if (not kernel32.SetConsoleMode(self.winOut, dwOutMode) or
+                    not kernel32.SetConsoleMode(self.winIn, dwInMode)):
                 quitapp(error_message=Terminal.ERROR_MESSAGE,
                         error_recommendation=Terminal.RECOMENDATION, error_func=UnclassifiedUserFault)
         else:
             try:
                 import tty
-                import termios
+                import termios  # pylint: disable=import-error
                 fd = sys.stdin.fileno()
             except (ModuleNotFoundError, ValueError):
                 quitapp(error_message=Terminal.ERROR_MESSAGE,
@@ -258,7 +263,7 @@ class Terminal:
                 kernel32.SetConsoleMode(self.winIn, self.winOriginalInMode)
         else:
             if self.unixOriginalMode:
-                import termios
+                import termios  # pylint: disable=import-error
                 try:
                     fd = sys.stdin.fileno()
                 except ValueError:
@@ -288,22 +293,30 @@ class SerialConsole:
             c = getch()
             if GV.webSocket and not GV.firstMessage:
                 if c == b'\x1d':
-                    c = PC.prompt(
-                        getch, "| Press n for NMI | s for SysRq | r to Reset VM |\r\n| q to quit Console | CTRL + ] to forward input |", lines=2)
+                    message = ("| Press n for NMI | s for SysRq | r to Reset VM |\r\n"
+                               "| q to quit Console | CTRL + ] to forward input |")
+                    c = PC.prompt(getch, message)
                     if c == b'n':
-                        c = PC.prompt(
-                            getch, "Warning: A Non-Maskable Interrupt (NMI) is used in debugging\r\nscenarios and is designed to crash your target Virtual Machine.\r\nAre you sure you want to send an NMI? (Y/n): ", lines=3)
+                        message = ("Warning: A Non-Maskable Interrupt (NMI) is used in debugging\r\n"
+                                   "scenarios and is designed to crash your target Virtual Machine.\r\n"
+                                   "Are you sure you want to send an NMI? (Y/n): ")
+                        c = PC.prompt(getch, message)
                         if c == b"Y":
                             GV.serialConsoleInstance.sendNMI()
                         continue
                     if c == b'r':
-                        c = PC.prompt(getch, "Warning: This results in a hard restart, like powering the computer\r\ndown, then back up again. This can result in data loss in the virtual\r\nmachine. You should only perform this operation if a graceful restart\r\nis not effective.\r\nAre you sure you want to Hard Reset the VM? (Y/n): ", lines=5)
+                        message = ("Warning: This results in a hard restart, like powering the computer\r\n"
+                                   "down, then back up again. This can result in data loss in the virtual\r\n"
+                                   "machine. You should only perform this operation if a graceful restart\r\n"
+                                   "is not effective.\r\n"
+                                   "Are you sure you want to Hard Reset the VM? (Y/n): ")
+                        c = PC.prompt(getch, message)
                         if c == b"Y":
                             GV.serialConsoleInstance.sendReset()
                         continue
                     if c == b's':
-                        c = PC.prompt(
-                            getch, "Which SysRq command would you like to send? Press h for help: ")
+                        message = "Which SysRq command would you like to send? Press h for help: "
+                        c = PC.prompt(getch, message)
                         GV.serialConsoleInstance.sendSysRq(c.decode())
                         continue
                     if c == b'q':
@@ -393,8 +406,9 @@ class SerialConsole:
             GV.loading = False
             if not GV.terminatingApp:
                 if GV.firstMessage:
-                    PC.print(
-                        "\r\nCould not establish connection to VM or VMSS. Make sure that it is powered on and press \"Enter\" try again...", color=PrintClass.RED)
+                    message = ("\r\nCould not establish connection to VM or VMSS. "
+                               "Make sure that it is powered on and press \"Enter\" try again...")
+                    PC.print(message, color=PrintClass.RED)
                 else:
                     PC.print(
                         "\r\nConnection Closed: Press Enter to reconnect...", color=PrintClass.RED)
@@ -410,8 +424,9 @@ class SerialConsole:
                 GV.webSocket.run_forever(skip_utf8_validation=True)
             else:
                 GV.loading = False
-                PC.print(
-                    "\r\nCould not establish connection to VM or VMSS. Make sure that input parameters are correct or press \"Enter\" to try again...", color=PrintClass.RED)
+                message = ("\r\nCould not establish connection to VM or VMSS. "
+                           "Make sure that input parameters are correct or press \"Enter\" to try again...")
+                PC.print(message, color=PrintClass.RED)
 
         GV.loading = True
         GV.firstMessage = True
