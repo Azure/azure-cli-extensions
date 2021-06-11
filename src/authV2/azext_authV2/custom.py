@@ -21,9 +21,10 @@ import json
 from azure.cli.core.util import send_raw_request
 from azure.cli.core.profiles import get_sdk, supported_api_version, ResourceType
 from azure.cli.command_modules.appservice._appservice_utils import _generic_site_operation
+from azure.cli.command_modules.appservice.custom import update_app_settings
+from azure.cli.core.commands.client_factory import get_subscription_id
 
 def get_auth_settings_v2(cmd, resource_group_name, name, slot=None):
-    from azure.cli.core.commands.client_factory import get_subscription_id
     sub_id = get_subscription_id(cmd.cli_ctx)
     r = send_raw_request(cmd.cli_ctx, "GET", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2/list?api-version=2020-12-01".format(sub_id, resource_group_name, name))
     return r.json()
@@ -36,19 +37,15 @@ def set_auth_settings_v2(cmd, resource_group_name, name, body=None, slot=None): 
     final_json = {
         "properties": json_object
     }
-    from azure.cli.core.commands.client_factory import get_subscription_id
     sub_id = get_subscription_id(cmd.cli_ctx)
     r = send_raw_request(cmd.cli_ctx, "PUT", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name), None, None, json.dumps(final_json))
-    return r.json() 
+    return r.json()
 
 def update_auth_settings_v2(cmd, resource_group_name, name, set_string=None, enabled=None, # pylint: disable=unused-argument
                             runtime_version=None, config_file_path=None, unauthenticated_client_action=None, # pylint: disable=unused-argument
                             redirect_provider=None, enable_token_store=None, require_https=None,  # pylint: disable=unused-argument
                             proxy_convention=None, proxy_custom_host_header=None, proxy_custom_proto_header=None, slot=None):  # pylint: disable=unused-argument
-    from azure.cli.core.commands.client_factory import get_subscription_id
-    sub_id = get_subscription_id(cmd.cli_ctx)
-    getr = send_raw_request(cmd.cli_ctx, "GET", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2/list?api-version=2020-12-01".format(sub_id, resource_group_name, name))
-    existing_auth = getr.json()["properties"]
+    existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if set_string is not None:
         split1 = set_string.split("=")
         fieldName = split1[0]
@@ -157,7 +154,65 @@ def is_auth_runtime_version_valid(runtime_version=None):
             return False
     return True
 
+def prep_auth_settings_for_v2(cmd, resource_group_name, name, slot=None): # pylint: disable=unused-argument
+    site_auth_settings = get_auth_settings(cmd, resource_group_name, name, slot)
+    settings = []
+    if site_auth_settings.client_secret is not None:
+        settings.append('MICROSOFT_PROVIDER_AUTHENTICATION_SECRET=' + site_auth_settings.client_secret)
+        site_auth_settings.client_secret_setting_name = 'MICROSOFT_PROVIDER_AUTHENTICATION_SECRET'
+    if site_auth_settings.facebook_app_secret is not None:
+        settings.append('FACEBOOK_PROVIDER_AUTHENTICATION_SECRET=' + site_auth_settings.facebook_app_secret)
+        site_auth_settings.facebook_app_secret_setting_name = 'FACEBOOK_PROVIDER_AUTHENTICATION_SECRET'
+    if site_auth_settings.git_hub_client_secret is not None:
+        settings.append('GITHUB_PROVIDER_AUTHENTICATION_SECRET=' + site_auth_settings.git_hub_client_secret)
+        site_auth_settings.git_hub_client_secret_setting_name = 'GITHUB_PROVIDER_AUTHENTICATION_SECRET'
+    if site_auth_settings.google_client_secret is not None:
+        settings.append('GOOGLE_PROVIDER_AUTHENTICATION_SECRET=' + site_auth_settings.google_client_secret)
+        site_auth_settings.google_client_secret_setting_name = 'GOOGLE_PROVIDER_AUTHENTICATION_SECRET'
+    if site_auth_settings.microsoft_account_client_secret is not None:
+        settings.append('MSA_PROVIDER_AUTHENTICATION_SECRET=' + site_auth_settings.microsoft_account_client_secret)
+        site_auth_settings.microsoft_account_client_secret_setting_name = 'MSA_PROVIDER_AUTHENTICATION_SECRET'
+    if site_auth_settings.twitter_consumer_secret is not None:
+        settings.append('TWITTER_PROVIDER_AUTHENTICATION_SECRET=' + site_auth_settings.twitter_consumer_secret)
+        site_auth_settings.twitter_consumer_secret_setting_name = 'TWITTER_PROVIDER_AUTHENTICATION_SECRET'
+    if len(settings) > 0:
+        update_app_settings(cmd, resource_group_name, name, settings, slot)
+        print("hiiiiiii")
+        remove_all_auth_settings_secrets(cmd, resource_group_name, name, slot)
+        print("byeeeeee")
+        update_auth_settings(cmd, resource_group_name, name, site_auth_settings.enabled, None,
+                            site_auth_settings.client_id, site_auth_settings.token_store_enabled, site_auth_settings.runtime_version,
+                            site_auth_settings.token_refresh_extension_hours,
+                            site_auth_settings.allowed_external_redirect_urls, None,
+                            site_auth_settings.client_secret_certificate_thumbprint,
+                            site_auth_settings.allowed_audiences, site_auth_settings.issuer, site_auth_settings.facebook_app_id,
+                            None, site_auth_settings.facebook_o_auth_scopes,
+                            site_auth_settings.twitter_consumer_key, None,
+                            site_auth_settings.google_client_id, None, 
+                            site_auth_settings.google_o_auth_scopes, site_auth_settings.microsoft_account_client_id,
+                            None,
+                            site_auth_settings.microsoft_account_o_auth_scopes, slot,
+                            site_auth_settings.git_hub_client_id, None, site_auth_settings.git_hub_o_auth_scopes,
+                            site_auth_settings.client_secret_setting_name, site_auth_settings.facebook_app_secret_setting_name,
+                            site_auth_settings.google_client_secret_setting_name, site_auth_settings.microsoft_account_client_secret_setting_name,
+                            site_auth_settings.twitter_consumer_secret_setting_name, site_auth_settings.git_hub_client_secret_setting_name)
+
+def upgrade_to_auth_settings_v2(cmd, resource_group_name, name, slot=None):  # pylint: disable=unused-argument
+    if is_auth_v2_app(cmd, resource_group_name, name, slot):
+        raise CLIError('Usage Error: Cannot use command az webapp auth upgrade when the app is using auth v2.')
+    prep_auth_settings_for_v2(cmd, resource_group_name, name, slot)
+    site_auth_settings_v2 = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
+    final_json = {
+        "properties": site_auth_settings_v2
+    }    
+    sub_id = get_subscription_id(cmd.cli_ctx)
+    r = send_raw_request(cmd.cli_ctx, "PUT", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name), None, None, json.dumps(final_json))
+    return r.json()
+
 def revert_to_auth_settings(cmd, resource_group_name, name, slot=None):  # pylint: disable=unused-argument
+    if not is_auth_v2_app(cmd, resource_group_name, name, slot):
+        raise CLIError('Usage Error: Cannot use command az webapp auth revert when the app is using auth v1.')
+
     site_auth_settings = get_auth_settings(cmd, resource_group_name, name, slot)
 
     set_auth_settings_v2(cmd, resource_group_name, name, None, slot)
@@ -173,7 +228,21 @@ def revert_to_auth_settings(cmd, resource_group_name, name, slot=None):  # pylin
                          site_auth_settings.google_client_id, site_auth_settings.google_client_secret, 
                          site_auth_settings.google_o_auth_scopes, site_auth_settings.microsoft_account_client_id,
                          site_auth_settings.microsoft_account_client_secret,
-                         site_auth_settings.microsoft_account_o_auth_scopes, slot)
+                         site_auth_settings.microsoft_account_o_auth_scopes, slot,
+                         site_auth_settings.git_hub_client_id, site_auth_settings.git_hub_client_secret, site_auth_settings.git_hub_o_auth_scopes,
+                         site_auth_settings.client_secret_setting_name, site_auth_settings.facebook_app_secret_setting_name,
+                         site_auth_settings.google_client_secret_setting_name, site_auth_settings.microsoft_account_client_secret_setting_name,
+                         site_auth_settings.twitter_consumer_secret_setting_name, site_auth_settings.git_hub_client_secret_setting_name)
+
+def remove_all_auth_settings_secrets(cmd, resource_group_name, name, slot=None): # pylint: disable=unused-argument
+    auth_settings = get_auth_settings(cmd, resource_group_name, name, slot)
+    auth_settings.client_secret = ""
+    auth_settings.facebook_app_secret = ""
+    auth_settings.git_hub_client_secret = ""
+    auth_settings.google_client_secret = ""
+    auth_settings.microsoft_account_client_secret = ""
+    auth_settings.twitter_consumer_secret_setting_name = ""
+    return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'update_auth_settings', slot, auth_settings)
 
 def update_auth_settings(cmd, resource_group_name, name, enabled=None, action=None,  # pylint: disable=unused-argument
                         client_id=None, token_store_enabled=None, runtime_version=None,  # pylint: disable=unused-argument
@@ -187,10 +256,10 @@ def update_auth_settings(cmd, resource_group_name, name, enabled=None, action=No
                         google_oauth_scopes=None, microsoft_account_client_id=None,  # pylint: disable=unused-argument
                         microsoft_account_client_secret=None,  # pylint: disable=unused-argument
                         microsoft_account_oauth_scopes=None, slot=None, # pylint: disable=unused-argument
-                        github_client_id=None, github_client_secret=None, # pylint: disable=unused-argument
+                        git_hub_client_id=None, git_hub_client_secret=None, git_hub_o_auth_scopes=None, # pylint: disable=unused-argument
                         client_secret_setting_name=None, facebook_app_secret_setting_name=None, # pylint: disable=unused-argument
                         google_client_secret_setting_name=None, microsoft_account_client_secret_setting_name=None, # pylint: disable=unused-argument
-                        twitter_consume_secret_setting_name=None, github_client_secret_setting_name=None):  # pylint: disable=unused-argument
+                        twitter_consume_secret_setting_name=None, git_hub_client_secret_setting_name=None):  # pylint: disable=unused-argument
     if is_auth_v2_app(cmd, resource_group_name, name, slot):
         raise CLIError('Usage Error: Cannot use command az webapp authlegacy update when the app is using auth v2. If you wish to revert the app to v1, run az webapp auth revert')
         

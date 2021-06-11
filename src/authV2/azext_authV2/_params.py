@@ -65,18 +65,26 @@ def load_arguments(self, _):
         c.argument('facebook_app_id', arg_group='Facebook',
                    help="Application ID to integrate Facebook Sign-in into your web app")
         c.argument('facebook_app_secret', arg_group='Facebook', help='Facebook Application client secret')
+        c.argument('facebook_app_secret_setting_name', arg_group='Facebook', help='The app setting name that contains the app secret used for Facebook Login.')
         c.argument('facebook_oauth_scopes', nargs='+',
                    help="One or more facebook authentication scopes (space-delimited).", arg_group='Facebook')
         c.argument('twitter_consumer_key', arg_group='Twitter',
                    help='Application ID to integrate Twitter Sign-in into your web app')
         c.argument('twitter_consumer_secret', arg_group='Twitter', help='Twitter Application client secret')
+        c.argument('twitter_consumer_secret_setting_name', arg_group='Twitter', help='The app setting name that contains the OAuth 1.0a consumer secret of the Twitter application used for sign-in.')
         c.argument('google_client_id', arg_group='Google',
                    help='Application ID to integrate Google Sign-in into your web app')
         c.argument('google_client_secret', arg_group='Google', help='Google Application client secret')
+        c.argument('google_client_secret_setting_name', arg_group='Google', help='The app setting name that contains the client secret associated with the Google web application.')
         c.argument('google_oauth_scopes', nargs='+', help="One or more Google authentication scopes (space-delimited).",
                    arg_group='Google')
         c.argument('microsoft_account_client_id', arg_group='Microsoft',
                    help="AAD V2 Application ID to integrate Microsoft account Sign-in into your web app")
         c.argument('microsoft_account_client_secret', arg_group='Microsoft', help='AAD V2 Application client secret')
+        c.argument('microsoft_account_client_secret_setting_name', arg_group='Microsoft', help='The app setting name containing the OAuth 2.0 client secret that was created for the app used for authentication.')
         c.argument('microsoft_account_oauth_scopes', nargs='+',
                    help="One or more Microsoft authentification scopes (space-delimited).", arg_group='Microsoft')
+        c.argument('git_hub_client_id', arg_group='GitHub', help="The Client Id of the GitHub app used for login.")
+        c.argument('git_hub_client_secret', arg_group='GitHub', help="The Client Secret of the GitHub app used for login.")
+        c.argument('git_hub_client_secret_setting_name', arg_group='GitHub', help="The app setting name that contains the client secret of the Github app used for GitHub Login.")
+        c.argument('git_hub_o_auth_scopes', arg_group='GitHub', help="The OAuth 2.0 scopes that will be requested as part of GitHub Login authentication.")

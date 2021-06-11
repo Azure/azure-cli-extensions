@@ -19,6 +19,7 @@ def load_command_table(self, _):
         g.custom_command('set', 'set_auth_settings_v2')
         g.custom_command('update', 'update_auth_settings_v2')
         g.custom_command('revert', 'revert_to_auth_settings')
+        g.custom_command('upgrade', 'upgrade_to_auth_settings_v2')
 
     with self.command_group('webapp authlegacy') as g:
         g.custom_show_command('show', 'get_auth_settings')
