@@ -48,6 +48,12 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'get_apple_settings')
         g.custom_command('update', 'update_apple_settings')
     
+    with self.command_group('webapp auth oidc') as g:
+        g.custom_show_command('show', 'get_oidc_provider_settings')
+        g.custom_command('add', 'add_oidc_provider_settings')
+        g.custom_command('update', 'update_oidc_provider_settings')
+        g.custom_command('remove', 'remove_oidc_provider_settings')
+    
     with self.command_group('webapp auth-classic') as g:
         g.custom_show_command('show', 'get_auth_settings')
         g.custom_command('update', 'update_auth_settings')

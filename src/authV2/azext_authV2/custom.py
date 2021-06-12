@@ -514,3 +514,104 @@ def update_apple_settings(cmd, resource_group_name, name, slot=None,  # pylint: 
     r = send_raw_request(cmd.cli_ctx, "PUT", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name), None, None, json.dumps(final_json))
     return r.json()["properties"]["identityProviders"]["apple"]
 
+def get_oidc_provider_settings(cmd, resource_group_name, name, provider_name, slot=None): # pylint: disable=unused-argument
+    auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
+    if "identityProviders" not in auth_settings.keys():
+        raise CLIError('Usage Error: The following custom OpenID Connect provider has not been configured: ' + provider_name)
+    if "customOpenIdConnectProviders" not in auth_settings["identityProviders"].keys():
+        raise CLIError('Usage Error: The following custom OpenID Connect provider has not been configured: ' + provider_name)
+    if provider_name not in auth_settings["identityProviders"]["customOpenIdConnectProviders"].keys():
+        raise CLIError('Usage Error: The following custom OpenID Connect provider has not been configured: ' + provider_name)
+    return auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
+
+def add_oidc_provider_settings(cmd, resource_group_name, name, provider_name, slot=None, # pylint: disable=unused-argument
+                                client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
+                                openid_configuration=None, scopes=None):    # pylint: disable=unused-argument
+    auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
+    if "identityProviders" not in auth_settings.keys():
+        auth_settings["identityProviders"] = {}
+    if "customOpenIdConnectProviders" not in auth_settings["identityProviders"].keys():
+        auth_settings["identityProviders"]["customOpenIdConnectProviders"] = {}
+    if provider_name in auth_settings["identityProviders"]["customOpenIdConnectProviders"].keys():
+        raise CLIError('Usage Error: The following custom OpenID Connect provider has already been configured: ' + provider_name + '. Please use az webapp auth oidc update to update the provider.')
+    auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name] = {
+        "registration": {
+            "clientId": client_id,
+            "clientCredential": {
+                "clientSecretSettingName": client_secret_setting_name
+            },
+            "openIdConnectConfiguration": {
+                "wellKnownOpenIdConfiguration": openid_configuration
+            }
+        }
+    }
+    if scopes is not None:
+        auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"] = {}
+        auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"]["scopes"] = scopes.split(',')
+    
+    final_json = {
+        "properties": auth_settings
+    }
+    sub_id = get_subscription_id(cmd.cli_ctx)
+    r = send_raw_request(cmd.cli_ctx, "PUT", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name), None, None, json.dumps(final_json))
+    return r.json()["properties"]["identityProviders"]["customOpenIdConnectProviders"][provider_name]
+
+def update_oidc_provider_settings(cmd, resource_group_name, name, provider_name, slot=None, # pylint: disable=unused-argument
+                                client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
+                                openid_configuration=None, scopes=None):    # pylint: disable=unused-argument
+    auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
+    if "identityProviders" not in auth_settings.keys():
+        raise CLIError('Usage Error: The following custom OpenID Connect provider has not been configured: ' + provider_name)
+    if "customOpenIdConnectProviders" not in auth_settings["identityProviders"].keys():
+        raise CLIError('Usage Error: The following custom OpenID Connect provider has not been configured: ' + provider_name)
+    if provider_name not in auth_settings["identityProviders"]["customOpenIdConnectProviders"].keys():
+        raise CLIError('Usage Error: The following custom OpenID Connect provider has not been configured: ' + provider_name)
+
+    if client_id is not None or client_secret_setting_name is not None or openid_configuration is not None:
+        if "registration" not in auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name].keys():
+            auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["registration"] = {}
+    
+    if client_secret_setting_name is not None:
+        if "clientCredential" not in auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["registration"].keys():
+            auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["registration"]["clientCredential"] = {}
+    
+    if openid_configuration is not None:
+        if "openIdConnectConfiguration" not in auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["registration"].keys():
+            auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["registration"]["openIdConnectConfiguration"] = {}
+    
+    if scopes is not None:
+        if "login" not in auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name].keys():
+            auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"] = {}
+    
+    if client_id is not None:
+        auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["registration"]["clientId"] = client_id
+    if client_secret_setting_name is not None:
+        auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["registration"]["clientCredential"]["clientSecretSettingName"] = client_secret_setting_name
+    if openid_configuration is not None:
+        auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["registration"]["openIdConnectConfiguration"]["wellKnownOpenIdConfiguration"] = openid_configuration
+    if scopes is not None:
+        auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"]["scopes"] = scopes.split(",")
+    final_json = {
+        "properties": auth_settings
+    }
+    sub_id = get_subscription_id(cmd.cli_ctx)
+    r = send_raw_request(cmd.cli_ctx, "PUT", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name), None, None, json.dumps(final_json))
+    return r.json()["properties"]["identityProviders"]["customOpenIdConnectProviders"][provider_name]
+
+def remove_oidc_provider_settings(cmd, resource_group_name, name, provider_name, slot=None): # pylint: disable=unused-argument
+    auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
+    if "identityProviders" not in auth_settings.keys():
+        raise CLIError('Usage Error: The following custom OpenID Connect provider has not been configured: ' + provider_name)
+    if "customOpenIdConnectProviders" not in auth_settings["identityProviders"].keys():
+        raise CLIError('Usage Error: The following custom OpenID Connect provider has not been configured: ' + provider_name)
+    if provider_name not in auth_settings["identityProviders"]["customOpenIdConnectProviders"].keys():
+        raise CLIError('Usage Error: The following custom OpenID Connect provider has not been configured: ' + provider_name)
+    auth_settings["identityProviders"]["customOpenIdConnectProviders"].pop(provider_name, None)
+    final_json = {
+        "properties": auth_settings
+    }
+    sub_id = get_subscription_id(cmd.cli_ctx)
+    r = send_raw_request(cmd.cli_ctx, "PUT", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name), None, None, json.dumps(final_json))
+    return {}
+
+

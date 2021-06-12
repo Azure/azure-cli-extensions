@@ -70,6 +70,26 @@ def load_arguments(self, _):
         c.argument('client_id', options_list=['--client-id'])
         c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
         c.argument('scopes', options_list=['--scopes'])
+
+    with self.argument_context('webapp auth oidc show') as c:
+        c.argument('provider_name', options_list=['--provider-name'])
+            
+    with self.argument_context('webapp auth oidc add') as c:
+        c.argument('provider_name', options_list=['--provider-name'])
+        c.argument('client_id', options_list=['--client-id'])
+        c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
+        c.argument('openid_configuration', options_list=['--openid-configuration'])
+        c.argument('scopes', options_list=['--scopes'])
+
+    with self.argument_context('webapp auth oidc update') as c:
+        c.argument('provider_name', options_list=['--provider-name'])
+        c.argument('client_id', options_list=['--client-id'])
+        c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
+        c.argument('openid_configuration', options_list=['--openid-configuration'])
+        c.argument('scopes', options_list=['--scopes'])
+    
+    with self.argument_context('webapp auth oidc remove') as c:
+        c.argument('provider_name', options_list=['--provider-name'])
     
     with self.argument_context('webapp auth-classic update') as c:
         c.argument('enabled', arg_type=get_three_state_flag(return_label=True))
