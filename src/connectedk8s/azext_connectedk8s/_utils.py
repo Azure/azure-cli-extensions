@@ -19,6 +19,7 @@ from knack.prompting import NoTTYException, prompt_y_n
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import send_raw_request
 from azure.cli.core import telemetry
+from azure.core.exceptions import ResourceNotFoundError
 from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpiredError, ValidationError
 from msrestazure.azure_exceptions import CloudError
 from kubernetes.client.rest import ApiException
@@ -196,6 +197,9 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
         if status_code // 100 == 5:
             raise AzureInternalError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
         raise AzureResponseError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
+    
+    if isinstance(ex, ResourceNotFoundError):
+        return
 
     telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
     raise ClientRequestError("Error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))

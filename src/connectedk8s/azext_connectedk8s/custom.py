@@ -714,7 +714,7 @@ def get_release_namespace(kube_config, kube_context):
 
 def create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
     try:
-        return sdk_no_wait(no_wait, client.create, resource_group_name=resource_group_name,
+        return sdk_no_wait(no_wait, client.begin_create, resource_group_name=resource_group_name,
                            cluster_name=cluster_name, connected_cluster=cc)
     except CloudError as e:
         utils.arm_exception_handler(e, consts.Create_ConnectedCluster_Fault_Type, 'Unable to create connected cluster resource')
@@ -722,7 +722,7 @@ def create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait):
 
 def delete_cc_resource(client, resource_group_name, cluster_name, no_wait):
     try:
-        sdk_no_wait(no_wait, client.delete,
+        sdk_no_wait(no_wait, client.begin_delete,
                     resource_group_name=resource_group_name,
                     cluster_name=cluster_name)
     except CloudError as e:
