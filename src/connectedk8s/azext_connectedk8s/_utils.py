@@ -198,7 +198,7 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
             raise AzureInternalError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
         raise AzureResponseError("Cloud error occured while making ARM request: " + str(ex) + "\nSummary: {}".format(summary))
     
-    if isinstance(ex, ResourceNotFoundError):
+    if isinstance(ex, ResourceNotFoundError) and return_if_not_found:
         return
 
     telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
