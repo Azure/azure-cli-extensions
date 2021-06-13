@@ -92,6 +92,10 @@ def load_arguments(self, _):
                    nargs='+', help='DefaultRollout rest of the world group two.')
         c.argument('canary', action=AddCanaryRegion,
                    nargs='*', help='The canary regions to skip.')
+        c.argument('row2_wait_duration',
+                   type=str, help='The rest of the world group two wait duration.')
+        c.argument('skip_regions',
+                   action=AddSkipRegions, nargs='+', help='The canary skip regions.')
 
     with self.argument_context('providerhub default-rollout update') as c:
         c.argument('provider_namespace', type=str,
@@ -125,7 +129,7 @@ def load_arguments(self, _):
                    id_part='name')
         c.argument('environment', type=str,
                    help='The environment supplied to the checkin manifest operation.')
-        c.argument('baseline_arm_manifest_location', options_list=['--baseline-arm-manifest-location', '--location'], type=str, help='The baseline ARM manifest location supplied to '
+        c.argument('baseline_arm_manifest_location', options_list=['--baseline-arm-manifest-location', '--arm-manifest-location', '--location'], type=str, help='The baseline ARM manifest location supplied to '
                    'the checkin manifest operation.')
 
     with self.argument_context('providerhub manifest generate') as c:

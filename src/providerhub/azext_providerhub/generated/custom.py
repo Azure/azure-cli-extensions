@@ -62,6 +62,8 @@ def providerhub_default_rollout_create(client,
                                        rollout_name,
                                        rest_of_the_world_group_two=None,
                                        canary=None,
+                                       row2_wait_duration=None,
+                                       skip_regions=None,
                                        no_wait=False):
     properties = {
         'properties': {
@@ -71,6 +73,14 @@ def providerhub_default_rollout_create(client,
             }
         }
     }
+
+    if skip_regions is not None:
+        properties['properties']['specification']['canary'] = {}
+        properties['properties']['specification']['canary']['skip_regions'] = skip_regions
+    if row2_wait_duration is not None:
+        properties['properties']['specification']['rest_of_the_world_group_two'] = {}
+        properties['properties']['specification']['rest_of_the_world_group_two']['wait_duration'] = row2_wait_duration
+
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        provider_namespace=provider_namespace,
