@@ -12,6 +12,11 @@ helps['serial-console'] = """
     short-summary: Connent to the Serial Console of a Linux/Windows Virtual Machine or VMSS Instance.
 """
 
+helps['serial-console send'] = """
+    type: group
+    short-summary: Send commands to VM or VMSS Instance.
+"""
+
 helps['serial-console connect'] = """
     type: command
     short-summary: Connect to Serial Console VM or VMSS Instance
@@ -60,7 +65,7 @@ helps['serial-console send nmi'] = """
 
 helps['serial-console send sysrq'] = """
     type: command
-    short-summary: Send SysRq sequence to a VM or VMSS Instance
+    short-summary: Sends SysRq sequence to a VM or VMSS Instance
     long-summary:
         A SysRq is a sequence of keys understood by the Linux operation system kernel, which can trigger a set of pre-defined actions. These commands are often used when virtual machine troubleshooting or recovery can't be performed through traditional administration (for example, if the VM is not responding).
     parameters:
