@@ -220,7 +220,7 @@ helps['aks create'] = """
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
         - name: --workspace-resource-id
-          type: string
+          type: bool
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
         - name: --enable_msi_auth_for_monitoring
           type: bool
