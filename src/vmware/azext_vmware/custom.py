@@ -109,15 +109,12 @@ def privatecloud_rotate_nsxt_password(cmd, client: AVSClient, resource_group_nam
 
 
 def cluster_create(cmd, client: AVSClient, resource_group_name, name, sku, private_cloud, size, tags=[]):
-    from azext_vmware.vendored_sdks.avs_client.models import Cluster, Sku
-    cluster = Cluster(sku=Sku(name=sku), cluster_size=size)
-    return client.clusters.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name, cluster=cluster)
+    from azext_vmware.vendored_sdks.avs_client.models import Sku
+    return client.clusters.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name, sku=Sku(name=sku), cluster_size=size)
 
 
 def cluster_update(cmd, client: AVSClient, resource_group_name, name, private_cloud, size, tags=[]):
-    from azext_vmware.vendored_sdks.avs_client.models import ClusterUpdate
-    cluster_update = ClusterUpdate(cluster_size=size)
-    return client.clusters.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name, cluster_update=cluster_update)
+    return client.clusters.begin_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=name, cluster_size=size)
 
 
 def cluster_list(cmd, client: AVSClient, resource_group_name, private_cloud):
@@ -141,9 +138,7 @@ def check_trial_availability(cmd, client: AVSClient, location):
 
 
 def authorization_create(cmd, client: AVSClient, resource_group_name, private_cloud, name):
-    from azext_vmware.vendored_sdks.avs_client.models import ExpressRouteAuthorization
-    authorization = ExpressRouteAuthorization()
-    return client.authorizations.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, authorization_name=name, authorization=authorization)
+    return client.authorizations.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, authorization_name=name)
 
 
 def authorization_list(cmd, client: AVSClient, resource_group_name, private_cloud):
@@ -159,9 +154,7 @@ def authorization_delete(cmd, client: AVSClient, resource_group_name, private_cl
 
 
 def hcxenterprisesite_create(cmd, client: AVSClient, resource_group_name, private_cloud, name):
-    from azext_vmware.vendored_sdks.avs_client.models import HcxEnterpriseSite
-    hcx_enterprise_site = HcxEnterpriseSite()
-    return client.hcx_enterprise_sites.create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, hcx_enterprise_site_name=name, hcx_enterprise_site=hcx_enterprise_site)
+    return client.hcx_enterprise_sites.create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, hcx_enterprise_site_name=name)
 
 
 def hcxenterprisesite_list(cmd, client: AVSClient, resource_group_name, private_cloud):
@@ -177,13 +170,19 @@ def hcxenterprisesite_delete(cmd, client: AVSClient, resource_group_name, privat
 
 
 def datastore_create(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name, nfs_provider_ip=None, nfs_file_path=None, endpoints=[], lun_name=None):
-    from azext_vmware.vendored_sdks.avs_client.models import Datastore, NetAppVolume, DiskPoolVolume
-    datastore = Datastore()
-    if nfs_provider_ip is not None or nfs_file_path is not None:
-        datastore.net_app_volume = NetAppVolume(nfs_provider_ip=nfs_provider_ip, nfs_file_path=nfs_file_path)
-    if len(endpoints) > 0 or lun_name is not None:
-        datastore.disk_pool_volume = DiskPoolVolume(endpoints=endpoints, lun_name=lun_name)
-    return client.datastores.begin_create(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name, datastore=datastore)
+    print('Please use "az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create" instead.')
+
+
+def datastore_netappvolume_create(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name, volume_id):
+    from azext_vmware.vendored_sdks.avs_client.models import NetAppVolume
+    net_app_volume = NetAppVolume(id=volume_id)
+    return client.datastores.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name, net_app_volume=net_app_volume, disk_pool_volume=None)
+
+
+def datastore_diskpoolvolume_create(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name, target_id, lun_name, mount_option="MOUNT", path=None):
+    from azext_vmware.vendored_sdks.avs_client.models import DiskPoolVolume
+    disk_pool_volume = DiskPoolVolume(target_id=target_id, lun_name=lun_name, mount_option=mount_option, path=path)
+    return client.datastores.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name, net_app_volume=None, disk_pool_volume=disk_pool_volume)
 
 
 def datastore_list(cmd, client: AVSClient, resource_group_name, private_cloud, cluster):
@@ -196,3 +195,67 @@ def datastore_show(cmd, client: AVSClient, resource_group_name, private_cloud, c
 
 def datastore_delete(cmd, client: AVSClient, resource_group_name, private_cloud, cluster, name):
     return client.datastores.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, cluster_name=cluster, datastore_name=name)
+
+
+def addon_list(cmd, client: AVSClient, resource_group_name, private_cloud):
+    return client.addons.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def addon_vr_create(cmd, client: AVSClient, resource_group_name, private_cloud, vrs_count: int):
+    from azext_vmware.vendored_sdks.avs_client.models import Addon, AddonVrProperties
+    properties = AddonVrProperties(vrs_count=vrs_count)
+    return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="vr", properties=properties)
+
+
+def addon_hcx_create(cmd, client: AVSClient, resource_group_name, private_cloud, offer: str):
+    from azext_vmware.vendored_sdks.avs_client.models import Addon, AddonHcxProperties
+    properties = AddonHcxProperties(offer=offer)
+    return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="hcx", properties=properties)
+
+
+def addon_srm_create(cmd, client: AVSClient, resource_group_name, private_cloud, license_key: str):
+    from azext_vmware.vendored_sdks.avs_client.models import Addon, AddonSrmProperties
+    properties = AddonSrmProperties(license_key=license_key)
+    return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="srm", properties=properties)
+
+
+def addon_vr_show(cmd, client: AVSClient, resource_group_name, private_cloud):
+    return client.addons.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="vr")
+
+
+def addon_hcx_show(cmd, client: AVSClient, resource_group_name, private_cloud):
+    return client.addons.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="hcx")
+
+
+def addon_srm_show(cmd, client: AVSClient, resource_group_name, private_cloud):
+    return client.addons.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="srm")
+
+
+def addon_vr_update(cmd, client: AVSClient, resource_group_name, private_cloud, vrs_count: int):
+    from azext_vmware.vendored_sdks.avs_client.models import Addon, AddonVrProperties
+    properties = AddonVrProperties(vrs_count=vrs_count)
+    return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="vr", properties=properties)
+
+
+def addon_hcx_update(cmd, client: AVSClient, resource_group_name, private_cloud, offer: str):
+    from azext_vmware.vendored_sdks.avs_client.models import Addon, AddonHcxProperties
+    properties = AddonHcxProperties(offer=offer)
+    return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="hcx", properties=properties)
+
+
+def addon_srm_update(cmd, client: AVSClient, resource_group_name, private_cloud, license_key: str):
+    from azext_vmware.vendored_sdks.avs_client.models import Addon, AddonSrmProperties
+    properties = AddonSrmProperties(license_key=license_key)
+    return client.addons.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="srm", properties=properties)
+
+
+def addon_vr_delete(cmd, client: AVSClient, resource_group_name, private_cloud):
+    return client.addons.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="vr")
+
+
+def addon_hcx_delete(cmd, client: AVSClient, resource_group_name, private_cloud):
+    return client.addons.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="hcx")
+
+
+def addon_srm_delete(cmd, client: AVSClient, resource_group_name, private_cloud):
+    return client.addons.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="srm")
