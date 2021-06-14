@@ -3,10 +3,51 @@
 Release History
 ===============
 
+1.1.5
+++++++
+* Add custom-locations oid parameter for spn scenario
+
+
+1.1.4
+++++++
+* Add compatible logic for the track 2 migration of resource dependence
+
+
+1.1.3
+++++++
+* Fix for list_node() sdk function for AKS v1.19.x clusters
+* Some logging and telemetry fixes
+
+
+1.1.2
+++++++
+* Fix/remove bug for unused error type import from az cli version 2.16.0+
+
+
+1.1.1
+++++++
+* Adapting to the new CLI error handling guidelines
+
+
+1.1.0
+++++++
+* Adding enable/disable features support and az connectedk8s proxy
+
+1.0.0
+++++++
+* Moving to GA API version
+
+0.2.9
+++++++
+* `az connectedk8s connect`: Added support for disabling auto upgrade of agents
+* `az connectedk8s update`: Added support for switching on/off the auto-upgrade
+* `az connectedk8s upgrade`: Added support for manual upgrading of agents
+
 0.2.8
 ++++++
-* Added checks for proxy
+* Added checks for proxy and added disable-proxy
 * Updated config dataplane endpoint to support other clouds
+* `az connectedk8s connect`: Added support for kubernetes distro/infra parameters and heuristics
 
 0.2.7
 ++++++

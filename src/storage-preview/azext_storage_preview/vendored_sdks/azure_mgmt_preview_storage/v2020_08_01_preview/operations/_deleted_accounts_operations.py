@@ -14,7 +14,7 @@ from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import HttpRequest, HttpResponse
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
-from .. import models
+from .. import models as _models
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
@@ -37,7 +37,7 @@ class DeletedAccountsOperations(object):
     :param deserializer: An object model deserializer.
     """
 
-    models = models
+    models = _models
 
     def __init__(self, client, config, serializer, deserializer):
         self._client = client
@@ -49,7 +49,7 @@ class DeletedAccountsOperations(object):
         self,
         **kwargs  # type: Any
     ):
-        # type: (...) -> Iterable["models.DeletedAccountListResult"]
+        # type: (...) -> Iterable["_models.DeletedAccountListResult"]
         """Lists deleted accounts under the subscription.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
@@ -57,7 +57,7 @@ class DeletedAccountsOperations(object):
         :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.storage.v2020_08_01_preview.models.DeletedAccountListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.DeletedAccountListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.DeletedAccountListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -102,7 +102,7 @@ class DeletedAccountsOperations(object):
             response = pipeline_response.http_response
 
             if response.status_code not in [200]:
-                error = self._deserialize(models.ErrorResponse, response)
+                error = self._deserialize(_models.ErrorResponse, response)
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
                 raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
@@ -119,7 +119,7 @@ class DeletedAccountsOperations(object):
         location,  # type: str
         **kwargs  # type: Any
     ):
-        # type: (...) -> "models.DeletedAccount"
+        # type: (...) -> "_models.DeletedAccount"
         """Get properties of specified deleted account resource.
 
         :param deleted_account_name: Name of the deleted storage account.
@@ -131,7 +131,7 @@ class DeletedAccountsOperations(object):
         :rtype: ~azure.mgmt.storage.v2020_08_01_preview.models.DeletedAccount
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.DeletedAccount"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.DeletedAccount"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -162,7 +162,7 @@ class DeletedAccountsOperations(object):
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize(models.ErrorResponse, response)
+            error = self._deserialize(_models.ErrorResponse, response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize('DeletedAccount', pipeline_response)

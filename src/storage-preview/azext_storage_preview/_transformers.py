@@ -120,3 +120,8 @@ def transform_storage_list_output(result):
         logger.warning('Next Marker:')
         logger.warning(result.next_marker)
     return list(result)
+
+
+# pylint: disable=unused-argument
+def transform_file_upload(result):
+    return None

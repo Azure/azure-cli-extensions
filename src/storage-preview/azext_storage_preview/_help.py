@@ -55,6 +55,42 @@ examples:
     text: az storage account blob-inventory-policy delete -g ResourceGroupName --account-name storageAccountName -y
 """
 
+helps['storage account file-service-properties'] = """
+type: group
+short-summary: Manage the properties of file service in storage account.
+"""
+
+helps['storage account file-service-properties show'] = """
+type: command
+short-summary: Show the properties of file service in storage account.
+long-summary: >
+    Show the properties of file service in storage account.
+examples:
+  - name: Show the properties of file service in storage account.
+    text: az storage account file-service-properties show -n mystorageaccount -g MyResourceGroup
+"""
+
+helps['storage account file-service-properties update'] = """
+type: command
+short-summary: Update the properties of file service in storage account.
+long-summary: >
+    Update the properties of file service in storage account.
+examples:
+  - name: Enable soft delete policy and set delete retention days to 100 for file service in storage account.
+    text: az storage account file-service-properties update --enable-delete-retention true --delete-retention-days 100 -n mystorageaccount -g MyResourceGroup
+  - name: Disable soft delete policy for file service.
+    text: az storage account file-service-properties update --enable-delete-retention false -n mystorageaccount -g MyResourceGroup
+  - name: Enable SMB Multichannel setting for file service.
+    text: az storage account file-service-properties update --enable-smb-multichannel -n mystorageaccount -g MyResourceGroup
+  - name: Disable SMB Multichannel setting for file service.
+    text: az storage account file-service-properties update --enable-smb-multichannel false -n mystorageaccount -g MyResourceGroup
+  - name: Set secured SMB setting for file service.
+    text: >
+        az storage account file-service-properties update --versions SMB2.1;SMB3.0;SMB3.1.1
+        --auth-methods NTLMv2;Kerberos --kerb-ticket-encryption RC4-HMAC;AES-256
+        --channel-encryption AES-CCM-128;AES-GCM-128;AES-GCM-256 -n mystorageaccount -g MyResourceGroup
+"""
+
 helps['storage account keys list'] = """
 type: command
 short-summary: List the access keys or Kerberos keys (if active directory enabled) for a storage account.
@@ -357,4 +393,46 @@ helps['storage blob directory upload'] = """
           text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/directory" -d directory --recursive
         - name: Upload a set of files in a local directory to a storage blob directory.
           text: az storage blob directory upload -c MyContainer --account-name MyStorageAccount -s "path/to/file*" -d directory --recursive
+"""
+
+helps['storage fs list-deleted-path'] = """
+type: command
+short-summary: List the deleted (file or directory) paths under the specified file system.
+examples:
+  - name: List the deleted (file or directory) paths under the specified file system..
+    text: |
+        az storage fs list-deleted-path -f myfilesystem --account-name mystorageccount --account-key 00000000
+"""
+
+helps['storage fs service-properties'] = """
+type: group
+short-summary: Manage storage datalake service properties.
+"""
+
+helps['storage fs service-properties show'] = """
+type: command
+short-summary: Show the properties of a storage account's datalake service, including Azure Storage Analytics.
+examples:
+  - name: Show the properties of a storage account's datalake service
+    text: |
+        az storage fs service-properties show --account-name mystorageccount --account-key 00000000
+"""
+
+helps['storage fs service-properties update'] = """
+type: command
+short-summary: Update the properties of a storage account's datalake service, including Azure Storage Analytics.
+examples:
+  - name: Update the properties of a storage account's datalake service
+    text: |
+        az storage fs service-properties update --delete-retention --delete-retention-period 7 --account-name mystorageccount --account-key 00000000
+"""
+
+helps['storage fs undelete-path'] = """
+type: command
+short-summary: Restore soft-deleted path.
+long-summary: Operation will only be successful if used within the specified number of days set in the delete retention policy.
+examples:
+  - name: Restore soft-deleted path.
+    text: |
+        az storage fs undelete-path -f myfilesystem --deleted-path-name dir --deletion-id 0000 --account-name mystorageccount --account-key 00000000
 """

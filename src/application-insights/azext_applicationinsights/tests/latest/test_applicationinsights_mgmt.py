@@ -6,6 +6,7 @@
 # pylint: disable=line-too-long
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest, StorageAccountPreparer
 from .recording_processors import StorageAccountSASReplacer
+from azure_devtools.scenario_tests import AllowLargeResponse
 
 
 class ApplicationInsightsManagementClientTests(ScenarioTest):
@@ -93,6 +94,8 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             self.check('provisioningState', 'Succeeded')
         ])
 
+        app_insights_instrumentation_key = self.cmd('az monitor app-insights component show -g {resource_group} --app {ai_name}').get_output_in_json()['instrumentationKey']
+
         # Create web app.
         webapp_name = self.create_random_name('clitestwebapp', 24)
         plan = self.create_random_name('clitestplan', 24)
@@ -108,15 +111,65 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         ])
 
         # Connect AI to web app and update settings for web app.
-        self.cmd('az monitor app-insights component connect-webapp -g {resource_group} -n {webapp_name} --enable-profiler --enable-snapshot-debugger', checks=[
+        self.cmd('az monitor app-insights component connect-webapp -g {resource_group} --app {ai_name} --web-app {webapp_name} --enable-profiler --enable-snapshot-debugger', checks=[
             self.check("[?name=='APPINSIGHTS_PROFILERFEATURE_VERSION']|[0].value", '1.0.0'),
-            self.check("[?name=='APPINSIGHTS_SNAPSHOTFEATURE_VERSION']|[0].value", '1.0.0')
+            self.check("[?name=='APPINSIGHTS_SNAPSHOTFEATURE_VERSION']|[0].value", '1.0.0'),
+            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
         ])
 
         # Check if the settings are updated correctly.
         self.cmd('az webapp config appsettings list -g {resource_group} -n {webapp_name}', checks=[
             self.check("[?name=='APPINSIGHTS_PROFILERFEATURE_VERSION']|[0].value", '1.0.0'),
-            self.check("[?name=='APPINSIGHTS_SNAPSHOTFEATURE_VERSION']|[0].value", '1.0.0')
+            self.check("[?name=='APPINSIGHTS_SNAPSHOTFEATURE_VERSION']|[0].value", '1.0.0'),
+            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
+        ])
+
+    @ResourceGroupPreparer(parameter_name_for_location='location')
+    @StorageAccountPreparer()
+    def test_connect_function(self, resource_group, storage_account, location):
+        # Create Application Insights.
+        ai_name = self.create_random_name('clitestai', 24)
+        self.kwargs.update({
+            'loc': location,
+            'resource_group': resource_group,
+            'ai_name': ai_name,
+            'kind': 'web',
+            'application_type': 'web',
+            'sa': storage_account
+        })
+
+        self.cmd('az monitor app-insights component create --app {ai_name} --location {loc} --kind {kind} -g {resource_group} --application-type {application_type}', checks=[
+            self.check('location', '{loc}'),
+            self.check('kind', '{kind}'),
+            self.check('applicationType', '{application_type}'),
+            self.check('applicationId', '{ai_name}'),
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        app_insights_instrumentation_key = self.cmd('az monitor app-insights component show -g {resource_group} --app {ai_name}').get_output_in_json()['instrumentationKey']
+
+        # Create Azure function.
+        function_name = self.create_random_name('clitestfunction', 24)
+        plan = self.create_random_name('clitestplan', 24)
+        self.kwargs.update({
+            'plan': plan,
+            'function_name': function_name
+        })
+
+        self.cmd('az appservice plan create -g {resource_group} -n {plan}')
+        self.cmd('az functionapp create -g {resource_group} -n {function_name} --plan {plan} -s {sa}', checks=[
+            self.check('state', 'Running'),
+            self.check('name', function_name)
+        ])
+
+        # Connect AI to function and update settings for function.
+        self.cmd('az monitor app-insights component connect-function -g {resource_group} --app {ai_name} --function {function_name}', checks=[
+            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
+        ])
+
+        # Check if the settings are updated correctly.
+        self.cmd('az webapp config appsettings list -g {resource_group} -n {function_name}', checks=[
+            self.check("[?name=='APPINSIGHTS_INSTRUMENTATIONKEY']|[0].value", app_insights_instrumentation_key)
         ])
 
     """Test class for ApplicationInsights mgmt cli."""
@@ -141,14 +194,14 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
 
         api_key = self.cmd('az monitor app-insights api-key show --app {name} -g {resource_group} --api-key {apiKey}').get_output_in_json()
         assert len(api_key['linkedReadProperties']) >= 2  # Some are not user configurable but will be added automatically
-        assert len(api_key['linkedWriteProperties']) == 1
+        assert len(api_key['linkedWriteProperties']) == 0
 
         api_key = self.cmd('az monitor app-insights api-key create --app {name} -g {resource_group} --api-key {apiKeyB}').get_output_in_json()
         assert (api_key['apiKey'] is not None)
 
-        api_key = self.cmd('az monitor app-insights api-key create --app {name} -g {resource_group} --api-key {apiKeyC} --write-properties ""').get_output_in_json()
+        api_key = self.cmd('az monitor app-insights api-key create --app {name} -g {resource_group} --api-key {apiKeyC} --write-properties "WriteAnnotations"').get_output_in_json()
         assert len(api_key['linkedReadProperties']) >= 2  # Some are not user configurable but will be added automatically
-        assert len(api_key['linkedWriteProperties']) == 0
+        assert len(api_key['linkedWriteProperties']) == 1
 
         api_keys = self.cmd('az monitor app-insights api-key show --app {name} -g {resource_group}').get_output_in_json()
         assert len(api_keys) == 3
@@ -194,9 +247,10 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         with self.assertRaisesRegexp(SystemExit, '3'):
             self.cmd('monitor app-insights component linked-storage show --app {name_a} -g {resource_group}')
 
+    @AllowLargeResponse()
     @ResourceGroupPreparer(parameter_name_for_location='location')
-    @StorageAccountPreparer(name_prefix='component', kind='StorageV2')
-    @StorageAccountPreparer(name_prefix='component', kind='StorageV2', location='westus2', parameter_name='storage_account_2')
+    @StorageAccountPreparer(kind='StorageV2')
+    @StorageAccountPreparer(kind='StorageV2', location='westus2', parameter_name='storage_account_2')
     def test_component_continues_export(self, resource_group, location, storage_account, storage_account_2):
         from datetime import datetime, timedelta
         expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%MZ')
@@ -216,8 +270,8 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
             'retention_time': 120
         })
         self.kwargs['dest_sub_id'] = self.cmd('account show').get_output_in_json()['id']
-        self.cmd('storage container create -n {container_name_a} --account-name {account_name_a}')
-        self.cmd('storage container create -n {container_name_b} --account-name {account_name_b}')
+        self.cmd('storage container create -n {container_name_a} -g {resource_group} --account-name {account_name_a}')
+        self.cmd('storage container create -n {container_name_b} -g {resource_group} --account-name {account_name_b}')
         self.kwargs['dest_sas_a'] = self.cmd('storage container generate-sas --account-name {account_name_a} --name {container_name_a} --permissions w --expiry {expiry}').output.replace('"', '').strip()
         self.kwargs['dest_sas_b'] = self.cmd('storage container generate-sas --account-name {account_name_b} --name {container_name_b} --permissions w --expiry {expiry}').output.replace('"', '').strip()
         self.sas_replacer.add_sas_token(self.kwargs['dest_sas_a'])

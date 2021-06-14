@@ -32,6 +32,7 @@ def load_arguments(self, _):
         c.argument('internet', help='Connectivity to internet. Specify "Enabled" or "Disabled".')
         c.argument('vcenter_password', help='vCenter admin password.')
         c.argument('nsxt_password', help='NSX-T Manager password.')
+        c.argument('accept_eula', help='Accept the end-user license agreement without prompting.')
 
     with self.argument_context('vmware private-cloud show') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
@@ -41,6 +42,7 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware private-cloud delete') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the private cloud.')
+        c.argument('yes', help='Deletes without confirmation.')
 
     with self.argument_context('vmware authorization') as c:
         c.argument('name', options_list=['--name', '-n'], help='Name of the authorization.')
@@ -68,3 +70,33 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware hcx-enterprise-site') as c:
         c.argument('name', options_list=['--name', '-n'], help='The name of the HCX Enterprise Site.')
+
+    with self.argument_context('vmware datastore') as c:
+        c.argument('name', options_list=['--name', '-n'], help='The name of the datastore.')
+        c.argument('cluster', help='The name of the cluster.')
+        c.argument('lun_name', help='Name of the LUN to be used.')
+
+    with self.argument_context('vmware datastore create') as c:
+        c.argument('nfs_provider_ip', help='IP address of the NFS provider.')
+        c.argument('nfs_file_path', help='File path through which the NFS volume is exposed by the provider.')
+        c.argument('endpoints', nargs='*', help='iSCSI provider target IP address list.')
+
+    with self.argument_context('vmware datastore netapp-volume create') as c:
+        c.argument('volume_id', help='Azure resource ID of the NetApp volume.')
+
+    with self.argument_context('vmware datastore disk-pool-volume create') as c:
+        c.argument('target_id', help='Azure resource ID of the iSCSI target.')
+        c.argument('mount_option', nargs='*', help='Mode that describes whether the LUN has to be mounted as a datastore or attached as a LUN.')
+        c.argument('path', help='Device path.')
+
+    with self.argument_context('vmware addon') as c:
+        c.argument('name', options_list=['--name', '-n'], help='Name of the addon.')
+
+    with self.argument_context('vmware addon vr') as c:
+        c.argument('vrs_count', help='The vSphere Replication Server (VRS) count.')
+
+    with self.argument_context('vmware addon hcx') as c:
+        c.argument('offer', help='The HCX offer, example "VMware MaaS Cloud Provider (Enterprise)".')
+
+    with self.argument_context('vmware addon srm') as c:
+        c.argument('license_key', help='The Site Recovery Manager (SRM) license.')

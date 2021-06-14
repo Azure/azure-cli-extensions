@@ -270,3 +270,49 @@ def update_management_policies(client, resource_group_name, account_name, parame
     if parameters:
         parameters = parameters.policy
     return client.create_or_update_management_policies(resource_group_name, account_name, policy=parameters)
+
+
+def update_file_service_properties(cmd, instance, enable_delete_retention=None,
+                                   delete_retention_days=None, enable_smb_multichannel=None,
+                                   versions=None, authentication_methods=None, kerberos_ticket_encryption=None,
+                                   channel_encryption=None):
+    from azure.cli.core.azclierror import ValidationError
+    params = {}
+    # set delete retention policy according input
+    if enable_delete_retention is not None:
+        if enable_delete_retention is False:
+            delete_retention_days = None
+        instance.share_delete_retention_policy = cmd.get_models('DeleteRetentionPolicy')(
+            enabled=enable_delete_retention, days=delete_retention_days)
+
+    # If already enabled, only update days
+    if enable_delete_retention is None and delete_retention_days is not None:
+        if instance.share_delete_retention_policy is not None and instance.share_delete_retention_policy.enabled:
+            instance.share_delete_retention_policy.days = delete_retention_days
+        else:
+            raise ValidationError(
+                "Delete Retention Policy hasn't been enabled, and you cannot set delete retention days. "
+                "Please set --enable-delete-retention as true to enable Delete Retention Policy.")
+
+    # Fix the issue in server when delete_retention_policy.enabled=False, the returned days is 0
+    # TODO: remove it when server side return null not 0 for days
+    if instance.share_delete_retention_policy is not None and instance.share_delete_retention_policy.enabled is False:
+        instance.share_delete_retention_policy.days = None
+    if instance.share_delete_retention_policy:
+        params['share_delete_retention_policy'] = instance.share_delete_retention_policy
+
+    # set protocol settings
+    if any([enable_smb_multichannel is not None, versions, authentication_methods, kerberos_ticket_encryption, channel_encryption]):
+        params['protocol_settings'] = instance.protocol_settings
+    if enable_smb_multichannel is not None:
+        params['protocol_settings'].smb.multichannel = cmd.get_models('Multichannel')(enabled=enable_smb_multichannel)
+    if versions is not None:
+        params['protocol_settings'].smb.versions = versions
+    if authentication_methods is not None:
+        params['protocol_settings'].smb.authentication_methods = authentication_methods
+    if kerberos_ticket_encryption is not None:
+        params['protocol_settings'].smb.kerberos_ticket_encryption = kerberos_ticket_encryption
+    if channel_encryption is not None:
+        params['protocol_settings'].smb.channel_encryption = channel_encryption
+
+    return params

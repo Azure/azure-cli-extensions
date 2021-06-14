@@ -10,10 +10,11 @@ import isodate
 from knack.util import CLIError
 from knack.log import get_logger
 from msrestazure.azure_exceptions import CloudError
+from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.profiles import ResourceType
 from azext_applicationinsights.vendored_sdks.applicationinsights.models import ErrorResponseException
 from .util import get_id_from_azure_resource, get_query_targets, get_timespan, get_linked_properties
-from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
-from azure.cli.core.profiles import ResourceType
 
 logger = get_logger(__name__)
 HELP_MESSAGE = " Please use `az feature register --name AIWorkspacePreview --namespace microsoft.insights` to register the feature"
@@ -129,12 +130,15 @@ def update_component(cmd, client, application, resource_group_name, kind=None, w
         existing_component.public_network_access_for_query = public_network_access_for_query
 
     if hasattr(existing_component, 'workspace_resource_id') and existing_component.workspace_resource_id is not None:
+        from .vendored_sdks.mgmt_applicationinsights.v2020_02_02_preview.models import IngestionMode
         client = applicationinsights_mgmt_plane_client(cmd.cli_ctx, api_version='2020-02-02-preview').components
+        existing_component.ingestion_mode = IngestionMode.LOG_ANALYTICS
         return client.create_or_update(resource_group_name, application, existing_component)
 
-    from .vendored_sdks.mgmt_applicationinsights.v2018_05_01_preview.models import ApplicationInsightsComponent
+    from .vendored_sdks.mgmt_applicationinsights.v2018_05_01_preview.models import ApplicationInsightsComponent, IngestionMode
     if retention_in_days is not None:
         existing_component.retention_in_days = retention_in_days
+    existing_component.ingestion_mode = IngestionMode.APPLICATION_INSIGHTS
     component = ApplicationInsightsComponent(**(vars(existing_component)))
     return client.create_or_update(resource_group_name, application, component)
 
@@ -143,10 +147,14 @@ def update_component_tags(client, application, resource_group_name, tags):
     return client.update_tags(resource_group_name, application, tags)
 
 
-def connect_webapp(cmd, resource_group_name, webapp_name, enable_profiler=None, enable_snapshot_debugger=None):
+def connect_webapp(cmd, client, resource_group_name, application, app_service, enable_profiler=None, enable_snapshot_debugger=None):
     from azure.cli.command_modules.appservice.custom import update_app_settings
 
-    settings = []
+    app_insights = client.get(resource_group_name, application)
+    if app_insights is None or app_insights.instrumentation_key is None:
+        raise InvalidArgumentValueError("App Insights {} under resource group {} was not found.".format(application, resource_group_name))
+
+    settings = ["APPINSIGHTS_INSTRUMENTATIONKEY={}".format(app_insights.instrumentation_key)]
     if enable_profiler is True:
         settings.append("APPINSIGHTS_PROFILERFEATURE_VERSION=1.0.0")
     elif enable_profiler is False:
@@ -156,7 +164,17 @@ def connect_webapp(cmd, resource_group_name, webapp_name, enable_profiler=None, 
         settings.append("APPINSIGHTS_SNAPSHOTFEATURE_VERSION=1.0.0")
     elif enable_snapshot_debugger is False:
         settings.append("APPINSIGHTS_SNAPSHOTFEATURE_VERSION=disabled")
-    return update_app_settings(cmd, resource_group_name, webapp_name, settings)
+    return update_app_settings(cmd, resource_group_name, app_service, settings)
+
+
+def connect_function(cmd, client, resource_group_name, application, app_service):
+    from azure.cli.command_modules.appservice.custom import update_app_settings
+    app_insights = client.get(resource_group_name, application)
+    if app_insights is None or app_insights.instrumentation_key is None:
+        raise InvalidArgumentValueError("App Insights {} under resource group {} was not found.".format(application, resource_group_name))
+
+    settings = ["APPINSIGHTS_INSTRUMENTATIONKEY={}".format(app_insights.instrumentation_key)]
+    return update_app_settings(cmd, resource_group_name, app_service, settings)
 
 
 def get_component(client, application, resource_group_name):
@@ -189,8 +207,7 @@ def create_api_key(cmd, client, application, resource_group_name, api_key, read_
     if read_properties is None:
         read_properties = ['ReadTelemetry', 'AuthenticateSDKControlChannel']
     if write_properties is None:
-        write_properties = ['WriteAnnotations']
-        logger.warning('Set write permission to "WriteAnnotations". This default permission will be removed in the future.')
+        write_properties = []
     linked_read_properties, linked_write_properties = get_linked_properties(cmd.cli_ctx, application, resource_group_name, read_properties, write_properties)
     api_key_request = APIKeyRequest(name=api_key,
                                     linked_read_properties=linked_read_properties,
@@ -228,24 +245,41 @@ def update_component_billing(client, application, resource_group_name, cap=None,
         billing_features.data_volume_cap.stop_send_notification_when_hit_cap = stop_sending_notification_when_hitting_cap
     return client.update(resource_group_name=resource_group_name,
                          resource_name=application,
-                         data_volume_cap=billing_features.data_volume_cap,
-                         current_billing_features=billing_features.current_billing_features)
+                         billing_features_properties=billing_features)
 
 
 def get_component_linked_storage_account(client, resource_group_name, application):
-    return client.get(resource_group_name=resource_group_name, resource_name=application)
+    from .vendored_sdks.mgmt_applicationinsights.v2020_03_01_preview.models import StorageType
+    return client.get(resource_group_name=resource_group_name, resource_name=application, storage_type=StorageType.SERVICE_PROFILER)
 
 
 def create_component_linked_storage_account(client, resource_group_name, application, storage_account_id):
-    return client.create_and_update(resource_group_name=resource_group_name, resource_name=application, linked_storage_account=storage_account_id)
+    from .vendored_sdks.mgmt_applicationinsights.v2020_03_01_preview.models import StorageType
+    return client.create_and_update(
+        resource_group_name=resource_group_name,
+        resource_name=application,
+        storage_type=StorageType.SERVICE_PROFILER,
+        linked_storage_accounts_properties={
+            "linked_storage_account": storage_account_id
+        }
+    )
 
 
 def update_component_linked_storage_account(client, resource_group_name, application, storage_account_id):
-    return client.update(resource_group_name=resource_group_name, resource_name=application, linked_storage_account=storage_account_id)
+    from .vendored_sdks.mgmt_applicationinsights.v2020_03_01_preview.models import StorageType
+    return client.update(
+        resource_group_name=resource_group_name,
+        resource_name=application,
+        storage_type=StorageType.SERVICE_PROFILER,
+        linked_storage_accounts_properties={
+            "linked_storage_account": storage_account_id
+        }
+    )
 
 
 def delete_component_linked_storage_account(client, resource_group_name, application):
-    return client.delete(resource_group_name=resource_group_name, resource_name=application)
+    from .vendored_sdks.mgmt_applicationinsights.v2020_03_01_preview.models import StorageType
+    return client.delete(resource_group_name=resource_group_name, resource_name=application, storage_type=StorageType.SERVICE_PROFILER)
 
 
 def list_export_configurations(client, application, resource_group_name):

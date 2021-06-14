@@ -19,7 +19,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001?api-version=2020-10-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001","name":"clitest000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2020-11-19T02:37:28Z"},"properties":{"provisioningState":"Succeeded"}}'
@@ -291,13 +291,13 @@ interactions:
       "Delete", "kubeletConfig": {"cpuManagerPolicy": "static", "cpuCfsQuota": true,
       "cpuCfsQuotaPeriod": "200ms", "imageGcHighThreshold": 90, "imageGcLowThreshold":
       70, "topologyManagerPolicy": "best-effort", "allowedUnsafeSysctls": ["kernel.msg*",
-      "net.*"], "failSwapOn": false}, "linuxOSConfig": {"sysctls": {"netCoreSomaxconn":
+      "net.*"], "failSwapOn": false, "containerLogMaxFiles": 10, "containerLogMaxSizeMb": 20}, "linuxOSConfig": {"sysctls": {"netCoreSomaxconn":
       163849, "netIpv4TcpTwReuse": true, "netIpv4IpLocalPortRange": "32000 60000"},
       "transparentHugePageEnabled": "madvise", "transparentHugePageDefrag": "defer+madvise",
       "swapFileSizeMB": 1500}, "name": "nodepool1"}], "linuxProfile": {"adminUsername":
       "azureuser", "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCvs+MWAFDE8uqPhicolldxCS0qzlQOo53pqurCJ+513wUDoZdGWP9mUiWMQ1vs0ZeiWhrzIA8LBK6JDT0vPyJyxNAIuvF5v5VAErFVm5GdV+ZNscig+M/2AcNJAPMvIHS2Fokhrdw04R3YMfA3KD4WNCiiugCGJNIveapDQzdjXDZk2GOnB8XrLurN2B6mDK8sfAn0XSDqkeBWgTL/YprhBXV0Sr1GILTLMekbCLySTjZ6ZGvUvXsE7JsM7voVizMC9elvuZm4zzDyV3RwSs1p2Riz5L3tRAlqCz23ts82JqcRWlB8bXLK81G03lO8PFOTZmfEd8VN7C6fBAFaNrCv"}]}},
-      "servicePrincipalProfile": {"clientId": "1fae4a95-a515-437e-b7d1-477cd24c7d7e",
-      "secret": "74bce7060ea0633509a6$"}, "addonProfiles": {}, "enableRBAC": true,
+      "servicePrincipalProfile": {"clientId": "00000000-0000-0000-0000-000000000001",
+      "secret": "fake-secret"}, "addonProfiles": {}, "enableRBAC": true,
       "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin": "kubenet",
       "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP": "10.0.0.10",
       "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer", "loadBalancerSku":
@@ -326,7 +326,7 @@ interactions:
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2021-05-01
   response:
     body:
       string: "{\n  \"code\": \"ServicePrincipalNotFound\",\n  \"message\": \"Service\
@@ -365,13 +365,13 @@ interactions:
       "Delete", "kubeletConfig": {"cpuManagerPolicy": "static", "cpuCfsQuota": true,
       "cpuCfsQuotaPeriod": "200ms", "imageGcHighThreshold": 90, "imageGcLowThreshold":
       70, "topologyManagerPolicy": "best-effort", "allowedUnsafeSysctls": ["kernel.msg*",
-      "net.*"], "failSwapOn": false}, "linuxOSConfig": {"sysctls": {"netCoreSomaxconn":
+      "net.*"], "failSwapOn": false, "containerLogMaxFiles": 10, "containerLogMaxSizeMb": 20}, "linuxOSConfig": {"sysctls": {"netCoreSomaxconn":
       163849, "netIpv4TcpTwReuse": true, "netIpv4IpLocalPortRange": "32000 60000"},
       "transparentHugePageEnabled": "madvise", "transparentHugePageDefrag": "defer+madvise",
       "swapFileSizeMB": 1500}, "name": "nodepool1"}], "linuxProfile": {"adminUsername":
       "azureuser", "ssh": {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCvs+MWAFDE8uqPhicolldxCS0qzlQOo53pqurCJ+513wUDoZdGWP9mUiWMQ1vs0ZeiWhrzIA8LBK6JDT0vPyJyxNAIuvF5v5VAErFVm5GdV+ZNscig+M/2AcNJAPMvIHS2Fokhrdw04R3YMfA3KD4WNCiiugCGJNIveapDQzdjXDZk2GOnB8XrLurN2B6mDK8sfAn0XSDqkeBWgTL/YprhBXV0Sr1GILTLMekbCLySTjZ6ZGvUvXsE7JsM7voVizMC9elvuZm4zzDyV3RwSs1p2Riz5L3tRAlqCz23ts82JqcRWlB8bXLK81G03lO8PFOTZmfEd8VN7C6fBAFaNrCv"}]}},
-      "servicePrincipalProfile": {"clientId": "1fae4a95-a515-437e-b7d1-477cd24c7d7e",
-      "secret": "74bce7060ea0633509a6$"}, "addonProfiles": {}, "enableRBAC": true,
+      "servicePrincipalProfile": {"clientId": "00000000-0000-0000-0000-000000000001",
+      "secret": "fake-secret"}, "addonProfiles": {}, "enableRBAC": true,
       "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin": "kubenet",
       "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP": "10.0.0.10",
       "dockerBridgeCidr": "172.17.0.1/16", "outboundType": "loadBalancer", "loadBalancerSku":
@@ -400,7 +400,7 @@ interactions:
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2021-05-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002\"\
@@ -420,12 +420,13 @@ interactions:
         \ \"200ms\",\n      \"imageGcHighThreshold\": 90,\n      \"imageGcLowThreshold\"\
         : 70,\n      \"topologyManagerPolicy\": \"best-effort\",\n      \"allowedUnsafeSysctls\"\
         : [\n       \"kernel.msg*\",\n       \"net.*\"\n      ],\n      \"failSwapOn\"\
-        : false\n     },\n     \"linuxOSConfig\": {\n      \"sysctls\": {\n      \
+        : false,\n      \"containerLogMaxFiles\": 10,\n      \"containerLogMaxSizeMb\": 
+        20\n     },\n     \"linuxOSConfig\": {\n      \"sysctls\": {\n      \
         \ \"netCoreSomaxconn\": 163849,\n       \"netIpv4TcpTwReuse\": true,\n   \
         \    \"netIpv4IpLocalPortRange\": \"32000 60000\"\n      },\n      \"transparentHugePageEnabled\"\
         : \"madvise\",\n      \"transparentHugePageDefrag\": \"defer+madvise\",\n\
         \      \"swapFileSizeMB\": 1500\n     },\n     \"osType\": \"Linux\",\n  \
-        \   \"nodeImageVersion\": \"AKSUbuntu-1604-2020.10.28\"\n    }\n   ],\n  \
+        \   \"nodeImageVersion\": \"AKSUbuntu-1804-2021.01.06\"\n    }\n   ],\n  \
         \ \"linuxProfile\": {\n    \"adminUsername\": \"azureuser\",\n    \"ssh\"\
         : {\n     \"publicKeys\": [\n      {\n       \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCvs+MWAFDE8uqPhicolldxCS0qzlQOo53pqurCJ+513wUDoZdGWP9mUiWMQ1vs0ZeiWhrzIA8LBK6JDT0vPyJyxNAIuvF5v5VAErFVm5GdV+ZNscig+M/2AcNJAPMvIHS2Fokhrdw04R3YMfA3KD4WNCiiugCGJNIveapDQzdjXDZk2GOnB8XrLurN2B6mDK8sfAn0XSDqkeBWgTL/YprhBXV0Sr1GILTLMekbCLySTjZ6ZGvUvXsE7JsM7voVizMC9elvuZm4zzDyV3RwSs1p2Riz5L3tRAlqCz23ts82JqcRWlB8bXLK81G03lO8PFOTZmfEd8VN7C6fBAFaNrCv\"\
         \n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\": {\n    \"\
@@ -779,7 +780,7 @@ interactions:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.15.0 (DOCKER)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002?api-version=2021-05-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002\"\
@@ -799,12 +800,13 @@ interactions:
         \ \"200ms\",\n      \"imageGcHighThreshold\": 90,\n      \"imageGcLowThreshold\"\
         : 70,\n      \"topologyManagerPolicy\": \"best-effort\",\n      \"allowedUnsafeSysctls\"\
         : [\n       \"kernel.msg*\",\n       \"net.*\"\n      ],\n      \"failSwapOn\"\
-        : false\n     },\n     \"linuxOSConfig\": {\n      \"sysctls\": {\n      \
+        : false,\n      \"containerLogMaxFiles\": 10,\n      \"containerLogMaxSizeMb\": 
+        20\n     },\n     \"linuxOSConfig\": {\n      \"sysctls\": {\n      \
         \ \"netCoreSomaxconn\": 163849,\n       \"netIpv4TcpTwReuse\": true,\n   \
         \    \"netIpv4IpLocalPortRange\": \"32000 60000\"\n      },\n      \"transparentHugePageEnabled\"\
         : \"madvise\",\n      \"transparentHugePageDefrag\": \"defer+madvise\",\n\
         \      \"swapFileSizeMB\": 1500\n     },\n     \"osType\": \"Linux\",\n  \
-        \   \"nodeImageVersion\": \"AKSUbuntu-1604-2020.10.28\"\n    }\n   ],\n  \
+        \   \"nodeImageVersion\": \"AKSUbuntu-1804-2021.01.06\"\n    }\n   ],\n  \
         \ \"linuxProfile\": {\n    \"adminUsername\": \"azureuser\",\n    \"ssh\"\
         : {\n     \"publicKeys\": [\n      {\n       \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCvs+MWAFDE8uqPhicolldxCS0qzlQOo53pqurCJ+513wUDoZdGWP9mUiWMQ1vs0ZeiWhrzIA8LBK6JDT0vPyJyxNAIuvF5v5VAErFVm5GdV+ZNscig+M/2AcNJAPMvIHS2Fokhrdw04R3YMfA3KD4WNCiiugCGJNIveapDQzdjXDZk2GOnB8XrLurN2B6mDK8sfAn0XSDqkeBWgTL/YprhBXV0Sr1GILTLMekbCLySTjZ6ZGvUvXsE7JsM7voVizMC9elvuZm4zzDyV3RwSs1p2Riz5L3tRAlqCz23ts82JqcRWlB8bXLK81G03lO8PFOTZmfEd8VN7C6fBAFaNrCv\"\
         \n      }\n     ]\n    }\n   },\n   \"servicePrincipalProfile\": {\n    \"\
@@ -867,7 +869,7 @@ interactions:
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002/agentPools?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002/agentPools?api-version=2021-05-01
   response:
     body:
       string: "{\n  \"value\": [\n   {\n    \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002/agentPools/nodepool1\"\
@@ -882,13 +884,14 @@ interactions:
         \      \"cpuCfsQuotaPeriod\": \"200ms\",\n      \"imageGcHighThreshold\":\
         \ 90,\n      \"imageGcLowThreshold\": 70,\n      \"topologyManagerPolicy\"\
         : \"best-effort\",\n      \"allowedUnsafeSysctls\": [\n       \"kernel.msg*\"\
-        ,\n       \"net.*\"\n      ],\n      \"failSwapOn\": false\n     },\n    \
+        ,\n       \"net.*\"\n      ],\n      \"failSwapOn\": false,\n      \"containerLogMaxFiles\": 
+        10,\n      \"containerLogMaxSizeMb\": 20\n     },\n    \
         \ \"linuxOSConfig\": {\n      \"sysctls\": {\n       \"netCoreSomaxconn\"\
         : 163849,\n       \"netIpv4TcpTwReuse\": true,\n       \"netIpv4IpLocalPortRange\"\
         : \"32000 60000\"\n      },\n      \"transparentHugePageEnabled\": \"madvise\"\
         ,\n      \"transparentHugePageDefrag\": \"defer+madvise\",\n      \"swapFileSizeMB\"\
         : 1500\n     },\n     \"osType\": \"Linux\",\n     \"nodeImageVersion\": \"\
-        AKSUbuntu-1604-2020.10.28\"\n    }\n   }\n  ]\n }"
+        AKSUbuntu-1804-2021.01.06\"\n    }\n   }\n  ]\n }"
     headers:
       cache-control:
       - no-cache
@@ -922,9 +925,10 @@ interactions:
       [], "kubeletConfig": {"cpuManagerPolicy": "static", "cpuCfsQuota": true, "cpuCfsQuotaPeriod":
       "200ms", "imageGcHighThreshold": 90, "imageGcLowThreshold": 70, "topologyManagerPolicy":
       "best-effort", "allowedUnsafeSysctls": ["kernel.msg*", "net.*"], "failSwapOn":
-      false}, "linuxOSConfig": {"sysctls": {"netCoreSomaxconn": 163849, "netIpv4TcpTwReuse":
-      true, "netIpv4IpLocalPortRange": "32000 60000"}, "transparentHugePageEnabled":
-      "madvise", "transparentHugePageDefrag": "defer+madvise", "swapFileSizeMB": 1500}}}'
+      false, "containerLogMaxFiles": 10, "containerLogMaxSizeMb": 20}, "linuxOSConfig": 
+      {"sysctls": {"netCoreSomaxconn": 163849, "netIpv4TcpTwReuse": true, "netIpv4IpLocalPortRange": 
+      "32000 60000"}, "transparentHugePageEnabled": "madvise", "transparentHugePageDefrag": 
+      "defer+madvise", "swapFileSizeMB": 1500}}}'
     headers:
       AKSHTTPCustomFeatures:
       - Microsoft.ContainerService/CustomNodeConfigPreview
@@ -949,7 +953,7 @@ interactions:
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002/agentPools/nodepool2?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002/agentPools/nodepool2?api-version=2021-05-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002/agentPools/nodepool2\"\
@@ -963,12 +967,13 @@ interactions:
         : \"static\",\n    \"cpuCfsQuota\": true,\n    \"cpuCfsQuotaPeriod\": \"200ms\"\
         ,\n    \"imageGcHighThreshold\": 90,\n    \"imageGcLowThreshold\": 70,\n \
         \   \"topologyManagerPolicy\": \"best-effort\",\n    \"allowedUnsafeSysctls\"\
-        : [\n     \"kernel.msg*\",\n     \"net.*\"\n    ],\n    \"failSwapOn\": false\n\
+        : [\n     \"kernel.msg*\",\n     \"net.*\"\n    ],\n    \"failSwapOn\": false,\n      
+        \"containerLogMaxFiles\": 10,\n      \"containerLogMaxSizeMb\": 20\n\
         \   },\n   \"linuxOSConfig\": {\n    \"sysctls\": {\n     \"netCoreSomaxconn\"\
         : 163849,\n     \"netIpv4TcpTwReuse\": true,\n     \"netIpv4IpLocalPortRange\"\
         : \"32000 60000\"\n    },\n    \"transparentHugePageEnabled\": \"madvise\"\
         ,\n    \"transparentHugePageDefrag\": \"defer+madvise\",\n    \"swapFileSizeMB\"\
-        : 1500\n   },\n   \"osType\": \"Linux\",\n   \"nodeImageVersion\": \"AKSUbuntu-1604-2020.10.28\"\
+        : 1500\n   },\n   \"osType\": \"Linux\",\n   \"nodeImageVersion\": \"AKSUbuntu-1804-2021.01.06\"\
         ,\n   \"upgradeSettings\": {}\n  }\n }"
     headers:
       azure-asyncoperation:
@@ -1848,7 +1853,7 @@ interactions:
       - python/3.6.10 (Linux-4.19.76-linuxkit-x86_64-with) msrest/0.6.18 msrest_azure/0.6.3
         azure-mgmt-containerservice/4.4.6 Azure-SDK-For-Python AZURECLI/2.15.0 (DOCKER)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002/agentPools/nodepool2?api-version=2020-11-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002/agentPools/nodepool2?api-version=2021-05-01
   response:
     body:
       string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000002/agentPools/nodepool2\"\
@@ -1862,12 +1867,13 @@ interactions:
         : \"static\",\n    \"cpuCfsQuota\": true,\n    \"cpuCfsQuotaPeriod\": \"200ms\"\
         ,\n    \"imageGcHighThreshold\": 90,\n    \"imageGcLowThreshold\": 70,\n \
         \   \"topologyManagerPolicy\": \"best-effort\",\n    \"allowedUnsafeSysctls\"\
-        : [\n     \"kernel.msg*\",\n     \"net.*\"\n    ],\n    \"failSwapOn\": false\n\
+        : [\n     \"kernel.msg*\",\n     \"net.*\"\n    ],\n    \"failSwapOn\": false
+        ,\n      \"containerLogMaxFiles\": 10,\n      \"containerLogMaxSizeMb\": 20\n\
         \   },\n   \"linuxOSConfig\": {\n    \"sysctls\": {\n     \"netCoreSomaxconn\"\
         : 163849,\n     \"netIpv4TcpTwReuse\": true,\n     \"netIpv4IpLocalPortRange\"\
         : \"32000 60000\"\n    },\n    \"transparentHugePageEnabled\": \"madvise\"\
         ,\n    \"transparentHugePageDefrag\": \"defer+madvise\",\n    \"swapFileSizeMB\"\
-        : 1500\n   },\n   \"osType\": \"Linux\",\n   \"nodeImageVersion\": \"AKSUbuntu-1604-2020.10.28\"\
+        : 1500\n   },\n   \"osType\": \"Linux\",\n   \"nodeImageVersion\": \"AKSUbuntu-1804-2021.01.06\"\
         ,\n   \"upgradeSettings\": {}\n  }\n }"
     headers:
       cache-control:

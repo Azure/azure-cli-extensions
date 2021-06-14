@@ -14,10 +14,15 @@ from msrestazure.azure_exceptions import CloudError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from ._utils import _get_upload_local_file, _get_persistent_disk_size, get_portal_uri, get_azure_files_info
 from knack.util import CLIError
-from .vendored_sdks.appplatform import models
-from .vendored_sdks.appplatform.models import _app_platform_management_client_enums as AppPlatformEnums
+from .vendored_sdks.appplatform.v2020_07_01 import models
+from .vendored_sdks.appplatform.v2020_11_01_preview import models as models_20201101preview
+from .vendored_sdks.appplatform.v2020_07_01.models import _app_platform_management_client_enums as AppPlatformEnums
+from .vendored_sdks.appplatform.v2020_11_01_preview import (
+    AppPlatformManagementClient as AppPlatformManagementClient_20201101preview
+)
 from knack.log import get_logger
 from .azure_storage_file import FileService
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.profiles import ResourceType, get_sdk
@@ -30,6 +35,8 @@ from six.moves.urllib import parse
 from threading import Thread
 from threading import Timer
 import sys
+import json
+from collections import defaultdict
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
@@ -38,18 +45,20 @@ APP_CREATE_OR_UPDATE_SLEEP_INTERVAL = 2
 
 # pylint: disable=line-too-long
 NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment or create deployment with: az spring-cloud app deployment create"
+NO_PRODUCTION_DEPLOYMENT_SET_ERROR = "This app has no production deployment, use \"az spring-cloud app deployment create\" to create a deployment and \"az spring-cloud app set-deployment\" to set production deployment."
+DELETE_PRODUCTION_DEPLOYMENT_WARNING = "You are going to delete production deployment, the app will be inaccessible after this operation."
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
 
 
 def spring_cloud_create(cmd, client, resource_group, name, location=None, app_insights_key=None, app_insights=None,
                         vnet=None, service_runtime_subnet=None, app_subnet=None, reserved_cidr_range=None,
                         service_runtime_network_resource_group=None, app_network_resource_group=None,
-                        disable_distributed_tracing=None, sku=None, tags=None, no_wait=False):
+                        disable_distributed_tracing=None, disable_app_insights=None, enable_java_agent=None,
+                        sku='Standard', tags=None, no_wait=False):
     rg_location = _get_rg_location(cmd.cli_ctx, resource_group)
     if location is None:
         location = rg_location
     properties = models.ClusterResourceProperties()
-    resource = models.ServiceResource(location=location, properties=properties)
 
     if service_runtime_subnet or app_subnet or reserved_cidr_range:
         properties.network_profile = models.NetworkProfile(
@@ -60,20 +69,37 @@ def spring_cloud_create(cmd, client, resource_group, name, location=None, app_in
             service_runtime_network_resource_group=service_runtime_network_resource_group
         )
 
-    if sku is None:
-        sku = "Standard"
     full_sku = models.Sku(name=_get_sku_name(sku), tier=sku)
 
-    check_tracing_parameters(app_insights_key, app_insights, disable_distributed_tracing)
-    update_tracing_config(cmd, resource_group, name, location, properties,
-                          app_insights_key, app_insights, disable_distributed_tracing)
-
     resource = models.ServiceResource(location=location, sku=full_sku, properties=properties, tags=tags)
-    return sdk_no_wait(no_wait, client.create_or_update, resource_group_name=resource_group, service_name=name, resource=resource)
+
+    poller = client.services.create_or_update(
+        resource_group, name, resource)
+    logger.warning(" - Creating Service ..")
+    while poller.done() is False:
+        sleep(5)
+    if disable_distributed_tracing is not True or disable_app_insights is not True:
+        if enable_java_agent:
+            client_preview = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20201101preview)
+            logger.warning("Start configure Application Insights")
+            trace_properties = update_java_agent_config(cmd, resource_group, name, location, app_insights_key, app_insights,
+                                                        enable_java_agent)
+            if trace_properties is not None:
+                sdk_no_wait(no_wait, client_preview.monitoring_settings.update_put,
+                            resource_group_name=resource_group, service_name=name, properties=trace_properties)
+        else:
+            logger.warning("Start configure Application Insights")
+            trace_properties = update_tracing_config(cmd, resource_group, name, location, app_insights_key, app_insights,
+                                                     disable_app_insights)
+            if trace_properties is not None:
+                sdk_no_wait(no_wait, client.monitoring_settings.update_put,
+                            resource_group_name=resource_group, service_name=name, properties=trace_properties)
+    return poller
 
 
 def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
-                        disable_distributed_tracing=None, sku=None, tags=None, no_wait=False):
+                        disable_distributed_tracing=None, disable_app_insights=None,
+                        sku=None, tags=None, no_wait=False):
     updated_resource = models.ServiceResource()
     update_app_insights = False
     update_service_tags = False
@@ -85,46 +111,59 @@ def spring_cloud_update(cmd, client, resource_group, name, app_insights_key=None
         updated_resource.sku = full_sku
         update_service_sku = True
 
-    resource = client.get(resource_group, name)
+    resource = client.services.get(resource_group, name)
     location = resource.location
-    resource_properties = resource.properties
     updated_resource_properties = models.ClusterResourceProperties()
+    trace_properties = client.monitoring_settings.get(resource_group, name).properties
+    trace_enabled = trace_properties.trace_enabled if trace_properties is not None else False
 
-    check_tracing_parameters(app_insights_key, app_insights, disable_distributed_tracing)
     app_insights_target_status = False
-    if app_insights is not None or app_insights_key is not None or disable_distributed_tracing is False:
+    if app_insights or app_insights_key or disable_distributed_tracing is False or disable_app_insights is False:
         app_insights_target_status = True
-        if resource_properties.trace.enabled is False:
+        if trace_enabled is False:
             update_app_insights = True
-        elif app_insights_key != resource_properties.trace.app_insight_instrumentation_key:
+        elif app_insights or (app_insights_key and app_insights_key != trace_properties.app_insights_instrumentation_key):
             update_app_insights = True
-    elif disable_distributed_tracing is True:
+    elif disable_distributed_tracing is True or disable_app_insights is True:
         app_insights_target_status = False
-        if resource_properties.trace.enabled is True:
+        if trace_enabled is True:
             update_app_insights = True
 
     # update application insights
     if update_app_insights is True:
         if app_insights_target_status is False:
-            resource_properties.trace.enabled = app_insights_target_status
-        elif resource_properties.trace.app_insight_instrumentation_key is not None \
-                and app_insights is None and app_insights_key is None:
-            resource_properties.trace.enabled = app_insights_target_status
+            trace_properties.trace_enabled = app_insights_target_status
+        elif trace_properties.app_insights_instrumentation_key and not app_insights and not app_insights_key:
+            trace_properties.trace_enabled = app_insights_target_status
         else:
-            update_tracing_config(cmd, resource_group, name, location, resource_properties, app_insights_key,
-                                  app_insights, disable_distributed_tracing)
-        updated_resource_properties.trace = resource_properties.trace
+            trace_properties = update_tracing_config(cmd, resource_group, name, location,
+                                                     app_insights_key, app_insights, (disable_distributed_tracing or disable_app_insights))
+        if trace_properties is not None:
+            sdk_no_wait(no_wait, client.monitoring_settings.update_put,
+                        resource_group_name=resource_group, service_name=name, properties=trace_properties)
 
     # update service tags
     if tags is not None:
         updated_resource.tags = tags
         update_service_tags = True
 
-    if update_app_insights is False and update_service_tags is False and update_service_sku is False:
+    if update_service_tags is False and update_service_sku is False:
         return resource
 
     updated_resource.properties = updated_resource_properties
-    return sdk_no_wait(no_wait, client.update,
+    return sdk_no_wait(no_wait, client.services.update,
+                       resource_group_name=resource_group, service_name=name, resource=updated_resource)
+
+    # update service tags
+    if tags is not None:
+        updated_resource.tags = tags
+        update_service_tags = True
+
+    if update_service_tags is False and update_service_sku is False:
+        return resource
+
+    updated_resource.properties = updated_resource_properties
+    return sdk_no_wait(no_wait, client.services.update,
                        resource_group_name=resource_group, service_name=name, resource=updated_resource)
 
 
@@ -165,6 +204,8 @@ def list_keys(cmd, client, resource_group, name, app=None, deployment=None):
                 keys.primary_test_endpoint, app, deployment)
             keys.secondary_test_endpoint = "{}/{}/{}/".format(
                 keys.secondary_test_endpoint, app, deployment)
+        else:
+            logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
     return keys
 
 
@@ -174,7 +215,7 @@ def regenerate_keys(cmd, client, resource_group, name, type):
 
 
 def app_create(cmd, client, resource_group, service, name,
-               is_public=None,
+               assign_endpoint=None,
                cpu=None,
                memory=None,
                instance_count=None,
@@ -190,13 +231,13 @@ def app_create(cmd, client, resource_group, service, name,
     properties = models.AppResourceProperties()
     properties.temporary_disk = models.TemporaryDisk(
         size_in_gb=5, mount_path="/tmp")
-
     resource = client.services.get(resource_group, service)
-    location = resource.location
+
+    _validate_instance_count(resource.sku.tier, instance_count)
 
     app_resource = models.AppResource()
     app_resource.properties = properties
-    app_resource.location = location
+    app_resource.location = resource.location
     if assign_identity is True:
         app_resource.identity = models.ManagedIdentityProperties(type="systemassigned")
 
@@ -208,7 +249,6 @@ def app_create(cmd, client, resource_group, service, name,
     deployment_settings = models.DeploymentSettings(
         cpu=cpu,
         memory_in_gb=memory,
-        instance_count=instance_count,
         environment_variables=env,
         jvm_options=jvm_options,
         net_core_main_entry_path=None,
@@ -225,12 +265,13 @@ def app_create(cmd, client, resource_group, service, name,
     # create default deployment
     logger.warning(
         "[2/4] Creating default deployment with name '{}'".format(DEFAULT_DEPLOYMENT_NAME))
-    poller = client.deployments.create_or_update(
-        resource_group, service, name, DEFAULT_DEPLOYMENT_NAME, properties)
+    poller = client.deployments.create_or_update(resource_group, service, name, DEFAULT_DEPLOYMENT_NAME,
+                                                 properties=properties,
+                                                 sku=models.Sku(name="S0", tier="STANDARD", capacity=instance_count))
 
     logger.warning("[3/4] Setting default deployment to production")
     properties = models.AppResourceProperties(
-        active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=is_public)
+        active_deployment_name=DEFAULT_DEPLOYMENT_NAME, public=assign_endpoint)
 
     if enable_persistent_storage:
         properties.persistent_disk = models.PersistentDisk(
@@ -240,7 +281,7 @@ def app_create(cmd, client, resource_group, service, name,
             size_in_gb=0, mount_path="/persistent")
 
     app_resource.properties = properties
-    app_resource.location = location
+    app_resource.location = resource.location
 
     app_poller = client.apps.update(resource_group, service, name, app_resource)
     logger.warning(
@@ -256,26 +297,35 @@ def app_create(cmd, client, resource_group, service, name,
     return app
 
 
+def _check_active_deployment_exist(client, resource_group, service, app):
+    active_deployment_name = client.apps.get(resource_group, service, app).properties.active_deployment_name
+    if not active_deployment_name:
+        logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
+
+
 def app_update(cmd, client, resource_group, service, name,
-               is_public=None,
+               assign_endpoint=None,
                deployment=None,
                runtime_version=None,
                jvm_options=None,
                main_entry=None,
                env=None,
                enable_persistent_storage=None,
-               https_only=None):
+               https_only=None,
+               enable_end_to_end_tls=None):
+    _check_active_deployment_exist(client, resource_group, service, name)
     resource = client.services.get(resource_group, service)
     location = resource.location
 
-    properties = models.AppResourceProperties(public=is_public, https_only=https_only)
+    properties = models_20201101preview.AppResourceProperties(public=assign_endpoint, https_only=https_only,
+                                                              enable_end_to_end_tls=enable_end_to_end_tls)
     if enable_persistent_storage is True:
         properties.persistent_disk = models.PersistentDisk(
             size_in_gb=_get_persistent_disk_size(resource.sku.tier), mount_path="/persistent")
     if enable_persistent_storage is False:
         properties.persistent_disk = models.PersistentDisk(size_in_gb=0)
 
-    app_resource = models.AppResource()
+    app_resource = models_20201101preview.AppResource()
     app_resource.properties = properties
     app_resource.location = location
 
@@ -293,14 +343,13 @@ def app_update(cmd, client, resource_group, service, name,
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
         if deployment is None:
-            logger.warning("No deployment found for update")
+            logger.warning("No production deployment found for update")
             return app_updated
 
     logger.warning("[2/2] Updating deployment '{}'".format(deployment))
     deployment_settings = models.DeploymentSettings(
         cpu=None,
         memory_in_gb=None,
-        instance_count=None,
         environment_variables=env,
         jvm_options=jvm_options,
         net_core_main_entry_path=main_entry,
@@ -335,8 +384,9 @@ def app_start(cmd, client,
     if deployment is None:
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
-    if deployment is None:
-        raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
+        if deployment is None:
+            logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
+            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
     return sdk_no_wait(no_wait, client.deployments.start,
                        resource_group, service, name, deployment)
 
@@ -350,8 +400,9 @@ def app_stop(cmd, client,
     if deployment is None:
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
-    if deployment is None:
-        raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
+        if deployment is None:
+            logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
+            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
     return sdk_no_wait(no_wait, client.deployments.stop,
                        resource_group, service, name, deployment)
 
@@ -365,8 +416,9 @@ def app_restart(cmd, client,
     if deployment is None:
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
-    if deployment is None:
-        raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
+        if deployment is None:
+            logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
+            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
     return sdk_no_wait(no_wait, client.deployments.restart,
                        resource_group, service, name, deployment)
 
@@ -376,7 +428,7 @@ def app_list(cmd, client,
              service):
     apps = list(client.apps.list(resource_group, service))
     deployments = list(
-        client.deployments.list_cluster_all_deployments(resource_group, service))
+        client.deployments.list_for_cluster(resource_group, service))
     for app in apps:
         if app.properties.active_deployment_name:
             deployment = next(
@@ -396,6 +448,8 @@ def app_get(cmd, client,
         deployment = client.deployments.get(
             resource_group, service, name, deployment_name)
         app.properties.active_deployment = deployment
+    else:
+        logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
 
     return app
 
@@ -415,6 +469,7 @@ def app_deploy(cmd, client, resource_group, service, name,
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
         if not deployment:
+            logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
             raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
 
     client.deployments.get(resource_group, service, name, deployment)
@@ -450,16 +505,21 @@ def app_scale(cmd, client, resource_group, service, name,
     if deployment is None:
         deployment = client.apps.get(
             resource_group, service, name).properties.active_deployment_name
-    if deployment is None:
-        raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
+        if deployment is None:
+            logger.warning(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
+            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
+
+    resource = client.services.get(resource_group, service)
+    _validate_instance_count(resource.sku.tier, instance_count)
+
     deployment_settings = models.DeploymentSettings(
         cpu=cpu,
-        memory_in_gb=memory,
-        instance_count=instance_count,)
+        memory_in_gb=memory)
     properties = models.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
+    sku = models.Sku(name="S0", tier="STANDARD", capacity=instance_count)
     return sdk_no_wait(no_wait, client.deployments.update,
-                       resource_group, service, name, deployment, properties)
+                       resource_group, service, name, deployment, properties=properties, sku=sku)
 
 
 def app_get_build_log(cmd, client, resource_group, service, name, deployment=None):
@@ -475,21 +535,22 @@ def app_get_build_log(cmd, client, resource_group, service, name, deployment=Non
     return stream_logs(client.deployments, resource_group, service, name, deployment)
 
 
-def app_tail_log(cmd, client, resource_group, service, name, instance=None, follow=False, lines=50, since=None, limit=2048):
+def app_tail_log(cmd, client, resource_group, service, name,
+                 deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048, format_json=None):
     if not instance:
-        deployment_name = client.apps.get(
-            resource_group, service, name).properties.active_deployment_name
-        if not deployment_name:
-            raise CLIError(
-                "No production deployment found for app '{}'".format(name))
-        deployment = client.deployments.get(
-            resource_group, service, name, deployment_name)
-        if not deployment.properties.instances:
+        if deployment is None:
+            deployment = client.apps.get(
+                resource_group, service, name).properties.active_deployment_name
+        if not deployment:
+            raise CLIError(NO_PRODUCTION_DEPLOYMENT_ERROR)
+        deployment_properties = client.deployments.get(
+            resource_group, service, name, deployment).properties
+        if not deployment_properties.instances:
             raise CLIError("No instances found for deployment '{0}' in app '{1}'".format(
-                deployment_name, name))
-        instances = deployment.properties.instances
+                deployment, name))
+        instances = deployment_properties.instances
         if len(instances) > 1:
-            logger.warning("Mulitple app instances found:")
+            logger.warning("Multiple app instances found:")
             for temp_instance in instances:
                 logger.warning("{}".format(temp_instance.name))
             logger.warning("Please use '-i/--instance' parameter to specify the instance name")
@@ -519,7 +580,7 @@ def app_tail_log(cmd, client, resource_group, service, name, instance=None, foll
     exceptions = []
     streaming_url += "?{}".format(parse.urlencode(params)) if params else ""
     t = Thread(target=_get_app_log, args=(
-        streaming_url, "primary", primary_key, exceptions))
+        streaming_url, "primary", primary_key, format_json, exceptions))
     t.daemon = True
     t.start()
 
@@ -531,6 +592,7 @@ def app_tail_log(cmd, client, resource_group, service, name, instance=None, foll
 
 
 def app_identity_assign(cmd, client, resource_group, service, name, role=None, scope=None):
+    _check_active_deployment_exist(client, resource_group, service, name)
     app_resource = models.AppResource()
     identity = models.ManagedIdentityProperties(type="systemassigned")
     properties = models.AppResourceProperties()
@@ -588,6 +650,7 @@ def app_identity_remove(cmd, client, resource_group, service, name):
 
 
 def app_identity_show(cmd, client, resource_group, service, name):
+    _check_active_deployment_exist(client, resource_group, service, name)
     app = client.apps.get(resource_group, service, name)
     return app.identity
 
@@ -604,6 +667,25 @@ def app_set_deployment(cmd, client, resource_group, service, name, deployment):
                        "' not found, please use 'az spring-cloud app deployment create' to create the new deployment")
     properties = models.AppResourceProperties(
         active_deployment_name=deployment)
+
+    resource = client.services.get(resource_group, service)
+    location = resource.location
+
+    app_resource = models.AppResource()
+    app_resource.properties = properties
+    app_resource.location = location
+
+    return client.apps.update(resource_group, service, name, app_resource)
+
+
+def app_unset_deployment(cmd, client, resource_group, service, name):
+    active_deployment_name = client.apps.get(
+        resource_group, service, name).properties.active_deployment_name
+    if not active_deployment_name:
+        raise CLIError(NO_PRODUCTION_DEPLOYMENT_SET_ERROR)
+
+    # It's designed to use empty string for active_deployment_name to unset active deployment
+    properties = models.AppResourceProperties(active_deployment_name="")
 
     resource = client.services.get(resource_group, service)
     location = resource.location
@@ -633,17 +715,24 @@ def deployment_create(cmd, client, resource_group, service, app, name,
     if name in deployments:
         raise CLIError("Deployment " + name + " already exists")
 
+    resource = client.services.get(resource_group, service)
+    _validate_instance_count(resource.sku.tier, instance_count)
+
     if not skip_clone_settings:
         active_deployment_name = client.apps.get(
             resource_group, service, app).properties.active_deployment_name
-        active_deployment = client.deployments.get(
-            resource_group, service, app, active_deployment_name)
-        if active_deployment:
-            cpu = cpu or active_deployment.properties.deployment_settings.cpu
-            memory = memory or active_deployment.properties.deployment_settings.memory_in_gb
-            instance_count = instance_count or active_deployment.properties.deployment_settings.instance_count
-            jvm_options = jvm_options or active_deployment.properties.deployment_settings.jvm_options
-            env = env or active_deployment.properties.deployment_settings.environment_variables
+        if not active_deployment_name:
+            logger.warning("No production deployment found, use --skip-clone-settings to skip copying settings from "
+                           "production deployment.")
+        else:
+            active_deployment = client.deployments.get(
+                resource_group, service, app, active_deployment_name)
+            if active_deployment:
+                cpu = cpu or active_deployment.properties.deployment_settings.cpu
+                memory = memory or active_deployment.properties.deployment_settings.memory_in_gb
+                instance_count = instance_count or active_deployment.sku.capacity
+                jvm_options = jvm_options or active_deployment.properties.deployment_settings.jvm_options
+                env = env or active_deployment.properties.deployment_settings.environment_variables
     else:
         cpu = cpu or 1
         memory = memory or 1
@@ -663,6 +752,19 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                        file_type)
 
 
+def _validate_instance_count(sku, instance_count=None):
+    if instance_count is not None:
+        sku = sku.upper()
+        if sku == "STANDARD":
+            if instance_count > 500:
+                raise CLIError(
+                    "Standard SKU can have at most 500 app instances in total, but got '{}'".format(instance_count))
+        if sku == "BASIC":
+            if instance_count > 25:
+                raise CLIError(
+                    "Basic SKU can have at most 25 app instances in total, but got '{}'".format(instance_count))
+
+
 def deployment_list(cmd, client, resource_group, service, app):
     return client.deployments.list(resource_group, service, app)
 
@@ -672,8 +774,40 @@ def deployment_get(cmd, client, resource_group, service, app, name):
 
 
 def deployment_delete(cmd, client, resource_group, service, app, name):
+    active_deployment_name = client.apps.get(resource_group, service, app).properties.active_deployment_name
+    if active_deployment_name == name:
+        logger.warning(DELETE_PRODUCTION_DEPLOYMENT_WARNING)
     client.deployments.get(resource_group, service, app, name)
     return client.deployments.delete(resource_group, service, app, name)
+
+
+def is_valid_git_uri(uri):
+    return uri.startswith("https://") or uri.startswith("git@")
+
+
+def validate_config_server_settings(client, resource_group, name, git_property):
+    error_msg = "Git URI should start with \"https://\" or \"git@\""
+    if git_property:
+        if not is_valid_git_uri(git_property.uri):
+            raise CLIError(error_msg)
+        if git_property.repositories:
+            for repository in git_property.repositories:
+                if not is_valid_git_uri(repository.uri):
+                    raise CLIError(error_msg)
+
+    try:
+        result = sdk_no_wait(False, client.validate, resource_group, name, git_property).result()
+    except Exception as err:  # pylint: disable=broad-except
+        raise CLIError("{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
+
+    if not result.is_valid:
+        for item in result.details or []:
+            if not item.name:
+                logger.error("Default repository with URI \"%s\" meets error:", item.uri)
+            else:
+                logger.error("Repository named \"%s\" with URI \"%s\" meets error:", item.name, item.uri)
+            logger.error("\n".join(item.messages))
+        raise CLIError("Config Server settings contain error.")
 
 
 def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
@@ -713,36 +847,27 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
         del config_property['repos']
 
     config_property['repositories'] = repositories
-    git_property = client._deserialize(
-        'ConfigServerGitProperty', config_property)
-    config_server_settings = models.ConfigServerSettings(
-        git_property=git_property)
-    config_server_properties = models.ConfigServerProperties(
-        config_server=config_server_settings)
-    cluster_esource_properties = models.ClusterResourceProperties(
-        config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(
-        properties=cluster_esource_properties)
-    return sdk_no_wait(no_wait, client.update,
-                       resource_group, name, service_resource)
+    git_property = client._deserialize('ConfigServerGitProperty', config_property)
+    config_server_settings = models.ConfigServerSettings(git_property=git_property)
+    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
+
+    logger.warning("[1/2] Validating config server settings")
+    validate_config_server_settings(client, resource_group, name, git_property)
+    logger.warning("[2/2] Updating config server settings, (this operation can take a while to complete)")
+    return sdk_no_wait(no_wait, client.update_put, resource_group, name, config_server_properties)
 
 
 def config_get(cmd, client, resource_group, name):
-    resource = client.get(resource_group, name)
-    config_server = resource.properties.config_server_properties.config_server
-    if not config_server:
+    config_server_resource = client.get(resource_group, name)
+
+    if not config_server_resource.properties.config_server:
         raise CLIError("Config server not set.")
-    return config_server.git_property
+    return config_server_resource
 
 
 def config_delete(cmd, client, resource_group, name):
-    config_server_properties = models.ConfigServerProperties(
-        config_server=models.ConfigServerSettings())
-    properties = models.ClusterResourceProperties(
-        config_server_properties=config_server_properties)
-    appResource = models.ServiceResource(properties=properties)
-
-    return client.update(resource_group, name, appResource)
+    config_server_properties = models.ConfigServerProperties()
+    return client.update_put(resource_group, name, config_server_properties)
 
 
 def config_git_set(cmd, client, resource_group, name, uri,
@@ -754,33 +879,27 @@ def config_git_set(cmd, client, resource_group, name, uri,
                    host_key_algorithm=None,
                    private_key=None,
                    strict_host_key_checking=None):
-    resource = client.get(resource_group, name)
-    config_server = resource.properties.config_server_properties.config_server
-    config = models.ConfigServerGitProperty(
-        uri=uri) if not config_server else config_server.git_property
+    git_property = models.ConfigServerGitProperty(uri=uri)
 
     if search_paths:
         search_paths = search_paths.split(",")
 
-    config.uri = uri
-    config.label = label
-    config.search_paths = search_paths
-    config.username = username
-    config.password = password
-    config.host_key = host_key
-    config.host_key_algorithm = host_key_algorithm
-    config.private_key = private_key
-    config.strict_host_key_checking = strict_host_key_checking
+    git_property.label = label
+    git_property.search_paths = search_paths
+    git_property.username = username
+    git_property.password = password
+    git_property.host_key = host_key
+    git_property.host_key_algorithm = host_key_algorithm
+    git_property.private_key = private_key
+    git_property.strict_host_key_checking = strict_host_key_checking
 
-    config_server = models.ConfigServerSettings(git_property=config)
-    config_server_properties = models.ConfigServerProperties(
-        config_server=config_server)
-    cluster_esource_properties = models.ClusterResourceProperties(
-        config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(
-        properties=cluster_esource_properties)
+    config_server_settings = models.ConfigServerSettings(git_property=git_property)
+    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
 
-    return cached_put(cmd, client.update, service_resource, resource_group, name).result()
+    logger.warning("[1/2] Validating config server settings")
+    validate_config_server_settings(client, resource_group, name, git_property)
+    logger.warning("[2/2] Updating config server settings, (this operation can take a while to complete)")
+    return cached_put(cmd, client.update_put, config_server_properties, resource_group, name).result()
 
 
 def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
@@ -793,24 +912,27 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
                     host_key_algorithm=None,
                     private_key=None,
                     strict_host_key_checking=None):
-    resource = client.get(resource_group, name)
-    config_server = resource.properties.config_server_properties.config_server
-    config = models.ConfigServerGitProperty(
-        uri=uri) if not config_server else config_server.git_property
+    config_server_resource = client.get(resource_group, name)
+    config_server = config_server_resource.properties.config_server
+    git_property = models.ConfigServerGitProperty(uri=uri) if not config_server else config_server.git_property
 
     if search_paths:
         search_paths = search_paths.split(",")
 
-    if config.repositories:
-        repos = [repo for repo in config.repositories if repo.name == repo_name]
+    if pattern:
+        pattern = pattern.split(",")
+
+    if git_property.repositories:
+        repos = [repo for repo in git_property.repositories if repo.name == repo_name]
         if repos:
-            raise CLIError("Repo '{}' already exiests.".format(repo_name))
+            raise CLIError("Repo '{}' already exists.".format(repo_name))
     else:
-        config.repositories = []
+        git_property.repositories = []
 
     repository = models.GitPatternRepository(
         uri=uri,
         name=repo_name,
+        pattern=pattern,
         label=label,
         search_paths=search_paths,
         username=username,
@@ -820,40 +942,38 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
         private_key=private_key,
         strict_host_key_checking=strict_host_key_checking)
 
-    config.repositories.append(repository)
-    config_server_settings = models.ConfigServerSettings(git_property=config)
+    git_property.repositories.append(repository)
+    config_server_settings = models.ConfigServerSettings(git_property=git_property)
     config_server_properties = models.ConfigServerProperties(
         config_server=config_server_settings)
-    cluster_resource_properties = models.ClusterResourceProperties(
-        config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(
-        properties=cluster_resource_properties)
-    return cached_put(cmd, client.update, service_resource, resource_group, name).result()
+
+    logger.warning("[1/2] Validating config server settings")
+    validate_config_server_settings(client, resource_group, name, git_property)
+    logger.warning("[2/2] Adding config server settings repo, (this operation can take a while to complete)")
+    return cached_put(cmd, client.update_patch, config_server_properties, resource_group, name).result()
 
 
 def config_repo_delete(cmd, client, resource_group, name, repo_name):
-    resource = client.get(resource_group, name)
-    config_server = resource.properties.config_server_properties.config_server
-    if not config_server or not config_server.config or not config_server.config.repositories:
+    config_server_resource = client.get(resource_group, name)
+    config_server = config_server_resource.properties.config_server
+    if not config_server or not config_server.git_property or not config_server.git_property.repositories:
         raise CLIError("Repo '{}' not found.".format(repo_name))
 
-    config = config_server.git_property
-    repository = [
-        repo for repo in config.repositories if repo.name == repo_name]
+    git_property = config_server.git_property
+    repository = [repo for repo in git_property.repositories if repo.name == repo_name]
     if not repository:
         raise CLIError("Repo '{}' not found.".format(repo_name))
 
-    config.repositories.remove(repository[0])
+    git_property.repositories.remove(repository[0])
 
-    config_server_settings = models.ConfigServerSettings(git_property=config)
+    config_server_settings = models.ConfigServerSettings(git_property=git_property)
     config_server_properties = models.ConfigServerProperties(
         config_server=config_server_settings)
-    cluster_esource_properties = models.ClusterResourceProperties(
-        config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(
-        properties=cluster_esource_properties)
 
-    return cached_put(cmd, client.update, service_resource, resource_group, name).result()
+    logger.warning("[1/2] Validating config server settings")
+    validate_config_server_settings(client, resource_group, name, git_property)
+    logger.warning("[2/2] Deleting config server settings repo, (this operation can take a while to complete)")
+    return cached_put(cmd, client.update_patch, config_server_properties, resource_group, name).result()
 
 
 def config_repo_update(cmd, client, resource_group, name, repo_name,
@@ -867,13 +987,12 @@ def config_repo_update(cmd, client, resource_group, name, repo_name,
                        host_key_algorithm=None,
                        private_key=None,
                        strict_host_key_checking=None):
-    resource = client.get(resource_group, name)
-    config_server = resource.properties.config_server_properties.config_server
+    config_server_resource = client.get(resource_group, name)
+    config_server = config_server_resource.properties.config_server
     if not config_server or not config_server.git_property or not config_server.git_property.repositories:
         raise CLIError("Repo '{}' not found.".format(repo_name))
-    config = config_server.git_property
-    repository = [
-        repo for repo in config.repositories if repo.name == repo_name]
+    git_property = config_server.git_property
+    repository = [repo for repo in git_property.repositories if repo.name == repo_name]
     if not repository:
         raise CLIError("Repo '{}' not found.".format(repo_name))
 
@@ -883,45 +1002,53 @@ def config_repo_update(cmd, client, resource_group, name, repo_name,
     if pattern:
         pattern = pattern.split(",")
 
-    repository = repository[0]
-    repository = models.GitPatternRepository()
-    repository.uri = uri or repository.uri
-    repository.label = label or repository.label
-    repository.search_paths = search_paths or repository.search_paths
-    repository.username = username or repository.username
-    repository.password = password or repository.password
-    repository.host_key = host_key or repository.host_key
-    repository.host_key_algorithm = host_key_algorithm or repository.host_key_algorithm
-    repository.private_key = private_key or repository.private_key
-    repository.strict_host_key_checking = strict_host_key_checking or repository.strict_host_key_checking
+    old_repository = repository[0]
+    git_property.repositories.remove(old_repository)
 
-    config_server_settings = models.ConfigServerSettings(git_property=config)
-    config_server_properties = models.ConfigServerProperties(
-        config_server=config_server_settings)
-    cluster_esource_properties = models.ClusterResourceProperties(
-        config_server_properties=config_server_properties)
-    service_resource = models.ServiceResource(
-        properties=cluster_esource_properties)
+    repository = models.GitPatternRepository(name=old_repository.name, uri=uri or old_repository.uri)
+    repository.pattern = pattern or old_repository.pattern
+    repository.label = label or old_repository.label
+    repository.search_paths = search_paths or old_repository.search_paths
+    repository.username = username or old_repository.username
+    repository.password = password or old_repository.password
+    repository.host_key = host_key or old_repository.host_key
+    repository.host_key_algorithm = host_key_algorithm or old_repository.host_key_algorithm
+    repository.private_key = private_key or old_repository.private_key
+    repository.strict_host_key_checking = strict_host_key_checking or old_repository.strict_host_key_checking
 
-    return cached_put(cmd, client.update, service_resource, resource_group, name).result()
+    git_property.repositories.append(repository)
+
+    config_server_settings = models.ConfigServerSettings(git_property=git_property)
+    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
+
+    logger.warning("[1/2] Validating config server settings")
+    validate_config_server_settings(client, resource_group, name, git_property)
+    logger.warning("[2/2] Updating config server settings repo, (this operation can take a while to complete)")
+    return cached_put(cmd, client.update_patch, config_server_properties, resource_group, name).result()
 
 
 def config_repo_list(cmd, client, resource_group, name):
-    resource = client.get(resource_group, name)
-    config = resource.properties.config_server_properties.config_server.git_property
-    return config.repositories
+    config_server_resource = client.get(resource_group, name)
+    config_server = config_server_resource.properties.config_server
+
+    if not config_server or not config_server.git_property or not config_server.git_property.repositories:
+        raise CLIError("Repos not found.")
+
+    return config_server.git_property.repositories
 
 
 def binding_list(cmd, client, resource_group, service, app):
-    return client.list(resource_group, service, app)
+    _check_active_deployment_exist(client, resource_group, service, app)
+    return client.bindings.list(resource_group, service, app)
 
 
 def binding_get(cmd, client, resource_group, service, app, name):
-    return client.get(resource_group, service, app, name)
+    _check_active_deployment_exist(client, resource_group, service, app)
+    return client.bindings.get(resource_group, service, app, name)
 
 
 def binding_remove(cmd, client, resource_group, service, app, name):
-    return client.delete(resource_group, service, app, name)
+    return client.bindings.delete(resource_group, service, app, name)
 
 
 def binding_cosmos_add(cmd, client, resource_group, service, app, name,
@@ -930,6 +1057,7 @@ def binding_cosmos_add(cmd, client, resource_group, service, app, name,
                        database_name=None,
                        key_space=None,
                        collection_name=None):
+    _check_active_deployment_exist(client, resource_group, service, app)
     resource_id_dict = parse_resource_id(resource_id)
     resource_type = resource_id_dict['resource_type']
     resource_name = resource_id_dict['resource_name']
@@ -943,7 +1071,7 @@ def binding_cosmos_add(cmd, client, resource_group, service, app, name,
         binding_parameters['collectionName'] = collection_name
 
     try:
-        primary_key = _get_cosmosdb_primary_key(client, resource_id)
+        primary_key = _get_cosmosdb_primary_key(client.bindings, resource_id)
     except:
         raise CLIError(
             "Couldn't get cosmosdb {}'s primary key".format(resource_name))
@@ -955,14 +1083,15 @@ def binding_cosmos_add(cmd, client, resource_group, service, app, name,
         key=primary_key,
         binding_parameters=binding_parameters
     )
-    return client.create_or_update(resource_group, service, app, name, properties)
+    return client.bindings.create_or_update(resource_group, service, app, name, properties)
 
 
 def binding_cosmos_update(cmd, client, resource_group, service, app, name,
                           database_name=None,
                           key_space=None,
                           collection_name=None):
-    binding = client.get(resource_group, service, app, name).properties
+    _check_active_deployment_exist(client, resource_group, service, app)
+    binding = client.bindings.get(resource_group, service, app, name).properties
     resource_id = binding.resource_id
     resource_name = binding.resource_name
     binding_parameters = {}
@@ -971,7 +1100,7 @@ def binding_cosmos_update(cmd, client, resource_group, service, app, name,
     binding_parameters['collectionName'] = collection_name
 
     try:
-        primary_key = _get_cosmosdb_primary_key(client, resource_id)
+        primary_key = _get_cosmosdb_primary_key(client.bindings, resource_id)
     except:
         raise CLIError(
             "Couldn't get cosmosdb {}'s primary key".format(resource_name))
@@ -980,7 +1109,7 @@ def binding_cosmos_update(cmd, client, resource_group, service, app, name,
         key=primary_key,
         binding_parameters=binding_parameters
     )
-    return client.update(resource_group, service, app, name, properties)
+    return client.bindings.update(resource_group, service, app, name, properties)
 
 
 def binding_mysql_add(cmd, client, resource_group, service, app, name,
@@ -988,6 +1117,7 @@ def binding_mysql_add(cmd, client, resource_group, service, app, name,
                       key,
                       username,
                       database_name):
+    _check_active_deployment_exist(client, resource_group, service, app)
     resource_id_dict = parse_resource_id(resource_id)
     resource_type = resource_id_dict['resource_type']
     resource_name = resource_id_dict['resource_name']
@@ -1002,13 +1132,14 @@ def binding_mysql_add(cmd, client, resource_group, service, app, name,
         key=key,
         binding_parameters=binding_parameters
     )
-    return client.create_or_update(resource_group, service, app, name, properties)
+    return client.bindings.create_or_update(resource_group, service, app, name, properties)
 
 
 def binding_mysql_update(cmd, client, resource_group, service, app, name,
                          key=None,
                          username=None,
                          database_name=None):
+    _check_active_deployment_exist(client, resource_group, service, app)
     binding_parameters = {}
     binding_parameters['username'] = username
     binding_parameters['databaseName'] = database_name
@@ -1017,12 +1148,13 @@ def binding_mysql_update(cmd, client, resource_group, service, app, name,
         key=key,
         binding_parameters=binding_parameters
     )
-    return client.update(resource_group, service, app, name, properties)
+    return client.bindings.update(resource_group, service, app, name, properties)
 
 
 def binding_redis_add(cmd, client, resource_group, service, app, name,
                       resource_id,
                       disable_ssl=None):
+    _check_active_deployment_exist(client, resource_group, service, app)
     use_ssl = not disable_ssl
     resource_id_dict = parse_resource_id(resource_id)
     resource_type = resource_id_dict['resource_type']
@@ -1031,7 +1163,7 @@ def binding_redis_add(cmd, client, resource_group, service, app, name,
     binding_parameters['useSsl'] = use_ssl
     primary_key = None
     try:
-        primary_key = _get_redis_primary_key(client, resource_id)
+        primary_key = _get_redis_primary_key(client.bindings, resource_id)
     except:
         raise CLIError(
             "Couldn't get redis {}'s primary key".format(resource_name))
@@ -1044,21 +1176,21 @@ def binding_redis_add(cmd, client, resource_group, service, app, name,
         binding_parameters=binding_parameters
     )
 
-    return client.create_or_update(resource_group, service, app, name, properties)
+    return client.bindings.create_or_update(resource_group, service, app, name, properties)
 
 
 def binding_redis_update(cmd, client, resource_group, service, app, name,
                          disable_ssl=None):
-    binding = client.get(resource_group, service, app, name).properties
+    _check_active_deployment_exist(client, resource_group, service, app)
+    binding = client.bindings.get(resource_group, service, app, name).properties
     resource_id = binding.resource_id
     resource_name = binding.resource_name
     binding_parameters = {}
-    if disable_ssl:
-        binding_parameters['useSsl'] = not disable_ssl
+    binding_parameters['useSsl'] = not disable_ssl
 
     primary_key = None
     try:
-        primary_key = _get_redis_primary_key(client, resource_id)
+        primary_key = _get_redis_primary_key(client.bindings, resource_id)
     except:
         raise CLIError(
             "Couldn't get redis {}'s primary key".format(resource_name))
@@ -1067,7 +1199,7 @@ def binding_redis_update(cmd, client, resource_group, service, app, name,
         key=primary_key,
         binding_parameters=binding_parameters
     )
-    return client.update(resource_group, service, app, name, properties)
+    return client.bindings.update(resource_group, service, app, name, properties)
 
 
 def _get_cosmosdb_primary_key(client, resource_id):
@@ -1158,8 +1290,8 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
         environment_variables=env,
         jvm_options=jvm_options,
         net_core_main_entry_path=main_entry,
-        runtime_version=runtime_version,
-        instance_count=instance_count,)
+        runtime_version=runtime_version)
+    sku = models.Sku(name="S0", tier="STANDARD", capacity=instance_count)
     user_source_info = models.UserSourceInfo(
         version=version,
         relative_path=relative_path,
@@ -1212,24 +1344,130 @@ def _app_deploy(client, resource_group, service, app, name, version, path, runti
         "[3/3] Updating deployment in app '{}' (this operation can take a while to complete)".format(app))
     if update:
         return sdk_no_wait(no_wait, client.deployments.update,
-                           resource_group, service, app, name, properties)
+                           resource_group, service, app, name, properties=properties, sku=sku)
 
     return sdk_no_wait(no_wait, client.deployments.create_or_update,
-                       resource_group, service, app, name, properties)
+                       resource_group, service, app, name, properties=properties, sku=sku)
 
 
-def _get_app_log(url, user_name, password, exceptions):
+# pylint: disable=bare-except, too-many-statements
+def _get_app_log(url, user_name, password, format_json, exceptions):
+    logger_seg_regex = re.compile(r'([^\.])[^\.]+\.')
+
+    def build_log_shortener(length):
+        if length <= 0:
+            raise InvalidArgumentValueError('Logger length in `logger{length}` should be positive')
+
+        def shortener(record):
+            '''
+            Try shorten the logger property to the specified length before feeding it to the formatter.
+            '''
+            logger_name = record.get('logger', None)
+            if logger_name is None:
+                return record
+
+            # first, try to shorten the package name to one letter, e.g.,
+            #     org.springframework.cloud.netflix.eureka.config.DiscoveryClientOptionalArgsConfiguration
+            # to: o.s.c.n.e.c.DiscoveryClientOptionalArgsConfiguration
+            while len(logger_name) > length:
+                logger_name, count = logger_seg_regex.subn(r'\1.', logger_name, 1)
+                if count < 1:
+                    break
+
+            # then, cut off the leading packages if necessary
+            logger_name = logger_name[-length:]
+            record['logger'] = logger_name
+            return record
+
+        return shortener
+
+    def build_formatter():
+        '''
+        Build the log line formatter based on the format_json argument.
+        '''
+        nonlocal format_json
+
+        def identity(o):
+            return o
+
+        if format_json is None or len(format_json) == 0:
+            return identity
+
+        logger_regex = re.compile(r'\blogger\{(\d+)\}')
+        match = logger_regex.search(format_json)
+        pre_processor = identity
+        if match:
+            length = int(match[1])
+            pre_processor = build_log_shortener(length)
+            format_json = logger_regex.sub('logger', format_json, 1)
+
+        first_exception = True
+
+        def format_line(line):
+            nonlocal first_exception
+            try:
+                log_record = json.loads(line)
+                # Add n=\n so that in Windows CMD it's easy to specify customized format with line ending
+                # e.g., "{timestamp} {message}{n}"
+                # (Windows CMD does not escape \n in string literal.)
+                return format_json.format_map(pre_processor(defaultdict(str, n="\n", **log_record)))
+            except:
+                if first_exception:
+                    # enable this format error logging only with --verbose
+                    logger.info("Failed to format log line '{}'".format(line), exc_info=sys.exc_info())
+                    first_exception = False
+                return line
+
+        return format_line
+
+    def iter_lines(response, limit=2**20):
+        '''
+        Returns a line iterator from the response content. If no line ending was found and the buffered content size is
+        larger than the limit, the buffer will be yielded directly.
+        '''
+        buffer = []
+        total = 0
+        for content in response.iter_content(chunk_size=None):
+            if not content:
+                if len(buffer) > 0:
+                    yield b''.join(buffer)
+                break
+
+            start = 0
+            while start < len(content):
+                line_end = content.find(b'\n', start)
+                should_print = False
+                if line_end < 0:
+                    next = (content if start == 0 else content[start:])
+                    buffer.append(next)
+                    total += len(next)
+                    start = len(content)
+                    should_print = total >= limit
+                else:
+                    buffer.append(content[start:line_end + 1])
+                    start = line_end + 1
+                    should_print = True
+
+                if should_print:
+                    yield b''.join(buffer)
+                    buffer.clear()
+                    total = 0
+
     with requests.get(url, stream=True, auth=HTTPBasicAuth(user_name, password)) as response:
         try:
             if response.status_code != 200:
                 raise CLIError("Failed to connect to the server with status code '{}' and reason '{}'".format(
                     response.status_code, response.reason))
             std_encoding = sys.stdout.encoding
-            for content in response.iter_content():
-                if content:
-                    sys.stdout.write(content.decode(encoding='utf-8', errors='replace')
-                                     .encode(std_encoding, errors='replace')
-                                     .decode(std_encoding, errors='replace'))
+
+            formatter = build_formatter()
+
+            for line in iter_lines(response):
+                decoded = (line.decode(encoding='utf-8', errors='replace')
+                           .encode(std_encoding, errors='replace')
+                           .decode(std_encoding, errors='replace'))
+                print(formatter(decoded), end='')
+
         except CLIError as e:
             exceptions.append(e)
 
@@ -1257,7 +1495,9 @@ def certificate_remove(cmd, client, resource_group, service, name):
 
 def domain_bind(cmd, client, resource_group, service, app,
                 domain_name,
-                certificate=None):
+                certificate=None,
+                enable_end_to_end_tls=None):
+    _check_active_deployment_exist(client, resource_group, service, app)
     properties = models.CustomDomainProperties()
     if certificate is not None:
         certificate_response = client.certificates.get(resource_group, service, certificate)
@@ -1265,20 +1505,43 @@ def domain_bind(cmd, client, resource_group, service, app,
             thumbprint=certificate_response.properties.thumbprint,
             cert_name=certificate
         )
+    if enable_end_to_end_tls is not None:
+        _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls)
+
     return client.custom_domains.create_or_update(resource_group, service, app, domain_name, properties)
 
 
+def _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls):
+    client = get_mgmt_service_client(cmd.cli_ctx, AppPlatformManagementClient_20201101preview)
+    resource = client.services.get(resource_group, service)
+    location = resource.location
+
+    properties = models_20201101preview.AppResourceProperties(enable_end_to_end_tls=enable_end_to_end_tls)
+    app_resource = models_20201101preview.AppResource()
+    app_resource.properties = properties
+    app_resource.location = location
+
+    logger.warning("Set end to end tls for app '{}'".format(app))
+    poller = client.apps.update(
+        resource_group, service, app, app_resource)
+    return poller.result()
+
+
 def domain_show(cmd, client, resource_group, service, app, domain_name):
+    _check_active_deployment_exist(client, resource_group, service, app)
     return client.custom_domains.get(resource_group, service, app, domain_name)
 
 
 def domain_list(cmd, client, resource_group, service, app):
+    _check_active_deployment_exist(client, resource_group, service, app)
     return client.custom_domains.list(resource_group, service, app)
 
 
 def domain_update(cmd, client, resource_group, service, app,
                   domain_name,
-                  certificate=None):
+                  certificate=None,
+                  enable_end_to_end_tls=None):
+    _check_active_deployment_exist(client, resource_group, service, app)
     properties = models.CustomDomainProperties()
     if certificate is not None:
         certificate_response = client.certificates.get(resource_group, service, certificate)
@@ -1286,6 +1549,9 @@ def domain_update(cmd, client, resource_group, service, app,
             thumbprint=certificate_response.properties.thumbprint,
             cert_name=certificate
         )
+    if enable_end_to_end_tls is not None:
+        _update_app_e2e_tls(cmd, resource_group, service, app, enable_end_to_end_tls)
+
     return client.custom_domains.create_or_update(resource_group, service, app, domain_name, properties)
 
 
@@ -1302,44 +1568,75 @@ def get_app_insights_key(cli_ctx, resource_group, name):
     return appinsights.instrumentation_key
 
 
-def check_tracing_parameters(app_insights_key, app_insights, disable_distributed_tracing):
-    if (app_insights is not None or app_insights_key is not None) and disable_distributed_tracing is True:
-        raise CLIError("Conflict detected: '--app-insights' or '--app-insights-key' can not be set with '--disable-distributed-tracing true'.")
-    if app_insights is not None and app_insights_key is not None:
-        raise CLIError("Conflict detected: '--app-insights' and '--app-insights-key' can not be set at the same time.")
-
-
-def update_tracing_config(cmd, resource_group, service_name, location, resource_properties, app_insights_key,
-                          app_insights, disable_distributed_tracing):
+def update_tracing_config(cmd, resource_group, service_name, location, app_insights_key,
+                          app_insights, disable_app_insights):
     create_app_insights = False
-
-    if app_insights_key is not None:
-        resource_properties.trace = models.TraceProperties(
-            enabled=True, app_insight_instrumentation_key=app_insights_key)
-    elif app_insights is not None:
+    trace_properties = None
+    if app_insights_key:
+        trace_properties = models.MonitoringSettingProperties(
+            trace_enabled=True, app_insights_instrumentation_key=app_insights_key)
+    elif app_insights:
         if is_valid_resource_id(app_insights):
             resource_id_dict = parse_resource_id(app_insights)
             instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
                                                        resource_id_dict['resource_name'])
-            resource_properties.trace = models.TraceProperties(
-                enabled=True, app_insight_instrumentation_key=instrumentation_key)
+            trace_properties = models.MonitoringSettingProperties(
+                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
         else:
             instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
-            resource_properties.trace = models.TraceProperties(
-                enabled=True, app_insight_instrumentation_key=instrumentation_key)
-    elif disable_distributed_tracing is not True:
+            trace_properties = models.MonitoringSettingProperties(
+                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
+    elif disable_app_insights is not True:
         create_app_insights = True
 
     if create_app_insights is True:
         try:
             instrumentation_key = try_create_application_insights(cmd, resource_group, service_name, location)
-            if instrumentation_key is not None:
-                resource_properties.trace = models.TraceProperties(
-                    enabled=True, app_insight_instrumentation_key=instrumentation_key)
+            if instrumentation_key:
+                trace_properties = models.MonitoringSettingProperties()
+                trace_properties.trace_enabled = True
+                trace_properties.app_insights_instrumentation_key = instrumentation_key
         except Exception:  # pylint: disable=broad-except
             logger.warning(
                 'Error while trying to create and configure an Application Insights for the Azure Spring Cloud. '
                 'Please use the Azure Portal to create and configure the Application Insights, if needed.')
+            return None
+    return trace_properties
+
+
+def update_java_agent_config(cmd, resource_group, service_name, location, app_insights_key,
+                             app_insights, enable_java_agent):
+    create_app_insights = False
+    trace_properties = None
+    if app_insights_key:
+        trace_properties = models_20201101preview.MonitoringSettingProperties(
+            trace_enabled=True, app_insights_instrumentation_key=app_insights_key)
+    elif app_insights:
+        if is_valid_resource_id(app_insights):
+            resource_id_dict = parse_resource_id(app_insights)
+            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
+                                                       resource_id_dict['resource_name'])
+            trace_properties = models_20201101preview.MonitoringSettingProperties(
+                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
+        else:
+            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
+            trace_properties = models_20201101preview.MonitoringSettingProperties(
+                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
+    elif enable_java_agent is True:
+        create_app_insights = True
+
+    if create_app_insights is True:
+        try:
+            instrumentation_key = try_create_application_insights(cmd, resource_group, service_name, location)
+            if instrumentation_key:
+                trace_properties = models_20201101preview.MonitoringSettingProperties(
+                    trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
+        except Exception:  # pylint: disable=broad-except
+            logger.warning(
+                'Error while trying to create and configure an Application Insights for the Azure Spring Cloud. '
+                'Please use the Azure Portal to create and configure the Application Insights, if needed.')
+            return None
+    return trace_properties
 
 
 def try_create_application_insights(cmd, resource_group, name, location):
@@ -1372,3 +1669,39 @@ def try_create_application_insights(cmd, resource_group, name, location):
                    'Application Insights component', appinsights.name, portal_url, appinsights.id)
 
     return appinsights.instrumentation_key
+
+
+def app_insights_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None, sampling_rate=None, disable=None, no_wait=False):
+    if disable:
+        trace_properties = models_20201101preview.MonitoringSettingProperties(trace_enabled=False)
+    else:
+        trace_properties = client.monitoring_settings.get(resource_group, name).properties
+        if not trace_properties.app_insights_instrumentation_key and not app_insights_key and not app_insights and sampling_rate:
+            CLIError("Can't set '--sampling-rate' without connecting to Application Insights. Please provide '--app-insights' or '--app-insights-key'.")
+        if app_insights_key:
+            instrumentation_key = app_insights_key
+        elif app_insights:
+            if is_valid_resource_id(app_insights):
+                resource_id_dict = parse_resource_id(app_insights)
+                instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
+                                                           resource_id_dict['resource_name'])
+            else:
+                instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
+        else:
+            instrumentation_key = trace_properties.app_insights_instrumentation_key
+        if sampling_rate:
+            trace_properties = models_20201101preview.MonitoringSettingProperties(
+                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key, app_insights_sampling_rate=sampling_rate)
+        elif trace_properties.app_insights_sampling_rate:
+            trace_properties = models_20201101preview.MonitoringSettingProperties(
+                trace_enabled=True, app_insights_instrumentation_key=instrumentation_key, app_insights_sampling_rate=trace_properties.app_insights_sampling_rate)
+    if trace_properties is not None:
+        sdk_no_wait(no_wait, client.monitoring_settings.update_put,
+                    resource_group_name=resource_group, service_name=name, properties=trace_properties)
+
+
+def app_insights_show(cmd, client, resource_group, name, no_wait=False):
+    trace_properties = client.monitoring_settings.get(resource_group, name).properties
+    if not trace_properties:
+        raise CLIError("Application Insights not set.")
+    return trace_properties

@@ -30,14 +30,15 @@ from .repair_utils import (
     _check_script_succeeded,
     _fetch_disk_info,
     _unlock_singlepass_encrypted_disk,
-    _invoke_run_command
+    _invoke_run_command,
+    _check_hyperV_gen,
+    _get_cloud_init_script
 )
-from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError
+from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False):
-
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False):
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
     # Main command calling block
@@ -58,12 +59,20 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         else:
             os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
             os_type = 'Windows'
+        # check hyperv Generation
+        if enable_nested:
+            _check_hyperV_gen(source_vm)
 
         # Set up base create vm command
-        create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password}' \
-                                   .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password)
+        if is_linux:
+            create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password} --custom-data {cloud_init_script}' \
+                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, cloud_init_script=_get_cloud_init_script())
+        else:
+            create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password}' \
+                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password)
+
         # Fetch VM size of repair VM
-        sku = _fetch_compatible_sku(source_vm)
+        sku = _fetch_compatible_sku(source_vm, enable_nested)
         if not sku:
             raise SkuNotAvailableError('Failed to find compatible VM size for source VM\'s OS disk within given region and subscription.')
         create_repair_vm_command += ' --size {sku}'.format(sku=sku)
@@ -164,6 +173,30 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                                   .format(g=repair_group_name, disk_name=copy_disk_name, vm_name=repair_vm_name, uri=copy_disk_id)
             _call_az_command(attach_disk_command)
 
+        # invoke enable-NestedHyperV.ps1 again to attach Disk to Nested
+        if enable_nested:
+            logger.info("Running Script win-enable-nested-hyperv.ps1 to install HyperV")
+
+            run_hyperv_command = "az vm repair run -g {g} -n {name} --run-id win-enable-nested-hyperv" \
+                .format(g=repair_group_name, name=repair_vm_name)
+            ret_enable_nested = _call_az_command(run_hyperv_command)
+
+            logger.debug("az vm repair run hyperv command returned: %s", ret_enable_nested)
+
+            if str.find(ret_enable_nested, "SuccessRestartRequired") > -1:
+                restart_cmd = 'az vm restart -g {rg} -n {vm}'.format(rg=repair_group_name, vm=repair_vm_name)
+                logger.info("Restarting Repair VM")
+                restart_ret = _call_az_command(restart_cmd)
+                logger.debug(restart_ret)
+
+                # invoking hyperv script again
+                logger.info("Running win-enable-nested-hyperv.ps1 again to create nested VM")
+                run_hyperv_command = "az vm repair run -g {g} -n {name} --run-id win-enable-nested-hyperv" \
+                    .format(g=repair_group_name, name=repair_vm_name)
+                ret_enable_nested_again = _call_az_command(run_hyperv_command)
+
+                logger.debug("stderr: %s", ret_enable_nested_again)
+
         created_resources = _list_resource_ids_in_rg(repair_group_name)
         command.set_status_success()
 
@@ -176,6 +209,14 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(azCommandError)
         command.message = "Repair create failed. Cleaning up created resources."
+    except SkuDoesNotSupportHyperV as skuDoesNotSupportHyperV:
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = str(skuDoesNotSupportHyperV)
+        command.message = "v2 sku does not support nested VM in hyperv. Please run command without --enabled-nested."
+    except ScriptReturnsError as scriptReturnsError:
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = str(scriptReturnsError)
+        command.message = "Error returned from script when enabling hyperv."
     except SkuNotAvailableError as skuNotAvailableError:
         command.error_stack_trace = traceback.format_exc()
         command.error_message = str(skuNotAvailableError)
@@ -306,7 +347,6 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair run')
-
     LINUX_RUN_SCRIPT_NAME = 'linux-run-driver.sh'
     WINDOWS_RUN_SCRIPT_NAME = 'win-run-driver.ps1'
 

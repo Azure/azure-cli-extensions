@@ -14,7 +14,7 @@ from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core.exceptions import ARMErrorFormat
 
-from ... import models
+from ... import models as _models
 
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
@@ -33,7 +33,7 @@ class FileSharesOperations:
     :param deserializer: An object model deserializer.
     """
 
-    models = models
+    models = _models
 
     def __init__(self, client, config, serializer, deserializer) -> None:
         self._client = client
@@ -47,9 +47,9 @@ class FileSharesOperations:
         account_name: str,
         maxpagesize: Optional[str] = None,
         filter: Optional[str] = None,
-        expand: Optional[str] = "deleted",
+        expand: Optional[Union[str, "_models.ListSharesExpand"]] = None,
         **kwargs
-    ) -> AsyncIterable["models.FileShareItems"]:
+    ) -> AsyncIterable["_models.FileShareItems"]:
         """Lists all shares.
 
         :param resource_group_name: The name of the resource group within the user's subscription. The
@@ -66,13 +66,13 @@ class FileSharesOperations:
          listed.
         :type filter: str
         :param expand: Optional, used to expand the properties within share's properties.
-        :type expand: str
+        :type expand: str or ~azure.mgmt.storage.v2020_08_01_preview.models.ListSharesExpand
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either FileShareItems or the result of cls(response)
         :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.storage.v2020_08_01_preview.models.FileShareItems]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.FileShareItems"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.FileShareItems"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -140,9 +140,10 @@ class FileSharesOperations:
         resource_group_name: str,
         account_name: str,
         share_name: str,
-        file_share: "models.FileShare",
+        file_share: "_models.FileShare",
+        expand: Optional[str] = "snapshots",
         **kwargs
-    ) -> "models.FileShare":
+    ) -> "_models.FileShare":
         """Creates a new share under the specified account as described by request body. The share
         resource includes metadata and properties for that share. It does not include a list of the
         files contained by the share.
@@ -161,12 +162,14 @@ class FileSharesOperations:
         :type share_name: str
         :param file_share: Properties of the file share to create.
         :type file_share: ~azure.mgmt.storage.v2020_08_01_preview.models.FileShare
+        :param expand: Optional, used to create a snapshot.
+        :type expand: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: FileShare, or the result of cls(response)
         :rtype: ~azure.mgmt.storage.v2020_08_01_preview.models.FileShare
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.FileShare"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.FileShare"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -187,6 +190,8 @@ class FileSharesOperations:
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
+        if expand is not None:
+            query_parameters['$expand'] = self._serialize.query("expand", expand, 'str')
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
 
         # Construct headers
@@ -222,9 +227,9 @@ class FileSharesOperations:
         resource_group_name: str,
         account_name: str,
         share_name: str,
-        file_share: "models.FileShare",
+        file_share: "_models.FileShare",
         **kwargs
-    ) -> "models.FileShare":
+    ) -> "_models.FileShare":
         """Updates share properties as specified in request body. Properties not mentioned in the request
         will not be changed. Update fails if the specified share does not already exist.
 
@@ -247,7 +252,7 @@ class FileSharesOperations:
         :rtype: ~azure.mgmt.storage.v2020_08_01_preview.models.FileShare
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.FileShare"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.FileShare"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -300,8 +305,9 @@ class FileSharesOperations:
         account_name: str,
         share_name: str,
         expand: Optional[str] = "stats",
+        x_ms_snapshot: Optional[str] = None,
         **kwargs
-    ) -> "models.FileShare":
+    ) -> "_models.FileShare":
         """Gets properties of a specified share.
 
         :param resource_group_name: The name of the resource group within the user's subscription. The
@@ -318,12 +324,14 @@ class FileSharesOperations:
         :type share_name: str
         :param expand: Optional, used to expand the properties within share's properties.
         :type expand: str
+        :param x_ms_snapshot: Optional, used to retrieve properties of a snapshot.
+        :type x_ms_snapshot: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: FileShare, or the result of cls(response)
         :rtype: ~azure.mgmt.storage.v2020_08_01_preview.models.FileShare
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.FileShare"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.FileShare"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -349,6 +357,8 @@ class FileSharesOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        if x_ms_snapshot is not None:
+            header_parameters['x-ms-snapshot'] = self._serialize.header("x_ms_snapshot", x_ms_snapshot, 'str')
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.get(url, query_parameters, header_parameters)
@@ -372,6 +382,7 @@ class FileSharesOperations:
         resource_group_name: str,
         account_name: str,
         share_name: str,
+        x_ms_snapshot: Optional[str] = None,
         **kwargs
     ) -> None:
         """Deletes specified share under its account.
@@ -388,6 +399,8 @@ class FileSharesOperations:
          dash (-) only. Every dash (-) character must be immediately preceded and followed by a letter
          or number.
         :type share_name: str
+        :param x_ms_snapshot: Optional, used to delete a snapshot.
+        :type x_ms_snapshot: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
         :rtype: None
@@ -417,6 +430,8 @@ class FileSharesOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        if x_ms_snapshot is not None:
+            header_parameters['x-ms-snapshot'] = self._serialize.header("x_ms_snapshot", x_ms_snapshot, 'str')
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.delete(url, query_parameters, header_parameters)
@@ -437,7 +452,7 @@ class FileSharesOperations:
         resource_group_name: str,
         account_name: str,
         share_name: str,
-        deleted_share: "models.DeletedShare",
+        deleted_share: "_models.DeletedShare",
         **kwargs
     ) -> None:
         """Restore a file share within a valid retention days if share soft delete is enabled.

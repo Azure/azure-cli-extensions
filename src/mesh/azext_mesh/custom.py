@@ -240,12 +240,14 @@ def _generate_arm_template_core(input_yaml_files=None, parameters=None):
     logger.warning("Generated ARM template file at %s.", output_file_path)
 
 
-def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=too-many-arguments
+def _deploy_arm_template_core(cmd, resource_group_name,  # pylint: disable=too-many-arguments
                               template_file=None, template_uri=None, input_yaml_files=None, deployment_name=None,
                               parameters=None, mode=None, validate_only=False,
                               no_wait=False):
-    DeploymentProperties, TemplateLink = get_sdk(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
-                                                 'DeploymentProperties', 'TemplateLink', mod='models')
+    DeploymentProperties, TemplateLink, Deployment = get_sdk(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
+                                                             'DeploymentProperties', 'TemplateLink', 'Deployment',
+                                                             mod='models')
+
     template = None
     template_link = None
     template_obj = None
@@ -275,21 +277,27 @@ def _deploy_arm_template_core(cli_ctx, resource_group_name,  # pylint: disable=t
                                       parameters=parameters, mode=mode)
     # workaround
     properties.mode = 'incremental'
-    smc = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES)
+    smc = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES).deployments
+    deployment = Deployment(properties=properties)
 
     logger.warning("Deploying . . .")
     logger.warning("You can get the state of the deployment with the cmd")
     logger.warning("az group deployment show --name %s --resource-group %s", deployment_name, resource_group_name)
     if validate_only:
-        return sdk_no_wait(no_wait, smc.deployments.validate, resource_group_name, deployment_name, properties)
+        if cmd.supported_api_version(min_api='2019-10-01', resource_type=ResourceType.MGMT_RESOURCE_RESOURCES):
+            from azure.cli.core.commands import LongRunningOperation
+            validation_poller = smc.begin_validate(resource_group_name, deployment_name, deployment)
+            return LongRunningOperation(cmd.cli_ctx)(validation_poller)
+        else:
+            return sdk_no_wait(no_wait, smc.validate, resource_group_name, deployment_name, deployment)
 
-    return sdk_no_wait(no_wait, smc.deployments.create_or_update, resource_group_name, deployment_name, properties)
+    return sdk_no_wait(no_wait, smc.begin_create_or_update, resource_group_name, deployment_name, deployment)
 
 
 def deploy_arm_template(cmd, resource_group_name,
                         template_file=None, template_uri=None, input_yaml_files=None, deployment_name=None,
                         parameters=None, mode=None, no_wait=False):
-    return _deploy_arm_template_core(cmd.cli_ctx, resource_group_name, template_file, template_uri,
+    return _deploy_arm_template_core(cmd, resource_group_name, template_file, template_uri,
                                      input_yaml_files, deployment_name, parameters, mode, no_wait=no_wait)
 
 

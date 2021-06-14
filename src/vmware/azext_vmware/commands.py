@@ -20,9 +20,10 @@ def load_command_table(self, _):
         g.custom_command('update', 'privatecloud_update')
         g.custom_command('delete', 'privatecloud_delete')
         g.custom_command('listadmincredentials', 'privatecloud_listadmincredentials')
-
         g.custom_command('addidentitysource', 'privatecloud_addidentitysource')
         g.custom_command('deleteidentitysource', 'privatecloud_deleteidentitysource')
+        g.custom_command('rotate-vcenter-password', 'privatecloud_rotate_vcenter_password')
+        g.custom_command('rotate-nsxt-password', 'privatecloud_rotate_nsxt_password')
 
     with self.command_group('vmware cluster', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('create', 'cluster_create')
@@ -46,3 +47,36 @@ def load_command_table(self, _):
     with self.command_group('vmware location', vmware_sdk, client_factory=cf_vmware) as g:
         g.custom_command('checkquotaavailability', 'check_quota_availability')
         g.custom_command('checktrialavailability', 'check_trial_availability')
+
+    with self.command_group('vmware datastore', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'datastore_create', deprecate_info=g.deprecate(redirect='"az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create"', hide=True))
+        g.custom_command('list', 'datastore_list')
+        g.custom_show_command('show', 'datastore_show')
+        g.custom_command('delete', 'datastore_delete')
+
+    with self.command_group('vmware datastore netapp-volume', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'datastore_netappvolume_create')
+
+    with self.command_group('vmware datastore disk-pool-volume', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'datastore_diskpoolvolume_create')
+
+    with self.command_group('vmware addon', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('list', 'addon_list')
+
+    with self.command_group('vmware addon vr', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'addon_vr_create')
+        g.custom_show_command('show', 'addon_vr_show')
+        g.custom_command('update', 'addon_vr_update')
+        g.custom_command('delete', 'addon_vr_delete')
+
+    with self.command_group('vmware addon hcx', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'addon_hcx_create')
+        g.custom_show_command('show', 'addon_hcx_show')
+        g.custom_command('update', 'addon_hcx_update')
+        g.custom_command('delete', 'addon_hcx_delete')
+
+    with self.command_group('vmware addon srm', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'addon_srm_create')
+        g.custom_show_command('show', 'addon_srm_show')
+        g.custom_command('update', 'addon_srm_update')
+        g.custom_command('delete', 'addon_srm_delete')
