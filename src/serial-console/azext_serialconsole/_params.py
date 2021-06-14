@@ -11,7 +11,7 @@ from knack.arguments import CLIArgumentType
 name_arg_type = CLIArgumentType(
     options_list=('--name', '-n'), help='Name of the VM or VMSS')
 vmss_instance_arg_type = CLIArgumentType(
-    options_list=('--vmss-instance'),
+    options_list=('--instance-id'),
     help='ID of VMSS instance. Not needed when connecting to the serial port of a VM')
 sysrq_input_arg_type = CLIArgumentType(
     options_list=('--input'), help='SysRq Input Key')

@@ -27,7 +27,7 @@ helps['serial-console connect'] = """
         short-summary: Name of the Virtual Machine or Virtual Machine Scale Set.
       - name: --resource-group -g
         short-summary: Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.
-      - name: --vmss-instance
+      - name: --instance-id
         short-summary: ID of VMSS instance. Not needed when connecting to the serialport of a Virtual Machine.
       - name: --subscription
         short-summary: Name or ID of subscription. You can configure the default subscription using az account set -s NAME_OR_ID.
@@ -37,7 +37,7 @@ helps['serial-console connect'] = """
             az serial-console connect -n MyVM -g MyResourceGroup
       - name: Connect to Serial Console of a VMSS Instance with ID 2
         text: >
-            az serial-console connect -n MyVMSS -g MyResourceGroup --vmss-instance 2
+            az serial-console connect -n MyVMSS -g MyResourceGroup --instance-id 2
 """
 
 helps['serial-console send nmi'] = """
@@ -50,7 +50,7 @@ helps['serial-console send nmi'] = """
         short-summary: Name of the Virtual Machine or Virtual Machine Scale Set.
       - name: --resource-group -g
         short-summary: Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.
-      - name: --vmss-instance
+      - name: --instance-id
         short-summary: ID of VMSS instance. Not needed when connecting to the serialport of a Virtual Machine.
       - name: --subscription
         short-summary: Name or ID of subscription. You can configure the default subscription using az account set -s NAME_OR_ID.
@@ -60,7 +60,7 @@ helps['serial-console send nmi'] = """
             az serial-console send nmi -n MyVM -g MyResourceGroup
       - name: Send NMI to VMSS Instance with ID 2
         text: >
-            az serial-console send nmi -n MyVMSS -g MyResourceGroup --vmss-instance 2
+            az serial-console send nmi -n MyVMSS -g MyResourceGroup --instance-id 2
 """
 
 helps['serial-console send sysrq'] = """
@@ -73,7 +73,7 @@ helps['serial-console send sysrq'] = """
         short-summary: Name of the Virtual Machine or Virtual Machine Scale Set.
       - name: --resource-group -g
         short-summary: Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.
-      - name: --vmss-instance
+      - name: --instance-id
         short-summary: ID of VMSS instance. Not needed when connecting to the serialport of a Virtual Machine.
       - name: --subscription
         short-summary: Name or ID of subscription. You can configure the default subscription using az account set -s NAME_OR_ID.
@@ -85,7 +85,7 @@ helps['serial-console send sysrq'] = """
             az serial-console send sysrq -n MyVM -g MyResourceGroup
       - name: Send SysRq to VMSS Instance with ID 2
         text: >
-            az serial-console send sysrq -n MyVMSS -g MyResourceGroup --vmss-instance 2
+            az serial-console send sysrq -n MyVMSS -g MyResourceGroup --instance-id 2
 """
 
 helps['serial-console send reset'] = """
@@ -98,7 +98,7 @@ helps['serial-console send reset'] = """
         short-summary: Name of the Virtual Machine or Virtual Machine Scale Set.
       - name: --resource-group -g
         short-summary: Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.
-      - name: --vmss-instance
+      - name: --instance-id
         short-summary: ID of VMSS instance. Not needed when connecting to the serialport of a Virtual Machine.
       - name: --subscription
         short-summary: Name or ID of subscription. You can configure the default subscription using az account set -s NAME_OR_ID.
@@ -108,5 +108,5 @@ helps['serial-console send reset'] = """
             az serial-console send reset -n MyVM -g MyResourceGroup
       - name: Hard rest a VMSS Instance with ID 2
         text: >
-            az serial-console send reset -n MyVMSS -g MyResourceGroup --vmss-instance 2
+            az serial-console send reset -n MyVMSS -g MyResourceGroup --instance-id 2
 """
