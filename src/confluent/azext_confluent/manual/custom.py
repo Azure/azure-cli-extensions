@@ -25,6 +25,7 @@ def confluent_organization_create(cmd,
                                   no_wait=False):
     import jwt
     from azure.cli.core._profile import Profile
+    from azure.cli.core.azclierror import UnauthorizedError
     from azure.cli.command_modules.role.custom import list_role_assignments
 
     token_info = Profile(cli_ctx=cmd.cli_ctx).get_raw_token()[0][2]
@@ -36,7 +37,7 @@ def confluent_organization_create(cmd,
         body['user_detail']['last_name'] = decode['family_name']
         body['user_detail']['email_address'] = decode['email'] if 'email' in decode else decode['unique_name']
     except KeyError as ex:
-        raise Exception(f'Cannot create the organization as CLI cannot get the right value for {str(ex)} from access '
+        raise UnauthorizedError(f'Cannot create the organization as CLI cannot get the right value for {str(ex)} from access '
                         'token.') from ex
 
     # Check owner or contributor role of subscription
@@ -44,7 +45,7 @@ def confluent_organization_create(cmd,
     role_assignments = list_role_assignments(cmd, assignee=user_object_id, role='Owner') + \
         list_role_assignments(cmd, assignee=user_object_id, role='Contributor')
     if not role_assignments:
-        raise Exception('You must have Owner or Contributor role of the subscription to create an organization.')
+        raise UnauthorizedError('You must have Owner or Contributor role of the subscription to create an organization.')
 
     body['tags'] = tags
     body['location'] = location
@@ -75,7 +76,9 @@ def confluent_organization_delete(client,
                       '- Stop billing for the selected Confluent organization through Azure Marketplace.\n' \
                       'Do you want to proceed'
 
-        if org.offer_detail.plan_id.lower() == 'commit':
+        if org.offer_detail.plan_id in ['confluent-cloud-azure-payg-prod', 'confluent-cloud-azure-payg-stag']:
+            user_confirmation(default_msg)
+        else:
             user_confirmation('- The action cannot be undone and will permanently delete this resource.\n'
                               '- Resource deletion is a permanent action. All the resources, contract purchased '
                               'and its Azure integration will be permanently deleted and will unsubscribe you '
@@ -90,8 +93,6 @@ def confluent_organization_delete(client,
                               'deletion process and timeline, please contact Confluent Support: '
                               'https://support.confluent.io/\n'
                               'Do you want to proceed')
-        else:
-            user_confirmation(default_msg)
 
     return sdk_no_wait(no_wait,
                        client.begin_delete,
@@ -109,9 +110,20 @@ def confluent_offer_detail_show(cmd, publisher_id=None, offer_id=None):
         plans = response.json()['plans']
         plans = [{'planId': plan['planId'],
                   'planName': plan['displayName'],
-                  'termUnits':[item for a in plan['availabilities'] for item in a['terms']]
+                  'offerId': offer_id,
+                  'publisherId': publisher_id,
+                  'termUnits':[{
+                      'price': item['price'],
+                      'termDescription': item['termDescription'],
+                      'termUnits': item['termUnits']
+                    } for a in plan['availabilities'] for item in a['terms']]
                   } for plan in plans]
     except KeyError as ex:
         raise ArgumentUsageError('Not able to get offer details for the provided publisher id and offer id.') from ex
+
+    for plan in plans:
+        for term in plan['termUnits']:
+            if term['termUnits'] not in ['P1M', 'P1Y']:
+                del term['termUnits']
 
     return plans
