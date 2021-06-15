@@ -324,7 +324,7 @@ def build_af_rule_delete(item_param_name, collection_param_name):
         af = client.get(resource_group_name, firewall_name)
         collection = _find_item_at_path(af, '{}.{}'.format(collection_param_name, collection_name))
         collection.rules = [rule for rule in collection.rules if rule.name != item_name]
-        client.create_or_update(resource_group_name, firewall_name, af)
+        client.begin_create_or_update(resource_group_name, firewall_name, af)
 
     func_name = 'delete_af_{}'.format(item_param_name)
     setattr(sys.modules[__name__], func_name, delete_func)
