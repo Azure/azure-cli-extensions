@@ -8,6 +8,9 @@ from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import (get_three_state_flag, get_enum_type)
 from azure.mgmt.web.models import BuiltInAuthenticationProvider
 
+UNAUTHENTICATED_CLIENT_ACTION = ['RedirectToLoginPage', 'AllowAnonymous', 'RejectWith401', 'RejectWith404']
+FORWARD_PROXY_CONVENTION = ['NoProxy', 'Standard', 'Custom']
+
 AUTH_TYPES = {
     'AllowAnonymous': 'na',
     'LoginWithAzureActiveDirectory': BuiltInAuthenticationProvider.azure_active_directory,
@@ -28,14 +31,14 @@ def load_arguments(self, _):
 
     with self.argument_context('webapp auth update') as c:
         c.argument('set_string', options_list=['--set'])
-        c.argument('enabled', options_list=['--enabled'])
+        c.argument('enabled', options_list=['--enabled'], arg_type=get_three_state_flag(return_label=True))
         c.argument('runtime_version', options_list=['--runtime-version'])
         c.argument('config_file_path', options_list=['--config-file-path'])
-        c.argument('unauthenticated_client_action', options_list=['--unauthenticated-client-action'])
+        c.argument('unauthenticated_client_action', options_list=['--unauthenticated-client-action'], arg_type=get_enum_type(UNAUTHENTICATED_CLIENT_ACTION))
         c.argument('redirect_provider', options_list=['--redirect-provider'])
-        c.argument('enable_token_store', options_list=['--enable-token-store'])
-        c.argument('require_https', options_list=['--require-https'])
-        c.argument('proxy_convention', options_list=['--proxy-convention'])
+        c.argument('enable_token_store', options_list=['--enable-token-store'], arg_type=get_three_state_flag(return_label=True))
+        c.argument('require_https', options_list=['--require-https'], arg_type=get_three_state_flag(return_label=True))
+        c.argument('proxy_convention', options_list=['--proxy-convention'], arg_type=get_enum_type(FORWARD_PROXY_CONVENTION))
         c.argument('proxy_custom_host_header', options_list=['--proxy-custom-host-header'])
         c.argument('proxy_custom_proto_header', options_list=['--proxy-custom-proto-header'])
     
