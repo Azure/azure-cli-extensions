@@ -14,11 +14,22 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 # region rest calls
 
 
-def get_auth_settings_v2(cmd, resource_group_name, name, slot=None):
+def get_resource_id(cmd, resource_group_name, name, slot):
     sub_id = get_subscription_id(cmd.cli_ctx)
-    request_url = "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2/list?api-version=2020-12-01".format(sub_id, resource_group_name, name)
+    resource_id = "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}".format(
+        sub_id,
+        resource_group_name,
+        name)
     if slot is not None:
-        request_url = "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/slots/{}/config/authSettingsV2/list?api-version=2020-12-01".format(sub_id, resource_group_name, name, slot)
+        resource_id = resource_id + "/slots" + slot
+
+
+def get_auth_settings_v2(cmd, resource_group_name, name, slot=None):
+    resource_id = get_resource_id(cmd, resource_group_name, name, slot)
+    request_url = "https://management.azure.com/{}/{}?api-version={}".format(
+        resource_id,
+        "config/authSettingsV2/list",
+        "2020-12-01")
     r = send_raw_request(cmd.cli_ctx, "GET", request_url)
     return r.json()
 
@@ -27,21 +38,22 @@ def update_auth_settings_v2_rest_call(cmd, resource_group_name, name, site_auth_
     final_json = {
         "properties": site_auth_settings_v2
     }
-    sub_id = get_subscription_id(cmd.cli_ctx)
 
-    requestUrl = "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name)
-    if slot is not None:
-        requestUrl = "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/slots/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name, slot)
-
-    r = send_raw_request(cmd.cli_ctx, "PUT", requestUrl, None, None, json.dumps(final_json))
+    resource_id = get_resource_id(cmd, resource_group_name, name, slot)
+    request_url = "https://management.azure.com/{}/{}?api-version={}".format(
+        resource_id,
+        "config/authSettingsV2",
+        "2020-12-01")
+    r = send_raw_request(cmd.cli_ctx, "PUT", request_url, None, None, json.dumps(final_json))
     return r.json()["properties"]
 
 
 def is_auth_v2_app(cmd, resource_group_name, name, slot=None):
-    sub_id = get_subscription_id(cmd.cli_ctx)
-    request_url = "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettings/list?api-version=2020-12-01".format(sub_id, resource_group_name, name)
-    if slot is not None:
-        request_url = "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/slots/{}/config/authSettings/list?api-version=2020-12-01".format(sub_id, resource_group_name, name, slot)
+    resource_id = get_resource_id(cmd, resource_group_name, name, slot)
+    request_url = "https://management.azure.com/{}/{}?api-version={}".format(
+        resource_id,
+        "config/authSettings/list",
+        "2020-12-01")
     r = send_raw_request(cmd.cli_ctx, "POST", request_url)
     return r.json()["properties"]["configVersion"] == "v2"
 # endregion
@@ -294,7 +306,8 @@ def update_auth_settings(cmd, resource_group_name, name, enabled=None, action=No
                          microsoft_account_client_secret_setting_name=None,  # pylint: disable=unused-argument
                          twitter_consume_secret_setting_name=None, git_hub_client_secret_setting_name=None):  # pylint: disable=unused-argument
     if is_auth_v2_app(cmd, resource_group_name, name, slot):
-        raise CLIError('Usage Error: Cannot use command az webapp auth-classic update when the app is using auth v2. If you wish to revert the app to v1, run az webapp auth revert')
+        raise CLIError('Usage Error: Cannot use command az webapp auth-classic update when the app '
+                       'is using auth v2. If you wish to revert the app to v1, run az webapp auth revert')
 
     auth_settings = get_auth_settings(cmd, resource_group_name, name, slot)
     from azure.cli.core.profiles import ResourceType
@@ -340,12 +353,14 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
                         client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
                         issuer=None, allowed_token_audiences=None, client_secret=None, yes=False):    # pylint: disable=unused-argument
     if client_secret is not None and client_secret_setting_name is not None:
-        raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot both be configured to non empty strings')
+        raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot both be '
+                       'configured to non empty strings')
 
     if client_secret is not None and not yes:
         msg = 'Configuring --client-secret will add app settings to the web app. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add app settings to the web app.')
+            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add app settings '
+                           'to the web app.')
 
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in existing_auth.keys():
@@ -391,12 +406,14 @@ def update_facebook_settings(cmd, resource_group_name, name, slot=None,  # pylin
                              app_id=None, app_secret_setting_name=None,  # pylint: disable=unused-argument
                              graph_api_version=None, scopes=None, app_secret=None, yes=False):    # pylint: disable=unused-argument
     if app_secret is not None and app_secret_setting_name is not None:
-        raise CLIError('Usage Error: --app-secret and --app-secret-setting-name cannot both be configured to non empty strings')
+        raise CLIError('Usage Error: --app-secret and --app-secret-setting-name cannot both be configured '
+                       'to non empty strings')
 
     if app_secret is not None and not yes:
         msg = 'Configuring --app-secret will add app settings to the web app. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --app-secret cannot be used without agreeing to add app settings to the web app.')
+            raise CLIError('Usage Error: --app-secret cannot be used without agreeing to add app '
+                           'settings to the web app.')
 
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in existing_auth.keys():
