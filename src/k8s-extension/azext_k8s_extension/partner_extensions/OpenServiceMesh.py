@@ -54,27 +54,15 @@ class OpenServiceMesh(PartnerExtensionModel):
         scope_cluster = ScopeCluster(release_namespace=release_namespace)
         ext_scope = Scope(cluster=scope_cluster, namespace=None)
 
-        valid_release_trains = ['staging', 'pilot']
-        # If release-train is not input, set it to 'stable'
-        if release_train is None:
+        # version is a mandatory if release-train is staging or pilot
+        if version is None:
             raise RequiredArgumentMissingError(
-                "A release-train must be provided.  Valid values are 'staging', 'pilot'."
+                "A version must be provided for release-train {}.".format(release_train)
             )
-
-        if release_train.lower() in valid_release_trains:
-            # version is a mandatory if release-train is staging or pilot
-            if version is None:
-                raise RequiredArgumentMissingError(
-                    "A version must be provided for release-train {}.".format(release_train)
-                )
-            # If the release-train is 'staging' or 'pilot' then auto-upgrade-minor-version MUST be set to False
-            if auto_upgrade_minor_version or auto_upgrade_minor_version is None:
-                auto_upgrade_minor_version = False
-                logger.warning("Setting auto-upgrade-minor-version to False since release-train is '%s'", release_train)
-        else:
-            raise InvalidArgumentValueError(
-                "Invalid release-train '{}'.  Valid values are 'staging', 'pilot'.".format(release_train)
-            )
+        # If the release-train is 'staging' or 'pilot' then auto-upgrade-minor-version MUST be set to False
+        if auto_upgrade_minor_version or auto_upgrade_minor_version is None:
+            auto_upgrade_minor_version = False
+            logger.warning("Setting auto-upgrade-minor-version to False since release-train is '%s'", release_train)
 
         # NOTE-2: Return a valid ExtensionInstance object, Instance name and flag for Identity
         create_identity = False
