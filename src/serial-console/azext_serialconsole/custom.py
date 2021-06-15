@@ -19,6 +19,9 @@ import requests
 from azure.cli.core.azclierror import UnclassifiedUserFault
 from azure.cli.core.azclierror import ResourceNotFoundError
 from azure.cli.core.azclierror import AzureConnectionError
+from azure.cli.core.azclierror import AzureResponseError
+from azure.core.exceptions import ResourceNotFoundError as ResourceNotFoundError2
+from azext_serialconsole._client_factory import _compute_client_factory
 
 
 # pylint: disable=too-few-public-methods
@@ -118,7 +121,7 @@ class PrintClass:
         self.print("\x1b[?25h", buffer=buffer)
 
     @staticmethod
-    def getMaxWidthOfString(s):
+    def _getMaxWidthOfString(s):
         maxWidth = -1
         currWidth = 0
         i = 0
@@ -137,7 +140,7 @@ class PrintClass:
         width = self.getTerminalWidth(getch)
         _, col = self.getCursorPosition(getch)
         # adjust message if it is too wide to fit in console
-        if width < self.getMaxWidthOfString(message):
+        if width < self._getMaxWidthOfString(message):
             wrapped = textwrap.wrap(message.replace(
                 "\r\n", " ").replace("\n\r", " "), width=width)
             message = "\r\n".join(wrapped)
@@ -521,35 +524,99 @@ class SerialConsole:
             if GV.trycount == 0:
                 error_message = "Could not establish connection to VM or VMSS since it is not running."
                 recommendation = 'You can power on the VM with "az vm start".'
-                raise AzureConnectionError(
-                    error_message, recommendation=recommendation)
+                raise AzureConnectionError(error_message, recommendation=recommendation)
         else:
             GV.loading = False
             error_message = "Could not establish connection to VM or VMSS."
             recommendation = "Make sure the parameters name/resource-group/vmss-instance are correct."
-            raise ResourceNotFoundError(
-                error_message, recommendation=recommendation)
+            raise ResourceNotFoundError(error_message, recommendation=recommendation)
+
+
+def checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid):
+    client = _compute_client_factory(cmd.cli_ctx)
+    if vmss_instanceid:
+        result = client.virtual_machine_scale_set_vms.get_instance_view(
+            resource_group_name, vm_vmss_name, vmss_instanceid)
+        power_state = ','.join(
+            [s.display_status for s in result.statuses if s.code.startswith('PowerState/')])
+        if "running" not in power_state:
+            error_message = "Azure Serial Console requires a virtual machine to be running."
+            recommendation = 'Use "az vmss start" to start the Virtual Machine.'
+            raise AzureResponseError(error_message, recommendation=recommendation)
+
+        result = client.virtual_machine_scale_sets.get(resource_group_name, vm_vmss_name)
+        recommendation = ('Use "az vmss update --name MyScaleSet --resource-group MyResourceGroup --set '
+                          'virtualMachineProfile.diagnosticsProfile="{\"bootDiagnostics\": {\"Enabled\" : \"True\",'
+                          '\"StorageUri\":\"https://mystorageacct.blob.core.windows.net/\"}}""'
+                          'to enable boot diagnostics.')
+        if not result.virtual_machine_profile.diagnostics_profile.boot_diagnostics.enabled:
+            error_message = ("Azure Serial Console requires boot diagnostics to be enabled. Additionally, "
+                             "Serial Console requires a custom boot diagnostics storage account to be "
+                             "used, and is not yet fully compatible with managed boot diagnostics storage accounts.")
+            raise AzureResponseError(error_message, recommendation=recommendation)
+        if result.virtual_machine_profile.diagnostics_profile.boot_diagnostics.storage_uri is None:
+            error_message = ("Serial Console requires a custom boot diagnostics storage account to be used, "
+                             "and is not yet fully compatible with managed boot diagnostics storage accounts.")
+            raise AzureResponseError(error_message, recommendation=recommendation)
+    else:
+        try:
+            result = client.virtual_machines.get(
+                resource_group_name, vm_vmss_name, expand='instanceView')
+        except ResourceNotFoundError2 as e:
+            try:
+                client.virtual_machine_scale_sets.get(
+                    resource_group_name, vm_vmss_name)
+            except ResourceNotFoundError2:
+                raise e from e
+            error_message = e.message
+            recommendation = ("We found that you specified a Virtual Machine Scale Set and not a VM. "
+                              "Use the --instance-id parameter to select the VMSS instance you want.")
+            raise ResourceNotFoundError(error_message, recommendation=recommendation) from e
+
+        power_state = ','.join(
+            [s.display_status for s in result.instance_view.statuses if s.code.startswith('PowerState/')])
+        if "running" not in power_state:
+            error_message = "Azure Serial Console requires a virtual machine to be running."
+            recommendation = 'Use "az vm start" to start the Virtual Machine.'
+            raise AzureResponseError(error_message, recommendation=recommendation)
+
+        recommendation = ('Use "az vm boot-diagnostics enable --name MyVM --resource-group MyResourceGroup '
+                          '--storage https://mystor.blob.core.windows.net/ " to enable boot diagnostics and '
+                          'make sure to specify a storage account with the --storage parameter.')
+        if not result.diagnostics_profile.boot_diagnostics.enabled:
+            error_message = ("Azure Serial Console requires boot diagnostics to be enabled. Additionally, "
+                             "Serial Console requires a custom boot diagnostics storage account to be "
+                             "used, and is not yet fully compatible with managed boot diagnostics storage accounts.")
+            raise AzureResponseError(error_message, recommendation=recommendation)
+        if result.diagnostics_profile.boot_diagnostics.storage_uri is None:
+            error_message = ("Serial Console requires a custom boot diagnostics storage account to be used, "
+                             "and is not yet fully compatible with managed boot diagnostics storage accounts.")
+            raise AzureResponseError(error_message, recommendation=recommendation)
 
 
 def connect_serialconsole(cmd, resource_group_name, vm_vmss_name, vmss_instanceid=None):
+    checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid)
     GV.serialConsoleInstance = SerialConsole(
         cmd, resource_group_name, vm_vmss_name, vmss_instanceid)
     GV.serialConsoleInstance.launchConsole()
 
 
 def send_nmi_serialconsole(cmd, resource_group_name, vm_vmss_name, vmss_instanceid=None):
+    checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid)
     GV.serialConsoleInstance = SerialConsole(
         cmd, resource_group_name, vm_vmss_name, vmss_instanceid)
     GV.serialConsoleInstance.connectAndSendAdminCommand("nmi")
 
 
 def send_reset_serialconsole(cmd, resource_group_name, vm_vmss_name, vmss_instanceid=None):
+    checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid)
     GV.serialConsoleInstance = SerialConsole(
         cmd, resource_group_name, vm_vmss_name, vmss_instanceid)
     GV.serialConsoleInstance.connectAndSendAdminCommand("reset")
 
 
 def send_sysrq_serialconsole(cmd, resource_group_name, vm_vmss_name, sysrqinput, vmss_instanceid=None):
+    checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid)
     GV.serialConsoleInstance = SerialConsole(
         cmd, resource_group_name, vm_vmss_name, vmss_instanceid)
     GV.serialConsoleInstance.connectAndSendAdminCommand(

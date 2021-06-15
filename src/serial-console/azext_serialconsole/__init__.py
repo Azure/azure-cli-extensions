@@ -12,10 +12,8 @@ class SerialconsoleCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from azext_serialconsole._client_factory import cf_serialconsole
         serialconsole_custom = CliCommandType(
-            operations_tmpl='azext_serialconsole.custom#{}',
-            client_factory=cf_serialconsole)
+            operations_tmpl='azext_serialconsole.custom#{}')
         super().__init__(cli_ctx=cli_ctx, custom_command_type=serialconsole_custom)
 
     def load_command_table(self, args):
