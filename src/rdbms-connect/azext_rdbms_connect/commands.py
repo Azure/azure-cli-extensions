@@ -4,8 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from azure.cli.core.commands import CliCommandType
-
 def load_command_table(self, _):
 
     with self.command_group('mysql flexible-server', is_preview=True) as g:
