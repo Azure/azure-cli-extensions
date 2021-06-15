@@ -46,7 +46,6 @@ def get_repo_path(repo_name, root_path=None):
             logger.warning("Could not find valid path to repo '{}' from '{}'".format(repo_name, root_path))
     return repo_path
 
-
 def find_files(root_paths, file_pattern):
     """ Returns the paths to all files that match a given pattern.
 
@@ -60,7 +59,6 @@ def find_files(root_paths, file_pattern):
             pattern = os.path.join(path, file_pattern)
             paths.extend(glob.glob(pattern))
     return paths
-
 
 def get_name_index(invert=False, include_whl_extensions=False):
     """ Returns a dictionary containing the long and short names of modules and extensions is {SHORT:LONG} format or
@@ -115,7 +113,6 @@ def get_name_index(invert=False, include_whl_extensions=False):
     _update_table(whl_ext_paths, 'ext')
 
     return table
-
 
 # pylint: disable=too-many-statements
 def get_path_table(include_only=None, include_whl_extensions=False):
@@ -203,7 +200,6 @@ def get_path_table(include_only=None, include_whl_extensions=False):
         raise Exception('unrecognized modules: [ {} ]'.format(', '.join(include_only)))
 
     return table
-
 
 def discover_module_tests(mod_name, mod_data):
 

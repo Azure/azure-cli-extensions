@@ -19,6 +19,7 @@ def get_cli_mod_data(mod_name=const.ACS_MOD_NAME, profile="latest"):
     # key value pairs of all modules(in azcli & extention) and its absolute path, used later to find test indexes
     path_table = index.get_path_table()
     command_modules = path_table["mod"]
+    inverse_name_table = index.get_name_index(invert=True)
 
     # construct 'import_name' & mod_data', used later to find test indexes
     acs_mod_path = command_modules[mod_name]
@@ -37,5 +38,5 @@ def get_cli_test_index(module_data=None, mod_name=const.ACS_MOD_NAME, profile="l
     if mod_name in module_data:
         mod_data = module_data[mod_name]
     else:
-        mod_data = get_cli_mod_data(mod_name=mod_name, profile=profile)
+        mod_data = get_cli_mod_data(mod_name=mod_name, profile=profile)    
     return mod_data["files"]
