@@ -15,7 +15,7 @@ from msrestazure.tools import parse_resource_id
 from msrestazure.azure_exceptions import CloudError
 
 from knack.log import get_logger
-from knack.prompting import c
+from knack.prompting import prompt_y_n
 from knack.util import CLIError
 import json
 from azure.cli.core.util import send_raw_request
@@ -24,22 +24,45 @@ from azure.cli.command_modules.appservice._appservice_utils import _generic_site
 from azure.cli.command_modules.appservice.custom import update_app_settings
 from azure.cli.core.commands.client_factory import get_subscription_id
 
+#region rest calls
 def get_auth_settings_v2(cmd, resource_group_name, name, slot=None):
     sub_id = get_subscription_id(cmd.cli_ctx)
-    r = send_raw_request(cmd.cli_ctx, "GET", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2/list?api-version=2020-12-01".format(sub_id, resource_group_name, name))
+    request_url = "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2/list?api-version=2020-12-01".format(sub_id, resource_group_name, name)
+    if slot is not None:
+        request_url = "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/slots/{}/config/authSettingsV2/list?api-version=2020-12-01".format(sub_id, resource_group_name, name, slot)
+    r = send_raw_request(cmd.cli_ctx, "GET", request_url)
     return r.json()
 
+def update_auth_settings_v2_rest_call(cmd, resource_group_name, name, site_auth_settings_v2, slot=None): # pylint: disable=unused-argument
+    final_json = {
+        "properties": site_auth_settings_v2
+    }    
+    sub_id = get_subscription_id(cmd.cli_ctx)
+
+    requestUrl = "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name)
+    if slot is not None:
+        requestUrl = "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/slots/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name, slot)
+
+    r = send_raw_request(cmd.cli_ctx, "PUT", requestUrl, None, None, json.dumps(final_json))
+    return r.json()["properties"]
+
+def is_auth_v2_app(cmd, resource_group_name, name, slot=None):
+    from azure.cli.core.commands.client_factory import get_subscription_id
+    sub_id = get_subscription_id(cmd.cli_ctx)
+    request_url =  "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettings/list?api-version=2020-12-01".format(sub_id, resource_group_name, name)
+    if slot is not None:
+        request_url =  "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/slots/{}/config/authSettings/list?api-version=2020-12-01".format(sub_id, resource_group_name, name, slot)
+    r = send_raw_request(cmd.cli_ctx, "POST", request_url)
+    return r.json()["properties"]["configVersion"] == "v2"    
+#endregion
+
+#region webapp auth
 def set_auth_settings_v2(cmd, resource_group_name, name, body=None, slot=None):  # pylint: disable=unused-argument
     if body is None:
         json_object = None
     else:
         json_object = json.loads(body)
-    final_json = {
-        "properties": json_object
-    }
-    sub_id = get_subscription_id(cmd.cli_ctx)
-    r = send_raw_request(cmd.cli_ctx, "PUT", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name), None, None, json.dumps(final_json))
-    return r.json()
+    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, json_object, slot)
 
 def update_auth_settings_v2(cmd, resource_group_name, name, set_string=None, enabled=None, # pylint: disable=unused-argument
                             runtime_version=None, config_file_path=None, unauthenticated_client_action=None, # pylint: disable=unused-argument
@@ -119,22 +142,50 @@ def update_auth_settings_v2(cmd, resource_group_name, name, set_string=None, ena
         existing_auth["httpSettings"]["forwardProxy"]["customProtoHeaderName"] = proxy_custom_proto_header
                 
     json_object = existing_auth
-    final_json = {
-        "properties": json_object
+    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, json_object, slot)
+#endregion 
+
+#region webapp auth config-version
+def upgrade_to_auth_settings_v2(cmd, resource_group_name, name, slot=None):  # pylint: disable=unused-argument
+    if is_auth_v2_app(cmd, resource_group_name, name, slot):
+        raise CLIError('Usage Error: Cannot use command az webapp auth upgrade when the app is using auth v2.')
+    prep_auth_settings_for_v2(cmd, resource_group_name, name, slot)
+    site_auth_settings_v2 = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
+    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, site_auth_settings_v2, slot)
+
+def get_config_version(cmd, resource_group_name, name, slot=None):  # pylint: disable=unused-argument
+    isV2 = is_auth_v2_app(cmd, resource_group_name, name, slot)
+    config_version = "v1"
+    if isV2:
+        config_version = "v2"
+    return {
+        "configVersion": config_version
     }    
-    
-    r = send_raw_request(cmd.cli_ctx, "PUT", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name), None, None, json.dumps(final_json))
-    return r.json()
 
-def is_auth_v2_app(cmd, resource_group_name, name, slot=None):
-    from azure.cli.core.commands.client_factory import get_subscription_id
-    sub_id = get_subscription_id(cmd.cli_ctx)
-    r = send_raw_request(cmd.cli_ctx, "POST", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettings/list?api-version=2020-12-01".format(sub_id, resource_group_name, name))
-    return r.json()["properties"]["configVersion"] == "v2"    
+def revert_to_auth_settings(cmd, resource_group_name, name, slot=None):  # pylint: disable=unused-argument
+    if not is_auth_v2_app(cmd, resource_group_name, name, slot):
+        raise CLIError('Usage Error: Cannot use command az webapp auth revert when the app is using auth v1.')
+    site_auth_settings = get_auth_settings(cmd, resource_group_name, name, slot)
+    set_auth_settings_v2(cmd, resource_group_name, name, None, slot)
+    update_auth_settings(cmd, resource_group_name, name, site_auth_settings.enabled, None,
+                         site_auth_settings.client_id, site_auth_settings.token_store_enabled, site_auth_settings.runtime_version,
+                         site_auth_settings.token_refresh_extension_hours,
+                         site_auth_settings.allowed_external_redirect_urls, site_auth_settings.client_secret,
+                         site_auth_settings.client_secret_certificate_thumbprint,
+                         site_auth_settings.allowed_audiences, site_auth_settings.issuer, site_auth_settings.facebook_app_id,
+                         site_auth_settings.facebook_app_secret, site_auth_settings.facebook_o_auth_scopes,
+                         site_auth_settings.twitter_consumer_key, site_auth_settings.twitter_consumer_secret,
+                         site_auth_settings.google_client_id, site_auth_settings.google_client_secret, 
+                         site_auth_settings.google_o_auth_scopes, site_auth_settings.microsoft_account_client_id,
+                         site_auth_settings.microsoft_account_client_secret,
+                         site_auth_settings.microsoft_account_o_auth_scopes, slot,
+                         site_auth_settings.git_hub_client_id, site_auth_settings.git_hub_client_secret, site_auth_settings.git_hub_o_auth_scopes,
+                         site_auth_settings.client_secret_setting_name, site_auth_settings.facebook_app_secret_setting_name,
+                         site_auth_settings.google_client_secret_setting_name, site_auth_settings.microsoft_account_client_secret_setting_name,
+                         site_auth_settings.twitter_consumer_secret_setting_name, site_auth_settings.git_hub_client_secret_setting_name)
+#endregion
 
-def get_auth_settings(cmd, resource_group_name, name, slot=None):
-    return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'get_auth_settings', slot)
-
+#region helper methods
 def is_auth_runtime_version_valid(runtime_version=None):
     if runtime_version is None:
         return True
@@ -195,52 +246,6 @@ def prep_auth_settings_for_v2(cmd, resource_group_name, name, slot=None): # pyli
                             site_auth_settings.google_client_secret_setting_name, site_auth_settings.microsoft_account_client_secret_setting_name,
                             site_auth_settings.twitter_consumer_secret_setting_name, site_auth_settings.git_hub_client_secret_setting_name)
 
-def upgrade_to_auth_settings_v2(cmd, resource_group_name, name, slot=None):  # pylint: disable=unused-argument
-    if is_auth_v2_app(cmd, resource_group_name, name, slot):
-        raise CLIError('Usage Error: Cannot use command az webapp auth upgrade when the app is using auth v2.')
-    prep_auth_settings_for_v2(cmd, resource_group_name, name, slot)
-    site_auth_settings_v2 = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
-    final_json = {
-        "properties": site_auth_settings_v2
-    }    
-    sub_id = get_subscription_id(cmd.cli_ctx)
-    r = send_raw_request(cmd.cli_ctx, "PUT", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name), None, None, json.dumps(final_json))
-    return r.json()
-
-def get_config_version(cmd, resource_group_name, name, slot=None):  # pylint: disable=unused-argument
-    isV2 = is_auth_v2_app(cmd, resource_group_name, name, slot)
-    config_version = "v1"
-    if isV2:
-        config_version = "v2"
-    return {
-        "configVersion": config_version
-    }    
-
-def revert_to_auth_settings(cmd, resource_group_name, name, slot=None):  # pylint: disable=unused-argument
-    if not is_auth_v2_app(cmd, resource_group_name, name, slot):
-        raise CLIError('Usage Error: Cannot use command az webapp auth revert when the app is using auth v1.')
-
-    site_auth_settings = get_auth_settings(cmd, resource_group_name, name, slot)
-
-    set_auth_settings_v2(cmd, resource_group_name, name, None, slot)
-
-    update_auth_settings(cmd, resource_group_name, name, site_auth_settings.enabled, None,
-                         site_auth_settings.client_id, site_auth_settings.token_store_enabled, site_auth_settings.runtime_version,
-                         site_auth_settings.token_refresh_extension_hours,
-                         site_auth_settings.allowed_external_redirect_urls, site_auth_settings.client_secret,
-                         site_auth_settings.client_secret_certificate_thumbprint,
-                         site_auth_settings.allowed_audiences, site_auth_settings.issuer, site_auth_settings.facebook_app_id,
-                         site_auth_settings.facebook_app_secret, site_auth_settings.facebook_o_auth_scopes,
-                         site_auth_settings.twitter_consumer_key, site_auth_settings.twitter_consumer_secret,
-                         site_auth_settings.google_client_id, site_auth_settings.google_client_secret, 
-                         site_auth_settings.google_o_auth_scopes, site_auth_settings.microsoft_account_client_id,
-                         site_auth_settings.microsoft_account_client_secret,
-                         site_auth_settings.microsoft_account_o_auth_scopes, slot,
-                         site_auth_settings.git_hub_client_id, site_auth_settings.git_hub_client_secret, site_auth_settings.git_hub_o_auth_scopes,
-                         site_auth_settings.client_secret_setting_name, site_auth_settings.facebook_app_secret_setting_name,
-                         site_auth_settings.google_client_secret_setting_name, site_auth_settings.microsoft_account_client_secret_setting_name,
-                         site_auth_settings.twitter_consumer_secret_setting_name, site_auth_settings.git_hub_client_secret_setting_name)
-
 def remove_all_auth_settings_secrets(cmd, resource_group_name, name, slot=None): # pylint: disable=unused-argument
     auth_settings = get_auth_settings(cmd, resource_group_name, name, slot)
     auth_settings.client_secret = ""
@@ -250,6 +255,11 @@ def remove_all_auth_settings_secrets(cmd, resource_group_name, name, slot=None):
     auth_settings.microsoft_account_client_secret = ""
     auth_settings.twitter_consumer_secret_setting_name = ""
     return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'update_auth_settings', slot, auth_settings)
+#endregion
+
+#region webapp auth-classic
+def get_auth_settings(cmd, resource_group_name, name, slot=None):
+    return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'get_auth_settings', slot)
 
 def update_auth_settings(cmd, resource_group_name, name, enabled=None, action=None,  # pylint: disable=unused-argument
                         client_id=None, token_store_enabled=None, runtime_version=None,  # pylint: disable=unused-argument
@@ -294,7 +304,9 @@ def update_auth_settings(cmd, resource_group_name, name, enabled=None, action=No
             setattr(auth_settings, arg, values[arg] if arg not in bool_flags else values[arg] == 'true')
 
     return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'update_auth_settings', slot, auth_settings)
+#endregion
 
+#region webapp auth microsoft
 def get_aad_settings(cmd, resource_group_name, name, slot=None):
     auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in auth_settings.keys():
@@ -339,13 +351,10 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
         existing_auth["identityProviders"]["azureActiveDirectory"]["registration"]["openIdIssuer"] = issuer
     if allowed_token_audiences is not None:
         existing_auth["identityProviders"]["azureActiveDirectory"]["validation"]["allowedAudiences"] = allowed_token_audiences.split(",")
-    final_json = {
-        "properties": existing_auth
-    }
-    sub_id = get_subscription_id(cmd.cli_ctx)
-    r = send_raw_request(cmd.cli_ctx, "PUT", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name), None, None, json.dumps(final_json))
-    return r.json()["properties"]["identityProviders"]["azureActiveDirectory"]
+    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)["identityProviders"]["azureActiveDirectory"]
+#endregion
 
+#region webapp auth facebook
 def get_facebook_settings(cmd, resource_group_name, name, slot=None):
     auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in auth_settings.keys():
@@ -390,13 +399,10 @@ def update_facebook_settings(cmd, resource_group_name, name, slot=None,  # pylin
         existing_auth["identityProviders"]["facebook"]["graphApiVersion"] = graph_api_version
     if scopes is not None:
         existing_auth["identityProviders"]["facebook"]["login"]["scopes"] = scopes.split(",")
-    final_json = {
-        "properties": existing_auth
-    }
-    sub_id = get_subscription_id(cmd.cli_ctx)
-    r = send_raw_request(cmd.cli_ctx, "PUT", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name), None, None, json.dumps(final_json))
-    return r.json()["properties"]["identityProviders"]["facebook"]
+    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)["identityProviders"]["facebook"]
+#endregion
 
+#region webapp auth github
 def get_github_settings(cmd, resource_group_name, name, slot=None):
     auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in auth_settings.keys():
@@ -439,13 +445,10 @@ def update_github_settings(cmd, resource_group_name, name, slot=None,  # pylint:
         update_app_settings(cmd, resource_group_name, name, settings, slot)
     if scopes is not None:
         existing_auth["identityProviders"]["gitHub"]["login"]["scopes"] = scopes.split(",")
-    final_json = {
-        "properties": existing_auth
-    }
-    sub_id = get_subscription_id(cmd.cli_ctx)
-    r = send_raw_request(cmd.cli_ctx, "PUT", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name), None, None, json.dumps(final_json))
-    return r.json()["properties"]["identityProviders"]["gitHub"]
+    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)["identityProviders"]["gitHub"]
+#endregion
 
+#region webapp auth google
 def get_google_settings(cmd, resource_group_name, name, slot=None):
     auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in auth_settings.keys():
@@ -493,13 +496,10 @@ def update_google_settings(cmd, resource_group_name, name, slot=None,  # pylint:
         existing_auth["identityProviders"]["google"]["login"]["scopes"] = scopes.split(",")
     if allowed_token_audiences is not None:
         existing_auth["identityProviders"]["google"]["validation"]["allowedAudiences"] = allowed_token_audiences.split(",")
-    final_json = {
-        "properties": existing_auth
-    }
-    sub_id = get_subscription_id(cmd.cli_ctx)
-    r = send_raw_request(cmd.cli_ctx, "PUT", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name), None, None, json.dumps(final_json))
-    return r.json()["properties"]["identityProviders"]["google"]
+    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)["identityProviders"]["google"]
+#endregion
 
+#region webapp auth twitter
 def get_twitter_settings(cmd, resource_group_name, name, slot=None):
     auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in auth_settings.keys():
@@ -537,13 +537,10 @@ def update_twitter_settings(cmd, resource_group_name, name, slot=None,  # pylint
         settings = []
         settings.append('TWITTER_PROVIDER_AUTHENTICATION_SECRET=' + client_secret)
         update_app_settings(cmd, resource_group_name, name, settings, slot)
-    final_json = {
-        "properties": existing_auth
-    }
-    sub_id = get_subscription_id(cmd.cli_ctx)
-    r = send_raw_request(cmd.cli_ctx, "PUT", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name), None, None, json.dumps(final_json))
-    return r.json()["properties"]["identityProviders"]["twitter"]
+    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)["identityProviders"]["twitter"]
+#endregion
 
+#region webapp auth apple
 def get_apple_settings(cmd, resource_group_name, name, slot=None):
     auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in auth_settings.keys():
@@ -586,13 +583,10 @@ def update_apple_settings(cmd, resource_group_name, name, slot=None,  # pylint: 
         update_app_settings(cmd, resource_group_name, name, settings, slot)
     if scopes is not None:
         existing_auth["identityProviders"]["apple"]["login"]["scopes"] = scopes.split(",")
-    final_json = {
-        "properties": existing_auth
-    }
-    sub_id = get_subscription_id(cmd.cli_ctx)
-    r = send_raw_request(cmd.cli_ctx, "PUT", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name), None, None, json.dumps(final_json))
-    return r.json()["properties"]["identityProviders"]["apple"]
+    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)["identityProviders"]["apple"]
+#endregion
 
+#region webapp auth oidc
 def get_oidc_provider_settings(cmd, resource_group_name, name, provider_name, slot=None): # pylint: disable=unused-argument
     auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in auth_settings.keys():
@@ -628,12 +622,7 @@ def add_oidc_provider_settings(cmd, resource_group_name, name, provider_name, sl
         auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"] = {}
         auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"]["scopes"] = scopes.split(',')
     
-    final_json = {
-        "properties": auth_settings
-    }
-    sub_id = get_subscription_id(cmd.cli_ctx)
-    r = send_raw_request(cmd.cli_ctx, "PUT", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name), None, None, json.dumps(final_json))
-    return r.json()["properties"]["identityProviders"]["customOpenIdConnectProviders"][provider_name]
+    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)["identityProviders"]["customOpenIdConnectProviders"][provider_name]
 
 def update_oidc_provider_settings(cmd, resource_group_name, name, provider_name, slot=None, # pylint: disable=unused-argument
                                 client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
@@ -670,12 +659,7 @@ def update_oidc_provider_settings(cmd, resource_group_name, name, provider_name,
         auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["registration"]["openIdConnectConfiguration"]["wellKnownOpenIdConfiguration"] = openid_configuration
     if scopes is not None:
         auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"]["scopes"] = scopes.split(",")
-    final_json = {
-        "properties": auth_settings
-    }
-    sub_id = get_subscription_id(cmd.cli_ctx)
-    r = send_raw_request(cmd.cli_ctx, "PUT", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name), None, None, json.dumps(final_json))
-    return r.json()["properties"]["identityProviders"]["customOpenIdConnectProviders"][provider_name]
+    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)["identityProviders"]["customOpenIdConnectProviders"][provider_name]
 
 def remove_oidc_provider_settings(cmd, resource_group_name, name, provider_name, slot=None): # pylint: disable=unused-argument
     auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
@@ -686,11 +670,6 @@ def remove_oidc_provider_settings(cmd, resource_group_name, name, provider_name,
     if provider_name not in auth_settings["identityProviders"]["customOpenIdConnectProviders"].keys():
         raise CLIError('Usage Error: The following custom OpenID Connect provider has not been configured: ' + provider_name)
     auth_settings["identityProviders"]["customOpenIdConnectProviders"].pop(provider_name, None)
-    final_json = {
-        "properties": auth_settings
-    }
-    sub_id = get_subscription_id(cmd.cli_ctx)
-    r = send_raw_request(cmd.cli_ctx, "PUT", "https://management.azure.com/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Web/sites/{}/config/authSettingsV2?api-version=2020-12-01".format(sub_id, resource_group_name, name), None, None, json.dumps(final_json))
+    update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)
     return {}
-
-
+#endregion
