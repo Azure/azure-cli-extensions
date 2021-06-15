@@ -57,7 +57,9 @@ def load_arguments(self, _):
     with self.argument_context('webapp auth github update') as c:
         c.argument('client_id', options_list=['--client-id'])
         c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
+        c.argument('client_secret', options_list=['--client-secret'])
         c.argument('scopes', options_list=['--scopes'])
+        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
     
     with self.argument_context('webapp auth google update') as c:
         c.argument('client_id', options_list=['--client-id'])

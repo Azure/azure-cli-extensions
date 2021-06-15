@@ -15,7 +15,7 @@ from msrestazure.tools import parse_resource_id
 from msrestazure.azure_exceptions import CloudError
 
 from knack.log import get_logger
-
+from knack.prompting import c
 from knack.util import CLIError
 import json
 from azure.cli.core.util import send_raw_request
@@ -305,7 +305,15 @@ def get_aad_settings(cmd, resource_group_name, name, slot=None):
 
 def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: disable=unused-argument
                         client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
-                        issuer=None, allowed_token_audiences=None):    # pylint: disable=unused-argument
+                        issuer=None, allowed_token_audiences=None, client_secret=None, yes=False):    # pylint: disable=unused-argument
+    if client_secret is not None and client_secret_setting_name is not None:
+        raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot both be configured to non empty strings')
+
+    if client_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add app settings to the web app. Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            return
+
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in existing_auth.keys():
             existing_auth["identityProviders"] = {}
@@ -322,6 +330,11 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
         existing_auth["identityProviders"]["azureActiveDirectory"]["registration"]["clientId"] = client_id
     if client_secret_setting_name is not None:
         existing_auth["identityProviders"]["azureActiveDirectory"]["registration"]["clientSecretSettingName"] = client_secret_setting_name
+    if client_secret is not None:
+        existing_auth["identityProviders"]["azureActiveDirectory"]["registration"]["clientSecretSettingName"] = 'MICROSOFT_PROVIDER_AUTHENTICATION_SECRET'
+        settings = []
+        settings.append('MICROSOFT_PROVIDER_AUTHENTICATION_SECRET=' + client_secret)
+        update_app_settings(cmd, resource_group_name, name, settings, slot)
     if issuer is not None:
         existing_auth["identityProviders"]["azureActiveDirectory"]["registration"]["openIdIssuer"] = issuer
     if allowed_token_audiences is not None:
@@ -343,7 +356,15 @@ def get_facebook_settings(cmd, resource_group_name, name, slot=None):
 
 def update_facebook_settings(cmd, resource_group_name, name, slot=None,  # pylint: disable=unused-argument
                         app_id=None, app_secret_setting_name=None,  # pylint: disable=unused-argument
-                        graph_api_version=None, scopes=None):    # pylint: disable=unused-argument
+                        graph_api_version=None, scopes=None, app_secret=None, yes=False):    # pylint: disable=unused-argument
+    if app_secret is not None and app_secret_setting_name is not None:
+        raise CLIError('Usage Error: --app-secret and --app-secret-setting-name cannot both be configured to non empty strings')
+
+    if app_secret is not None and not yes:
+        msg = 'Configuring --app-secret will add app settings to the web app. Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            return
+
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in existing_auth.keys():
             existing_auth["identityProviders"] = {}
@@ -360,6 +381,11 @@ def update_facebook_settings(cmd, resource_group_name, name, slot=None,  # pylin
         existing_auth["identityProviders"]["facebook"]["registration"]["appId"] = app_id
     if app_secret_setting_name is not None:
         existing_auth["identityProviders"]["facebook"]["registration"]["appSecretSettingName"] = app_secret_setting_name
+    if app_secret is not None:
+        existing_auth["identityProviders"]["facebook"]["registration"]["appSecretSettingName"] = 'FACEBOOK_PROVIDER_AUTHENTICATION_SECRET'
+        settings = []
+        settings.append('FACEBOOK_PROVIDER_AUTHENTICATION_SECRET=' + app_secret)
+        update_app_settings(cmd, resource_group_name, name, settings, slot)
     if graph_api_version is not None:
         existing_auth["identityProviders"]["facebook"]["graphApiVersion"] = graph_api_version
     if scopes is not None:
@@ -381,7 +407,15 @@ def get_github_settings(cmd, resource_group_name, name, slot=None):
 
 def update_github_settings(cmd, resource_group_name, name, slot=None,  # pylint: disable=unused-argument
                         client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
-                        scopes=None):    # pylint: disable=unused-argument
+                        scopes=None, client_secret=None, yes=False):    # pylint: disable=unused-argument
+    if client_secret is not None and client_secret_setting_name is not None:
+        raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot both be configured to non empty strings')
+
+    if client_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add app settings to the web app. Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            return
+        
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in existing_auth.keys():
             existing_auth["identityProviders"] = {}
@@ -398,6 +432,11 @@ def update_github_settings(cmd, resource_group_name, name, slot=None,  # pylint:
         existing_auth["identityProviders"]["gitHub"]["registration"]["clientId"] = client_id
     if client_secret_setting_name is not None:
         existing_auth["identityProviders"]["gitHub"]["registration"]["clientSecretSettingName"] = client_secret_setting_name
+    if client_secret is not None:
+        existing_auth["identityProviders"]["gitHub"]["registration"]["clientSecretSettingName"] = 'GITHUB_PROVIDER_AUTHENTICATION_SECRET'
+        settings = []
+        settings.append('GITHUB_PROVIDER_AUTHENTICATION_SECRET=' + client_secret)
+        update_app_settings(cmd, resource_group_name, name, settings, slot)
     if scopes is not None:
         existing_auth["identityProviders"]["gitHub"]["login"]["scopes"] = scopes.split(",")
     final_json = {
@@ -417,7 +456,15 @@ def get_google_settings(cmd, resource_group_name, name, slot=None):
 
 def update_google_settings(cmd, resource_group_name, name, slot=None,  # pylint: disable=unused-argument
                         client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
-                        scopes=None, allowed_token_audiences=None):    # pylint: disable=unused-argument
+                        scopes=None, allowed_token_audiences=None, client_secret=None, yes=False):    # pylint: disable=unused-argument
+    if client_secret is not None and client_secret_setting_name is not None:
+        raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot both be configured to non empty strings')
+
+    if client_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add app settings to the web app. Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            return
+
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in existing_auth.keys():
             existing_auth["identityProviders"] = {}
@@ -437,6 +484,11 @@ def update_google_settings(cmd, resource_group_name, name, slot=None,  # pylint:
         existing_auth["identityProviders"]["google"]["registration"]["clientId"] = client_id
     if client_secret_setting_name is not None:
         existing_auth["identityProviders"]["google"]["registration"]["clientSecretSettingName"] = client_secret_setting_name
+    if client_secret is not None:
+        existing_auth["identityProviders"]["google"]["registration"]["clientSecretSettingName"] = 'GOOGLE_PROVIDER_AUTHENTICATION_SECRET'
+        settings = []
+        settings.append('GOOGLE_PROVIDER_AUTHENTICATION_SECRET=' + client_secret)
+        update_app_settings(cmd, resource_group_name, name, settings, slot)
     if scopes is not None:
         existing_auth["identityProviders"]["google"]["login"]["scopes"] = scopes.split(",")
     if allowed_token_audiences is not None:
@@ -457,7 +509,16 @@ def get_twitter_settings(cmd, resource_group_name, name, slot=None):
     return auth_settings["identityProviders"]["twitter"]
 
 def update_twitter_settings(cmd, resource_group_name, name, slot=None,  # pylint: disable=unused-argument
-                        consumer_key=None, consumer_secret_setting_name=None):  # pylint: disable=unused-argument
+                        consumer_key=None, consumer_secret_setting_name=None,   # pylint: disable=unused-argument
+                        consumer_secret=None, yes=False):    # pylint: disable=unused-argument
+    if consumer_secret is not None and consumer_secret_setting_name is not None:
+        raise CLIError('Usage Error: --consumer-secret and --consumer-secret-setting-name cannot both be configured to non empty strings')
+
+    if consumer_secret is not None and not yes:
+        msg = 'Configuring --consumer-secret will add app settings to the web app. Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            return
+
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in existing_auth.keys():
             existing_auth["identityProviders"] = {}
@@ -471,6 +532,11 @@ def update_twitter_settings(cmd, resource_group_name, name, slot=None,  # pylint
         existing_auth["identityProviders"]["twitter"]["registration"]["consumerKey"] = client_id
     if consumer_secret_setting_name is not None:
         existing_auth["identityProviders"]["twitter"]["registration"]["consumerSecretSettingName"] = client_secret_setting_name
+    if consumer_secret is not None:
+        existing_auth["identityProviders"]["twitter"]["registration"]["consumerSecretSettingName"] = 'TWITTER_PROVIDER_AUTHENTICATION_SECRET'
+        settings = []
+        settings.append('TWITTER_PROVIDER_AUTHENTICATION_SECRET=' + client_secret)
+        update_app_settings(cmd, resource_group_name, name, settings, slot)
     final_json = {
         "properties": existing_auth
     }
@@ -488,7 +554,15 @@ def get_apple_settings(cmd, resource_group_name, name, slot=None):
 
 def update_apple_settings(cmd, resource_group_name, name, slot=None,  # pylint: disable=unused-argument
                         client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
-                        scopes=None):    # pylint: disable=unused-argument
+                        scopes=None, client_secret=None, yes=False):    # pylint: disable=unused-argument
+    if client_secret is not None and client_secret_setting_name is not None:
+        raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot both be configured to non empty strings')
+
+    if client_secret is not None and not yes:
+        msg = 'Configuring --client-secret will add app settings to the web app. Are you sure you want to continue?'
+        if not prompt_y_n(msg, default="n"):
+            return
+
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in existing_auth.keys():
             existing_auth["identityProviders"] = {}
@@ -505,6 +579,11 @@ def update_apple_settings(cmd, resource_group_name, name, slot=None,  # pylint: 
         existing_auth["identityProviders"]["apple"]["registration"]["clientId"] = client_id
     if client_secret_setting_name is not None:
         existing_auth["identityProviders"]["apple"]["registration"]["clientSecretSettingName"] = client_secret_setting_name
+    if client_secret is not None:
+        existing_auth["identityProviders"]["apple"]["registration"]["clientSecretSettingName"] = 'APPLE_PROVIDER_AUTHENTICATION_SECRET'
+        settings = []
+        settings.append('APPLE_PROVIDER_AUTHENTICATION_SECRET=' + client_secret)
+        update_app_settings(cmd, resource_group_name, name, settings, slot)
     if scopes is not None:
         existing_auth["identityProviders"]["apple"]["login"]["scopes"] = scopes.split(",")
     final_json = {
