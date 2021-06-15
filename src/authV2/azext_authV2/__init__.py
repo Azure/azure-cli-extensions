@@ -17,7 +17,7 @@ class Authv2CommandsLoader(AzCommandsLoader):
             operations_tmpl='azext_authV2.custom#{}',
             client_factory=cf_authV2)
         super(Authv2CommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                  custom_command_type=authV2_custom)
+                                                   custom_command_type=authV2_custom)
 
     def load_command_table(self, args):
         from azext_authV2.commands import load_command_table

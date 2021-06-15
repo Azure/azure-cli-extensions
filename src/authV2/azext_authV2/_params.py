@@ -4,28 +4,14 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import (get_three_state_flag, get_enum_type)
-from azure.mgmt.web.models import BuiltInAuthenticationProvider
+from azure.cli.command_modules.appservice._params import AUTH_TYPES
 
 UNAUTHENTICATED_CLIENT_ACTION = ['RedirectToLoginPage', 'AllowAnonymous', 'RejectWith401', 'RejectWith404']
 FORWARD_PROXY_CONVENTION = ['NoProxy', 'Standard', 'Custom']
 
-AUTH_TYPES = {
-    'AllowAnonymous': 'na',
-    'LoginWithAzureActiveDirectory': BuiltInAuthenticationProvider.azure_active_directory,
-    'LoginWithFacebook': BuiltInAuthenticationProvider.facebook,
-    'LoginWithGoogle': BuiltInAuthenticationProvider.google,
-    'LoginWithMicrosoftAccount': BuiltInAuthenticationProvider.microsoft_account,
-    'LoginWithTwitter': BuiltInAuthenticationProvider.twitter}
 
 def load_arguments(self, _):
-
-    from azure.cli.core.commands.parameters import tags_type
-    from azure.cli.core.commands.validators import get_default_location_from_resource_group
-
-    authV2_name_type = CLIArgumentType(options_list='--authV2-name-name', help='Name of the Authv2.', id_part='name')
-
     with self.argument_context('webapp auth set') as c:
         c.argument('body', options_list=['--body', '-b'])
 
@@ -41,36 +27,36 @@ def load_arguments(self, _):
         c.argument('proxy_convention', options_list=['--proxy-convention'], arg_type=get_enum_type(FORWARD_PROXY_CONVENTION))
         c.argument('proxy_custom_host_header', options_list=['--proxy-custom-host-header'])
         c.argument('proxy_custom_proto_header', options_list=['--proxy-custom-proto-header'])
-    
+
     with self.argument_context('webapp auth microsoft update') as c:
         c.argument('client_id', options_list=['--client-id'])
         c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
         c.argument('issuer', options_list=['--issuer'])
         c.argument('allowed_token_audiences', options_list=['--allowed-token-audiences'])
-    
+
     with self.argument_context('webapp auth facebook update') as c:
         c.argument('app_id', options_list=['--app-id'])
         c.argument('app_secret_setting_name', options_list=['--app-secret-setting-name'])
         c.argument('graph_api_version', options_list=['--graph-api-version'])
         c.argument('scopes', options_list=['--scopes'])
-    
+
     with self.argument_context('webapp auth github update') as c:
         c.argument('client_id', options_list=['--client-id'])
         c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
         c.argument('client_secret', options_list=['--client-secret'])
         c.argument('scopes', options_list=['--scopes'])
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
-    
+
     with self.argument_context('webapp auth google update') as c:
         c.argument('client_id', options_list=['--client-id'])
         c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
         c.argument('scopes', options_list=['--scopes'])
         c.argument('allowed_token_audiences', options_list=['--allowed-token-audiences'])
-    
+
     with self.argument_context('webapp auth twitter update') as c:
         c.argument('consumer_key', options_list=['--consumer-key'])
         c.argument('consumer_secret_setting_name', options_list=['--consumer-secret-setting-name'])
-    
+
     with self.argument_context('webapp auth apple update') as c:
         c.argument('client_id', options_list=['--client-id'])
         c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
@@ -78,7 +64,7 @@ def load_arguments(self, _):
 
     with self.argument_context('webapp auth oidc show') as c:
         c.argument('provider_name', options_list=['--provider-name'])
-            
+
     with self.argument_context('webapp auth oidc add') as c:
         c.argument('provider_name', options_list=['--provider-name'])
         c.argument('client_id', options_list=['--client-id'])
@@ -92,10 +78,10 @@ def load_arguments(self, _):
         c.argument('client_secret_setting_name', options_list=['--client-secret-setting-name'])
         c.argument('openid_configuration', options_list=['--openid-configuration'])
         c.argument('scopes', options_list=['--scopes'])
-    
+
     with self.argument_context('webapp auth oidc remove') as c:
         c.argument('provider_name', options_list=['--provider-name'])
-    
+
     with self.argument_context('webapp auth-classic update') as c:
         c.argument('enabled', arg_type=get_three_state_flag(return_label=True))
         c.argument('token_store_enabled', options_list=['--token-store'],
