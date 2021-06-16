@@ -1268,8 +1268,7 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
         enable_sgxquotehelper = enable_sgxquotehelper,
         aci_subnet_name = aci_subnet_name,
         vnet_subnet_id = vnet_subnet_id,
-        enable_secret_rotation = enable_secret_rotation,
-        
+        enable_secret_rotation = enable_secret_rotation,        
     )
     monitoring = False
     if CONST_MONITORING_ADDON_NAME in addon_profiles:
@@ -2439,7 +2438,9 @@ def _handle_addons_args(cmd,  # pylint: disable=too-many-statements
             workspace_resource_id = _ensure_default_log_analytics_workspace_for_monitoring(
                 cmd, subscription_id, resource_group_name)
         workspace_resource_id = _sanitize_loganalytics_ws_resource_id(workspace_resource_id)
-        addon_profiles[CONST_MONITORING_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True, config={CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id, CONST_MONITORING_USING_AAD_MSI_AUTH: enable_msi_auth_for_monitoring})
+        addon_profiles[CONST_MONITORING_ADDON_NAME] = ManagedClusterAddonProfile(enabled=True,
+                                                                                 config={CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: workspace_resource_id,
+                                                                                 CONST_MONITORING_USING_AAD_MSI_AUTH: enable_msi_auth_for_monitoring})
         addons.remove('monitoring')
     elif workspace_resource_id:
         raise CLIError(
@@ -2687,13 +2688,26 @@ def _sanitize_loganalytics_ws_resource_id(workspace_resource_id):
     return workspace_resource_id
 
 
-def _ensure_container_insights_for_monitoring(cmd, addon, cluster_subscription, cluster_resource_group_name, cluster_name, cluster_region, remove_monitoring=False, aad_route=False, create_dcr=False, create_dcra=False):
+def _ensure_container_insights_for_monitoring(cmd,
+                                              addon,
+                                              cluster_subscription,
+                                              cluster_resource_group_name,
+                                              cluster_name,
+                                              cluster_region,
+                                              remove_monitoring=False,
+                                              aad_route=False,
+                                              create_dcr=False,
+                                              create_dcra=False):
     """
-    Adds the ContainerInsights solution to a LA workspace
-    Set remove_monitoring to True and create_dcra to True to remove the DCR-Association (DCR = Data Collection Rule) created for monitoring with the AAD route. The association makes
-    it very hard to manually delete either the DCR or cluster, and it is not obvious how to manually delete the association from the portal.
+    Either adds the ContainerInsights solution to a LA Workspace OR sets up a DCR (Data Collection Rule) and DCRA
+    (Data Collection Rule Association). Both let the monitoring addon send data to a Log Analytics Workspace.
+    
+    Set aad_route == True to set up the DCR data route. Otherwise the solution route will be used. Create_dcr and 
+    create_dcra have no effect if aad_route == False.
 
-    create_dcr and create_dcra have no effect if aad_route == False
+    Set remove_monitoring to True and create_dcra to True to remove the DCRA from a cluster. The association makes
+    it very hard to delete either the DCR or cluster. (It is not obvious how to even navigate to the association from
+    the portal, and it prevents the cluster and DCR from being deleted individually).
     """
     if not addon.enabled:
         return None
@@ -2740,12 +2754,14 @@ def _ensure_container_insights_for_monitoring(cmd, addon, cluster_subscription, 
         from azure.cli.core.profiles import ResourceType
 
         if create_dcr:
-            # first get the association between region display names and region IDs (because for some reason the "which RPs are available in which regions check returns region display names")
+            # first get the association between region display names and region IDs (because for some reason
+            # the "which RPs are available in which regions" check returns region display names)
             region_names_to_id = {}
             # retry the request up to two times
             for _ in range(3):
                 try:
-                    r = send_raw_request(cmd.cli_ctx, "GET", f"https://management.azure.com/subscriptions/{subscription_id}/locations?api-version=2019-11-01")
+                    location_list_url = f"https://management.azure.com/subscriptions/{subscription_id}/locations?api-version=2019-11-01"
+                    r = send_raw_request(cmd.cli_ctx, "GET", location_list_url)
                     break
                 except CLIError as e:
                     pass
@@ -2759,7 +2775,8 @@ def _ensure_container_insights_for_monitoring(cmd, addon, cluster_subscription, 
             # check if region supports DCRs and DCR-A
             for _ in range(3):
                 try:
-                    r = send_raw_request(cmd.cli_ctx, "GET", f"https://management.azure.com/subscriptions/{subscription_id}/providers/Microsoft.Insights?api-version=2020-10-01")
+                    feature_check_url = f"https://management.azure.com/subscriptions/{subscription_id}/providers/Microsoft.Insights?api-version=2020-10-01"
+                    r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url)
                     break
                 except CLIError as e:
                     pass
@@ -2806,10 +2823,10 @@ def _ensure_container_insights_for_monitoring(cmd, addon, cluster_subscription, 
                                                     ]
                                                 }
                                             }})
-            url = f"https://management.azure.com/{dcr_resource_id}?api-version=2019-11-01-preview"
+            dcr_url = f"https://management.azure.com/{dcr_resource_id}?api-version=2019-11-01-preview"
             for _ in range(3):
                 try:
-                    send_raw_request(cmd.cli_ctx, "PUT", url, body=dcr_creation_body)
+                    send_raw_request(cmd.cli_ctx, "PUT", dcr_url, body=dcr_creation_body)
                     break
                 except CLIError as e:
                     pass
@@ -2917,7 +2934,8 @@ def _ensure_container_insights_for_monitoring(cmd, addon, cluster_subscription, 
 
         deployment_name = 'aks-monitoring-{}'.format(unix_time_in_millis)
         # publish the Container Insights solution to the Log Analytics workspace
-        return _invoke_deployment(cmd, resource_group, deployment_name, template, params, validate=False, no_wait=False, subscription_id=subscription_id)
+        return _invoke_deployment(cmd, resource_group, deployment_name, template, params,
+                                  validate=False, no_wait=False, subscription_id=subscription_id)
 
 
 def _ensure_aks_service_principal(cli_ctx,
@@ -3391,9 +3409,22 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
     try:
-        if addons == "monitoring" and CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[CONST_MONITORING_USING_AAD_MSI_AUTH]:
+        if addons == "monitoring" and CONST_MONITORING_ADDON_NAME in instance.addon_profiles and \
+            instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled and \
+            instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[CONST_MONITORING_USING_AAD_MSI_AUTH]:
             # remove the DCR association because otherwise the DCR can't be deleted
-            _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name, instance.location, remove_monitoring=True, aad_route=True, create_dcr=False, create_dcra=True)
+            _ensure_container_insights_for_monitoring(
+                cmd,
+                instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                subscription_id,
+                resource_group_name,
+                name,
+                instance.location,
+                remove_monitoring=True,
+                aad_route=True,
+                create_dcr=False,
+                create_dcra=True
+            )
     except TypeError:
         pass
 
