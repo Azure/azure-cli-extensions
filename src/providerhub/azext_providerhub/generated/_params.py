@@ -92,10 +92,6 @@ def load_arguments(self, _):
                    nargs='+', help='DefaultRollout rest of the world group two.')
         c.argument('canary', action=AddCanaryRegion,
                    nargs='*', help='The canary regions to skip.')
-        c.argument('row2_wait_duration',
-                   type=str, help='The rest of the world group two wait duration.')
-        c.argument('skip_regions',
-                   action=AddSkipRegions, nargs='+', help='The canary skip regions.')
 
     with self.argument_context('providerhub default-rollout update') as c:
         c.argument('provider_namespace', type=str,
