@@ -8,7 +8,7 @@ logger = get_logger(__name__)
 def validate_cpu(cpu):
     '''
     CPU quantity should be either integer, or millis. Currently, 500m (aka 0.5) is the only allowed fractional value.
-    Note that 1 can be represented as 1000m which is also allowed.
+    Note that 1 can be represented as 1000m.
     '''
     if cpu is None:
         return None
@@ -22,7 +22,9 @@ def validate_cpu(cpu):
 
 def validate_memory(memory):
     '''
-    Memory quantity should be in gigabytes (Gi) or megabytes (Mi).
+    Memory quantity should be in gigabytes (Gi) or megabytes (Mi). Currently, the only allowed fractional gigabytes
+    quantity is 512Mi. Note that 1Gi can be specified with 1024Mi.
+
     In the legacy extension, gigabytes is specified with integer. This will generate a warning now.
     '''
     if memory is None:
