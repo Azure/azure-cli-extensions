@@ -1252,29 +1252,35 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
             )
 
     addon_profiles = _handle_addons_args(
-        cmd,
-        enable_addons,
-        subscription_id,
-        resource_group_name,
-        {},
-        workspace_resource_id,
-        appgw_name,
-        appgw_subnet_prefix,
-        appgw_subnet_cidr,
-        appgw_id,
-        appgw_subnet_id,
-        appgw_watch_namespace,
-        enable_sgxquotehelper,
-        aci_subnet_name,
-        vnet_subnet_id,
-        enable_secret_rotation
+        cmd = cmd,
+        addons_str = enable_addons,
+        subscription_id = subscription_id,
+        resource_group_name = resource_group_name,
+        addon_profiles = {},
+        workspace_resource_id = workspace_resource_id,
+        enable_msi_auth_for_monitoring = enable_msi_auth_for_monitoring,
+        appgw_name = appgw_name,
+        appgw_subnet_prefix = appgw_subnet_prefix,
+        appgw_subnet_cidr = appgw_subnet_cidr,
+        appgw_id = appgw_id,
+        appgw_subnet_id = appgw_subnet_id,
+        appgw_watch_namespace = appgw_watch_namespace,
+        enable_sgxquotehelper = enable_sgxquotehelper,
+        aci_subnet_name = aci_subnet_name,
+        vnet_subnet_id = vnet_subnet_id,
+        enable_secret_rotation = enable_secret_rotation,
+        
     )
     monitoring = False
     if CONST_MONITORING_ADDON_NAME in addon_profiles:
         monitoring = True
         if enable_msi_auth_for_monitoring and not enable_managed_identity:
             raise CLIError("--enable-msi-auth-for-monitoring can not be used on clusters with service principal auth.")
-        _ensure_container_insights_for_monitoring(cmd, addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name, location, aad_route=enable_msi_auth_for_monitoring, create_dcr=True, create_dcra=False)
+        _ensure_container_insights_for_monitoring(cmd, 
+                                                  addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, 
+                                                  resource_group_name, name, location, 
+                                                  aad_route=enable_msi_auth_for_monitoring, create_dcr=True, 
+                                                  create_dcra=False)
 
     # addon is in the list and is enabled
     ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in addon_profiles and \
@@ -1475,7 +1481,16 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
 
     # Create the DCR Association here, it must be done after the cluster is created.
     if monitoring and enable_msi_auth_for_monitoring:
-        _ensure_container_insights_for_monitoring(cmd, addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name, location, aad_route=enable_msi_auth_for_monitoring, create_dcr=False, create_dcra=True)
+        try:
+            LongRunningOperation(cmd.cli_ctx)(created_cluster)
+        except AttributeError:
+            # this means the cluster was already created
+            pass
+        _ensure_container_insights_for_monitoring(cmd, 
+                                                  addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id,
+                                                  resource_group_name, name, location, 
+                                                  aad_route=enable_msi_auth_for_monitoring, create_dcr=False, 
+                                                  create_dcra=True)
 
     return created_cluster
 
@@ -2722,25 +2737,41 @@ def _ensure_container_insights_for_monitoring(cmd, addon, cluster_subscription, 
         dataCollectionRuleName = f"DCR-{workspace_name}"
         dcr_resource_id = f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
         from azure.cli.core.util import send_raw_request
+        from azure.cli.core.profiles import ResourceType
 
         if create_dcr:
             # first get the association between region display names and region IDs (because for some reason the "which RPs are available in which regions check returns region display names")
             region_names_to_id = {}
-            # TODO: does this need retries?
-            r = send_raw_request(cmd.cli_ctx, "GET", f"https://management.azure.com/subscriptions/{subscription_id}/locations?api-version=2019-11-01")
+            # retry the request up to two times
+            for _ in range(3):
+                try:
+                    r = send_raw_request(cmd.cli_ctx, "GET", f"https://management.azure.com/subscriptions/{subscription_id}/locations?api-version=2019-11-01")
+                    break
+                except CLIError as e:
+                    pass
+            else:
+                # This will run if the above for loop was not broken out of. This means all three requests failed
+                raise e
             json_response = json.loads(r.text)
             for region_data in json_response["value"]:
                 region_names_to_id[region_data["displayName"]] = region_data["name"]
 
             # check if region supports DCRs and DCR-A
-            r = send_raw_request(cmd.cli_ctx, "GET", f"https://management.azure.com/subscriptions/{subscription_id}/providers/Microsoft.Insights?api-version=2020-10-01")
+            for _ in range(3):
+                try:
+                    r = send_raw_request(cmd.cli_ctx, "GET", f"https://management.azure.com/subscriptions/{subscription_id}/providers/Microsoft.Insights?api-version=2020-10-01")
+                    break
+                except CLIError as e:
+                    pass
+            else:
+                raise e
             json_response = json.loads(r.text)
             for resource in json_response["resourceTypes"]:
                 region_ids = map(lambda x: region_names_to_id[x], resource["locations"])  # map is lazy, so doing this for every region isn't slow
                 if resource["resourceType"] == "dataCollectionRules" and location not in region_ids:
-                    raise CLIError(f'Data Collection Rules are not enabled for LA workspace region {location}')
+                    raise CLIError(f'Data Collection Rules are not supported for LA workspace region {location}')
                 elif resource["resourceType"] == "dataCollectionRuleAssociations" and cluster_region not in region_ids:
-                    raise CLIError(f'Data Collection Rule Associations are not enabled for cluster region {location}')
+                    raise CLIError(f'Data Collection Rule Associations are not supported for cluster region {location}')
 
             # create the DCR
             dcr_creation_body = json.dumps({"location": location,
@@ -2775,9 +2806,15 @@ def _ensure_container_insights_for_monitoring(cmd, addon, cluster_subscription, 
                                                     ]
                                                 }
                                             }})
-
             url = f"https://management.azure.com/{dcr_resource_id}?api-version=2019-11-01-preview"
-            r = send_raw_request(cmd.cli_ctx, "PUT", url, body=dcr_creation_body)
+            for _ in range(3):
+                try:
+                    send_raw_request(cmd.cli_ctx, "PUT", url, body=dcr_creation_body)
+                    break
+                except CLIError as e:
+                    pass
+            else:
+                raise e
 
         if create_dcra:
             # only create or delete the association between the DCR and cluster
@@ -2787,9 +2824,16 @@ def _ensure_container_insights_for_monitoring(cmd, addon, cluster_subscription, 
                                                "description": "routes monitoring data to a Log Analytics workspace"
                                            }})
             association_url = f"https://management.azure.com/{cluster_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/send-to-{workspace_name}?api-version=2019-11-01-preview"
-            r = send_raw_request(cmd.cli_ctx, "PUT" if not remove_monitoring else "DELETE", association_url, body=association_body)
+            for _ in range(3):
+                try:
+                    send_raw_request(cmd.cli_ctx, "PUT" if not remove_monitoring else "DELETE", association_url, body=association_body)
+                    break
+                except CLIError as e:
+                    pass
+            else:
+                raise e
 
-    elif not aad_route:
+    else:
         # legacy auth with LA workspace solution
         unix_time_in_millis = int(
             (datetime.datetime.utcnow() - datetime.datetime.utcfromtimestamp(0)).total_seconds() * 1000.0)
@@ -3348,7 +3392,7 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
 
     try:
         if addons == "monitoring" and CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled and instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[CONST_MONITORING_USING_AAD_MSI_AUTH]:
-            # remove the DCR association because the DCR otherwise can't be deleted
+            # remove the DCR association because otherwise the DCR can't be deleted
             _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name, instance.location, remove_monitoring=True, aad_route=True, create_dcr=False, create_dcra=True)
     except TypeError:
         pass
@@ -3392,7 +3436,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
             _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name, instance.location, aad_route=True, create_dcr=True, create_dcra=True)
         else:
             # monitoring addon will use legacy path
-            _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME], aad_route=False)
+            _ensure_container_insights_for_monitoring(cmd, instance.addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id, resource_group_name, name, instance.location, aad_route=False)
 
     monitoring = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
         CONST_MONITORING_ADDON_NAME].enabled
@@ -3501,10 +3545,8 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                         resource_group_name)
                 workspace_resource_id = _sanitize_loganalytics_ws_resource_id(workspace_resource_id)
 
-                addon_profile.config = {
-                    logAnalyticsConstName: workspace_resource_id}
-                if addon == CONST_MONITORING_ADDON_NAME:  # TODO: What is the azure defender addon? Does it use omsagent?
-                    addon_profile.config[CONST_MONITORING_USING_AAD_MSI_AUTH] = enable_msi_auth_for_monitoring
+                addon_profile.config = {logAnalyticsConstName: workspace_resource_id}
+                addon_profile.config[CONST_MONITORING_USING_AAD_MSI_AUTH] = enable_msi_auth_for_monitoring
             elif addon == (CONST_VIRTUAL_NODE_ADDON_NAME + os_type):
                 if addon_profile.enabled:
                     raise CLIError('The virtual-node addon is already enabled for this managed cluster.\n'
