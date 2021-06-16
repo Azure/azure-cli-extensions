@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.11.0
+++++++
+* Fix issue: `create_or_update` not found
+
 0.10.0
 ++++++
 * `az network firewall create`: Add new parameter `--tier`
