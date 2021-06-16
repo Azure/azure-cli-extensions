@@ -5,36 +5,79 @@
 
 import os
 import unittest
-
+import json
+import requests
+import websocket
+from azext_serialconsole.custom import checkResource
 from azure_devtools.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
+from azure.cli.testsdk import (LiveScenarioTest, StorageAccountPreparer, ResourceGroupPreparer)
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-class SerialconsoleScenarioTest(ScenarioTest):
+class SerialconsoleScenarioTest(LiveScenarioTest):
+    def setUp(self):
+        self.buffer = ""
 
-    @ResourceGroupPreparer(name_prefix='cli_test_serialconsole')
-    def test_serialconsole(self, resource_group):
+    def check_result(self, resource_group_name, vm_vmss_name, vmss_instanceid = None, message = ""):
 
+        armEndpoint = "https://management.azure.com"
+        RP_PROVIDER = "Microsoft.SerialConsole"
+        subscriptionId = self.get_subscription_id()
+        vmPath = f"virtualMachineScaleSets/{vm_vmss_name}/virtualMachines/{vmss_instanceid}" \
+            if vmss_instanceid else f"virtualMachines/{vm_vmss_name}"
+        connectionUrl = (f"{armEndpoint}/subscriptions/{subscriptionId}/resourcegroups/{resource_group_name}"
+                         f"/providers/Microsoft.Compute/{vmPath}"
+                         f"/providers/{RP_PROVIDER}/serialPorts/0"
+                         f"/connect?api-version=2018-05-01")
+
+        from azure.cli.core._profile import Profile
+        tokenInfo, _, _ = Profile().get_raw_token()
+        accessToken = tokenInfo[1]
+        applicationJsonFormat = "application/json"
+        headers = {'authorization': "Bearer " + accessToken,
+                   'accept': applicationJsonFormat,
+                   'content-type': applicationJsonFormat}
+        result = requests.post(connectionUrl, headers=headers)
+        jsonResults = json.loads(result.text)
+        self.assertTrue(result.status_code == 200 and "connectionString" in jsonResults)
+        websocketURL = jsonResults["connectionString"]
+
+        ws = websocket.WebSocket()
+        ws.connect(websocketURL + "?authorization=" + accessToken, timeout = 30)
+        while True:
+            try:
+                self.buffer += ws.recv()
+            except websocket.WebSocketTimeoutException:
+                break
+
+        assert message in self.buffer
+
+    @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location = 'westus2')
+    def test_send_sysrq(self, resource_group):
+        name = self.create_random_name(prefix='cli', length=24)
         self.kwargs.update({
-            'name': 'test1'
+            'sa': self.create_random_name(prefix='cli', length=24),
+            'rg': resource_group,
+            'name1': name,
+            'urn': 'UbuntuLTS'
         })
+        self.cmd('az storage account create -n {sa} -g {rg} -l westus2 --kind Storage --https-only')
+        self.cmd('az vm create -g {rg} -n {name1} --image {urn} --boot-diagnostics-storage {sa}')
+        self.cmd('serial-console send sysrq -g {rg} -n {name1} --input h')
+        self.check_result(resource_group, name, message = "sysrq: HELP")
 
-        self.cmd('serialconsole create -g {rg} -n {name} --tags foo=doo', checks=[
-            self.check('tags.foo', 'doo'),
-            self.check('name', '{name}')
-        ])
-        self.cmd('serialconsole update -g {rg} -n {name} --tags foo=boo', checks=[
-            self.check('tags.foo', 'boo')
-        ])
-        count = len(self.cmd('serialconsole list').get_output_in_json())
-        self.cmd('serialconsole show - {rg} -n {name}', checks=[
-            self.check('name', '{name}'),
-            self.check('resourceGroup', '{rg}'),
-            self.check('tags.foo', 'boo')
-        ])
-        self.cmd('serialconsole delete -g {rg} -n {name}')
-        final_count = len(self.cmd('serialconsole list').get_output_in_json())
-        self.assertTrue(final_count, count - 1)
+    @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location = 'westus2')
+    def test_send_nmi(self, resource_group):
+        name = self.create_random_name(prefix='cli', length=24)
+        self.kwargs.update({
+            'sa': self.create_random_name(prefix='cli', length=24),
+            'rg': resource_group,
+            'name1': name,
+            'urn': 'UbuntuLTS'
+        })
+        self.cmd('az storage account create -n {sa} -g {rg} -l westus2 --kind Storage --https-only')
+        self.cmd('az vm create -g {rg} -n {name1} --image {urn} --boot-diagnostics-storage {sa}')
+        self.cmd('serial-console send nmi -g {rg} -n {name1}')
+        self.check_result(resource_group, name, message = "NMI received")

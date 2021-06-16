@@ -80,12 +80,12 @@ helps['serial-console send sysrq'] = """
       - name: --input
         short-summary: Input key to send over serial console. Must be one character.
     examples:
-      - name: Send SysRq to VM
+      - name: Send SysRq to VM to crash system
         text: >
-            az serial-console send sysrq -n MyVM -g MyResourceGroup
-      - name: Send SysRq to VMSS Instance with ID 2
+            az serial-console send sysrq -n MyVM -g MyResourceGroup --input c
+      - name: Send SysRq to VMSS Instance with ID 2 to crash system
         text: >
-            az serial-console send sysrq -n MyVMSS -g MyResourceGroup --instance-id 2
+            az serial-console send sysrq -n MyVMSS -g MyResourceGroup --instance-id 2 --input c
 """
 
 helps['serial-console send reset'] = """
