@@ -11,6 +11,10 @@
 
 from knack.help_files import helps
 
+helps['providerhub'] = """
+    type: group
+    short-summary: Manage resources with ProviderHub
+"""
 
 helps['providerhub custom-rollout'] = """
     type: group
