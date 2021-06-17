@@ -21,8 +21,7 @@ def step_custom_rollout_create(test, checks=None):
     test.cmd('az providerhub custom-rollout create '
              '--provider-namespace "{providerNamespace}" '
              '--rollout-name "{customRolloutName}" '
-             '--canary regions="BrazilUS" '
-             '--canary regions="EastUS2EUAP"',
+             '--canary regions="EastUS2EUAP" regions="centraluseuap"',
              checks=[])
 
 
@@ -57,8 +56,8 @@ def step_default_rollout_create(test, checks=None):
     test.cmd('az providerhub default-rollout create '
              '--provider-namespace "{providerNamespace}" '
              '--rollout-name "{defaultRolloutName}" '
-             '--row2-wait-duration "PT2H" '
-             '--skip-regions "brazilus, centraluseuap"',
+             '--rest-of-the-world-group-two wait-duration="PT2H" '
+             '--canary skip-regions="centraluseuap"',
              checks=checks)
 
 
@@ -107,6 +106,19 @@ def step_default_rollout_delete(test, checks=None):
              checks=checks)
 
 
+# EXAMPLE: /Operations/put/Operations_CreateOrUpdate
+@try_manual
+def step_operation_create(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub operation create '
+             '--contents "[{{\\"name\\":\\"Microsoft.Contoso/Employees/Read\\",\\"display\\":{{\\"description\\":\\"Rea'
+             'd employees\\",\\"operation\\":\\"Gets/List employee resources\\",\\"provider\\":\\"Microsoft.Contoso\\",'
+             '\\"resource\\":\\"Employees\\"}}}}]" '
+             '--provider-namespace "{providerNamespace}"',
+             checks=checks)
+
+
 # EXAMPLE: /Operations/get/Operations_ListByProviderRegistration
 @AllowLargeResponse()
 @try_manual
@@ -135,7 +147,7 @@ def step_manifest_checkin(test, checks=None):
         checks = []
     test.cmd('az providerhub manifest checkin '
              '--environment "Prod" '
-             '--arm-manifest-location "EastUS2EUAP" '
+             '--baseline-arm-manifest-location "EastUS2EUAP" '
              '--provider-namespace "{providerNamespace}"',
              checks=checks)
 
@@ -158,10 +170,9 @@ def step_provider_registration_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub provider-registration create '
-             '--providerhub-metadata-provider-authorizations '
-             'application-id="3d834152-5efa-46f7-85a4-a18c2b5d46f9" '
+             '--providerhub-metadata-authorizations application-id="3d834152-5efa-46f7-85a4-a18c2b5d46f9" '
              'role-definition-id="760505bf-dcfa-4311-b890-18da392a00b2" '
-             '--providerhub-metadata-rp-authentication allowed-audiences="https://management.core.windows.net/" '
+             '--providerhub-metadata-authentication allowed-audiences="https://management.core.windows.net/" '
              '--service-tree-infos service-id="6f53185c-ea09-4fc3-9075-318dec805303" '
              'component-id="6f53185c-ea09-4fc3-9075-318dec805303" '
              '--capabilities effect="Allow" quota-id="CSP_2015-05-01" '
@@ -170,7 +181,7 @@ def step_provider_registration_create(test, checks=None):
              '--incident-contact-email "helpme@contoso.com" '
              '--incident-routing-service "Contoso Resource Provider" '
              '--incident-routing-team "Contoso Triage" '
-             '--provider-type "Internal" '
+             '--provider-type "Internal, Hidden" '
              '--provider-version "2.0" '
              '--provider-namespace "{providerNamespace}"',
              checks=checks)
@@ -225,44 +236,15 @@ def step_resource_type_registration_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub resource-type-registration create '
-             '--endpoints api-versions="2018-11-01-preview,2020-01-01-preview,2019-01-01" '
-             'locations="West US, West Central US,West Europe,Southeast Asia, West US 2,'
-             'East US 2 EUAP, North Europe, East US, East Asia" '
-             'required-features="Microsoft.Contoso/RPaaSSampleApp" '
-             '--regionality "Regional" '
-             '--routing-type "Default" '
-             '--swagger-specifications api-versions="2018-11-01-preview,'
-             '2020-01-01-preview,2019-01-01" swagger-spec-folder-uri="https://github.com/'
-             'Azure/azure-rest-api-specs-pr/blob/RPSaaSMaster/specification/rpsaas/'
-             'resource-manager/Microsoft.Contoso/" '
+             '--endpoints api-versions="2020-01-01-preview" '
+             'locations="" required-features="Microsoft.Contoso/RPaaSSampleApp" '
+             '--regionality "Global" '
+             '--routing-type "Proxyonly, Extension" '
+             '--swagger-specifications api-versions="2020-01-01-preview" swagger-spec-folder-uri="https://github.com/Azure/azure-rest-api-specs-pr/blob/RPSaaSMaster/specification/contoso/resource-manager/Microsoft.Contoso/" '
              '--provider-namespace "{providerNamespace}" '
-             '--enable-async-operation true '
-             '--resource-move-policy validation-required=false '
-             'cross-resource-group-move-enabled=true cross-subscription-move-enabled=true '
-             '--resource-type "{resourceType}"',
-             checks=checks)
-
-
-# EXAMPLE: /ResourceTypeRegistration/delete/ResourceTypeRegistration_Delete
-@try_manual
-def step_resource_type_registration_delete(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az providerhub resource-type-registration delete -y '
-             '--provider-namespace "{providerNamespace}" '
-             '--resource-type "{resourceType}"',
-             checks=checks)
-
-
-# EXAMPLE: /ResourceTypeRegistrations/get/ResourceTypeRegistrations_Get
-@AllowLargeResponse()
-@try_manual
-def step_resource_type_registration_show(test, checks=None):
-    if checks is None:
-        checks = []
-    test.cmd('az providerhub resource-type-registration show '
-             '--provider-namespace "{providerNamespace}" '
-             '--resource-type "{resourceType}"',
+             '--enable-async-operation false '
+             '--enable-third-party-s2s false '
+             '--resource-type "extensionresourcetype"',
              checks=checks)
 
 
@@ -274,4 +256,367 @@ def step_resource_type_registration_list(test, checks=None):
         checks = []
     test.cmd('az providerhub resource-type-registration list '
              '--provider-namespace "{providerNamespace}"',
+             checks=checks)
+
+
+# EXAMPLE: /ResourceTypeRegistrations/get/ResourceTypeRegistrations_Get
+@AllowLargeResponse()
+@try_manual
+def step_resource_type_registration_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub resource-type-registration show '
+             '--provider-namespace "{providerNamespace}" '
+             '--resource-type "employees"',
+             checks=checks)
+
+
+# EXAMPLE: /ResourceTypeRegistration/put/ResourceTypeRegistration_CreateOrUpdate
+@AllowLargeResponse()
+@try_manual
+def step_nested_resource_type_registration_create(test, checks=None):
+    if checks is None:
+        checks = [
+            test.check("properties.name", "employees/NestedResourceType", case_sensitive=False),
+            test.check("properties.routingType", "ProxyOnly", case_sensitive=False),
+            test.check("properties.regionality", "Global", case_sensitive=False)
+        ]
+    test.cmd('az providerhub resource-type-registration create '
+             '--endpoints api-versions="2019-01-01" locations="Global" '
+             'required-features="Microsoft.Contoso/RPaaSSampleApp" extension-endpoint-uri="https://contoso-test-extension-endpoint.com/" extension-categories="ResourceReadValidate" extension-categories="ResourceDeletionValidate" '
+             '--regionality "Global" '
+             '--routing-type "ProxyOnly" '
+             '--swagger-specifications api-versions="2019-01-01" swagger-spec-folder-uri="https://github.com/Azure/azure-rest-api-specs-pr/tree/RPSaaSMaster/specification/rpsaas/resource-manager/Microsoft.Contoso/" '
+             '--provider-namespace "{providerNamespace}" '
+             '--enable-async-operation false '
+             '--template-deployment-options preflight-supported="true" preflight-options="DefaultValidationOnly" preflight-options="continueDeploymentOnFailure" '
+             '--resource-type "{resourceType}/{nestedResourceType}"',
+             checks=checks)
+
+
+# EXAMPLE: /ResourceTypeRegistration/put/ResourceTypeRegistration_CreateOrUpdate
+@AllowLargeResponse()
+@try_manual
+def step_nested_resource_type_registration_extensions_create(test, checks=None):
+    if checks is None:
+        checks = [
+            test.check("properties.name", "employees/NestedResourceType", case_sensitive=False),
+            test.check("properties.routingType", "ProxyOnly", case_sensitive=False),
+            test.check("properties.regionality", "Global", case_sensitive=False)
+        ]
+    test.cmd('az providerhub resource-type-registration create '
+             '--endpoints api-versions="2019-01-01" locations="Global" '
+             'required-features="Microsoft.Contoso/RPaaSSampleApp" extensions=[{{\\"endpointUri\\":\\"https://contoso-test-extension-endpoint.com/\\",\\"extensionCategories\\":[\\"ResourceReadValidate\\",\\"ResourceDeletionValidate\\"]}}] '
+             '--regionality "Global" '
+             '--routing-type "ProxyOnly" '
+             '--swagger-specifications api-versions="2019-01-01" swagger-spec-folder-uri="https://github.com/Azure/azure-rest-api-specs-pr/tree/RPSaaSMaster/specification/rpsaas/resource-manager/Microsoft.Contoso/" '
+             '--provider-namespace "{providerNamespace}" '
+             '--enable-async-operation false '
+             '--template-deployment-options preflight-supported="true" preflight-options="DefaultValidationOnly" preflight-options="continueDeploymentOnFailure" '
+             '--resource-type "{resourceType}/{nestedResourceType}"',
+             checks=checks)
+
+
+# EXAMPLE: /ResourceTypeRegistration/delete/ResourceTypeRegistration_Delete
+@try_manual
+def step_nested_resource_type_registration_delete(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub resource-type-registration delete -y '
+             '--provider-namespace "{providerNamespace}" '
+             '--resource-type "{resourceType}/{nestedResourceType}"',
+             checks=checks)
+
+
+# EXAMPLE: /ResourceTypeRegistrations/get/ResourceTypeRegistrations_Get
+@AllowLargeResponse()
+@try_manual
+def step_nested_resource_type_registration_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub resource-type-registration show '
+             '--provider-namespace "{providerNamespace}" '
+             '--resource-type "{resourceType}/{nestedResourceType}"',
+             checks=checks)
+
+
+# EXAMPLE: /NotificationRegistrations/put/NotificationRegistrations_CreateOrUpdate
+@try_manual
+def step_notification_registration_create(test, checks=None):
+    if checks is None:
+        checks = [
+            test.check("name", "{notificationRegistration}", case_sensitive=False),
+            test.check("properties.messageScope", "RegisteredSubscriptions", case_sensitive=False),
+            test.check("properties.notificationMode", "EventHub", case_sensitive=False)
+        ]
+    test.cmd('az providerhub notification-registration create '
+             '--name "{notificationRegistration}" '
+             '--included-events "*/write" "Microsoft.Contoso/employees/delete" '
+             '--message-scope "RegisteredSubscriptions" '
+             '--notification-endpoints locations="" locations="East US" notification-destination="/subscriptions/ac6bcfb5-3dc1-491f-95a6-646b89bf3e88/resourceGroups/mgmtexp-eastus/providers/Microsoft.EventHub/namespaces/unitedstates-mgmtexpint/eventhubs/armlinkednotifications" '
+             '--notification-endpoints locations="East US" notification-destination="/subscriptions/{subscription_'
+             'id}/resourceGroups/providers/Microsoft.EventHub/namespaces/europe-mgmtexpint/eventhubs/armlinkedno'
+             'tifications" '
+             '--notification-mode "EventHub" '
+             '--provider-namespace "{providerNamespace}"',
+             checks=checks)
+
+
+# EXAMPLE: /NotificationRegistrations/get/NotificationRegistrations_Get
+@try_manual
+def step_notification_registration_show(test, checks=None):
+    if checks is None:
+        checks = [
+            test.check("name", "{notificationRegistration}", case_sensitive=False),
+            test.check("properties.messageScope", "RegisteredSubscriptions", case_sensitive=False),
+            test.check("properties.notificationMode", "EventHub", case_sensitive=False),
+        ]
+    test.cmd('az providerhub notification-registration show '
+             '--name "{notificationRegistration}" '
+             '--provider-namespace "{providerNamespace}"',
+             checks=checks)
+
+
+# EXAMPLE: /NotificationRegistrations/get/NotificationRegistrations_ListByProviderRegistration
+@try_manual
+def step_notification_registration_list(test, checks=None):
+    if checks is None:
+        checks = [
+            test.check('length(@)', 2),
+        ]
+    test.cmd('az providerhub notification-registration list '
+             '--provider-namespace "{providerNamespace}"',
+             checks=checks)
+
+
+# EXAMPLE: /NotificationRegistrations/delete/NotificationRegistrations_Delete
+@try_manual
+def step_notification_registration_delete(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub notification-registration delete -y '
+             '--name "{notificationRegistration}" '
+             '--provider-namespace "{providerNamespace}"',
+             checks=checks)
+
+
+# EXAMPLE: /Skus/put/Skus_CreateOrUpdate
+@try_manual
+def step_sku_create(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub sku create '
+             '--sku-settings "[{{\\"name\\":\\"freeSku\\"}}]" '
+             '--provider-namespace "{providerNamespace}" '
+             '--resource-type "{resourceType}" '
+             '--sku "{skuName}"',
+             checks=checks)
+
+
+# EXAMPLE: /Skus/put/Skus_CreateOrUpdateNestedResourceTypeFirst
+@try_manual
+def step_sku_create2(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub sku create '
+             '--nested-resource-type-first "nestedResourceTypeFirst" '
+             '--sku-settings "[{{\\"name\\":\\"freeSku\\",\\"kind\\":\\"Standard\\",\\"tier\\":\\"Tier1\\"}},{{\\"name'
+             '\\":\\"premiumSku\\",\\"costs\\":[{{\\"meterId\\":\\"xxx\\"}}],\\"kind\\":\\"Premium\\",\\"tier\\":\\"Tie'
+             'r2\\"}}]" '
+             '--provider-namespace "{providerNamespace}" '
+             '--resource-type "{resourceType}" '
+             '--sku "{skuName}"',
+             checks=checks)
+
+
+# EXAMPLE: /Skus/put/Skus_CreateOrUpdateNestedResourceTypeSecond
+@try_manual
+def step_sku_create3(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub sku create '
+             '--nested-resource-type-first "nestedResourceTypeFirst" '
+             '--nested-resource-type-second "nestedResourceTypeSecond" '
+             '--sku-settings "[{{\\"name\\":\\"freeSku\\",\\"kind\\":\\"Standard\\",\\"tier\\":\\"Tier1\\"}},{{\\"name'
+             '\\":\\"premiumSku\\",\\"costs\\":[{{\\"meterId\\":\\"xxx\\"}}],\\"kind\\":\\"Premium\\",\\"tier\\":\\"Tie'
+             'r2\\"}}]" '
+             '--provider-namespace "{providerNamespace}" '
+             '--resource-type "{resourceType}" '
+             '--sku "{skuName}"',
+             checks=checks)
+
+
+# EXAMPLE: /Skus/put/Skus_CreateOrUpdateNestedResourceTypeThird
+@try_manual
+def step_sku_create4(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub sku create '
+             '--nested-resource-type-first "nestedResourceTypeFirst" '
+             '--nested-resource-type-second "nestedResourceTypeSecond" '
+             '--nested-resource-type-third "nestedResourceTypeThird" '
+             '--sku-settings "[{{\\"name\\":\\"freeSku\\",\\"kind\\":\\"Standard\\",\\"tier\\":\\"Tier1\\"}},{{\\"name'
+             '\\":\\"premiumSku\\",\\"costs\\":[{{\\"meterId\\":\\"xxx\\"}}],\\"kind\\":\\"Premium\\",\\"tier\\":\\"Tie'
+             'r2\\"}}]" '
+             '--provider-namespace "{providerNamespace}" '
+             '--resource-type "{resourceType}" '
+             '--sku "{skuName}"',
+             checks=checks)
+
+
+# EXAMPLE: /Skus/get/Skus_Get
+@try_manual
+def step_sku_show(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub sku show '
+             '--provider-namespace "{providerNamespace}" '
+             '--resource-type "{resourceType}" '
+             '--sku "{skuName}"',
+             checks=checks)
+
+
+# EXAMPLE: /Skus/get/Skus_GetNestedResourceTypeFirst
+@try_manual
+def step_sku_show_nested_resource_type_first(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub sku show-nested-resource-type-first '
+             '--nested-resource-type-first "nestedResourceTypeFirst" '
+             '--provider-namespace "{providerNamespace}" '
+             '--resource-type "{resourceType}" '
+             '--sku "{skuName}"',
+             checks=checks)
+
+
+# EXAMPLE: /Skus/get/Skus_GetNestedResourceTypeSecond
+@try_manual
+def step_sku_show_nested_resource_type_second(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub sku show-nested-resource-type-second '
+             '--nested-resource-type-first "nestedResourceTypeFirst" '
+             '--nested-resource-type-second "nestedResourceTypeSecond" '
+             '--provider-namespace "{providerNamespace}" '
+             '--resource-type "{resourceType}" '
+             '--sku "{skuName}"',
+             checks=checks)
+
+
+# EXAMPLE: /Skus/get/Skus_GetNestedResourceTypeThird
+@try_manual
+def step_sku_show_nested_resource_type_third(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub sku show-nested-resource-type-third '
+             '--nested-resource-type-first "nestedResourceTypeFirst" '
+             '--nested-resource-type-second "nestedResourceTypeSecond" '
+             '--nested-resource-type-third "nestedResourceTypeThird" '
+             '--provider-namespace "{providerNamespace}" '
+             '--resource-type "{resourceType}" '
+             '--sku "{skuName}"',
+             checks=checks)
+
+
+# EXAMPLE: /Skus/get/Skus_ListByResourceTypeRegistrations
+@try_manual
+def step_sku_list(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub sku list '
+             '--provider-namespace "{providerNamespace}" '
+             '--resource-type "{resourceType}"',
+             checks=checks)
+
+
+# EXAMPLE: /Skus/get/Skus_ListByResourceTypeRegistrationsNestedResourceTypeFirst
+@try_manual
+def step_sku_list2(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub sku list '
+             '--nested-resource-type-first "nestedResourceTypeFirst" '
+             '--provider-namespace "{providerNamespace}" '
+             '--resource-type "{resourceType}"',
+             checks=checks)
+
+
+# EXAMPLE: /Skus/get/Skus_ListByResourceTypeRegistrationsNestedResourceTypeSecond
+@try_manual
+def step_sku_list3(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub sku list '
+             '--nested-resource-type-first "nestedResourceTypeFirst" '
+             '--nested-resource-type-second "nestedResourceTypeSecond" '
+             '--provider-namespace "{providerNamespace}" '
+             '--resource-type "{resourceType}"',
+             checks=checks)
+
+
+# EXAMPLE: /Skus/get/Skus_ListByResourceTypeRegistrationsNestedResourceTypeThird
+@try_manual
+def step_sku_list4(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub sku list '
+             '--nested-resource-type-first "nestedResourceTypeFirst" '
+             '--nested-resource-type-second "nestedResourceTypeSecond" '
+             '--nested-resource-type-third "nestedResourceTypeThird" '
+             '--provider-namespace "{providerNamespace}" '
+             '--resource-type "{resourceType}"',
+             checks=checks)
+
+
+# EXAMPLE: /Skus/delete/Skus_Delete
+@try_manual
+def step_sku_delete(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub sku delete -y '
+             '--provider-namespace "{providerNamespace}" '
+             '--resource-type "{resourceType}" '
+             '--sku "{skuName}"',
+             checks=checks)
+
+
+# EXAMPLE: /Skus/delete/Skus_DeleteNestedResourceTypeFirst
+@try_manual
+def step_sku_delete2(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub sku delete -y '
+             '--nested-resource-type-first "nestedResourceTypeFirst" '
+             '--provider-namespace "{providerNamespace}" '
+             '--resource-type "{resourceType}" '
+             '--sku "{skuName}"',
+             checks=checks)
+
+
+# EXAMPLE: /Skus/delete/Skus_DeleteNestedResourceTypeSecond
+@try_manual
+def step_sku_delete3(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub sku delete -y '
+             '--nested-resource-type-first "nestedResourceTypeFirst" '
+             '--nested-resource-type-second "nestedResourceTypeSecond" '
+             '--provider-namespace "{providerNamespace}" '
+             '--resource-type "{resourceType}" '
+             '--sku "{skuName}"',
+             checks=checks)
+
+
+# EXAMPLE: /Skus/delete/Skus_DeleteNestedResourceTypeThird
+@try_manual
+def step_sku_delete4(test, checks=None):
+    if checks is None:
+        checks = []
+    test.cmd('az providerhub sku delete -y '
+             '--nested-resource-type-first "nestedResourceTypeFirst" '
+             '--nested-resource-type-second "nestedResourceTypeSecond" '
+             '--nested-resource-type-third "nestedResourceTypeThird" '
+             '--provider-namespace "{providerNamespace}" '
+             '--resource-type "{resourceType}" '
+             '--sku "{skuName}"',
              checks=checks)
