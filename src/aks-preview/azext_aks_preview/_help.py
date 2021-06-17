@@ -1047,7 +1047,7 @@ parameters:
     short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data.
   - name: --enable-msi-auth-for-monitoring
     type: bool
-    short-summary: Sends monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).
+    short-summary: Send monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
