@@ -224,7 +224,7 @@ helps['aks create'] = """
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
         - name: --enable-msi-auth-for-monitoring
           type: bool
-          short-summary: Sends monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).
+          short-summary: Send monitoring data to Log Analytics using the cluster's assigned identity (instead of the Log Analytics Workspace's shared key).
         - name: --enable-cluster-autoscaler
           type: bool
           short-summary: Enable cluster autoscaler, default value is false.
