@@ -8,6 +8,7 @@ from knack.util import CLIError
 from azure.cli.core.util import send_raw_request
 from azure.cli.command_modules.appservice._appservice_utils import _generic_site_operation
 from azure.cli.command_modules.appservice.custom import update_app_settings
+from azure.cli.command_modules.appservice.custom import update_auth_settings
 from azure.cli.command_modules.appservice._params import AUTH_TYPES
 from azure.cli.core.commands.client_factory import get_subscription_id
 
@@ -22,6 +23,7 @@ def get_resource_id(cmd, resource_group_name, name, slot):
         name)
     if slot is not None:
         resource_id = resource_id + "/slots" + slot
+    return resource_id
 
 
 def get_auth_settings_v2(cmd, resource_group_name, name, slot=None):
@@ -75,20 +77,8 @@ def update_auth_settings_v2(cmd, resource_group_name, name, set_string=None, ena
                             proxy_convention=None, proxy_custom_host_header=None,  # pylint: disable=unused-argument
                             proxy_custom_proto_header=None, slot=None):  # pylint: disable=unused-argument
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
-    if set_string is not None:
-        split1 = set_string.split("=")
-        fieldName = split1[0]
-        fieldValue = split1[1]
-        split2 = fieldName.split(".")
-        split2length = len(split2)
-        currentObj = existing_auth
-        for field in split2:
-            if split2[split2length - 1] == field:
-                currentObj[field] = fieldValue
-            else:
-                if field not in currentObj.keys():
-                    currentObj[field] = {}
-                currentObj = currentObj[field]
+    existing_auth = set_field_in_auth_settings(existing_auth, set_string)
+
     if enabled is not None:
         if "platform" not in existing_auth.keys():
             existing_auth["platform"] = {}
@@ -121,31 +111,9 @@ def update_auth_settings_v2(cmd, resource_group_name, name, set_string=None, ena
             existing_auth["login"]["tokenStore"] = {}
         existing_auth["login"]["tokenStore"]["enabled"] = enable_token_store
 
-    if require_https is not None:
-        if "httpSettings" not in existing_auth.keys():
-            existing_auth["httpSettings"] = {}
-        existing_auth["httpSettings"]["requireHttps"] = require_https
-
-    if proxy_convention is not None:
-        if "httpSettings" not in existing_auth.keys():
-            existing_auth["httpSettings"] = {}
-        if "forwardProxy" not in existing_auth["httpSettings"].keys():
-            existing_auth["httpSettings"]["forwardProxy"] = {}
-        existing_auth["httpSettings"]["forwardProxy"]["convention"] = proxy_convention
-
-    if proxy_custom_host_header is not None:
-        if "httpSettings" not in existing_auth.keys():
-            existing_auth["httpSettings"] = {}
-        if "forwardProxy" not in existing_auth["httpSettings"].keys():
-            existing_auth["httpSettings"]["forwardProxy"] = {}
-        existing_auth["httpSettings"]["forwardProxy"]["customHostHeaderName"] = proxy_custom_host_header
-
-    if proxy_custom_proto_header is not None:
-        if "httpSettings" not in existing_auth.keys():
-            existing_auth["httpSettings"] = {}
-        if "forwardProxy" not in existing_auth["httpSettings"].keys():
-            existing_auth["httpSettings"]["forwardProxy"] = {}
-        existing_auth["httpSettings"]["forwardProxy"]["customProtoHeaderName"] = proxy_custom_proto_header
+    existing_auth = update_http_settings_in_auth_settings(existing_auth, require_https,
+                                                          proxy_convention, proxy_custom_host_header,
+                                                          proxy_custom_proto_header)
 
     json_object = existing_auth
     return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, json_object, slot)
@@ -201,6 +169,54 @@ def revert_to_auth_settings(cmd, resource_group_name, name, slot=None):  # pylin
 # endregion
 
 # region helper methods
+
+
+def set_field_in_auth_settings(auth_settings, set_string):
+    if set_string is not None:
+        split1 = set_string.split("=")
+        fieldName = split1[0]
+        fieldValue = split1[1]
+        split2 = fieldName.split(".")
+        split2length = len(split2)
+        for field in split2:
+            if split2[split2length - 1] == field:
+                auth_settings[field] = fieldValue
+            else:
+                if field not in auth_settings.keys():
+                    auth_settings[field] = {}
+                auth_settings = auth_settings[field]
+    return auth_settings
+
+
+def update_http_settings_in_auth_settings(auth_settings, require_https, proxy_convention,
+                                          proxy_custom_host_header, proxy_custom_proto_header):
+    if require_https is not None:
+        if "httpSettings" not in auth_settings.keys():
+            auth_settings["httpSettings"] = {}
+        auth_settings["httpSettings"]["requireHttps"] = require_https
+
+    if proxy_convention is not None:
+        if "httpSettings" not in auth_settings.keys():
+            auth_settings["httpSettings"] = {}
+        if "forwardProxy" not in auth_settings["httpSettings"].keys():
+            auth_settings["httpSettings"]["forwardProxy"] = {}
+        auth_settings["httpSettings"]["forwardProxy"]["convention"] = proxy_convention
+
+    if proxy_custom_host_header is not None:
+        if "httpSettings" not in auth_settings.keys():
+            auth_settings["httpSettings"] = {}
+        if "forwardProxy" not in auth_settings["httpSettings"].keys():
+            auth_settings["httpSettings"]["forwardProxy"] = {}
+        auth_settings["httpSettings"]["forwardProxy"]["customHostHeaderName"] = proxy_custom_host_header
+
+    if proxy_custom_proto_header is not None:
+        if "httpSettings" not in auth_settings.keys():
+            auth_settings["httpSettings"] = {}
+        if "forwardProxy" not in auth_settings["httpSettings"].keys():
+            auth_settings["httpSettings"]["forwardProxy"] = {}
+        auth_settings["httpSettings"]["forwardProxy"]["customProtoHeaderName"] = proxy_custom_proto_header
+
+    return auth_settings
 
 
 def is_auth_runtime_version_valid(runtime_version=None):
@@ -287,54 +303,29 @@ def get_auth_settings(cmd, resource_group_name, name, slot=None):
     return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'get_auth_settings', slot)
 
 
-def update_auth_settings(cmd, resource_group_name, name, enabled=None, action=None,  # pylint: disable=unused-argument
-                         client_id=None, token_store_enabled=None, runtime_version=None,  # pylint: disable=unused-argument
-                         token_refresh_extension_hours=None,  # pylint: disable=unused-argument
-                         allowed_external_redirect_urls=None, client_secret=None,  # pylint: disable=unused-argument
-                         client_secret_certificate_thumbprint=None,  # pylint: disable=unused-argument
-                         allowed_audiences=None, issuer=None, facebook_app_id=None,  # pylint: disable=unused-argument
-                         facebook_app_secret=None, facebook_oauth_scopes=None,  # pylint: disable=unused-argument
-                         twitter_consumer_key=None, twitter_consumer_secret=None,  # pylint: disable=unused-argument
-                         google_client_id=None, google_client_secret=None,  # pylint: disable=unused-argument
-                         google_oauth_scopes=None, microsoft_account_client_id=None,  # pylint: disable=unused-argument
-                         microsoft_account_client_secret=None,  # pylint: disable=unused-argument
-                         microsoft_account_oauth_scopes=None, slot=None,  # pylint: disable=unused-argument
-                         git_hub_client_id=None, git_hub_client_secret=None,  # pylint: disable=unused-argument
-                         git_hub_o_auth_scopes=None,  # pylint: disable=unused-argument
-                         client_secret_setting_name=None, facebook_app_secret_setting_name=None,  # pylint: disable=unused-argument
-                         google_client_secret_setting_name=None,  # pylint: disable=unused-argument
-                         microsoft_account_client_secret_setting_name=None,  # pylint: disable=unused-argument
-                         twitter_consume_secret_setting_name=None, git_hub_client_secret_setting_name=None):  # pylint: disable=unused-argument
+def update_auth_classic_settings(cmd, resource_group_name, name, enabled=None, action=None,  # pylint: disable=unused-argument
+                                 client_id=None, token_store_enabled=None, runtime_version=None,  # pylint: disable=unused-argument
+                                 token_refresh_extension_hours=None,  # pylint: disable=unused-argument
+                                 allowed_external_redirect_urls=None, client_secret=None,  # pylint: disable=unused-argument
+                                 client_secret_certificate_thumbprint=None,  # pylint: disable=unused-argument
+                                 allowed_audiences=None, issuer=None, facebook_app_id=None,  # pylint: disable=unused-argument
+                                 facebook_app_secret=None, facebook_oauth_scopes=None,  # pylint: disable=unused-argument
+                                 twitter_consumer_key=None, twitter_consumer_secret=None,  # pylint: disable=unused-argument
+                                 google_client_id=None, google_client_secret=None,  # pylint: disable=unused-argument
+                                 google_oauth_scopes=None, microsoft_account_client_id=None,  # pylint: disable=unused-argument
+                                 microsoft_account_client_secret=None,  # pylint: disable=unused-argument
+                                 microsoft_account_oauth_scopes=None, slot=None,  # pylint: disable=unused-argument
+                                 git_hub_client_id=None, git_hub_client_secret=None,  # pylint: disable=unused-argument
+                                 git_hub_o_auth_scopes=None,  # pylint: disable=unused-argument
+                                 client_secret_setting_name=None, facebook_app_secret_setting_name=None,  # pylint: disable=unused-argument
+                                 google_client_secret_setting_name=None,  # pylint: disable=unused-argument
+                                 microsoft_account_client_secret_setting_name=None,  # pylint: disable=unused-argument
+                                 twitter_consume_secret_setting_name=None, git_hub_client_secret_setting_name=None):  # pylint: disable=unused-argument
     if is_auth_v2_app(cmd, resource_group_name, name, slot):
         raise CLIError('Usage Error: Cannot use command az webapp auth-classic update when the app '
                        'is using auth v2. If you wish to revert the app to v1, run az webapp auth revert')
 
-    auth_settings = get_auth_settings(cmd, resource_group_name, name, slot)
-    from azure.cli.core.profiles import ResourceType
-    UnauthenticatedClientAction = cmd.get_models('UnauthenticatedClientAction',
-                                                 resource_type=ResourceType.MGMT_RESOURCE_RESOURCES)
-    if action == 'AllowAnonymous':
-        auth_settings.unauthenticated_client_action = UnauthenticatedClientAction.allow_anonymous
-    elif action:
-        auth_settings.unauthenticated_client_action = UnauthenticatedClientAction.redirect_to_login_page
-        auth_settings.default_provider = AUTH_TYPES[action]
-    # validate runtime version
-    if not is_auth_runtime_version_valid(runtime_version):
-        raise CLIError('Usage Error: --runtime-version set to invalid value')
-
-    import inspect
-    frame = inspect.currentframe()
-    bool_flags = ['enabled', 'token_store_enabled']
-    # note: getargvalues is used already in azure.cli.core.commands.
-    # and no simple functional replacement for this deprecating method for 3.5
-    args, _, _, values = inspect.getargvalues(frame)  # pylint: disable=deprecated-method
-
-    for arg in args[2:]:
-        if values.get(arg, None):
-            setattr(auth_settings, arg, values[arg] if arg not in bool_flags else values[arg] == 'true')
-
-    return _generic_site_operation(cmd.cli_ctx, resource_group_name,
-                                   name, 'update_auth_settings', slot, auth_settings)
+    return update_auth_settings(**locals())
 # endregion
 
 # region webapp auth microsoft
@@ -363,31 +354,42 @@ def update_aad_settings(cmd, resource_group_name, name, slot=None,  # pylint: di
                            'to the web app.')
 
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
+    registration = {}
+    validation = {}
     if "identityProviders" not in existing_auth.keys():
         existing_auth["identityProviders"] = {}
     if "azureActiveDirectory" not in existing_auth["identityProviders"].keys():
         existing_auth["identityProviders"]["azureActiveDirectory"] = {}
-    if client_id is not None or client_secret_setting_name is not None or issuer is not None:
+    if (client_id is not None or client_secret is not None or
+            client_secret_setting_name is not None or issuer is not None):
         if "registration" not in existing_auth["identityProviders"]["azureActiveDirectory"].keys():
             existing_auth["identityProviders"]["azureActiveDirectory"]["registration"] = {}
+        registration = existing_auth["identityProviders"]["azureActiveDirectory"]["registration"]
     if allowed_token_audiences is not None:
         if "validation" not in existing_auth["identityProviders"]["azureActiveDirectory"].keys():
             existing_auth["identityProviders"]["azureActiveDirectory"]["validation"] = {}
+        validation = existing_auth["identityProviders"]["azureActiveDirectory"]["validation"]
 
     if client_id is not None:
-        existing_auth["identityProviders"]["azureActiveDirectory"]["registration"]["clientId"] = client_id
+        registration["clientId"] = client_id
     if client_secret_setting_name is not None:
-        existing_auth["identityProviders"]["azureActiveDirectory"]["registration"]["clientSecretSettingName"] = client_secret_setting_name
+        registration["clientSecretSettingName"] = client_secret_setting_name
     if client_secret is not None:
-        existing_auth["identityProviders"]["azureActiveDirectory"]["registration"]["clientSecretSettingName"] = 'MICROSOFT_PROVIDER_AUTHENTICATION_SECRET'
+        registration["clientSecretSettingName"] = 'MICROSOFT_PROVIDER_AUTHENTICATION_SECRET'
         settings = []
         settings.append('MICROSOFT_PROVIDER_AUTHENTICATION_SECRET=' + client_secret)
         update_app_settings(cmd, resource_group_name, name, settings, slot)
     if issuer is not None:
-        existing_auth["identityProviders"]["azureActiveDirectory"]["registration"]["openIdIssuer"] = issuer
+        registration["openIdIssuer"] = issuer
     if allowed_token_audiences is not None:
-        existing_auth["identityProviders"]["azureActiveDirectory"]["validation"]["allowedAudiences"] = allowed_token_audiences.split(",")
-    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)["identityProviders"]["azureActiveDirectory"]
+        validation["allowedAudiences"] = allowed_token_audiences.split(",")
+        existing_auth["identityProviders"]["azureActiveDirectory"]["validation"] = validation
+    if (client_id is not None or client_secret is not None or
+            client_secret_setting_name is not None or issuer is not None):
+        existing_auth["identityProviders"]["azureActiveDirectory"]["registration"] = registration
+
+    updated_auth_settings = update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)
+    return updated_auth_settings["identityProviders"]["azureActiveDirectory"]
 # endregion
 
 # region webapp auth facebook
@@ -416,23 +418,25 @@ def update_facebook_settings(cmd, resource_group_name, name, slot=None,  # pylin
                            'settings to the web app.')
 
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
+    registration = {}
     if "identityProviders" not in existing_auth.keys():
         existing_auth["identityProviders"] = {}
     if "facebook" not in existing_auth["identityProviders"].keys():
         existing_auth["identityProviders"]["facebook"] = {}
-    if app_id is not None or app_secret_setting_name is not None:
+    if app_id is not None or app_secret is not None or app_secret_setting_name is not None:
         if "registration" not in existing_auth["identityProviders"]["facebook"].keys():
             existing_auth["identityProviders"]["facebook"]["registration"] = {}
+        registration = existing_auth["identityProviders"]["facebook"]["registration"]
     if scopes is not None:
         if "login" not in existing_auth["identityProviders"]["facebook"].keys():
             existing_auth["identityProviders"]["facebook"]["login"] = {}
 
     if app_id is not None:
-        existing_auth["identityProviders"]["facebook"]["registration"]["appId"] = app_id
+        registration["appId"] = app_id
     if app_secret_setting_name is not None:
-        existing_auth["identityProviders"]["facebook"]["registration"]["appSecretSettingName"] = app_secret_setting_name
+        registration["appSecretSettingName"] = app_secret_setting_name
     if app_secret is not None:
-        existing_auth["identityProviders"]["facebook"]["registration"]["appSecretSettingName"] = 'FACEBOOK_PROVIDER_AUTHENTICATION_SECRET'
+        registration["appSecretSettingName"] = 'FACEBOOK_PROVIDER_AUTHENTICATION_SECRET'
         settings = []
         settings.append('FACEBOOK_PROVIDER_AUTHENTICATION_SECRET=' + app_secret)
         update_app_settings(cmd, resource_group_name, name, settings, slot)
@@ -440,7 +444,11 @@ def update_facebook_settings(cmd, resource_group_name, name, slot=None,  # pylin
         existing_auth["identityProviders"]["facebook"]["graphApiVersion"] = graph_api_version
     if scopes is not None:
         existing_auth["identityProviders"]["facebook"]["login"]["scopes"] = scopes.split(",")
-    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)["identityProviders"]["facebook"]
+    if app_id is not None or app_secret is not None or app_secret_setting_name is not None:
+        existing_auth["identityProviders"]["facebook"]["registration"] = registration
+
+    updated_auth_settings = update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)
+    return updated_auth_settings["identityProviders"]["facebook"]
 # endregion
 
 # region webapp auth github
@@ -459,37 +467,45 @@ def update_github_settings(cmd, resource_group_name, name, slot=None,  # pylint:
                            client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
                            scopes=None, client_secret=None, yes=False):    # pylint: disable=unused-argument
     if client_secret is not None and client_secret_setting_name is not None:
-        raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot both be configured to non empty strings')
+        raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot '
+                       'both be configured to non empty strings')
 
     if client_secret is not None and not yes:
         msg = 'Configuring --client-secret will add app settings to the web app. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add app settings to the web app.')
+            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add '
+                           'app settings to the web app.')
 
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
+    registration = {}
     if "identityProviders" not in existing_auth.keys():
         existing_auth["identityProviders"] = {}
     if "gitHub" not in existing_auth["identityProviders"].keys():
         existing_auth["identityProviders"]["gitHub"] = {}
-    if client_id is not None or client_secret_setting_name is not None:
+    if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
         if "registration" not in existing_auth["identityProviders"]["gitHub"].keys():
             existing_auth["identityProviders"]["gitHub"]["registration"] = {}
+        registration = existing_auth["identityProviders"]["gitHub"]["registration"]
     if scopes is not None:
         if "login" not in existing_auth["identityProviders"]["gitHub"].keys():
             existing_auth["identityProviders"]["gitHub"]["login"] = {}
 
     if client_id is not None:
-        existing_auth["identityProviders"]["gitHub"]["registration"]["clientId"] = client_id
+        registration["clientId"] = client_id
     if client_secret_setting_name is not None:
-        existing_auth["identityProviders"]["gitHub"]["registration"]["clientSecretSettingName"] = client_secret_setting_name
+        registration["clientSecretSettingName"] = client_secret_setting_name
     if client_secret is not None:
-        existing_auth["identityProviders"]["gitHub"]["registration"]["clientSecretSettingName"] = 'GITHUB_PROVIDER_AUTHENTICATION_SECRET'
+        registration["clientSecretSettingName"] = 'GITHUB_PROVIDER_AUTHENTICATION_SECRET'
         settings = []
         settings.append('GITHUB_PROVIDER_AUTHENTICATION_SECRET=' + client_secret)
         update_app_settings(cmd, resource_group_name, name, settings, slot)
     if scopes is not None:
         existing_auth["identityProviders"]["gitHub"]["login"]["scopes"] = scopes.split(",")
-    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)["identityProviders"]["gitHub"]
+    if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
+        existing_auth["identityProviders"]["gitHub"]["registration"] = registration
+
+    updated_auth_settings = update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)
+    return updated_auth_settings["identityProviders"]["gitHub"]
 # endregion
 
 # region webapp auth google
@@ -508,21 +524,26 @@ def update_google_settings(cmd, resource_group_name, name, slot=None,  # pylint:
                            client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
                            scopes=None, allowed_token_audiences=None, client_secret=None, yes=False):    # pylint: disable=unused-argument
     if client_secret is not None and client_secret_setting_name is not None:
-        raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot both be configured to non empty strings')
+        raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot '
+                       'both be configured to non empty strings')
 
     if client_secret is not None and not yes:
         msg = 'Configuring --client-secret will add app settings to the web app. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add app settings to the web app.')
+            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add '
+                           'app settings to the web app.')
 
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
+    registration = {}
+    validation = {}
     if "identityProviders" not in existing_auth.keys():
         existing_auth["identityProviders"] = {}
     if "google" not in existing_auth["identityProviders"].keys():
         existing_auth["identityProviders"]["google"] = {}
-    if client_id is not None or client_secret_setting_name is not None:
+    if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
         if "registration" not in existing_auth["identityProviders"]["google"].keys():
             existing_auth["identityProviders"]["google"]["registration"] = {}
+        registration = existing_auth["identityProviders"]["google"]["registration"]
     if scopes is not None:
         if "login" not in existing_auth["identityProviders"]["google"].keys():
             existing_auth["identityProviders"]["google"]["login"] = {}
@@ -531,19 +552,24 @@ def update_google_settings(cmd, resource_group_name, name, slot=None,  # pylint:
             existing_auth["identityProviders"]["google"]["validation"] = {}
 
     if client_id is not None:
-        existing_auth["identityProviders"]["google"]["registration"]["clientId"] = client_id
+        registration["clientId"] = client_id
     if client_secret_setting_name is not None:
-        existing_auth["identityProviders"]["google"]["registration"]["clientSecretSettingName"] = client_secret_setting_name
+        registration["clientSecretSettingName"] = client_secret_setting_name
     if client_secret is not None:
-        existing_auth["identityProviders"]["google"]["registration"]["clientSecretSettingName"] = 'GOOGLE_PROVIDER_AUTHENTICATION_SECRET'
+        registration["clientSecretSettingName"] = 'GOOGLE_PROVIDER_AUTHENTICATION_SECRET'
         settings = []
         settings.append('GOOGLE_PROVIDER_AUTHENTICATION_SECRET=' + client_secret)
         update_app_settings(cmd, resource_group_name, name, settings, slot)
     if scopes is not None:
         existing_auth["identityProviders"]["google"]["login"]["scopes"] = scopes.split(",")
     if allowed_token_audiences is not None:
-        existing_auth["identityProviders"]["google"]["validation"]["allowedAudiences"] = allowed_token_audiences.split(",")
-    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)["identityProviders"]["google"]
+        validation["allowedAudiences"] = allowed_token_audiences.split(",")
+        existing_auth["identityProviders"]["google"]["validation"] = validation
+    if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
+        existing_auth["identityProviders"]["google"]["registration"] = registration
+
+    updated_auth_settings = update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)
+    return updated_auth_settings["identityProviders"]["google"]
 # endregion
 
 # region webapp auth twitter
@@ -562,32 +588,39 @@ def update_twitter_settings(cmd, resource_group_name, name, slot=None,  # pylint
                             consumer_key=None, consumer_secret_setting_name=None,   # pylint: disable=unused-argument
                             consumer_secret=None, yes=False):    # pylint: disable=unused-argument
     if consumer_secret is not None and consumer_secret_setting_name is not None:
-        raise CLIError('Usage Error: --consumer-secret and --consumer-secret-setting-name cannot both be configured to non empty strings')
+        raise CLIError('Usage Error: --consumer-secret and --consumer-secret-setting-name cannot '
+                       'both be configured to non empty strings')
 
     if consumer_secret is not None and not yes:
         msg = 'Configuring --consumer-secret will add app settings to the web app. Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --consumer-secret cannot be used without agreeing to add app settings to the web app.')
+            raise CLIError('Usage Error: --consumer-secret cannot be used without agreeing '
+                           'to add app settings to the web app.')
 
+    registration = {}
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in existing_auth.keys():
         existing_auth["identityProviders"] = {}
     if "twitter" not in existing_auth["identityProviders"].keys():
         existing_auth["identityProviders"]["twitter"] = {}
-    if consumer_key is not None or consumer_secret_setting_name is not None:
+    if consumer_key is not None or consumer_secret is not None or consumer_secret_setting_name is not None:
         if "registration" not in existing_auth["identityProviders"]["twitter"].keys():
             existing_auth["identityProviders"]["twitter"]["registration"] = {}
+        registration = existing_auth["identityProviders"]["twitter"]["registration"]
 
     if consumer_key is not None:
-        existing_auth["identityProviders"]["twitter"]["registration"]["consumerKey"] = consumer_key
+        registration["consumerKey"] = consumer_key
     if consumer_secret_setting_name is not None:
-        existing_auth["identityProviders"]["twitter"]["registration"]["consumerSecretSettingName"] = consumer_secret_setting_name
+        registration["consumerSecretSettingName"] = consumer_secret_setting_name
     if consumer_secret is not None:
-        existing_auth["identityProviders"]["twitter"]["registration"]["consumerSecretSettingName"] = 'TWITTER_PROVIDER_AUTHENTICATION_SECRET'
+        registration["consumerSecretSettingName"] = 'TWITTER_PROVIDER_AUTHENTICATION_SECRET'
         settings = []
         settings.append('TWITTER_PROVIDER_AUTHENTICATION_SECRET=' + consumer_secret)
         update_app_settings(cmd, resource_group_name, name, settings, slot)
-    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)["identityProviders"]["twitter"]
+    if consumer_key is not None or consumer_secret is not None or consumer_secret_setting_name is not None:
+        existing_auth["identityProviders"]["twitter"]["registration"] = registration
+    updated_auth_settings = update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)
+    return updated_auth_settings["identityProviders"]["twitter"]
 # endregion
 
 # region webapp auth apple
@@ -606,37 +639,46 @@ def update_apple_settings(cmd, resource_group_name, name, slot=None,  # pylint: 
                           client_id=None, client_secret_setting_name=None,  # pylint: disable=unused-argument
                           scopes=None, client_secret=None, yes=False):    # pylint: disable=unused-argument
     if client_secret is not None and client_secret_setting_name is not None:
-        raise CLIError('Usage Error: --client-secret and --client-secret-setting-name cannot both be configured to non empty strings')
+        raise CLIError('Usage Error: --client-secret and --client-secret-setting-name '
+                       'cannot both be configured to non empty strings')
 
     if client_secret is not None and not yes:
-        msg = 'Configuring --client-secret will add app settings to the web app. Are you sure you want to continue?'
+        msg = 'Configuring --client-secret will add app settings to the web app. ' \
+            'Are you sure you want to continue?'
         if not prompt_y_n(msg, default="n"):
-            raise CLIError('Usage Error: --client-secret cannot be used without agreeing to add app settings to the web app.')
+            raise CLIError('Usage Error: --client-secret cannot be used without agreeing '
+                           'to add app settings to the web app.')
 
     existing_auth = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
+    registration = {}
     if "identityProviders" not in existing_auth.keys():
         existing_auth["identityProviders"] = {}
     if "apple" not in existing_auth["identityProviders"].keys():
         existing_auth["identityProviders"]["apple"] = {}
-    if client_id is not None or client_secret_setting_name is not None:
+    if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
         if "registration" not in existing_auth["identityProviders"]["apple"].keys():
             existing_auth["identityProviders"]["apple"]["registration"] = {}
+        registration = existing_auth["identityProviders"]["apple"]["registration"]
     if scopes is not None:
         if "login" not in existing_auth["identityProviders"]["apple"].keys():
             existing_auth["identityProviders"]["apple"]["login"] = {}
 
     if client_id is not None:
-        existing_auth["identityProviders"]["apple"]["registration"]["clientId"] = client_id
+        registration["clientId"] = client_id
     if client_secret_setting_name is not None:
-        existing_auth["identityProviders"]["apple"]["registration"]["clientSecretSettingName"] = client_secret_setting_name
+        registration["clientSecretSettingName"] = client_secret_setting_name
     if client_secret is not None:
-        existing_auth["identityProviders"]["apple"]["registration"]["clientSecretSettingName"] = 'APPLE_PROVIDER_AUTHENTICATION_SECRET'
+        registration["clientSecretSettingName"] = 'APPLE_PROVIDER_AUTHENTICATION_SECRET'
         settings = []
         settings.append('APPLE_PROVIDER_AUTHENTICATION_SECRET=' + client_secret)
         update_app_settings(cmd, resource_group_name, name, settings, slot)
     if scopes is not None:
         existing_auth["identityProviders"]["apple"]["login"]["scopes"] = scopes.split(",")
-    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)["identityProviders"]["apple"]
+    if client_id is not None or client_secret is not None or client_secret_setting_name is not None:
+        existing_auth["identityProviders"]["apple"]["registration"] = registration
+
+    updated_auth_settings = update_auth_settings_v2_rest_call(cmd, resource_group_name, name, existing_auth, slot)
+    return updated_auth_settings["identityProviders"]["apple"]
 # endregion
 
 # region webapp auth oidc
@@ -648,9 +690,11 @@ def get_oidc_provider_settings(cmd, resource_group_name, name, provider_name, sl
         raise CLIError('Usage Error: The following custom OpenID Connect provider '
                        'has not been configured: ' + provider_name)
     if "customOpenIdConnectProviders" not in auth_settings["identityProviders"].keys():
-        raise CLIError('Usage Error: The following custom OpenID Connect provider has not been configured: ' + provider_name)
+        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+                       'has not been configured: ' + provider_name)
     if provider_name not in auth_settings["identityProviders"]["customOpenIdConnectProviders"].keys():
-        raise CLIError('Usage Error: The following custom OpenID Connect provider has not been configured: ' + provider_name)
+        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+                       'has not been configured: ' + provider_name)
     return auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
 
 
@@ -663,7 +707,9 @@ def add_oidc_provider_settings(cmd, resource_group_name, name, provider_name, sl
     if "customOpenIdConnectProviders" not in auth_settings["identityProviders"].keys():
         auth_settings["identityProviders"]["customOpenIdConnectProviders"] = {}
     if provider_name in auth_settings["identityProviders"]["customOpenIdConnectProviders"].keys():
-        raise CLIError('Usage Error: The following custom OpenID Connect provider has already been configured: ' + provider_name + '. Please use az webapp auth oidc update to update the provider.')
+        raise CLIError('Usage Error: The following custom OpenID Connect provider has already been '
+                       'configured: ' + provider_name + '. Please use az webapp auth oidc update to '
+                       'update the provider.')
     auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name] = {
         "registration": {
             "clientId": client_id,
@@ -676,10 +722,12 @@ def add_oidc_provider_settings(cmd, resource_group_name, name, provider_name, sl
         }
     }
     if scopes is not None:
-        auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"] = {}
-        auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"]["scopes"] = scopes.split(',')
+        login = {}
+        login["scopes"] = scopes.split(',')
+        auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"] = login
 
-    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, auth_settings, slot)["identityProviders"]["customOpenIdConnectProviders"][provider_name]
+    updated_auth_settings = update_auth_settings_v2_rest_call(cmd, resource_group_name, name, auth_settings, slot)
+    return updated_auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
 
 
 def update_oidc_provider_settings(cmd, resource_group_name, name, provider_name, slot=None,  # pylint: disable=unused-argument
@@ -687,37 +735,48 @@ def update_oidc_provider_settings(cmd, resource_group_name, name, provider_name,
                                   openid_configuration=None, scopes=None):    # pylint: disable=unused-argument
     auth_settings = get_auth_settings_v2(cmd, resource_group_name, name, slot)["properties"]
     if "identityProviders" not in auth_settings.keys():
-        raise CLIError('Usage Error: The following custom OpenID Connect provider has not been configured: ' + provider_name)
+        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+                       'has not been configured: ' + provider_name)
     if "customOpenIdConnectProviders" not in auth_settings["identityProviders"].keys():
-        raise CLIError('Usage Error: The following custom OpenID Connect provider has not been configured: ' + provider_name)
+        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+                       'has not been configured: ' + provider_name)
     if provider_name not in auth_settings["identityProviders"]["customOpenIdConnectProviders"].keys():
-        raise CLIError('Usage Error: The following custom OpenID Connect provider has not been configured: ' + provider_name)
+        raise CLIError('Usage Error: The following custom OpenID Connect provider '
+                       'has not been configured: ' + provider_name)
 
+    custom_open_id_connect_providers = auth_settings["identityProviders"]["customOpenIdConnectProviders"]
+    registration = {}
     if client_id is not None or client_secret_setting_name is not None or openid_configuration is not None:
-        if "registration" not in auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name].keys():
-            auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["registration"] = {}
+        if "registration" not in custom_open_id_connect_providers[provider_name].keys():
+            custom_open_id_connect_providers[provider_name]["registration"] = {}
+        registration = custom_open_id_connect_providers[provider_name]["registration"]
 
     if client_secret_setting_name is not None:
-        if "clientCredential" not in auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["registration"].keys():
-            auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["registration"]["clientCredential"] = {}
+        if "clientCredential" not in custom_open_id_connect_providers[provider_name]["registration"].keys():
+            custom_open_id_connect_providers[provider_name]["registration"]["clientCredential"] = {}
 
     if openid_configuration is not None:
-        if "openIdConnectConfiguration" not in auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["registration"].keys():
-            auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["registration"]["openIdConnectConfiguration"] = {}
+        if "openIdConnectConfiguration" not in custom_open_id_connect_providers[provider_name]["registration"].keys():
+            custom_open_id_connect_providers[provider_name]["registration"]["openIdConnectConfiguration"] = {}
 
     if scopes is not None:
         if "login" not in auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name].keys():
-            auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"] = {}
+            custom_open_id_connect_providers[provider_name]["login"] = {}
 
     if client_id is not None:
-        auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["registration"]["clientId"] = client_id
+        registration["clientId"] = client_id
     if client_secret_setting_name is not None:
-        auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["registration"]["clientCredential"]["clientSecretSettingName"] = client_secret_setting_name
+        registration["clientCredential"]["clientSecretSettingName"] = client_secret_setting_name
     if openid_configuration is not None:
-        auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["registration"]["openIdConnectConfiguration"]["wellKnownOpenIdConfiguration"] = openid_configuration
+        registration["openIdConnectConfiguration"]["wellKnownOpenIdConfiguration"] = openid_configuration
     if scopes is not None:
-        auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]["login"]["scopes"] = scopes.split(",")
-    return update_auth_settings_v2_rest_call(cmd, resource_group_name, name, auth_settings, slot)["identityProviders"]["customOpenIdConnectProviders"][provider_name]
+        custom_open_id_connect_providers[provider_name]["login"]["scopes"] = scopes.split(",")
+    if client_id is not None or client_secret_setting_name is not None or openid_configuration is not None:
+        custom_open_id_connect_providers[provider_name]["registration"] = registration
+    auth_settings["identityProviders"]["customOpenIdConnectProviders"] = custom_open_id_connect_providers
+
+    updated_auth_settings = update_auth_settings_v2_rest_call(cmd, resource_group_name, name, auth_settings, slot)
+    return updated_auth_settings["identityProviders"]["customOpenIdConnectProviders"][provider_name]
 
 
 def remove_oidc_provider_settings(cmd, resource_group_name, name, provider_name, slot=None):  # pylint: disable=unused-argument

@@ -47,4 +47,4 @@ def load_command_table(self, _):
 
     with self.command_group('webapp auth-classic') as g:
         g.custom_show_command('show', 'get_auth_settings')
-        g.custom_command('update', 'update_auth_settings')
+        g.custom_command('update', 'update_auth_classic_settings')
