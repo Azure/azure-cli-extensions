@@ -186,15 +186,14 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
     from azure.cli.command_modules.storage._client_factory import blob_data_service_factory
 
     path = os.path.join(tempfile.gettempdir(), job_id)
+    info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
+    client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
+    job = client.get(job_id)
 
     if os.path.exists(path):
         logger.debug("Using existing blob from %s", path)
     else:
         logger.debug("Downloading job results blob into %s", path)
-
-        info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-        client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-        job = client.get(job_id)
 
         if job.status != "Succeeded":
             return f"Job status: {job.status}. Output only available if Succeeded."
@@ -204,7 +203,14 @@ def output(cmd, job_id, resource_group_name=None, workspace_name=None, location=
         blob_service.get_blob_to_path(args['container'], args['blob'], path)
 
     with open(path) as json_file:
-        data = json.load(json_file)
+        if job.target.startswith("microsoft.simulator"):
+            lines = [line.strip() for line in json_file.readlines()]
+            print('\n'.join(lines[:-1]))
+            print("_" * len(lines[-1]) + "\n")
+            json_string = "{ \"histogram\" : { \"" + lines[-1] + "\" : 1 } }"
+            data = json.loads(json_string)
+        else:
+            data = json.load(json_file)
         return data
 
 
