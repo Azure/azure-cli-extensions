@@ -11,6 +11,7 @@ import yaml   # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
 from msrestazure.azure_exceptions import CloudError
+from azure.core.exceptions import ResourceNotFoundError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from ._utils import _get_upload_local_file, _get_persistent_disk_size, get_portal_uri, get_azure_files_info
 from knack.util import CLIError
@@ -1560,12 +1561,12 @@ def domain_unbind(cmd, client, resource_group, service, app, domain_name):
     return client.custom_domains.delete(resource_group, service, app, domain_name)
 
 
-def get_conenction_string_or_instrumentation_key(appinsights):
+def get_connection_string_or_instrumentation_key(appinsights):
     credential = None
     if appinsights:
-        if appinsights.conenction_string:
+        if hasattr(appinsights, "connection_string") and appinsights.connection_string:
             credential = appinsights.connection_string
-        elif appinsights.instrumentation_key:
+        elif hasattr(appinsights, "instrumentation_key") and appinsights.instrumentation_key:
             credential = appinsights.instrumentation_key
     return credential
 
@@ -1578,8 +1579,8 @@ def get_app_insights_credential(cli_ctx, resource_group, name):
     appinsights_client = get_mgmt_service_client(cli_ctx, ApplicationInsightsManagementClient)
     appinsights = appinsights_client.components.get(resource_group, name)
     if appinsights is None or (appinsights.connection_string is None and appinsights.instrumentation_key is None):
-        raise CLIError("App Insights {} under resource group {} was not found.".format(name, resource_group))
-    return get_conenction_string_or_instrumentation_key(appinsights)
+        raise ResourceNotFoundError("App Insights {} under resource group {} was not found.".format(name, resource_group))
+    return get_connection_string_or_instrumentation_key(appinsights)
 
 
 def update_tracing_config(cmd, resource_group, service_name, location, app_insights_key,
@@ -1681,7 +1682,7 @@ def try_create_application_insights(cmd, resource_group, name, location):
     logger.warning('Application Insights \"%s\" was created for this Azure Spring Cloud. '
                    'You can visit %s/#resource%s/overview to view your '
                    'Application Insights component', appinsights.name, portal_url, appinsights.id)
-    return get_conenction_string_or_instrumentation_key(appinsights)
+    return get_connection_string_or_instrumentation_key(appinsights)
 
 
 def app_insights_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None, sampling_rate=None, disable=None, no_wait=False):

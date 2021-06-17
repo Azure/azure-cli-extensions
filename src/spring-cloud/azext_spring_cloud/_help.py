@@ -17,8 +17,8 @@ helps['spring-cloud create'] = """
     examples:
     - name: Create a new Azure Spring Cloud in westus.
       text: az spring-cloud create -n MyService -g MyResourceGroup -l westus
-    - name: Create a new Azure Spring Cloud in westus with an existing Application Insights by using the instrumentation key.
-      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --app-insights-key MyInstrumentationKey
+    - name: Create a new Azure Spring Cloud in westus with an existing Application Insights by using the connection string.
+      text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --app-insights-key \"MyConnectionString\"
     - name: Create a new Azure Spring Cloud in westus with an existing Application Insights and enable Java In-Process Agent.
       text: az spring-cloud create -n MyService -g MyResourceGroup -l westus --enable-java-agent true --app-insights MyInstrumentationName
     - name: Create a new Azure Spring Cloud with distributed tracing disabled.
