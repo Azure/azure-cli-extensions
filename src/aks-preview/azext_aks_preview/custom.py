@@ -1472,14 +1472,14 @@ def aks_create(cmd,     # pylint: disable=too-many-locals,too-many-statements,to
                 attach_acr,
                 headers,
                 no_wait)
-            
+
             if monitoring and enable_msi_auth_for_monitoring:
                 # Create the DCR Association here
                 _ensure_container_insights_for_monitoring(cmd,
-                                                         addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id,
-                                                         resource_group_name, name, location,
-                                                         aad_route=enable_msi_auth_for_monitoring, create_dcr=False,
-                                                         create_dcra=True)
+                                                          addon_profiles[CONST_MONITORING_ADDON_NAME], subscription_id,
+                                                          resource_group_name, name, location,
+                                                          aad_route=enable_msi_auth_for_monitoring, create_dcr=False,
+                                                          create_dcra=True)
 
             return created_cluster
         except CloudError as ex:
