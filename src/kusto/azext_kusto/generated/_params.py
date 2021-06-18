@@ -81,12 +81,11 @@ def load_arguments(self, _):
                    help='The type of managed identity used. The type \'SystemAssigned, UserAssigned\' includes both an '
                    'implicitly created identity and a set of user-assigned identities. The type \'None\' will remove '
                    'all identities.', arg_group='Identity')
-        c.argument('user_assigned_identities', options_list=['--user-assigned-identities', '--uai'],
-                   type=validate_file_or_dict, help='The list of user identities associated with the Kusto cluster. '
-                   'The user identity dictionary key references will be ARM resource ids in the form: '
-                   '\'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIde'
-                   'ntity/userAssignedIdentities/{identityName}\'. Expected value: json-string/@json-file.',
-                   arg_group='Identity')
+        c.argument('user_assigned_identities', type=validate_file_or_dict, help='The list of user identities '
+                   'associated with the Kusto cluster. The user identity dictionary key references will be ARM '
+                   'resource ids in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/prov'
+                   'iders/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}\'. Expected value: '
+                   'json-string/@json-file.', arg_group='Identity')
 
     with self.argument_context('kusto cluster update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -121,12 +120,11 @@ def load_arguments(self, _):
                    help='The type of managed identity used. The type \'SystemAssigned, UserAssigned\' includes both an '
                    'implicitly created identity and a set of user-assigned identities. The type \'None\' will remove '
                    'all identities.', arg_group='Identity')
-        c.argument('user_assigned_identities', options_list=['--user-assigned-identities', '--uai'],
-                   type=validate_file_or_dict, help='The list of user identities associated with the Kusto cluster. '
-                   'The user identity dictionary key references will be ARM resource ids in the form: '
-                   '\'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIde'
-                   'ntity/userAssignedIdentities/{identityName}\'. Expected value: json-string/@json-file.',
-                   arg_group='Identity')
+        c.argument('user_assigned_identities', type=validate_file_or_dict, help='The list of user identities '
+                   'associated with the Kusto cluster. The user identity dictionary key references will be ARM '
+                   'resource ids in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/prov'
+                   'iders/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}\'. Expected value: '
+                   'json-string/@json-file.', arg_group='Identity')
 
     with self.argument_context('kusto cluster delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -430,8 +428,8 @@ def load_arguments(self, _):
                    'like to attach reside.')
         c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']),
                    help='The default principals modification kind')
-        c.argument('table_level_sharing_properties', options_list=['--table-level-sharing-properties', '--tls'],
-                   action=AddTableLevelSharingProperties, nargs='+', help='Table level sharing specifications')
+        c.argument('table_level_sharing_properties', action=AddTableLevelSharingProperties, nargs='+', help='Table '
+                   'level sharing specifications')
 
     with self.argument_context('kusto attached-database-configuration update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -447,8 +445,8 @@ def load_arguments(self, _):
                    'like to attach reside.')
         c.argument('default_principals_modification_kind', arg_type=get_enum_type(['Union', 'Replace', 'None']),
                    help='The default principals modification kind')
-        c.argument('table_level_sharing_properties', options_list=['--table-level-sharing-properties', '--tls'],
-                   action=AddTableLevelSharingProperties, nargs='+', help='Table level sharing specifications')
+        c.argument('table_level_sharing_properties', action=AddTableLevelSharingProperties, nargs='+', help='Table '
+                   'level sharing specifications')
         c.ignore('parameters')
 
     with self.argument_context('kusto attached-database-configuration delete') as c:
@@ -527,9 +525,8 @@ def load_arguments(self, _):
         c.argument('event_system_properties', nargs='+', help='System properties of the event hub')
         c.argument('compression', arg_type=get_enum_type(['None', 'GZip']), help='The event hub messages compression '
                    'type')
-        c.argument('managed_identity_resource_id', options_list=['--managed-identity-resource-id', '--mi-rid'],
-                   type=str, help='The resource ID of a managed identity (system or user assigned) to be used to '
-                   'authenticate with event hub.')
+        c.argument('managed_identity_resource_id', type=str, help='The resource ID of a managed identity (system or '
+                   'user assigned) to be used to authenticate with event hub.')
 
     with self.argument_context('kusto data-connection iot-hub create') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -604,9 +601,8 @@ def load_arguments(self, _):
         c.argument('event_system_properties', nargs='+', help='System properties of the event hub')
         c.argument('compression', arg_type=get_enum_type(['None', 'GZip']), help='The event hub messages compression '
                    'type')
-        c.argument('managed_identity_resource_id', options_list=['--managed-identity-resource-id', '--mi-rid'],
-                   type=str, help='The resource ID of a managed identity (system or user assigned) to be used to '
-                   'authenticate with event hub.')
+        c.argument('managed_identity_resource_id', type=str, help='The resource ID of a managed identity (system or '
+                   'user assigned) to be used to authenticate with event hub.')
 
     with self.argument_context('kusto data-connection iot-hub update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -690,9 +686,8 @@ def load_arguments(self, _):
         c.argument('event_system_properties', nargs='+', help='System properties of the event hub')
         c.argument('compression', arg_type=get_enum_type(['None', 'GZip']), help='The event hub messages compression '
                    'type')
-        c.argument('managed_identity_resource_id', options_list=['--managed-identity-resource-id', '--mi-rid'],
-                   type=str, help='The resource ID of a managed identity (system or user assigned) to be used to '
-                   'authenticate with event hub.')
+        c.argument('managed_identity_resource_id', type=str, help='The resource ID of a managed identity (system or '
+                   'user assigned) to be used to authenticate with event hub.')
 
     with self.argument_context('kusto data-connection iot-hub data-connection-validation') as c:
         c.argument('resource_group_name', resource_group_name_type)
