@@ -8,7 +8,7 @@
 from typing import Any, Callable, Dict, Generic, Optional, TypeVar, Union
 import warnings
 
-from azure.core.exceptions import HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError, ResourceExistsError, ResourceNotFoundError, map_error
 from azure.core.pipeline import PipelineResponse
 from azure.core.pipeline.transport import AsyncHttpResponse, HttpRequest
 from azure.core.polling import AsyncLROPoller, AsyncNoPolling, AsyncPollingMethod
@@ -27,7 +27,7 @@ class AliasOperations:
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~subscription_client.models
+    :type models: ~azure.mgmt.subscription.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -45,16 +45,17 @@ class AliasOperations:
     async def _create_initial(
         self,
         alias_name: str,
-        properties: "models.PutAliasRequestProperties",
+        body: "models.PutAliasRequest",
         **kwargs
     ) -> "models.PutAliasResponse":
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PutAliasResponse"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
-
-        _body = models.PutAliasRequest(properties=properties)
         api_version = "2020-09-01"
         content_type = kwargs.pop("content_type", "application/json")
+        accept = "application/json"
 
         # Construct URL
         url = self._create_initial.metadata['url']  # type: ignore
@@ -70,13 +71,12 @@ class AliasOperations:
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
         header_parameters['Content-Type'] = self._serialize.header("content_type", content_type, 'str')
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_body, 'PutAliasRequest')
+        body_content = self._serialize.body(body, 'PutAliasRequest')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
-
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
         response = pipeline_response.http_response
 
@@ -100,15 +100,15 @@ class AliasOperations:
     async def begin_create(
         self,
         alias_name: str,
-        properties: "models.PutAliasRequestProperties",
+        body: "models.PutAliasRequest",
         **kwargs
     ) -> AsyncLROPoller["models.PutAliasResponse"]:
         """Create Alias Subscription.
 
         :param alias_name: Alias Name.
         :type alias_name: str
-        :param properties: Put alias request properties.
-        :type properties: ~subscription_client.models.PutAliasRequestProperties
+        :param body:
+        :type body: ~azure.mgmt.subscription.models.PutAliasRequest
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: True for ARMPolling, False for no polling, or a
@@ -116,7 +116,7 @@ class AliasOperations:
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either PutAliasResponse or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~subscription_client.models.PutAliasResponse]
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.subscription.models.PutAliasResponse]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
@@ -129,7 +129,7 @@ class AliasOperations:
         if cont_token is None:
             raw_result = await self._create_initial(
                 alias_name=alias_name,
-                properties=properties,
+                body=body,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -144,7 +144,11 @@ class AliasOperations:
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
-        if polling is True: polling_method = AsyncARMPolling(lro_delay,  **kwargs)
+        path_format_arguments = {
+            'aliasName': self._serialize.url("alias_name", alias_name, 'str'),
+        }
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         if cont_token:
@@ -169,13 +173,16 @@ class AliasOperations:
         :type alias_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PutAliasResponse, or the result of cls(response)
-        :rtype: ~subscription_client.models.PutAliasResponse
+        :rtype: ~azure.mgmt.subscription.models.PutAliasResponse
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PutAliasResponse"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-09-01"
+        accept = "application/json"
 
         # Construct URL
         url = self.get.metadata['url']  # type: ignore
@@ -190,7 +197,7 @@ class AliasOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
@@ -224,9 +231,12 @@ class AliasOperations:
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-09-01"
+        accept = "application/json"
 
         # Construct URL
         url = self.delete.metadata['url']  # type: ignore
@@ -241,6 +251,7 @@ class AliasOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.delete(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
@@ -264,13 +275,16 @@ class AliasOperations:
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: PutAliasListResult, or the result of cls(response)
-        :rtype: ~subscription_client.models.PutAliasListResult
+        :rtype: ~azure.mgmt.subscription.models.PutAliasListResult
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["models.PutAliasListResult"]
-        error_map = {404: ResourceNotFoundError, 409: ResourceExistsError}
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
         error_map.update(kwargs.pop('error_map', {}))
         api_version = "2020-09-01"
+        accept = "application/json"
 
         # Construct URL
         url = self.list.metadata['url']  # type: ignore
@@ -281,7 +295,7 @@ class AliasOperations:
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
-        header_parameters['Accept'] = 'application/json'
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         request = self._client.get(url, query_parameters, header_parameters)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)

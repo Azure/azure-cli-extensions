@@ -6,14 +6,16 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
+from ._subscriptions_operations import SubscriptionsOperations
+from ._tenants_operations import TenantsOperations
 from ._subscription_operations import SubscriptionOperations
-from ._tenant_operations import TenantOperations
-from ._operation_operations import OperationOperations
+from ._operations import Operations
 from ._alias_operations import AliasOperations
 
 __all__ = [
+    'SubscriptionsOperations',
+    'TenantsOperations',
     'SubscriptionOperations',
-    'TenantOperations',
-    'OperationOperations',
+    'Operations',
     'AliasOperations',
 ]

@@ -15,25 +15,28 @@ if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials_async import AsyncTokenCredential
 
-from ._configuration_async import SubscriptionClientConfiguration
-from .operations_async import SubscriptionOperations
-from .operations_async import TenantOperations
-from .operations_async import OperationOperations
-from .operations_async import AliasOperations
+from ._configuration import SubscriptionClientConfiguration
+from .operations import SubscriptionsOperations
+from .operations import TenantsOperations
+from .operations import SubscriptionOperations
+from .operations import Operations
+from .operations import AliasOperations
 from .. import models
 
 
 class SubscriptionClient(object):
     """The subscription client.
 
+    :ivar subscriptions: SubscriptionsOperations operations
+    :vartype subscriptions: azure.mgmt.subscription.aio.operations.SubscriptionsOperations
+    :ivar tenants: TenantsOperations operations
+    :vartype tenants: azure.mgmt.subscription.aio.operations.TenantsOperations
     :ivar subscription: SubscriptionOperations operations
-    :vartype subscription: subscription_client.aio.operations_async.SubscriptionOperations
-    :ivar tenant: TenantOperations operations
-    :vartype tenant: subscription_client.aio.operations_async.TenantOperations
-    :ivar operation: OperationOperations operations
-    :vartype operation: subscription_client.aio.operations_async.OperationOperations
+    :vartype subscription: azure.mgmt.subscription.aio.operations.SubscriptionOperations
+    :ivar operations: Operations operations
+    :vartype operations: azure.mgmt.subscription.aio.operations.Operations
     :ivar alias: AliasOperations operations
-    :vartype alias: subscription_client.aio.operations_async.AliasOperations
+    :vartype alias: azure.mgmt.subscription.aio.operations.AliasOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param str base_url: Service URL
@@ -55,11 +58,13 @@ class SubscriptionClient(object):
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
+        self.subscriptions = SubscriptionsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.tenants = TenantsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
         self.subscription = SubscriptionOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.tenant = TenantOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.operation = OperationOperations(
+        self.operations = Operations(
             self._client, self._config, self._serialize, self._deserialize)
         self.alias = AliasOperations(
             self._client, self._config, self._serialize, self._deserialize)

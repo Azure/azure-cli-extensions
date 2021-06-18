@@ -12,13 +12,14 @@ from azure.core.configuration import Configuration
 from azure.core.pipeline import policies
 from azure.mgmt.core.policies import ARMHttpLoggingPolicy
 
+from ._version import VERSION
+
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from typing import Any
 
     from azure.core.credentials import TokenCredential
 
-VERSION = "unknown"
 
 class SubscriptionClientConfiguration(Configuration):
     """Configuration for SubscriptionClient.
@@ -41,9 +42,8 @@ class SubscriptionClientConfiguration(Configuration):
         super(SubscriptionClientConfiguration, self).__init__(**kwargs)
 
         self.credential = credential
-        self.credential_scopes = ['https://management.azure.com/.default']
-        self.credential_scopes.extend(kwargs.pop('credential_scopes', []))
-        kwargs.setdefault('sdk_moniker', 'subscriptionclient/{}'.format(VERSION))
+        self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
+        kwargs.setdefault('sdk_moniker', 'mgmt-subscription/{}'.format(VERSION))
         self._configure(**kwargs)
 
     def _configure(

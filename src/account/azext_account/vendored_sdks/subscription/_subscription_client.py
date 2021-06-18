@@ -18,9 +18,10 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
 
 from ._configuration import SubscriptionClientConfiguration
+from .operations import SubscriptionsOperations
+from .operations import TenantsOperations
 from .operations import SubscriptionOperations
-from .operations import TenantOperations
-from .operations import OperationOperations
+from .operations import Operations
 from .operations import AliasOperations
 from . import models
 
@@ -28,14 +29,16 @@ from . import models
 class SubscriptionClient(object):
     """The subscription client.
 
+    :ivar subscriptions: SubscriptionsOperations operations
+    :vartype subscriptions: azure.mgmt.subscription.operations.SubscriptionsOperations
+    :ivar tenants: TenantsOperations operations
+    :vartype tenants: azure.mgmt.subscription.operations.TenantsOperations
     :ivar subscription: SubscriptionOperations operations
-    :vartype subscription: subscription_client.operations.SubscriptionOperations
-    :ivar tenant: TenantOperations operations
-    :vartype tenant: subscription_client.operations.TenantOperations
-    :ivar operation: OperationOperations operations
-    :vartype operation: subscription_client.operations.OperationOperations
+    :vartype subscription: azure.mgmt.subscription.operations.SubscriptionOperations
+    :ivar operations: Operations operations
+    :vartype operations: azure.mgmt.subscription.operations.Operations
     :ivar alias: AliasOperations operations
-    :vartype alias: subscription_client.operations.AliasOperations
+    :vartype alias: azure.mgmt.subscription.operations.AliasOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param str base_url: Service URL
@@ -58,11 +61,13 @@ class SubscriptionClient(object):
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
 
+        self.subscriptions = SubscriptionsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
+        self.tenants = TenantsOperations(
+            self._client, self._config, self._serialize, self._deserialize)
         self.subscription = SubscriptionOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.tenant = TenantOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.operation = OperationOperations(
+        self.operations = Operations(
             self._client, self._config, self._serialize, self._deserialize)
         self.alias = AliasOperations(
             self._client, self._config, self._serialize, self._deserialize)
