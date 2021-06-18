@@ -2812,7 +2812,7 @@ def _ensure_container_insights_for_monitoring(cmd,
                                                             "Microsoft-InsightsMetrics"
                                                         ],
                                                         "destinations": [
-                                                            workspace_name
+                                                            "la-workspace"
                                                         ]
                                                     }
                                                 ],
@@ -2820,7 +2820,7 @@ def _ensure_container_insights_for_monitoring(cmd,
                                                     "logAnalytics": [
                                                         {
                                                             "workspaceResourceId": workspace_resource_id,
-                                                            "name": workspace_name
+                                                            "name": "la-workspace"
                                                         }
                                                     ]
                                                 }
@@ -2829,12 +2829,12 @@ def _ensure_container_insights_for_monitoring(cmd,
             for _ in range(3):
                 try:
                     send_raw_request(cmd.cli_ctx, "PUT", dcr_url, body=dcr_creation_body)
-                    e = None
+                    error = None
                     break
                 except CLIError as e:
-                    pass
+                    error = e
             else:
-                raise e
+                raise error
 
         if create_dcra:
             # only create or delete the association between the DCR and cluster
@@ -2847,12 +2847,12 @@ def _ensure_container_insights_for_monitoring(cmd,
             for _ in range(3):
                 try:
                     send_raw_request(cmd.cli_ctx, "PUT" if not remove_monitoring else "DELETE", association_url, body=association_body)
-                    e = None
+                    error = None
                     break
                 except CLIError as e:
-                    pass
+                    error = e
             else:
-                raise e
+                raise error
 
     else:
         # legacy auth with LA workspace solution
