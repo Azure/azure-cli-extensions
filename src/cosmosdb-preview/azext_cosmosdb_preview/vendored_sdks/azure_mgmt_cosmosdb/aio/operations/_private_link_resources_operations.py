@@ -45,7 +45,7 @@ class PrivateLinkResourcesOperations:
         self,
         resource_group_name: str,
         account_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.PrivateLinkResourceListResult"]:
         """Gets the private link resources that need to be created for a Cosmos DB account.
 
@@ -120,7 +120,7 @@ class PrivateLinkResourcesOperations:
         resource_group_name: str,
         account_name: str,
         group_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.PrivateLinkResource":
         """Gets the private link resources that need to be created for a Cosmos DB account.
 

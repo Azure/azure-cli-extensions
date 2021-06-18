@@ -47,7 +47,7 @@ class SqlResourcesOperations:
         self,
         resource_group_name: str,
         account_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.SqlDatabaseListResult"]:
         """Lists the SQL databases under an existing Azure Cosmos DB database account.
 
@@ -122,7 +122,7 @@ class SqlResourcesOperations:
         resource_group_name: str,
         account_name: str,
         database_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.SqlDatabaseGetResults":
         """Gets the SQL database under an existing Azure Cosmos DB database account with the provided
         name.
@@ -186,7 +186,7 @@ class SqlResourcesOperations:
         account_name: str,
         database_name: str,
         create_update_sql_database_parameters: "_models.SqlDatabaseCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.SqlDatabaseGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.SqlDatabaseGetResults"]]
         error_map = {
@@ -243,7 +243,7 @@ class SqlResourcesOperations:
         account_name: str,
         database_name: str,
         create_update_sql_database_parameters: "_models.SqlDatabaseCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.SqlDatabaseGetResults"]:
         """Create or update an Azure Cosmos DB SQL database.
 
@@ -258,8 +258,8 @@ class SqlResourcesOperations:
         :type create_update_sql_database_parameters: ~azure.mgmt.cosmosdb.models.SqlDatabaseCreateUpdateParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either SqlDatabaseGetResults or the result of cls(response)
@@ -319,7 +319,7 @@ class SqlResourcesOperations:
         resource_group_name: str,
         account_name: str,
         database_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -363,7 +363,7 @@ class SqlResourcesOperations:
         resource_group_name: str,
         account_name: str,
         database_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller[None]:
         """Deletes an existing Azure Cosmos DB SQL database.
 
@@ -375,8 +375,8 @@ class SqlResourcesOperations:
         :type database_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -432,7 +432,7 @@ class SqlResourcesOperations:
         resource_group_name: str,
         account_name: str,
         database_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.ThroughputSettingsGetResults":
         """Gets the RUs per second of the SQL database under an existing Azure Cosmos DB database account
         with the provided name.
@@ -496,7 +496,7 @@ class SqlResourcesOperations:
         account_name: str,
         database_name: str,
         update_throughput_parameters: "_models.ThroughputSettingsUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.ThroughputSettingsGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.ThroughputSettingsGetResults"]]
         error_map = {
@@ -553,7 +553,7 @@ class SqlResourcesOperations:
         account_name: str,
         database_name: str,
         update_throughput_parameters: "_models.ThroughputSettingsUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.ThroughputSettingsGetResults"]:
         """Update RUs per second of an Azure Cosmos DB SQL database.
 
@@ -568,8 +568,8 @@ class SqlResourcesOperations:
         :type update_throughput_parameters: ~azure.mgmt.cosmosdb.models.ThroughputSettingsUpdateParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the result of cls(response)
@@ -629,7 +629,7 @@ class SqlResourcesOperations:
         resource_group_name: str,
         account_name: str,
         database_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.ThroughputSettingsGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.ThroughputSettingsGetResults"]]
         error_map = {
@@ -680,7 +680,7 @@ class SqlResourcesOperations:
         resource_group_name: str,
         account_name: str,
         database_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.ThroughputSettingsGetResults"]:
         """Migrate an Azure Cosmos DB SQL database from manual throughput to autoscale.
 
@@ -692,8 +692,8 @@ class SqlResourcesOperations:
         :type database_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the result of cls(response)
@@ -752,7 +752,7 @@ class SqlResourcesOperations:
         resource_group_name: str,
         account_name: str,
         database_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.ThroughputSettingsGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.ThroughputSettingsGetResults"]]
         error_map = {
@@ -803,7 +803,7 @@ class SqlResourcesOperations:
         resource_group_name: str,
         account_name: str,
         database_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.ThroughputSettingsGetResults"]:
         """Migrate an Azure Cosmos DB SQL database from autoscale to manual throughput.
 
@@ -815,8 +815,8 @@ class SqlResourcesOperations:
         :type database_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the result of cls(response)
@@ -875,7 +875,7 @@ class SqlResourcesOperations:
         resource_group_name: str,
         account_name: str,
         database_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.SqlContainerListResult"]:
         """Lists the SQL container under an existing Azure Cosmos DB database account.
 
@@ -954,7 +954,7 @@ class SqlResourcesOperations:
         account_name: str,
         database_name: str,
         container_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.SqlContainerGetResults":
         """Gets the SQL container under an existing Azure Cosmos DB database account.
 
@@ -1021,7 +1021,7 @@ class SqlResourcesOperations:
         database_name: str,
         container_name: str,
         create_update_sql_container_parameters: "_models.SqlContainerCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.SqlContainerGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.SqlContainerGetResults"]]
         error_map = {
@@ -1080,7 +1080,7 @@ class SqlResourcesOperations:
         database_name: str,
         container_name: str,
         create_update_sql_container_parameters: "_models.SqlContainerCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.SqlContainerGetResults"]:
         """Create or update an Azure Cosmos DB SQL container.
 
@@ -1097,8 +1097,8 @@ class SqlResourcesOperations:
         :type create_update_sql_container_parameters: ~azure.mgmt.cosmosdb.models.SqlContainerCreateUpdateParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either SqlContainerGetResults or the result of cls(response)
@@ -1161,7 +1161,7 @@ class SqlResourcesOperations:
         account_name: str,
         database_name: str,
         container_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -1207,7 +1207,7 @@ class SqlResourcesOperations:
         account_name: str,
         database_name: str,
         container_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller[None]:
         """Deletes an existing Azure Cosmos DB SQL container.
 
@@ -1221,8 +1221,8 @@ class SqlResourcesOperations:
         :type container_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -1281,7 +1281,7 @@ class SqlResourcesOperations:
         account_name: str,
         database_name: str,
         container_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.ThroughputSettingsGetResults":
         """Gets the RUs per second of the SQL container under an existing Azure Cosmos DB database
         account.
@@ -1349,7 +1349,7 @@ class SqlResourcesOperations:
         database_name: str,
         container_name: str,
         update_throughput_parameters: "_models.ThroughputSettingsUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.ThroughputSettingsGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.ThroughputSettingsGetResults"]]
         error_map = {
@@ -1408,7 +1408,7 @@ class SqlResourcesOperations:
         database_name: str,
         container_name: str,
         update_throughput_parameters: "_models.ThroughputSettingsUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.ThroughputSettingsGetResults"]:
         """Update RUs per second of an Azure Cosmos DB SQL container.
 
@@ -1425,8 +1425,8 @@ class SqlResourcesOperations:
         :type update_throughput_parameters: ~azure.mgmt.cosmosdb.models.ThroughputSettingsUpdateParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the result of cls(response)
@@ -1489,7 +1489,7 @@ class SqlResourcesOperations:
         account_name: str,
         database_name: str,
         container_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.ThroughputSettingsGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.ThroughputSettingsGetResults"]]
         error_map = {
@@ -1542,7 +1542,7 @@ class SqlResourcesOperations:
         account_name: str,
         database_name: str,
         container_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.ThroughputSettingsGetResults"]:
         """Migrate an Azure Cosmos DB SQL container from manual throughput to autoscale.
 
@@ -1556,8 +1556,8 @@ class SqlResourcesOperations:
         :type container_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the result of cls(response)
@@ -1619,7 +1619,7 @@ class SqlResourcesOperations:
         account_name: str,
         database_name: str,
         container_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.ThroughputSettingsGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.ThroughputSettingsGetResults"]]
         error_map = {
@@ -1672,7 +1672,7 @@ class SqlResourcesOperations:
         account_name: str,
         database_name: str,
         container_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.ThroughputSettingsGetResults"]:
         """Migrate an Azure Cosmos DB SQL container from autoscale to manual throughput.
 
@@ -1686,8 +1686,8 @@ class SqlResourcesOperations:
         :type container_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the result of cls(response)
@@ -1749,7 +1749,7 @@ class SqlResourcesOperations:
         account_name: str,
         database_name: str,
         container_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.SqlStoredProcedureListResult"]:
         """Lists the SQL storedProcedure under an existing Azure Cosmos DB database account.
 
@@ -1832,7 +1832,7 @@ class SqlResourcesOperations:
         database_name: str,
         container_name: str,
         stored_procedure_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.SqlStoredProcedureGetResults":
         """Gets the SQL storedProcedure under an existing Azure Cosmos DB database account.
 
@@ -1903,7 +1903,7 @@ class SqlResourcesOperations:
         container_name: str,
         stored_procedure_name: str,
         create_update_sql_stored_procedure_parameters: "_models.SqlStoredProcedureCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.SqlStoredProcedureGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.SqlStoredProcedureGetResults"]]
         error_map = {
@@ -1964,7 +1964,7 @@ class SqlResourcesOperations:
         container_name: str,
         stored_procedure_name: str,
         create_update_sql_stored_procedure_parameters: "_models.SqlStoredProcedureCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.SqlStoredProcedureGetResults"]:
         """Create or update an Azure Cosmos DB SQL storedProcedure.
 
@@ -1983,8 +1983,8 @@ class SqlResourcesOperations:
         :type create_update_sql_stored_procedure_parameters: ~azure.mgmt.cosmosdb.models.SqlStoredProcedureCreateUpdateParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either SqlStoredProcedureGetResults or the result of cls(response)
@@ -2050,7 +2050,7 @@ class SqlResourcesOperations:
         database_name: str,
         container_name: str,
         stored_procedure_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -2098,7 +2098,7 @@ class SqlResourcesOperations:
         database_name: str,
         container_name: str,
         stored_procedure_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller[None]:
         """Deletes an existing Azure Cosmos DB SQL storedProcedure.
 
@@ -2114,8 +2114,8 @@ class SqlResourcesOperations:
         :type stored_procedure_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -2176,7 +2176,7 @@ class SqlResourcesOperations:
         account_name: str,
         database_name: str,
         container_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.SqlUserDefinedFunctionListResult"]:
         """Lists the SQL userDefinedFunction under an existing Azure Cosmos DB database account.
 
@@ -2259,7 +2259,7 @@ class SqlResourcesOperations:
         database_name: str,
         container_name: str,
         user_defined_function_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.SqlUserDefinedFunctionGetResults":
         """Gets the SQL userDefinedFunction under an existing Azure Cosmos DB database account.
 
@@ -2330,7 +2330,7 @@ class SqlResourcesOperations:
         container_name: str,
         user_defined_function_name: str,
         create_update_sql_user_defined_function_parameters: "_models.SqlUserDefinedFunctionCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.SqlUserDefinedFunctionGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.SqlUserDefinedFunctionGetResults"]]
         error_map = {
@@ -2391,7 +2391,7 @@ class SqlResourcesOperations:
         container_name: str,
         user_defined_function_name: str,
         create_update_sql_user_defined_function_parameters: "_models.SqlUserDefinedFunctionCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.SqlUserDefinedFunctionGetResults"]:
         """Create or update an Azure Cosmos DB SQL userDefinedFunction.
 
@@ -2410,8 +2410,8 @@ class SqlResourcesOperations:
         :type create_update_sql_user_defined_function_parameters: ~azure.mgmt.cosmosdb.models.SqlUserDefinedFunctionCreateUpdateParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either SqlUserDefinedFunctionGetResults or the result of cls(response)
@@ -2477,7 +2477,7 @@ class SqlResourcesOperations:
         database_name: str,
         container_name: str,
         user_defined_function_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -2525,7 +2525,7 @@ class SqlResourcesOperations:
         database_name: str,
         container_name: str,
         user_defined_function_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller[None]:
         """Deletes an existing Azure Cosmos DB SQL userDefinedFunction.
 
@@ -2541,8 +2541,8 @@ class SqlResourcesOperations:
         :type user_defined_function_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -2603,7 +2603,7 @@ class SqlResourcesOperations:
         account_name: str,
         database_name: str,
         container_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.SqlTriggerListResult"]:
         """Lists the SQL trigger under an existing Azure Cosmos DB database account.
 
@@ -2686,7 +2686,7 @@ class SqlResourcesOperations:
         database_name: str,
         container_name: str,
         trigger_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.SqlTriggerGetResults":
         """Gets the SQL trigger under an existing Azure Cosmos DB database account.
 
@@ -2757,7 +2757,7 @@ class SqlResourcesOperations:
         container_name: str,
         trigger_name: str,
         create_update_sql_trigger_parameters: "_models.SqlTriggerCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.SqlTriggerGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.SqlTriggerGetResults"]]
         error_map = {
@@ -2818,7 +2818,7 @@ class SqlResourcesOperations:
         container_name: str,
         trigger_name: str,
         create_update_sql_trigger_parameters: "_models.SqlTriggerCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.SqlTriggerGetResults"]:
         """Create or update an Azure Cosmos DB SQL trigger.
 
@@ -2837,8 +2837,8 @@ class SqlResourcesOperations:
         :type create_update_sql_trigger_parameters: ~azure.mgmt.cosmosdb.models.SqlTriggerCreateUpdateParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either SqlTriggerGetResults or the result of cls(response)
@@ -2904,7 +2904,7 @@ class SqlResourcesOperations:
         database_name: str,
         container_name: str,
         trigger_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -2952,7 +2952,7 @@ class SqlResourcesOperations:
         database_name: str,
         container_name: str,
         trigger_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller[None]:
         """Deletes an existing Azure Cosmos DB SQL trigger.
 
@@ -2968,8 +2968,8 @@ class SqlResourcesOperations:
         :type trigger_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -3031,7 +3031,7 @@ class SqlResourcesOperations:
         database_name: str,
         container_name: str,
         location: "_models.ContinuousBackupRestoreLocation",
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.BackupInformation"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.BackupInformation"]]
         error_map = {
@@ -3090,7 +3090,7 @@ class SqlResourcesOperations:
         database_name: str,
         container_name: str,
         location: "_models.ContinuousBackupRestoreLocation",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.BackupInformation"]:
         """Retrieves continuous backup information for a container resource.
 
@@ -3106,8 +3106,8 @@ class SqlResourcesOperations:
         :type location: ~azure.mgmt.cosmosdb.models.ContinuousBackupRestoreLocation
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either BackupInformation or the result of cls(response)
@@ -3169,7 +3169,7 @@ class SqlResourcesOperations:
         role_definition_id: str,
         resource_group_name: str,
         account_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.SqlRoleDefinitionGetResults":
         """Retrieves the properties of an existing Azure Cosmos DB SQL Role Definition with the given Id.
 
@@ -3232,7 +3232,7 @@ class SqlResourcesOperations:
         resource_group_name: str,
         account_name: str,
         create_update_sql_role_definition_parameters: "_models.SqlRoleDefinitionCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.SqlRoleDefinitionGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.SqlRoleDefinitionGetResults"]]
         error_map = {
@@ -3289,7 +3289,7 @@ class SqlResourcesOperations:
         resource_group_name: str,
         account_name: str,
         create_update_sql_role_definition_parameters: "_models.SqlRoleDefinitionCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.SqlRoleDefinitionGetResults"]:
         """Creates or updates an Azure Cosmos DB SQL Role Definition.
 
@@ -3304,8 +3304,8 @@ class SqlResourcesOperations:
         :type create_update_sql_role_definition_parameters: ~azure.mgmt.cosmosdb.models.SqlRoleDefinitionCreateUpdateParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either SqlRoleDefinitionGetResults or the result of cls(response)
@@ -3365,7 +3365,7 @@ class SqlResourcesOperations:
         role_definition_id: str,
         resource_group_name: str,
         account_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -3411,7 +3411,7 @@ class SqlResourcesOperations:
         role_definition_id: str,
         resource_group_name: str,
         account_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller[None]:
         """Deletes an existing Azure Cosmos DB SQL Role Definition.
 
@@ -3423,8 +3423,8 @@ class SqlResourcesOperations:
         :type account_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -3479,7 +3479,7 @@ class SqlResourcesOperations:
         self,
         resource_group_name: str,
         account_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.SqlRoleDefinitionListResult"]:
         """Retrieves the list of all Azure Cosmos DB SQL Role Definitions.
 
@@ -3554,7 +3554,7 @@ class SqlResourcesOperations:
         role_assignment_id: str,
         resource_group_name: str,
         account_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.SqlRoleAssignmentGetResults":
         """Retrieves the properties of an existing Azure Cosmos DB SQL Role Assignment with the given Id.
 
@@ -3617,7 +3617,7 @@ class SqlResourcesOperations:
         resource_group_name: str,
         account_name: str,
         create_update_sql_role_assignment_parameters: "_models.SqlRoleAssignmentCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.SqlRoleAssignmentGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.SqlRoleAssignmentGetResults"]]
         error_map = {
@@ -3674,7 +3674,7 @@ class SqlResourcesOperations:
         resource_group_name: str,
         account_name: str,
         create_update_sql_role_assignment_parameters: "_models.SqlRoleAssignmentCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.SqlRoleAssignmentGetResults"]:
         """Creates or updates an Azure Cosmos DB SQL Role Assignment.
 
@@ -3689,8 +3689,8 @@ class SqlResourcesOperations:
         :type create_update_sql_role_assignment_parameters: ~azure.mgmt.cosmosdb.models.SqlRoleAssignmentCreateUpdateParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either SqlRoleAssignmentGetResults or the result of cls(response)
@@ -3750,7 +3750,7 @@ class SqlResourcesOperations:
         role_assignment_id: str,
         resource_group_name: str,
         account_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -3796,7 +3796,7 @@ class SqlResourcesOperations:
         role_assignment_id: str,
         resource_group_name: str,
         account_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller[None]:
         """Deletes an existing Azure Cosmos DB SQL Role Assignment.
 
@@ -3808,8 +3808,8 @@ class SqlResourcesOperations:
         :type account_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -3864,7 +3864,7 @@ class SqlResourcesOperations:
         self,
         resource_group_name: str,
         account_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.SqlRoleAssignmentListResult"]:
         """Retrieves the list of all Azure Cosmos DB SQL Role Assignments.
 

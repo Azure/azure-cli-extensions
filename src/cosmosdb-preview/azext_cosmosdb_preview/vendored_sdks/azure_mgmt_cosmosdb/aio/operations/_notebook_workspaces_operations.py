@@ -47,7 +47,7 @@ class NotebookWorkspacesOperations:
         self,
         resource_group_name: str,
         account_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.NotebookWorkspaceListResult"]:
         """Gets the notebook workspace resources of an existing Cosmos DB account.
 
@@ -123,7 +123,7 @@ class NotebookWorkspacesOperations:
         resource_group_name: str,
         account_name: str,
         notebook_workspace_name: Union[str, "_models.NotebookWorkspaceName"],
-        **kwargs: Any
+        **kwargs
     ) -> "_models.NotebookWorkspace":
         """Gets the notebook workspace for a Cosmos DB account.
 
@@ -187,7 +187,7 @@ class NotebookWorkspacesOperations:
         account_name: str,
         notebook_workspace_name: Union[str, "_models.NotebookWorkspaceName"],
         notebook_create_update_parameters: "_models.NotebookWorkspaceCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> "_models.NotebookWorkspace":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.NotebookWorkspace"]
         error_map = {
@@ -243,7 +243,7 @@ class NotebookWorkspacesOperations:
         account_name: str,
         notebook_workspace_name: Union[str, "_models.NotebookWorkspaceName"],
         notebook_create_update_parameters: "_models.NotebookWorkspaceCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.NotebookWorkspace"]:
         """Creates the notebook workspace for a Cosmos DB account.
 
@@ -258,8 +258,8 @@ class NotebookWorkspacesOperations:
         :type notebook_create_update_parameters: ~azure.mgmt.cosmosdb.models.NotebookWorkspaceCreateUpdateParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either NotebookWorkspace or the result of cls(response)
@@ -319,7 +319,7 @@ class NotebookWorkspacesOperations:
         resource_group_name: str,
         account_name: str,
         notebook_workspace_name: Union[str, "_models.NotebookWorkspaceName"],
-        **kwargs: Any
+        **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -366,7 +366,7 @@ class NotebookWorkspacesOperations:
         resource_group_name: str,
         account_name: str,
         notebook_workspace_name: Union[str, "_models.NotebookWorkspaceName"],
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller[None]:
         """Deletes the notebook workspace for a Cosmos DB account.
 
@@ -378,8 +378,8 @@ class NotebookWorkspacesOperations:
         :type notebook_workspace_name: str or ~azure.mgmt.cosmosdb.models.NotebookWorkspaceName
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -435,7 +435,7 @@ class NotebookWorkspacesOperations:
         resource_group_name: str,
         account_name: str,
         notebook_workspace_name: Union[str, "_models.NotebookWorkspaceName"],
-        **kwargs: Any
+        **kwargs
     ) -> "_models.NotebookWorkspaceConnectionInfoResult":
         """Retrieves the connection info for the notebook workspace.
 
@@ -498,7 +498,7 @@ class NotebookWorkspacesOperations:
         resource_group_name: str,
         account_name: str,
         notebook_workspace_name: Union[str, "_models.NotebookWorkspaceName"],
-        **kwargs: Any
+        **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -545,7 +545,7 @@ class NotebookWorkspacesOperations:
         resource_group_name: str,
         account_name: str,
         notebook_workspace_name: Union[str, "_models.NotebookWorkspaceName"],
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller[None]:
         """Regenerates the auth token for the notebook workspace.
 
@@ -557,8 +557,8 @@ class NotebookWorkspacesOperations:
         :type notebook_workspace_name: str or ~azure.mgmt.cosmosdb.models.NotebookWorkspaceName
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -614,7 +614,7 @@ class NotebookWorkspacesOperations:
         resource_group_name: str,
         account_name: str,
         notebook_workspace_name: Union[str, "_models.NotebookWorkspaceName"],
-        **kwargs: Any
+        **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -661,7 +661,7 @@ class NotebookWorkspacesOperations:
         resource_group_name: str,
         account_name: str,
         notebook_workspace_name: Union[str, "_models.NotebookWorkspaceName"],
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller[None]:
         """Starts the notebook workspace.
 
@@ -673,8 +673,8 @@ class NotebookWorkspacesOperations:
         :type notebook_workspace_name: str or ~azure.mgmt.cosmosdb.models.NotebookWorkspaceName
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)

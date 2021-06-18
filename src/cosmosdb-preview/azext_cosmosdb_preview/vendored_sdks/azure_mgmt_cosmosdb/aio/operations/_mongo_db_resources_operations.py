@@ -47,7 +47,7 @@ class MongoDBResourcesOperations:
         self,
         resource_group_name: str,
         account_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.MongoDBDatabaseListResult"]:
         """Lists the MongoDB databases under an existing Azure Cosmos DB database account.
 
@@ -122,7 +122,7 @@ class MongoDBResourcesOperations:
         resource_group_name: str,
         account_name: str,
         database_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.MongoDBDatabaseGetResults":
         """Gets the MongoDB databases under an existing Azure Cosmos DB database account with the provided
         name.
@@ -186,7 +186,7 @@ class MongoDBResourcesOperations:
         account_name: str,
         database_name: str,
         create_update_mongo_db_database_parameters: "_models.MongoDBDatabaseCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.MongoDBDatabaseGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.MongoDBDatabaseGetResults"]]
         error_map = {
@@ -243,7 +243,7 @@ class MongoDBResourcesOperations:
         account_name: str,
         database_name: str,
         create_update_mongo_db_database_parameters: "_models.MongoDBDatabaseCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.MongoDBDatabaseGetResults"]:
         """Create or updates Azure Cosmos DB MongoDB database.
 
@@ -258,8 +258,8 @@ class MongoDBResourcesOperations:
         :type create_update_mongo_db_database_parameters: ~azure.mgmt.cosmosdb.models.MongoDBDatabaseCreateUpdateParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either MongoDBDatabaseGetResults or the result of cls(response)
@@ -319,7 +319,7 @@ class MongoDBResourcesOperations:
         resource_group_name: str,
         account_name: str,
         database_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -363,7 +363,7 @@ class MongoDBResourcesOperations:
         resource_group_name: str,
         account_name: str,
         database_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller[None]:
         """Deletes an existing Azure Cosmos DB MongoDB database.
 
@@ -375,8 +375,8 @@ class MongoDBResourcesOperations:
         :type database_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -432,7 +432,7 @@ class MongoDBResourcesOperations:
         resource_group_name: str,
         account_name: str,
         database_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.ThroughputSettingsGetResults":
         """Gets the RUs per second of the MongoDB database under an existing Azure Cosmos DB database
         account with the provided name.
@@ -496,7 +496,7 @@ class MongoDBResourcesOperations:
         account_name: str,
         database_name: str,
         update_throughput_parameters: "_models.ThroughputSettingsUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.ThroughputSettingsGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.ThroughputSettingsGetResults"]]
         error_map = {
@@ -553,7 +553,7 @@ class MongoDBResourcesOperations:
         account_name: str,
         database_name: str,
         update_throughput_parameters: "_models.ThroughputSettingsUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.ThroughputSettingsGetResults"]:
         """Update RUs per second of the an Azure Cosmos DB MongoDB database.
 
@@ -568,8 +568,8 @@ class MongoDBResourcesOperations:
         :type update_throughput_parameters: ~azure.mgmt.cosmosdb.models.ThroughputSettingsUpdateParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the result of cls(response)
@@ -629,7 +629,7 @@ class MongoDBResourcesOperations:
         resource_group_name: str,
         account_name: str,
         database_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.ThroughputSettingsGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.ThroughputSettingsGetResults"]]
         error_map = {
@@ -680,7 +680,7 @@ class MongoDBResourcesOperations:
         resource_group_name: str,
         account_name: str,
         database_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.ThroughputSettingsGetResults"]:
         """Migrate an Azure Cosmos DB MongoDB database from manual throughput to autoscale.
 
@@ -692,8 +692,8 @@ class MongoDBResourcesOperations:
         :type database_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the result of cls(response)
@@ -752,7 +752,7 @@ class MongoDBResourcesOperations:
         resource_group_name: str,
         account_name: str,
         database_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.ThroughputSettingsGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.ThroughputSettingsGetResults"]]
         error_map = {
@@ -803,7 +803,7 @@ class MongoDBResourcesOperations:
         resource_group_name: str,
         account_name: str,
         database_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.ThroughputSettingsGetResults"]:
         """Migrate an Azure Cosmos DB MongoDB database from autoscale to manual throughput.
 
@@ -815,8 +815,8 @@ class MongoDBResourcesOperations:
         :type database_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the result of cls(response)
@@ -875,7 +875,7 @@ class MongoDBResourcesOperations:
         resource_group_name: str,
         account_name: str,
         database_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.MongoDBCollectionListResult"]:
         """Lists the MongoDB collection under an existing Azure Cosmos DB database account.
 
@@ -954,7 +954,7 @@ class MongoDBResourcesOperations:
         account_name: str,
         database_name: str,
         collection_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.MongoDBCollectionGetResults":
         """Gets the MongoDB collection under an existing Azure Cosmos DB database account.
 
@@ -1021,7 +1021,7 @@ class MongoDBResourcesOperations:
         database_name: str,
         collection_name: str,
         create_update_mongo_db_collection_parameters: "_models.MongoDBCollectionCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.MongoDBCollectionGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.MongoDBCollectionGetResults"]]
         error_map = {
@@ -1080,7 +1080,7 @@ class MongoDBResourcesOperations:
         database_name: str,
         collection_name: str,
         create_update_mongo_db_collection_parameters: "_models.MongoDBCollectionCreateUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.MongoDBCollectionGetResults"]:
         """Create or update an Azure Cosmos DB MongoDB Collection.
 
@@ -1097,8 +1097,8 @@ class MongoDBResourcesOperations:
         :type create_update_mongo_db_collection_parameters: ~azure.mgmt.cosmosdb.models.MongoDBCollectionCreateUpdateParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either MongoDBCollectionGetResults or the result of cls(response)
@@ -1161,7 +1161,7 @@ class MongoDBResourcesOperations:
         account_name: str,
         database_name: str,
         collection_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -1207,7 +1207,7 @@ class MongoDBResourcesOperations:
         account_name: str,
         database_name: str,
         collection_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller[None]:
         """Deletes an existing Azure Cosmos DB MongoDB Collection.
 
@@ -1221,8 +1221,8 @@ class MongoDBResourcesOperations:
         :type collection_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -1281,7 +1281,7 @@ class MongoDBResourcesOperations:
         account_name: str,
         database_name: str,
         collection_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.ThroughputSettingsGetResults":
         """Gets the RUs per second of the MongoDB collection under an existing Azure Cosmos DB database
         account with the provided name.
@@ -1349,7 +1349,7 @@ class MongoDBResourcesOperations:
         database_name: str,
         collection_name: str,
         update_throughput_parameters: "_models.ThroughputSettingsUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.ThroughputSettingsGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.ThroughputSettingsGetResults"]]
         error_map = {
@@ -1408,7 +1408,7 @@ class MongoDBResourcesOperations:
         database_name: str,
         collection_name: str,
         update_throughput_parameters: "_models.ThroughputSettingsUpdateParameters",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.ThroughputSettingsGetResults"]:
         """Update the RUs per second of an Azure Cosmos DB MongoDB collection.
 
@@ -1425,8 +1425,8 @@ class MongoDBResourcesOperations:
         :type update_throughput_parameters: ~azure.mgmt.cosmosdb.models.ThroughputSettingsUpdateParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the result of cls(response)
@@ -1489,7 +1489,7 @@ class MongoDBResourcesOperations:
         account_name: str,
         database_name: str,
         collection_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.ThroughputSettingsGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.ThroughputSettingsGetResults"]]
         error_map = {
@@ -1542,7 +1542,7 @@ class MongoDBResourcesOperations:
         account_name: str,
         database_name: str,
         collection_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.ThroughputSettingsGetResults"]:
         """Migrate an Azure Cosmos DB MongoDB collection from manual throughput to autoscale.
 
@@ -1556,8 +1556,8 @@ class MongoDBResourcesOperations:
         :type collection_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the result of cls(response)
@@ -1619,7 +1619,7 @@ class MongoDBResourcesOperations:
         account_name: str,
         database_name: str,
         collection_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.ThroughputSettingsGetResults"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.ThroughputSettingsGetResults"]]
         error_map = {
@@ -1672,7 +1672,7 @@ class MongoDBResourcesOperations:
         account_name: str,
         database_name: str,
         collection_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.ThroughputSettingsGetResults"]:
         """Migrate an Azure Cosmos DB MongoDB collection from autoscale to manual throughput.
 
@@ -1686,8 +1686,8 @@ class MongoDBResourcesOperations:
         :type collection_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ThroughputSettingsGetResults or the result of cls(response)

@@ -48,7 +48,7 @@ class RestorableSqlContainersOperations:
         restorable_sql_database_rid: Optional[str] = None,
         start_time: Optional[str] = None,
         end_time: Optional[str] = None,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.RestorableSqlContainersListResult"]:
         """Show the event feed of all mutations done on all the Azure Cosmos DB SQL containers under a
         specific database.  This helps in scenario where container was accidentally deleted.  This API

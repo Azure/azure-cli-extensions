@@ -45,7 +45,7 @@ class RestorableSqlDatabasesOperations:
         self,
         location: str,
         instance_id: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.RestorableSqlDatabasesListResult"]:
         """Show the event feed of all mutations done on all the Azure Cosmos DB SQL databases under the
         restorable account.  This helps in scenario where database was accidentally deleted to get the

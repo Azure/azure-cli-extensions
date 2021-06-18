@@ -47,7 +47,7 @@ class RestorableMongodbResourcesOperations:
         instance_id: str,
         restore_location: Optional[str] = None,
         restore_timestamp_in_utc: Optional[str] = None,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.RestorableMongodbResourcesListResult"]:
         """Return a list of database and collection combo that exist on the account at the given timestamp
         and location. This helps in scenarios to validate what resources exist at given timestamp and

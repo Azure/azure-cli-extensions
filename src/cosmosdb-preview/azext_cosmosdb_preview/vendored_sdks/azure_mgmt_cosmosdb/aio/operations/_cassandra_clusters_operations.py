@@ -45,7 +45,7 @@ class CassandraClustersOperations:
 
     def list_by_subscription(
         self,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.ListClusters"]:
         """List all managed Cassandra clusters in this subscription.
 
@@ -112,7 +112,7 @@ class CassandraClustersOperations:
     def list_by_resource_group(
         self,
         resource_group_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.ListClusters"]:
         """List all managed Cassandra clusters in this resource group.
 
@@ -183,7 +183,7 @@ class CassandraClustersOperations:
         self,
         resource_group_name: str,
         cluster_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.ClusterResource":
         """Get the properties of a managed Cassandra cluster.
 
@@ -209,7 +209,7 @@ class CassandraClustersOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -241,7 +241,7 @@ class CassandraClustersOperations:
         self,
         resource_group_name: str,
         cluster_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -256,7 +256,7 @@ class CassandraClustersOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -285,7 +285,7 @@ class CassandraClustersOperations:
         self,
         resource_group_name: str,
         cluster_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller[None]:
         """Deletes a managed Cassandra cluster.
 
@@ -295,8 +295,8 @@ class CassandraClustersOperations:
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -328,7 +328,7 @@ class CassandraClustersOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -350,7 +350,7 @@ class CassandraClustersOperations:
         resource_group_name: str,
         cluster_name: str,
         body: "_models.ClusterResource",
-        **kwargs: Any
+        **kwargs
     ) -> "_models.ClusterResource":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ClusterResource"]
         error_map = {
@@ -366,7 +366,7 @@ class CassandraClustersOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -407,7 +407,7 @@ class CassandraClustersOperations:
         resource_group_name: str,
         cluster_name: str,
         body: "_models.ClusterResource",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.ClusterResource"]:
         """Create or update a managed Cassandra cluster. When updating, you must specify all writable
         properties. To update only some properties, use PATCH.
@@ -420,8 +420,8 @@ class CassandraClustersOperations:
         :type body: ~azure.mgmt.cosmosdb.models.ClusterResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ClusterResource or the result of cls(response)
@@ -457,7 +457,7 @@ class CassandraClustersOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -479,7 +479,7 @@ class CassandraClustersOperations:
         resource_group_name: str,
         cluster_name: str,
         body: "_models.ClusterResource",
-        **kwargs: Any
+        **kwargs
     ) -> "_models.ClusterResource":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ClusterResource"]
         error_map = {
@@ -495,7 +495,7 @@ class CassandraClustersOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -536,7 +536,7 @@ class CassandraClustersOperations:
         resource_group_name: str,
         cluster_name: str,
         body: "_models.ClusterResource",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.ClusterResource"]:
         """Updates some of the properties of a managed Cassandra cluster.
 
@@ -548,8 +548,8 @@ class CassandraClustersOperations:
         :type body: ~azure.mgmt.cosmosdb.models.ClusterResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ClusterResource or the result of cls(response)
@@ -585,7 +585,7 @@ class CassandraClustersOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -607,7 +607,7 @@ class CassandraClustersOperations:
         resource_group_name: str,
         cluster_name: str,
         body: "_models.RepairPostBody",
-        **kwargs: Any
+        **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -623,7 +623,7 @@ class CassandraClustersOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -657,7 +657,7 @@ class CassandraClustersOperations:
         resource_group_name: str,
         cluster_name: str,
         body: "_models.RepairPostBody",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller[None]:
         """Request that repair begin on this cluster as soon as possible.
 
@@ -669,8 +669,8 @@ class CassandraClustersOperations:
         :type body: ~azure.mgmt.cosmosdb.models.RepairPostBody
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -703,7 +703,7 @@ class CassandraClustersOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -724,7 +724,7 @@ class CassandraClustersOperations:
         self,
         resource_group_name: str,
         cluster_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.ClusterNodeStatus"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.ClusterNodeStatus"]]
         error_map = {
@@ -739,7 +739,7 @@ class CassandraClustersOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -773,7 +773,7 @@ class CassandraClustersOperations:
         self,
         resource_group_name: str,
         cluster_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.ClusterNodeStatus"]:
         """Request the status of all nodes in the cluster (as returned by 'nodetool status').
 
@@ -783,8 +783,8 @@ class CassandraClustersOperations:
         :type cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ClusterNodeStatus or the result of cls(response)
@@ -819,7 +819,7 @@ class CassandraClustersOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -840,7 +840,7 @@ class CassandraClustersOperations:
         self,
         resource_group_name: str,
         cluster_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.ListBackups"]:
         """List the backups of this cluster that are available to restore.
 
@@ -872,7 +872,7 @@ class CassandraClustersOperations:
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-                    'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+                    'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -915,7 +915,7 @@ class CassandraClustersOperations:
         resource_group_name: str,
         cluster_name: str,
         backup_id: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.BackupResource":
         """Get the properties of an individual backup of this cluster that is available to restore.
 
@@ -943,7 +943,7 @@ class CassandraClustersOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
             'backupId': self._serialize.url("backup_id", backup_id, 'str', max_length=15, min_length=1, pattern=r'^[0-9]+$'),
         }
         url = self._client.format_url(url, **path_format_arguments)

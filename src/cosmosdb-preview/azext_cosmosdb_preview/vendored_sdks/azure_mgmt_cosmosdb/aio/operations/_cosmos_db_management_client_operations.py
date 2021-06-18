@@ -23,7 +23,7 @@ class CosmosDBManagementClientOperationsMixin:
 
     def location_list(
         self,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.LocationListResult"]:
         """List Cosmos DB locations and their properties.
 
@@ -90,7 +90,7 @@ class CosmosDBManagementClientOperationsMixin:
     async def location_get(
         self,
         location: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.LocationGetResult":
         """Get the properties of an existing Cosmos DB location.
 

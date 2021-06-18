@@ -47,7 +47,7 @@ class ServiceOperations:
         self,
         resource_group_name: str,
         account_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.ServiceResourceListResult"]:
         """Gets the status of service.
 
@@ -123,7 +123,7 @@ class ServiceOperations:
         account_name: str,
         service_name: str,
         create_update_parameters: "_models.ServiceResource",
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.ServiceResource"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.ServiceResource"]]
         error_map = {
@@ -180,7 +180,7 @@ class ServiceOperations:
         account_name: str,
         service_name: str,
         create_update_parameters: "_models.ServiceResource",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.ServiceResource"]:
         """Creates a service.
 
@@ -194,8 +194,8 @@ class ServiceOperations:
         :type create_update_parameters: ~azure.mgmt.cosmosdb.models.ServiceResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ServiceResource or the result of cls(response)
@@ -255,7 +255,7 @@ class ServiceOperations:
         resource_group_name: str,
         account_name: str,
         service_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.ServiceResource":
         """Gets the status of service.
 
@@ -317,7 +317,7 @@ class ServiceOperations:
         resource_group_name: str,
         account_name: str,
         service_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -363,7 +363,7 @@ class ServiceOperations:
         resource_group_name: str,
         account_name: str,
         service_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller[None]:
         """Deletes service with the given serviceName.
 
@@ -375,8 +375,8 @@ class ServiceOperations:
         :type service_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)

@@ -49,7 +49,7 @@ class CollectionPartitionRegionOperations:
         database_rid: str,
         collection_rid: str,
         filter: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.PartitionMetricListResult"]:
         """Retrieves the metrics determined by the given filter for the given collection and region, split
         by partition.

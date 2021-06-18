@@ -50,7 +50,7 @@ class PartitionKeyRangeIdRegionOperations:
         collection_rid: str,
         partition_key_range_id: str,
         filter: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.PartitionMetricListResult"]:
         """Retrieves the metrics determined by the given filter for the given partition key range id and
         region.

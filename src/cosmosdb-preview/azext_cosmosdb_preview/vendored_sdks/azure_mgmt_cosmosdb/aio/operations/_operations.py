@@ -43,7 +43,7 @@ class Operations:
 
     def list(
         self,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.OperationListResult"]:
         """Lists all of the available Cosmos DB Resource Provider operations.
 

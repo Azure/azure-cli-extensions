@@ -47,7 +47,7 @@ class PrivateEndpointConnectionsOperations:
         self,
         resource_group_name: str,
         account_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.PrivateEndpointConnectionListResult"]:
         """List all private endpoint connections on a Cosmos DB account.
 
@@ -122,7 +122,7 @@ class PrivateEndpointConnectionsOperations:
         resource_group_name: str,
         account_name: str,
         private_endpoint_connection_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.PrivateEndpointConnection":
         """Gets a private endpoint connection.
 
@@ -185,7 +185,7 @@ class PrivateEndpointConnectionsOperations:
         account_name: str,
         private_endpoint_connection_name: str,
         parameters: "_models.PrivateEndpointConnection",
-        **kwargs: Any
+        **kwargs
     ) -> Optional["_models.PrivateEndpointConnection"]:
         cls = kwargs.pop('cls', None)  # type: ClsType[Optional["_models.PrivateEndpointConnection"]]
         error_map = {
@@ -243,7 +243,7 @@ class PrivateEndpointConnectionsOperations:
         account_name: str,
         private_endpoint_connection_name: str,
         parameters: "_models.PrivateEndpointConnection",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.PrivateEndpointConnection"]:
         """Approve or reject a private endpoint connection with a given name.
 
@@ -257,8 +257,8 @@ class PrivateEndpointConnectionsOperations:
         :type parameters: ~azure.mgmt.cosmosdb.models.PrivateEndpointConnection
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either PrivateEndpointConnection or the result of cls(response)
@@ -318,7 +318,7 @@ class PrivateEndpointConnectionsOperations:
         resource_group_name: str,
         account_name: str,
         private_endpoint_connection_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -365,7 +365,7 @@ class PrivateEndpointConnectionsOperations:
         resource_group_name: str,
         account_name: str,
         private_endpoint_connection_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller[None]:
         """Deletes a private endpoint connection with a given name.
 
@@ -377,8 +377,8 @@ class PrivateEndpointConnectionsOperations:
         :type private_endpoint_connection_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)

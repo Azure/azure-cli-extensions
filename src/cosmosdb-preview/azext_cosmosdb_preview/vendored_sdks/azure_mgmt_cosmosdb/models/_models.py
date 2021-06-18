@@ -2442,7 +2442,7 @@ class ServiceResourceProperties(msrest.serialization.Model):
 
     :param additional_properties: Unmatched properties from the message are deserialized to this
      collection.
-    :type additional_properties: dict[str, any]
+    :type additional_properties: dict[str, object]
     :ivar creation_time: Time of the last state change (ISO-8601 format).
     :vartype creation_time: ~datetime.datetime
     :param instance_size: Instance type for the service. Possible values include: "Cosmos.D4s",
@@ -2500,7 +2500,7 @@ class DataTransferServiceResourceProperties(ServiceResourceProperties):
 
     :param additional_properties: Unmatched properties from the message are deserialized to this
      collection.
-    :type additional_properties: dict[str, any]
+    :type additional_properties: dict[str, object]
     :ivar creation_time: Time of the last state change (ISO-8601 format).
     :vartype creation_time: ~datetime.datetime
     :param instance_size: Instance type for the service. Possible values include: "Cosmos.D4s",
@@ -7035,7 +7035,7 @@ class SqlDedicatedGatewayServiceResourceProperties(ServiceResourceProperties):
 
     :param additional_properties: Unmatched properties from the message are deserialized to this
      collection.
-    :type additional_properties: dict[str, any]
+    :type additional_properties: dict[str, object]
     :ivar creation_time: Time of the last state change (ISO-8601 format).
     :vartype creation_time: ~datetime.datetime
     :param instance_size: Instance type for the service. Possible values include: "Cosmos.D4s",

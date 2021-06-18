@@ -46,7 +46,7 @@ class PercentileOperations:
         resource_group_name: str,
         account_name: str,
         filter: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.PercentileMetricListResult"]:
         """Retrieves the metrics determined by the given filter for the given database account. This url
         is only for PBS and Replication Latency data.

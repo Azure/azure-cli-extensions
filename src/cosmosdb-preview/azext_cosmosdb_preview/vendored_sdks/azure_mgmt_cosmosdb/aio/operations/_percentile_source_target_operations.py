@@ -48,7 +48,7 @@ class PercentileSourceTargetOperations:
         source_region: str,
         target_region: str,
         filter: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.PercentileMetricListResult"]:
         """Retrieves the metrics determined by the given filter for the given account, source and target
         region. This url is only for PBS and Replication Latency data.

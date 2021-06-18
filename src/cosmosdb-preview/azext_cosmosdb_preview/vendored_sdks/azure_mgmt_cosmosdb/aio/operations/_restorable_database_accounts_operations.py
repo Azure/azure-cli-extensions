@@ -44,7 +44,7 @@ class RestorableDatabaseAccountsOperations:
     def list_by_location(
         self,
         location: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.RestorableDatabaseAccountsListResult"]:
         """Lists all the restorable Azure Cosmos DB database accounts available under the subscription and
         in a region.  This call requires
@@ -115,7 +115,7 @@ class RestorableDatabaseAccountsOperations:
 
     def list(
         self,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.RestorableDatabaseAccountsListResult"]:
         """Lists all the restorable Azure Cosmos DB database accounts available under the subscription.
         This call requires 'Microsoft.DocumentDB/locations/restorableDatabaseAccounts/read' permission.
@@ -184,7 +184,7 @@ class RestorableDatabaseAccountsOperations:
         self,
         location: str,
         instance_id: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.RestorableDatabaseAccountGetResult":
         """Retrieves the properties of an existing Azure Cosmos DB restorable database account.  This call
         requires 'Microsoft.DocumentDB/locations/restorableDatabaseAccounts/read/*' permission.

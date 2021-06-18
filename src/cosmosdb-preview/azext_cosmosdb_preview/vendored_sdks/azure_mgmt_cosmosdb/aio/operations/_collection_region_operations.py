@@ -49,7 +49,7 @@ class CollectionRegionOperations:
         database_rid: str,
         collection_rid: str,
         filter: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.MetricListResult"]:
         """Retrieves the metrics determined by the given filter for the given database account, collection
         and region.

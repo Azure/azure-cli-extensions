@@ -48,7 +48,7 @@ class CollectionPartitionOperations:
         database_rid: str,
         collection_rid: str,
         filter: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.PartitionMetricListResult"]:
         """Retrieves the metrics determined by the given filter for the given collection, split by
         partition.
@@ -137,7 +137,7 @@ class CollectionPartitionOperations:
         database_rid: str,
         collection_rid: str,
         filter: Optional[str] = None,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.PartitionUsagesResult"]:
         """Retrieves the usages (most recent storage data) for the given collection, split by partition.
 

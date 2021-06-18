@@ -45,7 +45,7 @@ class RestorableMongodbDatabasesOperations:
         self,
         location: str,
         instance_id: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.RestorableMongodbDatabasesListResult"]:
         """Show the event feed of all mutations done on all the Azure Cosmos DB MongoDB databases under
         the restorable account.  This helps in scenario where database was accidentally deleted to get

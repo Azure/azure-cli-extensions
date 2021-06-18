@@ -48,7 +48,7 @@ class CollectionOperations:
         database_rid: str,
         collection_rid: str,
         filter: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.MetricListResult"]:
         """Retrieves the metrics determined by the given filter for the given database account and
         collection.
@@ -137,7 +137,7 @@ class CollectionOperations:
         database_rid: str,
         collection_rid: str,
         filter: Optional[str] = None,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.UsagesResult"]:
         """Retrieves the usages (most recent storage data) for the given collection.
 
@@ -224,7 +224,7 @@ class CollectionOperations:
         account_name: str,
         database_rid: str,
         collection_rid: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.MetricDefinitionsListResult"]:
         """Retrieves metric definitions for the given collection.
 

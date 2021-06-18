@@ -47,7 +47,7 @@ class RestorableSqlResourcesOperations:
         instance_id: str,
         restore_location: Optional[str] = None,
         restore_timestamp_in_utc: Optional[str] = None,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.RestorableSqlResourcesListResult"]:
         """Return a list of database and container combo that exist on the account at the given timestamp
         and location. This helps in scenarios to validate what resources exist at given timestamp and

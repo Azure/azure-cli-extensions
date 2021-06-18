@@ -47,7 +47,7 @@ class CassandraDataCentersOperations:
         self,
         resource_group_name: str,
         cluster_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncIterable["_models.ListDataCenters"]:
         """List all data centers in a particular managed Cassandra cluster.
 
@@ -79,7 +79,7 @@ class CassandraDataCentersOperations:
                 path_format_arguments = {
                     'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
                     'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-                    'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+                    'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
                 }
                 url = self._client.format_url(url, **path_format_arguments)
                 # Construct parameters
@@ -122,7 +122,7 @@ class CassandraDataCentersOperations:
         resource_group_name: str,
         cluster_name: str,
         data_center_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> "_models.DataCenterResource":
         """Get the properties of a managed Cassandra data center.
 
@@ -150,8 +150,8 @@ class CassandraDataCentersOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
-            'dataCenterName': self._serialize.url("data_center_name", data_center_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
+            'dataCenterName': self._serialize.url("data_center_name", data_center_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -184,7 +184,7 @@ class CassandraDataCentersOperations:
         resource_group_name: str,
         cluster_name: str,
         data_center_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> None:
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         error_map = {
@@ -199,8 +199,8 @@ class CassandraDataCentersOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
-            'dataCenterName': self._serialize.url("data_center_name", data_center_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
+            'dataCenterName': self._serialize.url("data_center_name", data_center_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -230,7 +230,7 @@ class CassandraDataCentersOperations:
         resource_group_name: str,
         cluster_name: str,
         data_center_name: str,
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller[None]:
         """Delete a managed Cassandra data center.
 
@@ -242,8 +242,8 @@ class CassandraDataCentersOperations:
         :type data_center_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
@@ -276,8 +276,8 @@ class CassandraDataCentersOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
-            'dataCenterName': self._serialize.url("data_center_name", data_center_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
+            'dataCenterName': self._serialize.url("data_center_name", data_center_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -300,7 +300,7 @@ class CassandraDataCentersOperations:
         cluster_name: str,
         data_center_name: str,
         body: "_models.DataCenterResource",
-        **kwargs: Any
+        **kwargs
     ) -> "_models.DataCenterResource":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.DataCenterResource"]
         error_map = {
@@ -316,8 +316,8 @@ class CassandraDataCentersOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
-            'dataCenterName': self._serialize.url("data_center_name", data_center_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
+            'dataCenterName': self._serialize.url("data_center_name", data_center_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -359,7 +359,7 @@ class CassandraDataCentersOperations:
         cluster_name: str,
         data_center_name: str,
         body: "_models.DataCenterResource",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.DataCenterResource"]:
         """Create or update a managed Cassandra data center. When updating, overwrite all properties. To
         update only some properties, use PATCH.
@@ -374,8 +374,8 @@ class CassandraDataCentersOperations:
         :type body: ~azure.mgmt.cosmosdb.models.DataCenterResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either DataCenterResource or the result of cls(response)
@@ -412,8 +412,8 @@ class CassandraDataCentersOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
-            'dataCenterName': self._serialize.url("data_center_name", data_center_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
+            'dataCenterName': self._serialize.url("data_center_name", data_center_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
@@ -436,7 +436,7 @@ class CassandraDataCentersOperations:
         cluster_name: str,
         data_center_name: str,
         body: "_models.DataCenterResource",
-        **kwargs: Any
+        **kwargs
     ) -> "_models.DataCenterResource":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.DataCenterResource"]
         error_map = {
@@ -452,8 +452,8 @@ class CassandraDataCentersOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
-            'dataCenterName': self._serialize.url("data_center_name", data_center_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
+            'dataCenterName': self._serialize.url("data_center_name", data_center_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -495,7 +495,7 @@ class CassandraDataCentersOperations:
         cluster_name: str,
         data_center_name: str,
         body: "_models.DataCenterResource",
-        **kwargs: Any
+        **kwargs
     ) -> AsyncLROPoller["_models.DataCenterResource"]:
         """Update some of the properties of a managed Cassandra data center.
 
@@ -509,8 +509,8 @@ class CassandraDataCentersOperations:
         :type body: ~azure.mgmt.cosmosdb.models.DataCenterResource
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling.
-         Pass in False for this operation to not poll, or pass in your own initialized polling object for a personal polling strategy.
+        :keyword polling: Pass in True if you'd like the AsyncARMPolling polling method,
+         False for no polling, or your own initialized polling object for a personal polling strategy.
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either DataCenterResource or the result of cls(response)
@@ -547,8 +547,8 @@ class CassandraDataCentersOperations:
         path_format_arguments = {
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1, pattern=r'^[-\w\._\(\)]+$'),
-            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
-            'dataCenterName': self._serialize.url("data_center_name", data_center_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$'),
+            'clusterName': self._serialize.url("cluster_name", cluster_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
+            'dataCenterName': self._serialize.url("data_center_name", data_center_name, 'str', max_length=100, min_length=1, pattern=r'^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*'),
         }
 
         if polling is True: polling_method = AsyncARMPolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
