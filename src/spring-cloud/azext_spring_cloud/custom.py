@@ -360,6 +360,8 @@ def app_update(cmd, client, resource_group, service, name,
         jvm_options=jvm_options,
         net_core_main_entry_path=main_entry,
         runtime_version=runtime_version,)
+    deployment_settings.cpu = None
+    deployment_settings.memory_in_gb = None
     properties = models_20210601preview.DeploymentResourceProperties(
         deployment_settings=deployment_settings)
     poller = client.deployments.update(
