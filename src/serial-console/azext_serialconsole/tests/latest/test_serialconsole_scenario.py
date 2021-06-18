@@ -65,10 +65,11 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
             'sa': storage_account,
             'rg': resource_group,
             'name': name,
-            'urn': 'UbuntuLTS'
+            'urn': 'UbuntuLTS',
+            'loc': 'westus2'
         })
         self.cmd(
-            'az vmss create -g {rg} -n {name} --image {urn} --instance-count 2 -l westus2')
+            'az vmss create -g {rg} -n {name} --image {urn} --instance-count 2 -l {loc}')
         self.cmd('az vmss update --name {name} --resource-group {rg} --set virtualMachineProfile.diagnosticsProfile="{{\\"bootDiagnostics\\": {{\\"Enabled\\" : \\"True\\",\\"StorageUri\\":\\"https://{sa}.blob.core.windows.net/\\"}}}}"')
         result = self.cmd(
             'vmss list-instances --resource-group {rg} --name {name} --query "[].instanceId"').get_output_in_json()
@@ -99,10 +100,11 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
             'sa': storage_account,
             'rg': resource_group,
             'name': name,
-            'urn': 'UbuntuLTS'
+            'urn': 'UbuntuLTS',
+            'loc': 'westus2'
         })
         self.cmd(
-            'az vmss create -g {rg} -n {name} --image {urn} --instance-count 2 -l westus2')
+            'az vmss create -g {rg} -n {name} --image {urn} --instance-count 2 -l {loc}')
         self.cmd('az vmss update --name {name} --resource-group {rg} --set virtualMachineProfile.diagnosticsProfile="{{\\"bootDiagnostics\\": {{\\"Enabled\\" : \\"True\\",\\"StorageUri\\":\\"https://{sa}.blob.core.windows.net/\\"}}}}"')
         result = self.cmd(
             'vmss list-instances --resource-group {rg} --name {name} --query "[].instanceId"').get_output_in_json()
@@ -133,12 +135,13 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
             'sa': storage_account,
             'rg': resource_group,
             'name': name,
-            'urn': 'UbuntuLTS'
+            'urn': 'UbuntuLTS',
+            'loc': 'westus2'
         })
         self.cmd(
-            'az storage account create -n {sa} -g {rg} -l westus2 --kind Storage --https-only')
+            'az storage account create -n {sa} -g {rg} -l {loc} --kind Storage --https-only')
         self.cmd(
-            'az vm create -g {rg} -n {name} --image {urn} --boot-diagnostics-storage {sa} -l westus2 --generate-ssh-keys')
+            'az vm create -g {rg} -n {name} --image {urn} --boot-diagnostics-storage {sa} -l {loc} --generate-ssh-keys')
         time.sleep(60)
         for i in range(5):
             try:
@@ -162,12 +165,13 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
             'sa': storage_account,
             'rg': resource_group,
             'name': name,
-            'urn': 'UbuntuLTS'
+            'urn': 'UbuntuLTS',
+            'loc': 'westus2'
         })
         self.cmd(
-            'az storage account create -n {sa} -g {rg} -l westus2 --kind Storage --https-only')
+            'az storage account create -n {sa} -g {rg} -l {loc} --kind Storage --https-only')
         self.cmd(
-            'az vm create -g {rg} -n {name} --image {urn} --boot-diagnostics-storage {sa} -l westus2')
+            'az vm create -g {rg} -n {name} --image {urn} --boot-diagnostics-storage {sa} -l {loc} --generate-ssh-keys')
         time.sleep(60)
         for i in range(5):
             try:

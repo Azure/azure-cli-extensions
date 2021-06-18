@@ -35,24 +35,7 @@ class GlobalVariables:
         self.firstMessage = True
         self.blockPrint = False
         self.trycount = 0
-
-
-GV = GlobalVariables()
-
-
-def quitapp(fromWebsocket=False, message="", error_message=None, error_recommendation=None, error_func=None):
-    PC.print(message + "\r\n", color=PrintClass.RED)
-    GV.terminatingApp = True
-    GV.loading = False
-    if GV.terminalInstance:
-        GV.terminalInstance.revertTerminal()
-        GV.terminalInstance = None
-    if not fromWebsocket and GV.webSocket:
-        GV.webSocket.close()
-        GV.webSocket = None
-    if error_message and error_func:
-        raise error_func(error_message, error_recommendation)
-    sys.exit()
+        self.OSIsWindows = False
 
 
 class PrintClass:
@@ -157,6 +140,22 @@ class PrintClass:
         return c
 
 
+def quitapp(fromWebsocket=False, message="", error_message=None, error_recommendation=None, error_func=None):
+    PC.print(message + "\r\n", color=PrintClass.RED)
+    GV.terminatingApp = True
+    GV.loading = False
+    if GV.terminalInstance:
+        GV.terminalInstance.revertTerminal()
+        GV.terminalInstance = None
+    if not fromWebsocket and GV.webSocket:
+        GV.webSocket.close()
+        GV.webSocket = None
+    if error_message and error_func:
+        raise error_func(error_message, error_recommendation)
+    sys.exit()
+
+
+GV = GlobalVariables()
 PC = PrintClass()
 
 
@@ -295,8 +294,12 @@ class SerialConsole:
             c = getch()
             if GV.webSocket and not GV.firstMessage:
                 if c == b'\x1d':
-                    message = ("| Press n for NMI | s for SysRq | r to Reset VM |\r\n"
-                               "| q to quit Console | CTRL + ] to forward input |")
+                    if GV.OSIsWindows:
+                        message = ("| Press n for NMI | r to Reset VM |\r\n"
+                                   "| q to quit Console | CTRL + ] to forward input |")
+                    else:
+                        message = ("| Press n for NMI | s for SysRq | r to Reset VM |\r\n"
+                                   "| q to quit Console | CTRL + ] to forward input |")
                     c = PC.prompt(getch, message)
                     if c == b'n':
                         message = ("Warning: A Non-Maskable Interrupt (NMI) is used in debugging\r\n"
@@ -316,7 +319,7 @@ class SerialConsole:
                         if c == b"Y":
                             GV.serialConsoleInstance.sendReset()
                         continue
-                    if c == b's':
+                    if not GV.OSIsWindows and c == b's':
                         message = "Which SysRq command would you like to send? Press h for help: "
                         c = PC.prompt(getch, message)
                         GV.serialConsoleInstance.sendSysRq(c.decode())
@@ -332,7 +335,7 @@ class SerialConsole:
                 except (AttributeError, websocket.WebSocketConnectionClosedException):
                     pass
             else:
-                if c == b'\r':
+                if c == b'\r' and not GV.loading:
                     GV.serialConsoleInstance.connect()
                 elif c == b'\x1d':
                     c = PC.prompt(getch, "| Press q to quit Console |")
@@ -341,7 +344,7 @@ class SerialConsole:
                         return
 
     @staticmethod
-    def connectLoadingMessage():
+    def connectLoadingMessageLinux():
         PC.clearScreen()
         PC.print("For more information on the Azure Serial Console, see <https://aka.ms/serialconsolelinux>.\r\n",
                  color=PrintClass.YELLOW)
@@ -359,6 +362,32 @@ class SerialConsole:
             PC.showCursor()
             indx = (indx + 1) % numberOfSquares
             time.sleep(0.5)
+    
+    @staticmethod
+    def connectLoadingMessageWindows():
+        PC.clearScreen()
+        message1 = ("Windows Serial Console requires Special Administration Console (SAC) to be enabled within "
+                   "the Windows VM.\r\nIf you do not see SAC> in the console below after the connection is made, "
+                   "SAC is not enabled.\r\n\r\n")
+        message2 = ("For more information on the Azure Serial Console and SAC, "
+                    "see <https://aka.ms/serialconsolewindows>.\r\n")
+        PC.print(message1)
+        PC.print(message2, color=PrintClass.YELLOW)
+        indx = 0
+        numberOfSquares = 3
+        chars = ["\u25A1"] * numberOfSquares
+        while GV.loading:
+            PC.hideCursor()
+            charsCopy = chars.copy()
+            charsCopy[indx] = "\u25A0"
+            squares = " ".join(charsCopy)
+            PC.clearLine()
+            PC.print("Connecting to console of VM   " +
+                     squares, color=PrintClass.CYAN)
+            PC.showCursor()
+            indx = (indx + 1) % numberOfSquares
+            time.sleep(0.5)
+    
 
     @staticmethod
     def sendLoadingMessage(loadingText):
@@ -433,7 +462,10 @@ class SerialConsole:
         GV.loading = True
         GV.firstMessage = True
 
-        th1 = threading.Thread(target=self.connectLoadingMessage, args=())
+        if GV.OSIsWindows:
+            th1 = threading.Thread(target=self.connectLoadingMessageWindows, args=())
+        else:
+            th1 = threading.Thread(target=self.connectLoadingMessageLinux, args=())
         th1.daemon = True
         th1.start()
 
@@ -523,12 +555,14 @@ class SerialConsole:
             if GV.trycount == 0:
                 error_message = "Could not establish connection to VM or VMSS since it is not running."
                 recommendation = 'You can power on the VM with "az vm start".'
-                raise AzureConnectionError(error_message, recommendation=recommendation)
+                raise AzureConnectionError(
+                    error_message, recommendation=recommendation)
         else:
             GV.loading = False
             error_message = "Could not establish connection to VM or VMSS."
             recommendation = "Make sure the parameters name/resource-group/vmss-instance are correct."
-            raise ResourceNotFoundError(error_message, recommendation=recommendation)
+            raise ResourceNotFoundError(
+                error_message, recommendation=recommendation)
 
 
 def checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid):
@@ -536,14 +570,20 @@ def checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid):
     if vmss_instanceid:
         result = client.virtual_machine_scale_set_vms.get_instance_view(
             resource_group_name, vm_vmss_name, vmss_instanceid)
+        print(result)
+        if "windows" in result.additional_properties['osName'].lower():
+            GV.OSIsWindows = True
+
         power_state = ','.join(
             [s.display_status for s in result.statuses if s.code.startswith('PowerState/')]).lower()
         if "deallocating" in power_state or "deallocated" in power_state:
             error_message = "Azure Serial Console requires a virtual machine to be running."
             recommendation = 'Use "az vmss start" to start the Virtual Machine.'
-            raise AzureConnectionError(error_message, recommendation=recommendation)
+            raise AzureConnectionError(
+                error_message, recommendation=recommendation)
 
-        result = client.virtual_machine_scale_sets.get(resource_group_name, vm_vmss_name)
+        result = client.virtual_machine_scale_sets.get(
+            resource_group_name, vm_vmss_name)
         recommendation = ('Use "az vmss update --name MyScaleSet --resource-group MyResourceGroup --set '
                           'virtualMachineProfile.diagnosticsProfile="{\"bootDiagnostics\": {\"Enabled\" : \"True\",'
                           '\"StorageUri\":\"https://mystorageacct.blob.core.windows.net/\"}}""'
@@ -552,11 +592,13 @@ def checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid):
             error_message = ("Azure Serial Console requires boot diagnostics to be enabled. Additionally, "
                              "Serial Console requires a custom boot diagnostics storage account to be "
                              "used, and is not yet fully compatible with managed boot diagnostics storage accounts.")
-            raise AzureConnectionError(error_message, recommendation=recommendation)
+            raise AzureConnectionError(
+                error_message, recommendation=recommendation)
         if result.virtual_machine_profile.diagnostics_profile.boot_diagnostics.storage_uri is None:
             error_message = ("Serial Console requires a custom boot diagnostics storage account to be used, "
                              "and is not yet fully compatible with managed boot diagnostics storage accounts.")
-            raise AzureConnectionError(error_message, recommendation=recommendation)
+            raise AzureConnectionError(
+                error_message, recommendation=recommendation)
     else:
         try:
             result = client.virtual_machines.get(
@@ -570,27 +612,34 @@ def checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid):
             error_message = e.message
             recommendation = ("We found that you specified a Virtual Machine Scale Set and not a VM. "
                               "Use the --instance-id parameter to select the VMSS instance you want to connect to.")
-            raise ResourceNotFoundError(error_message, recommendation=recommendation) from e
+            raise ResourceNotFoundError(
+                error_message, recommendation=recommendation) from e
+
+        if "windows" in result.instance_view.os_name.lower():
+            GV.OSIsWindows = True
 
         power_state = ','.join(
             [s.display_status for s in result.instance_view.statuses if s.code.startswith('PowerState/')])
         if "deallocating" in power_state or "deallocated" in power_state:
             error_message = "Azure Serial Console requires a virtual machine to be running."
             recommendation = 'Use "az vm start" to start the Virtual Machine.'
-            raise AzureConnectionError(error_message, recommendation=recommendation)
+            raise AzureConnectionError(
+                error_message, recommendation=recommendation)
 
         recommendation = ('Use "az vm boot-diagnostics enable --name MyVM --resource-group MyResourceGroup '
-                          '--storage https://mystor.blob.core.windows.net/ " to enable boot diagnostics and '
+                          '--storage https://mystor.blob.core.windows.net/" to enable boot diagnostics and '
                           'make sure to specify a storage account with the --storage parameter.')
         if not result.diagnostics_profile.boot_diagnostics.enabled:
             error_message = ("Azure Serial Console requires boot diagnostics to be enabled. Additionally, "
                              "Serial Console requires a custom boot diagnostics storage account to be "
                              "used, and is not yet fully compatible with managed boot diagnostics storage accounts.")
-            raise AzureConnectionError(error_message, recommendation=recommendation)
+            raise AzureConnectionError(
+                error_message, recommendation=recommendation)
         if result.diagnostics_profile.boot_diagnostics.storage_uri is None:
             error_message = ("Serial Console requires a custom boot diagnostics storage account to be used, "
                              "and is not yet fully compatible with managed boot diagnostics storage accounts.")
-            raise AzureConnectionError(error_message, recommendation=recommendation)
+            raise AzureConnectionError(
+                error_message, recommendation=recommendation)
 
 
 def connect_serialconsole(cmd, resource_group_name, vm_vmss_name, vmss_instanceid=None):
