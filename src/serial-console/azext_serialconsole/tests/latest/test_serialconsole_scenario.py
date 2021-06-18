@@ -6,22 +6,23 @@
 import os
 import unittest
 import json
+import time
 import requests
 import websocket
 from azext_serialconsole.custom import checkResource
 from azure_devtools.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (LiveScenarioTest, StorageAccountPreparer, ResourceGroupPreparer)
+from azure.cli.testsdk import (
+    LiveScenarioTest, StorageAccountPreparer, ResourceGroupPreparer)
+from azure.cli.testsdk.exceptions import JMESPathCheckAssertionError
+from azure.cli.core.azclierror import ResourceNotFoundError
 
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-class SerialconsoleScenarioTest(LiveScenarioTest):
-    def setUp(self):
-        self.buffer = ""
+class SerialconsoleAdminCommandsTest(LiveScenarioTest):
 
-    def check_result(self, resource_group_name, vm_vmss_name, vmss_instanceid = None, message = ""):
-
+    def check_result(self, resource_group_name, vm_vmss_name, vmss_instanceid=None, message=""):
         armEndpoint = "https://management.azure.com"
         RP_PROVIDER = "Microsoft.SerialConsole"
         subscriptionId = self.get_subscription_id()
@@ -41,43 +42,143 @@ class SerialconsoleScenarioTest(LiveScenarioTest):
                    'content-type': applicationJsonFormat}
         result = requests.post(connectionUrl, headers=headers)
         jsonResults = json.loads(result.text)
-        self.assertTrue(result.status_code == 200 and "connectionString" in jsonResults)
+        self.assertTrue(result.status_code ==
+                        200 and "connectionString" in jsonResults)
         websocketURL = jsonResults["connectionString"]
 
         ws = websocket.WebSocket()
-        ws.connect(websocketURL + "?authorization=" + accessToken, timeout = 30)
+        ws.connect(websocketURL + "?authorization=" + accessToken, timeout=30)
+        buffer = ""
         while True:
             try:
-                self.buffer += ws.recv()
-            except websocket.WebSocketTimeoutException:
+                buffer += ws.recv()
+            except (websocket.WebSocketTimeoutException, websocket.WebSocketConnectionClosedException):
                 break
 
-        assert message in self.buffer
+        assert message in buffer
 
-    @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location = 'westus2')
-    def test_send_sysrq(self, resource_group):
+    @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location='westus2')
+    @StorageAccountPreparer(name_prefix='cli', location="westus2")
+    def test_send_sysrq_VMSS(self, resource_group, storage_account):
         name = self.create_random_name(prefix='cli', length=24)
         self.kwargs.update({
-            'sa': self.create_random_name(prefix='cli', length=24),
+            'sa': storage_account,
             'rg': resource_group,
-            'name1': name,
+            'name': name,
             'urn': 'UbuntuLTS'
         })
-        self.cmd('az storage account create -n {sa} -g {rg} -l westus2 --kind Storage --https-only')
-        self.cmd('az vm create -g {rg} -n {name1} --image {urn} --boot-diagnostics-storage {sa}')
-        self.cmd('serial-console send sysrq -g {rg} -n {name1} --input h')
-        self.check_result(resource_group, name, message = "sysrq: HELP")
+        self.cmd(
+            'az vmss create -g {rg} -n {name} --image {urn} --instance-count 2 -l westus2')
+        self.cmd('az vmss update --name {name} --resource-group {rg} --set virtualMachineProfile.diagnosticsProfile="{{\\"bootDiagnostics\\": {{\\"Enabled\\" : \\"True\\",\\"StorageUri\\":\\"https://{sa}.blob.core.windows.net/\\"}}}}"')
+        result = self.cmd(
+            'vmss list-instances --resource-group {rg} --name {name} --query "[].instanceId"').get_output_in_json()
+        self.kwargs.update({'id': result[1]})
+        self.cmd(
+            'az vmss update-instances -g {rg} -n {name} --instance-ids {id}')
+        time.sleep(60)
+        for i in range(5):
+            try:
+                self.cmd('vmss get-instance-view --resource-group {rg} --name {name} --instance-id {id}', checks=[
+                    self.check('statuses[0].code',
+                               'ProvisioningState/succeeded'),
+                    self.check('statuses[1].code', 'PowerState/running'),
+                ])
+                break
+            except JMESPathCheckAssertionError:
+                time.sleep(30)
+        self.cmd(
+            'serial-console send sysrq -g {rg} -n {name} --instance-id {id} --input h')
+        self.check_result(resource_group, name,
+                          vmss_instanceid=result[1], message="sysrq: HELP")
 
-    @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location = 'westus2')
-    def test_send_nmi(self, resource_group):
+    @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location='westus2')
+    @StorageAccountPreparer(name_prefix='cli', location="westus2")
+    def test_send_nmi_VMSS(self, resource_group, storage_account):
         name = self.create_random_name(prefix='cli', length=24)
         self.kwargs.update({
-            'sa': self.create_random_name(prefix='cli', length=24),
+            'sa': storage_account,
             'rg': resource_group,
-            'name1': name,
+            'name': name,
             'urn': 'UbuntuLTS'
         })
-        self.cmd('az storage account create -n {sa} -g {rg} -l westus2 --kind Storage --https-only')
-        self.cmd('az vm create -g {rg} -n {name1} --image {urn} --boot-diagnostics-storage {sa}')
-        self.cmd('serial-console send nmi -g {rg} -n {name1}')
-        self.check_result(resource_group, name, message = "NMI received")
+        self.cmd(
+            'az vmss create -g {rg} -n {name} --image {urn} --instance-count 2 -l westus2')
+        self.cmd('az vmss update --name {name} --resource-group {rg} --set virtualMachineProfile.diagnosticsProfile="{{\\"bootDiagnostics\\": {{\\"Enabled\\" : \\"True\\",\\"StorageUri\\":\\"https://{sa}.blob.core.windows.net/\\"}}}}"')
+        result = self.cmd(
+            'vmss list-instances --resource-group {rg} --name {name} --query "[].instanceId"').get_output_in_json()
+        self.kwargs.update({'id': result[1]})
+        self.cmd(
+            'az vmss update-instances -g {rg} -n {name} --instance-ids {id}')
+        time.sleep(60)
+        for i in range(5):
+            try:
+                self.cmd('vmss get-instance-view --resource-group {rg} --name {name} --instance-id {id}', checks=[
+                    self.check('statuses[0].code',
+                               'ProvisioningState/succeeded'),
+                    self.check('statuses[1].code', 'PowerState/running'),
+                ])
+                break
+            except JMESPathCheckAssertionError:
+                time.sleep(30)
+        self.cmd(
+            'serial-console send nmi -g {rg} -n {name} --instance-id {id}')
+        self.check_result(resource_group, name,
+                          vmss_instanceid=result[1], message="NMI received")
+
+    @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location='westus2')
+    @StorageAccountPreparer(name_prefix='cli', location="westus2")
+    def test_send_nmi_VM(self, resource_group, storage_account):
+        name = self.create_random_name(prefix='cli', length=24)
+        self.kwargs.update({
+            'sa': storage_account,
+            'rg': resource_group,
+            'name': name,
+            'urn': 'UbuntuLTS'
+        })
+        self.cmd(
+            'az storage account create -n {sa} -g {rg} -l westus2 --kind Storage --https-only')
+        self.cmd(
+            'az vm create -g {rg} -n {name} --image {urn} --boot-diagnostics-storage {sa} -l westus2 --generate-ssh-keys')
+        time.sleep(60)
+        for i in range(5):
+            try:
+                self.cmd('vm get-instance-view --resource-group {rg} --name {name}', checks=[
+                    self.check(
+                        'instanceView.statuses[0].code', 'ProvisioningState/succeeded'),
+                    self.check(
+                        'instanceView.statuses[1].code', 'PowerState/running'),
+                ])
+                break
+            except JMESPathCheckAssertionError:
+                time.sleep(30)
+        self.cmd('serial-console send nmi -g {rg} -n {name}')
+        self.check_result(resource_group, name, message="NMI received")
+
+    @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location='westus2')
+    @StorageAccountPreparer(name_prefix='cli', location="westus2")
+    def test_send_sysrq_VM(self, resource_group, storage_account):
+        name = self.create_random_name(prefix='cli', length=24)
+        self.kwargs.update({
+            'sa': storage_account,
+            'rg': resource_group,
+            'name': name,
+            'urn': 'UbuntuLTS'
+        })
+        self.cmd(
+            'az storage account create -n {sa} -g {rg} -l westus2 --kind Storage --https-only')
+        self.cmd(
+            'az vm create -g {rg} -n {name} --image {urn} --boot-diagnostics-storage {sa} -l westus2')
+        time.sleep(60)
+        for i in range(5):
+            try:
+                self.cmd('vm get-instance-view --resource-group {rg} --name {name}', checks=[
+                    self.check(
+                        'instanceView.statuses[0].code', 'ProvisioningState/succeeded'),
+                    self.check(
+                        'instanceView.statuses[1].code', 'PowerState/running'),
+                ])
+                break
+            except JMESPathCheckAssertionError:
+                time.sleep(30)
+        self.cmd('serial-console send sysrq -g {rg} -n {name} --input h')
+        self.check_result(resource_group, name, message="sysrq: HELP")
