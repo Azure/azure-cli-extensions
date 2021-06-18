@@ -262,7 +262,8 @@ def cli_cosmosdb_update(client,
                         enable_public_network=None,
                         enable_analytical_storage=None,
                         backup_interval=None,
-                        backup_retention=None):
+                        backup_retention=None,
+                        backup_policy_type=None):
     """Update an existing Azure Cosmos DB database account. """
     existing = client.get(resource_group_name, account_name)
 
@@ -294,6 +295,8 @@ def cli_cosmosdb_update(client,
     backup_policy = None
     if backup_interval is not None or backup_retention is not None:
         if isinstance(existing.backup_policy, PeriodicModeBackupPolicy):
+            if backup_policy_type is not None and backup_policy_type.lower() == 'continuous':
+                raise CLIError('backup-interval and backup-retention can only be set with periodic backup policy.')
             periodic_mode_properties = PeriodicModeProperties(
                 backup_interval_in_minutes=backup_interval,
                 backup_retention_interval_in_hours=backup_retention
@@ -303,6 +306,9 @@ def cli_cosmosdb_update(client,
         else:
             raise CLIError(
                 'backup-interval and backup-retention can only be set for accounts with periodic backup policy.')
+    elif backup_policy_type is not None and backup_policy_type.lower() == 'continuous':
+        if isinstance(existing.backup_policy, PeriodicModeBackupPolicy):
+            backup_policy = ContinuousModeBackupPolicy()
 
     params = DatabaseAccountUpdateParameters(
         locations=locations,

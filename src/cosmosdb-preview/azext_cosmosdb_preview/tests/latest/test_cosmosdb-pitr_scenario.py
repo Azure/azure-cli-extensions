@@ -33,6 +33,22 @@ class Cosmosdb_previewScenarioTest(ScenarioTest):
             self.check('backupPolicy.type', 'Periodic'),
         ])
 
+    @ResourceGroupPreparer(name_prefix='cli_update_pitrmigrate_database_account')
+    def test_update_pitrmigrate_database_account(self, resource_group):
+
+        self.kwargs.update({
+            'acc': self.create_random_name(prefix='cli', length=40)
+        })
+
+        self.cmd('az cosmosdb create -n {acc} -g {rg}')
+        self.cmd('az cosmosdb show -n {acc} -g {rg}', checks=[
+            self.check('backupPolicy.type', 'Periodic')
+        ])
+
+        self.cmd('az cosmosdb update -n {acc} -g {rg} --backup-policy-type continuous', checks=[
+            self.check('backupPolicy.type', 'Continuous'),
+        ])
+
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_restore_using_create', parameter_name_for_location='location')
     def test_cosmosdb_restore_using_create(self, resource_group, location):
         col = self.create_random_name(prefix='cli', length=15)
