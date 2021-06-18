@@ -19,7 +19,8 @@ import requests
 from azure.cli.core.azclierror import UnclassifiedUserFault
 from azure.cli.core.azclierror import ResourceNotFoundError
 from azure.cli.core.azclierror import AzureConnectionError
-from azure.core.exceptions import ResourceNotFoundError as ResourceNotFoundError2
+from azure.cli.core.azclierror import ForbiddenError
+from azure.core.exceptions import ResourceNotFoundError as ComputeClientResourceNotFoundError
 from azext_serialconsole._client_factory import _compute_client_factory
 
 
@@ -362,7 +363,7 @@ class SerialConsole:
             PC.showCursor()
             indx = (indx + 1) % numberOfSquares
             time.sleep(0.5)
-    
+
     @staticmethod
     def connectLoadingMessageWindows():
         PC.clearScreen()
@@ -387,7 +388,6 @@ class SerialConsole:
             PC.showCursor()
             indx = (indx + 1) % numberOfSquares
             time.sleep(0.5)
-    
 
     @staticmethod
     def sendLoadingMessage(loadingText):
@@ -522,7 +522,7 @@ class SerialConsole:
                 return self.sendSysRq(arg_characters)
             func = wrapper
             successMessage = "Successfully sent SysRq command\r\n"
-            failureMessage = "Failed to send SysRq command   \r\n"
+            failureMessage = "Failed to send SysRq command. Make sure the input only contains numbers and letters.\r\n"
             loadingText = "Sending SysRq to VM"
         else:
             return
@@ -553,8 +553,8 @@ class SerialConsole:
             wsapp.run_forever()
             GV.loading = False
             if GV.trycount == 0:
-                error_message = "Could not establish connection to VM or VMSS since it is not running."
-                recommendation = 'You can power on the VM with "az vm start".'
+                error_message = "Could not establish connection to VM or VMSS."
+                recommendation = 'Try restarting it with "az vm restart".'
                 raise AzureConnectionError(
                     error_message, recommendation=recommendation)
         else:
@@ -603,11 +603,11 @@ def checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid):
         try:
             result = client.virtual_machines.get(
                 resource_group_name, vm_vmss_name, expand='instanceView')
-        except ResourceNotFoundError2 as e:
+        except ComputeClientResourceNotFoundError as e:
             try:
                 client.virtual_machine_scale_sets.get(
                     resource_group_name, vm_vmss_name)
-            except ResourceNotFoundError2:
+            except ComputeClientResourceNotFoundError:
                 raise e from e
             error_message = e.message
             recommendation = ("We found that you specified a Virtual Machine Scale Set and not a VM. "
@@ -665,6 +665,9 @@ def send_reset_serialconsole(cmd, resource_group_name, vm_vmss_name, vmss_instan
 
 def send_sysrq_serialconsole(cmd, resource_group_name, vm_vmss_name, sysrqinput, vmss_instanceid=None):
     checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid)
+    if GV.OSIsWindows:
+        error_message = "You can only send a SysRq to a Linux VM."
+        raise ForbiddenError(error_message)
     GV.serialConsoleInstance = SerialConsole(
         cmd, resource_group_name, vm_vmss_name, vmss_instanceid)
     GV.serialConsoleInstance.connectAndSendAdminCommand(

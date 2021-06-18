@@ -139,8 +139,6 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
             'loc': 'westus2'
         })
         self.cmd(
-            'az storage account create -n {sa} -g {rg} -l {loc} --kind Storage --https-only')
-        self.cmd(
             'az vm create -g {rg} -n {name} --image {urn} --boot-diagnostics-storage {sa} -l {loc} --generate-ssh-keys')
         time.sleep(60)
         for i in range(5):
@@ -168,8 +166,6 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
             'urn': 'UbuntuLTS',
             'loc': 'westus2'
         })
-        self.cmd(
-            'az storage account create -n {sa} -g {rg} -l {loc} --kind Storage --https-only')
         self.cmd(
             'az vm create -g {rg} -n {name} --image {urn} --boot-diagnostics-storage {sa} -l {loc} --generate-ssh-keys')
         time.sleep(60)
