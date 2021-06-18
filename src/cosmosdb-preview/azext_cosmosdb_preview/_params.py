@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, too-many-statements
 
-from enum import Enum
 
 from azure.cli.core.commands.parameters import (
     get_resource_name_completion_list, name_type, get_enum_type, get_three_state_flag, get_location_type)
