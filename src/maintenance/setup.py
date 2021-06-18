@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '1.1.0'
+VERSION = '1.2.0'
 try:
     from azext_maintenance.manual.version import VERSION
 except ImportError:
@@ -31,8 +31,9 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = []
+
 try:
-    from .manual.dependency import DEPENDENCIES
+    from azext_maintenance.manual.dependency import DEPENDENCIES
 except ImportError:
     pass
 

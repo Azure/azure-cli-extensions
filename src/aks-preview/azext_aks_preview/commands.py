@@ -69,6 +69,7 @@ def load_command_table(self, _):
         g.wait_command('wait')
         g.command('stop', 'stop', supports_no_wait=True)
         g.command('start', 'start', supports_no_wait=True)
+        g.custom_command('get-os-options', 'aks_get_os_options')
 
     # AKS container service commands
     with self.command_group('aks', container_services_sdk, client_factory=cf_container_services) as g:
@@ -119,3 +120,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'aks_pod_identity_exception_update')
         g.custom_command('list', 'aks_pod_identity_exception_list',
                          table_transformer=aks_pod_identity_exceptions_table_format)
+
+    # AKS egress commands
+    with self.command_group('aks egress-endpoints', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
+        g.custom_command('list', 'aks_egress_endpoints_list')

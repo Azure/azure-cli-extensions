@@ -37,7 +37,7 @@ def load_arguments(self, _):
                    help='Specify certificates separated by space that should be installed onto the role instances. '
                    'Format: KeyVaultName:CertificateUrl:CertificateUrl2:...:CertificateUrlN')
         c.argument('configuration', type=file_type, help='Specify the XML service configuration (.cscfg) '
-                   'for the cloud service. Expected value: json-string/@json-file.')
+                   'for the cloud service. Expected value: xml-string/@xml-file.')
         c.argument('configuration_url', type=str, help='Specify a URL that refers to the location of the service '
                    'configuration in the Blob service. The service package URL  can be Shared Access Signature (SAS) '
                    'URI from any storage account. This is a write-only property and is not returned in GET calls.')

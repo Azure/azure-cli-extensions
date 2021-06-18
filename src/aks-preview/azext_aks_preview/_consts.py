@@ -76,3 +76,6 @@ ADDONS = {
     'gitops': 'gitops',
     'azure-keyvault-secrets-provider': CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME
 }
+
+CONST_MANAGED_IDENTITY_OPERATOR_ROLE = 'Managed Identity Operator'
+CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID = 'f1a07417-d97a-45cb-824c-7a7467783830'

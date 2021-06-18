@@ -1,5 +1,9 @@
 Release History
 ===============
+0.1.5
+-----
+* Add public key error message
+* Cleanup documentation
 
 0.1.4
 -----

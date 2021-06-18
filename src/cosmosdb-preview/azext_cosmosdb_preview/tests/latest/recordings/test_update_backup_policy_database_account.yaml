@@ -13,15 +13,15 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.20 msrest_azure/0.6.4
-        azure-mgmt-resource/12.0.0 Azure-SDK-For-Python AZURECLI/2.18.0
+      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-resource/12.1.0 Azure-SDK-For-Python AZURECLI/2.23.0
       accept-language:
       - en-US
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_update_backup_policy_database_account000001?api-version=2020-10-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001","name":"cli_update_backup_policy_database_account000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2021-01-28T22:57:14Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001","name":"cli_update_backup_policy_database_account000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2021-05-24T19:10:21Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -30,7 +30,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 28 Jan 2021 22:57:16 GMT
+      - Mon, 24 May 2021 19:10:23 GMT
       expires:
       - '-1'
       pragma:
@@ -64,33 +64,33 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.20 msrest_azure/0.6.4
-        azure-mgmt-cosmosdb/2.0.0rc1 Azure-SDK-For-Python AZURECLI/2.18.0
+      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-cosmosdb/4.0.0 Azure-SDK-For-Python AZURECLI/2.23.0
       accept-language:
       - en-US
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2020-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2021-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002","name":"cli000002","location":"West
-        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2021-01-28T22:57:33.7504177Z"},"properties":{"provisioningState":"Creating","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"instanceId":"732fd2de-994c-4fe5-bc96-de2ca3e08e09","createMode":"Default","databaseAccountOfferType":"Standard","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000002-westus","locationName":"West
+        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2021-05-24T19:10:26.894697Z"},"properties":{"provisioningState":"Creating","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":null,"instanceId":"5f837669-29c3-4331-ab4e-6f538e7b4cf0","createMode":"Default","databaseAccountOfferType":"Standard","enableCassandraConnector":false,"connectorOffer":"","networkAclBypass":"None","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000002-westus","locationName":"West
         US","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000002-westus","locationName":"West
         US","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000002-westus","locationName":"West
         US","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000002-westus","locationName":"West
-        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":1}}},"identity":{"type":"None"}}'
+        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[]},"identity":{"type":"None"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/9a901d60-ac27-411f-9244-255372d4811c?api-version=2020-06-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/df711ecd-52b8-42b8-87dc-53369e847834?api-version=2021-03-01-preview
       cache-control:
       - no-store, no-cache
       content-length:
-      - '1939'
+      - '2092'
       content-type:
       - application/json
       date:
-      - Thu, 28 Jan 2021 22:57:34 GMT
+      - Mon, 24 May 2021 19:10:29 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/operationResults/9a901d60-ac27-411f-9244-255372d4811c?api-version=2020-06-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/operationResults/df711ecd-52b8-42b8-87dc-53369e847834?api-version=2021-03-01-preview
       pragma:
       - no-cache
       server:
@@ -124,10 +124,10 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.20 msrest_azure/0.6.4
-        azure-mgmt-cosmosdb/2.0.0rc1 Azure-SDK-For-Python AZURECLI/2.18.0
+      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-cosmosdb/4.0.0 Azure-SDK-For-Python AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/9a901d60-ac27-411f-9244-255372d4811c?api-version=2020-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/df711ecd-52b8-42b8-87dc-53369e847834?api-version=2021-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -139,7 +139,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 28 Jan 2021 22:58:04 GMT
+      - Mon, 24 May 2021 19:10:59 GMT
       pragma:
       - no-cache
       server:
@@ -171,10 +171,57 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.20 msrest_azure/0.6.4
-        azure-mgmt-cosmosdb/2.0.0rc1 Azure-SDK-For-Python AZURECLI/2.18.0
+      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-cosmosdb/4.0.0 Azure-SDK-For-Python AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/9a901d60-ac27-411f-9244-255372d4811c?api-version=2020-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/df711ecd-52b8-42b8-87dc-53369e847834?api-version=2021-03-01-preview
+  response:
+    body:
+      string: '{"status":"Dequeued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Mon, 24 May 2021 19:11:29 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.11.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-cosmosdb/4.0.0 Azure-SDK-For-Python AZURECLI/2.23.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/df711ecd-52b8-42b8-87dc-53369e847834?api-version=2021-03-01-preview
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -186,7 +233,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 28 Jan 2021 22:58:35 GMT
+      - Mon, 24 May 2021 19:11:59 GMT
       pragma:
       - no-cache
       server:
@@ -218,27 +265,27 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.20 msrest_azure/0.6.4
-        azure-mgmt-cosmosdb/2.0.0rc1 Azure-SDK-For-Python AZURECLI/2.18.0
+      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-cosmosdb/4.0.0 Azure-SDK-For-Python AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2020-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2021-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002","name":"cli000002","location":"West
-        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2021-01-28T22:58:03.1026316Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"instanceId":"732fd2de-994c-4fe5-bc96-de2ca3e08e09","createMode":"Default","databaseAccountOfferType":"Standard","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000002-westus","locationName":"West
+        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2021-05-24T19:11:19.4387279Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":null,"instanceId":"5f837669-29c3-4331-ab4e-6f538e7b4cf0","createMode":"Default","databaseAccountOfferType":"Standard","enableCassandraConnector":false,"connectorOffer":"","networkAclBypass":"None","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000002-westus","locationName":"West
-        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":1}}},"identity":{"type":"None"}}'
+        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[]},"identity":{"type":"None"}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '2344'
+      - '2498'
       content-type:
       - application/json
       date:
-      - Thu, 28 Jan 2021 22:58:35 GMT
+      - Mon, 24 May 2021 19:11:59 GMT
       pragma:
       - no-cache
       server:
@@ -270,29 +317,29 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.20 msrest_azure/0.6.4
-        azure-mgmt-cosmosdb/2.0.0rc1 Azure-SDK-For-Python AZURECLI/2.18.0
+      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-cosmosdb/4.0.0 Azure-SDK-For-Python AZURECLI/2.23.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2020-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2021-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002","name":"cli000002","location":"West
-        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2021-01-28T22:58:03.1026316Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"instanceId":"732fd2de-994c-4fe5-bc96-de2ca3e08e09","createMode":"Default","databaseAccountOfferType":"Standard","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000002-westus","locationName":"West
+        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2021-05-24T19:11:19.4387279Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":null,"instanceId":"5f837669-29c3-4331-ab4e-6f538e7b4cf0","createMode":"Default","databaseAccountOfferType":"Standard","enableCassandraConnector":false,"connectorOffer":"","networkAclBypass":"None","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000002-westus","locationName":"West
-        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":1}}},"identity":{"type":"None"}}'
+        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[]},"identity":{"type":"None"}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '2344'
+      - '2498'
       content-type:
       - application/json
       date:
-      - Thu, 28 Jan 2021 22:58:35 GMT
+      - Mon, 24 May 2021 19:11:59 GMT
       pragma:
       - no-cache
       server:
@@ -324,29 +371,29 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.20 msrest_azure/0.6.4
-        azure-mgmt-cosmosdb/2.0.0rc1 Azure-SDK-For-Python AZURECLI/2.18.0
+      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-cosmosdb/4.0.0 Azure-SDK-For-Python AZURECLI/2.23.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2020-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2021-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002","name":"cli000002","location":"West
-        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2021-01-28T22:58:03.1026316Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"instanceId":"732fd2de-994c-4fe5-bc96-de2ca3e08e09","createMode":"Default","databaseAccountOfferType":"Standard","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000002-westus","locationName":"West
+        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2021-05-24T19:11:19.4387279Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":null,"instanceId":"5f837669-29c3-4331-ab4e-6f538e7b4cf0","createMode":"Default","databaseAccountOfferType":"Standard","enableCassandraConnector":false,"connectorOffer":"","networkAclBypass":"None","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000002-westus","locationName":"West
-        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":1}}},"identity":{"type":"None"}}'
+        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[]},"identity":{"type":"None"}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '2344'
+      - '2498'
       content-type:
       - application/json
       date:
-      - Thu, 28 Jan 2021 22:58:36 GMT
+      - Mon, 24 May 2021 19:11:59 GMT
       pragma:
       - no-cache
       server:
@@ -378,29 +425,29 @@ interactions:
       ParameterSetName:
       - -n -g --backup-interval --backup-retention
       User-Agent:
-      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.20 msrest_azure/0.6.4
-        azure-mgmt-cosmosdb/2.0.0rc1 Azure-SDK-For-Python AZURECLI/2.18.0
+      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-cosmosdb/4.0.0 Azure-SDK-For-Python AZURECLI/2.23.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2020-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2021-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002","name":"cli000002","location":"West
-        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2021-01-28T22:58:03.1026316Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"instanceId":"732fd2de-994c-4fe5-bc96-de2ca3e08e09","createMode":"Default","databaseAccountOfferType":"Standard","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000002-westus","locationName":"West
+        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2021-05-24T19:11:19.4387279Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":null,"instanceId":"5f837669-29c3-4331-ab4e-6f538e7b4cf0","createMode":"Default","databaseAccountOfferType":"Standard","enableCassandraConnector":false,"connectorOffer":"","networkAclBypass":"None","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000002-westus","locationName":"West
-        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":1}}},"identity":{"type":"None"}}'
+        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[]},"identity":{"type":"None"}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '2344'
+      - '2498'
       content-type:
       - application/json
       date:
-      - Thu, 28 Jan 2021 22:58:36 GMT
+      - Mon, 24 May 2021 19:12:00 GMT
       pragma:
       - no-cache
       server:
@@ -437,33 +484,33 @@ interactions:
       ParameterSetName:
       - -n -g --backup-interval --backup-retention
       User-Agent:
-      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.20 msrest_azure/0.6.4
-        azure-mgmt-cosmosdb/2.0.0rc1 Azure-SDK-For-Python AZURECLI/2.18.0
+      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-cosmosdb/4.0.0 Azure-SDK-For-Python AZURECLI/2.23.0
       accept-language:
       - en-US
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2020-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2021-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002","name":"cli000002","location":"West
-        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2021-01-28T22:58:03.1026316Z"},"properties":{"provisioningState":"Updating","documentEndpoint":"https://cli000002.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"instanceId":"732fd2de-994c-4fe5-bc96-de2ca3e08e09","createMode":"Default","databaseAccountOfferType":"Standard","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000002-westus","locationName":"West
+        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2021-05-24T19:11:19.4387279Z"},"properties":{"provisioningState":"Updating","documentEndpoint":"https://cli000002.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":null,"instanceId":"5f837669-29c3-4331-ab4e-6f538e7b4cf0","createMode":"Default","databaseAccountOfferType":"Standard","enableCassandraConnector":false,"connectorOffer":"","networkAclBypass":"None","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Updating","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Updating","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Updating","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000002-westus","locationName":"West
-        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":1}}},"identity":{"type":"None"}}'
+        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":240,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[]},"identity":{"type":"None"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/5d378897-d4f2-4ba4-8ad0-d2055a6f71ae?api-version=2020-06-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/23db488f-a091-41ad-be94-b7062d5c784b?api-version=2021-03-01-preview
       cache-control:
       - no-store, no-cache
       content-length:
-      - '2340'
+      - '2494'
       content-type:
       - application/json
       date:
-      - Thu, 28 Jan 2021 22:58:40 GMT
+      - Mon, 24 May 2021 19:12:02 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/operationResults/5d378897-d4f2-4ba4-8ad0-d2055a6f71ae?api-version=2020-06-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002/operationResults/23db488f-a091-41ad-be94-b7062d5c784b?api-version=2021-03-01-preview
       pragma:
       - no-cache
       server:
@@ -497,10 +544,10 @@ interactions:
       ParameterSetName:
       - -n -g --backup-interval --backup-retention
       User-Agent:
-      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.20 msrest_azure/0.6.4
-        azure-mgmt-cosmosdb/2.0.0rc1 Azure-SDK-For-Python AZURECLI/2.18.0
+      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-cosmosdb/4.0.0 Azure-SDK-For-Python AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/5d378897-d4f2-4ba4-8ad0-d2055a6f71ae?api-version=2020-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/23db488f-a091-41ad-be94-b7062d5c784b?api-version=2021-03-01-preview
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -512,7 +559,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 28 Jan 2021 22:59:11 GMT
+      - Mon, 24 May 2021 19:12:33 GMT
       pragma:
       - no-cache
       server:
@@ -544,27 +591,27 @@ interactions:
       ParameterSetName:
       - -n -g --backup-interval --backup-retention
       User-Agent:
-      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.20 msrest_azure/0.6.4
-        azure-mgmt-cosmosdb/2.0.0rc1 Azure-SDK-For-Python AZURECLI/2.18.0
+      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-cosmosdb/4.0.0 Azure-SDK-For-Python AZURECLI/2.23.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2020-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2021-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002","name":"cli000002","location":"West
-        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2021-01-28T22:58:03.1026316Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"instanceId":"732fd2de-994c-4fe5-bc96-de2ca3e08e09","createMode":"Default","databaseAccountOfferType":"Standard","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000002-westus","locationName":"West
+        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2021-05-24T19:11:19.4387279Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":null,"instanceId":"5f837669-29c3-4331-ab4e-6f538e7b4cf0","createMode":"Default","databaseAccountOfferType":"Standard","enableCassandraConnector":false,"connectorOffer":"","networkAclBypass":"None","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000002-westus","locationName":"West
-        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":120,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":1}}},"identity":{"type":"None"}}'
+        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":120,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[]},"identity":{"type":"None"}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '2344'
+      - '2498'
       content-type:
       - application/json
       date:
-      - Thu, 28 Jan 2021 22:59:12 GMT
+      - Mon, 24 May 2021 19:12:33 GMT
       pragma:
       - no-cache
       server:
@@ -596,29 +643,29 @@ interactions:
       ParameterSetName:
       - -n -g --backup-interval --backup-retention
       User-Agent:
-      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.20 msrest_azure/0.6.4
-        azure-mgmt-cosmosdb/2.0.0rc1 Azure-SDK-For-Python AZURECLI/2.18.0
+      - python/3.8.4 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.4
+        azure-mgmt-cosmosdb/4.0.0 Azure-SDK-For-Python AZURECLI/2.23.0
       accept-language:
       - en-US
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2020-06-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002?api-version=2021-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_update_backup_policy_database_account000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000002","name":"cli000002","location":"West
-        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2021-01-28T22:58:03.1026316Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"instanceId":"732fd2de-994c-4fe5-bc96-de2ca3e08e09","createMode":"Default","databaseAccountOfferType":"Standard","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000002-westus","locationName":"West
+        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2021-05-24T19:11:19.4387279Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000002.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":null,"instanceId":"5f837669-29c3-4331-ab4e-6f538e7b4cf0","createMode":"Default","databaseAccountOfferType":"Standard","enableCassandraConnector":false,"connectorOffer":"","networkAclBypass":"None","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000002-westus","locationName":"West
         US","documentEndpoint":"https://cli000002-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000002-westus","locationName":"West
-        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":120,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":1}}},"identity":{"type":"None"}}'
+        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Periodic","periodicModeProperties":{"backupIntervalInMinutes":120,"backupRetentionIntervalInHours":8,"backupStorageRedundancy":"Geo"}},"networkAclBypassResourceIds":[]},"identity":{"type":"None"}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '2344'
+      - '2498'
       content-type:
       - application/json
       date:
-      - Thu, 28 Jan 2021 22:59:12 GMT
+      - Mon, 24 May 2021 19:12:33 GMT
       pragma:
       - no-cache
       server:

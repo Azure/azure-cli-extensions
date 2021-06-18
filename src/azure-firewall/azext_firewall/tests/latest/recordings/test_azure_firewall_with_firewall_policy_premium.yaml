@@ -1,0 +1,688 @@
+interactions:
+- request:
+    body: '{"location": "westus2", "properties": {"sku": {"tier": "Premium"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '67'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --sku
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.7.3 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.Network/firewallPolicies/myclipolicy2?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
+        \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.Network/firewallPolicies/myclipolicy2\",\r\n
+        \ \"name\": \"myclipolicy2\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"c88b1cb7-858a-4356-b74d-c6dd7ab9be84\",\r\n  \"location\": \"westus2\"\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/ec41ef36-5d4d-4c9a-acff-a71677bba5c2?api-version=2020-07-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '592'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 May 2021 03:16:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --sku
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.7.3 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/ec41ef36-5d4d-4c9a-acff-a71677bba5c2?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 May 2021 03:16:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --sku
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.7.3 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.Network/firewallPolicies/myclipolicy2?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
+        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.Network/firewallPolicies/myclipolicy2\",\r\n
+        \ \"name\": \"myclipolicy2\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"c88b1cb7-858a-4356-b74d-c6dd7ab9be84\",\r\n  \"location\": \"westus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '593'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 May 2021 03:16:34 GMT
+      etag:
+      - '"c88b1cb7-858a-4356-b74d-c6dd7ab9be84"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-resource/16.1.0 Python/3.7.3 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_firewall_with_firewall_policy_premium000001?api-version=2020-10-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001","name":"test_azure_firewall_with_firewall_policy_premium000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","date":"2021-05-21T03:16:12Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '429'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 May 2021 03:16:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - identity create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json; charset=utf-8
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.7.3 (Windows-10-10.0.19041-SP0) msrest/0.6.21 msrest_azure/0.6.3
+        azure-mgmt-msi/0.2.0 Azure-SDK-For-Python AZURECLI/2.23.0
+      accept-language:
+      - en-US
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identitytest?api-version=2015-08-31-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identitytest","name":"identitytest","type":"Microsoft.ManagedIdentity/userAssignedIdentities","location":"westus2","tags":{},"properties":{"tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","principalId":"dba2b4cc-ffe5-4a86-8cb6-83be15ac6d5b","clientId":"5dcbcccf-93dc-41d3-9969-3d64b79fb5a9","clientSecretUrl":"https://control-westus2.identity.azure.net/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identitytest/credentials?tid=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a&oid=dba2b4cc-ffe5-4a86-8cb6-83be15ac6d5b&aid=5dcbcccf-93dc-41d3-9969-3d64b79fb5a9"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '914'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 May 2021 03:16:44 GMT
+      expires:
+      - '-1'
+      location:
+      - /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identitytest
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --identity
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.7.3 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.Network/firewallPolicies/myclipolicy2?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
+        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.Network/firewallPolicies/myclipolicy2\",\r\n
+        \ \"name\": \"myclipolicy2\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"c88b1cb7-858a-4356-b74d-c6dd7ab9be84\",\r\n  \"location\": \"westus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '593'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 May 2021 03:16:44 GMT
+      etag:
+      - '"c88b1cb7-858a-4356-b74d-c6dd7ab9be84"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.Network/firewallPolicies/myclipolicy2",
+      "location": "westus2", "identity": {"type": "UserAssigned", "userAssignedIdentities":
+      {"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identitytest":
+      {}}}, "properties": {"threatIntelMode": "Alert", "sku": {"tier": "Premium"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '593'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --identity
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.7.3 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.Network/firewallPolicies/myclipolicy2?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
+        \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.Network/firewallPolicies/myclipolicy2\",\r\n
+        \ \"name\": \"myclipolicy2\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"1093b38e-3875-4885-9862-98d3fc4fb7e8\",\r\n  \"location\": \"westus2\",\r\n
+        \ \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"userAssignedIdentities\":
+        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identitytest\":
+        {}\r\n    }\r\n  }\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/43f35867-a075-4757-892b-32561e5d01c1?api-version=2020-07-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '912'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 May 2021 03:16:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --identity
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.7.3 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/43f35867-a075-4757-892b-32561e5d01c1?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 May 2021 03:17:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --identity
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.7.3 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.Network/firewallPolicies/myclipolicy2?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
+        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.Network/firewallPolicies/myclipolicy2\",\r\n
+        \ \"name\": \"myclipolicy2\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"1093b38e-3875-4885-9862-98d3fc4fb7e8\",\r\n  \"location\": \"westus2\",\r\n
+        \ \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"userAssignedIdentities\":
+        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identitytest\":
+        {\r\n        \"clientId\": \"5dcbcccf-93dc-41d3-9969-3d64b79fb5a9\",\r\n        \"principalId\":
+        \"dba2b4cc-ffe5-4a86-8cb6-83be15ac6d5b\"\r\n      }\r\n    }\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1045'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 May 2021 03:17:02 GMT
+      etag:
+      - '"1093b38e-3875-4885-9862-98d3fc4fb7e8"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --remove
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.7.3 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.Network/firewallPolicies/myclipolicy2?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
+        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.Network/firewallPolicies/myclipolicy2\",\r\n
+        \ \"name\": \"myclipolicy2\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"1093b38e-3875-4885-9862-98d3fc4fb7e8\",\r\n  \"location\": \"westus2\",\r\n
+        \ \"identity\": {\r\n    \"type\": \"UserAssigned\",\r\n    \"userAssignedIdentities\":
+        {\r\n      \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identitytest\":
+        {\r\n        \"clientId\": \"5dcbcccf-93dc-41d3-9969-3d64b79fb5a9\",\r\n        \"principalId\":
+        \"dba2b4cc-ffe5-4a86-8cb6-83be15ac6d5b\"\r\n      }\r\n    }\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1045'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 May 2021 03:17:03 GMT
+      etag:
+      - '"1093b38e-3875-4885-9862-98d3fc4fb7e8"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.Network/firewallPolicies/myclipolicy2",
+      "location": "westus2", "identity": {"type": "None"}, "properties": {"threatIntelMode":
+      "Alert", "sku": {"tier": "Premium"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '335'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --remove
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.7.3 (Windows-10-10.0.19041-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.Network/firewallPolicies/myclipolicy2?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
+        \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.Network/firewallPolicies/myclipolicy2\",\r\n
+        \ \"name\": \"myclipolicy2\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"06d40d30-cc0e-42ff-b980-4d1ba218461d\",\r\n  \"location\": \"westus2\",\r\n
+        \ \"identity\": {\r\n    \"type\": \"None\"\r\n  }\r\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/c32f96b5-a7db-487c-ab28-d1f34fa51a87?api-version=2020-07-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '635'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 May 2021 03:17:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --remove
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.7.3 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus2/nfvOperations/c32f96b5-a7db-487c-ab28-d1f34fa51a87?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 May 2021 03:17:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --remove
+      User-Agent:
+      - AZURECLI/2.23.0 azsdk-python-azure-mgmt-network/18.0.0 Python/3.7.3 (Windows-10-10.0.19041-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.Network/firewallPolicies/myclipolicy2?api-version=2020-07-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Premium\"\r\n
+        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"childPolicies\": [],\r\n
+        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
+        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_azure_firewall_with_firewall_policy_premium000001/providers/Microsoft.Network/firewallPolicies/myclipolicy2\",\r\n
+        \ \"name\": \"myclipolicy2\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
+        \ \"etag\": \"06d40d30-cc0e-42ff-b980-4d1ba218461d\",\r\n  \"location\": \"westus2\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '593'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 May 2021 03:17:21 GMT
+      etag:
+      - '"06d40d30-cc0e-42ff-b980-4d1ba218461d"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -81,7 +81,7 @@ helps['aks create'] = """
           short-summary: User account password to use on windows node VMs.
           long-summary: |-
             Rules for windows-admin-password:
-                - Minimum-length: 8 characters
+                - Minimum-length: 14 characters
                 - Max-length: 123 characters
                 - Complexity requirements: 3 out of 4 conditions below need to be fulfilled
                   * Has lower characters
@@ -98,7 +98,7 @@ helps['aks create'] = """
           short-summary: Enable managed AAD feature for cluster.
         - name: --enable-azure-rbac
           type: bool
-          short-summary: Whether to enable Azure RBAC for Kubernetes authorization.
+          short-summary: Enable Azure RBAC to control authorization checks on cluster.
         - name: --aad-admin-group-object-ids
           type: string
           short-summary: Comma seperated list of aad group object IDs that will be set as cluster admin.
@@ -213,6 +213,12 @@ helps['aks create'] = """
         - name: --ppg
           type: string
           short-summary: The ID of a PPG.
+        - name: --os-sku
+          type: string
+          short-summary: The os-sku of the agent node pool. Ubuntu or CBLMariner.
+        - name: --enable-fips-image
+          type: bool
+          short-summary: Use FIPS-enabled OS on agent nodes.
         - name: --workspace-resource-id
           type: string
           short-summary: The resource ID of an existing Log Analytics Workspace to use for storing monitoring data. If not specified, uses the default Log Analytics Workspace if it exists, otherwise creates one.
@@ -254,6 +260,9 @@ helps['aks create'] = """
         - name: --fqdn-subdomain
           type: string
           short-summary: Prefix for FQDN that is created for private cluster with custom private dns zone scenario.
+        - name: --enable-public-fqdn
+          type: bool
+          short-summary: (Preview) Enable public fqdn feature for private cluster.
         - name: --enable-node-public-ip
           type: bool
           short-summary: Enable VMSS node public IP.
@@ -265,7 +274,10 @@ helps['aks create'] = """
           short-summary: Using managed identity to manage cluster resource group. Default value is true, you can explicitly specify "--client-id" and "--secret" to disable managed identity.
         - name: --assign-identity
           type: string
-          short-summary: (PREVIEW) Specify an existing user assigned identity to manage cluster resource group.
+          short-summary: Specify an existing user assigned identity to manage cluster resource group.
+        - name: --assign-kubelet-identity
+          type: string
+          short-summary: Specify an existing user assigned identity for kubelet's usage, which is typically used to pull image from ACR.
         - name: --api-server-authorized-ip-ranges
           type: string
           short-summary: Comma seperated list of authorized apiserver IP ranges. Set to 0.0.0.0/32 to restrict apiserver traffic to node pools.
@@ -317,9 +329,15 @@ helps['aks create'] = """
         - name: --enable-encryption-at-host
           type: bool
           short-summary: Enable EncryptionAtHost on agent node pool.
+        - name: --enable-ultra-ssd
+          type: bool
+          short-summary: Enable UltraSSD on agent node pool.
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
+        - name: --disable-local-accounts
+          type: bool
+          short-summary: (Preview) If set to true, getting static credential will be disabled for this cluster.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -359,7 +377,14 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --tags "foo=bar" "baz=qux"
         - name: Create a kubernetes cluster with EncryptionAtHost enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-encryption-at-host
-
+        - name: Create a kubernetes cluster with UltraSSD enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-ultra-ssd
+        - name: Create a kubernetes cluster with custom control plane identity and kubelet identity.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --assign-identity <control-plane-identity-resource-id> --assign-kubelet-identity <kubelet-identity-resource-id>
+        - name: Create a kubernetes cluster with Azure RBAC enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-aad --enable-azure-rbac
+        - name: Create a kubernetes cluster with a specific os-sku
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --os-sku Ubuntu
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
 helps['aks scale'] = """
@@ -500,6 +525,38 @@ helps['aks update'] = """
         - name: --tags
           type: string
           short-summary: The tags of the managed cluster. The managed cluster instance and all resources managed by the cloud provider will be tagged.
+        - name: --windows-admin-password
+          type: string
+          short-summary: User account password to use on windows node VMs.
+          long-summary: |-
+            Rules for windows-admin-password:
+                - Minimum-length: 14 characters
+                - Max-length: 123 characters
+                - Complexity requirements: 3 out of 4 conditions below need to be fulfilled
+                  * Has lower characters
+                  * Has upper characters
+                  * Has a digit
+                  * Has a special character (Regex match [\\W_])
+                - Disallowed values:  "abc@123", "P@$$w0rd", "P@ssw0rd", "P@ssword123", "Pa$$word", "pass@word1", "Password!", "Password1", "Password22", "iloveyou!"
+            Reference: https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.management.compute.models.virtualmachinescalesetosprofile.adminpassword?view=azure-dotnet
+        - name: --enable-azure-rbac
+          type: bool
+          short-summary: Enable Azure RBAC to control authorization checks on cluster.
+        - name: --disable-azure-rbac
+          type: bool
+          short-summary: Disable Azure RBAC to control authorization checks on cluster.
+        - name: --disable-local-accounts
+          type: bool
+          short-summary: (Preview) If set to true, getting static credential will be disabled for this cluster.
+        - name: --enable-local-accounts
+          type: bool
+          short-summary: (Preview) If set to true, will enable getting static credential for this cluster.
+        - name: --enable-public-fqdn
+          type: bool
+          short-summary: (Preview) Enable public fqdn feature for private cluster.
+        - name: --disable-public-fqdn
+          type: bool
+          short-summary: (Preview) Disable public fqdn feature for private cluster.
     examples:
       - name: Enable cluster-autoscaler within node count range [1,5]
         text: az aks update --enable-cluster-autoscaler --min-count 1 --max-count 5 -g MyResourceGroup -n MyManagedCluster
@@ -543,6 +600,12 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-pod-identity
       - name: Update the tags of a kubernetes cluster
         text: az aks update -g MyResourceGroup -n MyManagedCLuster --tags "foo=bar" "baz=qux"
+      - name: Update Windows password of a kubernetes cluster
+        text: az aks update -g MyResourceGroup -n MyManagedCLuster --windows-admin-password "Repl@cePassw0rd12345678"
+      - name: Update a managed AAD AKS cluster to use Azure RBAC
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-azure-rbac
+      - name: Disable Azure RBAC in a managed AAD AKS cluster
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --disable-azure-rbac
 """
 
 helps['aks kollect'] = """
@@ -813,6 +876,12 @@ helps['aks nodepool add'] = """
         - name: --os-type
           type: string
           short-summary: The OS Type. Linux or Windows.
+        - name: --os-sku
+          type: string
+          short-summary: The os-sku of the agent node pool. Ubuntu or CBLMariner.
+        - name: --enable-fips-image
+          type: bool
+          short-summary: Use FIPS-enabled OS on agent nodes.
         - name: --enable-cluster-autoscaler -e
           type: bool
           short-summary: Enable cluster autoscaler.
@@ -861,11 +930,16 @@ helps['aks nodepool add'] = """
         - name: --enable-encryption-at-host
           type: bool
           short-summary: Enable EncryptionAtHost on agent node pool.
+        - name: --enable-ultra-ssd
+          type: bool
+          short-summary: Enable UltraSSD on agent node pool.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
         - name: Create a nodepool with EncryptionAtHost enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --enable-encryption-at-host
+        - name: Create a nodepool cluster with a specific os-sku
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --os-sku Ubuntu
 """
 
 helps['aks nodepool scale'] = """
@@ -1016,6 +1090,15 @@ examples:
     crafted: true
 """
 
+helps['aks get-os-options'] = """
+type: command
+short-summary: Get the OS options available for creating a managed Kubernetes cluster.
+examples:
+  - name: Get the OS options available for creating a managed Kubernetes cluster
+    text: az aks get-os-options --location westus2
+    crafted: true
+"""
+
 helps['aks get-credentials'] = """
 type: command
 short-summary: Get access credentials for a managed Kubernetes cluster.
@@ -1035,6 +1118,9 @@ parameters:
   - name: --output -o
     type: string
     long-summary: Credentials are always in YAML format, so this argument is effectively ignored.
+  - name: --public-fqdn
+    type: bool
+    short-summary: (Preview) Get private cluster credential with server address to be public fqdn.
 examples:
   - name: Get access credentials for a managed Kubernetes cluster. (autogenerated)
     text: az aks get-credentials --name MyManagedCluster --resource-group MyResourceGroup
@@ -1093,4 +1179,14 @@ helps['aks pod-identity exception update'] = """
 helps['aks pod-identity exception list'] = """
     type: command
     short-summary: List pod identity exceptions in a managed Kubernetes cluster
+"""
+
+helps['aks egress-endpoints'] = """
+    type: group
+    short-summary: Commands to manage egress endpoints in managed Kubernetes cluster.
+"""
+
+helps['aks egress-endpoints list'] = """
+    type: command
+    short-summary: List egress endpoints that are required or recommended to be whitelisted for a cluster.
 """
