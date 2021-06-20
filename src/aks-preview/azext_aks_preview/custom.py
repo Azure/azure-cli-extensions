@@ -1804,7 +1804,7 @@ def aks_kollect(cmd,    # pylint: disable=too-many-statements,too-many-locals
     print(f'{colorama.Fore.GREEN}Your logs are being uploaded to storage account {format_bright(storage_account_name)}')
 
     print()
-    print(f'You can download Azure Stroage Explorer here '
+    print(f'You can download Azure Storage Explorer here '
           f'{format_hyperlink("https://azure.microsoft.com/en-us/features/storage-explorer/")}'
           f' to check the logs by adding the storage account using the following URL:')
     print(f'{format_hyperlink(log_storage_account_url)}')
