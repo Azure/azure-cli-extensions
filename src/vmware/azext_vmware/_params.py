@@ -100,3 +100,6 @@ def load_arguments(self, _):
 
     with self.argument_context('vmware addon srm') as c:
         c.argument('license_key', help='The Site Recovery Manager (SRM) license.')
+
+    with self.argument_context('vmware global-reach-connection') as c:
+        c.argument('name', options_list=['--name', '-n'], help='Name of the global reach connection.')

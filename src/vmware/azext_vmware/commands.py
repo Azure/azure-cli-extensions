@@ -80,3 +80,9 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'addon_srm_show')
         g.custom_command('update', 'addon_srm_update')
         g.custom_command('delete', 'addon_srm_delete')
+
+    with self.command_group('vmware global-reach-connection', vmware_sdk, client_factory=cf_vmware) as g:
+        g.custom_command('create', 'globalreachconnection_create')
+        g.custom_command('list', 'globalreachconnection_list')
+        g.custom_command('delete', 'globalreachconnection_delete')
+        g.custom_show_command('show', 'globalreachconnection_show')

@@ -351,3 +351,28 @@ helps['vmware addon srm delete'] = """
     - name: Delete a Site Recovery Manager (SRM) addon.
       text: az vmware addon srm delete --resource-group MyResourceGroup --private-cloud MyPrivateCloud
 """
+
+helps['vmware global-reach-connection'] = """
+    type: group
+    short-summary: Commands to manage global reach connections in a private cloud.
+"""
+
+helps['vmware global-reach-connection create'] = """
+    type: command
+    short-summary: Create a global reach connection in a private cloud.
+"""
+
+helps['vmware global-reach-connection list'] = """
+    type: command
+    short-summary: List global reach connections in a private cloud.
+"""
+
+helps['vmware global-reach-connection show'] = """
+    type: command
+    short-summary: Show details of a global reach connection in a private cloud.
+"""
+
+helps['vmware global-reach-connection delete'] = """
+    type: command
+    short-summary: Delete a global reach connection in a private cloud.
+"""

@@ -259,3 +259,19 @@ def addon_hcx_delete(cmd, client: AVSClient, resource_group_name, private_cloud)
 
 def addon_srm_delete(cmd, client: AVSClient, resource_group_name, private_cloud):
     return client.addons.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, addon_name="srm")
+
+
+def globalreachconnection_create(cmd, client: AVSClient, resource_group_name, private_cloud, name, authorization_key=None, peer_express_route_circuit=None):
+    return client.global_reach_connections.begin_create_or_update(resource_group_name=resource_group_name, private_cloud_name=private_cloud, global_reach_connection_name=name, authorization_key=authorization_key, peer_express_route_circuit=peer_express_route_circuit)
+
+
+def globalreachconnection_list(cmd, client: AVSClient, resource_group_name, private_cloud):
+    return client.global_reach_connections.list(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
+
+
+def globalreachconnection_show(cmd, client: AVSClient, resource_group_name, private_cloud, name):
+    return client.global_reach_connections.get(resource_group_name=resource_group_name, private_cloud_name=private_cloud, global_reach_connection_name=name)
+
+
+def globalreachconnection_delete(cmd, client: AVSClient, resource_group_name, private_cloud, name):
+    return client.global_reach_connections.begin_delete(resource_group_name=resource_group_name, private_cloud_name=private_cloud, global_reach_connection_name=name)
