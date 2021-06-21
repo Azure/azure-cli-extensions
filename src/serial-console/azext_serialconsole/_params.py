@@ -5,7 +5,6 @@
 # pylint: disable=line-too-long
 
 from knack.arguments import CLIArgumentType
-# from azure.cli.core.api import get_subscription_id_list
 
 
 name_arg_type = CLIArgumentType(
@@ -20,7 +19,6 @@ sysrq_input_arg_type = CLIArgumentType(
 def load_arguments(self, _):
 
     from azure.cli.core.commands.parameters import resource_group_name_type
-    # from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
     with self.argument_context('serial-console') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)

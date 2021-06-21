@@ -10,6 +10,7 @@ import time
 from azure.cli.testsdk.base import ScenarioTest
 import requests
 import websocket
+import pytest
 from azext_serialconsole.custom import checkResource
 from azure_devtools.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (
@@ -55,6 +56,12 @@ class CheckResourceTest(ScenarioTest):
         
         with self.assertRaises(AzureConnectionError):
             checkResource(self.cli_ctx, resource_group, name, idd)  #deallocated, no diagnostics
+
+        self.cmd('az vmss start -g {rg} -n {name} --instance-ids {id}')
+        self.cmd('az vmss stop -g {rg} -n {name} --instance-ids {id}')
+        
+        with self.assertRaises(AzureConnectionError):
+            checkResource(self.cli_ctx, resource_group, name, idd)  #stopped, no diagnostics
             
         self.cmd('az vmss start -g {rg} -n {name} --instance-ids {id}')
         self.cmd('az vmss update --name {name} --resource-group {rg} --set virtualMachineProfile.diagnosticsProfile="{{\\"bootDiagnostics\\": {{\\"Enabled\\" : \\"True\\",\\"StorageUri\\":\\"https://{sa}.blob.core.windows.net/\\"}}}}"')
@@ -67,16 +74,6 @@ class CheckResourceTest(ScenarioTest):
         checkResource(self.cli_ctx, resource_group, name, idd) #should work, 1,2,3
 
         self.cmd('az vmss deallocate -g {rg} -n {name} --instance-ids {id}')
-        # for i in range(5):
-        #     try:
-        #         self.cmd('vmss get-instance-view --resource-group {rg} --name {name} --instance-id {id}', checks=[
-        #             self.check('statuses[0].code',
-        #                        'ProvisioningState/succeeded'),
-        #             self.check('statuses[1].code', 'PowerState/deallocated'),
-        #         ])
-        #         break
-        #     except JMESPathCheckAssertionError:
-        #         time.sleep(30)
 
         with self.assertRaises(AzureConnectionError):
             checkResource(self.cli_ctx, resource_group, name, idd) #2,3
@@ -143,16 +140,6 @@ class CheckResourceTest(ScenarioTest):
         checkResource(self.cli_ctx, resource_group, name, None) #should work, 1,2,3
 
         self.cmd('az vm deallocate -g {rg} -n {name}')
-        # for i in range(5):
-        #     try:
-        #         self.cmd('vmss get-instance-view --resource-group {rg} --name {name} --instance-id {id}', checks=[
-        #             self.check('statuses[0].code',
-        #                        'ProvisioningState/succeeded'),
-        #             self.check('statuses[1].code', 'PowerState/deallocated'),
-        #         ])
-        #         break
-        #     except JMESPathCheckAssertionError:
-        #         time.sleep(30)
 
         with self.assertRaises(AzureConnectionError):
             checkResource(self.cli_ctx, resource_group, name, None) #2,3
@@ -265,6 +252,9 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
         self.check_result(resource_group, name,
                           vmss_instanceid=result[1], message="NMI received")
 
+    @pytest.mark.donow
+    @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location='westus2')
+    @StorageAccountPreparer(name_prefix='cli', location="westus2")
     def test_send_reset_VMSS(self, resource_group, storage_account):
         name = self.create_random_name(prefix='cli', length=24)
         self.kwargs.update({
@@ -293,8 +283,7 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
                 break
             except JMESPathCheckAssertionError:
                 time.sleep(30)
-        self.cmd(
-            'serial-console send reset -g {rg} -n {name} --instance-id {id}')
+        self.cmd('serial-console send reset -g {rg} -n {name} --instance-id {id}')
 
     @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location='westus2')
     @StorageAccountPreparer(name_prefix='cli', location="westus2")
@@ -352,6 +341,7 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
         self.cmd('serial-console send sysrq -g {rg} -n {name} --input h')
         self.check_result(resource_group, name, message="sysrq: HELP")
 
+    @pytest.mark.donow
     @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location='westus2')
     @StorageAccountPreparer(name_prefix='cli', location="westus2")
     def test_send_reset_VM(self, resource_group, storage_account):
