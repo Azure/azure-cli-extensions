@@ -9,11 +9,28 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from ._configuration import MonitorClientConfiguration
-from ._monitor_client import MonitorClient
-__all__ = ['MonitorClient', 'MonitorClientConfiguration']
+from enum import Enum
 
-from .version import VERSION
 
-__version__ = VERSION
+class TimeAggregation(str, Enum):
 
+    count = "Count"
+    average = "Average"
+    minimum = "Minimum"
+    maximum = "Maximum"
+    total = "Total"
+
+
+class DimensionOperator(str, Enum):
+
+    include = "Include"
+    exclude = "Exclude"
+
+
+class ConditionOperator(str, Enum):
+
+    equals = "Equals"
+    greater_than = "GreaterThan"
+    greater_than_or_equal = "GreaterThanOrEqual"
+    less_than = "LessThan"
+    less_than_or_equal = "LessThanOrEqual"

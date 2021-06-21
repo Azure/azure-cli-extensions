@@ -9,11 +9,5 @@
 # regenerated.
 # --------------------------------------------------------------------------
 
-from ._configuration import MonitorClientConfiguration
-from ._monitor_client import MonitorClient
-__all__ = ['MonitorClient', 'MonitorClientConfiguration']
-
-from .version import VERSION
-
-__version__ = VERSION
+VERSION = "2020-05-01-preview"
 
