@@ -11,6 +11,7 @@ import yaml   # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
 from msrestazure.azure_exceptions import CloudError
+from azure.core.exceptions import ResourceNotFoundError
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from ._utils import _get_upload_local_file, _get_persistent_disk_size, get_portal_uri, get_azure_files_info
 from knack.util import CLIError
@@ -1560,12 +1561,26 @@ def domain_unbind(cmd, client, resource_group, service, app, domain_name):
     return client.custom_domains.delete(resource_group, service, app, domain_name)
 
 
-def get_app_insights_key(cli_ctx, resource_group, name):
+def get_connection_string_or_instrumentation_key(appinsights):
+    credential = None
+    if appinsights:
+        if hasattr(appinsights, "connection_string") and appinsights.connection_string:
+            credential = appinsights.connection_string
+        elif hasattr(appinsights, "instrumentation_key") and appinsights.instrumentation_key:
+            credential = appinsights.instrumentation_key
+    return credential
+
+
+def get_app_insights_credential(cli_ctx, resource_group, name):
+    """
+    Application Insights is migrating from instrumentation_key to connection_key.
+    Get connection_string first, if not exist, fall back to instrumentation_key.
+    """
     appinsights_client = get_mgmt_service_client(cli_ctx, ApplicationInsightsManagementClient)
     appinsights = appinsights_client.components.get(resource_group, name)
-    if appinsights is None or appinsights.instrumentation_key is None:
-        raise CLIError("App Insights {} under resource group {} was not found.".format(name, resource_group))
-    return appinsights.instrumentation_key
+    if appinsights is None or (appinsights.connection_string is None and appinsights.instrumentation_key is None):
+        raise ResourceNotFoundError("App Insights {} under resource group {} was not found.".format(name, resource_group))
+    return get_connection_string_or_instrumentation_key(appinsights)
 
 
 def update_tracing_config(cmd, resource_group, service_name, location, app_insights_key,
@@ -1578,12 +1593,12 @@ def update_tracing_config(cmd, resource_group, service_name, location, app_insig
     elif app_insights:
         if is_valid_resource_id(app_insights):
             resource_id_dict = parse_resource_id(app_insights)
-            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
-                                                       resource_id_dict['resource_name'])
+            instrumentation_key = get_app_insights_credential(cmd.cli_ctx, resource_id_dict['resource_group'],
+                                                              resource_id_dict['resource_name'])
             trace_properties = models.MonitoringSettingProperties(
                 trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
         else:
-            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
+            instrumentation_key = get_app_insights_credential(cmd.cli_ctx, resource_group, app_insights)
             trace_properties = models.MonitoringSettingProperties(
                 trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
     elif disable_app_insights is not True:
@@ -1614,12 +1629,12 @@ def update_java_agent_config(cmd, resource_group, service_name, location, app_in
     elif app_insights:
         if is_valid_resource_id(app_insights):
             resource_id_dict = parse_resource_id(app_insights)
-            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
-                                                       resource_id_dict['resource_name'])
+            instrumentation_key = get_app_insights_credential(cmd.cli_ctx, resource_id_dict['resource_group'],
+                                                              resource_id_dict['resource_name'])
             trace_properties = models_20201101preview.MonitoringSettingProperties(
                 trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
         else:
-            instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
+            instrumentation_key = get_app_insights_credential(cmd.cli_ctx, resource_group, app_insights)
             trace_properties = models_20201101preview.MonitoringSettingProperties(
                 trace_enabled=True, app_insights_instrumentation_key=instrumentation_key)
     elif enable_java_agent is True:
@@ -1658,7 +1673,7 @@ def try_create_application_insights(cmd, resource_group, name, location):
         }
     }
     appinsights = app_insights_client.components.create_or_update(ai_resource_group_name, ai_name, ai_properties)
-    if appinsights is None or appinsights.instrumentation_key is None:
+    if appinsights is None or (appinsights.connection_string is None and appinsights.instrumentation_key is None):
         logger.warning(creation_failed_warn)
         return None
 
@@ -1667,8 +1682,7 @@ def try_create_application_insights(cmd, resource_group, name, location):
     logger.warning('Application Insights \"%s\" was created for this Azure Spring Cloud. '
                    'You can visit %s/#resource%s/overview to view your '
                    'Application Insights component', appinsights.name, portal_url, appinsights.id)
-
-    return appinsights.instrumentation_key
+    return get_connection_string_or_instrumentation_key(appinsights)
 
 
 def app_insights_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None, sampling_rate=None, disable=None, no_wait=False):
@@ -1683,10 +1697,10 @@ def app_insights_update(cmd, client, resource_group, name, app_insights_key=None
         elif app_insights:
             if is_valid_resource_id(app_insights):
                 resource_id_dict = parse_resource_id(app_insights)
-                instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_id_dict['resource_group'],
-                                                           resource_id_dict['resource_name'])
+                instrumentation_key = get_app_insights_credential(cmd.cli_ctx, resource_id_dict['resource_group'],
+                                                                  resource_id_dict['resource_name'])
             else:
-                instrumentation_key = get_app_insights_key(cmd.cli_ctx, resource_group, app_insights)
+                instrumentation_key = get_app_insights_credential(cmd.cli_ctx, resource_group, app_insights)
         else:
             instrumentation_key = trace_properties.app_insights_instrumentation_key
         if sampling_rate:
