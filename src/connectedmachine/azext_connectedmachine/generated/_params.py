@@ -13,12 +13,17 @@
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_three_state_flag,
+    get_enum_type,
     resource_group_name_type,
     get_location_type
 )
 from azure.cli.core.commands.validators import (
     get_default_location_from_resource_group,
     validate_file_or_dict
+)
+from azext_connectedmachine.action import (
+    AddStatus,
+    AddPrivateLinkServiceConnectionState
 )
 
 
@@ -55,7 +60,7 @@ def load_arguments(self, _):
         c.argument('name', options_list=['-n', '--extension-name', '--name'], type=str, help='The name of the machine '
                    'extension.')
         c.argument('tags', tags_type)
-        c.argument('location', arg_type=get_location_type(self.cli_ctx),
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
         c.argument('force_update_tag', type=str, help='How the extension handler should be forced to update even if '
                    'the extension configuration has not changed.')
@@ -72,6 +77,13 @@ def load_arguments(self, _):
         c.argument('protected_settings', type=validate_file_or_dict, help='The extension can contain either '
                    'protectedSettings or protectedSettingsFromKeyVault or no protected settings at all. Expected '
                    'value: json-string/@json-file.')
+        c.argument('properties_instance_view_name', type=str, help='The machine extension name.', arg_group='Instance '
+                   'View')
+        c.argument('machine_extension_instance_view_type', type=str, help='Specifies the type of the extension; an '
+                   'example is "CustomScriptExtension".', arg_group='Instance View')
+        c.argument('machine_extension_instance_view_type_handler_version_type_handler_version', type=str,
+                   help='Specifies the version of the script handler.', arg_group='Instance View')
+        c.argument('status', action=AddStatus, nargs='+', help='Instance view status.', arg_group='Instance View')
 
     with self.argument_context('connectedmachine extension update') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -108,3 +120,125 @@ def load_arguments(self, _):
         c.argument('machine_name', type=str, help='The name of the machine containing the extension.', id_part='name')
         c.argument('name', options_list=['-n', '--extension-name', '--name'], type=str, help='The name of the machine '
                    'extension.', id_part='child_name_1')
+
+    with self.argument_context('connectedmachine upgrade-extension') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('machine_name', type=str, help='The name of the hybrid machine.', id_part='name')
+        c.argument('extension_targets', type=validate_file_or_dict, help='Describes the Extension Target Properties. '
+                   'Expected value: json-string/@json-file.')
+
+    with self.argument_context('connectedmachine private-link-scope list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+
+    with self.argument_context('connectedmachine private-link-scope show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', type=str, help='The name of the Azure Arc PrivateLinkScope resource.',
+                   id_part='name')
+
+    with self.argument_context('connectedmachine private-link-scope create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', type=str, help='The name of the Azure Arc PrivateLinkScope resource.')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+                   validator=get_default_location_from_resource_group)
+        c.argument('tags', tags_type)
+        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Indicates whether '
+                   'machines associated with the private link scope can also use public Azure Arc service endpoints.')
+
+    with self.argument_context('connectedmachine private-link-scope update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', type=str, help='The name of the Azure Arc PrivateLinkScope resource.',
+                   id_part='name')
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+                   validator=get_default_location_from_resource_group)
+        c.argument('tags', tags_type)
+        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']), help='Indicates whether '
+                   'machines associated with the private link scope can also use public Azure Arc service endpoints.')
+        c.ignore('parameters')
+
+    with self.argument_context('connectedmachine private-link-scope delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', type=str, help='The name of the Azure Arc PrivateLinkScope resource.',
+                   id_part='name')
+
+    with self.argument_context('connectedmachine private-link-scope show-validation-detail') as c:
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), id_part='name')
+        c.argument('private_link_scope_id', type=str, help='The id (Guid) of the Azure Arc PrivateLinkScope resource.',
+                   id_part='child_name_1')
+
+    with self.argument_context('connectedmachine private-link-scope show-validation-detail-for-machine') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('machine_name', type=str, help='The name of the target machine to get the private link scope '
+                   'validation details for.', id_part='name')
+
+    with self.argument_context('connectedmachine private-link-scope update-tag') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', type=str, help='The name of the Azure Arc PrivateLinkScope resource.',
+                   id_part='name')
+        c.argument('tags', tags_type)
+
+    with self.argument_context('connectedmachine private-link-scope wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', type=str, help='The name of the Azure Arc PrivateLinkScope resource.',
+                   id_part='name')
+
+    with self.argument_context('connectedmachine private-link-resource list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', type=str, help='The name of the Azure Arc PrivateLinkScope resource.')
+
+    with self.argument_context('connectedmachine private-link-resource show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', type=str, help='The name of the Azure Arc PrivateLinkScope resource.',
+                   id_part='name')
+        c.argument('group_name', type=str, help='The name of the private link resource.', id_part='child_name_1')
+
+    with self.argument_context('connectedmachine private-endpoint-connection list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', type=str, help='The name of the Azure Arc PrivateLinkScope resource.')
+
+    with self.argument_context('connectedmachine private-endpoint-connection show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', type=str, help='The name of the Azure Arc PrivateLinkScope resource.',
+                   id_part='name')
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
+                                                                     'e'], type=str, help='The name of the private '
+                   'endpoint connection.', id_part='child_name_1')
+
+    with self.argument_context('connectedmachine private-endpoint-connection create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', type=str, help='The name of the Azure Arc PrivateLinkScope resource.')
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
+                                                                     'e'], type=str, help='The name of the private '
+                   'endpoint connection.')
+        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='+',
+                   help='Connection state of the private endpoint connection.')
+        c.argument('id_', options_list=['--id'], type=str, help='Resource id of the private endpoint.',
+                   arg_group='Private Endpoint')
+
+    with self.argument_context('connectedmachine private-endpoint-connection update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', type=str, help='The name of the Azure Arc PrivateLinkScope resource.',
+                   id_part='name')
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
+                                                                     'e'], type=str, help='The name of the private '
+                   'endpoint connection.', id_part='child_name_1')
+        c.argument('private_link_service_connection_state', action=AddPrivateLinkServiceConnectionState, nargs='+',
+                   help='Connection state of the private endpoint connection.')
+        c.argument('id_', options_list=['--id'], type=str, help='Resource id of the private endpoint.',
+                   arg_group='Private Endpoint')
+        c.ignore('parameters')
+
+    with self.argument_context('connectedmachine private-endpoint-connection delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', type=str, help='The name of the Azure Arc PrivateLinkScope resource.',
+                   id_part='name')
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
+                                                                     'e'], type=str, help='The name of the private '
+                   'endpoint connection.', id_part='child_name_1')
+
+    with self.argument_context('connectedmachine private-endpoint-connection wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('scope_name', type=str, help='The name of the Azure Arc PrivateLinkScope resource.',
+                   id_part='name')
+        c.argument('private_endpoint_connection_name', options_list=['--name', '-n', '--private-endpoint-connection-nam'
+                                                                     'e'], type=str, help='The name of the private '
+                   'endpoint connection.', id_part='child_name_1')
