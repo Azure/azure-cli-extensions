@@ -42,7 +42,7 @@ helps['serial-console connect'] = """
 
 helps['serial-console send nmi'] = """
     type: command
-    short-summary: Sends a Non-Maskable Interrupt (NMI) to a VM or VMSS Instance
+    short-summary: Send a Non-Maskable Interrupt (NMI) to a VM or VMSS Instance
     long-summary: >
         A Non-Maskable Interrupt (NMI) is used in debugging scenarios and is designed to crash your target Virtual Machine.
     parameters:
@@ -65,7 +65,7 @@ helps['serial-console send nmi'] = """
 
 helps['serial-console send sysrq'] = """
     type: command
-    short-summary: Sends SysRq sequence to a VM or VMSS Instance
+    short-summary: Send SysRq sequence to a VM or VMSS Instance
     long-summary:
         A SysRq is a sequence of keys understood by the Linux operation system kernel, which can trigger a set of pre-defined actions. These commands are often used when virtual machine troubleshooting or recovery can't be performed through traditional administration (for example, if the VM is not responding).
     parameters:
@@ -90,7 +90,7 @@ helps['serial-console send sysrq'] = """
 
 helps['serial-console send reset'] = """
     type: command
-    short-summary: Performs a "hard" restart of the VM or VMSS Instance
+    short-summary: Perform a "hard" restart of the VM or VMSS Instance
     long-summary: >
         This results in a "hard" restart, like powering the computer down, then back up again. This can result in data loss in the virtual machine. You should only perform this operation if a graceful restart is not effective.
     parameters:
