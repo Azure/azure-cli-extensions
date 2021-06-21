@@ -7,6 +7,7 @@ import os
 import unittest
 import json
 import time
+from azure.cli.testsdk.base import ScenarioTest
 import requests
 import websocket
 from azext_serialconsole.custom import checkResource
@@ -15,9 +16,146 @@ from azure.cli.testsdk import (
     LiveScenarioTest, StorageAccountPreparer, ResourceGroupPreparer)
 from azure.cli.testsdk.exceptions import JMESPathCheckAssertionError
 from azure.cli.core.azclierror import ResourceNotFoundError
-
+from azure.cli.core.azclierror import AzureConnectionError
+from azure.core.exceptions import ResourceNotFoundError as ComputeClientResourceNotFoundError
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+
+class CheckResourceTest(ScenarioTest):
+
+    @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location='westus2')
+    @StorageAccountPreparer(name_prefix='cli', location="westus2")
+    def test_check_resource_VMSS(self, resource_group, storage_account):
+        name = self.create_random_name(prefix='cli', length=24)
+        self.kwargs.update({
+            'sa': storage_account,
+            'rg': resource_group,
+            'name': name,
+            'urn': 'UbuntuLTS',
+            'loc': 'westus2'
+        })
+
+        with self.assertRaises(ComputeClientResourceNotFoundError):
+            checkResource(self.cli_ctx, resource_group, name, None) #None, ne
+        with self.assertRaises(ComputeClientResourceNotFoundError):
+            checkResource(self.cli_ctx, resource_group, name, "0")  #None, ne
+
+        self.cmd('az vmss create -g {rg} -n {name} --image {urn} --instance-count 2 -l {loc}')
+
+        with self.assertRaises(ResourceNotFoundError):
+            checkResource(self.cli_ctx, resource_group, name, None) #None
+
+        idd = self.cmd('vmss list-instances --resource-group {rg} --name {name} --query "[].instanceId"').get_output_in_json()[1]
+        self.kwargs.update({'id': idd})
+
+        with self.assertRaises(AzureConnectionError):
+            checkResource(self.cli_ctx, resource_group, name, idd)  #1
+
+        self.cmd('az vmss deallocate -g {rg} -n {name} --instance-ids {id}')
+        
+        with self.assertRaises(AzureConnectionError):
+            checkResource(self.cli_ctx, resource_group, name, idd)  #deallocated, no diagnostics
+            
+        self.cmd('az vmss start -g {rg} -n {name} --instance-ids {id}')
+        self.cmd('az vmss update --name {name} --resource-group {rg} --set virtualMachineProfile.diagnosticsProfile="{{\\"bootDiagnostics\\": {{\\"Enabled\\" : \\"True\\",\\"StorageUri\\":\\"https://{sa}.blob.core.windows.net/\\"}}}}"')
+
+        with self.assertRaises(AzureConnectionError):
+            checkResource(self.cli_ctx, resource_group, name, idd)  #1,2,3 but not propogated
+
+        self.cmd('az vmss update-instances -g {rg} -n {name} --instance-ids {id}')
+
+        checkResource(self.cli_ctx, resource_group, name, idd) #should work, 1,2,3
+
+        self.cmd('az vmss deallocate -g {rg} -n {name} --instance-ids {id}')
+        # for i in range(5):
+        #     try:
+        #         self.cmd('vmss get-instance-view --resource-group {rg} --name {name} --instance-id {id}', checks=[
+        #             self.check('statuses[0].code',
+        #                        'ProvisioningState/succeeded'),
+        #             self.check('statuses[1].code', 'PowerState/deallocated'),
+        #         ])
+        #         break
+        #     except JMESPathCheckAssertionError:
+        #         time.sleep(30)
+
+        with self.assertRaises(AzureConnectionError):
+            checkResource(self.cli_ctx, resource_group, name, idd) #2,3
+
+        self.cmd('az vmss start -g {rg} -n {name} --instance-ids {id}')
+        self.cmd('az vmss update --name {name} --resource-group {rg} --set virtualMachineProfile.diagnosticsProfile="{{\\"bootDiagnostics\\": {{\\"Enabled\\" : \\"True\\",\\"StorageUri\\" : null}}}}"')
+        self.cmd('az vmss update-instances -g {rg} -n {name} --instance-ids {id}')
+
+        with self.assertRaises(AzureConnectionError):
+            checkResource(self.cli_ctx, resource_group, name, idd) #1,2
+
+        self.cmd('az vmss stop -g {rg} -n {name} --instance-ids {id}')
+
+        with self.assertRaises(AzureConnectionError):
+            checkResource(self.cli_ctx, resource_group, name, idd) #2
+
+        self.cmd('az vmss start -g {rg} -n {name} --instance-ids {id}')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location='westus2')
+    @StorageAccountPreparer(name_prefix='cli', location="westus2")
+    def test_check_resource_VM(self, resource_group, storage_account):
+        name = self.create_random_name(prefix='cli', length=24)
+        self.kwargs.update({
+            'sa': storage_account,
+            'rg': resource_group,
+            'name': name,
+            'urn': 'UbuntuLTS',
+            'loc': 'westus2'
+        })
+
+        with self.assertRaises(ComputeClientResourceNotFoundError):
+            checkResource(self.cli_ctx, resource_group, name, None) #None, ne
+        with self.assertRaises(ComputeClientResourceNotFoundError):
+            checkResource(self.cli_ctx, resource_group, name, "0")  #None, ne
+
+        self.cmd('az vm create -g {rg} -n {name} --image {urn} -l {loc} --generate-ssh-keys')
+
+        with self.assertRaises(AzureConnectionError):
+            checkResource(self.cli_ctx, resource_group, name, None) #1,2
+
+        self.cmd('az vm deallocate -g {rg} -n {name}')
+        
+        with self.assertRaises(AzureConnectionError):
+            checkResource(self.cli_ctx, resource_group, name, None)  #2
+
+        self.cmd('az vm start -g {rg} -n {name}')
+        self.cmd('az vm stop -g {rg} -n {name}')
+        
+        with self.assertRaises(AzureConnectionError):
+            checkResource(self.cli_ctx, resource_group, name, None)  #2
+
+        self.cmd('az vm boot-diagnostics disable -g {rg} -n {name}')
+
+        with self.assertRaises(AzureConnectionError):
+            checkResource(self.cli_ctx, resource_group, name, None)  #None
+
+        self.cmd('az vm start -g {rg} -n {name}')
+
+        with self.assertRaises(AzureConnectionError):
+            checkResource(self.cli_ctx, resource_group, name, None)  #1
+
+        self.cmd('az vm boot-diagnostics enable -g {rg} -n {name} --storage {sa}')
+
+        checkResource(self.cli_ctx, resource_group, name, None) #should work, 1,2,3
+
+        self.cmd('az vm deallocate -g {rg} -n {name}')
+        # for i in range(5):
+        #     try:
+        #         self.cmd('vmss get-instance-view --resource-group {rg} --name {name} --instance-id {id}', checks=[
+        #             self.check('statuses[0].code',
+        #                        'ProvisioningState/succeeded'),
+        #             self.check('statuses[1].code', 'PowerState/deallocated'),
+        #         ])
+        #         break
+        #     except JMESPathCheckAssertionError:
+        #         time.sleep(30)
+
+        with self.assertRaises(AzureConnectionError):
+            checkResource(self.cli_ctx, resource_group, name, None) #2,3
 
 
 class SerialconsoleAdminCommandsTest(LiveScenarioTest):
@@ -127,6 +265,37 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
         self.check_result(resource_group, name,
                           vmss_instanceid=result[1], message="NMI received")
 
+    def test_send_reset_VMSS(self, resource_group, storage_account):
+        name = self.create_random_name(prefix='cli', length=24)
+        self.kwargs.update({
+            'sa': storage_account,
+            'rg': resource_group,
+            'name': name,
+            'urn': 'UbuntuLTS',
+            'loc': 'westus2'
+        })
+        self.cmd(
+            'az vmss create -g {rg} -n {name} --image {urn} --instance-count 2 -l {loc}')
+        self.cmd('az vmss update --name {name} --resource-group {rg} --set virtualMachineProfile.diagnosticsProfile="{{\\"bootDiagnostics\\": {{\\"Enabled\\" : \\"True\\",\\"StorageUri\\":\\"https://{sa}.blob.core.windows.net/\\"}}}}"')
+        result = self.cmd(
+            'vmss list-instances --resource-group {rg} --name {name} --query "[].instanceId"').get_output_in_json()
+        self.kwargs.update({'id': result[1]})
+        self.cmd(
+            'az vmss update-instances -g {rg} -n {name} --instance-ids {id}')
+        time.sleep(60)
+        for i in range(5):
+            try:
+                self.cmd('vmss get-instance-view --resource-group {rg} --name {name} --instance-id {id}', checks=[
+                    self.check('statuses[0].code',
+                               'ProvisioningState/succeeded'),
+                    self.check('statuses[1].code', 'PowerState/running'),
+                ])
+                break
+            except JMESPathCheckAssertionError:
+                time.sleep(30)
+        self.cmd(
+            'serial-console send reset -g {rg} -n {name} --instance-id {id}')
+
     @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location='westus2')
     @StorageAccountPreparer(name_prefix='cli', location="westus2")
     def test_send_nmi_VM(self, resource_group, storage_account):
@@ -182,3 +351,30 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
                 time.sleep(30)
         self.cmd('serial-console send sysrq -g {rg} -n {name} --input h')
         self.check_result(resource_group, name, message="sysrq: HELP")
+
+    @ResourceGroupPreparer(name_prefix='cli_test_serialconsole', location='westus2')
+    @StorageAccountPreparer(name_prefix='cli', location="westus2")
+    def test_send_reset_VM(self, resource_group, storage_account):
+        name = self.create_random_name(prefix='cli', length=24)
+        self.kwargs.update({
+            'sa': storage_account,
+            'rg': resource_group,
+            'name': name,
+            'urn': 'UbuntuLTS',
+            'loc': 'westus2'
+        })
+        self.cmd(
+            'az vm create -g {rg} -n {name} --image {urn} --boot-diagnostics-storage {sa} -l {loc} --generate-ssh-keys')
+        time.sleep(60)
+        for i in range(5):
+            try:
+                self.cmd('vm get-instance-view --resource-group {rg} --name {name}', checks=[
+                    self.check(
+                        'instanceView.statuses[0].code', 'ProvisioningState/succeeded'),
+                    self.check(
+                        'instanceView.statuses[1].code', 'PowerState/running'),
+                ])
+                break
+            except JMESPathCheckAssertionError:
+                time.sleep(30)
+        self.cmd('serial-console send reset -g {rg} -n {name}')

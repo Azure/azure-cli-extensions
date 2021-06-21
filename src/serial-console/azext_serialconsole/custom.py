@@ -368,8 +368,8 @@ class SerialConsole:
     def connectLoadingMessageWindows():
         PC.clearScreen()
         message1 = ("Windows Serial Console requires Special Administration Console (SAC) to be enabled within "
-                   "the Windows VM.\r\nIf you do not see SAC> in the console below after the connection is made, "
-                   "SAC is not enabled.\r\n\r\n")
+                    "the Windows VM.\r\nIf you do not see SAC> in the console below after the connection is made, "
+                    "SAC is not enabled.\r\n\r\n")
         message2 = ("For more information on the Azure Serial Console and SAC, "
                     "see <https://aka.ms/serialconsolewindows>.\r\n")
         PC.print(message1)
@@ -463,9 +463,11 @@ class SerialConsole:
         GV.firstMessage = True
 
         if GV.OSIsWindows:
-            th1 = threading.Thread(target=self.connectLoadingMessageWindows, args=())
+            th1 = threading.Thread(
+                target=self.connectLoadingMessageWindows, args=())
         else:
-            th1 = threading.Thread(target=self.connectLoadingMessageLinux, args=())
+            th1 = threading.Thread(
+                target=self.connectLoadingMessageLinux, args=())
         th1.daemon = True
         th1.start()
 
@@ -565,13 +567,12 @@ class SerialConsole:
                 error_message, recommendation=recommendation)
 
 
-def checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid):
-    client = _compute_client_factory(cmd.cli_ctx)
+def checkResource(cli_ctx, resource_group_name, vm_vmss_name, vmss_instanceid):
+    client = _compute_client_factory(cli_ctx)
     if vmss_instanceid:
         result = client.virtual_machine_scale_set_vms.get_instance_view(
             resource_group_name, vm_vmss_name, vmss_instanceid)
-        print(result)
-        if "windows" in result.additional_properties['osName'].lower():
+        if 'osName' in result.additional_properties and "windows" in result.additional_properties['osName'].lower():
             GV.OSIsWindows = True
 
         power_state = ','.join(
@@ -582,21 +583,14 @@ def checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid):
             raise AzureConnectionError(
                 error_message, recommendation=recommendation)
 
-        result = client.virtual_machine_scale_sets.get(
-            resource_group_name, vm_vmss_name)
         recommendation = ('Use "az vmss update --name MyScaleSet --resource-group MyResourceGroup --set '
-                          'virtualMachineProfile.diagnosticsProfile="{\"bootDiagnostics\": {\"Enabled\" : \"True\",'
-                          '\"StorageUri\":\"https://mystorageacct.blob.core.windows.net/\"}}""'
+                          'virtualMachineProfile.diagnosticsProfile="{\\"bootDiagnostics\\": {\\"Enabled\\" : '
+                          '\\"True\\",\\"StorageUri\\":\\"https://mystorageacct.blob.core.windows.net/\\"}}""'
                           'to enable boot diagnostics.')
-        if not result.virtual_machine_profile.diagnostics_profile.boot_diagnostics.enabled:
+        if result.boot_diagnostics is None or result.boot_diagnostics.serial_console_log_blob_uri is None:
             error_message = ("Azure Serial Console requires boot diagnostics to be enabled. Additionally, "
                              "Serial Console requires a custom boot diagnostics storage account to be "
                              "used, and is not yet fully compatible with managed boot diagnostics storage accounts.")
-            raise AzureConnectionError(
-                error_message, recommendation=recommendation)
-        if result.virtual_machine_profile.diagnostics_profile.boot_diagnostics.storage_uri is None:
-            error_message = ("Serial Console requires a custom boot diagnostics storage account to be used, "
-                             "and is not yet fully compatible with managed boot diagnostics storage accounts.")
             raise AzureConnectionError(
                 error_message, recommendation=recommendation)
     else:
@@ -614,8 +608,9 @@ def checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid):
                               "Use the --instance-id parameter to select the VMSS instance you want to connect to.")
             raise ResourceNotFoundError(
                 error_message, recommendation=recommendation) from e
-
-        if "windows" in result.instance_view.os_name.lower():
+        if (result.instance_view is not None and
+                result.instance_view.os_name is not None and
+                "windows" in result.instance_view.os_name.lower()):
             GV.OSIsWindows = True
 
         power_state = ','.join(
@@ -629,7 +624,9 @@ def checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid):
         recommendation = ('Use "az vm boot-diagnostics enable --name MyVM --resource-group MyResourceGroup '
                           '--storage https://mystor.blob.core.windows.net/" to enable boot diagnostics and '
                           'make sure to specify a storage account with the --storage parameter.')
-        if not result.diagnostics_profile.boot_diagnostics.enabled:
+        if (result.diagnostics_profile is None or
+                result.diagnostics_profile.boot_diagnostics is None or
+                not result.diagnostics_profile.boot_diagnostics.enabled):
             error_message = ("Azure Serial Console requires boot diagnostics to be enabled. Additionally, "
                              "Serial Console requires a custom boot diagnostics storage account to be "
                              "used, and is not yet fully compatible with managed boot diagnostics storage accounts.")
@@ -643,28 +640,32 @@ def checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid):
 
 
 def connect_serialconsole(cmd, resource_group_name, vm_vmss_name, vmss_instanceid=None):
-    checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid)
+    checkResource(cmd.cli_ctx, resource_group_name,
+                  vm_vmss_name, vmss_instanceid)
     GV.serialConsoleInstance = SerialConsole(
         cmd, resource_group_name, vm_vmss_name, vmss_instanceid)
     GV.serialConsoleInstance.launchConsole()
 
 
 def send_nmi_serialconsole(cmd, resource_group_name, vm_vmss_name, vmss_instanceid=None):
-    checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid)
+    checkResource(cmd.cli_ctx, resource_group_name,
+                  vm_vmss_name, vmss_instanceid)
     GV.serialConsoleInstance = SerialConsole(
         cmd, resource_group_name, vm_vmss_name, vmss_instanceid)
     GV.serialConsoleInstance.connectAndSendAdminCommand("nmi")
 
 
 def send_reset_serialconsole(cmd, resource_group_name, vm_vmss_name, vmss_instanceid=None):
-    checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid)
+    checkResource(cmd.cli_ctx, resource_group_name,
+                  vm_vmss_name, vmss_instanceid)
     GV.serialConsoleInstance = SerialConsole(
         cmd, resource_group_name, vm_vmss_name, vmss_instanceid)
     GV.serialConsoleInstance.connectAndSendAdminCommand("reset")
 
 
 def send_sysrq_serialconsole(cmd, resource_group_name, vm_vmss_name, sysrqinput, vmss_instanceid=None):
-    checkResource(cmd, resource_group_name, vm_vmss_name, vmss_instanceid)
+    checkResource(cmd.cli_ctx, resource_group_name,
+                  vm_vmss_name, vmss_instanceid)
     if GV.OSIsWindows:
         error_message = "You can only send a SysRq to a Linux VM."
         raise ForbiddenError(error_message)
